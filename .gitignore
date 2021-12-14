@@ -4,7 +4,7 @@ backend/*/obj
 backend/api/Properties/launchSettings.json
 
 # frontend
-/node_modules
+/frontend/node_modules/
 /.pnp
 .pnp.js
 /coverage
@@ -13,6 +13,7 @@ backend/api/Properties/launchSettings.json
 # Editors
 .vscode
 .idea
+/.idea/
 
 # Environment variables
 .env
@@ -23,3 +24,4 @@ venv
 #Cypress
 frontend/cypress/videos
 frontend/cypress/screenshots
+
