@@ -1,5 +1,11 @@
 # Digital Concept Development (DCD)
 
+### Prerequisites
+
+-   [.NET 6.0+](https://dotnet.microsoft.com/download/dotnet/6.0)
+-   [Node 16+ with npm 8+](https://github.com/nodesource/distributions/blob/master/README.md)
+-   [Docker](https://docs.docker.com/engine/install/)
+
 ## Frontend
 
 The frontend is built using TypeScript and components from the Equinor Design System ([EDS](https://eds.equinor.com/components/component-status/)).
@@ -10,6 +16,13 @@ The frontend is built using TypeScript and components from the Equinor Design Sy
 cd frontend
 npm install
 npm start
+```
+
+### Run backend
+
+```
+cd backend/api
+dotnet run
 ```
 
 ### Testing
@@ -27,3 +40,9 @@ The Cypress tests constitute a suite of automated, functional regression tests.
 To run the Cypress tests locally, type
 
 `npm run cyopen` to open the Cypress interactive runner. This requires the application to be run locally.
+
+
+
+### Team
+DCD is developed by the Shellvis team in TDI EDT DSD EDB.
+
