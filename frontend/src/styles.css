@@ -1,1 +1,9 @@
 @import url('https://eds-static.equinor.com/font/equinor-font.css');
+
+body {
+    margin: 0;
+}
+
+.App {
+    font-family: Equinor;
+}
