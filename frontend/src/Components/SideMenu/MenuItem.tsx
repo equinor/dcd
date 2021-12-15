@@ -20,22 +20,25 @@ const StyledIcon = styled(Icon)`
 
 interface Props {
     title: string
+    isSelected: boolean
     icon?: IconData
     isOpen?: boolean
     onClick?: () => void
     style?: object
 }
 
-const MenuItemHeader = ({ title, icon, isOpen, onClick, style }: Props) => {
+const MenuItem = ({ title, isSelected, icon, isOpen, onClick, style }: Props) => {
+    const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
+
     return (
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', ...style }} onClick={onClick}>
             <NameDiv>
-                {icon && <StyledIcon data={icon}></StyledIcon>}
-                <Typography>{title}</Typography>
+                {icon && <StyledIcon data={icon} color={isSelected ? selectedColor : ''}></StyledIcon>}
+                <Typography color={isSelected ? selectedColor : ''}>{title}</Typography>
             </NameDiv>
             {onClick !== undefined && <StyledIcon data={isOpen ? chevron_down : chevron_right}></StyledIcon>}
         </div>
     )
 }
 
-export default MenuItemHeader
+export default MenuItem
