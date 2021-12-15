@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { IconData } from '@equinor/eds-icons'
 import MenuItemHeader from './MenuItemHeader'
+import { Link } from 'react-router-dom'
+import { CaseItem } from './SideMenu'
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -26,10 +28,11 @@ export type ProjectMenuItem = {
 
 interface Props {
     item: ProjectMenuItem
-    subItems?: string[]
+    projectId: string
+    subItems?: CaseItem[]
 }
 
-const ExpandableProjectMenuItem = ({ item, subItems }: Props) => {
+const ExpandableProjectMenuItem = ({ item, projectId, subItems }: Props) => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
     return (
@@ -39,7 +42,11 @@ const ExpandableProjectMenuItem = ({ item, subItems }: Props) => {
                 <ul style={{ padding: 0, margin: 0, width: '100%' }}>
                     {subItems.map((subItem, index) => (
                         <StyledLi style={{ listStyleType: 'none', margin: 0, padding: 0 }} key={index}>
-                            <MenuItemHeader title={subItem} style={{ padding: '0.25rem 2rem' }} />
+                            <nav>
+                                <Link to={'/project/' + projectId + '/case/' + subItem.id} style={{ textDecoration: 'none' }}>
+                                    <MenuItemHeader title={subItem.title} style={{ padding: '0.25rem 2rem' }} />
+                                </Link>
+                            </nav>
                         </StyledLi>
                     ))}
                 </ul>
