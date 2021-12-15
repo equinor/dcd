@@ -4,6 +4,7 @@ import { file, folder, dashboard } from '@equinor/eds-icons'
 import { MenuItem } from './SideMenu'
 import MenuItemHeader from './MenuItemHeader'
 import ExpandableProjectMenuItem from './ExpandableProjectMenuItem'
+import { Link } from 'react-router-dom'
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -35,7 +36,11 @@ const ExpandableProject = ({ item }: Props) => {
 
     return (
         <ExpandableDiv>
-            <MenuItemHeader title={item.name} icon={folder} isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
+            <nav>
+                <Link to={'/project/' + item.id} style={{ textDecoration: 'none' }}>
+                    <MenuItemHeader title={item.name} icon={folder} isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
+                </Link>
+            </nav>
             {isOpen && (
                 <ul style={{ padding: 0, margin: 0, width: '100%' }}>
                     {subItems.map((projectMenuItem, index) => {
@@ -43,6 +48,7 @@ const ExpandableProject = ({ item }: Props) => {
                             <StyledLi style={{ listStyleType: 'none', margin: 0, padding: 0 }} key={index}>
                                 <ExpandableProjectMenuItem
                                     item={projectMenuItem}
+                                    projectId={item.id}
                                     subItems={projectMenuItem.name === 'Cases' ? item.cases : undefined}
                                 />
                             </StyledLi>
