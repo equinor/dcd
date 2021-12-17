@@ -5,7 +5,7 @@ import { Table, Typography } from '@equinor/eds-core-react'
 
 import { sort } from './helpers'
 import SortableTable, { Column, SortDirection } from './SortableTable'
-import { Case } from '../SideMenu/SideMenu'
+import { Case } from '../../types'
 
 const { Row, Cell } = Table
 

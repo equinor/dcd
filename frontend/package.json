@@ -11,9 +11,12 @@
     "@types/node": "^12.20.37",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
+    "plotly.js": "^2.8.1",
+    "plotly.js-dist": "^2.8.1",
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-plotly.js": "^2.5.1",
     "react-router": "^6.1.1",
     "react-router-dom": "^6.1.1",
     "react-scripts": "4.0.3",
@@ -47,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-plotly.js": "^2.5.0",
     "@types/styled-components": "^5.1.18",
     "cypress": "^9.1.0"
   }

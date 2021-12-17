@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { file, folder, dashboard } from '@equinor/eds-icons'
 
-import { Project } from './SideMenu'
+import { Project } from '../../types'
 import MenuItem from './MenuItem'
 import ProjectMenuItemComponent from './ProjectMenuItemComponent'
 
