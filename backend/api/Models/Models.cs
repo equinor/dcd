@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,7 +17,14 @@ namespace api.Models
         [Required]
         public DateTimeOffset CreateDate { get; set; }
         [Required]
-        public virtual ICollection<Case> Cases { get; private set; }
+        public ICollection<Case>? Cases { get; set; }
+
+        public Project(string Id, string ProjectName)
+        {
+            this.Id = Id;
+            this.ProjectName = ProjectName;
+            this.CreateDate = DateTimeOffset.UtcNow;
+        }
     }
 
     public class Case
@@ -28,13 +36,19 @@ namespace api.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Capex { get; set; }
+        public string? Capex { get; set; }
         [Required]
-        public string Drillex { get; set; }
+        public string? Drillex { get; set; }
         [Required]
-        public string UR { get; set; }
+        public string? UR { get; set; }
         [Required]
         public DateTimeOffset CreateDate { get; set; }
+
+        public Case(string id, string name)
+        {
+            this.Id = id;
+            this.Name = name;
+        }
     }
 
 }

@@ -8,26 +8,30 @@ namespace api.Services
 {
     public class ProjectService
     {
-        private readonly DCDDbContext _context;
+        private readonly DcdDbContext _context;
 
-        public ProjectService(DCDDbContext context)
+        public ProjectService(DcdDbContext context)
         {
             _context = context;
         }
 
-        public IQueryable<Project> GetAll()
+        public IQueryable<Project>? GetAll()
         {
             return _context.Projects;
         }
 
         public Project GetProject(string projectId)
         {
-            Project project = _context.Projects.FirstOrDefault(project => project.Id.Equals(projectId));
-            if (project == null)
+            if (_context.Projects != null)
             {
-                throw new NotFoundInDBException($"Project not found: {projectId}");
+                Project project = _context.Projects.First(project => project.Id.Equals(projectId));
+                if (project == null)
+                {
+                    throw new Exception($"Project not found: {projectId}");
+                }
+                return project;
             }
-            return project;
+            throw new Exception($"Project not found: {projectId}");
         }
     }
 }
