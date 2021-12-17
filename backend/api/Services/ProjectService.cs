@@ -22,10 +22,10 @@ namespace api.Services
 
         public Project GetProject(string projectId)
         {
-            Project project = _context.Projects.FirstOrDefault(project => project.Id.Equals(projectId));
+            Project project = _context.Projects.First(project => project.Id.Equals(projectId));
             if (project == null)
             {
-                throw new NotFoundInDBException($"Project not found: {projectId}");
+                throw new Exception($"Project not found: {projectId}");
             }
             return project;
         }

@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 
-using Microsoft.Data.Sqlite;
 using api.Context;
-using Microsoft.EntityFrameworkCore;
 using api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,8 +49,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
