@@ -6,7 +6,7 @@ using api.Models;
 
 namespace api.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
@@ -30,7 +30,7 @@ public class ProjectController : ControllerBase
     }
 
     [HttpGet("GetProjects")]
-    public IEnumerable<Project> GetProjects()
+    public IEnumerable<Project>? GetProjects()
     {
         return _projectService.GetAll();
     }

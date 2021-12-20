@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 
-using Microsoft.Data.Sqlite;
 using api.Context;
-using Microsoft.EntityFrameworkCore;
 using api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +15,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 string _sqlConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
 if (string.IsNullOrEmpty(_sqlConnectionString))
 {
-    DbContextOptionsBuilder<DCDDbContext> dBbuilder = new DbContextOptionsBuilder<DCDDbContext>();
+    DbContextOptionsBuilder<DcdDbContext> dBbuilder = new DbContextOptionsBuilder<DcdDbContext>();
     _sqlConnectionString = new SqliteConnectionStringBuilder { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }.ToString();
 
     // In-memory sqlite requires an open connection throughout the whole lifetime of the database
@@ -24,7 +23,7 @@ if (string.IsNullOrEmpty(_sqlConnectionString))
     _connectionToInMemorySqlite.Open();
     dBbuilder.UseSqlite(_connectionToInMemorySqlite);
 
-    using (DCDDbContext context = new DCDDbContext(dBbuilder.Options))
+    using (DcdDbContext context = new DcdDbContext(dBbuilder.Options))
     {
         context.Database.EnsureCreated();
         InitContent.PopulateDb(context);
@@ -32,7 +31,7 @@ if (string.IsNullOrEmpty(_sqlConnectionString))
 }
 
 // Setting splitting behavior explicitly to avoid warning
-builder.Services.AddDbContext<DCDDbContext>(
+builder.Services.AddDbContext<DcdDbContext>(
     options => options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
 );
 builder.Services.AddScoped<ProjectService>();
@@ -50,8 +49,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
