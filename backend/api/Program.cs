@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using api.Context;
 using api.Services;
 
@@ -11,8 +13,17 @@ configBuilder.AddAzureAppConfiguration(Environment.GetEnvironmentVariable("AppCo
 var config = configBuilder.Build();
 Console.WriteLine(config["PoC2"] ?? "Hello world!");
 
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Dev-Note Add this configuration to prevent circular references in the database
+// https://stackoverflow.com/questions/60197270/jsonexception-a-possible-object-cycle-was-detected-which-is-not-supported-this
+builder.Services.AddMvc()
+ .AddJsonOptions(o =>
+ {
+     o.JsonSerializerOptions
+        .ReferenceHandler = ReferenceHandler.IgnoreCycles;
+ });
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));

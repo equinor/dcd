@@ -22,14 +22,13 @@ namespace api.Controllers
             _projectService = projectService;
         }
 
-
-        [HttpGet("GetProject/{projectId}")]
-        public Project Get(string projectId)
+        [HttpGet("{projectId}", Name = "GetProject")]
+        public Project Get(Guid projectId)
         {
             return _projectService.GetProject(projectId);
         }
 
-        [HttpGet("GetProjects")]
+        [HttpGet(Name = "GetProjects")]
         public IEnumerable<Project>? GetProjects()
         {
             return _projectService.GetAll();
