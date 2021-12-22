@@ -11,11 +11,11 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'fde94e74-cfd2-4a29-bab9-ac62b3b3b864'
-  imageRepository: 'equinordcd'
+  dockerRegistryServiceConnection: 'd48562b7-b6e2-4806-be56-f85e7d14caa8'
+  imageRepository: 'dcd_frontend'
   containerRegistry: 'crdcd.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/frontend/Dockerfile'
-  tag: '$(Build.BuildId)'
+  tag: 'latest'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
