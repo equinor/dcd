@@ -12,9 +12,11 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'd48562b7-b6e2-4806-be56-f85e7d14caa8'
-  imageRepository: 'dcd_frontend'
+  frontendImageRepository: 'dcd_frontend'
+  backendImageRepository: 'dcd_backend'
   containerRegistry: 'crdcd.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/frontend/Dockerfile'
+  frontendDockerfilePath: '$(Build.SourcesDirectory)/frontend/Dockerfile'
+  backendDockerfilePath: '$(Build.SourcesDirectory)/backend/Dockerfile'
   tag: 'latest'
 
   # Agent VM image name
@@ -24,8 +26,8 @@ stages:
 - stage: Build
   displayName: Build and push stage
   jobs:
-  - job: Build
-    displayName: Build
+  - job: Build_Frontend
+    displayName: Build frontend
     pool:
       vmImage: $(vmImageName)
     steps:
@@ -33,8 +35,23 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
+        repository: $(frontendImageRepository)
+        dockerfile: $(frontendDockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
+  - job: Build_Backend
+    displayName: Build backend
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(backendImageRepository)
+        dockerfile: $(backendDockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
