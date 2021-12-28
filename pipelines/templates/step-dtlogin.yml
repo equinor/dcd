@@ -1,0 +1,9 @@
+parameters:
+  - name: dt_tenant
+  - name: dt_password
+  - name: dt_url
+
+steps:
+  - script: |
+      docker login -u ${{ parameters.dt_tenant }} ${{ parameters.dt_url }} --password ${{ parameters.dt_password }}
+    displayName: "docker login dynatrace"

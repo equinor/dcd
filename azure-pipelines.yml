@@ -1,40 +1,30 @@
-# Docker
-# Build and push an image to Azure Container Registry
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
-- main
-- cicd
+  - main
+  - cicd
 
 resources:
-- repo: self
+  - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'd48562b7-b6e2-4806-be56-f85e7d14caa8'
-  imageRepository: 'dcd_frontend'
-  containerRegistry: 'crdcd.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/frontend/Dockerfile'
-  tag: 'latest'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-
+  - group: DCD
+  - group: DCD-KeyVault
+  - name: vmImageName
+    value: "ubuntu-latest"
 stages:
-- stage: Build
-  displayName: Build and push stage
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
-      inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+  - template: pipelines/templates/stage-build.yml
+    parameters:
+      workSpace: $(Pipeline.Workspace)
+      buildId: $(Build.BuildId)
+      dt_tenant: $(dynatrace_tenant)
+      dt_password: $(dynatrace-prod-token)
+      dt_url: $(dynatrace_baseurl)
+      sourcesDirectory: $(Build.SourcesDirectory)
+      name: "DCD"
+
+  - template: pipelines/templates/stage-deploy.yml
+    parameters:
+      imageTag: $(Build.BuildId)
+      webAppName: "ase-dcd"
+      serviceConnection: "dcd-pipeline-sp"
+      name: DeployQA
+      environment: qa

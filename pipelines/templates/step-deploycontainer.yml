@@ -1,0 +1,21 @@
+parameters:
+  - name: imageName
+  - name: imageTag
+  - name: webAppName
+  - name: serviceConnection
+  - name: name
+
+steps:
+  - task: AzureRmWebAppDeployment@4
+    displayName: ${{ parameters.name }}
+    inputs:
+      ConnectionType: "AzureRM"
+      azureSubscription: ${{ parameters.serviceConnection }}
+      appType: "webAppContainer"
+      WebAppName: ${{ parameters.webAppName }}
+      deployToSlotOrASE: true
+      ResourceGroupName: "DCD"
+      SlotName: "cold"
+      DockerNamespace: "crdcd.azurecr.io"
+      DockerRepository: ${{ parameters.imageName }}
+      DockerImageTag: ${{ parameters.imageTag }}

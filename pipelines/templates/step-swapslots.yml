@@ -1,0 +1,14 @@
+parameters:
+  - name: webAppName
+  - name: serviceConnection
+  - name: name
+
+steps:
+  - task: AzureAppServiceManage@0
+    displayName: ${{ parameters.name }}
+    inputs:
+      azureSubscription: ${{ parameters.serviceConnection }}
+      Action: "Swap Slots"
+      WebAppName: ${{ parameters.webAppName }}
+      ResourceGroupName: "DCD"
+      SourceSlot: "cold"
