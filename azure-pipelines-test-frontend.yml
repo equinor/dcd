@@ -1,0 +1,23 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+  - job: Test_Frontend
+        steps:
+            - task: NodeTool@0
+              inputs:
+                  versionSpec: "16.x"
+            - task: Npm@1
+              name: Install
+              inputs:
+                  command: "install"
+                  workingDir: "frontend"
+            - task: Npm@1
+              name: Run_Frontend_Tests
+              inputs:
+                  command: "custom"
+                  workingDir: "frontend"
+                  customCommand: "test"
