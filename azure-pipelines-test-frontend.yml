@@ -1,5 +1,5 @@
 trigger:
-- main
+- test-frontend
 
 pool:
   vmImage: ubuntu-latest
