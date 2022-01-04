@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Xunit;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.Sqlite;
 
 using api.Context;
 using api.Models;
+
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+
+using Xunit;
 
 namespace tests
 {

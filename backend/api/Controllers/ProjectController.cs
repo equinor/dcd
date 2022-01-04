@@ -1,9 +1,9 @@
+using api.Models;
+using api.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
-
-using api.Models;
-using api.Services;
 
 namespace api.Controllers
 {
