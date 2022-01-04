@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 using api.Context;
 using api.Models;
 
@@ -24,14 +21,14 @@ namespace api.Services
         {
             if (_context.Projects != null)
             {
-                Project project = _context.Projects.First(project => project.Id.Equals(projectId));
+                var project = _context.Projects.FirstOrDefault(p => p.Id.Equals(projectId));
                 if (project == null)
                 {
-                    throw new Exception($"Project not found: {projectId}");
+                    throw new NotFoundInDBException($"Project not found: {projectId}");
                 }
                 return project;
             }
-            throw new Exception($"Project not found: {projectId}");
+            throw new NotFoundInDBException($"The database contains no projects");
         }
     }
 }
