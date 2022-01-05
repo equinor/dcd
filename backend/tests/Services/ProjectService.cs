@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
-using Xunit;
 
 using api.Models;
 using api.Services;
+
+using Xunit;
 
 namespace tests
 {

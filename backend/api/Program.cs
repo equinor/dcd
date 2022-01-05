@@ -1,10 +1,10 @@
+using api.Context;
+using api.Services;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
-
-using api.Context;
-using api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
