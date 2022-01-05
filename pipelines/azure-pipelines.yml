@@ -11,7 +11,7 @@ variables:
   - name: vmImageName
     value: "ubuntu-latest"
 stages:
-  - template: pipelines/templates/stage-build.yml
+  - template: templates/stage-build.yml
     parameters:
       workSpace: $(Pipeline.Workspace)
       buildId: $(Build.BuildId)
@@ -21,7 +21,7 @@ stages:
       sourcesDirectory: $(Build.SourcesDirectory)
       name: "DCD"
 
-  - template: pipelines/templates/stage-deploy.yml
+  - template: templates/stage-deploy.yml
     parameters:
       imageTag: $(Build.BuildId)
       webAppName: "ase-dcd"
