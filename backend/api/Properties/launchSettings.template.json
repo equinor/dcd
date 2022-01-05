@@ -9,7 +9,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ApplicationInsights__InstrumentationKey": "",
-        "AzureAd__ClientSecret": ""
+        "AzureAd__ClientSecret": "",
+        "AppConfiguration__ConnectionString": ""
       }
     }
   }
