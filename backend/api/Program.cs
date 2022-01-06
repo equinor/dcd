@@ -6,6 +6,11 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 
+var configBuilder = new ConfigurationBuilder();
+configBuilder.AddAzureAppConfiguration(Environment.GetEnvironmentVariable("AppConfiguration__ConnectionString"));
+var config = configBuilder.Build();
+Console.WriteLine(config["PoC2"] ?? "Hello world!");
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
