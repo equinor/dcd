@@ -12,6 +12,7 @@ const ExpandableDiv = styled.div`
     flex-direction: column;
     padding: 0.25rem 1rem;
     cursor: pointer;
+    width: 90%;
 `
 
 const StyledLi = styled.li`
