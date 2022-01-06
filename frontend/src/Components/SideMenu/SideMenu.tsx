@@ -1,17 +1,24 @@
 import React from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { chevron_left } from '@equinor/eds-icons'
+import { Divider, Icon, Typography } from '@equinor/eds-core-react'
+
 import ProjectMenu from './ProjectMenu'
 
 const SidebarDiv = styled.div`
     min-width: 15rem;
     display: flex;
     border-right: 1px solid lightgrey;
+    display: flex;
+    flex-direction: column;
 `
 
 export const projects = [
     {
         name: 'Project 1',
         id: '78hdkssjd7c73ndks38shsn',
+        createdDate: 1641387278188,
         cases: [
             { title: 'Case 1', id: '7jssgs62hajk', capex: 1400, drillex: 900, ur: 120 },
             { title: 'Case 2', id: 'hdgsiwksjs6l', capex: 1200, drillex: 700, ur: 110 },
@@ -24,6 +31,7 @@ export const projects = [
     {
         name: 'Project 2',
         id: 'js83hdytdgsdhffh63hsfs',
+        createdDate: 1633434946771,
         cases: [
             { title: 'Case 1', id: 'gdhj63dhdjkd', capex: 1200, drillex: 700, ur: 150 },
             { title: 'Case 2', id: 'dhhdj3dhdjkd', capex: 1400, drillex: 900, ur: 90 },
@@ -32,6 +40,7 @@ export const projects = [
     {
         name: 'Project 3',
         id: 'h63fdt3d63a8jfgyd-73isgs',
+        createdDate: 1622894187502,
         cases: [
             { title: 'Case 1', id: 'hd63hdjd8sjs', capex: 1200, drillex: 700, ur: 150 },
             { title: 'Case 2', id: 'hfgded7edsgs', capex: 1300, drillex: 500, ur: 140 },
@@ -42,6 +51,7 @@ export const projects = [
     {
         name: 'Project 4',
         id: 'hsye7362jdkhfg73hsgdf73',
+        createdDate: 1641387546683,
         cases: [
             { title: 'Case 1', id: '83jshddtwgsj', capex: 1400, drillex: 900, ur: 150 },
             { title: 'Case 2', id: 'kdjeuhdgfyeh', capex: 1200, drillex: 700, ur: 140 },
@@ -53,17 +63,31 @@ export const projects = [
 ]
 
 const SideMenu = () => {
-    return (
-        <SidebarDiv>
-            <ul style={{ padding: 0, margin: 0, width: '100%', paddingTop: '2rem' }}>
-                {projects.map((project, index) => (
-                    <li style={{ listStyleType: 'none', margin: 0, padding: 0 }} key={index}>
-                        <ProjectMenu project={project} />
-                    </li>
-                ))}
-            </ul>
-        </SidebarDiv>
-    )
+    const navigate = useNavigate()
+    const params = useParams()
+    const project = projects.find(p => p.id === params.projectId)
+
+    const returnToSearch = () => {
+        navigate('/')
+    }
+
+    if (project) {
+        return (
+            <SidebarDiv>
+                <div
+                    style={{ display: 'flex', alignItems: 'center', padding: '1rem 1rem 0 1rem', cursor: 'pointer' }}
+                    onClick={returnToSearch}
+                >
+                    <Icon data={chevron_left} size={24} />
+                    <Typography>Back to search</Typography>
+                </div>
+                <Divider style={{ width: '80%' }} />
+                <ProjectMenu project={project} />
+            </SidebarDiv>
+        )
+    } else {
+        return <></>
+    }
 }
 
 export default SideMenu

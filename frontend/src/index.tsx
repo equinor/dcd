@@ -5,6 +5,7 @@ import App from './App'
 import DashboardView from './Views/DashboardView'
 import ProjectView from './Views/ProjectView'
 import CaseView from './Views/CaseView'
+import MainView from './Components/SideMenu/MainView'
 
 ReactDOM.render(
     <React.StrictMode>
@@ -12,8 +13,10 @@ ReactDOM.render(
             <Routes>
                 <Route path="/" element={<App />}>
                     <Route index element={<DashboardView />} />
-                    <Route path="project/:projectId" element={<ProjectView />} />
-                    <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                    <Route path="project" element={<MainView />}>
+                        <Route path=":projectId" element={<ProjectView />} />
+                        <Route path=":projectId/case/:caseId" element={<CaseView />} />
+                    </Route>
                 </Route>
             </Routes>
         </BrowserRouter>
