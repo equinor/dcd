@@ -1,6 +1,8 @@
 using api.Context;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services
 {
     public class ProjectService
@@ -12,19 +14,41 @@ namespace api.Services
             _context = context;
         }
 
-        public IQueryable<Project>? GetAll()
-        {
-            return _context.Projects;
-        }
-
-        public Project GetProject(string projectId)
+        public IEnumerable<Project> GetAll()
         {
             if (_context.Projects != null)
             {
-                var project = _context.Projects.FirstOrDefault(p => p.Id.Equals(projectId));
+                return _context.Projects
+                    .Include(c => c.Cases)
+                        .ThenInclude(c => c.DrainageStrategy)
+                            .ThenInclude(c => c.ProductionProfileOil)
+                                .ThenInclude(c => c.YearValues)
+                    .Include(c => c.Cases)
+                        .ThenInclude(c => c.DrainageStrategy)
+                            .ThenInclude(c => c.ProductionProfileGas)
+                                .ThenInclude(c => c.YearValues);
+            }
+            else
+            {
+                return new List<Project>();
+            }
+        }
+
+        public Project GetProject(Guid projectId)
+        {
+            if (_context.Projects != null)
+            {
+                var project = _context.Projects
+                    .Include(c => c.Cases)
+                        .ThenInclude(c => c.DrainageStrategy)
+                            .ThenInclude(c => c.ProductionProfileOil)
+                    .Include(c => c.Cases)
+                        .ThenInclude(c => c.DrainageStrategy)
+                            .ThenInclude(c => c.ProductionProfileGas)
+                              .FirstOrDefault(p => p.Id.Equals(projectId));
                 if (project == null)
                 {
-                    throw new NotFoundInDBException($"Project not found: {projectId}");
+                    throw new NotFoundInDBException(string.Format("Project %s not found", projectId));
                 }
                 return project;
             }

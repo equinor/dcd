@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using api.Models;
 using api.Services;
 
 using Xunit;
+
 
 namespace tests
 {
@@ -18,12 +20,12 @@ namespace tests
             this.fixture = fixture;
         }
         [Fact]
-        public void GetQueryable()
+        public void RetrieveAllProjects()
         {
             ProjectService projectService = new ProjectService(fixture.context);
-            IQueryable<Project> projectQueryable = projectService.GetAll();
+            IEnumerable<Project> projects = projectService.GetAll();
 
-            Assert.True(projectQueryable.Count() > 0);
+            Assert.True(projects.Count() > 0);
         }
 
         [Fact]
@@ -42,8 +44,7 @@ namespace tests
         public void GetDoesNotExist()
         {
             ProjectService projectService = new ProjectService(fixture.context);
-
-            Assert.Throws<NotFoundInDBException>(() => projectService.GetProject("some_project_id_that_does_not_exist"));
+            Assert.Throws<NotFoundInDBException>(() => projectService.GetProject(new Guid()));
         }
     }
 }
