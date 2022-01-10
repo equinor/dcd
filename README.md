@@ -12,6 +12,8 @@ The frontend is built using TypeScript and components from the Equinor Design Sy
 
 ### Run frontend
 
+Before you can run the application, you need to copy `.env.template` (`cp .env.template .env`) and set the necessary values.
+
 ```
 cd frontend
 npm install
