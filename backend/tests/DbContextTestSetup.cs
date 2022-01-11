@@ -27,7 +27,7 @@ namespace tests
             builder.UseSqlite(_connection);
             context = new DcdDbContext(builder.Options);
             context.Database.EnsureCreated();
-            InitContent.PopulateDb(context);
+            SaveTestdataToDB.PopulateDb(context);
         }
 
         public void Dispose()

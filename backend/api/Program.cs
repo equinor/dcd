@@ -42,7 +42,7 @@ if (string.IsNullOrEmpty(_sqlConnectionString))
     using (DcdDbContext context = new DcdDbContext(dBbuilder.Options))
     {
         context.Database.EnsureCreated();
-        InitContent.PopulateDb(context);
+        SaveTestdataToDB.PopulateDb(context);
     }
 }
 
