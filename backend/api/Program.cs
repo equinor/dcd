@@ -47,6 +47,23 @@ if (string.IsNullOrEmpty(_sqlConnectionString))
         SaveSampleDataToDB.PopulateDb(context);
     }
 }
+// Set up CORS
+var _accessControlPolicyName = "AllowSpecificOrigins";
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(_accessControlPolicyName,
+        builder =>
+        {
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+            builder.WithOrigins(
+                "http://localhost:3000",
+                "https://*.equinor.com",
+                "https://ase-dcd-frontend-dev.azurewebsites.net/",
+                "https://ase-dcd-frontend-qa.azurewebsites.net/"
+            ).SetIsOriginAllowedToAllowWildcardSubdomains();
+        });
+    });
 
 // Setting splitting behavior explicitly to avoid warning
 builder.Services.AddDbContext<DcdDbContext>(
@@ -61,6 +78,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -72,6 +90,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(_accessControlPolicyName);
 
 app.MapControllers();
 
