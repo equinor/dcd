@@ -1,0 +1,20 @@
+trigger:
+  - main
+
+pr:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: SnykSecurityScan@1
+    inputs:
+      serviceConnectionEndpoint: "Shellvis Snyk Integration"
+      testType: "app"
+      severityThreshold: "high"
+      monitorWhen: "always"
+      failOnIssues: true
+      projectName: "DCD"
+      organization: "559239bb-3363-45ab-925a-a639ba9e0e51"
+      testDirectory: '$(Build.SourcesDirectory)\backend\api'
