@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { Icon, SingleSelect, Typography } from '@equinor/eds-core-react'
@@ -7,6 +7,7 @@ import { tokens } from '@equinor/eds-tokens'
 import { UseComboboxStateChange } from 'downshift'
 
 import { projects } from '../Components/SideMenu/SideMenu'
+import { ProjectService } from '../Services/ProjectService'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -34,6 +35,17 @@ const ChooseProjectText = styled(Typography)`
 
 const DashboardView = () => {
     const navigate = useNavigate()
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await ProjectService.getProjects()
+                console.log(res)
+            } catch (error) {
+                console.error(error)
+            }
+        })()
+    }, [])
 
     const onSelected = (selectedValue: string | null | undefined) => {
         const project = projects.find(p => p.name === selectedValue)

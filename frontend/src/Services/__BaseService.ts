@@ -25,18 +25,18 @@ export class __BaseService {
         this.client = axios.create({ baseURL: this.config.BASE_URL })
         this.client.defaults.headers.common = {
             accept: 'application/json',
-            'Access-Control-Allow-Origin': '*',
             ...this.config.headers,
         }
     }
 
-    private request(path: string, options?: RequestOptions) {
-        return this.client.request({
+    private async request(path: string, options?: RequestOptions) {
+        const { data } = await this.client.request({
             method: options?.method,
             headers: options?.headers,
             withCredentials: options?.credentials === "include",
             url: path
         })
+        return data
     }
 
     protected get(path: string, options?: RequestOptions) {
