@@ -34,6 +34,25 @@ public class CaseBuilder : Case
         this.DrainageStrategy = d;
         return this;
     }
+    public CaseBuilder WithCessationCost(CessationCostBuilder c)
+    {
+        c.Case = this;
+        this.CessationCost = c;
+        return this;
+    }
+}
+
+public class CessationCostBuilder : CessationCost
+{
+    public CessationCostBuilder()
+    {
+        YearValues = new List<YearValue<double>>();
+    }
+    public CessationCostBuilder WithYearValue(int y, double v)
+    {
+        this.YearValues.Add(new YearValue<double>(y, v));
+        return this;
+    }
 }
 
 public class DrainageStrategyBuilder : DrainageStrategy

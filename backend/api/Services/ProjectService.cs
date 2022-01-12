@@ -20,6 +20,9 @@ namespace api.Services
             {
                 return _context.Projects
                     .Include(c => c.Cases)
+                        .ThenInclude(c => c.CessationCost)
+                            .ThenInclude(c => c.YearValues)
+                    .Include(c => c.Cases)
                         .ThenInclude(c => c.DrainageStrategy)
                             .ThenInclude(c => c.ProductionProfileOil)
                                 .ThenInclude(c => c.YearValues)
@@ -39,6 +42,9 @@ namespace api.Services
             if (_context.Projects != null)
             {
                 var project = _context.Projects
+                    .Include(c => c.Cases)
+                        .ThenInclude(c => c.CessationCost)
+                            .ThenInclude(c => c.YearValues)
                     .Include(c => c.Cases)
                         .ThenInclude(c => c.DrainageStrategy)
                             .ThenInclude(c => c.ProductionProfileOil)
