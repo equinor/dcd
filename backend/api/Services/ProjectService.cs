@@ -42,10 +42,12 @@ namespace api.Services
                     .Include(c => c.Cases)
                         .ThenInclude(c => c.DrainageStrategy)
                             .ThenInclude(c => c.ProductionProfileOil)
+                                .ThenInclude(c => c.YearValues)
                     .Include(c => c.Cases)
                         .ThenInclude(c => c.DrainageStrategy)
                             .ThenInclude(c => c.ProductionProfileGas)
-                              .FirstOrDefault(p => p.Id.Equals(projectId));
+                                .ThenInclude(c => c.YearValues)
+                    .FirstOrDefault(p => p.Id.Equals(projectId));
                 if (project == null)
                 {
                     throw new NotFoundInDBException(string.Format("Project %s not found", projectId));
