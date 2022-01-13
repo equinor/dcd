@@ -10,7 +10,9 @@ public static class TestDataGenerator
         .WithProject(new ProjectBuilder()
         {
             ProjectName = "P1",
-            CreateDate = DateTimeOffset.UtcNow
+            CreateDate = DateTimeOffset.UtcNow,
+            ProjectCategory = ProjectCategory.OffshoreWind,
+            ProjectPhase = ProjectPhase.DG3
         }
             .WithCase(new CaseBuilder()
             {
@@ -42,7 +44,7 @@ public static class TestDataGenerator
                 }
                     .WithProductionProfileGas(new ProductionProfileGasBuilder()
                     {
-
+                        Unit = Unit.SM3
                     }
                         .WithYearValue(2030, 2.3)
                         .WithYearValue(2031, 3.3)
@@ -50,7 +52,7 @@ public static class TestDataGenerator
                     )
                     .WithProductionProfileOil(new ProductionProfileOilBuilder()
                     {
-
+                        Unit = Unit.BBL
                     }
                         .WithYearValue(2030, 10.3)
                         .WithYearValue(2031, 13.3)
