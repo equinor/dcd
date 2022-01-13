@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
@@ -9,4 +8,16 @@ namespace api.Models
 
         public ICollection<YearValue<T>> YearValues { get; set; } = null!;
     }
+
+    public class TimeSeriesCost<T> : TimeSeriesBase<T>
+    {
+        public string EPAVersion { get; set; } = string.Empty;
+        public Currency Currency { get; set; }
+    }
+    public enum Currency
+    {
+        USD,
+        NOK
+    }
 }
+
