@@ -29,7 +29,7 @@ namespace tests
             Assert.Equal(projects.Count(), projectsFromService.Count());
             foreach (var projectPair in projectsSourceAndTarget)
             {
-                compareProject(projectPair.First, projectPair.Second);
+                compareProjects(projectPair.First, projectPair.Second);
             }
         }
 
@@ -42,9 +42,9 @@ namespace tests
 
             Project projectGotten = projectService.GetProject(projectExsists.Id);
 
-            compareProject(projectExsists, projectGotten);
+            compareProjects(projectExsists, projectGotten);
         }
-        void compareProject(Project x, Project y)
+        void compareProjects(Project x, Project y)
         {
             Assert.Equal(x.ProjectName, y.ProjectName);
             Assert.Equal(x.ProjectPhase, y.ProjectPhase);
@@ -52,11 +52,11 @@ namespace tests
             var casesSourceAndTarget = x.Cases.OrderBy(c => c.Name).Zip(y.Cases.OrderBy(c => c.Name));
             foreach (var casePair in casesSourceAndTarget)
             {
-                compareCase(casePair.First, casePair.Second);
+                compareCases(casePair.First, casePair.Second);
             }
         }
 
-        void compareCase(Case x, Case y)
+        void compareCases(Case x, Case y)
         {
             Assert.Equal(x.Name, y.Name);
             Assert.Equal(x.Description, y.Description);
@@ -69,7 +69,7 @@ namespace tests
             Assert.Equal(x.FacilitiesAvailability, y.FacilitiesAvailability);
             Assert.Equal(x.ArtificialLift, y.ArtificialLift);
             compareCosts(x.CessationCost, y.CessationCost);
-            compareDrainageStrategy(x.DrainageStrategy, y.DrainageStrategy);
+            compareDrainageStrategies(x.DrainageStrategy, y.DrainageStrategy);
         }
 
         void compareCosts<T>(TimeSeriesCost<T> x, TimeSeriesCost<T> y)
@@ -85,7 +85,7 @@ namespace tests
                 Assert.Equal(x.Currency, y.Currency);
             }
         }
-        void compareDrainageStrategy(DrainageStrategy x, DrainageStrategy y)
+        void compareDrainageStrategies(DrainageStrategy x, DrainageStrategy y)
         {
             if (x == null || y == null)
             {
@@ -108,8 +108,8 @@ namespace tests
             }
             else
             {
-                var z = x.YearValues.OrderBy(v => v.Year).Zip(y.YearValues.OrderBy(v => v.Year));
-                foreach (var pair in z)
+                var yearValuePairsXY = x.YearValues.OrderBy(v => v.Year).Zip(y.YearValues.OrderBy(v => v.Year));
+                foreach (var pair in yearValuePairsXY)
                 {
                     Assert.Equal(pair.First.Year, pair.Second.Year);
                     Assert.Equal(pair.First.Value, pair.Second.Value);
