@@ -37,12 +37,14 @@ namespace tests
         public void GetProject()
         {
             ProjectService projectService = new ProjectService(fixture.context);
-
-            Project projectExsists = projectService.GetAll().First();
-
-            Project projectGotten = projectService.GetProject(projectExsists.Id);
-
-            compareProjects(projectExsists, projectGotten);
+            IEnumerable<Project> projectsFromGetAllService = projectService.GetAll();
+            var projectsFromTestDataGen = TestDataGenerator.initialize().Projects;
+            foreach (var project in projectsFromGetAllService)
+            {
+                var projectFromGetProjectService = projectService.GetProject(project.Id);
+                var projectFromTestDataGen = projectsFromTestDataGen.Find(p => p.ProjectName == project.ProjectName);
+                compareProjects(projectFromTestDataGen, projectFromGetProjectService);
+            }
         }
         void compareProjects(Project x, Project y)
         {
