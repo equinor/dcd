@@ -100,7 +100,21 @@ public static class SampleDataGenerator
                         .WithYearValue(2031, 22.45)
                         .WithYearValue(2032, 23.56)
                     )
-                    ))
+                )
+                .WithExploration(new ExplorationBuilder()
+
+                    .WithDrillingSchedule(new DrillingScheduleBuilder()
+                        .WithYearValue(2030, 5)
+                        .WithYearValue(2031, 6)
+                        .WithYearValue(2032, 7)
+                    )
+                    .WithGGAndAdminCost(new GGAndAdminCostBuilder()
+                        .WithYearValue(2030, 10)
+                        .WithYearValue(2031, 12)
+                        .WithYearValue(2032, 13)
+                        )
+                )
+            )
             .WithCase(new CaseBuilder()
             {
                 Name = "Case 2 in P1",

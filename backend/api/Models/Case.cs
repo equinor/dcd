@@ -21,6 +21,7 @@ namespace api.Models
         public ArtificialLift ArtificialLift { get; set; }
         public virtual Project Project { get; set; } = null!;
         public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+        public virtual Exploration Exploration { get; set; } = null!;
     }
 
     public enum ArtificialLift

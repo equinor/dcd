@@ -42,6 +42,12 @@ public class CaseBuilder : Case
         this.CessationCost = c;
         return this;
     }
+    public CaseBuilder WithExploration(ExplorationBuilder b)
+    {
+        b.Case = this;
+        this.Exploration = b;
+        return this;
+    }
 }
 
 public class CessationCostBuilder : CessationCost
@@ -194,3 +200,63 @@ public class Co2EmissionsBuilder : Co2Emissions
         return this;
     }
 }
+
+public class ExplorationBuilder : Exploration
+{
+    public ExplorationBuilder WithCost(ExplorationCostBuilder b)
+    {
+        this.Cost = b;
+        return this;
+    }
+    public ExplorationBuilder WithDrillingSchedule(DrillingScheduleBuilder b)
+    {
+        b.Exploration = this;
+        this.DrillingSchedule = b;
+        return this;
+    }
+    public ExplorationBuilder WithGGAndAdminCost(GGAndAdminCostBuilder b)
+    {
+        b.Exploration = this;
+        this.GGAndAdminCost = b;
+        return this;
+    }
+}
+
+public class ExplorationCostBuilder : ExplorationCost<double>
+{
+    public ExplorationCostBuilder()
+    {
+        YearValues = new List<YearValue<double>>();
+    }
+    public ExplorationCostBuilder WithYearValue(int y, double v)
+    {
+        this.YearValues.Add(new YearValue<double>(y, v));
+        return this;
+    }
+}
+public class DrillingScheduleBuilder : DrillingSchedule
+{
+    public DrillingScheduleBuilder()
+    {
+        YearValues = new List<YearValue<int>>();
+    }
+    public DrillingScheduleBuilder WithYearValue(int y, int v)
+    {
+        this.YearValues.Add(new YearValue<int>(y, v));
+        return this;
+    }
+}
+
+public class GGAndAdminCostBuilder : GGAndAdminCost<double>
+{
+    public GGAndAdminCostBuilder()
+    {
+        YearValues = new List<YearValue<double>>();
+    }
+    public GGAndAdminCostBuilder WithYearValue(int y, double v)
+    {
+        this.YearValues.Add(new YearValue<double>(y, v));
+        return this;
+    }
+}
+
