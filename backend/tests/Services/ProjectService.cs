@@ -20,13 +20,13 @@ namespace tests
             this.fixture = fixture;
         }
         [Fact]
-        public void RetrieveAllProjects()
+        public void GetAll()
         {
-            var projects = TestDataGenerator.initialize().Projects.OrderBy(p => p.ProjectName);
+            var projectFromTestDataGenerator = TestDataGenerator.initialize().Projects.OrderBy(p => p.ProjectName);
             ProjectService projectService = new ProjectService(fixture.context);
             var projectsFromService = projectService.GetAll().OrderBy(p => p.ProjectName);
-            var projectsSourceAndTarget = projects.Zip(projectsFromService);
-            Assert.Equal(projects.Count(), projectsFromService.Count());
+            var projectsSourceAndTarget = projectFromTestDataGenerator.Zip(projectsFromService);
+            Assert.Equal(projectFromTestDataGenerator.Count(), projectsFromService.Count());
             foreach (var projectPair in projectsSourceAndTarget)
             {
                 compareProjects(projectPair.First, projectPair.Second);
@@ -38,12 +38,12 @@ namespace tests
         {
             ProjectService projectService = new ProjectService(fixture.context);
             IEnumerable<Project> projectsFromGetAllService = projectService.GetAll();
-            var projectsFromTestDataGen = TestDataGenerator.initialize().Projects;
+            var projectsFromTestDataGenerator = TestDataGenerator.initialize().Projects;
             foreach (var project in projectsFromGetAllService)
             {
                 var projectFromGetProjectService = projectService.GetProject(project.Id);
-                var projectFromTestDataGen = projectsFromTestDataGen.Find(p => p.ProjectName == project.ProjectName);
-                compareProjects(projectFromTestDataGen, projectFromGetProjectService);
+                var projectFromTestDataGenerator = projectsFromTestDataGenerator.Find(p => p.ProjectName == project.ProjectName);
+                compareProjects(projectFromTestDataGenerator, projectFromGetProjectService);
             }
         }
         void compareProjects(Project x, Project y)
