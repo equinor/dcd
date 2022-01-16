@@ -1,6 +1,6 @@
 import axios, { Axios } from 'axios'
 
-import { ServiceConfig, servicesConfig } from './servicesConfig'
+import { ServiceConfig } from './config'
 
 type RequestOptions = RequestInit & {
     method?: 'GET'
@@ -20,11 +20,12 @@ export class __BaseService {
     private config: ServiceConfig
     private client: Axios
 
-    constructor(name: keyof typeof servicesConfig) {
-        this.config = servicesConfig[name]
+    constructor(config: ServiceConfig) {
+        this.config = config
         this.client = axios.create({ baseURL: this.config.BASE_URL })
         this.client.defaults.headers.common = {
-            accept: 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${config.accessToken}`,
             ...this.config.headers,
         }
     }

@@ -1,13 +1,7 @@
 import { __BaseService } from "./__BaseService";
 
-class __ProjectService extends __BaseService {
-    constructor() {
-        super('ProjectsService')
-    }
-
+export class __ProjectService extends __BaseService {
     getProjects() {
         return this.get('')
     }
 }
-
-export const ProjectService = new __ProjectService()
