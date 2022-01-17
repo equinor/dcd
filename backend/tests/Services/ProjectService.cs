@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using api.Models;
-using api.Services;
 using api.SampleData;
+using api.Services;
 
 using Xunit;
 
