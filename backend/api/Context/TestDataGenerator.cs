@@ -44,7 +44,7 @@ public static class TestDataGenerator
                 }
                     .WithProductionProfileGas(new ProductionProfileGasBuilder()
                     {
-                        Unit = Unit.SM3
+                        Unit = VolumeUnit.SM3
                     }
                         .WithYearValue(2030, 2.3)
                         .WithYearValue(2031, 3.3)
@@ -52,11 +52,51 @@ public static class TestDataGenerator
                     )
                     .WithProductionProfileOil(new ProductionProfileOilBuilder()
                     {
-                        Unit = Unit.BBL
+                        Unit = VolumeUnit.BBL
                     }
                         .WithYearValue(2030, 10.3)
                         .WithYearValue(2031, 13.3)
                         .WithYearValue(2032, 24.4)
+                    )
+                    .WithProductionProfileWater(new ProductionProfileWaterBuilder()
+                    {
+                        Unit = VolumeUnit.SM3
+                    }
+                        .WithYearValue(2030, 12.34)
+                        .WithYearValue(2031, 13.45)
+                        .WithYearValue(2032, 14.56)
+                    )
+                    .WithProductionProfileWaterInjection(new ProductionProfileWaterInjectionBuilder()
+                    {
+                        Unit = VolumeUnit.SM3
+                    }
+                        .WithYearValue(2030, 7.89)
+                        .WithYearValue(2031, 8.91)
+                        .WithYearValue(2032, 9.01)
+                    )
+                    .WithFuelFlaringAndLosses(new FuelFlaringAndLossesBuilder()
+                    {
+                        Unit = VolumeUnit.SM3
+                    }
+                        .WithYearValue(2030, 7.89)
+                        .WithYearValue(2031, 8.91)
+                        .WithYearValue(2032, 9.01)
+                    )
+                    .WithNetSalesGas(new NetSalesGasBuilder()
+                    {
+                        Unit = VolumeUnit.SM3
+                    }
+                        .WithYearValue(2030, 11.23)
+                        .WithYearValue(2031, 11.45)
+                        .WithYearValue(2032, 11.56)
+                    )
+                    .WithCo2Emissions(new Co2EmissionsBuilder()
+                    {
+                        Unit = MassUnit.TON
+                    }
+                        .WithYearValue(2030, 21.23)
+                        .WithYearValue(2031, 22.45)
+                        .WithYearValue(2032, 23.56)
                     )
                     ))
             .WithCase(new CaseBuilder()
@@ -103,7 +143,5 @@ public static class TestDataGenerator
                         .WithYearValue(2041, 13.23)
                         .WithYearValue(2042, 34.21)
                     ))));
-
     }
-
 }

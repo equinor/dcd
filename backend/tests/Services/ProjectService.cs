@@ -25,9 +25,9 @@ namespace tests
             var projectFromTestDataGenerator = TestDataGenerator.initialize().Projects.OrderBy(p => p.ProjectName);
             ProjectService projectService = new ProjectService(fixture.context);
             var projectsFromService = projectService.GetAll().OrderBy(p => p.ProjectName);
-            var projectsSourceAndTarget = projectFromTestDataGenerator.Zip(projectsFromService);
+            var projectsExpectedActual = projectFromTestDataGenerator.Zip(projectsFromService);
             Assert.Equal(projectFromTestDataGenerator.Count(), projectsFromService.Count());
-            foreach (var projectPair in projectsSourceAndTarget)
+            foreach (var projectPair in projectsExpectedActual)
             {
                 compareProjects(projectPair.First, projectPair.Second);
             }
@@ -39,6 +39,7 @@ namespace tests
             ProjectService projectService = new ProjectService(fixture.context);
             IEnumerable<Project> projectsFromGetAllService = projectService.GetAll();
             var projectsFromTestDataGenerator = TestDataGenerator.initialize().Projects;
+            Assert.Equal(projectsFromTestDataGenerator.Count(), projectsFromGetAllService.Count());
             foreach (var project in projectsFromGetAllService)
             {
                 var projectFromGetProjectService = projectService.GetProject(project.Id);
@@ -46,86 +47,104 @@ namespace tests
                 compareProjects(projectFromTestDataGenerator, projectFromGetProjectService);
             }
         }
-        void compareProjects(Project x, Project y)
+        void compareProjects(Project expected, Project actual)
         {
-            Assert.Equal(x.ProjectName, y.ProjectName);
-            Assert.Equal(x.ProjectPhase, y.ProjectPhase);
-            Assert.Equal(x.ProjectCategory, y.ProjectCategory);
-            Assert.Equal(x.Cases.Count(), y.Cases.Count());
-            var casesSourceAndTarget = x.Cases.OrderBy(c => c.Name).Zip(y.Cases.OrderBy(c => c.Name));
+            Assert.Equal(expected.ProjectName, actual.ProjectName);
+            Assert.Equal(expected.ProjectPhase, actual.ProjectPhase);
+            Assert.Equal(expected.ProjectCategory, actual.ProjectCategory);
+            Assert.Equal(expected.Cases.Count(), actual.Cases.Count());
+            var casesSourceAndTarget = expected.Cases.OrderBy(c => c.Name).Zip(actual.Cases.OrderBy(c => c.Name));
             foreach (var casePair in casesSourceAndTarget)
             {
                 compareCases(casePair.First, casePair.Second);
             }
         }
 
-        void compareCases(Case x, Case y)
+        void compareCases(Case expected, Case actual)
         {
-            Assert.Equal(x.Name, y.Name);
-            Assert.Equal(x.Description, y.Description);
-            Assert.Equal(x.ReferenceCase, y.ReferenceCase);
-            Assert.Equal(x.ProducerCount, y.ProducerCount);
-            Assert.Equal(x.GasInjectorCount, y.GasInjectorCount);
-            Assert.Equal(x.WaterInjectorCount, y.WaterInjectorCount);
-            Assert.Equal(x.RiserCount, y.RiserCount);
-            Assert.Equal(x.TemplateCount, y.TemplateCount);
-            Assert.Equal(x.FacilitiesAvailability, y.FacilitiesAvailability);
-            Assert.Equal(x.ArtificialLift, y.ArtificialLift);
-            compareCosts(x.CessationCost, y.CessationCost);
-            compareDrainageStrategies(x.DrainageStrategy, y.DrainageStrategy);
+            Assert.Equal(expected.Name, actual.Name);
+            Assert.Equal(expected.Description, actual.Description);
+            Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
+            Assert.Equal(expected.ProducerCount, actual.ProducerCount);
+            Assert.Equal(expected.GasInjectorCount, actual.GasInjectorCount);
+            Assert.Equal(expected.WaterInjectorCount, actual.WaterInjectorCount);
+            Assert.Equal(expected.RiserCount, actual.RiserCount);
+            Assert.Equal(expected.TemplateCount, actual.TemplateCount);
+            Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
+            Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
+            compareCosts(expected.CessationCost, actual.CessationCost);
+            compareDrainageStrategies(expected.DrainageStrategy, actual.DrainageStrategy);
         }
 
-        void compareCosts<T>(TimeSeriesCost<T> x, TimeSeriesCost<T> y)
+        void compareCosts<T>(TimeSeriesCost<T> expected, TimeSeriesCost<T> actual)
         {
-            if (x == null || y == null)
+            if (expected == null || actual == null)
             {
-                Assert.Equal(x, null);
-                Assert.Equal(y, null);
+                Assert.Equal(expected, null);
+                Assert.Equal(actual, null);
             }
             else
             {
-                compareYearValues(x, y);
-                Assert.Equal(x.Currency, y.Currency);
+                compareYearValues(expected, actual);
+                Assert.Equal(expected.Currency, actual.Currency);
             }
         }
-        void compareDrainageStrategies(DrainageStrategy x, DrainageStrategy y)
+        void compareDrainageStrategies(DrainageStrategy expected, DrainageStrategy actual)
         {
-            if (x == null || y == null)
+            if (expected == null || actual == null)
             {
-                Assert.Equal(x, null);
-                Assert.Equal(y, null);
+                Assert.Equal(expected, null);
+                Assert.Equal(actual, null);
             }
             else
             {
-                Assert.Equal(x.NGLYield, y.NGLYield);
-                compareVolumes(x.ProductionProfileOil, y.ProductionProfileOil);
-                compareVolumes(x.ProductionProfileGas, y.ProductionProfileGas);
+                Assert.Equal(expected.NGLYield, actual.NGLYield);
+                compareVolumes(expected.ProductionProfileOil, actual.ProductionProfileOil);
+                compareVolumes(expected.ProductionProfileGas, actual.ProductionProfileGas);
+                compareVolumes(expected.ProductionProfileWater, actual.ProductionProfileWater);
+                compareVolumes(expected.ProductionProfileWaterInjection, actual.ProductionProfileWaterInjection);
+                compareVolumes(expected.NetSalesGas, actual.NetSalesGas);
+                compareMasses(expected.Co2Emissions, actual.Co2Emissions);
             }
         }
 
-        void compareVolumes<T>(TimeSeriesVolume<T> x, TimeSeriesVolume<T> y)
+        void compareVolumes<T>(TimeSeriesVolume<T> expected, TimeSeriesVolume<T> actual)
         {
-            if (x == null || y == null)
+            if (expected == null || actual == null)
             {
-                Assert.Equal(x, null);
-                Assert.Equal(y, null);
+                Assert.Equal(expected, null);
+                Assert.Equal(actual, null);
             }
             else
             {
-                compareYearValues(x, y);
-                Assert.Equal(x.Unit, y.Unit);
+                compareYearValues(expected, actual);
+                Assert.Equal(expected.Unit, actual.Unit);
             }
         }
-        void compareYearValues<T>(TimeSeriesBase<T> x, TimeSeriesBase<T> y)
+        void compareMasses<T>(TimeSeriesMass<T> expected, TimeSeriesMass<T> actual)
         {
-            if (x == null || y == null)
+            if (expected == null || actual == null)
             {
-                Assert.Equal(x, null);
-                Assert.Equal(y, null);
+                Assert.Equal(expected, null);
+                Assert.Equal(actual, null);
             }
             else
             {
-                var yearValuePairsXY = x.YearValues.OrderBy(v => v.Year).Zip(y.YearValues.OrderBy(v => v.Year));
+                compareYearValues(expected, actual);
+                Assert.Equal(expected.Unit, actual.Unit);
+            }
+        }
+        void compareYearValues<T>(TimeSeriesBase<T> expected, TimeSeriesBase<T> actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, null);
+                Assert.Equal(actual, null);
+            }
+            else
+            {
+                Assert.Equal(expected.YearValues.Count(), actual.YearValues.Count());
+                var yearValuePairsXY = expected.YearValues.OrderBy(v => v.Year).Zip(actual.YearValues.OrderBy(v => v.Year));
                 foreach (var pair in yearValuePairsXY)
                 {
                     Assert.Equal(pair.First.Year, pair.Second.Year);
