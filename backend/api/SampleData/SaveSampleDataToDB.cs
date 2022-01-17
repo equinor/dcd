@@ -1,7 +1,10 @@
 
-namespace api.Context
+using api.Context;
+
+namespace api.SampleData
+
 {
-    public static class SaveTestdataToDB
+    public static class SaveSampleDataToDB
     {
 
         public static void PopulateDb(DcdDbContext context)
@@ -10,7 +13,7 @@ namespace api.Context
             {
                 throw new ArgumentNullException(nameof(context));
             }
-            var projectsBuilder = TestDataGenerator.initialize();
+            var projectsBuilder = SampleDataGenerator.initialize();
             context.AddRange(projectsBuilder.Projects);
             context.SaveChanges();
         }

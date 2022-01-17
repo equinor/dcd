@@ -1,7 +1,7 @@
 
 using api.Models;
 
-public static class TestDataGenerator
+public static class SampleDataGenerator
 {
 
     public static ProjectsBuilder initialize()

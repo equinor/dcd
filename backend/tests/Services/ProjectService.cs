@@ -22,12 +22,12 @@ namespace tests
         [Fact]
         public void GetAll()
         {
-            var projectFromTestDataGenerator = TestDataGenerator.initialize().Projects.OrderBy(p => p.ProjectName);
+            var projectFromSampleDataGenerator = SampleDataGenerator.initialize().Projects.OrderBy(p => p.ProjectName);
             ProjectService projectService = new ProjectService(fixture.context);
             var projectsFromService = projectService.GetAll().OrderBy(p => p.ProjectName);
             var projectsExpectedActual = projectFromTestDataGenerator.Zip(projectsFromService);
-            Assert.Equal(projectFromTestDataGenerator.Count(), projectsFromService.Count());
             foreach (var projectPair in projectsExpectedActual)
+            Assert.Equal(projectFromSampleDataGenerator.Count(), projectsFromService.Count());
             {
                 compareProjects(projectPair.First, projectPair.Second);
             }
@@ -38,13 +38,13 @@ namespace tests
         {
             ProjectService projectService = new ProjectService(fixture.context);
             IEnumerable<Project> projectsFromGetAllService = projectService.GetAll();
-            var projectsFromTestDataGenerator = TestDataGenerator.initialize().Projects;
-            Assert.Equal(projectsFromTestDataGenerator.Count(), projectsFromGetAllService.Count());
+            var projectsFromSampleDataGenerator = SampleDataGenerator.initialize().Projects;
+            Assert.Equal(projectsFromSampleDataGenerator.Count(), projectsFromGetAllService.Count());
             foreach (var project in projectsFromGetAllService)
             {
                 var projectFromGetProjectService = projectService.GetProject(project.Id);
-                var projectFromTestDataGenerator = projectsFromTestDataGenerator.Find(p => p.ProjectName == project.ProjectName);
-                compareProjects(projectFromTestDataGenerator, projectFromGetProjectService);
+                var projectFromSampleDataGenerator = projectsFromSampleDataGenerator.Find(p => p.ProjectName == project.ProjectName);
+                compareProjects(projectFromSampleDataGenerator, projectFromGetProjectService);
             }
         }
         void compareProjects(Project expected, Project actual)

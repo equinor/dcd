@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using api.Context;
 using api.Models;
+using api.SampleData;
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,7 @@ namespace tests
             builder.UseSqlite(_connection);
             context = new DcdDbContext(builder.Options);
             context.Database.EnsureCreated();
-            SaveTestdataToDB.PopulateDb(context);
+            SaveSampleDataToDB.PopulateDb(context);
         }
 
         public void Dispose()
