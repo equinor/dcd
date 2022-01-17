@@ -5,16 +5,20 @@ import { __ProjectService } from "./ProjectService"
 import { ServicesContext } from "./ServicesContext"
 import { config } from "./config"
 
-export const useService = (service: keyof typeof config) => {
+export const useService = (namespace: keyof typeof config) => {
     const { accessToken } = useContext(ServicesContext)
 
-    const serviceConfig = useMemo(() => config[service], [service])
+    const service = useMemo(() => {
+        switch (namespace) {
+            case 'ProjectService':
+                return new __ProjectService({
+                    ...config.ProjectService,
+                    accessToken,
+                })
+            default:
+                break;
+        }
+    }, [])
 
-    switch (service) {
-        case 'ProjectService':
-            return new __ProjectService({ ...serviceConfig, accessToken })
-        default:
-            console.warn(`[useService] No config found for ${service}`)
-            break
-    }
+    return service
 }
