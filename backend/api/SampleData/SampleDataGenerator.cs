@@ -1,6 +1,8 @@
 
 using api.Models;
 
+namespace api.SampleData;
+
 public static class SampleDataGenerator
 {
 

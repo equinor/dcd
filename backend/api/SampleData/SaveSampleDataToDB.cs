@@ -1,21 +1,19 @@
 
 using api.Context;
 
-namespace api.SampleData
+namespace api.SampleData;
 
+public static class SaveSampleDataToDB
 {
-    public static class SaveSampleDataToDB
-    {
 
-        public static void PopulateDb(DcdDbContext context)
+    public static void PopulateDb(DcdDbContext context)
+    {
+        if (context == null)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-            var projectsBuilder = SampleDataGenerator.initialize();
-            context.AddRange(projectsBuilder.Projects);
-            context.SaveChanges();
+            throw new ArgumentNullException(nameof(context));
         }
+        var projectsBuilder = SampleDataGenerator.initialize();
+        context.AddRange(projectsBuilder.Projects);
+        context.SaveChanges();
     }
 }
