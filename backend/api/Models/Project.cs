@@ -8,6 +8,7 @@ namespace api.Models
         public DateTimeOffset CreateDate { get; set; }
         public virtual ICollection<Case> Cases { get; set; } = null!;
         public ProjectPhase ProjectPhase { get; set; }
+        public ProjectCategory ProjectCategory { get; set; }
     }
 
     public enum ProjectPhase
@@ -16,5 +17,23 @@ namespace api.Models
         DG2,
         DG3,
         DG4
+    }
+
+    public enum ProjectCategory
+    {
+        OffshoreWind,
+        Hydrogen,
+        CarbonCaptureAndStorage,
+        Solar,
+        FPSO,
+        Platform,
+        TieIn,
+        Electrification,
+        Brownfield,
+        Onshore,
+        Pipeline,
+        Subsea,
+        DrillingUpgrade,
+        Cessation,
     }
 }

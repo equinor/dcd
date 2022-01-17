@@ -50,6 +50,7 @@ namespace tests
         {
             Assert.Equal(x.ProjectName, y.ProjectName);
             Assert.Equal(x.ProjectPhase, y.ProjectPhase);
+            Assert.Equal(x.ProjectCategory, y.ProjectCategory);
             Assert.Equal(x.Cases.Count(), y.Cases.Count());
             var casesSourceAndTarget = x.Cases.OrderBy(c => c.Name).Zip(y.Cases.OrderBy(c => c.Name));
             foreach (var casePair in casesSourceAndTarget)
@@ -97,8 +98,22 @@ namespace tests
             else
             {
                 Assert.Equal(x.NGLYield, y.NGLYield);
-                compareYearValues(x.ProductionProfileOil, y.ProductionProfileOil);
-                compareYearValues(x.ProductionProfileGas, y.ProductionProfileGas);
+                compareVolumes(x.ProductionProfileOil, y.ProductionProfileOil);
+                compareVolumes(x.ProductionProfileGas, y.ProductionProfileGas);
+            }
+        }
+
+        void compareVolumes<T>(TimeSeriesVolume<T> x, TimeSeriesVolume<T> y)
+        {
+            if (x == null || y == null)
+            {
+                Assert.Equal(x, null);
+                Assert.Equal(y, null);
+            }
+            else
+            {
+                compareYearValues(x, y);
+                Assert.Equal(x.Unit, y.Unit);
             }
         }
         void compareYearValues<T>(TimeSeriesBase<T> x, TimeSeriesBase<T> y)
