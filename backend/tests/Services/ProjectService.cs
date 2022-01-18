@@ -26,9 +26,9 @@ namespace tests
             var projectFromSampleDataGenerator = SampleDataGenerator.initialize().Projects.OrderBy(p => p.ProjectName);
             ProjectService projectService = new ProjectService(fixture.context);
             var projectsFromService = projectService.GetAll().OrderBy(p => p.ProjectName);
-            var projectsExpectedActual = projectFromTestDataGenerator.Zip(projectsFromService);
-            foreach (var projectPair in projectsExpectedActual)
+            var projectsExpectedActual = projectFromSampleDataGenerator.Zip(projectsFromService);
             Assert.Equal(projectFromSampleDataGenerator.Count(), projectsFromService.Count());
+            foreach (var projectPair in projectsExpectedActual)
             {
                 compareProjects(projectPair.First, projectPair.Second);
             }
