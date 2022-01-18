@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 using api.Context;
+using api.SampleData;
 using api.Services;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,7 +43,7 @@ if (string.IsNullOrEmpty(_sqlConnectionString))
     using (DcdDbContext context = new DcdDbContext(dBbuilder.Options))
     {
         context.Database.EnsureCreated();
-        SaveTestdataToDB.PopulateDb(context);
+        SaveSampleDataToDB.PopulateDb(context);
     }
 }
 

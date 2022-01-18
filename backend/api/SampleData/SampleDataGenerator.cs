@@ -1,7 +1,9 @@
 
 using api.Models;
 
-public static class TestDataGenerator
+namespace api.SampleData;
+
+public static class SampleDataGenerator
 {
 
     public static ProjectsBuilder initialize()
