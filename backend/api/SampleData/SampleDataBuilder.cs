@@ -18,12 +18,20 @@ public class ProjectBuilder : Project
     public ProjectBuilder()
     {
         Cases = new List<Case>();
+        Surfs = new List<Surf>();
     }
 
     public ProjectBuilder WithCase(CaseBuilder c)
     {
         c.Project = this;
         Cases.Add(c);
+        return this;
+    }
+
+    public ProjectBuilder WithSurf(Surf surf)
+    {
+        surf.Project = this;
+        Surfs.Add(surf);
         return this;
     }
 }
@@ -192,5 +200,12 @@ public class Co2EmissionsBuilder : Co2Emissions
     {
         this.YearValues.Add(new YearValue<double>(year, value));
         return this;
+    }
+}
+
+public class SurfBuilder : Surf
+{
+    public SurfBuilder()
+    {
     }
 }

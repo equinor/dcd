@@ -122,6 +122,10 @@ public static class SampleDataGenerator
             {
                 Name = "Case 3 in P1",
                 Description = "Description 2 in Case 1 in P1"
+            })
+            .WithSurf(new SurfBuilder()
+            {
+                Maturity = Maturity.B
             }))
         .WithProject(new ProjectBuilder()
         {

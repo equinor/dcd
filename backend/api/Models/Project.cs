@@ -7,6 +7,7 @@ namespace api.Models
         public string ProjectName { get; set; } = string.Empty;
         public DateTimeOffset CreateDate { get; set; }
         public virtual ICollection<Case> Cases { get; set; } = null!;
+        public virtual ICollection<Surf> Surfs { get; set; } = null!;
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
     }
