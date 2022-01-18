@@ -1,6 +1,8 @@
 
 using api.Models;
 
+namespace api.SampleData;
+
 public class ProjectsBuilder
 {
     public List<Project> Projects { get; set; } = new List<Project>();

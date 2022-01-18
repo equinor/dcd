@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 using api.Context;
+using api.SampleData;
 using api.Services;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,12 +10,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 
 var configBuilder = new ConfigurationBuilder();
-configBuilder.AddAzureAppConfiguration(Environment.GetEnvironmentVariable("AppConfiguration__ConnectionString"));
-var config = configBuilder.Build();
-Console.WriteLine(config["PoC2"] ?? "Hello world!");
-
-
 var builder = WebApplication.CreateBuilder(args);
+var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
+configBuilder.AddAzureAppConfiguration(azureAppConfigConnectionString);
+var config = configBuilder.Build();
+
+//POC For Azure App Config
+Console.WriteLine(config["PoC2"] ?? "Hello world!");
 
 // Dev-Note Add this configuration to prevent circular references in the database
 // https://stackoverflow.com/questions/60197270/jsonexception-a-possible-object-cycle-was-detected-which-is-not-supported-this
@@ -42,7 +44,7 @@ if (string.IsNullOrEmpty(_sqlConnectionString))
     using (DcdDbContext context = new DcdDbContext(dBbuilder.Options))
     {
         context.Database.EnsureCreated();
-        SaveTestdataToDB.PopulateDb(context);
+        SaveSampleDataToDB.PopulateDb(context);
     }
 }
 

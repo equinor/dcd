@@ -13,9 +13,7 @@ steps:
       azureSubscription: ${{ parameters.serviceConnection }}
       appType: "webAppContainer"
       WebAppName: ${{ parameters.webAppName }}
-      deployToSlotOrASE: true
       ResourceGroupName: "DCD"
-      SlotName: "cold"
       DockerNamespace: "crdcd.azurecr.io"
       DockerRepository: ${{ parameters.imageName }}
       DockerImageTag: ${{ parameters.imageTag }}
