@@ -1,4 +1,5 @@
 
+
 namespace api.Models
 {
 
@@ -11,12 +12,21 @@ namespace api.Models
 
     public class TimeSeriesVolume<T> : TimeSeriesBase<T>
     {
-        public Unit Unit { get; set; }
+        public VolumeUnit Unit { get; set; }
     }
-    public enum Unit
+    public enum VolumeUnit
     {
         SM3,
         BBL
+    }
+
+    public class TimeSeriesMass<T> : TimeSeriesBase<T>
+    {
+        public MassUnit Unit { get; set; }
+    }
+    public enum MassUnit
+    {
+        TON
     }
     public class TimeSeriesCost<T> : TimeSeriesBase<T>
     {
