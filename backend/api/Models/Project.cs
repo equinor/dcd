@@ -9,6 +9,7 @@ namespace api.Models
         public virtual ICollection<Case> Cases { get; set; } = null!;
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
+        public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = null!;
     }
 
     public enum ProjectPhase

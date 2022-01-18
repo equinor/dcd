@@ -23,7 +23,7 @@ namespace tests
         [Fact]
         public void GetAll()
         {
-            var projectFromSampleDataGenerator = SampleDataGenerator.initialize().Projects.OrderBy(p => p.ProjectName);
+            var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.ProjectName);
             ProjectService projectService = new ProjectService(fixture.context);
             var projectsFromService = projectService.GetAll().OrderBy(p => p.ProjectName);
             var projectsExpectedActual = projectFromSampleDataGenerator.Zip(projectsFromService);
@@ -39,7 +39,7 @@ namespace tests
         {
             ProjectService projectService = new ProjectService(fixture.context);
             IEnumerable<Project> projectsFromGetAllService = projectService.GetAll();
-            var projectsFromSampleDataGenerator = SampleDataGenerator.initialize().Projects;
+            var projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects;
             Assert.Equal(projectsFromSampleDataGenerator.Count(), projectsFromGetAllService.Count());
             foreach (var project in projectsFromGetAllService)
             {
@@ -59,6 +59,13 @@ namespace tests
             {
                 compareCases(casePair.First, casePair.Second);
             }
+            Assert.Equal(expected.DrainageStrategies.Count(), actual.DrainageStrategies.Count());
+            var drainageStrategiesExpectedAndActual = expected.DrainageStrategies.OrderBy(d => d.Name)
+                .Zip(actual.DrainageStrategies.OrderBy(d => d.Name));
+            foreach (var drainageStrategyPair in drainageStrategiesExpectedAndActual)
+            {
+                compareDrainageStrategies(drainageStrategyPair.First, drainageStrategyPair.Second);
+            }
         }
 
         void compareCases(Case expected, Case actual)
@@ -74,7 +81,6 @@ namespace tests
             Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
             compareCosts(expected.CessationCost, actual.CessationCost);
-            compareDrainageStrategies(expected.DrainageStrategy, actual.DrainageStrategy);
         }
 
         void compareCosts<T>(TimeSeriesCost<T> expected, TimeSeriesCost<T> actual)
@@ -100,6 +106,7 @@ namespace tests
             else
             {
                 Assert.Equal(expected.NGLYield, actual.NGLYield);
+                Assert.Equal(expected.Name, actual.Name);
                 compareVolumes(expected.ProductionProfileOil, actual.ProductionProfileOil);
                 compareVolumes(expected.ProductionProfileGas, actual.ProductionProfileGas);
                 compareVolumes(expected.ProductionProfileWater, actual.ProductionProfileWater);

@@ -5,19 +5,38 @@ namespace api.SampleData;
 
 public class ProjectsBuilder
 {
-    public List<Project> Projects { get; set; } = new List<Project>();
+    public List<ProjectBuilder> Projects { get; set; } = new List<ProjectBuilder>();
 
     public ProjectsBuilder WithProject(ProjectBuilder p)
     {
         Projects.Add(p);
         return this;
     }
+
+    public ProjectBuilder ForProject(string projectName)
+    {
+        var projectBuilder = Projects.FirstOrDefault(p => p.ProjectName.Equals(projectName));
+        if (projectBuilder == null)
+        {
+            throw new Exception(string.Format("Cannot find project %s"));
+        }
+        return projectBuilder;
+    }
 }
+
 public class ProjectBuilder : Project
 {
     public ProjectBuilder()
     {
         Cases = new List<Case>();
+        DrainageStrategies = new List<DrainageStrategy>();
+    }
+
+    public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)
+    {
+        d.Project = this;
+        DrainageStrategies.Add(d);
+        return this;
     }
 
     public ProjectBuilder WithCase(CaseBuilder c)
@@ -30,10 +49,16 @@ public class ProjectBuilder : Project
 
 public class CaseBuilder : Case
 {
-    public CaseBuilder WithDrainageStrategy(DrainageStrategyBuilder d)
+
+    public CaseBuilder WithDrainageStrategy(string drainageStrategyName, Project project)
     {
-        d.Case = this;
-        this.DrainageStrategy = d;
+
+        var drainageStrategy = project.DrainageStrategies.FirstOrDefault(d => d.Name.Equals(drainageStrategyName));
+        if (drainageStrategy == null)
+        {
+            throw new Exception(string.Format("Drainage strategy %s not found", drainageStrategyName));
+        }
+        DrainageStrategyLink = drainageStrategy.Id;
         return this;
     }
     public CaseBuilder WithCessationCost(CessationCostBuilder c)

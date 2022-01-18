@@ -52,6 +52,7 @@ builder.Services.AddDbContext<DcdDbContext>(
     options => options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
 );
 builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
