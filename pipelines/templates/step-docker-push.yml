@@ -12,4 +12,3 @@ steps:
       command: "push"
       tags: |
         ${{ parameters.buildId }}
-        release

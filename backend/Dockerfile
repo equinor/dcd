@@ -1,5 +1,6 @@
 ARG dt_tenant
 ARG dt_url
+ARG azappconfig
 
 FROM ${dt_url}/e/${dt_tenant}/linux/oneagent-codemodules:all as DYNATRACE_ONEAGENT_IMAGE
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
@@ -20,7 +21,7 @@ EXPOSE 5000
 COPY --from=DYNATRACE_ONEAGENT_IMAGE / /
 ENV LD_PRELOAD /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so
 ENV DT_TAGS=SHELLVIS
-
+ENV AppConfiguration__ConnectionString=${azappconfig}
 # Runtime user change to non-root for added security
 USER 1001
 

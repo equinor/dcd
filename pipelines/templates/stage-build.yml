@@ -6,6 +6,7 @@ parameters:
   - name: dt_url
   - name: sourcesDirectory
   - name: name
+  - name: azAppConfig
 
 stages:
   - stage: ${{ parameters.name }}
@@ -24,6 +25,7 @@ stages:
               dt_tenant: ${{ parameters.dt_tenant }}
               dt_url: ${{ parameters.dt_url }}
               dt_password: ${{ parameters.dt_password }}
+              azAppConfig: ${{ parameters.azAppConfig }}
               buildId: $(Build.BuildId)
               sourcesDirectory: $(Build.SourcesDirectory)
               appName: "backend"
@@ -32,7 +34,7 @@ stages:
             parameters:
               name: "Push_backend-container_to_ACR"
               registry: "crdcd-1844"
-              repository: "dcd_backend"
+              repository: "backend"
               buildId: $(Build.BuildId)
 
       - job: "Build_frontend_container_and_Push_To_acr"
@@ -48,6 +50,7 @@ stages:
               dt_tenant: ${{ parameters.dt_tenant }}
               dt_url: ${{ parameters.dt_url }}
               dt_password: ${{ parameters.dt_password }}
+              azAppConfig: ${{ parameters.azAppConfig }}
               buildId: $(Build.BuildId)
               sourcesDirectory: $(Build.SourcesDirectory)
               appName: "frontend"
@@ -56,5 +59,5 @@ stages:
             parameters:
               name: "Push_backend-container_to_ACR"
               registry: "crdcd-1844"
-              repository: "dcd_frontend"
+              repository: "frontend"
               buildId: $(Build.BuildId)

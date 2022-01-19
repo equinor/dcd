@@ -1,6 +1,13 @@
 trigger:
-  - main
-  - cicd
+  branches:
+    include:
+      - main
+  tags:
+    include:
+      - v*
+  paths:
+    exclude:
+      - /*
 
 pool:
   vmImage: "ubuntu-latest"
@@ -26,5 +33,13 @@ stages:
       imageTag: $(Build.BuildId)
       webAppName: "ase-dcd"
       serviceConnection: "dcd-pipeline-sp"
-      name: DeployDev
-      environment: dev
+      name: DeployQA
+      environment: qa
+
+  - template: templates/stage-deploy.yml
+    parameters:
+      imageTag: $(Build.BuildId)
+      webAppName: "ase-dcd"
+      serviceConnection: "dcd-pipeline-sp"
+      name: DeployProd
+      environment: prod

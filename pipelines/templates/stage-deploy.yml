@@ -10,34 +10,42 @@ stages:
     displayName: "Deploy App ${{ parameters.environment }}"
     jobs:
       - job: "DeployContainerBackend"
-        pool:
-          vmImage: "ubuntu-latest"
         steps:
+          - task: Docker@2
+            inputs:
+              containerRegistry: "crdcd-1844"
+              command: "login"
+          - template: step-tag-dockerimage.yml
+            parameters:
+              buildid: $(Build.BuildId)
+              envshortname: ${{ parameters.environment }}
+              registry: "crdcd.azurecr.io"
+              repository: "backend"
+
           - template: step-deploycontainer.yml
             parameters:
-              imageName: "dcd_backend"
+              imageName: "backend"
               imageTag: $(Build.BuildId)
-              webAppName: "${{ parameters.webAppName }}-backend-${{ parameters.environment }}"
-              serviceConnection: "dcd-pipeline-sp"
-              name: "DeployBackend_${{ parameters.environment }}"
-          - template: step-swapslots.yml
-            parameters:
               webAppName: "${{ parameters.webAppName }}-backend-${{ parameters.environment }}"
               serviceConnection: "dcd-pipeline-sp"
               name: "DeployBackend_${{ parameters.environment }}"
       - job: "DeployContainerFrontend"
-        pool:
-          vmImage: "ubuntu-latest"
         steps:
+          - task: Docker@2
+            inputs:
+              containerRegistry: "crdcd-1844"
+              command: "login"
+          - template: step-tag-dockerimage.yml
+            parameters:
+              buildid: $(Build.BuildId)
+              envshortname: ${{ parameters.environment }}
+              registry: "crdcd.azurecr.io"
+              repository: "frontend"
+
           - template: step-deploycontainer.yml
             parameters:
-              imageName: "dcd_frontend"
+              imageName: "frontend"
               imageTag: $(Build.BuildId)
-              webAppName: "${{ parameters.webAppName }}-frontend-${{ parameters.environment }}"
-              serviceConnection: "dcd-pipeline-sp"
-              name: "DeployFrontend_${{ parameters.environment }}"
-          - template: step-swapslots.yml
-            parameters:
               webAppName: "${{ parameters.webAppName }}-frontend-${{ parameters.environment }}"
               serviceConnection: "dcd-pipeline-sp"
               name: "DeployFrontend_${{ parameters.environment }}"
