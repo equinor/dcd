@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Tabs, Typography } from '@equinor/eds-core-react'
 import { projects } from '../Components/SideMenu/SideMenu'
+import OverviewView from './OverviewView'
+import DrainageStrategyView from './DrainageStrategyView'
+import ExplorationView from './ExplorationView'
 
 const { List, Tab, Panels, Panel } = Tabs
 
@@ -28,22 +31,27 @@ const CaseView = () => {
                 <Typography variant="h2" style={{ marginBottom: '2rem' }}>
                     {project.name} - {caseItem.title}
                 </Typography>
+
                 <Tabs activeTab={activeTab} onChange={handleTabChange}>
                     <List>
                         <Tab>Overview</Tab>
-                        <Tab>Input data</Tab>
-                        <Tab>Technical input</Tab>
-                        <Tab>Satelite production</Tab>
-                        <Tab>Pipelines umbilicals</Tab>
-                        <Tab>Flexible riser</Tab>
+                        <Tab>Drainage Strategy</Tab>
+                        <Tab>Exploration</Tab>
+                        <Tab>Well Project</Tab>
+                        <Tab>Offshore facilities</Tab>
                     </List>
                     <Panels>
-                        <Panel>Overview</Panel>
-                        <Panel>Input data</Panel>
-                        <Panel>Technical input</Panel>
+                        <Panel>
+                            <OverviewView />
+                        </Panel>
+                        <Panel>
+                            <DrainageStrategyView />
+                        </Panel>
+                        <Panel>
+                            <ExplorationView />
+                        </Panel>
                         <Panel>Satelite production</Panel>
                         <Panel>Pipelines umbilicals</Panel>
-                        <Panel>Flexible riser</Panel>
                     </Panels>
                 </Tabs>
             </CaseViewDiv>

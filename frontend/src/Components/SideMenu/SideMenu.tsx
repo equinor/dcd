@@ -7,7 +7,7 @@ import { Divider, Icon, Typography } from '@equinor/eds-core-react'
 import ProjectMenu from './ProjectMenu'
 
 const SidebarDiv = styled.div`
-    min-width: 15rem;
+    width: 15rem;
     display: flex;
     border-right: 1px solid lightgrey;
     display: flex;
