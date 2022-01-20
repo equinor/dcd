@@ -13,6 +13,7 @@ namespace api.Models
         public ICollection<Transport> Transports { get; set; } = null!;
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
+        public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = null!;
     }
 
     public enum ProjectPhase

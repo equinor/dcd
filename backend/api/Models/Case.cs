@@ -1,4 +1,5 @@
 
+
 namespace api.Models
 {
 
@@ -20,7 +21,7 @@ namespace api.Models
         public DateTimeOffset DG4Date { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public virtual Project Project { get; set; } = null!;
-        public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+        public virtual Guid DrainageStrategyLink { get; set; }
     }
 
     public enum ArtificialLift
