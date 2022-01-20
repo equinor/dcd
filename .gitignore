@@ -2,6 +2,7 @@
 backend/*/bin
 backend/*/obj
 backend/api/Properties/launchSettings.json
+backend/api/app
 
 # frontend
 /frontend/node_modules/

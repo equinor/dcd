@@ -1,6 +1,5 @@
 ARG dt_tenant
 ARG dt_url
-ARG azappconfig
 
 FROM ${dt_url}/e/${dt_tenant}/linux/oneagent-codemodules:all as DYNATRACE_ONEAGENT_IMAGE
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
@@ -12,6 +11,9 @@ WORKDIR /source/api
 RUN dotnet publish -c release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+ARG azappconfig
+
 WORKDIR /app
 COPY --from=build /app ./
 
