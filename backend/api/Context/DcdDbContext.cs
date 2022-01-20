@@ -15,6 +15,14 @@ namespace api.Context
 
         public DbSet<Case>? Cases { get; set; }
 
+        public DbSet<Surf>? Surfs { get; set; }
+
+        public DbSet<Substructure>? Substructures { get; set; }
+
+        public DbSet<Topside>? Topsides { get; set; }
+
+        public DbSet<Transport>? Transports { get; set; }
+
         public DbSet<DrainageStrategy>? DrainageStrategies { get; set; }
 
         public DbSet<ProductionProfileOil>? ProductionProfileOil { get; set; }
