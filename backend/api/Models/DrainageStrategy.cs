@@ -18,4 +18,40 @@ namespace api.Models
         public virtual NetSalesGas NetSalesGas { get; set; } = null!;
         public virtual Co2Emissions Co2Emissions { get; set; } = null!;
     }
+    public class ProductionProfileOil : TimeSeriesVolume<double>
+    {
+        [ForeignKey("DrainageStrategy.Id")]
+        public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    }
+
+    public class ProductionProfileGas : TimeSeriesVolume<double>
+    {
+        [ForeignKey("DrainageStrategy.Id")]
+        public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    }
+    public class ProductionProfileWater : TimeSeriesVolume<double>
+    {
+        [ForeignKey("DrainageStrategy.Id")]
+        public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    }
+    public class ProductionProfileWaterInjection : TimeSeriesVolume<double>
+    {
+        [ForeignKey("DrainageStrategy.Id")]
+        public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    }
+    public class FuelFlaringAndLosses : TimeSeriesVolume<double>
+    {
+        [ForeignKey("DrainageStrategy.Id")]
+        public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    }
+    public class NetSalesGas : TimeSeriesVolume<double>
+    {
+        [ForeignKey("DrainageStrategy.Id")]
+        public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    }
+    public class Co2Emissions : TimeSeriesMass<double>
+    {
+        [ForeignKey("DrainageStrategy.Id")]
+        public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
+    }
 }
