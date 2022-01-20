@@ -1,7 +1,8 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { useParams } from 'react-router-dom'
 import { Tabs, Typography } from '@equinor/eds-core-react'
+
 import { projects } from '../Components/SideMenu/SideMenu'
 import OverviewView from './OverviewView'
 import DrainageStrategyView from './DrainageStrategyView'
@@ -13,6 +14,10 @@ const CaseViewDiv = styled.div`
     margin: 2rem;
     display: flex;
     flex-direction: column;
+`
+
+const CaseHeader = styled(Typography)`
+    margin-bottom: 2rem;
 `
 
 const CaseView = () => {
@@ -28,9 +33,9 @@ const CaseView = () => {
     if (project && caseItem) {
         return (
             <CaseViewDiv>
-                <Typography variant="h2" style={{ marginBottom: '2rem' }}>
+                <CaseHeader variant="h2">
                     {project.name} - {caseItem.title}
-                </Typography>
+                </CaseHeader>
 
                 <Tabs activeTab={activeTab} onChange={handleTabChange}>
                     <List>

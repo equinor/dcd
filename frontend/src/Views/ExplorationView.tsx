@@ -1,8 +1,33 @@
 import React from 'react'
+import styled from 'styled-components'
 import { Button, Scrim, Typography } from '@equinor/eds-core-react'
+
 import ExcelImport from '../Components/ExcelImport/ExcelImport'
 import DataTable, { CellValue } from '../Components/DataTable/DataTable'
 import { generateNewGrid, replaceOldData } from '../Components/DataTable/helpers'
+
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const ImportButton = styled(Button)`
+    width: 6rem;
+    align-self: flex-end;
+`
+
+const ScrimBackground = styled(Scrim)`
+    width: 100%;
+`
+
+const Buttons = styled.div`
+    align-self: flex-end;
+    margin-top: 3rem;
+`
+
+const CancelButton = styled(Button)`
+    margin-right: 1rem;
+`
 
 // TODO: This data will have to be generated from the format received from the API
 const initialGridData = [
@@ -74,26 +99,24 @@ const ExplorationView = () => {
     }
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <Button style={{ width: '6rem', alignSelf: 'flex-end' }} onClick={openImportView}>
-                Import...
-            </Button>
+        <Wrapper>
+            <ImportButton onClick={openImportView}>Import...</ImportButton>
             <Typography variant="h3">Exploration</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
-                <Scrim isDismissable={true} onClose={closeImportView} style={{ width: '100%' }}>
+                <ScrimBackground isDismissable={true} onClose={closeImportView}>
                     <ExcelImport onClose={closeImportView} onImport={onImport} />
-                </Scrim>
+                </ScrimBackground>
             )}
             {dataIsChanged && (
-                <div style={{ alignSelf: 'flex-end', marginTop: '3rem' }}>
-                    <Button variant={'outlined'} onClick={revertChange} style={{ marginRight: '1rem' }}>
+                <Buttons>
+                    <CancelButton variant={'outlined'} onClick={revertChange}>
                         Cancel change
-                    </Button>
+                    </CancelButton>
                     <Button onClick={saveDataImport}>Save new data</Button>
-                </div>
+                </Buttons>
             )}
-        </div>
+        </Wrapper>
     )
 }
 

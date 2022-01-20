@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { Link, useParams } from 'react-router-dom'
 import { file, folder, dashboard } from '@equinor/eds-icons'
 
 import { Project } from '../../types'
@@ -15,13 +15,23 @@ const ExpandableDiv = styled.div`
     width: 90%;
 `
 
-const StyledLi = styled.li`
+const Item = styled.li`
     list-style-type: none;
     margin: 0;
     display: flex;
     flex-direction: column;
     padding: 0.25rem 0 0.25rem 1.75rem;
     cursor: pointer;
+`
+
+const LinkWithoutStyle = styled(Link)`
+    text-decoration: none;
+`
+
+const MenuItems = styled.ul`
+    padding: 0;
+    margin: 0;
+    width: 100%;
 `
 
 export enum ProjectMenuItemType {
@@ -45,7 +55,7 @@ const ProjectMenu = ({ project }: Props) => {
     return (
         <ExpandableDiv>
             <nav>
-                <Link to={'/project/' + project.id} style={{ textDecoration: 'none' }}>
+                <LinkWithoutStyle to={'/project/' + project.id}>
                     <MenuItem
                         title={project.name}
                         isSelected={params.projectId === project.id}
@@ -53,27 +63,27 @@ const ProjectMenu = ({ project }: Props) => {
                         isOpen={isOpen}
                         onClick={() => setIsOpen(!isOpen)}
                     />
-                </Link>
+                </LinkWithoutStyle>
             </nav>
             {isOpen && (
-                <ul style={{ padding: 0, margin: 0, width: '100%' }}>
+                <MenuItems>
                     {projectMenuItems.map((projectMenuItem, index) => {
                         return (
-                            <StyledLi style={{ listStyleType: 'none', margin: 0, padding: 0 }} key={index}>
+                            <Item key={index}>
                                 {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                     <nav>
-                                        <Link to={'/project/' + project.id} style={{ textDecoration: 'none' }}>
+                                        <LinkWithoutStyle to={'/project/' + project.id}>
                                             <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id} />
-                                        </Link>
+                                        </LinkWithoutStyle>
                                     </nav>
                                 )}
                                 {projectMenuItem.name === ProjectMenuItemType.CASES && (
                                     <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id} subItems={project.cases} />
                                 )}
-                            </StyledLi>
+                            </Item>
                         )
                     })}
-                </ul>
+                </MenuItems>
             )}
         </ExpandableDiv>
     )

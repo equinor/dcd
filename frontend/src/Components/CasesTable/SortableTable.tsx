@@ -1,9 +1,21 @@
 import React, { useMemo, useState } from 'react'
+import styled from 'styled-components'
 import { Icon, Table } from '@equinor/eds-core-react'
 import { chevron_down, chevron_up } from '@equinor/eds-icons'
-import styled from 'styled-components'
 
 const { Body, Row, Cell, Head } = Table
+
+const Wrapper = styled.div`
+    width: 40rem;
+`
+
+const StyledTable = styled(Table)`
+    width: 100%;
+`
+
+const StyledCell = styled(Cell)<{ sortable?: boolean }>`
+    cursor: ${props => (props.sortable ? 'pointer' : 'default')};
+`
 
 Icon.add({ chevron_down, chevron_up })
 
@@ -60,18 +72,18 @@ const SortableTable = <DataType,>({ columns, data, sortOnAccessor, renderRow, st
     }
 
     return (
-        <div style={style}>
-            <Table style={{ width: '100%' }}>
+        <Wrapper>
+            <StyledTable>
                 <Head>
                     <Row>
                         {columns.map(column => {
                             const isSelected = columnToSortBy ? column.name === columnToSortBy.name : false
                             return (
-                                <Cell
+                                <StyledCell
                                     key={column.name}
                                     onClick={column.sortable ? () => setSortOn(column) : undefined}
                                     sort={isSelected ? sortDirection : 'none'}
-                                    style={{ cursor: column.sortable ? 'pointer' : 'default' }}
+                                    sortable={column.sortable}
                                 >
                                     {column.name}
                                     {column.sortable && (
@@ -80,14 +92,14 @@ const SortableTable = <DataType,>({ columns, data, sortOnAccessor, renderRow, st
                                             isSelected={isSelected}
                                         />
                                     )}
-                                </Cell>
+                                </StyledCell>
                             )
                         })}
                     </Row>
                 </Head>
                 <Body>{sortedData.map((dataObject, index) => renderRow(dataObject, index))}</Body>
-            </Table>
-        </div>
+            </StyledTable>
+        </Wrapper>
     )
 }
 

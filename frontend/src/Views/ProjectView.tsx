@@ -1,16 +1,28 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { useParams } from 'react-router-dom'
 import { Typography } from '@equinor/eds-core-react'
 
 import { projects } from '../Components/SideMenu/SideMenu'
 import CasesTable from '../Components/CasesTable/CasesTable'
 import BarChart from '../Components/BarChart'
 
-const ProjectViewDiv = styled.div`
+const Wrapper = styled.div`
     margin: 2rem;
     display: flex;
     flex-direction: column;
+`
+
+const OverviewHeader = styled(Typography)`
+    margin-bottom: 2rem;
+`
+
+const CasesHeader = styled(Typography)`
+    margin-bottom: 1rem;
+`
+
+const Charts = styled.div`
+    display: flex;
 `
 
 const ProjectView = () => {
@@ -29,19 +41,15 @@ const ProjectView = () => {
         })
 
         return (
-            <ProjectViewDiv>
-                <Typography variant="h2" style={{ marginBottom: '2rem' }}>
-                    {project.name} - Overview
-                </Typography>
-                <div style={{ display: 'flex' }}>
+            <Wrapper>
+                <OverviewHeader variant="h2">{project.name} - Overview</OverviewHeader>
+                <Charts>
                     <BarChart data={{ x: dataX, y: dataYCapex }} title="Total Capex per case" />
                     <BarChart data={{ x: dataX, y: dataYDrillex }} title="Total Drillex per case" />
-                </div>
-                <Typography variant="h3" style={{ marginBottom: '1rem' }}>
-                    Cases
-                </Typography>
+                </Charts>
+                <CasesHeader variant="h3">Cases</CasesHeader>
                 <CasesTable key={project.id} projectId={project.id} cases={project.cases} />
-            </ProjectViewDiv>
+            </Wrapper>
         )
     } else {
         return <></>

@@ -13,6 +13,10 @@ const CellWithBorder = styled(Cell)`
     border-right: 1px solid lightgrey;
 `
 
+const LinkWithoutStyle = styled(Link)`
+    text-decoration: none;
+`
+
 const columns: Column[] = [
     { name: 'Title', accessor: 'title', sortable: true },
     { name: 'Capex', accessor: 'capex', sortable: true },
@@ -49,7 +53,7 @@ const CasesTable = ({ cases, projectId }: Props) => {
         return (
             <Row key={index}>
                 <CellWithBorder>
-                    <Link to={`/project/${projectId}/case/${caseItem.id}`} style={{ textDecoration: 'none' }}>
+                    <LinkWithoutStyle to={`/project/${projectId}/case/${caseItem.id}`}>
                         <Typography
                             color="primary"
                             variant="body_short"
@@ -59,7 +63,7 @@ const CasesTable = ({ cases, projectId }: Props) => {
                         >
                             {caseItem.title}
                         </Typography>
-                    </Link>
+                    </LinkWithoutStyle>
                 </CellWithBorder>
                 <CellWithBorder>
                     <Typography>{caseItem.capex} USD</Typography>
@@ -74,7 +78,7 @@ const CasesTable = ({ cases, projectId }: Props) => {
         )
     }
 
-    return <SortableTable columns={columns} data={cases} sortOnAccessor={sortOnAccessor} renderRow={renderRow} style={{ width: '40rem' }} />
+    return <SortableTable columns={columns} data={cases} sortOnAccessor={sortOnAccessor} renderRow={renderRow} />
 }
 
 export default CasesTable

@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Button, Dialog, Typography } from '@equinor/eds-core-react'
-import { Case } from '../../types'
+
 import { tsvToJson } from './helpers'
 
-const StyledTextArea = styled.textarea`
+const StyledDialog = styled(Dialog)`
+    width: 50rem;
+`
+
+const TextArea = styled.textarea`
     flex-grow: 1;
     resize: none;
     white-space: pre;
@@ -15,6 +19,14 @@ const StyledTextArea = styled.textarea`
 const Bold = styled.em`
     font-style: normal;
     font-weight: bold;
+`
+
+const Label = styled.label`
+    margin-top: 2rem;
+`
+
+const ImportButton = styled(Button)`
+    margin-right: 0.5rem;
 `
 
 const Main = styled.div`
@@ -53,24 +65,22 @@ const ExcelImport = ({ onClose, onImport }: Props) => {
     }
 
     return (
-        <Dialog style={{ width: '50rem' }}>
+        <StyledDialog>
             <Dialog.Title>Import data from Excel</Dialog.Title>
             <Main>
                 <Typography>
                     To paste values correctly in the table, make sure that <Bold>column titles</Bold> are part of the paste.
                 </Typography>
-                <label style={{ marginTop: '2rem' }}>Paste your information here:</label>
-                <StyledTextArea cols={30} rows={10} placeholder={example} value={dataInput} onChange={onChangeInput}></StyledTextArea>
+                <Label>Paste your information here:</Label>
+                <TextArea cols={30} rows={10} placeholder={example} value={dataInput} onChange={onChangeInput}></TextArea>
             </Main>
             <Dialog.Actions>
-                <Button style={{ marginRight: '0.5rem' }} onClick={onClickImport}>
-                    Import
-                </Button>
+                <ImportButton onClick={onClickImport}>Import</ImportButton>
                 <Button variant="outlined" onClick={onClose}>
                     Cancel
                 </Button>
             </Dialog.Actions>
-        </Dialog>
+        </StyledDialog>
     )
 }
 

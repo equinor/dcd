@@ -26,7 +26,22 @@ const appInsights = new ApplicationInsights({
 })
 appInsights.loadAppInsights()
 
-const MainViewWrapper = styled.div`
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
     width: calc(100% - 15rem);
     overflow: scroll;
 `
@@ -52,16 +67,15 @@ const ProfileContent = () => {
 
     return (
         <>
-            <h5 className="card-title">Welcome to DCD {accounts[0].name}!</h5>
-            <div className="App" style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw' }}>
-                <Header />
-                <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1, width: '100%' }}>
+            <Wrapper className="App">
+                <Header name={accounts[0].name} />
+                <Body>
                     <SideMenu />
-                    <MainViewWrapper>
+                    <MainView>
                         <Outlet />
-                    </MainViewWrapper>
-                </div>
-            </div>
+                    </MainView>
+                </Body>
+            </Wrapper>
         </>
     )
 }
