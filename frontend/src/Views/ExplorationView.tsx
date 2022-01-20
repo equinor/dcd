@@ -90,6 +90,7 @@ const ExplorationView = () => {
 
     const revertChange = () => {
         setGridData(initialGridData)
+        setColumns(columnTitles)
         setDataIsChanged(false)
     }
 

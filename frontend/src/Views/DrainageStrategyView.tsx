@@ -149,6 +149,7 @@ const DrainageStrategyView = () => {
 
     const revertChange = () => {
         setGridData(initialGridData)
+        setColumns(columnTitles)
         setDataIsChanged(false)
     }
 
