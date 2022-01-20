@@ -1,35 +1,24 @@
 import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal, useMsalAuthentication } from '@azure/msal-react'
 import { createBrowserHistory } from 'history'
-import { InteractionType } from '@azure/msal-browser'
+import { InteractionType, PublicClientApplication } from '@azure/msal-browser'
+import { MsalProvider } from '@azure/msal-react'
 import { Outlet } from 'react-router-dom'
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import SideMenu from './Components/SideMenu/SideMenu'
 import Header from './Components/Header'
+import SideMenu from './Components/SideMenu/SideMenu'
 
 import { loginRequest } from './auth/authContextProvider'
-import { appInsightsInstrumentationKey, fusionApiScope } from './config'
+import { fusionApiScope, RetrieveConfigFromAzure } from './config'
 
 import './styles.css'
 
 const browserHistory = createBrowserHistory()
 
 const reactPlugin = new ReactPlugin()
-
-const appInsights = new ApplicationInsights({
-    config: {
-        instrumentationKey: appInsightsInstrumentationKey,
-        extensions: [reactPlugin],
-        extensionConfig: {
-            [reactPlugin.identifier]: { history: browserHistory },
-        },
-    },
-})
-
-appInsights.loadAppInsights()
 
 const Wrapper = styled.div`
     display: flex;
@@ -55,7 +44,7 @@ const ProfileContent = () => {
     const { instance, accounts } = useMsal()
 
     useEffect(() => {
-        (async () => {
+        ;(async () => {
             // Silently acquires an access token which is then attached to a request for MS Graph data
             try {
                 const { accessToken } = await instance.acquireTokenSilent({
@@ -66,6 +55,7 @@ const ProfileContent = () => {
             } catch (error) {
                 console.error('[ProfileContent] Login failed', error)
             }
+
             try {
                 const { accessToken } = await instance.acquireTokenSilent({
                     scopes: fusionApiScope,
@@ -94,17 +84,50 @@ const ProfileContent = () => {
 }
 
 function App() {
+    const [msalInstance, setMsalInstance] = useState<PublicClientApplication>()
+
     useMsalAuthentication(InteractionType.Redirect)
+
+    useEffect(() => {
+        ;(async () => {
+            try {
+                const config = await RetrieveConfigFromAzure()
+
+                const appInsights = new ApplicationInsights({
+                    config: {
+                        instrumentationKey: config.applicationInsightInstrumentationKey,
+                        extensions: [reactPlugin],
+                        extensionConfig: {
+                            [reactPlugin.identifier]: { history: browserHistory },
+                        },
+                    },
+                })
+
+                appInsights.loadAppInsights()
+
+                console.log('[App] config', config)
+
+                setMsalInstance(new PublicClientApplication(config.msal))
+            } catch (error) {
+                console.error(error)
+            }
+        })()
+    }, [])
+
+    // TODO: display spinner
+    if (!msalInstance) return null
 
     return (
         <div className="App">
-            <AuthenticatedTemplate>
-                <ProfileContent />
-            </AuthenticatedTemplate>
+            <MsalProvider instance={msalInstance}>
+                <AuthenticatedTemplate>
+                    <ProfileContent />
+                </AuthenticatedTemplate>
 
-            <UnauthenticatedTemplate>
-                <h5 className="card-title">Please sign-in to DCD.</h5>
-            </UnauthenticatedTemplate>
+                <UnauthenticatedTemplate>
+                    <h5 className="card-title">Please sign-in to DCD.</h5>
+                </UnauthenticatedTemplate>
+            </MsalProvider>
         </div>
     )
 }
