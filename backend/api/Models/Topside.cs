@@ -2,9 +2,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public class Topside
+    public class Topside : IFacility
     {
         public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty!;
         public Project Project { get; set; } = null!;
         public TopsideCostProfile CostProfile { get; set; } = null!;
         public TopsideDryWeight DryWeight { get; set; } = null!;

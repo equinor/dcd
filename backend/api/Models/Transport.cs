@@ -2,9 +2,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public class Transport
+    public class Transport : IFacility
     {
         public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty!;
         public Project Project { get; set; } = null!;
         public TransportCostProfile CostProfile { get; set; } = null!;
         public GasExportPipelineLength GasExportPipelineLength { get; set; } = null!;

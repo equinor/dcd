@@ -2,9 +2,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public class Surf
+    public class Surf : IFacility
     {
         public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty!;
         public Project Project { get; set; } = null!;
         public SurfCostProfile CostProfile { get; set; } = null!;
         public Maturity Maturity { get; set; }
