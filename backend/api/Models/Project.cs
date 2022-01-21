@@ -14,6 +14,7 @@ namespace api.Models
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
         public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = null!;
+        public virtual ICollection<WellProject> WellProjects { get; set; } = null!;
     }
 
     public enum ProjectPhase

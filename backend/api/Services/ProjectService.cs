@@ -18,10 +18,17 @@ namespace api.Services
         {
             if (_context.Projects != null)
             {
-                return _context.Projects
+
+                var projects = _context.Projects
                     .Include(c => c.Cases)
                         .ThenInclude(c => c.CessationCost)
                             .ThenInclude(c => c.YearValues);
+
+                foreach (Project project in projects)
+                {
+                    AddAssetsToProject(project);
+                }
+                return projects;
             }
             else
             {
@@ -38,13 +45,25 @@ namespace api.Services
                         .ThenInclude(c => c.CessationCost)
                             .ThenInclude(c => c.YearValues)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
+
                 if (project == null)
                 {
                     throw new NotFoundInDBException(string.Format("Project %s not found", projectId));
                 }
+                AddAssetsToProject(project);
                 return project;
             }
             throw new NotFoundInDBException($"The database contains no projects");
+        }
+        private Project AddAssetsToProject(Project project)
+        {
+            WellProjectService wellProjectService = new WellProjectService(_context);
+            var wellProjects = wellProjectService.GetWellProjects(project.Id).ToList();
+            project.WellProjects = wellProjects;
+            DrainageStrategyService drainageStrategyService = new DrainageStrategyService(_context);
+            var drainageStrategies = drainageStrategyService.GetDrainageStrategies(project.Id).ToList();
+            project.DrainageStrategies = drainageStrategies;
+            return project;
         }
     }
 }
