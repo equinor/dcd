@@ -1,0 +1,40 @@
+.data-grid {
+    background-color: #f7f7f7;
+    margin-top: 1rem;
+}
+
+.data-grid, th, td, .data-grid-container .data-grid .cell {
+    height: 100%;
+}
+
+.data-grid, th, td, .data-grid-container .data-grid .cell.read-only {
+    border: 1px solid #DDD;
+    color: #6f6f6f;
+    text-align: right;
+}
+
+.value-viewer {
+    padding: 0.25rem 1rem;
+}
+
+.value-viewer, .data-grid-container .data-grid .cell .data-editor {
+    min-width: 100px;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+.data-grid-container .data-grid .cell .data-editor {
+    font-family: Equinor;
+    font-weight: 400;
+    height: inherit;
+    width: inherit;
+    border-width: 1px;
+    padding: 0;
+}
+
+.data-grid-container .data-grid tr th  {
+    padding: 0.25rem 1rem;
+    text-align: right;
+    font-weight: bold;
+}
+

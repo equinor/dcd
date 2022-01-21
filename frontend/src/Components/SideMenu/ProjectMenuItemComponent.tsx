@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { Link, useParams } from 'react-router-dom'
 import { IconData } from '@equinor/eds-icons'
 
 import { Case } from '../../types'
@@ -14,13 +14,23 @@ const ExpandableDiv = styled.div`
     cursor: pointer;
 `
 
-const StyledLi = styled.li`
+const SubItems = styled.ul`
+    padding: 0;
+    margin: 0;
+    width: 100%;
+`
+
+const SubItem = styled.li`
     list-style-type: none;
     margin: 0;
     display: flex;
     flex-direction: column;
-    padding: 0.25rem 0 0.25rem 2rem;
+    padding: 0;
     cursor: pointer;
+`
+
+const LinkWithoutStyle = styled(Link)`
+    text-decoration: none;
 `
 
 export type ProjectMenuItem = {
@@ -56,21 +66,21 @@ const ProjectMenuItemComponent = ({ item, projectId, subItems }: Props) => {
                 onClick={subItems ? () => setIsOpen(!isOpen) : undefined}
             />
             {subItems && isOpen && (
-                <ul style={{ padding: 0, margin: 0, width: '100%' }}>
+                <SubItems>
                     {subItems.map((subItem, index) => (
-                        <StyledLi style={{ listStyleType: 'none', margin: 0, padding: 0 }} key={index}>
+                        <SubItem key={index}>
                             <nav>
-                                <Link to={'/project/' + projectId + '/case/' + subItem.id} style={{ textDecoration: 'none' }}>
+                                <LinkWithoutStyle to={'/project/' + projectId + '/case/' + subItem.id}>
                                     <MenuItem
                                         title={subItem.title}
-                                        style={{ padding: '0.25rem 2rem' }}
                                         isSelected={isSelected && params.caseId === subItem.id}
+                                        padding={'0.25rem 2rem'}
                                     />
-                                </Link>
+                                </LinkWithoutStyle>
                             </nav>
-                        </StyledLi>
+                        </SubItem>
                     ))}
-                </ul>
+                </SubItems>
             )}
         </ExpandableDiv>
     )
