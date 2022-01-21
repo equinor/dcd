@@ -7,7 +7,7 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
@@ -22,22 +22,40 @@ namespace api.Controllers
             _facilityService = facilityService;
         }
 
-        [HttpGet(Name = "GetAllSurfs")]
+        [HttpGet("surf/", Name = "GetAllSurfs")]
         public IEnumerable<Surf> GetAllSurfs()
         {
             return _facilityService.GetAllSurfs();
         }
 
-        [HttpGet("{surfId}", Name = "GetSurf")]
+        [HttpGet("surf/{surfId}", Name = "GetSurf")]
         public Surf GetSurf(Guid surfId)
         {
             return _facilityService.GetSurf(surfId);
         }
 
-        [HttpGet("project/{projectId}", Name = "GetSurfsForProject")]
+        [HttpGet("surf/project/{projectId}", Name = "GetSurfsForProject")]
         public IEnumerable<Surf> GetSurfsForProject(Guid projectId) 
         {
             return _facilityService.GetSurfsForProject(projectId);
+        }
+
+        [HttpGet("substructure/", Name = "GetAllSubstructures")]
+        public IEnumerable<Substructure> GetAllSubstructures()
+        {
+            return _facilityService.GetAllSubstructures();
+        }
+
+        [HttpGet("substructure/{substructureId}", Name = "GetSubstructure")]
+        public Substructure GetSubstructure(Guid substructureId)
+        {
+            return _facilityService.GetSubstructure(substructureId);
+        }
+
+        [HttpGet("substructure/project/{projectId}", Name = "GetSubstructuresForProject")]
+        public IEnumerable<Substructure> GetSubstructuresForProject(Guid projectId) 
+        {
+            return _facilityService.GetSubstructuresForProject(projectId);
         }
     }
 }

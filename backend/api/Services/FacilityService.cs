@@ -64,5 +64,57 @@ namespace api.Services
                 return new List<Surf>();
             }
         }
+
+        public IEnumerable<Substructure> GetAllSubstructures()
+        {
+            throw new NotImplementedException();
+            /*if (_context.Surfs != null)
+            {
+                return _context.Surfs
+                        .Include(c => c.CostProfile)
+                        .Include(c => c.InfieldPipelineSystemLength)
+                        .Include(c => c.UmbilicalSystemLength);
+            }
+            else
+            {
+                return new List<Surf>();
+            }*/
+        }
+
+        public Substructure GetSubstructure(Guid surfId)
+        {
+            throw new NotImplementedException();
+            /*if (_context.Surfs != null)
+            {
+                var surf = _context.Surfs
+                        .Include(c => c.CostProfile)
+                        .Include(c => c.InfieldPipelineSystemLength)
+                        .Include(c => c.UmbilicalSystemLength)
+                    .FirstOrDefault(p => p.Id.Equals(surfId));
+                if (surf == null)
+                {
+                    throw new NotFoundInDBException(string.Format("Surf {0} not found", surfId));
+                }
+                return surf;
+            }
+            throw new NotFoundInDBException($"The database contains no surfs");*/
+        }
+
+        public IEnumerable<Substructure> GetSubstructuresForProject(Guid projectId)
+        {
+            throw new NotImplementedException();
+            /*if (_context.Surfs != null)
+            {
+                return _context.Surfs
+                        .Include(c => c.CostProfile)
+                        .Include(c => c.InfieldPipelineSystemLength)
+                        .Include(c => c.UmbilicalSystemLength)
+                    .Where(d => d.Project.Id.Equals(projectId));
+            }
+            else
+            {
+                return new List<Surf>();
+            }*/
+        }
     }
 }
