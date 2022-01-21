@@ -11,14 +11,14 @@ public class SurfBuilder : Surf
         return this;
     }
 
-    public SurfBuilder WithInfieldPipelineSystemLength(InfieldPipelineSystemLengthBuilder builder) 
+    public SurfBuilder WithInfieldPipelineSystemLength(InfieldPipelineSystemLengthBuilder builder)
     {
         builder.Surf = this;
         this.InfieldPipelineSystemLength = builder;
         return this;
     }
 
-    public SurfBuilder WithUmbilicalSystemLength(UmbilicalSystemLengthBuilder builder) 
+    public SurfBuilder WithUmbilicalSystemLength(UmbilicalSystemLengthBuilder builder)
     {
         builder.Surf = this;
         this.UmbilicalSystemLength = builder;

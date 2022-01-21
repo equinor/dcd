@@ -11,14 +11,14 @@ public class TransportBuilder : Transport
         return this;
     }
 
-    public TransportBuilder WithGasExportPipelineLength(GasExportPipelineLengthBuilder builder) 
+    public TransportBuilder WithGasExportPipelineLength(GasExportPipelineLengthBuilder builder)
     {
         builder.Transport = this;
         this.GasExportPipelineLength = builder;
         return this;
     }
 
-    public TransportBuilder WithOilExportPipelineLength(OilExportPipelineLengthBuilder builder) 
+    public TransportBuilder WithOilExportPipelineLength(OilExportPipelineLengthBuilder builder)
     {
         builder.Transport = this;
         this.OilExportPipelineLength = builder;

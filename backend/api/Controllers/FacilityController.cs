@@ -35,7 +35,7 @@ namespace api.Controllers
         }
 
         [HttpGet("surf/{projectId}", Name = "GetSurfsForProject")]
-        public IEnumerable<Surf>? GetSurfsForProject(Guid projectId) 
+        public IEnumerable<Surf>? GetSurfsForProject(Guid projectId)
         {
             return _facilityService.GetSurfsForProject(projectId);
         }
@@ -53,7 +53,7 @@ namespace api.Controllers
         }
 
         [HttpGet("substructure/{projectId}", Name = "GetSubstructuresForProject")]
-        public IEnumerable<Substructure>? GetSubstructuresForProject(Guid projectId) 
+        public IEnumerable<Substructure>? GetSubstructuresForProject(Guid projectId)
         {
             return _facilityService.GetSubstructuresForProject(projectId);
         }
@@ -71,7 +71,7 @@ namespace api.Controllers
         }
 
         [HttpGet("topside/{projectId}", Name = "GetTopsidesForProject")]
-        public IEnumerable<Topside>? GetTopsidesForProject(Guid projectId) 
+        public IEnumerable<Topside>? GetTopsidesForProject(Guid projectId)
         {
             return _facilityService.GetTopsidesForProject(projectId);
         }
@@ -89,7 +89,7 @@ namespace api.Controllers
         }
 
         [HttpGet("transport/{projectId}", Name = "GetTransportsForProject")]
-        public IEnumerable<Transport>? GetTransportsForProject(Guid projectId) 
+        public IEnumerable<Transport>? GetTransportsForProject(Guid projectId)
         {
             return _facilityService.GetTransportsForProject(projectId);
         }

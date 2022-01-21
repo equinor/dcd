@@ -72,7 +72,7 @@ namespace api.Services
             {
                 return _context.Substructures
                         .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues) 
+                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.DryWeight);
             }
             else
