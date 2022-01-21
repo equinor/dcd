@@ -91,6 +91,27 @@ public static class SampleAssetGenerator
                     .WithYearValue(2037, 7.4)
                 )
             )
+            .WithWellProject(new WellProjectBuilder()
+            {
+                WellType = WellType.Oil,
+                RigMobDemob = 100.0,
+                AnnualWellInterventionCost = 200.0,
+                PluggingAndAbandonment = 300.0
+            }
+                .WithWellProjectCostProfile(new WellProjectCostProfileBuilder()
+                {
+                    Currency = Currency.USD
+                }
+                    .WithYearValue(2035, 55.3)
+                    .WithYearValue(2036, 66.3)
+                    .WithYearValue(2037, 75.4)
+                )
+                .WithDrillingSchedule(new DrillingScheduleBuilder()
+                    .WithYearValue(2035, 10)
+                    .WithYearValue(2036, 12)
+                    .WithYearValue(2037, 20)
+                    )
+            )
         )
         .WithProject(new ProjectBuilder()
         {

@@ -12,6 +12,7 @@ public static class SampleCaseGenerator
         const string project1 = "P1";
         string project1DrainageStrategyName1 = projectsBuilder.ForProject(project1).DrainageStrategies.ToList()[0].Name;
         string project1DrainageStrategyName2 = projectsBuilder.ForProject(project1).DrainageStrategies.ToList()[1].Name;
+        string wellProjectName = projectsBuilder.ForProject(project1).WellProjects.ToList()[0].Name;
         projectsBuilder.ForProject(project1)
         .WithCase(new CaseBuilder()
         {
@@ -38,6 +39,7 @@ public static class SampleCaseGenerator
                 .WithYearValue(2032, 1200)
             )
             .WithDrainageStrategy(project1DrainageStrategyName1, projectsBuilder.ForProject(project1))
+            .WithWellProject(wellProjectName, projectsBuilder.ForProject(project1))
             )
         .WithCase(new CaseBuilder()
         {
