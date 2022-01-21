@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public class Surf : IFacility
+    public class Surf
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;

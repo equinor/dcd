@@ -30,6 +30,10 @@ public class ProjectBuilder : Project
     {
         Cases = new List<Case>();
         DrainageStrategies = new List<DrainageStrategy>();
+        Surfs = new List<Surf>();
+        Substructures = new List<Substructure>();
+        Topsides = new List<Topside>();
+        Transports = new List<Transport>();
     }
 
     public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)
@@ -43,6 +47,34 @@ public class ProjectBuilder : Project
     {
         c.Project = this;
         Cases.Add(c);
+        return this;
+    }
+
+    public ProjectBuilder WithSurf(SurfBuilder s)
+    {
+        s.Project = this;
+        Surfs.Add(s);
+        return this;
+    }
+
+    public ProjectBuilder WithSubstructure(SubstructureBuilder s)
+    {
+        s.Project = this;
+        Substructures.Add(s);
+        return this;
+    }
+
+    public ProjectBuilder WithTopside(TopsideBuilder t)
+    {
+        t.Project = this;
+        Topsides.Add(t);
+        return this;
+    }
+
+    public ProjectBuilder WithTransport(TransportBuilder t)
+    {
+        t.Project = this;
+        Transports.Add(t);
         return this;
     }
 }

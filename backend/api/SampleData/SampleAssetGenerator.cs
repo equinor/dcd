@@ -91,6 +91,33 @@ public static class SampleAssetGenerator
                     .WithYearValue(2037, 7.4)
                 )
             )
+            .WithSurf(new SurfBuilder()
+            {
+                Name = "Surf 1",
+                Maturity = Maturity.A,
+                ProductionFlowline = ProductionFlowline.Default
+            }
+                .WithCostProfile(new SurfCostProfileBuilder()
+                {
+
+                }
+                    .WithYearValue(2035, 5.3)
+                    .WithYearValue(2036, 6.3)
+                    .WithYearValue(2037, 7.4)
+                )
+                .WithInfieldPipelineSystemLength(new InfieldPipelineSystemLengthBuilder()
+                {
+                    Unit = LengthUnit.km,
+                    Value = 5.5
+                }
+                )
+                .WithUmbilicalSystemLength(new UmbilicalSystemLengthBuilder()
+                {
+                    Unit = LengthUnit.km,
+                    Value = 1.1
+                }
+                )
+            )
         )
         .WithProject(new ProjectBuilder()
         {

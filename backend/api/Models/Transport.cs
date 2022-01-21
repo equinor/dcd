@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public class Transport : IFacility
+    public class Transport
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;

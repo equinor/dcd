@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-    public class Substructure : IFacility
+    public class Substructure
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
