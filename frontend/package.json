@@ -16,7 +16,7 @@
         "@types/node": "^12.20.37",
         "@types/react": "^17.0.37",
         "@types/react-dom": "^17.0.11",
-        "plotly.js": "^2.8.1",
+        "plotly.js": "^2.8.3",
         "plotly.js-dist": "^2.8.1",
         "prettier": "^2.5.1",
         "react": "^17.0.2",
