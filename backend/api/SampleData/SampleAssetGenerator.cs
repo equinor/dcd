@@ -1,4 +1,3 @@
-
 using api.Models;
 
 namespace api.SampleData;
@@ -111,6 +110,89 @@ public static class SampleAssetGenerator
                     .WithYearValue(2036, 12)
                     .WithYearValue(2037, 20)
                     )
+            )
+            .WithSurf(new SurfBuilder
+            {
+                Name = "Surf 1",
+                Maturity = Maturity.A,
+                ProductionFlowline = ProductionFlowline.Default
+            }
+                .WithCostProfile(new SurfCostProfileBuilder
+                {
+
+                }
+                    .WithYearValue(2035, 5.3)
+                    .WithYearValue(2036, 6.3)
+                    .WithYearValue(2037, 7.4)
+                )
+                .WithInfieldPipelineSystemLength(new InfieldPipelineSystemLengthBuilder
+                {
+                    Unit = LengthUnit.km,
+                    Value = 5.5
+                }
+                )
+                .WithUmbilicalSystemLength(new UmbilicalSystemLengthBuilder
+                {
+                    Unit = LengthUnit.km,
+                    Value = 1.1
+                }
+                )
+            )
+            .WithSubstructure(new SubstructureBuilder
+            {
+                Name = "Substructure 1",
+                Maturity = Maturity.B
+            }
+                .WithCostProfile(new SubstructureCostProfileBuilder
+                {
+
+                }
+                    .WithYearValue(2035, 5.4)
+                    .WithYearValue(2036, 6.4)
+                    .WithYearValue(2037, 7.5)
+                )
+                .WithDryWeight(new SubstructureDryWeightBuilder
+                {
+
+                }
+                    .WithValue(WeightUnit.tonnes, 4.5)
+                )
+            )
+            .WithTopside(new TopsideBuilder
+            {
+                Name = "Topside 1",
+                Maturity = Maturity.C,
+                OilCapacity = 50.0,
+                GasCapacity = 75.0
+            }
+                .WithCostProfile(new TopsideCostProfileBuilder
+                {
+
+                }
+                    .WithYearValue(2035, 5.2)
+                    .WithYearValue(2036, 6.2)
+                    .WithYearValue(2037, 7.3)
+                )
+                .WithDryWeight(new TopsideDryWeightBuilder
+                {
+
+                }
+                    .WithValue(WeightUnit.tonnes, 45.1)
+                )
+            )
+            .WithTransport(new TransportBuilder
+            {
+                Name = "Transport 1",
+                Maturity = Maturity.D
+            }
+                .WithCostProfile(new TransportCostProfileBuilder
+                {
+
+                }
+                    .WithYearValue(2035, 1.2)
+                    .WithYearValue(2036, 2.2)
+                    .WithYearValue(2037, 3.3)
+                )
             )
         )
         .WithProject(new ProjectBuilder()
