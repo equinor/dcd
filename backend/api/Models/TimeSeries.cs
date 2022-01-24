@@ -38,5 +38,9 @@ namespace api.Models
         USD,
         NOK
     }
+    public class TimeSeriesSchedule : TimeSeriesBase<int>
+    {
+
+    }
 }
 

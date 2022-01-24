@@ -25,6 +25,6 @@ namespace api.Context
 
         public DbSet<DrainageStrategy>? DrainageStrategies { get; set; }
         public DbSet<WellProject>? WellProjects { get; set; }
-
+        public DbSet<Exploration>? Explorations { get; set; }
     }
 }

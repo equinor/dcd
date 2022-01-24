@@ -72,6 +72,12 @@ namespace tests
             {
                 compareWellProjects(wellProjectPair.First, wellProjectPair.Second);
             }
+            var explorationsExpectedAndActual = expected.Explorations.OrderBy(d => d.Name)
+                .Zip(actual.Explorations.OrderBy(d => d.Name));
+            foreach (var explorationPair in explorationsExpectedAndActual)
+            {
+                compareExplorations(explorationPair.First, explorationPair.Second);
+            }
         }
 
         void compareCases(Case expected, Case actual)
@@ -136,6 +142,20 @@ namespace tests
             Assert.Equal(expected.PluggingAndAbandonment, actual.PluggingAndAbandonment);
             compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
             compareCosts(expected.CostProfile, actual.CostProfile);
+        }
+
+        void compareExplorations(Exploration expected, Exploration actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, null);
+                Assert.Equal(actual, null);
+            }
+            Assert.Equal(expected.Name, actual.Name);
+            Assert.Equal(expected.WellType, actual.WellType);
+            Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
+            compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
+            compareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
         }
 
         void compareVolumes<T>(TimeSeriesVolume<T> expected, TimeSeriesVolume<T> actual)
