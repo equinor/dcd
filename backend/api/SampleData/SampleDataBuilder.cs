@@ -52,7 +52,7 @@ public class ProjectBuilder : Project
         Cases.Add(c);
         return this;
     }
-    
+
     public ProjectBuilder WithSurf(SurfBuilder s)
     {
         s.Project = this;
@@ -107,7 +107,7 @@ public class CaseBuilder : Case
         var wellProject = project.WellProjects.FirstOrDefault(d => d.Name.Equals(wellProjectName));
         if (wellProject == null)
         {
-            throw new Exception(string.Format("Drainage strategy {0} not found", wellProjectName));
+            throw new Exception(string.Format("Drainage strategy %s not found", wellProjectName));
         }
         WellProjectLink = wellProject.Id;
         return this;
