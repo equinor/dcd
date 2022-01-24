@@ -112,7 +112,46 @@ public class CaseBuilder : Case
         WellProjectLink = wellProject.Id;
         return this;
     }
-
+    public CaseBuilder WithSurf(string surfName, Project project)
+    {
+        var surf = project.Surfs.FirstOrDefault(d => d.Name.Equals(surfName));
+        if (surf == null)
+        {
+            throw new Exception(string.Format("Surf %s not found", surfName));
+        }
+        SurfLink = surf.Id;
+        return this;
+    }
+    public CaseBuilder WithSubstructure(string substructureName, Project project)
+    {
+        var substructure = project.Substructures.FirstOrDefault(d => d.Name.Equals(substructureName));
+        if (substructure == null)
+        {
+            throw new Exception(string.Format("Substructure %s not found", substructureName));
+        }
+        SubstructureLink = substructure.Id;
+        return this;
+    }
+    public CaseBuilder WithTopside(string topsideName, Project project)
+    {
+        var topside = project.Topsides.FirstOrDefault(d => d.Name.Equals(topsideName));
+        if (topside == null)
+        {
+            throw new Exception(string.Format("Topside %s not found", topsideName));
+        }
+        TopsideLink = topside.Id;
+        return this;
+    }
+    public CaseBuilder WithTransport(string transportName, Project project)
+    {
+        var transport = project.Transports.FirstOrDefault(d => d.Name.Equals(transportName));
+        if (transport == null)
+        {
+            throw new Exception(string.Format("Transport %s not found", transportName));
+        }
+        TransportLink = transport.Id;
+        return this;
+    }
 }
 
 public class CessationCostBuilder : CessationCost

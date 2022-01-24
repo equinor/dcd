@@ -13,6 +13,10 @@ public static class SampleCaseGenerator
         string project1DrainageStrategyName1 = projectsBuilder.ForProject(project1).DrainageStrategies.ToList()[0].Name;
         string project1DrainageStrategyName2 = projectsBuilder.ForProject(project1).DrainageStrategies.ToList()[1].Name;
         string wellProjectName = projectsBuilder.ForProject(project1).WellProjects.ToList()[0].Name;
+        string project1SurfName = projectsBuilder.ForProject(project1).Surfs.ToList()[0].Name;
+        string project1SubstructureName = projectsBuilder.ForProject(project1).Substructures.ToList()[0].Name;
+        string project1TopsideName = projectsBuilder.ForProject(project1).Topsides.ToList()[0].Name;
+        string project1TransportName = projectsBuilder.ForProject(project1).Transports.ToList()[0].Name;
         projectsBuilder.ForProject(project1)
         .WithCase(new CaseBuilder()
         {
@@ -49,7 +53,6 @@ public static class SampleCaseGenerator
             Description = "Description 2 in Case 2 in P1"
         }
             .WithDrainageStrategy(project1DrainageStrategyName1, projectsBuilder.ForProject(project1))
-            )
             .WithSubstructure(project1SubstructureName, projectsBuilder.ForProject(project1))
             .WithTransport(project1TransportName, projectsBuilder.ForProject(project1))
         )
