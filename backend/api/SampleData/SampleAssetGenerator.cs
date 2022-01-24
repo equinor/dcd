@@ -111,13 +111,13 @@ public static class SampleAssetGenerator
                     .WithYearValue(2037, 20)
                     )
             )
-            .WithSurf(new SurfBuilder()
+            .WithSurf(new SurfBuilder
             {
                 Name = "Surf 1",
                 Maturity = Maturity.A,
                 ProductionFlowline = ProductionFlowline.Default
             }
-                .WithCostProfile(new SurfCostProfileBuilder()
+                .WithCostProfile(new SurfCostProfileBuilder
                 {
 
                 }
@@ -125,25 +125,25 @@ public static class SampleAssetGenerator
                     .WithYearValue(2036, 6.3)
                     .WithYearValue(2037, 7.4)
                 )
-                .WithInfieldPipelineSystemLength(new InfieldPipelineSystemLengthBuilder()
+                .WithInfieldPipelineSystemLength(new InfieldPipelineSystemLengthBuilder
                 {
                     Unit = LengthUnit.km,
                     Value = 5.5
                 }
                 )
-                .WithUmbilicalSystemLength(new UmbilicalSystemLengthBuilder()
+                .WithUmbilicalSystemLength(new UmbilicalSystemLengthBuilder
                 {
                     Unit = LengthUnit.km,
                     Value = 1.1
                 }
                 )
             )
-            .WithSubstructure(new SubstructureBuilder()
+            .WithSubstructure(new SubstructureBuilder
             {
                 Name = "Substructure 1",
                 Maturity = Maturity.B
             }
-                .WithCostProfile(new SubstructureCostProfileBuilder()
+                .WithCostProfile(new SubstructureCostProfileBuilder
                 {
 
                 }
@@ -151,21 +151,21 @@ public static class SampleAssetGenerator
                     .WithYearValue(2036, 6.4)
                     .WithYearValue(2037, 7.5)
                 )
-                .WithDryWeight(new SubstructureDryWeightBuilder()
+                .WithDryWeight(new SubstructureDryWeightBuilder
                 {
 
                 }
                     .WithValue(WeightUnit.tonnes, 4.5)
                 )
             )
-            .WithTopside(new TopsideBuilder()
+            .WithTopside(new TopsideBuilder
             {
                 Name = "Topside 1",
                 Maturity = Maturity.C,
                 OilCapacity = 50.0,
                 GasCapacity = 75.0
             }
-                .WithCostProfile(new TopsideCostProfileBuilder()
+                .WithCostProfile(new TopsideCostProfileBuilder
                 {
 
                 }
@@ -173,19 +173,19 @@ public static class SampleAssetGenerator
                     .WithYearValue(2036, 6.2)
                     .WithYearValue(2037, 7.3)
                 )
-                .WithDryWeight(new TopsideDryWeightBuilder()
+                .WithDryWeight(new TopsideDryWeightBuilder
                 {
 
                 }
                     .WithValue(WeightUnit.tonnes, 45.1)
                 )
             )
-            .WithTransport(new TransportBuilder()
+            .WithTransport(new TransportBuilder
             {
                 Name = "Transport 1",
                 Maturity = Maturity.D
             }
-                .WithCostProfile(new TransportCostProfileBuilder()
+                .WithCostProfile(new TransportCostProfileBuilder
                 {
 
                 }

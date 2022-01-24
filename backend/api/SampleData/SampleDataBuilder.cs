@@ -151,7 +151,7 @@ public class CaseBuilder : Case
         var transport = project.Transports.FirstOrDefault(d => d.Name.Equals(transportName));
         if (transport == null)
         {
-            throw new Exception(string.Format("Transport %s not found", transportName));
+            throw new Exception(string.Format("Transport {0} not found", transportName));
         }
         TransportLink = transport.Id;
         return this;
