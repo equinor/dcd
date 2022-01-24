@@ -99,7 +99,8 @@ public class CaseBuilder : Case
         this.CessationCost = c;
         return this;
     }
-    public CaseBuilder WithSurf(string surfName, Project project) {
+    public CaseBuilder WithSurf(string surfName, Project project)
+    {
         var surf = project.Surfs.FirstOrDefault(d => d.Name.Equals(surfName));
         if (surf == null)
         {
@@ -108,8 +109,9 @@ public class CaseBuilder : Case
         SurfLink = surf.Id;
         return this;
     }
-    
-    public CaseBuilder WithSubstructure(string substructureName, Project project) {
+
+    public CaseBuilder WithSubstructure(string substructureName, Project project)
+    {
         var substructure = project.Substructures.FirstOrDefault(d => d.Name.Equals(substructureName));
         if (substructure == null)
         {
@@ -118,8 +120,9 @@ public class CaseBuilder : Case
         SubstructureLink = substructure.Id;
         return this;
     }
-    
-    public CaseBuilder WithTopside(string topsideName, Project project) {
+
+    public CaseBuilder WithTopside(string topsideName, Project project)
+    {
         var topside = project.Topsides.FirstOrDefault(d => d.Name.Equals(topsideName));
         if (topside == null)
         {
@@ -128,8 +131,9 @@ public class CaseBuilder : Case
         TopsideLink = topside.Id;
         return this;
     }
-    
-    public CaseBuilder WithTransport(string transportName, Project project) {
+
+    public CaseBuilder WithTransport(string transportName, Project project)
+    {
         var transport = project.Transports.FirstOrDefault(d => d.Name.Equals(transportName));
         if (transport == null)
         {
