@@ -1,6 +1,6 @@
 using api.Models;
 
-namespace api.SampleData;
+namespace api.SampleData.Builders;
 
 public class TransportBuilder : Transport
 {

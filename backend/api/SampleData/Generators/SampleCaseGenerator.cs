@@ -1,8 +1,7 @@
-using System.Linq;
-
 using api.Models;
+using api.SampleData.Builders;
 
-namespace api.SampleData;
+namespace api.SampleData.Generators;
 
 public static class SampleCaseGenerator
 {

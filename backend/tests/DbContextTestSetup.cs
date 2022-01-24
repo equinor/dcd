@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 
 using api.Context;
-using api.Models;
-using api.SampleData;
+using api.SampleData.Generators;
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;

@@ -1,8 +1,8 @@
 
 using api.Context;
-using api.Models;
+using api.SampleData.Builders;
 
-namespace api.SampleData;
+namespace api.SampleData.Generators;
 
 public static class SaveSampleDataToDB
 {

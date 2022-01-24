@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 
 using api.Context;
-using api.SampleData;
+using api.SampleData.Generators;
 using api.Services;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
