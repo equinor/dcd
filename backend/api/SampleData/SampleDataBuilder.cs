@@ -107,7 +107,7 @@ public class CaseBuilder : Case
         var wellProject = project.WellProjects.FirstOrDefault(d => d.Name.Equals(wellProjectName));
         if (wellProject == null)
         {
-            throw new Exception(string.Format("Drainage strategy %s not found", wellProjectName));
+            throw new Exception(string.Format("Drainage strategy {0} not found", wellProjectName));
         }
         WellProjectLink = wellProject.Id;
         return this;
@@ -117,7 +117,7 @@ public class CaseBuilder : Case
         var surf = project.Surfs.FirstOrDefault(d => d.Name.Equals(surfName));
         if (surf == null)
         {
-            throw new Exception(string.Format("Surf %s not found", surfName));
+            throw new Exception(string.Format("Surf {0} not found", surfName));
         }
         SurfLink = surf.Id;
         return this;
@@ -127,7 +127,7 @@ public class CaseBuilder : Case
         var substructure = project.Substructures.FirstOrDefault(d => d.Name.Equals(substructureName));
         if (substructure == null)
         {
-            throw new Exception(string.Format("Substructure %s not found", substructureName));
+            throw new Exception(string.Format("Substructure {0} not found", substructureName));
         }
         SubstructureLink = substructure.Id;
         return this;
@@ -137,7 +137,7 @@ public class CaseBuilder : Case
         var topside = project.Topsides.FirstOrDefault(d => d.Name.Equals(topsideName));
         if (topside == null)
         {
-            throw new Exception(string.Format("Topside %s not found", topsideName));
+            throw new Exception(string.Format("Topside {0} not found", topsideName));
         }
         TopsideLink = topside.Id;
         return this;
