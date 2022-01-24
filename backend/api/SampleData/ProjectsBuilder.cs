@@ -17,7 +17,7 @@ public class ProjectsBuilder
         var projectBuilder = Projects.FirstOrDefault(p => p.ProjectName.Equals(projectName));
         if (projectBuilder == null)
         {
-            throw new Exception(string.Format("Cannot find project %s"));
+            throw new Exception(string.Format("Cannot find project {0}", projectName));
         }
         return projectBuilder;
     }

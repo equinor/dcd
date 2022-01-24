@@ -10,7 +10,7 @@ public class CaseBuilder : Case
         var drainageStrategy = project.DrainageStrategies.FirstOrDefault(d => d.Name.Equals(drainageStrategyName));
         if (drainageStrategy == null)
         {
-            throw new Exception(string.Format("Drainage strategy %s not found", drainageStrategyName));
+            throw new Exception(string.Format("Drainage strategy {0} not found", drainageStrategyName));
         }
         DrainageStrategyLink = drainageStrategy.Id;
         return this;
@@ -26,7 +26,7 @@ public class CaseBuilder : Case
         var wellProject = project.WellProjects.FirstOrDefault(d => d.Name.Equals(wellProjectName));
         if (wellProject == null)
         {
-            throw new Exception(string.Format("Drainage strategy %s not found", wellProjectName));
+            throw new Exception(string.Format("Drainage strategy {0} not found", wellProjectName));
         }
         WellProjectLink = wellProject.Id;
         return this;

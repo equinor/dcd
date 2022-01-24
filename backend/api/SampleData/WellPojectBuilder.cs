@@ -4,7 +4,6 @@ namespace api.SampleData;
 
 public class WellProjectBuilder : WellProject
 {
-    public WellProjectBuilder() { }
     public WellProjectBuilder WithWellProjectCostProfile(WellProjectCostProfileBuilder w)
     {
         this.CostProfile = w;
