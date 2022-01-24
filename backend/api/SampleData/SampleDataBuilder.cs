@@ -30,6 +30,10 @@ public class ProjectBuilder : Project
         Cases = new List<Case>();
         DrainageStrategies = new List<DrainageStrategy>();
         WellProjects = new List<WellProject>();
+        Surfs = new List<Surf>();
+        Substructures = new List<Substructure>();
+        Topsides = new List<Topside>();
+        Transports = new List<Transport>();
     }
 
     public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)
