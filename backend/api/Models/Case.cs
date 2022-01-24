@@ -1,4 +1,4 @@
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
@@ -31,5 +31,10 @@ namespace api.Models
         GasLift,
         ElectricalSubmergedPumps,
         SubseaBoosterPumps
+    }
+    public class CessationCost : TimeSeriesCost<double>
+    {
+        [ForeignKey("Case.Id")]
+        public virtual Case Case { get; set; } = null!;
     }
 }
