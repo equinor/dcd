@@ -7,7 +7,7 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
@@ -28,7 +28,7 @@ namespace api.Controllers
             return _facilityService.GetAllSurfs();
         }
 
-        [HttpGet("surf/project/{surfId}", Name = "GetSurf")]
+        [HttpGet("project/surf/{surfId}", Name = "GetSurf")]
         public Surf GetSurf(Guid surfId)
         {
             return _facilityService.GetSurf(surfId);
@@ -46,7 +46,7 @@ namespace api.Controllers
             return _facilityService.GetAllSubstructures();
         }
 
-        [HttpGet("substructure/project/{substructureId}", Name = "GetSubstructure")]
+        [HttpGet("project/substructure/{substructureId}", Name = "GetSubstructure")]
         public Substructure GetSubstructure(Guid substructureId)
         {
             return _facilityService.GetSubstructure(substructureId);
@@ -64,7 +64,7 @@ namespace api.Controllers
             return _facilityService.GetAllTopsides();
         }
 
-        [HttpGet("topside/project/{topsideId}", Name = "GetTopside")]
+        [HttpGet("project/topside/{topsideId}", Name = "GetTopside")]
         public Topside GetTopside(Guid topsideId)
         {
             return _facilityService.GetTopside(topsideId);
@@ -82,7 +82,7 @@ namespace api.Controllers
             return _facilityService.GetAllTransports();
         }
 
-        [HttpGet("transport/project/{transportId}", Name = "GetTransport")]
+        [HttpGet("project/transport/{transportId}", Name = "GetTransport")]
         public Transport GetTransport(Guid transportId)
         {
             return _facilityService.GetTransport(transportId);
