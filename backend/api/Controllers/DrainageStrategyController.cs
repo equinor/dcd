@@ -34,7 +34,7 @@ namespace api.Controllers
             return _drainageStrategyService.GetDrainageStrategies(projectId);
         }
 
-        [HttpGet(Name = "GetAllDrainageStrategies")]
+        [HttpGet(Name = "GetAll")]
         public IEnumerable<DrainageStrategy>? Get()
         {
             return _drainageStrategyService.GetAll();
