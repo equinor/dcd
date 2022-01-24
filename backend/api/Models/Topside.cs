@@ -6,9 +6,9 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
-        public Project Project { get; set; } = null!;
-        public TopsideCostProfile CostProfile { get; set; } = null!;
-        public TopsideDryWeight DryWeight { get; set; } = null!;
+        public virtual Project Project { get; set; } = null!;
+        public virtual TopsideCostProfile CostProfile { get; set; } = null!;
+        public virtual TopsideDryWeight DryWeight { get; set; } = null!;
         public double OilCapacity { get; set; }
         public double GasCapacity { get; set; }
         public Maturity Maturity { get; set; }
@@ -17,13 +17,13 @@ namespace api.Models
     public class TopsideCostProfile : TimeSeriesCost<double>
     {
         [ForeignKey("Topside.Id")]
-        public Topside Topside { get; set; } = null!;
+        public virtual Topside Topside { get; set; } = null!;
     }
 
     public class TopsideDryWeight : Measurement
     {
         [ForeignKey("Topside.Id")]
-        public Topside Topside { get; set; } = null!;
+        public virtual Topside Topside { get; set; } = null!;
         public WeightUnit Unit { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace api.Services
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.InfieldPipelineSystemLength)
                         .Include(c => c.UmbilicalSystemLength)
-                    .FirstOrDefault(p => p.Id.Equals(surfId));
+                    .FirstOrDefault(c => c.Id.Equals(surfId));
                 if (surf == null)
                 {
                     throw new NotFoundInDBException(string.Format("Surf {0} not found.", surfId));
@@ -58,7 +58,7 @@ namespace api.Services
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.InfieldPipelineSystemLength)
                         .Include(c => c.UmbilicalSystemLength)
-                    .Where(d => d.Project.Id.Equals(projectId));
+                    .Where(c => c.Project.Id.Equals(projectId));
             }
             else
             {
@@ -89,7 +89,7 @@ namespace api.Services
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.DryWeight)
-                    .FirstOrDefault(p => p.Id.Equals(substructureId));
+                    .FirstOrDefault(c => c.Id.Equals(substructureId));
                 if (substructure == null)
                 {
                     throw new NotFoundInDBException(string.Format("Substructure {0} not found.", substructureId));
@@ -107,7 +107,7 @@ namespace api.Services
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.DryWeight)
-                    .Where(d => d.Project.Id.Equals(projectId));
+                    .Where(c => c.Project.Id.Equals(projectId));
             }
             else
             {
@@ -138,7 +138,7 @@ namespace api.Services
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.DryWeight)
-                    .FirstOrDefault(p => p.Id.Equals(topsideId));
+                    .FirstOrDefault(c => c.Id.Equals(topsideId));
                 if (topside == null)
                 {
                     throw new NotFoundInDBException(string.Format("Topside {0} not found.", topsideId));
@@ -156,7 +156,7 @@ namespace api.Services
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.DryWeight)
-                    .Where(d => d.Project.Id.Equals(projectId));
+                    .Where(c => c.Project.Id.Equals(projectId));
             }
             else
             {
@@ -189,7 +189,7 @@ namespace api.Services
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.GasExportPipelineLength)
                         .Include(c => c.OilExportPipelineLength)
-                    .FirstOrDefault(p => p.Id.Equals(transportId));
+                    .FirstOrDefault(c => c.Id.Equals(transportId));
                 if (transport == null)
                 {
                     throw new NotFoundInDBException(string.Format("Transport {0} not found.", transportId));
@@ -208,7 +208,7 @@ namespace api.Services
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.GasExportPipelineLength)
                         .Include(c => c.OilExportPipelineLength)
-                    .Where(d => d.Project.Id.Equals(projectId));
+                    .Where(c => c.Project.Id.Equals(projectId));
             }
             else
             {

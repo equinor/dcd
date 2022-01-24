@@ -7,10 +7,10 @@ namespace api.Models
         public string ProjectName { get; set; } = string.Empty;
         public DateTimeOffset CreateDate { get; set; }
         public virtual ICollection<Case> Cases { get; set; } = null!;
-        public ICollection<Surf> Surfs { get; set; } = null!;
-        public ICollection<Substructure> Substructures { get; set; } = null!;
-        public ICollection<Topside> Topsides { get; set; } = null!;
-        public ICollection<Transport> Transports { get; set; } = null!;
+        public virtual ICollection<Surf> Surfs { get; set; } = null!;
+        public virtual ICollection<Substructure> Substructures { get; set; } = null!;
+        public virtual ICollection<Topside> Topsides { get; set; } = null!;
+        public virtual ICollection<Transport> Transports { get; set; } = null!;
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
         public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = null!;

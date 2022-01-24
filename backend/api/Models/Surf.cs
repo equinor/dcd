@@ -6,11 +6,11 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
-        public Project Project { get; set; } = null!;
-        public SurfCostProfile CostProfile { get; set; } = null!;
+        public virtual Project Project { get; set; } = null!;
+        public virtual SurfCostProfile CostProfile { get; set; } = null!;
         public Maturity Maturity { get; set; }
-        public InfieldPipelineSystemLength InfieldPipelineSystemLength { get; set; } = null!;
-        public UmbilicalSystemLength UmbilicalSystemLength { get; set; } = null!;
+        public virtual InfieldPipelineSystemLength InfieldPipelineSystemLength { get; set; } = null!;
+        public virtual UmbilicalSystemLength UmbilicalSystemLength { get; set; } = null!;
         public ProductionFlowline ProductionFlowline { get; set; }
     }
 
@@ -23,14 +23,14 @@ namespace api.Models
     public class InfieldPipelineSystemLength : Measurement
     {
         [ForeignKey("Surf.Id")]
-        public Surf Surf { get; set; } = null!;
+        public virtual Surf Surf { get; set; } = null!;
         public LengthUnit Unit { get; set; }
     }
 
     public class UmbilicalSystemLength : Measurement
     {
         [ForeignKey("Surf.Id")]
-        public Surf Surf { get; set; } = null!;
+        public virtual Surf Surf { get; set; } = null!;
         public LengthUnit Unit { get; set; }
     }
 
