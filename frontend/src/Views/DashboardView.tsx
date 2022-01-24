@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { Icon, SingleSelect, Typography } from '@equinor/eds-core-react'
 import { chevron_up, search } from '@equinor/eds-icons'
@@ -6,6 +7,30 @@ import { tokens } from '@equinor/eds-tokens'
 import { UseComboboxStateChange } from 'downshift'
 
 import { projects } from '../Components/SideMenu/SideMenu'
+
+const Wrapper = styled.div`
+    margin: 2rem;
+    width: 100%;
+`
+
+const ProjectSelect = styled.div`
+    display: flex;
+    align-items: center;
+`
+
+const ProjectDropdown = styled(SingleSelect)`
+    width: 25rem;
+    margin-left: 0.5rem;
+`
+
+const ArrowUp = styled(Icon)`
+    margin-left: 7rem;
+    margin-top: 0.5rem;
+`
+
+const ChooseProjectText = styled(Typography)`
+    margin-left: 2rem;
+`
 
 const DashboardView = () => {
     const navigate = useNavigate()
@@ -20,20 +45,19 @@ const DashboardView = () => {
     const grey = tokens.colors.ui.background__scrim.rgba
 
     return (
-        <div style={{ margin: '2rem', width: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Wrapper>
+            <ProjectSelect>
                 <Icon data={search} color={grey}></Icon>
-                <SingleSelect
-                    style={{ width: '25rem', marginLeft: '0.5rem' }}
+                <ProjectDropdown
                     label={''}
                     placeholder={'Search projects'}
                     items={projects.map(p => p.name)}
                     handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
                 />
-            </div>
-            <Icon data={chevron_up} color={grey} style={{ marginLeft: '7rem', marginTop: '0.5rem' }}></Icon>
-            <Typography style={{ marginLeft: '2rem' }}>Start by choosing a project.</Typography>
-        </div>
+            </ProjectSelect>
+            <ArrowUp data={chevron_up} color={grey}></ArrowUp>
+            <ChooseProjectText>Start by choosing a project.</ChooseProjectText>
+        </Wrapper>
     )
 }
 

@@ -1,17 +1,28 @@
 import React from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { useNavigate, useParams } from 'react-router-dom'
 import { chevron_left } from '@equinor/eds-icons'
 import { Divider, Icon, Typography } from '@equinor/eds-core-react'
 
 import ProjectMenu from './ProjectMenu'
 
 const SidebarDiv = styled.div`
-    min-width: 15rem;
+    width: 15rem;
     display: flex;
     border-right: 1px solid lightgrey;
     display: flex;
     flex-direction: column;
+`
+
+const ReturnToSearch = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 1rem 1rem 0 1rem;
+    cursor: pointer;
+`
+
+const StyledDivider = styled(Divider)`
+    width: 80%;
 `
 
 export const projects = [
@@ -74,14 +85,11 @@ const SideMenu = () => {
     if (project) {
         return (
             <SidebarDiv>
-                <div
-                    style={{ display: 'flex', alignItems: 'center', padding: '1rem 1rem 0 1rem', cursor: 'pointer' }}
-                    onClick={returnToSearch}
-                >
+                <ReturnToSearch onClick={returnToSearch}>
                     <Icon data={chevron_left} size={24} />
                     <Typography>Back to search</Typography>
-                </div>
-                <Divider style={{ width: '80%' }} />
+                </ReturnToSearch>
+                <StyledDivider />
                 <ProjectMenu project={project} />
             </SidebarDiv>
         )

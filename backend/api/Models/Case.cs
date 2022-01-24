@@ -22,7 +22,7 @@ namespace api.Models
         public ArtificialLift ArtificialLift { get; set; }
         public virtual Project Project { get; set; } = null!;
         public virtual Guid DrainageStrategyLink { get; set; }
-
+        public virtual Guid WellProjectLink { get; set; }
         public virtual Guid SurfLink { get; set; }
         public virtual Guid SubstructureLink { get; set; }
         public virtual Guid TopsideLink { get; set; }

@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
+import styled from 'styled-components'
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal, useMsalAuthentication } from '@azure/msal-react'
+import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
+import { InteractionType } from '@azure/msal-browser'
+
 import './styles.css'
+import { createBrowserHistory } from 'history'
+import { appInsightsInstrumentationKey } from './config'
 import { loginRequest } from './auth/authContextProvider'
 import SideMenu from './Components/SideMenu/SideMenu'
 import Header from './Components/Header'
-import { createBrowserHistory } from 'history'
-import { ApplicationInsights } from '@microsoft/applicationinsights-web'
-import { ReactPlugin, withAITracking } from '@microsoft/applicationinsights-react-js'
-import { InteractionType } from '@azure/msal-browser'
-import { appInsightsInstrumentationKey } from './config'
+
 const browserHistory = createBrowserHistory()
 const reactPlugin = new ReactPlugin()
 const appInsights = new ApplicationInsights({
@@ -22,6 +25,26 @@ const appInsights = new ApplicationInsights({
     },
 })
 appInsights.loadAppInsights()
+
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
+`
 
 const ProfileContent = () => {
     const { instance, accounts } = useMsal()
@@ -44,14 +67,15 @@ const ProfileContent = () => {
 
     return (
         <>
-            <h5 className="card-title">Welcome to DCD {accounts[0].name}!</h5>
-            <div className="App" style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw' }}>
-                <Header />
-                <div style={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
+            <Wrapper className="App">
+                <Header name={accounts[0].name} />
+                <Body>
                     <SideMenu />
-                    <Outlet />
-                </div>
-            </div>
+                    <MainView>
+                        <Outlet />
+                    </MainView>
+                </Body>
+            </Wrapper>
         </>
     )
 }

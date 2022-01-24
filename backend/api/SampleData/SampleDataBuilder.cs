@@ -1,4 +1,3 @@
-
 using api.Models;
 
 namespace api.SampleData;
@@ -30,10 +29,7 @@ public class ProjectBuilder : Project
     {
         Cases = new List<Case>();
         DrainageStrategies = new List<DrainageStrategy>();
-        Surfs = new List<Surf>();
-        Substructures = new List<Substructure>();
-        Topsides = new List<Topside>();
-        Transports = new List<Transport>();
+        WellProjects = new List<WellProject>();
     }
 
     public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)
@@ -43,13 +39,20 @@ public class ProjectBuilder : Project
         return this;
     }
 
+    public ProjectBuilder WithWellProject(WellProjectBuilder w)
+    {
+        w.Project = this;
+        WellProjects.Add(w);
+        return this;
+    }
+
     public ProjectBuilder WithCase(CaseBuilder c)
     {
         c.Project = this;
         Cases.Add(c);
         return this;
     }
-
+    
     public ProjectBuilder WithSurf(SurfBuilder s)
     {
         s.Project = this;
@@ -99,49 +102,17 @@ public class CaseBuilder : Case
         this.CessationCost = c;
         return this;
     }
-    public CaseBuilder WithSurf(string surfName, Project project)
+    public CaseBuilder WithWellProject(string wellProjectName, Project project)
     {
-        var surf = project.Surfs.FirstOrDefault(d => d.Name.Equals(surfName));
-        if (surf == null)
+        var wellProject = project.WellProjects.FirstOrDefault(d => d.Name.Equals(wellProjectName));
+        if (wellProject == null)
         {
-            throw new Exception(string.Format("Surf {0} not found.", surfName));
+            throw new Exception(string.Format("Drainage strategy %s not found", wellProjectName));
         }
-        SurfLink = surf.Id;
+        WellProjectLink = wellProject.Id;
         return this;
     }
 
-    public CaseBuilder WithSubstructure(string substructureName, Project project)
-    {
-        var substructure = project.Substructures.FirstOrDefault(d => d.Name.Equals(substructureName));
-        if (substructure == null)
-        {
-            throw new Exception(string.Format("Substructure {0} not found.", substructureName));
-        }
-        SubstructureLink = substructure.Id;
-        return this;
-    }
-
-    public CaseBuilder WithTopside(string topsideName, Project project)
-    {
-        var topside = project.Topsides.FirstOrDefault(d => d.Name.Equals(topsideName));
-        if (topside == null)
-        {
-            throw new Exception(string.Format("Surf {0} not found.", topsideName));
-        }
-        TopsideLink = topside.Id;
-        return this;
-    }
-
-    public CaseBuilder WithTransport(string transportName, Project project)
-    {
-        var transport = project.Transports.FirstOrDefault(d => d.Name.Equals(transportName));
-        if (transport == null)
-        {
-            throw new Exception(string.Format("Transport {0} not found.", transportName));
-        }
-        TransportLink = transport.Id;
-        return this;
-    }
 }
 
 public class CessationCostBuilder : CessationCost
@@ -291,6 +262,47 @@ public class Co2EmissionsBuilder : Co2Emissions
     public Co2EmissionsBuilder WithYearValue(int year, double value)
     {
         this.YearValues.Add(new YearValue<double>(year, value));
+        return this;
+    }
+}
+
+public class WellProjectBuilder : WellProject
+{
+    public WellProjectBuilder() { }
+    public WellProjectBuilder WithWellProjectCostProfile(WellProjectCostProfileBuilder w)
+    {
+        this.CostProfile = w;
+        return this;
+    }
+    public WellProjectBuilder WithDrillingSchedule(DrillingScheduleBuilder d)
+    {
+        this.DrillingSchedule = d;
+        return this;
+    }
+}
+
+public class WellProjectCostProfileBuilder : WellProjectCostProfile
+{
+    public WellProjectCostProfileBuilder()
+    {
+        YearValues = new List<YearValue<double>>();
+    }
+    public WellProjectCostProfileBuilder WithYearValue(int y, double v)
+    {
+        this.YearValues.Add(new YearValue<double>(y, v));
+        return this;
+    }
+}
+
+public class DrillingScheduleBuilder : DrillingSchedule
+{
+    public DrillingScheduleBuilder()
+    {
+        YearValues = new List<YearValue<int>>();
+    }
+    public DrillingScheduleBuilder WithYearValue(int year, int numberOfWells)
+    {
+        this.YearValues.Add(new YearValue<int>(year, numberOfWells));
         return this;
     }
 }
