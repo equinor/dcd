@@ -8,10 +8,16 @@ namespace api.Services
     public class ProjectService
     {
         private readonly DcdDbContext _context;
+        private readonly WellProjectService _wellProjectService;
+        private readonly DrainageStrategyService _drainageStrategyService;
+        private readonly FacilityService _facilityService;
 
         public ProjectService(DcdDbContext context)
         {
             _context = context;
+            _wellProjectService = new WellProjectService(_context);
+            _drainageStrategyService = new DrainageStrategyService(_context);
+            _facilityService = new FacilityService(_context);
         }
 
         public IEnumerable<Project> GetAll()
@@ -57,12 +63,12 @@ namespace api.Services
         }
         private Project AddAssetsToProject(Project project)
         {
-            WellProjectService wellProjectService = new WellProjectService(_context);
-            var wellProjects = wellProjectService.GetWellProjects(project.Id).ToList();
-            project.WellProjects = wellProjects;
-            DrainageStrategyService drainageStrategyService = new DrainageStrategyService(_context);
-            var drainageStrategies = drainageStrategyService.GetDrainageStrategies(project.Id).ToList();
-            project.DrainageStrategies = drainageStrategies;
+            project.WellProjects = _wellProjectService.GetWellProjects(project.Id).ToList();
+            project.DrainageStrategies = _drainageStrategyService.GetDrainageStrategies(project.Id).ToList();
+            project.Surfs = _facilityService.GetSurfsForProject(project.Id).ToList();
+            project.Substructures = _facilityService.GetSubstructuresForProject(project.Id).ToList();
+            project.Topsides = _facilityService.GetTopsidesForProject(project.Id).ToList();
+            project.Transports = _facilityService.GetTransportsForProject(project.Id).ToList();
             return project;
         }
     }
