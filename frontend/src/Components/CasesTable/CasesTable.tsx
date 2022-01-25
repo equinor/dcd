@@ -1,4 +1,4 @@
-import React from 'react'
+import { useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Table, Typography } from '@equinor/eds-core-react'
@@ -18,10 +18,10 @@ const LinkWithoutStyle = styled(Link)`
 `
 
 const columns: Column[] = [
-    { name: 'Title', accessor: 'title', sortable: true },
-    { name: 'Capex', accessor: 'capex', sortable: true },
-    { name: 'Drillex', accessor: 'drillex', sortable: true },
-    { name: 'UR', accessor: 'ur', sortable: true },
+    { name: 'Name', accessor: 'name', sortable: true },
+    { name: 'PPG', accessor: 'ppg', sortable: true },
+    { name: 'PPO', accessor: 'ppo', sortable: true },
+    { name: 'NGL Yield', accessor: 'nglYield', sortable: true },
 ]
 
 interface Props {
@@ -30,20 +30,28 @@ interface Props {
 }
 
 const CasesTable = ({ cases, projectId }: Props) => {
+    const getPpg = useCallback((c: Case) => {
+        return c.drainageStrategy?.productionProfileGas?.yearValues?.reduce((sum, yearValue) => sum + yearValue.value, 0) ?? 0
+    }, [])
+
+    const getPpo = useCallback((c: Case) => {
+        return c.drainageStrategy?.productionProfileOil?.yearValues?.reduce((sum, yearValue) => sum + yearValue.value, 0) ?? 0
+    }, [])
+
     const sortOnAccessor = (a: Case, b: Case, accessor: string, sortDirection: SortDirection) => {
         switch (accessor) {
             case 'name': {
                 return sort(a.name.toLowerCase(), b.name.toLowerCase(), sortDirection)
             }
-            // case 'capex': {
-            //     return sort(a.capex, b.capex, sortDirection)
-            // }
-            // case 'drillex': {
-            //     return sort(a.drillex, b.drillex, sortDirection)
-            // }
-            // case 'ur': {
-            //     return sort(a.ur, b.ur, sortDirection)
-            // }
+            case 'ppg': {
+                return sort(getPpg(a), getPpg(b), sortDirection)
+            }
+            case 'ppo': {
+                return sort(getPpo(a), getPpo(b), sortDirection)
+            }
+            case 'nglYield': {
+                return sort(a.drainageStrategy.nglYield, b.drainageStrategy.nglYield, sortDirection)
+            }
             default:
                 return sort(a.name.toLowerCase(), b.name.toLowerCase(), sortDirection)
         }
@@ -66,13 +74,13 @@ const CasesTable = ({ cases, projectId }: Props) => {
                     </LinkWithoutStyle>
                 </CellWithBorder>
                 <CellWithBorder>
-                    {/* <Typography>{caseItem.capex} USD</Typography> */}
+                    <Typography>{getPpg(caseItem)} USD</Typography>
                 </CellWithBorder>
                 <CellWithBorder>
-                    {/* <Typography>{caseItem.drillex} USD</Typography> */}
+                    <Typography>{getPpo(caseItem)} USD</Typography>
                 </CellWithBorder>
                 <CellWithBorder>
-                    {/* <Typography>{caseItem.ur} Mbbl</Typography> */}
+                    <Typography>{caseItem.drainageStrategy.nglYield}</Typography>
                 </CellWithBorder>
             </Row>
         )

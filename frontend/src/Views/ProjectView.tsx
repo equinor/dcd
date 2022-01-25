@@ -63,10 +63,10 @@ const ProjectView = () => {
                 {project.name} - Overview
             </OverviewHeader>
             <Charts>
-                <BarChart data={{ x: dataX, y: dataProdProfileGas }} title="Total Capex per case" />
-                <BarChart data={{ x: dataX, y: dataProdProfileOil }} title="Total Drillex per case" />
+                <BarChart data={{ x: dataX, y: dataProdProfileGas }} title="Production profile gas" />
+                <BarChart data={{ x: dataX, y: dataProdProfileOil }} title="Production profile oil" />
             </Charts>
-            <CasesHeader variant="h3" style={{ marginBottom: '1rem' }}>
+            <CasesHeader variant="h3">
                 Cases
             </CasesHeader>
             <CasesTable key={project.id} projectId={project.id} cases={project.cases} />
