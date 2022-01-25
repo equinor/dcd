@@ -14,22 +14,6 @@ namespace api.Services
             _context = context;
         }
 
-        public IEnumerable<Surf> GetAllSurfs()
-        {
-            if (_context.Surfs != null)
-            {
-                return _context.Surfs
-                        .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.InfieldPipelineSystemLength)
-                        .Include(c => c.UmbilicalSystemLength);
-            }
-            else
-            {
-                return new List<Surf>();
-            }
-        }
-
         public Surf GetSurf(Guid surfId)
         {
             if (_context.Surfs != null)
@@ -63,21 +47,6 @@ namespace api.Services
             else
             {
                 return new List<Surf>();
-            }
-        }
-
-        public IEnumerable<Substructure> GetAllSubstructures()
-        {
-            if (_context.Substructures != null)
-            {
-                return _context.Substructures
-                        .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.DryWeight);
-            }
-            else
-            {
-                return new List<Substructure>();
             }
         }
 
@@ -115,21 +84,6 @@ namespace api.Services
             }
         }
 
-        public IEnumerable<Topside> GetAllTopsides()
-        {
-            if (_context.Topsides != null)
-            {
-                return _context.Topsides
-                        .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.DryWeight);
-            }
-            else
-            {
-                return new List<Topside>();
-            }
-        }
-
         public Topside GetTopside(Guid topsideId)
         {
             if (_context.Topsides != null)
@@ -161,22 +115,6 @@ namespace api.Services
             else
             {
                 return new List<Topside>();
-            }
-        }
-
-        public IEnumerable<Transport> GetAllTransports()
-        {
-            if (_context.Transports != null)
-            {
-                return _context.Transports
-                        .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.GasExportPipelineLength)
-                        .Include(c => c.OilExportPipelineLength);
-            }
-            else
-            {
-                return new List<Transport>();
             }
         }
 

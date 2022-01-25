@@ -16,31 +16,6 @@ namespace api.Services
             _context = context;
         }
 
-        public IEnumerable<DrainageStrategy> GetAll()
-        {
-            if (_context.DrainageStrategies != null)
-            {
-                return _context.DrainageStrategies
-                        .Include(c => c.ProductionProfileOil)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.ProductionProfileGas)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.ProductionProfileWater)
-                           .ThenInclude(c => c.YearValues)
-                        .Include(c => c.ProductionProfileWaterInjection)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.FuelFlaringAndLosses)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.NetSalesGas)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.Co2Emissions)
-                            .ThenInclude(c => c.YearValues);
-            }
-            else
-            {
-                return new List<DrainageStrategy>();
-            }
-        }
         public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
         {
             if (_context.DrainageStrategies != null)
