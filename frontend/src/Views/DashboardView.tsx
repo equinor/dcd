@@ -1,12 +1,12 @@
-import React from 'react'
-import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
-import { Icon, SingleSelect, Typography } from '@equinor/eds-core-react'
 import { chevron_up, search } from '@equinor/eds-icons'
+import { Icon, SingleSelect, Typography } from '@equinor/eds-core-react'
 import { tokens } from '@equinor/eds-tokens'
 import { UseComboboxStateChange } from 'downshift'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
 
-import { projects } from '../Components/SideMenu/SideMenu'
+import { useService } from '../Services'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -34,15 +34,34 @@ const ChooseProjectText = styled(Typography)`
 
 const DashboardView = () => {
     const navigate = useNavigate()
+    const ProjectService = useService('ProjectService')
+
+    const [projects, setProjects] = useState<any[]>()
+
+    useEffect(() => {
+        if (ProjectService) {
+            (async () => {
+                try {
+                    const res = await ProjectService?.getProjects()
+                    console.log(res)
+                    setProjects(res)
+                } catch (error) {
+                    console.error(error)
+                }
+            })()
+        }
+    }, [])
 
     const onSelected = (selectedValue: string | null | undefined) => {
-        const project = projects.find(p => p.name === selectedValue)
+        const project = projects?.find(p => p.projectName === selectedValue)
         if (project) {
             navigate(`/project/${project.id}`)
         }
     }
 
     const grey = tokens.colors.ui.background__scrim.rgba
+
+    if (!projects) return null
 
     return (
         <Wrapper>
@@ -51,7 +70,7 @@ const DashboardView = () => {
                 <ProjectDropdown
                     label={''}
                     placeholder={'Search projects'}
-                    items={projects.map(p => p.name)}
+                    items={projects.map(p => p.projectName)}
                     handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
                 />
             </ProjectSelect>

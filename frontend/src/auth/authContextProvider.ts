@@ -37,7 +37,7 @@ export const msalConfig = {
 }
 
 export const loginRequest = {
-    scopes: ['User.Read'],
+    scopes: ['api://9b125a0c-4907-43b9-8db2-ff405d6b0524/user_impersonation'],
 }
 
 export const graphConfig = {

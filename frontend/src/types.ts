@@ -6,9 +6,27 @@ export type Project = {
 }
 
 export type Case = {
-    title: string
+    description?: string
+    drainageStrategy: DrainageStrategy
     id: string
-    capex: number
-    drillex: number
-    ur: number
+    name: string
+    project?: any
+}
+
+export type DrainageStrategy = {
+    case?: any
+    id: string
+    nglYield: number
+    productionProfileGas: ProductionProfile
+    productionProfileOil: ProductionProfile
+}
+
+export type ProductionProfile = {
+    id: string
+    drainageStrategy?: string
+    yearValues: {
+        id: string|number
+        year: number
+        value: number
+    }[]
 }

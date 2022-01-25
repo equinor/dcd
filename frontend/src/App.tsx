@@ -1,20 +1,26 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import styled from 'styled-components'
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal, useMsalAuthentication } from '@azure/msal-react'
 import { ApplicationInsights } from '@microsoft/applicationinsights-web'
-import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
-import { InteractionType } from '@azure/msal-browser'
-
-import './styles.css'
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal, useMsalAuthentication } from '@azure/msal-react'
 import { createBrowserHistory } from 'history'
-import { appInsightsInstrumentationKey } from './config'
-import { loginRequest } from './auth/authContextProvider'
+import { InteractionType } from '@azure/msal-browser'
+import { Outlet } from 'react-router-dom'
+import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
+
 import SideMenu from './Components/SideMenu/SideMenu'
 import Header from './Components/Header'
 
+import { ServicesContextProvider } from './Services'
+
+import { loginRequest } from './auth/authContextProvider'
+import { appInsightsInstrumentationKey } from './config'
+
+import './styles.css'
+
 const browserHistory = createBrowserHistory()
+
 const reactPlugin = new ReactPlugin()
+
 const appInsights = new ApplicationInsights({
     config: {
         instrumentationKey: appInsightsInstrumentationKey,
@@ -24,6 +30,7 @@ const appInsights = new ApplicationInsights({
         },
     },
 })
+
 appInsights.loadAppInsights()
 
 const Wrapper = styled.div`
@@ -47,26 +54,28 @@ const MainView = styled.div`
 `
 
 const ProfileContent = () => {
+    const [accessToken, setAccessToken] = useState<string>()
     const { instance, accounts } = useMsal()
 
-    /*  function RequestProfileData() { */
-    // Silently acquires an access token which is then attached to a request for MS Graph data
-    instance
-        .acquireTokenSilent({
-            ...loginRequest,
-            account: accounts[0],
-        })
-        .then(response => {
-            console.log(response)
-        })
-        .catch(err => {
-            console.log('Error')
-            console.log(err)
-        })
-    /*  } */
+    useEffect(() => {
+        (async () => {
+            // Silently acquires an access token which is then attached to a request for MS Graph data
+            try {
+                const { accessToken } = await instance.acquireTokenSilent({
+                    ...loginRequest,
+                    account: accounts[0],
+                })
+                setAccessToken(accessToken)
+            } catch (error) {
+                console.error("[ProfileContent] Login failed", error)
+            }
+        })()
+    }, [])
+
+    if (!accessToken) return null
 
     return (
-        <>
+        <ServicesContextProvider accessToken={accessToken}>
             <Wrapper className="App">
                 <Header name={accounts[0].name} />
                 <Body>
@@ -76,12 +85,13 @@ const ProfileContent = () => {
                     </MainView>
                 </Body>
             </Wrapper>
-        </>
+        </ServicesContextProvider>
     )
 }
 
 function App() {
     useMsalAuthentication(InteractionType.Redirect)
+
     return (
         <div className="App">
             <AuthenticatedTemplate>

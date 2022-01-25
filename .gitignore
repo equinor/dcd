@@ -26,3 +26,6 @@ venv
 frontend/cypress/videos
 frontend/cypress/screenshots
 
+#MacOS
+.DS_Store
+
