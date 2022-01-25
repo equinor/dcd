@@ -6,6 +6,6 @@ export type ServiceConfig = {
 
 export const config = Object.freeze({
     ProjectService: {
-        BASE_URL: 'http://localhost:5000/project',
+        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/project`,
     }
 })
