@@ -18,10 +18,9 @@ namespace api.Models
         public virtual Substructure Substructure { get; set; } = null!;
     }
 
-    public class SubstructureDryWeight : Measurement
+    public class SubstructureDryWeight : WeightMeasurement
     {
         [ForeignKey("Substructure.Id")]
         public virtual Substructure Substructure { get; set; } = null!;
-        public WeightUnit Unit { get; set; }
     }
 }

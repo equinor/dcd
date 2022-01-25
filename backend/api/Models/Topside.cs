@@ -20,10 +20,9 @@ namespace api.Models
         public virtual Topside Topside { get; set; } = null!;
     }
 
-    public class TopsideDryWeight : Measurement
+    public class TopsideDryWeight : WeightMeasurement
     {
         [ForeignKey("Topside.Id")]
         public virtual Topside Topside { get; set; } = null!;
-        public WeightUnit Unit { get; set; }
     }
 }
