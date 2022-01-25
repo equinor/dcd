@@ -78,6 +78,30 @@ namespace tests
             {
                 compareExplorations(explorationPair.First, explorationPair.Second);
             }
+            var substructuresExpectedAndActual = expected.Substructures.OrderBy(d => d.Name)
+              .Zip(actual.Substructures.OrderBy(d => d.Name));
+            foreach (var substructurePair in substructuresExpectedAndActual)
+            {
+                compareSubstructures(substructurePair.First, substructurePair.Second);
+            }
+            var surfsExpectedAndActual = expected.Surfs.OrderBy(d => d.Name)
+             .Zip(actual.Surfs.OrderBy(d => d.Name));
+            foreach (var surfPair in surfsExpectedAndActual)
+            {
+                compareSurfs(surfPair.First, surfPair.Second);
+            }
+            var topsidesExpectedAndActual = expected.Topsides.OrderBy(d => d.Name)
+             .Zip(actual.Topsides.OrderBy(d => d.Name));
+            foreach (var topsidePair in topsidesExpectedAndActual)
+            {
+                compareTopsides(topsidePair.First, topsidePair.Second);
+            }
+            var transportsExpectedAndActual = expected.Transports.OrderBy(d => d.Name)
+            .Zip(actual.Transports.OrderBy(d => d.Name));
+            foreach (var transportPair in transportsExpectedAndActual)
+            {
+                compareTransports(transportPair.First, transportPair.Second);
+            }
         }
 
         void compareCases(Case expected, Case actual)
@@ -132,13 +156,16 @@ namespace tests
             {
                 Assert.Equal(expected, actual);
             }
-            Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.WellType, actual.WellType);
-            Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-            Assert.Equal(expected.AnnualWellInterventionCost, actual.AnnualWellInterventionCost);
-            Assert.Equal(expected.PluggingAndAbandonment, actual.PluggingAndAbandonment);
-            compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
-            compareCosts(expected.CostProfile, actual.CostProfile);
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.WellType, actual.WellType);
+                Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
+                Assert.Equal(expected.AnnualWellInterventionCost, actual.AnnualWellInterventionCost);
+                Assert.Equal(expected.PluggingAndAbandonment, actual.PluggingAndAbandonment);
+                compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
+                compareCosts(expected.CostProfile, actual.CostProfile);
+            }
         }
 
         void compareExplorations(Exploration expected, Exploration actual)
@@ -147,12 +174,108 @@ namespace tests
             {
                 Assert.Equal(expected, actual);
             }
-            Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.WellType, actual.WellType);
-            Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-            compareCosts(expected.CostProfile, actual.CostProfile);
-            compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
-            compareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.WellType, actual.WellType);
+                Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
+                compareCosts(expected.CostProfile, actual.CostProfile);
+                compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
+                compareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
+            }
+        }
+
+        void compareSubstructures(Substructure expected, Substructure actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                compareCosts(expected.CostProfile, actual.CostProfile);
+                compareWeigthMeasurements(expected.DryWeight, actual.DryWeight);
+            }
+        }
+
+        void compareSurfs(Surf expected, Surf actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                compareLengthMeasurements(expected.InfieldPipelineSystemLength, actual.InfieldPipelineSystemLength);
+                compareLengthMeasurements(expected.UmbilicalSystemLength, actual.UmbilicalSystemLength);
+                Assert.Equal(expected.ProductionFlowline, actual.ProductionFlowline);
+                compareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
+
+        void compareTopsides(Topside expected, Topside actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                compareWeigthMeasurements(expected.DryWeight, actual.DryWeight);
+                Assert.Equal(expected.GasCapacity, actual.GasCapacity);
+                Assert.Equal(expected.OilCapacity, actual.OilCapacity);
+                compareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
+
+        void compareTransports(Transport expected, Transport actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                Console.WriteLine("EX " + expected.OilExportPipelineLength);
+                Console.WriteLine("AC " + actual.OilExportPipelineLength);
+                compareLengthMeasurements(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
+                compareLengthMeasurements(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
+                compareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
+
+        void compareWeigthMeasurements(WeightMeasurement expected, WeightMeasurement actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Value, actual.Value);
+                Assert.Equal(expected.Unit, actual.Unit);
+            }
+        }
+
+        void compareLengthMeasurements(LengthMeasurement expected, LengthMeasurement actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Value, actual.Value);
+                Assert.Equal(expected.Unit, actual.Unit);
+            }
         }
 
         void compareVolumes<T>(TimeSeriesVolume<T> expected, TimeSeriesVolume<T> actual)

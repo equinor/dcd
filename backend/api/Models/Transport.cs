@@ -19,17 +19,15 @@ namespace api.Models
         public virtual Transport Transport { get; set; } = null!;
     }
 
-    public class GasExportPipelineLength : Measurement
+    public class GasExportPipelineLength : LengthMeasurement
     {
         [ForeignKey("Transport.Id")]
         public virtual Transport Transport { get; set; } = null!;
-        public LengthUnit Unit { get; set; }
     }
 
-    public class OilExportPipelineLength : Measurement
+    public class OilExportPipelineLength : LengthMeasurement
     {
         [ForeignKey("Transport.Id")]
         public virtual Transport Transport { get; set; } = null!;
-        public LengthUnit Unit { get; set; }
     }
 }

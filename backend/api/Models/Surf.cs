@@ -20,18 +20,16 @@ namespace api.Models
         public virtual Surf Surf { get; set; } = null!;
     }
 
-    public class InfieldPipelineSystemLength : Measurement
+    public class InfieldPipelineSystemLength : LengthMeasurement
     {
         [ForeignKey("Surf.Id")]
         public virtual Surf Surf { get; set; } = null!;
-        public LengthUnit Unit { get; set; }
     }
 
-    public class UmbilicalSystemLength : Measurement
+    public class UmbilicalSystemLength : LengthMeasurement
     {
         [ForeignKey("Surf.Id")]
         public virtual Surf Surf { get; set; } = null!;
-        public LengthUnit Unit { get; set; }
     }
 
     public enum ProductionFlowline
