@@ -72,7 +72,7 @@ const ProjectMenuItemComponent = ({ item, projectId, subItems }: Props) => {
                             <nav>
                                 <LinkWithoutStyle to={'/project/' + projectId + '/case/' + subItem.id}>
                                     <MenuItem
-                                        title={subItem.title}
+                                        title={subItem.name}
                                         isSelected={isSelected && params.caseId === subItem.id}
                                         padding={'0.25rem 2rem'}
                                     />

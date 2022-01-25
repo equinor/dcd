@@ -1,10 +1,12 @@
-import React from 'react'
-import styled from 'styled-components'
-import { useNavigate, useParams } from 'react-router-dom'
 import { chevron_left } from '@equinor/eds-icons'
 import { Divider, Icon, Typography } from '@equinor/eds-core-react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
 
 import ProjectMenu from './ProjectMenu'
+import { Project } from '../../types'
+import { useService } from '../../Services'
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -74,9 +76,23 @@ export const projects = [
 ]
 
 const SideMenu = () => {
+    const [project, setProject] = useState<Project>()
     const navigate = useNavigate()
     const params = useParams()
-    const project = projects.find(p => p.id === params.projectId)
+
+    const ProjectService = useService('ProjectService')
+
+    useEffect(() => {
+        if (ProjectService && params.projectId) {
+            (async () => {
+                try {
+                    setProject(await ProjectService.getProjectByID(params.projectId!))
+                } catch (error) {
+                    console.error()
+                }
+            })()
+        }
+    }, [params])
 
     const returnToSearch = () => {
         navigate('/')

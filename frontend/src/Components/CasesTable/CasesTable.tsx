@@ -32,20 +32,20 @@ interface Props {
 const CasesTable = ({ cases, projectId }: Props) => {
     const sortOnAccessor = (a: Case, b: Case, accessor: string, sortDirection: SortDirection) => {
         switch (accessor) {
-            case 'title': {
-                return sort(a.title.toLowerCase(), b.title.toLowerCase(), sortDirection)
+            case 'name': {
+                return sort(a.name.toLowerCase(), b.name.toLowerCase(), sortDirection)
             }
-            case 'capex': {
-                return sort(a.capex, b.capex, sortDirection)
-            }
-            case 'drillex': {
-                return sort(a.drillex, b.drillex, sortDirection)
-            }
-            case 'ur': {
-                return sort(a.ur, b.ur, sortDirection)
-            }
+            // case 'capex': {
+            //     return sort(a.capex, b.capex, sortDirection)
+            // }
+            // case 'drillex': {
+            //     return sort(a.drillex, b.drillex, sortDirection)
+            // }
+            // case 'ur': {
+            //     return sort(a.ur, b.ur, sortDirection)
+            // }
             default:
-                return sort(a.title.toLowerCase(), b.title.toLowerCase(), sortDirection)
+                return sort(a.name.toLowerCase(), b.name.toLowerCase(), sortDirection)
         }
     }
 
@@ -61,18 +61,18 @@ const CasesTable = ({ cases, projectId }: Props) => {
                                 fontSize: '1.2rem',
                             }}
                         >
-                            {caseItem.title}
+                            {caseItem.name}
                         </Typography>
                     </LinkWithoutStyle>
                 </CellWithBorder>
                 <CellWithBorder>
-                    <Typography>{caseItem.capex} USD</Typography>
+                    {/* <Typography>{caseItem.capex} USD</Typography> */}
                 </CellWithBorder>
                 <CellWithBorder>
-                    <Typography>{caseItem.drillex} USD</Typography>
+                    {/* <Typography>{caseItem.drillex} USD</Typography> */}
                 </CellWithBorder>
                 <CellWithBorder>
-                    <Typography>{caseItem.ur} Mbbl</Typography>
+                    {/* <Typography>{caseItem.ur} Mbbl</Typography> */}
                 </CellWithBorder>
             </Row>
         )
