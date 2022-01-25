@@ -13,7 +13,7 @@ stages:
         steps:
           - task: Docker@2
             inputs:
-              containerRegistry: "crdcd-1844"
+              containerRegistry: "DCD Registry"
               command: "login"
           - template: step-tag-dockerimage.yml
             parameters:
@@ -33,7 +33,7 @@ stages:
         steps:
           - task: Docker@2
             inputs:
-              containerRegistry: "crdcd-1844"
+              containerRegistry: "DCD Registry"
               command: "login"
           - template: step-tag-dockerimage.yml
             parameters:

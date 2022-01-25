@@ -33,7 +33,7 @@ stages:
           - template: step-docker-push.yml
             parameters:
               name: "Push_backend-container_to_ACR"
-              registry: "crdcd-1844"
+              registry: "DCD Registry"
               repository: "backend"
               buildId: $(Build.BuildId)
 
@@ -58,6 +58,6 @@ stages:
           - template: step-docker-push.yml
             parameters:
               name: "Push_backend-container_to_ACR"
-              registry: "crdcd-1844"
+              registry: "DCD Registry"
               repository: "frontend"
               buildId: $(Build.BuildId)
