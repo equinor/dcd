@@ -150,6 +150,7 @@ namespace tests
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.WellType, actual.WellType);
             Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
+            compareCosts(expected.CostProfile, actual.CostProfile);
             compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
             compareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
         }

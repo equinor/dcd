@@ -21,6 +21,8 @@ namespace api.Services
             if (_context.Explorations != null)
             {
                 return _context.Explorations
+                        .Include(c => c.CostProfile)
+                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.GAndGAdminCost)
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.DrillingSchedule)
@@ -37,6 +39,8 @@ namespace api.Services
             if (_context.Explorations != null)
             {
                 var exploration = _context.Explorations
+                        .Include(c => c.CostProfile)
+                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.GAndGAdminCost)
                             .ThenInclude(c => c.YearValues)
                         .Include(c => c.DrillingSchedule)

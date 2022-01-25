@@ -4,6 +4,11 @@ namespace api.SampleData.Builders;
 
 public class ExplorationBuilder : Exploration
 {
+    public ExplorationBuilder WithExplorationCostProfile(ExplorationCostBuilder e)
+    {
+        this.CostProfile = e;
+        return this;
+    }
     public ExplorationBuilder WithExplorationDrillingSchedule(ExplorationDrillingScheduleBuilder d)
     {
         this.DrillingSchedule = d;
@@ -13,6 +18,19 @@ public class ExplorationBuilder : Exploration
     public ExplorationBuilder WithGAndGAdminCost(WithGAndGAdminCostBuilder d)
     {
         this.GAndGAdminCost = d;
+        return this;
+    }
+}
+
+public class ExplorationCostBuilder : ExplorationCostProfile
+{
+    public ExplorationCostBuilder()
+    {
+        YearValues = new List<YearValue<double>>();
+    }
+    public ExplorationCostBuilder WithYearValue(int year, double cost)
+    {
+        this.YearValues.Add(new YearValue<double>(year, cost));
         return this;
     }
 }

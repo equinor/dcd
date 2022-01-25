@@ -201,6 +201,11 @@ public static class SampleAssetGenerator
                 WellType = WellType.Oil,
                 RigMobDemob = 122.4
             }
+                .WithExplorationCostProfile(new ExplorationCostBuilder()
+                    .WithYearValue(2040, 78.9)
+                    .WithYearValue(2041, 79.8)
+                    .WithYearValue(2042, 77.6)
+                )
                 .WithExplorationDrillingSchedule(new ExplorationDrillingScheduleBuilder()
                     .WithYearValue(2040, 4)
                     .WithYearValue(2041, 5)
