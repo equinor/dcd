@@ -99,8 +99,7 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, null);
-                Assert.Equal(actual, null);
+                Assert.Equal(expected, actual);
             }
             else
             {
@@ -112,8 +111,7 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, null);
-                Assert.Equal(actual, null);
+                Assert.Equal(expected, actual);
             }
             else
             {
@@ -132,8 +130,7 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, null);
-                Assert.Equal(actual, null);
+                Assert.Equal(expected, actual);
             }
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.WellType, actual.WellType);
@@ -148,8 +145,7 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, null);
-                Assert.Equal(actual, null);
+                Assert.Equal(expected, actual);
             }
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.WellType, actual.WellType);
@@ -162,8 +158,7 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, null);
-                Assert.Equal(actual, null);
+                Assert.Equal(expected, actual);
             }
             else
             {
@@ -175,8 +170,7 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, null);
-                Assert.Equal(actual, null);
+                Assert.Equal(expected, actual);
             }
             else
             {
@@ -188,8 +182,7 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, null);
-                Assert.Equal(actual, null);
+                Assert.Equal(expected, actual);
             }
             else
             {
