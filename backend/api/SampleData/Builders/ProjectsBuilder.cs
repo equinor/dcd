@@ -2,26 +2,26 @@ using api.Models;
 
 namespace api.SampleData.Builders;
 
-public class ProjectsBuilder
-{
-    public List<ProjectBuilder> Projects { get; set; } = new List<ProjectBuilder>();
+// public class ProjectsBuilder
+// {
+//     public List<ProjectBuilder> Projects { get; set; } = new List<ProjectBuilder>();
 
-    public ProjectsBuilder WithProject(ProjectBuilder p)
-    {
-        Projects.Add(p);
-        return this;
-    }
+//     public ProjectsBuilder WithProject(ProjectBuilder p)
+//     {
+//         Projects.Add(p);
+//         return this;
+//     }
 
-    public ProjectBuilder ForProject(string projectName)
-    {
-        var projectBuilder = Projects.FirstOrDefault(p => p.ProjectName.Equals(projectName));
-        if (projectBuilder == null)
-        {
-            throw new Exception(string.Format("Cannot find project {0}", projectName));
-        }
-        return projectBuilder;
-    }
-}
+//     public ProjectBuilder ForProject(string projectName)
+//     {
+//         var projectBuilder = Projects.FirstOrDefault(p => p.ProjectName.Equals(projectName));
+//         if (projectBuilder == null)
+//         {
+//             throw new Exception(string.Format("Cannot find project {0}", projectName));
+//         }
+//         return projectBuilder;
+//     }
+// }
 
 public class ProjectBuilder : Project
 {
