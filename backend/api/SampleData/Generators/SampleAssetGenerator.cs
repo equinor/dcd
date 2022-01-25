@@ -195,6 +195,28 @@ public static class SampleAssetGenerator
                     .WithYearValue(2037, 3.3)
                 )
             )
+            .WithExploration(new ExplorationBuilder
+            {
+                Name = "Exploration",
+                WellType = WellType.Oil,
+                RigMobDemob = 122.4
+            }
+                .WithExplorationCostProfile(new ExplorationCostBuilder()
+                    .WithYearValue(2040, 78.9)
+                    .WithYearValue(2041, 79.8)
+                    .WithYearValue(2042, 77.6)
+                )
+                .WithExplorationDrillingSchedule(new ExplorationDrillingScheduleBuilder()
+                    .WithYearValue(2040, 4)
+                    .WithYearValue(2041, 5)
+                    .WithYearValue(2042, 6)
+                )
+                .WithGAndGAdminCost(new WithGAndGAdminCostBuilder()
+                    .WithYearValue(2040, 50.75)
+                    .WithYearValue(2041, 53.83)
+                    .WithYearValue(2042, 64.91)
+                )
+            )
         )
         .WithProject(new ProjectBuilder()
         {

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Permissions;
 
 namespace api.Models
 {
@@ -16,18 +15,12 @@ namespace api.Models
         public double PluggingAndAbandonment { get; set; }
     }
 
-    public enum WellType
-    {
-        Oil,
-        Gas
-    }
-
     public class WellProjectCostProfile : TimeSeriesCost<double>
     {
         [ForeignKey("WellProject.Id")]
         public WellProject WellProject { get; set; } = null!;
     }
-    public class DrillingSchedule : TimeSeriesBase<int>
+    public class DrillingSchedule : TimeSeriesSchedule
     {
         [ForeignKey("WellProject.Id")]
         public WellProject WellProject { get; set; } = null!;

@@ -14,9 +14,9 @@ namespace api.Controllers
     public class WellProjectController : ControllerBase
     {
         private WellProjectService _wellProjectService;
-        private readonly ILogger<DrainageStrategyController> _logger;
+        private readonly ILogger<WellProjectController> _logger;
 
-        public WellProjectController(ILogger<DrainageStrategyController> logger, WellProjectService wellProjectService)
+        public WellProjectController(ILogger<WellProjectController> logger, WellProjectService wellProjectService)
         {
             _logger = logger;
             _wellProjectService = wellProjectService;

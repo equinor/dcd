@@ -34,6 +34,7 @@ public class ProjectBuilder : Project
         Substructures = new List<Substructure>();
         Topsides = new List<Topside>();
         Transports = new List<Transport>();
+        Explorations = new List<Exploration>();
     }
 
     public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)
@@ -43,6 +44,12 @@ public class ProjectBuilder : Project
         return this;
     }
 
+    public ProjectBuilder WithExploration(ExplorationBuilder w)
+    {
+        w.Project = this;
+        Explorations.Add(w);
+        return this;
+    }
     public ProjectBuilder WithWellProject(WellProjectBuilder w)
     {
         w.Project = this;
