@@ -5,13 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
+
     public class ExplorationService
     {
         private readonly DcdDbContext _context;
+        private readonly ProjectService _projectService;
 
-        public ExplorationService(DcdDbContext context)
+        public ExplorationService(DcdDbContext context, ProjectService
+                projectService)
         {
             _context = context;
+            _projectService = projectService;
         }
 
         public IEnumerable<Exploration> GetExplorations(Guid projectId)
@@ -32,6 +36,26 @@ namespace api.Services
                 return new List<Exploration>();
             }
         }
+
+        public Exploration CreateExploration(Exploration exploration)
+        {
+            ValidateExploration(exploration);
+            AddExplorationToProject(exploration);
+            _context.Explorations!.Add(exploration);
+            _context.SaveChanges();
+            return exploration;
+        }
+        private void ValidateExploration(Exploration exploration)
+        {
+            if (exploration == null)
+                throw new ArgumentException("Cannot add a null drainage strategy.");
+            if (exploration.Project == null)
+                throw new ArgumentException("The drainage strategy needs a project.");
+        }
+        private void AddExplorationToProject(Exploration exploration)
+        {
+            var project = _projectService.GetProject(exploration.Project.Id);
+            _projectService.AddExploration(project, exploration);
+        }
     }
 }
-
