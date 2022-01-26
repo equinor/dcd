@@ -7,7 +7,7 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
@@ -38,6 +38,12 @@ namespace api.Controllers
         public IEnumerable<DrainageStrategy>? Get()
         {
             return _drainageStrategyService.GetAll();
+        }
+
+        [HttpPost(Name = "CreateDrainageStrategy")]
+        public DrainageStrategy CreateDrainageStrategy([FromBody] DrainageStrategy drainageStrategy)
+        {
+            return _drainageStrategyService.CreateDrainageStrategy(drainageStrategy);
         }
     }
 }

@@ -10,10 +10,12 @@ namespace api.Services
     public class DrainageStrategyService
     {
         private readonly DcdDbContext _context;
+        private readonly ProjectService _projectService;
 
-        public DrainageStrategyService(DcdDbContext context)
+        public DrainageStrategyService(DcdDbContext context, ProjectService projectService)
         {
             _context = context;
+            _projectService = projectService;
         }
 
         public IEnumerable<DrainageStrategy> GetAll()
@@ -84,6 +86,28 @@ namespace api.Services
                 return drainageStrategy;
             }
             throw new NotFoundInDBException($"The database contains no drainage strategies");
+        }
+
+        public DrainageStrategy CreateDrainageStrategy(DrainageStrategy drainageStrategy)
+        {
+            ValidateDrainageStrategy(drainageStrategy);
+            AddStrategyToProject(drainageStrategy);
+            _context.DrainageStrategies!.Add(drainageStrategy);
+            _context.SaveChanges();
+            return drainageStrategy;
+        }
+
+        private void ValidateDrainageStrategy(DrainageStrategy drainageStrategy)
+        {
+            if (drainageStrategy == null)
+                throw new ArgumentException("Cannot add a null drainage strategy.");
+            if (drainageStrategy.Project == null)
+                throw new ArgumentException("The drainage strategy needs a project.");
+        }
+        private void AddStrategyToProject(DrainageStrategy drainageStrategy)
+        {
+            var project = _projectService.GetProject(drainageStrategy.Project.Id);
+            _projectService.AddDrainageStrategy(project, drainageStrategy);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace api.Services
         {
             _context = context;
             _wellProjectService = new WellProjectService(_context);
-            _drainageStrategyService = new DrainageStrategyService(_context);
+            _drainageStrategyService = new DrainageStrategyService(_context, this);
             _facilityService = new FacilityService(_context);
         }
 
@@ -70,6 +70,11 @@ namespace api.Services
             project.Topsides = _facilityService.GetTopsidesForProject(project.Id).ToList();
             project.Transports = _facilityService.GetTransportsForProject(project.Id).ToList();
             return project;
+        }
+
+        public void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy) {
+            
+            project.DrainageStrategies.Add(drainageStrategy);
         }
     }
 }
