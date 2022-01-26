@@ -66,36 +66,42 @@ namespace tests
             {
                 compareDrainageStrategies(drainageStrategyPair.First, drainageStrategyPair.Second);
             }
+            Assert.Equal(expected.WellProjects.Count(), actual.WellProjects.Count());
             var wellProjectsExpectedAndActual = expected.WellProjects.OrderBy(d => d.Name)
                 .Zip(actual.WellProjects.OrderBy(d => d.Name));
             foreach (var wellProjectPair in wellProjectsExpectedAndActual)
             {
                 compareWellProjects(wellProjectPair.First, wellProjectPair.Second);
             }
+            Assert.Equal(expected.Explorations.Count(), actual.Explorations.Count());
             var explorationsExpectedAndActual = expected.Explorations.OrderBy(d => d.Name)
                 .Zip(actual.Explorations.OrderBy(d => d.Name));
             foreach (var explorationPair in explorationsExpectedAndActual)
             {
                 compareExplorations(explorationPair.First, explorationPair.Second);
             }
+            Assert.Equal(expected.Substructures.Count(), actual.Substructures.Count());
             var substructuresExpectedAndActual = expected.Substructures.OrderBy(d => d.Name)
               .Zip(actual.Substructures.OrderBy(d => d.Name));
             foreach (var substructurePair in substructuresExpectedAndActual)
             {
                 compareSubstructures(substructurePair.First, substructurePair.Second);
             }
+            Assert.Equal(expected.Surfs.Count(), actual.Surfs.Count());
             var surfsExpectedAndActual = expected.Surfs.OrderBy(d => d.Name)
              .Zip(actual.Surfs.OrderBy(d => d.Name));
             foreach (var surfPair in surfsExpectedAndActual)
             {
                 compareSurfs(surfPair.First, surfPair.Second);
             }
+            Assert.Equal(expected.Topsides.Count(), actual.Topsides.Count());
             var topsidesExpectedAndActual = expected.Topsides.OrderBy(d => d.Name)
              .Zip(actual.Topsides.OrderBy(d => d.Name));
             foreach (var topsidePair in topsidesExpectedAndActual)
             {
                 compareTopsides(topsidePair.First, topsidePair.Second);
             }
+            Assert.Equal(expected.Transports.Count(), actual.Transports.Count());
             var transportsExpectedAndActual = expected.Transports.OrderBy(d => d.Name)
             .Zip(actual.Transports.OrderBy(d => d.Name));
             foreach (var transportPair in transportsExpectedAndActual)
@@ -244,8 +250,6 @@ namespace tests
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Maturity, actual.Maturity);
-                Console.WriteLine("EX " + expected.OilExportPipelineLength);
-                Console.WriteLine("AC " + actual.OilExportPipelineLength);
                 compareLengthMeasurements(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
                 compareLengthMeasurements(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
                 compareCosts(expected.CostProfile, actual.CostProfile);
