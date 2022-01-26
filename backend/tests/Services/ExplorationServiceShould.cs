@@ -23,7 +23,7 @@ public class ExplorationServiceTest
     public void CreateNewExplorationCorrectly()
     {
         var project = fixture.context.Projects.FirstOrDefault();
-		var testExploration = CreateTestExploration(project);
+        var testExploration = CreateTestExploration(project);
         ProjectService projectService = new
             ProjectService(fixture.context);
         ExplorationService explorationService = new
@@ -39,23 +39,23 @@ public class ExplorationServiceTest
         compareExplorations(testExploration, retrievedExploration);
     }
 
-	[Fact]
-	public void NotAddExplorationToOtherProjects()
-	{
-		var projectService = new ProjectService(fixture.context);
-		var explorationService = new ExplorationService(fixture.context, projectService);
-		var project = fixture.context.Projects.FirstOrDefault();
-		var expectedExploration = CreateTestExploration(project);
+    [Fact]
+    public void NotAddExplorationToOtherProjects()
+    {
+        var projectService = new ProjectService(fixture.context);
+        var explorationService = new ExplorationService(fixture.context, projectService);
+        var project = fixture.context.Projects.FirstOrDefault();
+        var expectedExploration = CreateTestExploration(project);
 
-		explorationService.CreateExploration(expectedExploration);
+        explorationService.CreateExploration(expectedExploration);
 
-		var otherProjects = fixture.context.Projects.Where(o => o.ProjectName != project.ProjectName);
-		foreach(var otherProject in otherProjects)
-		{
-			var exploration = otherProject.DrainageStrategies.FirstOrDefault(o => o.Name == expectedExploration.Name);
-			Assert.Null(exploration);
-		}
-	}
+        var otherProjects = fixture.context.Projects.Where(o => o.ProjectName != project.ProjectName);
+        foreach (var otherProject in otherProjects)
+        {
+            var exploration = otherProject.DrainageStrategies.FirstOrDefault(o => o.Name == expectedExploration.Name);
+            Assert.Null(exploration);
+        }
+    }
 
     [Fact]
     public void NotCreateExplorationWithoutExplorationDuh()
@@ -72,7 +72,7 @@ public class ExplorationServiceTest
     [Fact]
     public void NotCreateExplorationWithoutProject()
     {
-		var testExploration = CreateTestExploration(null);
+        var testExploration = CreateTestExploration(null);
         ProjectService projectService = new
             ProjectService(fixture.context);
         ExplorationService explorationService = new
@@ -85,11 +85,12 @@ public class ExplorationServiceTest
     [Fact]
     public void NotCreateExplorationIfProjectNotFound()
     {
-        var iDontExistProject = new Project {
+        var iDontExistProject = new Project
+        {
             ProjectName = "never mind",
             Id = new Guid(),
         };
-		var testExploration = CreateTestExploration(iDontExistProject);
+        var testExploration = CreateTestExploration(iDontExistProject);
         ProjectService projectService = new
             ProjectService(fixture.context);
         ExplorationService explorationService = new
@@ -146,12 +147,12 @@ public class ExplorationServiceTest
     private static Exploration CreateTestExploration(Project project)
     {
         return new ExplorationBuilder()
-            {
-                Name = "Test-exploration-23",
-                Project = project,
-                WellType = WellType.Gas,
-                RigMobDemob = 32.7
-            }
+        {
+            Name = "Test-exploration-23",
+            Project = project,
+            WellType = WellType.Gas,
+            RigMobDemob = 32.7
+        }
                 .WithExplorationCostProfile(new ExplorationCostBuilder()
                     .WithYearValue(2023, 44)
                     .WithYearValue(2024, 45.7)
