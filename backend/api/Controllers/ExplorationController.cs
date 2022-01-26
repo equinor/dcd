@@ -22,12 +22,6 @@ namespace api.Controllers
             _explorationService = explorationProjectService;
         }
 
-        [HttpGet("Project/{wellProjectId}", Name = "GetExploration")]
-        public Exploration GetExploration(Guid wellProjectId)
-        {
-            return _explorationService.GetExploration(wellProjectId);
-        }
-
         [HttpGet("{projectId}", Name = "GetExplorations")]
         public IEnumerable<Exploration> GetExplorations(Guid projectId)
         {

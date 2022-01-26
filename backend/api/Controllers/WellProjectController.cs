@@ -22,22 +22,10 @@ namespace api.Controllers
             _wellProjectService = wellProjectService;
         }
 
-        [HttpGet("Project/{wellProjectId}", Name = "GetWellProject")]
-        public WellProject GetWellProject(Guid wellProjectId)
-        {
-            return _wellProjectService.GetWellProject(wellProjectId);
-        }
-
         [HttpGet("{projectId}", Name = "GetWellProjects")]
         public IEnumerable<WellProject> GetWellProjects(Guid projectId)
         {
             return _wellProjectService.GetWellProjects(projectId);
-        }
-
-        [HttpGet(Name = "GetAllWellProjects")]
-        public IEnumerable<WellProject>? Get()
-        {
-            return _wellProjectService.GetAll();
         }
     }
 }

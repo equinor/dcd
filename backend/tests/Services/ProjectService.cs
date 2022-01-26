@@ -244,8 +244,6 @@ namespace tests
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Maturity, actual.Maturity);
-                Console.WriteLine("EX " + expected.OilExportPipelineLength);
-                Console.WriteLine("AC " + actual.OilExportPipelineLength);
                 compareLengthMeasurements(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
                 compareLengthMeasurements(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
                 compareCosts(expected.CostProfile, actual.CostProfile);

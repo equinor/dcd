@@ -22,12 +22,6 @@ namespace api.Controllers
             _drainageStrategyService = drainageStrategyService;
         }
 
-        [HttpGet("Project/{drainageStrategyId}", Name = "GetDrainageStrategy")]
-        public DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
-        {
-            return _drainageStrategyService.GetDrainageStrategy(drainageStrategyId);
-        }
-
         [HttpGet("{projectId}", Name = "GetDrainageStrategies")]
         public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
         {
