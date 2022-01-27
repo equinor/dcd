@@ -6,21 +6,21 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
-        public virtual Project Project { get; set; } = null!;
-        public virtual SubstructureCostProfile CostProfile { get; set; } = null!;
-        public virtual SubstructureDryWeight DryWeight { get; set; } = null!;
+        public Project Project { get; set; } = null!;
+        public SubstructureCostProfile CostProfile { get; set; } = null!;
+        public SubstructureDryWeight DryWeight { get; set; } = null!;
         public Maturity Maturity { get; set; }
     }
 
     public class SubstructureCostProfile : TimeSeriesCost<double>
     {
         [ForeignKey("Substructure.Id")]
-        public virtual Substructure Substructure { get; set; } = null!;
+        public Substructure Substructure { get; set; } = null!;
     }
 
     public class SubstructureDryWeight : WeightMeasurement
     {
         [ForeignKey("Substructure.Id")]
-        public virtual Substructure Substructure { get; set; } = null!;
+        public Substructure Substructure { get; set; } = null!;
     }
 }
