@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 using api.Context;
+using api.Controllers;
 using api.SampleData.Generators;
 using api.Services;
 
@@ -74,7 +75,9 @@ builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();
 builder.Services.AddScoped<ExplorationService>();
 builder.Services.AddScoped<FacilityService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers((o =>
+    o.InputFormatters.Insert(
+    o.InputFormatters.Count, new TextPlainInputFormatter())));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,7 +1,9 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 using api.Models;
 using api.Services;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
@@ -26,16 +28,18 @@ namespace api.Controllers
             _projectService = projectService;
         }
 
-        [HttpGet("{projectId}", Name = "GetExplorations")]
-        public IEnumerable<Exploration> GetExplorations(Guid projectId)
-        {
-            return _explorationService.GetExplorations(projectId);
-        }
-
         [HttpPost(Name = "CreateExploration")]
-        public Exploration CreateExploration([FromBody] Exploration
-                exploration)
+        [Consumes("text/plain")]
+        public Exploration CreateExploration([FromBody] String
+                explorationJson)
         {
+            JsonSerializerOptions options = new()
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+            };
+
+            var exploration =
+                JsonSerializer.Deserialize<Exploration>(explorationJson, options);
             return _explorationService.CreateExploration(exploration);
         }
     }
