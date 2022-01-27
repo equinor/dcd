@@ -34,26 +34,6 @@ namespace api.Services
                 return new List<Exploration>();
             }
         }
-        public Exploration GetExploration(Guid wellProjectId)
-        {
-            if (_context.Explorations != null)
-            {
-                var exploration = _context.Explorations
-                        .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.GAndGAdminCost)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.DrillingSchedule)
-                            .ThenInclude(c => c.YearValues)
-                    .FirstOrDefault(p => p.Id.Equals(wellProjectId));
-                if (exploration == null)
-                {
-                    throw new NotFoundInDBException(string.Format("Exploration %s not found", exploration));
-                }
-                return exploration;
-            }
-            throw new NotFoundInDBException($"The database contains no explorations");
-        }
     }
 }
 

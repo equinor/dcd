@@ -42,24 +42,6 @@ namespace api.Services
                 return new List<DrainageStrategy>();
             }
         }
-        public DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
-        {
-            if (_context.DrainageStrategies != null)
-            {
-                var drainageStrategy = _context.DrainageStrategies
-                        .Include(c => c.ProductionProfileOil)
-                            .ThenInclude(c => c.YearValues)
-                        .Include(c => c.ProductionProfileGas)
-                            .ThenInclude(c => c.YearValues)
-                    .FirstOrDefault(p => p.Id.Equals(drainageStrategyId));
-                if (drainageStrategy == null)
-                {
-                    throw new NotFoundInDBException(string.Format("Drainage strategy %s not found", drainageStrategy));
-                }
-                return drainageStrategy;
-            }
-            throw new NotFoundInDBException($"The database contains no drainage strategies");
-        }
     }
 }
 
