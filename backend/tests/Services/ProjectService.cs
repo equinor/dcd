@@ -12,14 +12,20 @@ using Xunit;
 namespace tests
 {
     [Collection("Database collection")]
-    public class ProjectServiceTest
+    public class ProjectServiceTest : IDisposable
     {
         DatabaseFixture fixture;
 
         public ProjectServiceTest(DatabaseFixture fixture)
         {
-            this.fixture = fixture;
+            this.fixture = new DatabaseFixture();
         }
+
+        public void Dispose()
+        {
+            fixture.Dispose();
+        }
+
         [Fact]
         public void GetAll()
         {
