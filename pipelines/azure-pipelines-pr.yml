@@ -1,0 +1,31 @@
+trigger:
+  - pr
+
+pr: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  - group: DCD
+  - group: DCD-KeyVault
+
+stages:
+  - template: templates/stage-build.yml
+    parameters:
+      workSpace: $(Pipeline.Workspace)
+      buildId: $(Build.BuildId)
+      dt_tenant: $(dynatrace_tenant)
+      dt_password: $(dynatrace-prod-token)
+      dt_url: $(dynatrace_baseurl)
+      azAppConfig: $(azureAppConfig)
+      sourcesDirectory: $(Build.SourcesDirectory)
+      name: "Build_PR_env"
+
+  - template: templates/stage-deploy.yml
+    parameters:
+      imageTag: $(Build.BuildId)
+      webAppName: "ase-dcd"
+      serviceConnection: "dcd-pipeline-sp"
+      name: "Deploy_PR_env"
+      environment: pr

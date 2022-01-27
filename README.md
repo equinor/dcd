@@ -20,7 +20,12 @@ npm install
 npm start
 ```
 
+## Backend
+The backend is built with .NET 6
+
 ### Run backend
+Create a file `backend/api/Properties/launchSettings.json` with the provided
+template file.
 
 ```
 cd backend/api
@@ -43,7 +48,11 @@ To run the Cypress tests locally, type
 
 `npm run cyopen` to open the Cypress interactive runner. This requires the application to be run locally.
 
-
+## Deployment
+We have 4 different environments in use; dev, pr, qa and prod. Dev is built
+when PR's are merged to master. The pr env is built on push to the pr branch. The
+qa and prod environments are deployed with [Azure Pipeline](https://dev.azure.com/Shellvis/DCD/_build?definitionId=40)
+manually and when a new tag is created.
 
 ### Team
 DCD is developed by the Shellvis team in TDI EDT DSD EDB.
