@@ -1,6 +1,5 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace api.Models
 {
@@ -22,44 +21,37 @@ namespace api.Models
     }
     public class ProductionProfileOil : TimeSeriesVolume<double>
     {
-        [JsonIgnore]
         [ForeignKey("DrainageStrategy.Id")]
         public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
     }
 
     public class ProductionProfileGas : TimeSeriesVolume<double>
     {
-        [JsonIgnore]
         [ForeignKey("DrainageStrategy.Id")]
         public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
     }
     public class ProductionProfileWater : TimeSeriesVolume<double>
     {
-        [JsonIgnore]
         [ForeignKey("DrainageStrategy.Id")]
         public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
     }
     public class ProductionProfileWaterInjection : TimeSeriesVolume<double>
     {
-        [JsonIgnore]
         [ForeignKey("DrainageStrategy.Id")]
         public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
     }
     public class FuelFlaringAndLosses : TimeSeriesVolume<double>
     {
-        [JsonIgnore]
         [ForeignKey("DrainageStrategy.Id")]
         public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
     }
     public class NetSalesGas : TimeSeriesVolume<double>
     {
-        [JsonIgnore]
         [ForeignKey("DrainageStrategy.Id")]
         public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
     }
     public class Co2Emissions : TimeSeriesMass<double>
     {
-        [JsonIgnore]
         [ForeignKey("DrainageStrategy.Id")]
         public virtual DrainageStrategy DrainageStrategy { get; set; } = null!;
     }
