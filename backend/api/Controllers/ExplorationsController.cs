@@ -1,3 +1,5 @@
+using api.Adapters;
+using api.Dtos;
 using api.Models;
 using api.Services;
 
@@ -15,11 +17,23 @@ namespace api.Controllers
     {
         private ExplorationService _explorationService;
         private readonly ILogger<ExplorationsController> _logger;
+        private readonly ExplorationAdapter _explorationAdapter;
 
-        public ExplorationsController(ILogger<ExplorationsController> logger, ExplorationService explorationProjectService)
+        public ExplorationsController(ILogger<ExplorationsController> logger,
+                ExplorationService explorationProjectService,
+                ProjectService projectService)
         {
             _logger = logger;
             _explorationService = explorationProjectService;
+            _explorationAdapter = new ExplorationAdapter(projectService);
+        }
+
+        [HttpPost(Name = "CreateExploration")]
+        public Exploration CreateExploration([FromBody] ExplorationDto
+                explorationDto)
+        {
+            var exploration = _explorationAdapter.Convert(explorationDto);
+            return _explorationService.CreateExploration(exploration);
         }
     }
 }

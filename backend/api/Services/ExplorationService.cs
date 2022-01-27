@@ -41,9 +41,9 @@ namespace api.Services
         {
             ValidateExploration(exploration);
             AddExplorationToProject(exploration);
-            _context.Explorations!.Add(exploration);
+            var result = _context.Explorations!.Add(exploration);
             _context.SaveChanges();
-            return exploration;
+            return result.Entity;
         }
         private void ValidateExploration(Exploration exploration)
         {
