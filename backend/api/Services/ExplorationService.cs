@@ -48,9 +48,9 @@ namespace api.Services
         private void ValidateExploration(Exploration exploration)
         {
             if (exploration == null)
-                throw new ArgumentException("Cannot add a null drainage strategy.");
+                throw new ArgumentException("Cannot add a null exploration.");
             if (exploration.Project == null)
-                throw new ArgumentException("The drainage strategy needs a project.");
+                throw new ArgumentException("The exploration needs a project.");
         }
         private void AddExplorationToProject(Exploration exploration)
         {
