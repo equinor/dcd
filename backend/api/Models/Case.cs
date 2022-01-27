@@ -17,16 +17,16 @@ namespace api.Models
         public int RiserCount { get; set; }
         public int TemplateCount { get; set; }
         public double FacilitiesAvailability { get; set; }
-        public virtual CessationCost CessationCost { get; set; } = null!;
+        public CessationCost CessationCost { get; set; } = null!;
         public DateTimeOffset DG4Date { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
-        public virtual Project Project { get; set; } = null!;
-        public virtual Guid DrainageStrategyLink { get; set; }
-        public virtual Guid WellProjectLink { get; set; }
-        public virtual Guid SurfLink { get; set; }
-        public virtual Guid SubstructureLink { get; set; }
-        public virtual Guid TopsideLink { get; set; }
-        public virtual Guid TransportLink { get; set; }
+        public Project Project { get; set; } = null!;
+        public Guid DrainageStrategyLink { get; set; }
+        public Guid WellProjectLink { get; set; }
+        public Guid SurfLink { get; set; }
+        public Guid SubstructureLink { get; set; }
+        public Guid TopsideLink { get; set; }
+        public Guid TransportLink { get; set; }
     }
 
     public enum ArtificialLift
@@ -39,6 +39,6 @@ namespace api.Models
     public class CessationCost : TimeSeriesCost<double>
     {
         [ForeignKey("Case.Id")]
-        public virtual Case Case { get; set; } = null!;
+        public Case Case { get; set; } = null!;
     }
 }
