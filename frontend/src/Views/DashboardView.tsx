@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { useService } from '../Services'
+import { useProjectService } from '../Services/ProjectService'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -34,7 +34,8 @@ const ChooseProjectText = styled(Typography)`
 
 const DashboardView = () => {
     const navigate = useNavigate()
-    const ProjectService = useService('ProjectService')
+    
+    const ProjectService = useProjectService()
 
     const [projects, setProjects] = useState<any[]>()
 

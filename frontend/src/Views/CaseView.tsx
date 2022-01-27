@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Project } from '../types'
-import { useService } from '../Services'
 import DrainageStrategyView from './DrainageStrategyView'
 import ExplorationView from './ExplorationView'
 import OverviewView from './OverviewView'
+import { useProjectService } from '../Services/ProjectService'
 
 const { List, Tab, Panels, Panel } = Tabs
 
@@ -26,7 +26,7 @@ const CaseView = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
 
-    const ProjectService = useService('ProjectService')
+    const ProjectService = useProjectService()
 
     useEffect(() => {
         if (ProjectService) {

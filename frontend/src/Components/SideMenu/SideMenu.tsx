@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import ProjectMenu from './ProjectMenu'
 import { Project } from '../../types'
-import { useService } from '../../Services'
+import { useProjectService } from '../../Services/ProjectService'
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -80,7 +80,7 @@ const SideMenu = () => {
     const navigate = useNavigate()
     const params = useParams()
 
-    const ProjectService = useService('ProjectService')
+    const ProjectService = useProjectService()
 
     useEffect(() => {
         if (ProjectService && params.projectId) {

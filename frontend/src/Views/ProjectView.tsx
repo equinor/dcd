@@ -5,8 +5,8 @@ import styled from 'styled-components'
 
 import CasesTable from '../Components/CasesTable/CasesTable'
 import BarChart from '../Components/BarChart'
-import { useService } from '../Services'
 import { Project } from '../types'
+import { useProjectService } from '../Services/ProjectService'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -30,7 +30,7 @@ const ProjectView = () => {
     let params = useParams()
     const [project, setProject] = useState<Project>()
 
-    const ProjectService = useService('ProjectService')
+    const ProjectService = useProjectService()
 
     useEffect(() => {
         if (ProjectService) {
