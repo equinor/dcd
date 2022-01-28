@@ -1,7 +1,4 @@
-import { useContext, useMemo } from "react"
 import { config } from "./config"
-
-import { ServicesContext } from "./ServicesContext"
 import { __BaseService } from "./__BaseService"
 
 export class __ProjectService extends __BaseService {
@@ -14,15 +11,7 @@ export class __ProjectService extends __BaseService {
     }
 }
 
-export const useProjectService = () => {
-    const { accessToken } = useContext(ServicesContext)
-
-    const projectService = useMemo(() => {
-        return new __ProjectService({
-            ...config.ProjectService,
-            accessToken,
-        })
-    }, [])
-
-    return projectService
-}
+export const projectService = new __ProjectService({
+        ...config.ProjectService,
+        accessToken: window.sessionStorage.getItem('loginAccessToken')!,
+    })

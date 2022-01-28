@@ -7,7 +7,7 @@ import { Project } from '../types'
 import DrainageStrategyView from './DrainageStrategyView'
 import ExplorationView from './ExplorationView'
 import OverviewView from './OverviewView'
-import { useProjectService } from '../Services/ProjectService'
+import { projectService } from '../Services/ProjectService'
 
 const { List, Tab, Panels, Panel } = Tabs
 
@@ -26,13 +26,11 @@ const CaseView = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
 
-    const ProjectService = useProjectService()
-
     useEffect(() => {
-        if (ProjectService) {
+        if (projectService) {
             (async () => {
                 try {
-                    setProject(await ProjectService.getProjectByID(params.projectId!))
+                    setProject(await projectService.getProjectByID(params.projectId!))
                 } catch (error) {
                     console.error(`[CaseView] Error while fetching projet ${params.projectId}`, error)
                 }
