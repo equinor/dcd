@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using api.Models;
+using api.SampleData.Builders;
 using api.SampleData.Generators;
 using api.Services;
 
@@ -12,14 +13,20 @@ using Xunit;
 namespace tests
 {
     [Collection("Database collection")]
-    public class ProjectServiceTest
+    public class ProjectServiceTest : IDisposable
     {
         DatabaseFixture fixture;
 
-        public ProjectServiceTest(DatabaseFixture fixture)
+        public ProjectServiceTest()
         {
-            this.fixture = fixture;
+            fixture = new DatabaseFixture();
         }
+
+        public void Dispose()
+        {
+            fixture.Dispose();
+        }
+
         [Fact]
         public void GetAll()
         {
@@ -328,6 +335,29 @@ namespace tests
         {
             ProjectService projectService = new ProjectService(fixture.context);
             Assert.Throws<NotFoundInDBException>(() => projectService.GetProject(new Guid()));
+        }
+
+        [Fact]
+        public void AddNewDrainageStrategy()
+        {
+            // Arrange
+            var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.ProjectName);
+            ProjectService projectService = new ProjectService(fixture.context);
+            var project = projectFromSampleDataGenerator.FirstOrDefault();
+            var expectedDrainageStrategy = new DrainageStrategyBuilder()
+            {
+                Project = project,
+                Name = "New Drainage Strategy",
+                NGLYield = 5.7
+            };
+
+            // Act
+            projectService.AddDrainageStrategy(project, expectedDrainageStrategy);
+
+            // Assert
+            var actualDrainageStrategy = project.DrainageStrategies.FirstOrDefault(o => o.Name == expectedDrainageStrategy.Name);
+            Assert.NotNull(actualDrainageStrategy);
+            compareDrainageStrategies(expectedDrainageStrategy, actualDrainageStrategy);
         }
     }
 }

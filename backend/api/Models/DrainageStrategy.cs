@@ -1,5 +1,6 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace api.Models
 {
@@ -11,13 +12,13 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public string Name { get; set; } = null!;
         public double NGLYield { get; set; }
-        public ProductionProfileOil ProductionProfileOil { get; set; } = null!;
-        public ProductionProfileGas ProductionProfileGas { get; set; } = null!;
-        public ProductionProfileWater ProductionProfileWater { get; set; } = null!;
-        public ProductionProfileWaterInjection ProductionProfileWaterInjection { get; set; } = null!;
-        public FuelFlaringAndLosses FuelFlaringAndLosses { get; set; } = null!;
-        public NetSalesGas NetSalesGas { get; set; } = null!;
-        public Co2Emissions Co2Emissions { get; set; } = null!;
+        public ProductionProfileOil? ProductionProfileOil { get; set; }
+        public ProductionProfileGas? ProductionProfileGas { get; set; }
+        public ProductionProfileWater? ProductionProfileWater { get; set; }
+        public ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
+        public FuelFlaringAndLosses? FuelFlaringAndLosses { get; set; }
+        public NetSalesGas? NetSalesGas { get; set; }
+        public Co2Emissions? Co2Emissions { get; set; }
     }
     public class ProductionProfileOil : TimeSeriesVolume<double>
     {

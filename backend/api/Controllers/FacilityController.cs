@@ -7,16 +7,16 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers
 {
-    [Authorize]
+    ///[Authorize]
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class FacilityController : ControllerBase
     {
         private readonly FacilityService _facilityService;
-        private readonly ILogger<ProjectController> _logger;
+        private readonly ILogger<FacilityController> _logger;
 
-        public FacilityController(ILogger<ProjectController> logger, FacilityService facilityService)
+        public FacilityController(ILogger<FacilityController> logger, FacilityService facilityService)
         {
             _logger = logger;
             _facilityService = facilityService;

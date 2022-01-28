@@ -14,12 +14,12 @@ public static class SaveSampleDataToDB
             throw new ArgumentNullException(nameof(context));
         }
         var projectsBuilder = SampleAssetGenerator.initializeAssets();
-        context.AddRange(projectsBuilder.Projects);
+        context.AddRange(projectsBuilder.Projects!);
         context.SaveChanges();
         projectsBuilder = SampleCaseGenerator.initializeCases(projectsBuilder);
         foreach (ProjectBuilder p in projectsBuilder.Projects)
         {
-            context.AddRange(p.Cases);
+            context.AddRange(p.Cases!);
         }
         context.SaveChanges();
     }
