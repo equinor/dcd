@@ -18,6 +18,7 @@ public static class SampleAssetGenerator
             .WithDrainageStrategy(new DrainageStrategyBuilder()
             {
                 Name = "DrainStrat 1",
+                Description = "Desc of drain strat 1",
                 NGLYield = 0.3
             }
                 .WithProductionProfileGas(new ProductionProfileGasBuilder()
@@ -80,6 +81,7 @@ public static class SampleAssetGenerator
             .WithDrainageStrategy(new DrainageStrategyBuilder()
             {
                 Name = "DrainStrat 2",
+                Description = "Desc of drain strategy 2",
                 NGLYield = 0.3
             }
                 .WithProductionProfileGas(new ProductionProfileGasBuilder()
@@ -93,10 +95,13 @@ public static class SampleAssetGenerator
             )
             .WithWellProject(new WellProjectBuilder()
             {
-                WellType = WellType.Oil,
                 RigMobDemob = 100.0,
                 AnnualWellInterventionCost = 200.0,
-                PluggingAndAbandonment = 300.0
+                PluggingAndAbandonment = 300.0,
+                ProducerCount = 2,
+                GasInjectorCount = 3,
+                WaterInjectorCount = 4,
+                ArtificialLift = ArtificialLift.GasLift
             }
                 .WithWellProjectCostProfile(new WellProjectCostProfileBuilder()
                 {
@@ -116,7 +121,12 @@ public static class SampleAssetGenerator
             {
                 Name = "Surf 1",
                 Maturity = Maturity.A,
-                ProductionFlowline = ProductionFlowline.Default
+                ProductionFlowline = ProductionFlowline.Default,
+                InfieldPipelineSystemLength = 5.5,
+                UmbilicalSystemLength = 1.1,
+                RiserCount = 5,
+                TemplateCount = 6,
+                ArtificialLift = ArtificialLift.GasLift
             }
                 .WithCostProfile(new SurfCostProfileBuilder
                 {
@@ -126,23 +136,12 @@ public static class SampleAssetGenerator
                     .WithYearValue(2036, 6.3)
                     .WithYearValue(2037, 7.4)
                 )
-                .WithInfieldPipelineSystemLength(new InfieldPipelineSystemLengthBuilder
-                {
-                    Unit = LengthUnit.km,
-                    Value = 5.5
-                }
-                )
-                .WithUmbilicalSystemLength(new UmbilicalSystemLengthBuilder
-                {
-                    Unit = LengthUnit.km,
-                    Value = 1.1
-                }
-                )
             )
             .WithSubstructure(new SubstructureBuilder
             {
                 Name = "Substructure 1",
-                Maturity = Maturity.B
+                Maturity = Maturity.B,
+                DryWeight = 4.5,
             }
                 .WithCostProfile(new SubstructureCostProfileBuilder
                 {
@@ -152,19 +151,16 @@ public static class SampleAssetGenerator
                     .WithYearValue(2036, 6.4)
                     .WithYearValue(2037, 7.5)
                 )
-                .WithDryWeight(new SubstructureDryWeightBuilder
-                {
-
-                }
-                    .WithValue(WeightUnit.tonnes, 4.5)
-                )
             )
             .WithTopside(new TopsideBuilder
             {
                 Name = "Topside 1",
                 Maturity = Maturity.C,
                 OilCapacity = 50.0,
-                GasCapacity = 75.0
+                GasCapacity = 75.0,
+                DryWeight = 45.1,
+                FacilitiesAvailability = 0.8,
+                ArtificialLift = ArtificialLift.GasLift
             }
                 .WithCostProfile(new TopsideCostProfileBuilder
                 {
@@ -173,12 +169,6 @@ public static class SampleAssetGenerator
                     .WithYearValue(2035, 5.2)
                     .WithYearValue(2036, 6.2)
                     .WithYearValue(2037, 7.3)
-                )
-                .WithDryWeight(new TopsideDryWeightBuilder
-                {
-
-                }
-                    .WithValue(WeightUnit.tonnes, 45.1)
                 )
             )
             .WithTransport(new TransportBuilder
@@ -226,7 +216,9 @@ public static class SampleAssetGenerator
             .WithDrainageStrategy(new DrainageStrategyBuilder()
             {
                 Name = "Drainage Strategy 1",
-                NGLYield = 0.56
+                Description = "Desc. of drainage strategy in P2",
+                NGLYield = 0.56,
+                ArtificialLift = ArtificialLift.GasLift
             }
                     .WithProductionProfileGas(new ProductionProfileGasBuilder()
                     {

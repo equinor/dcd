@@ -1,5 +1,7 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Drawing;
+using System.Security.Permissions;
 
 namespace api.Models
 {
@@ -10,7 +12,9 @@ namespace api.Models
         [ForeignKey("Project.Id")]
         public Project Project { get; set; } = null!;
         public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
         public double NGLYield { get; set; }
+        public ArtificialLift ArtificialLift { get; set; }
         public ProductionProfileOil ProductionProfileOil { get; set; } = null!;
         public ProductionProfileGas ProductionProfileGas { get; set; } = null!;
         public ProductionProfileWater ProductionProfileWater { get; set; } = null!;
