@@ -22,19 +22,19 @@ namespace api.Services
             {
                 return _context.DrainageStrategies
                         .Include(c => c.ProductionProfileOil)
-                            .ThenInclude(c => c!.YearValues)
+                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.ProductionProfileGas)
-                            .ThenInclude(c => c!.YearValues)
+                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.ProductionProfileWater)
-                           .ThenInclude(c => c!.YearValues)
+                           .ThenInclude(c => c.YearValues)
                         .Include(c => c.ProductionProfileWaterInjection)
-                            .ThenInclude(c => c!.YearValues)
+                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.FuelFlaringAndLosses)
-                            .ThenInclude(c => c!.YearValues)
+                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.NetSalesGas)
-                            .ThenInclude(c => c!.YearValues)
+                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.Co2Emissions)
-                            .ThenInclude(c => c!.YearValues)
+                            .ThenInclude(c => c.YearValues)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
             else

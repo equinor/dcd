@@ -40,55 +40,55 @@ public class ProjectBuilder : Project
     public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)
     {
         d.Project = this;
-        DrainageStrategies!.Add(d);
+        DrainageStrategies.Add(d);
         return this;
     }
 
     public ProjectBuilder WithExploration(ExplorationBuilder w)
     {
         w.Project = this;
-        Explorations!.Add(w);
+        Explorations.Add(w);
         return this;
     }
     public ProjectBuilder WithWellProject(WellProjectBuilder w)
     {
         w.Project = this;
-        WellProjects!.Add(w);
+        WellProjects.Add(w);
         return this;
     }
 
     public ProjectBuilder WithCase(CaseBuilder c)
     {
         c.Project = this;
-        Cases!.Add(c);
+        Cases.Add(c);
         return this;
     }
 
     public ProjectBuilder WithSurf(SurfBuilder s)
     {
         s.Project = this;
-        Surfs!.Add(s);
+        Surfs.Add(s);
         return this;
     }
 
     public ProjectBuilder WithSubstructure(SubstructureBuilder s)
     {
         s.Project = this;
-        Substructures!.Add(s);
+        Substructures.Add(s);
         return this;
     }
 
     public ProjectBuilder WithTopside(TopsideBuilder t)
     {
         t.Project = this;
-        Topsides!.Add(t);
+        Topsides.Add(t);
         return this;
     }
 
     public ProjectBuilder WithTransport(TransportBuilder t)
     {
         t.Project = this;
-        Transports!.Add(t);
+        Transports.Add(t);
         return this;
     }
 }

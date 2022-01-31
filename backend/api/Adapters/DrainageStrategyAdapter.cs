@@ -31,11 +31,11 @@ namespace api.Adapters
             return drainageStrategy;
         }
 
-        private ProductionProfileOil? Convert(ProductionProfileOilDto? productionProfileOilDto, DrainageStrategy drainageStrategy)
+        private ProductionProfileOil Convert(ProductionProfileOilDto? productionProfileOilDto, DrainageStrategy drainageStrategy)
         {
             if (productionProfileOilDto == null)
             {
-                return null;
+                throw new ArgumentException("ProductionProfileOil is required.");
             }
             return new ProductionProfileOil
             {
@@ -44,11 +44,11 @@ namespace api.Adapters
             };
         }
 
-        private ProductionProfileGas? Convert(ProductionProfileGasDto? productionProfileGasDto, DrainageStrategy drainageStrategy)
+        private ProductionProfileGas Convert(ProductionProfileGasDto? productionProfileGasDto, DrainageStrategy drainageStrategy)
         {
             if (productionProfileGasDto == null)
             {
-                return null;
+                throw new ArgumentException("ProductionProfileGas is required.");
             }
             return new ProductionProfileGas
             {
@@ -57,11 +57,11 @@ namespace api.Adapters
             };
         }
 
-        private ProductionProfileWater? Convert(ProductionProfileWaterDto? productionProfileWaterDto, DrainageStrategy drainageStrategy)
+        private ProductionProfileWater Convert(ProductionProfileWaterDto? productionProfileWaterDto, DrainageStrategy drainageStrategy)
         {
             if (productionProfileWaterDto == null)
             {
-                return null;
+                throw new ArgumentException("ProductionProfileWater is required.");
             }
             return new ProductionProfileWater
             {
@@ -70,11 +70,11 @@ namespace api.Adapters
             };
         }
 
-        private ProductionProfileWaterInjection? Convert(ProductionProfileWaterInjectionDto? productionProfileWaterInjectionDto, DrainageStrategy drainageStrategy)
+        private ProductionProfileWaterInjection Convert(ProductionProfileWaterInjectionDto? productionProfileWaterInjectionDto, DrainageStrategy drainageStrategy)
         {
             if (productionProfileWaterInjectionDto == null)
             {
-                return null;
+                throw new ArgumentException("ProductionProfileWaterInjection is required.");
             }
             return new ProductionProfileWaterInjection
             {
@@ -83,11 +83,11 @@ namespace api.Adapters
             };
         }
 
-        private FuelFlaringAndLosses? Convert(FuelFlaringAndLossesDto? fuelFlaringAndLossesDto, DrainageStrategy drainageStrategy)
+        private FuelFlaringAndLosses Convert(FuelFlaringAndLossesDto? fuelFlaringAndLossesDto, DrainageStrategy drainageStrategy)
         {
             if (fuelFlaringAndLossesDto == null)
             {
-                return null;
+                throw new ArgumentException("FuelFlaringAndLosses is required.");
             }
             return new FuelFlaringAndLosses
             {
@@ -96,11 +96,11 @@ namespace api.Adapters
             };
         }
 
-        private NetSalesGas? Convert(NetSalesGasDto? netSalesGasDto, DrainageStrategy drainageStrategy)
+        private NetSalesGas Convert(NetSalesGasDto? netSalesGasDto, DrainageStrategy drainageStrategy)
         {
             if (netSalesGasDto == null)
             {
-                return null;
+                throw new ArgumentException("NetSalesGas is required.");
             }
             return new NetSalesGas
             {
@@ -109,11 +109,11 @@ namespace api.Adapters
             };
         }
 
-        private Co2Emissions? Convert(Co2EmissionsDto? co2EmissionsDto, DrainageStrategy drainageStrategy)
+        private Co2Emissions Convert(Co2EmissionsDto? co2EmissionsDto, DrainageStrategy drainageStrategy)
         {
             if (co2EmissionsDto == null)
             {
-                return null;
+                throw new ArgumentException("Co2Emissions is required.");
             }
             return new Co2Emissions
             {

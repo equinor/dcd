@@ -9,16 +9,16 @@ namespace api.Models
         public string ProjectDescription { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public DateTimeOffset CreateDate { get; set; }
-        public ICollection<Case>? Cases { get; set; }
-        public ICollection<Surf>? Surfs { get; set; }
-        public ICollection<Substructure>? Substructures { get; set; }
-        public ICollection<Topside>? Topsides { get; set; }
-        public ICollection<Transport>? Transports { get; set; }
-        public ProjectPhase? ProjectPhase { get; set; }
-        public ProjectCategory? ProjectCategory { get; set; }
-        public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
-        public ICollection<WellProject>? WellProjects { get; set; }
-        public ICollection<Exploration>? Explorations { get; set; }
+        public ICollection<Case> Cases { get; set; } = null!;
+        public ICollection<Surf> Surfs { get; set; } = null!;
+        public ICollection<Substructure> Substructures { get; set; } = null!;
+        public ICollection<Topside> Topsides { get; set; } = null!;
+        public ICollection<Transport> Transports { get; set; } = null!;
+        public ProjectPhase ProjectPhase { get; set; }
+        public ProjectCategory ProjectCategory { get; set; }
+        public ICollection<DrainageStrategy> DrainageStrategies { get; set; } = null!;
+        public ICollection<WellProject> WellProjects { get; set; } = null!;
+        public ICollection<Exploration> Explorations { get; set; } = null!;
     }
 
     public enum ProjectPhase

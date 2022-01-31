@@ -69,7 +69,7 @@ namespace api.Services
         public void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy)
         {
 
-            project.DrainageStrategies!.Add(drainageStrategy);
+            project.DrainageStrategies.Add(drainageStrategy);
         }
     }
 }
