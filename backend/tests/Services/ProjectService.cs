@@ -318,10 +318,11 @@ namespace tests
             var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.ProjectName);
             ProjectService projectService = new ProjectService(fixture.context);
             var project = projectFromSampleDataGenerator.FirstOrDefault();
-            var expectedDrainageStrategy = new DrainageStrategyBuilder()
+            var expectedDrainageStrategy = new DrainageStrategyBuilder
             {
                 Project = project,
                 Name = "New Drainage Strategy",
+                Description = "New Drainage Strategy Description",
                 NGLYield = 5.7
             };
 

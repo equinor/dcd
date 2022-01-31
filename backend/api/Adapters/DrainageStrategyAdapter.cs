@@ -6,7 +6,7 @@ namespace api.Adapters
 {
     public class DrainageStrategyAdapter
     {
-        private IProjectService _projectService = null!;
+        private readonly IProjectService _projectService = null!;
 
         public DrainageStrategyAdapter(IProjectService projectService)
         {
@@ -34,7 +34,9 @@ namespace api.Adapters
         private ProductionProfileOil? Convert(ProductionProfileOilDto? productionProfileOilDto, DrainageStrategy drainageStrategy)
         {
             if (productionProfileOilDto == null)
+            {
                 return null;
+            }
             return new ProductionProfileOil
             {
                 DrainageStrategy = drainageStrategy,
@@ -45,7 +47,9 @@ namespace api.Adapters
         private ProductionProfileGas? Convert(ProductionProfileGasDto? productionProfileGasDto, DrainageStrategy drainageStrategy)
         {
             if (productionProfileGasDto == null)
+            {
                 return null;
+            }
             return new ProductionProfileGas
             {
                 DrainageStrategy = drainageStrategy,
@@ -56,7 +60,9 @@ namespace api.Adapters
         private ProductionProfileWater? Convert(ProductionProfileWaterDto? productionProfileWaterDto, DrainageStrategy drainageStrategy)
         {
             if (productionProfileWaterDto == null)
+            {
                 return null;
+            }
             return new ProductionProfileWater
             {
                 DrainageStrategy = drainageStrategy,
@@ -67,7 +73,9 @@ namespace api.Adapters
         private ProductionProfileWaterInjection? Convert(ProductionProfileWaterInjectionDto? productionProfileWaterInjectionDto, DrainageStrategy drainageStrategy)
         {
             if (productionProfileWaterInjectionDto == null)
+            {
                 return null;
+            }
             return new ProductionProfileWaterInjection
             {
                 DrainageStrategy = drainageStrategy,
@@ -78,7 +86,9 @@ namespace api.Adapters
         private FuelFlaringAndLosses? Convert(FuelFlaringAndLossesDto? fuelFlaringAndLossesDto, DrainageStrategy drainageStrategy)
         {
             if (fuelFlaringAndLossesDto == null)
+            {
                 return null;
+            }
             return new FuelFlaringAndLosses
             {
                 DrainageStrategy = drainageStrategy,
@@ -89,7 +99,9 @@ namespace api.Adapters
         private NetSalesGas? Convert(NetSalesGasDto? netSalesGasDto, DrainageStrategy drainageStrategy)
         {
             if (netSalesGasDto == null)
+            {
                 return null;
+            }
             return new NetSalesGas
             {
                 DrainageStrategy = drainageStrategy,
@@ -100,7 +112,9 @@ namespace api.Adapters
         private Co2Emissions? Convert(Co2EmissionsDto? co2EmissionsDto, DrainageStrategy drainageStrategy)
         {
             if (co2EmissionsDto == null)
+            {
                 return null;
+            }
             return new Co2Emissions
             {
                 DrainageStrategy = drainageStrategy,

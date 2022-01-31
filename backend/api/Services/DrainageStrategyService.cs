@@ -55,9 +55,13 @@ namespace api.Services
         private void ValidateDrainageStrategy(DrainageStrategy drainageStrategy)
         {
             if (drainageStrategy == null)
+            {
                 throw new ArgumentException("Cannot add a null drainage strategy.");
+            }
             if (drainageStrategy.Project == null)
+            {
                 throw new ArgumentException("The drainage strategy needs a project.");
+            }
         }
         private void AddStrategyToProject(DrainageStrategy drainageStrategy)
         {

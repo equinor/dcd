@@ -13,7 +13,7 @@ namespace tests
     [Collection("Database collection")]
     public class DrainageStrategyServiceShould : IDisposable
     {
-        DatabaseFixture fixture;
+        private readonly DatabaseFixture fixture;
 
         public DrainageStrategyServiceShould()
         {
@@ -38,7 +38,6 @@ namespace tests
             drainageStrategyService.CreateDrainageStrategy(expectedStrategy);
 
             // Assert
-            Console.WriteLine(expectedStrategy.Name);
             var actualStrategy = fixture.context.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
             Assert.NotNull(actualStrategy);
             TestHelper.CompareDrainageStrategies(expectedStrategy, actualStrategy);
@@ -126,7 +125,7 @@ namespace tests
 
         private static DrainageStrategy CreateTestDrainageStrategy(Project project)
         {
-            return new DrainageStrategyBuilder()
+            return new DrainageStrategyBuilder
             {
                 Name = "DrainStrat Test",
                 Description = "Some description of the strategy",
