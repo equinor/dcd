@@ -55,7 +55,7 @@ namespace tests
             Assert.Throws<ArgumentException>(() => drainageStrategyService.CreateDrainageStrategy(null));
         }
 
-        
+
         [Fact]
         public void ThrowArgumentExceptionIfProjectIsNull()
         {
@@ -74,7 +74,8 @@ namespace tests
             // Arrange
             var projectService = new ProjectService(fixture.context);
             var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
-            var project = new ProjectBuilder {
+            var project = new ProjectBuilder
+            {
                 Id = new Guid(),
                 ProjectName = "nonexistent project"
             };
@@ -116,7 +117,7 @@ namespace tests
 
             // Assert
             var otherProjects = fixture.context.Projects.Where(o => o.ProjectName != project.ProjectName);
-            foreach(var otherProject in otherProjects)
+            foreach (var otherProject in otherProjects)
             {
                 var drainageStrategy = otherProject.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
                 Assert.Null(drainageStrategy);

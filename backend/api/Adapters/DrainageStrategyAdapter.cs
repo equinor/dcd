@@ -8,11 +8,13 @@ namespace api.Adapters
     {
         private IProjectService _projectService = null!;
 
-        public DrainageStrategyAdapter(IProjectService projectService) {
+        public DrainageStrategyAdapter(IProjectService projectService)
+        {
             _projectService = projectService;
         }
 
-        public DrainageStrategy Convert(DrainageStrategyDto drainageStrategyDto) {
+        public DrainageStrategy Convert(DrainageStrategyDto drainageStrategyDto)
+        {
             var drainageStrategy = new DrainageStrategy();
             drainageStrategy.Name = drainageStrategyDto.Name;
             drainageStrategy.Description = drainageStrategyDto.Description;
@@ -29,64 +31,78 @@ namespace api.Adapters
             return drainageStrategy;
         }
 
-        private ProductionProfileOil? Convert(ProductionProfileOilDto? productionProfileOilDto, DrainageStrategy drainageStrategy) {
+        private ProductionProfileOil? Convert(ProductionProfileOilDto? productionProfileOilDto, DrainageStrategy drainageStrategy)
+        {
             if (productionProfileOilDto == null)
                 return null;
-            return new ProductionProfileOil {
+            return new ProductionProfileOil
+            {
                 DrainageStrategy = drainageStrategy,
                 YearValues = productionProfileOilDto.YearValues
             };
         }
 
-        private ProductionProfileGas? Convert(ProductionProfileGasDto? productionProfileGasDto, DrainageStrategy drainageStrategy) {
+        private ProductionProfileGas? Convert(ProductionProfileGasDto? productionProfileGasDto, DrainageStrategy drainageStrategy)
+        {
             if (productionProfileGasDto == null)
                 return null;
-            return new ProductionProfileGas {
+            return new ProductionProfileGas
+            {
                 DrainageStrategy = drainageStrategy,
                 YearValues = productionProfileGasDto.YearValues
             };
         }
 
-        private ProductionProfileWater? Convert(ProductionProfileWaterDto? productionProfileWaterDto, DrainageStrategy drainageStrategy) {
+        private ProductionProfileWater? Convert(ProductionProfileWaterDto? productionProfileWaterDto, DrainageStrategy drainageStrategy)
+        {
             if (productionProfileWaterDto == null)
                 return null;
-            return new ProductionProfileWater {
+            return new ProductionProfileWater
+            {
                 DrainageStrategy = drainageStrategy,
                 YearValues = productionProfileWaterDto.YearValues
             };
         }
 
-        private ProductionProfileWaterInjection? Convert(ProductionProfileWaterInjectionDto? productionProfileWaterInjectionDto, DrainageStrategy drainageStrategy) {
+        private ProductionProfileWaterInjection? Convert(ProductionProfileWaterInjectionDto? productionProfileWaterInjectionDto, DrainageStrategy drainageStrategy)
+        {
             if (productionProfileWaterInjectionDto == null)
                 return null;
-            return new ProductionProfileWaterInjection {
+            return new ProductionProfileWaterInjection
+            {
                 DrainageStrategy = drainageStrategy,
                 YearValues = productionProfileWaterInjectionDto.YearValues
             };
         }
-        
-        private FuelFlaringAndLosses? Convert(FuelFlaringAndLossesDto? fuelFlaringAndLossesDto, DrainageStrategy drainageStrategy) {
+
+        private FuelFlaringAndLosses? Convert(FuelFlaringAndLossesDto? fuelFlaringAndLossesDto, DrainageStrategy drainageStrategy)
+        {
             if (fuelFlaringAndLossesDto == null)
                 return null;
-            return new FuelFlaringAndLosses {
+            return new FuelFlaringAndLosses
+            {
                 DrainageStrategy = drainageStrategy,
                 YearValues = fuelFlaringAndLossesDto.YearValues
             };
         }
 
-        private NetSalesGas? Convert(NetSalesGasDto? netSalesGasDto, DrainageStrategy drainageStrategy) {
+        private NetSalesGas? Convert(NetSalesGasDto? netSalesGasDto, DrainageStrategy drainageStrategy)
+        {
             if (netSalesGasDto == null)
                 return null;
-            return new NetSalesGas {
+            return new NetSalesGas
+            {
                 DrainageStrategy = drainageStrategy,
                 YearValues = netSalesGasDto.YearValues
             };
         }
 
-        private Co2Emissions? Convert(Co2EmissionsDto? co2EmissionsDto, DrainageStrategy drainageStrategy) {
+        private Co2Emissions? Convert(Co2EmissionsDto? co2EmissionsDto, DrainageStrategy drainageStrategy)
+        {
             if (co2EmissionsDto == null)
                 return null;
-            return new Co2Emissions {
+            return new Co2Emissions
+            {
                 DrainageStrategy = drainageStrategy,
                 YearValues = co2EmissionsDto.YearValues
             };

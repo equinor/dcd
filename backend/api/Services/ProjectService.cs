@@ -66,8 +66,9 @@ namespace api.Services
             project.Transports = _facilityService.GetTransportsForProject(project.Id).ToList();
             return project;
         }
-        public void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy) {
-            
+        public void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy)
+        {
+
             project.DrainageStrategies!.Add(drainageStrategy);
         }
     }
