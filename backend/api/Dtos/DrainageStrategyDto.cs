@@ -7,7 +7,9 @@ namespace api.Dtos
     {
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
         public double NGLYield { get; set; }
+        public ArtificialLift ArtificialLift { get; set; }
         public ProductionProfileOilDto? ProductionProfileOil { get; set; }
         public ProductionProfileGasDto? ProductionProfileGas { get; set; }
         public ProductionProfileWaterDto? ProductionProfileWater { get; set; }
@@ -16,26 +18,26 @@ namespace api.Dtos
         public NetSalesGasDto? NetSalesGas { get; set; }
         public Co2EmissionsDto? Co2Emissions { get; set; }
     }
-    public class ProductionProfileOilDto : TimeSeriesVolume<double>
+    public class ProductionProfileOilDto : TimeSeriesVolume
     {
     }
 
-    public class ProductionProfileGasDto : TimeSeriesVolume<double>
+    public class ProductionProfileGasDto : TimeSeriesVolume
     {
     }
-    public class ProductionProfileWaterDto : TimeSeriesVolume<double>
+    public class ProductionProfileWaterDto : TimeSeriesVolume
     {
     }
-    public class ProductionProfileWaterInjectionDto : TimeSeriesVolume<double>
+    public class ProductionProfileWaterInjectionDto : TimeSeriesVolume
     {
     }
-    public class FuelFlaringAndLossesDto : TimeSeriesVolume<double>
+    public class FuelFlaringAndLossesDto : TimeSeriesVolume
     {
     }
-    public class NetSalesGasDto : TimeSeriesVolume<double>
+    public class NetSalesGasDto : TimeSeriesVolume
     {
     }
-    public class Co2EmissionsDto : TimeSeriesMass<double>
+    public class Co2EmissionsDto : TimeSeriesMass
     {
     }
 }

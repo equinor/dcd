@@ -24,23 +24,8 @@ public static class SampleCaseGenerator
             CreateTime = DateTimeOffset.UtcNow,
             ModifyTime = DateTimeOffset.UtcNow,
             ReferenceCase = true,
-            ProducerCount = 2,
-            GasInjectorCount = 3,
-            WaterInjectorCount = 4,
-            RiserCount = 5,
-            TemplateCount = 6,
-            FacilitiesAvailability = 0.8,
-            DG4Date = DateTimeOffset.Now.AddYears(5),
-            ArtificialLift = ArtificialLift.GasLift
+            DG4Date = DateTimeOffset.Now.AddYears(5)
         }
-            .WithCessationCost(new CessationCostBuilder()
-            {
-                Currency = api.Models.Currency.NOK
-            }
-                .WithYearValue(2030, 1000)
-                .WithYearValue(2031, 1100)
-                .WithYearValue(2032, 1200)
-            )
             .WithDrainageStrategy(project1DrainageStrategyName1, projectsBuilder.ForProject(project1))
             .WithWellProject(wellProjectName, projectsBuilder.ForProject(project1))
             .WithSurf(project1SurfName, projectsBuilder.ForProject(project1))

@@ -15,12 +15,6 @@ public class CaseBuilder : Case
         DrainageStrategyLink = drainageStrategy.Id;
         return this;
     }
-    public CaseBuilder WithCessationCost(CessationCostBuilder c)
-    {
-        c.Case = this;
-        this.CessationCost = c;
-        return this;
-    }
     public CaseBuilder WithWellProject(string wellProjectName, Project project)
     {
         var wellProject = project.WellProjects!.FirstOrDefault(d => d.Name.Equals(wellProjectName));

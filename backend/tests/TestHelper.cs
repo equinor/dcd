@@ -47,7 +47,7 @@ namespace tests
             }
         }
 
-        public static void CompareVolumes<T>(TimeSeriesVolume<T> expected, TimeSeriesVolume<T> actual)
+        public static void CompareVolumes(TimeSeriesVolume expected, TimeSeriesVolume actual)
         {
             if (expected == null || actual == null)
             {
@@ -57,10 +57,9 @@ namespace tests
             else
             {
                 CompareYearValues(expected, actual);
-                Assert.Equal(expected.Unit, actual.Unit);
             }
         }
-        public static void CompareMasses<T>(TimeSeriesMass<T> expected, TimeSeriesMass<T> actual)
+        public static void CompareMasses(TimeSeriesMass expected, TimeSeriesMass actual)
         {
             if (expected == null || actual == null)
             {
@@ -70,7 +69,6 @@ namespace tests
             else
             {
                 CompareYearValues(expected, actual);
-                Assert.Equal(expected.Unit, actual.Unit);
             }
         }
     }

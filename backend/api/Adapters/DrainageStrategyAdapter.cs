@@ -15,8 +15,10 @@ namespace api.Adapters
         public DrainageStrategy Convert(DrainageStrategyDto drainageStrategyDto) {
             var drainageStrategy = new DrainageStrategy();
             drainageStrategy.Name = drainageStrategyDto.Name;
+            drainageStrategy.Description = drainageStrategyDto.Description;
             drainageStrategy.Project = _projectService.GetProject(drainageStrategyDto.ProjectId);
             drainageStrategy.NGLYield = drainageStrategyDto.NGLYield;
+            drainageStrategy.ArtificialLift = drainageStrategyDto.ArtificialLift;
             drainageStrategy.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, drainageStrategy);
             drainageStrategy.ProductionProfileGas = Convert(drainageStrategyDto.ProductionProfileGas, drainageStrategy);
             drainageStrategy.ProductionProfileWater = Convert(drainageStrategyDto.ProductionProfileWater, drainageStrategy);

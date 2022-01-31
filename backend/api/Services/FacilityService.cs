@@ -21,8 +21,6 @@ namespace api.Services
                 return _context.Surfs
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
-                        .Include(c => c.InfieldPipelineSystemLength)
-                        .Include(c => c.UmbilicalSystemLength)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -38,7 +36,6 @@ namespace api.Services
                 return _context.Substructures
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
-                        .Include(c => c.DryWeight)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -54,7 +51,6 @@ namespace api.Services
                 return _context.Topsides
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
-                        .Include(c => c.DryWeight)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -70,8 +66,6 @@ namespace api.Services
                 return _context.Transports
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
-                        .Include(c => c.GasExportPipelineLength)
-                        .Include(c => c.OilExportPipelineLength)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else

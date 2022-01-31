@@ -122,14 +122,6 @@ namespace tests
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Description, actual.Description);
             Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
-            Assert.Equal(expected.ProducerCount, actual.ProducerCount);
-            Assert.Equal(expected.GasInjectorCount, actual.GasInjectorCount);
-            Assert.Equal(expected.WaterInjectorCount, actual.WaterInjectorCount);
-            Assert.Equal(expected.RiserCount, actual.RiserCount);
-            Assert.Equal(expected.TemplateCount, actual.TemplateCount);
-            Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
-            Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            compareCosts(expected.CessationCost, actual.CessationCost);
         }
 
         void compareCosts<T>(TimeSeriesCost<T> expected, TimeSeriesCost<T> actual)
@@ -154,6 +146,7 @@ namespace tests
             {
                 Assert.Equal(expected.NGLYield, actual.NGLYield);
                 Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
                 compareVolumes(expected.ProductionProfileOil, actual.ProductionProfileOil);
                 compareVolumes(expected.ProductionProfileGas, actual.ProductionProfileGas);
                 compareVolumes(expected.ProductionProfileWater, actual.ProductionProfileWater);
@@ -172,10 +165,13 @@ namespace tests
             else
             {
                 Assert.Equal(expected.Name, actual.Name);
-                Assert.Equal(expected.WellType, actual.WellType);
                 Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
                 Assert.Equal(expected.AnnualWellInterventionCost, actual.AnnualWellInterventionCost);
                 Assert.Equal(expected.PluggingAndAbandonment, actual.PluggingAndAbandonment);
+                Assert.Equal(expected.ProducerCount, actual.ProducerCount);
+                Assert.Equal(expected.GasInjectorCount, actual.GasInjectorCount);
+                Assert.Equal(expected.WaterInjectorCount, actual.WaterInjectorCount);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
                 compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
                 compareCosts(expected.CostProfile, actual.CostProfile);
             }
@@ -209,7 +205,7 @@ namespace tests
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Maturity, actual.Maturity);
                 compareCosts(expected.CostProfile, actual.CostProfile);
-                compareWeigthMeasurements(expected.DryWeight, actual.DryWeight);
+                Assert.Equal(expected.DryWeight, actual.DryWeight);
             }
         }
 
@@ -223,8 +219,11 @@ namespace tests
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Maturity, actual.Maturity);
-                compareLengthMeasurements(expected.InfieldPipelineSystemLength, actual.InfieldPipelineSystemLength);
-                compareLengthMeasurements(expected.UmbilicalSystemLength, actual.UmbilicalSystemLength);
+                Assert.Equal(expected.RiserCount, actual.RiserCount);
+                Assert.Equal(expected.TemplateCount, actual.TemplateCount);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
+                Assert.Equal(expected.InfieldPipelineSystemLength, actual.InfieldPipelineSystemLength);
+                Assert.Equal(expected.UmbilicalSystemLength, actual.UmbilicalSystemLength);
                 Assert.Equal(expected.ProductionFlowline, actual.ProductionFlowline);
                 compareCosts(expected.CostProfile, actual.CostProfile);
             }
@@ -240,9 +239,11 @@ namespace tests
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Maturity, actual.Maturity);
-                compareWeigthMeasurements(expected.DryWeight, actual.DryWeight);
+                Assert.Equal(expected.DryWeight, actual.DryWeight);
                 Assert.Equal(expected.GasCapacity, actual.GasCapacity);
                 Assert.Equal(expected.OilCapacity, actual.OilCapacity);
+                Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
                 compareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
@@ -257,39 +258,13 @@ namespace tests
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Maturity, actual.Maturity);
-                compareLengthMeasurements(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
-                compareLengthMeasurements(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
+                Assert.Equal(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
+                Assert.Equal(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
                 compareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
 
-        void compareWeigthMeasurements(WeightMeasurement expected, WeightMeasurement actual)
-        {
-            if (expected == null || actual == null)
-            {
-                Assert.Equal(expected, actual);
-            }
-            else
-            {
-                Assert.Equal(expected.Value, actual.Value);
-                Assert.Equal(expected.Unit, actual.Unit);
-            }
-        }
-
-        void compareLengthMeasurements(LengthMeasurement expected, LengthMeasurement actual)
-        {
-            if (expected == null || actual == null)
-            {
-                Assert.Equal(expected, actual);
-            }
-            else
-            {
-                Assert.Equal(expected.Value, actual.Value);
-                Assert.Equal(expected.Unit, actual.Unit);
-            }
-        }
-
-        void compareVolumes<T>(TimeSeriesVolume<T> expected, TimeSeriesVolume<T> actual)
+        void compareVolumes(TimeSeriesVolume expected, TimeSeriesVolume actual)
         {
             if (expected == null || actual == null)
             {
@@ -298,10 +273,10 @@ namespace tests
             else
             {
                 compareYearValues(expected, actual);
-                Assert.Equal(expected.Unit, actual.Unit);
+
             }
         }
-        void compareMasses<T>(TimeSeriesMass<T> expected, TimeSeriesMass<T> actual)
+        void compareMasses(TimeSeriesMass expected, TimeSeriesMass actual)
         {
             if (expected == null || actual == null)
             {
@@ -310,7 +285,6 @@ namespace tests
             else
             {
                 compareYearValues(expected, actual);
-                Assert.Equal(expected.Unit, actual.Unit);
             }
         }
         void compareYearValues<T>(TimeSeriesBase<T> expected, TimeSeriesBase<T> actual)

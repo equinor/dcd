@@ -24,11 +24,8 @@ namespace api.Services
         {
             if (_context.Projects != null)
             {
-
-                var projects = _context.Projects!
-                    .Include(c => c.Cases!)
-                        .ThenInclude(c => c.CessationCost)
-                            .ThenInclude(c => c.YearValues);
+                var projects = _context.Projects
+                    .Include(c => c.Cases);
 
                 foreach (Project project in projects)
                 {
@@ -46,10 +43,8 @@ namespace api.Services
         {
             if (_context.Projects != null)
             {
-                var project = _context.Projects!
-                    .Include(c => c.Cases!)
-                        .ThenInclude(c => c.CessationCost)
-                            .ThenInclude(c => c.YearValues)
+                var project = _context.Projects
+                    .Include(c => c.Cases)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
 
                 if (project == null)
