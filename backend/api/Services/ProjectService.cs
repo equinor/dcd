@@ -26,9 +26,7 @@ namespace api.Services
             {
 
                 var projects = _context.Projects
-                    .Include(c => c.Cases)
-                        .ThenInclude(c => c.CessationCost)
-                            .ThenInclude(c => c.YearValues);
+                    .Include(c => c.Cases);
 
                 foreach (Project project in projects)
                 {
@@ -48,8 +46,6 @@ namespace api.Services
             {
                 var project = _context.Projects
                     .Include(c => c.Cases)
-                        .ThenInclude(c => c.CessationCost)
-                            .ThenInclude(c => c.YearValues)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
 
                 if (project == null)

@@ -11,15 +11,8 @@ namespace api.Models
         public DateTimeOffset CreateTime { get; set; }
         public DateTimeOffset ModifyTime { get; set; }
         public Boolean ReferenceCase { get; set; }
-        public int ProducerCount { get; set; }
-        public int GasInjectorCount { get; set; }
-        public int WaterInjectorCount { get; set; }
-        public int RiserCount { get; set; }
-        public int TemplateCount { get; set; }
-        public double FacilitiesAvailability { get; set; }
-        public CessationCost CessationCost { get; set; } = null!;
+
         public DateTimeOffset DG4Date { get; set; }
-        public ArtificialLift ArtificialLift { get; set; }
         public Project Project { get; set; } = null!;
         public Guid DrainageStrategyLink { get; set; }
         public Guid WellProjectLink { get; set; }

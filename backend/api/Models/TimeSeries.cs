@@ -10,24 +10,17 @@ namespace api.Models
         public ICollection<YearValue<T>> YearValues { get; set; } = null!;
     }
 
-    public class TimeSeriesVolume<T> : TimeSeriesBase<T>
+    public class TimeSeriesVolume : TimeSeriesBase<double>
     {
-        public VolumeUnit Unit { get; set; }
-    }
-    public enum VolumeUnit
-    {
-        SM3,
-        BBL
+
     }
 
-    public class TimeSeriesMass<T> : TimeSeriesBase<T>
+
+    public class TimeSeriesMass : TimeSeriesBase<double>
     {
-        public MassUnit Unit { get; set; }
+
     }
-    public enum MassUnit
-    {
-        TON
-    }
+
     public class TimeSeriesCost<T> : TimeSeriesBase<T>
     {
         public string EPAVersion { get; set; } = string.Empty;

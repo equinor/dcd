@@ -9,24 +9,15 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public SurfCostProfile CostProfile { get; set; } = null!;
         public Maturity Maturity { get; set; }
-        public InfieldPipelineSystemLength InfieldPipelineSystemLength { get; set; } = null!;
-        public UmbilicalSystemLength UmbilicalSystemLength { get; set; } = null!;
+        public double InfieldPipelineSystemLength { get; set; }
+        public double UmbilicalSystemLength { get; set; }
+        public ArtificialLift ArtificialLift { get; set; }
+        public int RiserCount { get; set; }
+        public int TemplateCount { get; set; }
         public ProductionFlowline ProductionFlowline { get; set; }
     }
 
     public class SurfCostProfile : TimeSeriesCost<double>
-    {
-        [ForeignKey("Surf.Id")]
-        public Surf Surf { get; set; } = null!;
-    }
-
-    public class InfieldPipelineSystemLength : LengthMeasurement
-    {
-        [ForeignKey("Surf.Id")]
-        public Surf Surf { get; set; } = null!;
-    }
-
-    public class UmbilicalSystemLength : LengthMeasurement
     {
         [ForeignKey("Surf.Id")]
         public Surf Surf { get; set; } = null!;
