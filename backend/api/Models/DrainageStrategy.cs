@@ -1,7 +1,5 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing;
-using System.Security.Permissions;
 
 namespace api.Models
 {

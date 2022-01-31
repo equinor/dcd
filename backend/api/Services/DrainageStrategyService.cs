@@ -1,5 +1,3 @@
-using System.Linq;
-
 using api.Context;
 using api.Models;
 
@@ -10,10 +8,12 @@ namespace api.Services
     public class DrainageStrategyService
     {
         private readonly DcdDbContext _context;
+        private readonly ProjectService _projectService;
 
-        public DrainageStrategyService(DcdDbContext context)
+        public DrainageStrategyService(DcdDbContext context, ProjectService projectService)
         {
             _context = context;
+            _projectService = projectService;
         }
 
         public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
@@ -42,6 +42,19 @@ namespace api.Services
                 return new List<DrainageStrategy>();
             }
         }
+
+        public DrainageStrategy CreateDrainageStrategy(DrainageStrategy drainageStrategy)
+        {
+            AddStrategyToProject(drainageStrategy);
+            _context.DrainageStrategies!.Add(drainageStrategy);
+            _context.SaveChanges();
+            return drainageStrategy;
+        }
+
+        private void AddStrategyToProject(DrainageStrategy drainageStrategy)
+        {
+            var project = _projectService.GetProject(drainageStrategy.Project.Id);
+            _projectService.AddDrainageStrategy(project, drainageStrategy);
+        }
     }
 }
-
