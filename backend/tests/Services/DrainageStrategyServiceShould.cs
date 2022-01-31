@@ -44,30 +44,6 @@ namespace tests
         }
 
         [Fact]
-        public void ThrowArgumentExceptionIfDrainageStrategyIsNull()
-        {
-            // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyService.CreateDrainageStrategy(null));
-        }
-
-
-        [Fact]
-        public void ThrowArgumentExceptionIfProjectIsNull()
-        {
-            // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
-            var expectedStrategy = CreateTestDrainageStrategy(null);
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyService.CreateDrainageStrategy(expectedStrategy));
-        }
-
-        [Fact]
         public void ThrowNotFoundInDBExceptionIfProjectNotFound()
         {
             // Arrange

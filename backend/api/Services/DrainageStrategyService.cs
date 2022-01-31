@@ -45,24 +45,12 @@ namespace api.Services
 
         public DrainageStrategy CreateDrainageStrategy(DrainageStrategy drainageStrategy)
         {
-            ValidateDrainageStrategy(drainageStrategy);
             AddStrategyToProject(drainageStrategy);
             _context.DrainageStrategies!.Add(drainageStrategy);
             _context.SaveChanges();
             return drainageStrategy;
         }
 
-        private void ValidateDrainageStrategy(DrainageStrategy drainageStrategy)
-        {
-            if (drainageStrategy == null)
-            {
-                throw new ArgumentException("Cannot add a null drainage strategy.");
-            }
-            if (drainageStrategy.Project == null)
-            {
-                throw new ArgumentException("The drainage strategy needs a project.");
-            }
-        }
         private void AddStrategyToProject(DrainageStrategy drainageStrategy)
         {
             var project = _projectService.GetProject(drainageStrategy.Project.Id);
