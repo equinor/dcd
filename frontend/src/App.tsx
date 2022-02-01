@@ -1,17 +1,17 @@
 import { ApplicationInsights } from '@microsoft/applicationinsights-web'
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal, useMsalAuthentication } from '@azure/msal-react'
+import { AuthenticationResult, EventMessage, EventType, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
-import { InteractionType } from '@azure/msal-browser'
-import { Outlet } from 'react-router-dom'
+import { MsalProvider } from '@azure/msal-react'
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
-import { useEffect } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState, VoidFunctionComponent } from 'react'
 
-import SideMenu from './Components/SideMenu/SideMenu'
-import Header from './Components/Header'
+import { ViewsContainer } from './Views/ViewsContainer'
+import CaseView from './Views/CaseView'
+import DashboardView from './Views/DashboardView'
+import ProjectView from './Views/ProjectView'
 
-import { loginRequest } from './auth/authContextProvider'
-import { appInsightsInstrumentationKey, fusionApiScope } from './config'
+import { RetrieveConfigFromAzure } from './config'
 
 import './styles.css'
 
@@ -19,93 +19,66 @@ const browserHistory = createBrowserHistory()
 
 const reactPlugin = new ReactPlugin()
 
-const appInsights = new ApplicationInsights({
-    config: {
-        instrumentationKey: appInsightsInstrumentationKey,
-        extensions: [reactPlugin],
-        extensionConfig: {
-            [reactPlugin.identifier]: { history: browserHistory },
-        },
-    },
-})
-
-appInsights.loadAppInsights()
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-`
-
-const Body = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex-row: 1;
-    width: 100%;
-    height: 100%;
-`
-
-const MainView = styled.div`
-    width: calc(100% - 15rem);
-    overflow: scroll;
-`
-
-const ProfileContent = () => {
-    const { instance, accounts } = useMsal()
+const App: VoidFunctionComponent = () => {
+    const [instance, setMsalInstance] = useState<IPublicClientApplication>()
 
     useEffect(() => {
-        (async () => {
-            // Silently acquires an access token which is then attached to a request for MS Graph data
+        ;(async () => {
             try {
-                const { accessToken } = await instance.acquireTokenSilent({
-                    ...loginRequest,
-                    account: accounts[0],
+                const appConfig = await RetrieveConfigFromAzure()
+
+                // Set up MSAL
+                const instance = new PublicClientApplication(appConfig.msal)
+
+                const accounts = instance.getAllAccounts();
+                if (accounts.length > 0) {
+                    instance.setActiveAccount(accounts[0]);
+                }
+
+                instance.addEventCallback((event: EventMessage) => {
+                    if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
+                        const payload = event.payload as AuthenticationResult;
+                        const account = payload.account;
+                        instance.setActiveAccount(account);
+                    }
+                });
+
+                setMsalInstance(instance)
+
+                // Set up AppInsights
+                const appInsights = new ApplicationInsights({
+                    config: {
+                        instrumentationKey: appConfig.applicationInsightInstrumentationKey,
+                        extensions: [reactPlugin],
+                        extensionConfig: {
+                            [reactPlugin.identifier]: { history: browserHistory },
+                        },
+                    },
                 })
-                window.sessionStorage.setItem('loginAccessToken', accessToken)
+
+                appInsights.loadAppInsights()
             } catch (error) {
-                console.error('[ProfileContent] Login failed', error)
-            }
-            try {
-                const { accessToken } = await instance.acquireTokenSilent({
-                    scopes: fusionApiScope,
-                    account: accounts[0],
-                })
-                window.sessionStorage.setItem('fusionAccessToken', accessToken)
-            } catch (error) {
-                console.error('[Fusion] Failed to get fusion token', error)
+                console.error('[App] Error while retreiving AppConfig from Azure', error)
             }
         })()
     }, [])
 
-    if (!window.sessionStorage.getItem('loginAccessToken')) return null
+    if (!instance) return null
 
     return (
-        <Wrapper className="App">
-            <Header name={accounts[0].name} />
-            <Body>
-                <SideMenu />
-                <MainView>
-                    <Outlet />
-                </MainView>
-            </Body>
-        </Wrapper>
-    )
-}
-
-function App() {
-    useMsalAuthentication(InteractionType.Redirect)
-
-    return (
-        <div className="App">
-            <AuthenticatedTemplate>
-                <ProfileContent />
-            </AuthenticatedTemplate>
-
-            <UnauthenticatedTemplate>
-                <h5 className="card-title">Please sign-in to DCD.</h5>
-            </UnauthenticatedTemplate>
-        </div>
+        <React.StrictMode>
+            <MsalProvider instance={instance}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<ViewsContainer />}>
+                            <Route index element={<DashboardView />} />
+                            <Route path="project/:projectId" element={<ProjectView />} />
+                            <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
+            </MsalProvider>
+        </React.StrictMode>
     )
 }
 
