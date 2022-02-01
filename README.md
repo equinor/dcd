@@ -20,6 +20,25 @@ npm install
 npm start
 ```
 
+### Develop frontend
+
+We are using the npm package
+[`https://www.npmjs.com/package/@openapitools/openapi-generator-cli`](openapi-generator-cli)
+based on the java package
+[openapi-generator](https://github.com/OpenAPITools/openapi-generator) to
+generate client code for talking to the API based on the swagger documentation
+of the api. As the package is based on a java package, we need a working java
+runtime - install your favorite in your favorite way. on debian based systems,
+
+```
+sudo apt-get install default-jdk
+```
+
+did the trick.
+
+Use `npm run generate-api-client` to regenerate the client code upon changes in
+the swagger api. Note that this is part of `npm run build`.
+
 ## Backend
 The backend is built with .NET 6
 
