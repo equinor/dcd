@@ -11,29 +11,36 @@ export const fusionApiScope = ['97978493-9777-4d48-b38a-67b0b9cd88d2/.default']
 
 export const appInsightsInstrumentationKey = 'f218caa9-c1a4-4c31-973b-c787a90af4ce'
 
+const APP_CONFIG_CONN_STRING = process.env.REACT_APP_AZURE_APP_CONFIG_CONNECTION_STRING ?? ''
+const ENV_NAME = process.env.REACT_APP_ENVIRONMENT ?? 'localdev'
+
 export async function RetrieveConfigFromAzure() {
-    var authority = appConfigClient.getConfigurationSetting({
+    console.log(`Loading App Config for ${ENV_NAME}`)
+
+    const appConfigClient = new AppConfigurationClient(APP_CONFIG_CONN_STRING)
+
+    const authority = appConfigClient.getConfigurationSetting({
         key: 'AzureAd:Authority',
-        label: environmentName,
+        label: ENV_NAME,
     })
 
-    var clientId = appConfigClient.getConfigurationSetting({
+    const clientId = appConfigClient.getConfigurationSetting({
         key: 'AzureAd:ClientId',
-        label: environmentName,
+        label: ENV_NAME,
     })
 
-    var redirecturl = appConfigClient.getConfigurationSetting({
+    const redirecturl = appConfigClient.getConfigurationSetting({
         key: 'AzureAd:RedirectUrl',
-        label: environmentName,
+        label: ENV_NAME,
     })
 
-    var appinnsightkey = appConfigClient.getConfigurationSetting({
+    const appinnsightkey = appConfigClient.getConfigurationSetting({
         key: 'ApplicationInsightInstrumentationKey',
     })
 
-    var backendurl = appConfigClient.getConfigurationSetting({
+    const backendurl = appConfigClient.getConfigurationSetting({
         key: 'BackendUrl',
-        label: environmentName,
+        label: ENV_NAME,
     })
 
     return Promise.all([clientId, authority, redirecturl, backendurl, appinnsightkey]).then(res => {
@@ -86,8 +93,3 @@ export async function RetrieveConfigFromAzure() {
         }
     })
 }
-
-var appconfigconnstring = process.env.REACT_APP_AZURE_APP_CONFIG_CONNECTION_STRING || ''
-var environmentName = process.env.REACT_APP_ENVIRONMENT || 'localdev'
-const appConfigClient = new AppConfigurationClient(appconfigconnstring!)
-console.log('Loading config for ENV: ' + environmentName)

@@ -1,18 +1,17 @@
 import { ApplicationInsights } from '@microsoft/applicationinsights-web'
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal, useMsalAuthentication } from '@azure/msal-react'
+import { AuthenticationResult, EventMessage, EventType, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
-import { InteractionType, PublicClientApplication } from '@azure/msal-browser'
 import { MsalProvider } from '@azure/msal-react'
-import { Outlet } from 'react-router-dom'
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
-import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useState, VoidFunctionComponent } from 'react'
 
-import Header from './Components/Header'
-import SideMenu from './Components/SideMenu/SideMenu'
+import { ViewsContainer } from './Views/ViewsContainer'
+import CaseView from './Views/CaseView'
+import DashboardView from './Views/DashboardView'
+import ProjectView from './Views/ProjectView'
 
-import { loginRequest } from './auth/authContextProvider'
-import { fusionApiScope, RetrieveConfigFromAzure } from './config'
+import { RetrieveConfigFromAzure } from './config'
 
 import './styles.css'
 
@@ -20,82 +19,36 @@ const browserHistory = createBrowserHistory()
 
 const reactPlugin = new ReactPlugin()
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-`
-
-const Body = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex-row: 1;
-    width: 100%;
-    height: 100%;
-`
-
-const MainView = styled.div`
-    width: calc(100% - 15rem);
-    overflow: scroll;
-`
-
-const ProfileContent = () => {
-    const { instance, accounts } = useMsal()
-
-    useEffect(() => {
-        ;(async () => {
-            // Silently acquires an access token which is then attached to a request for MS Graph data
-            try {
-                const { accessToken } = await instance.acquireTokenSilent({
-                    ...loginRequest,
-                    account: accounts[0],
-                })
-                window.sessionStorage.setItem('loginAccessToken', accessToken)
-            } catch (error) {
-                console.error('[ProfileContent] Login failed', error)
-            }
-
-            try {
-                const { accessToken } = await instance.acquireTokenSilent({
-                    scopes: fusionApiScope,
-                    account: accounts[0],
-                })
-                window.sessionStorage.setItem('fusionAccessToken', accessToken)
-            } catch (error) {
-                console.error('[Fusion] Failed to get fusion token', error)
-            }
-        })()
-    }, [])
-
-    if (!window.sessionStorage.getItem('loginAccessToken')) return null
-
-    return (
-        <Wrapper className="App">
-            <Header name={accounts[0].name} />
-            <Body>
-                <SideMenu />
-                <MainView>
-                    <Outlet />
-                </MainView>
-            </Body>
-        </Wrapper>
-    )
-}
-
-function App() {
-    const [msalInstance, setMsalInstance] = useState<PublicClientApplication>()
-
-    useMsalAuthentication(InteractionType.Redirect)
+const App: VoidFunctionComponent = () => {
+    const [instance, setMsalInstance] = useState<IPublicClientApplication>()
 
     useEffect(() => {
         ;(async () => {
             try {
-                const config = await RetrieveConfigFromAzure()
+                const appConfig = await RetrieveConfigFromAzure()
 
+                // Set up MSAL
+                const instance = new PublicClientApplication(appConfig.msal)
+
+                const accounts = instance.getAllAccounts();
+                if (accounts.length > 0) {
+                    instance.setActiveAccount(accounts[0]);
+                }
+
+                instance.addEventCallback((event: EventMessage) => {
+                    if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
+                        const payload = event.payload as AuthenticationResult;
+                        const account = payload.account;
+                        instance.setActiveAccount(account);
+                    }
+                });
+
+                setMsalInstance(instance)
+
+                // Set up AppInsights
                 const appInsights = new ApplicationInsights({
                     config: {
-                        instrumentationKey: config.applicationInsightInstrumentationKey,
+                        instrumentationKey: appConfig.applicationInsightInstrumentationKey,
                         extensions: [reactPlugin],
                         extensionConfig: {
                             [reactPlugin.identifier]: { history: browserHistory },
@@ -104,31 +57,28 @@ function App() {
                 })
 
                 appInsights.loadAppInsights()
-
-                console.log('[App] config', config)
-
-                setMsalInstance(new PublicClientApplication(config.msal))
             } catch (error) {
-                console.error(error)
+                console.error('[App] Error while retreiving AppConfig from Azure', error)
             }
         })()
     }, [])
 
-    // TODO: display spinner
-    if (!msalInstance) return null
+    if (!instance) return null
 
     return (
-        <div className="App">
-            <MsalProvider instance={msalInstance}>
-                <AuthenticatedTemplate>
-                    <ProfileContent />
-                </AuthenticatedTemplate>
-
-                <UnauthenticatedTemplate>
-                    <h5 className="card-title">Please sign-in to DCD.</h5>
-                </UnauthenticatedTemplate>
+        <React.StrictMode>
+            <MsalProvider instance={instance}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<ViewsContainer />}>
+                            <Route index element={<DashboardView />} />
+                            <Route path="project/:projectId" element={<ProjectView />} />
+                            <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
             </MsalProvider>
-        </div>
+        </React.StrictMode>
     )
 }
 
