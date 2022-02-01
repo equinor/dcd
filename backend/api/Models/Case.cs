@@ -20,6 +20,7 @@ namespace api.Models
         public Guid SubstructureLink { get; set; }
         public Guid TopsideLink { get; set; }
         public Guid TransportLink { get; set; }
+        public Guid ExplorationLink { get; set; }
     }
 
     public enum ArtificialLift
