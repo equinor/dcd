@@ -1,0 +1,1560 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "api",
+    "version": "1.0"
+  },
+  "paths": {
+    "/DrainageStrategy/{projectId}": {
+      "get": {
+        "tags": [
+          "DrainageStrategy"
+        ],
+        "operationId": "GetDrainageStrategies",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DrainageStrategy"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DrainageStrategy"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DrainageStrategy"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DrainageStrategy": {
+      "post": {
+        "tags": [
+          "DrainageStrategy"
+        ],
+        "operationId": "CreateDrainageStrategy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrainageStrategyDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrainageStrategyDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DrainageStrategyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrainageStrategy"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrainageStrategy"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DrainageStrategy"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Exploration/{projectId}": {
+      "get": {
+        "tags": [
+          "Exploration"
+        ],
+        "operationId": "GetExplorations",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exploration"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exploration"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exploration"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Facility/surf/{projectId}": {
+      "get": {
+        "tags": [
+          "Facility"
+        ],
+        "operationId": "GetSurfsForProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Surf"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Surf"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Surf"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Facility/substructure/{projectId}": {
+      "get": {
+        "tags": [
+          "Facility"
+        ],
+        "operationId": "GetSubstructuresForProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Substructure"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Substructure"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Substructure"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Facility/topside/{projectId}": {
+      "get": {
+        "tags": [
+          "Facility"
+        ],
+        "operationId": "GetTopsidesForProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Topside"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Topside"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Topside"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Facility/transport/{projectId}": {
+      "get": {
+        "tags": [
+          "Facility"
+        ],
+        "operationId": "GetTransportsForProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transport"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transport"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transport"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Project/{projectId}": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "operationId": "GetProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Project": {
+      "get": {
+        "tags": [
+          "Project"
+        ],
+        "operationId": "GetProjects",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/WellProject/{projectId}": {
+      "get": {
+        "tags": [
+          "WellProject"
+        ],
+        "operationId": "GetWellProjects",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WellProject"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WellProject"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WellProject"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ArtificialLift": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Case": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifyTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "referenceCase": {
+            "type": "boolean"
+          },
+          "dG4Date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "drainageStrategyLink": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "wellProjectLink": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "surfLink": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "substructureLink": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "topsideLink": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "transportLink": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Co2Emissions": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "drainageStrategy": {
+            "$ref": "#/components/schemas/DrainageStrategy"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Co2EmissionsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Currency": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "DoubleYearValue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DrainageStrategy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "nglYield": {
+            "type": "number",
+            "format": "double"
+          },
+          "artificialLift": {
+            "$ref": "#/components/schemas/ArtificialLift"
+          },
+          "productionProfileOil": {
+            "$ref": "#/components/schemas/ProductionProfileOil"
+          },
+          "productionProfileGas": {
+            "$ref": "#/components/schemas/ProductionProfileGas"
+          },
+          "productionProfileWater": {
+            "$ref": "#/components/schemas/ProductionProfileWater"
+          },
+          "productionProfileWaterInjection": {
+            "$ref": "#/components/schemas/ProductionProfileWaterInjection"
+          },
+          "fuelFlaringAndLosses": {
+            "$ref": "#/components/schemas/FuelFlaringAndLosses"
+          },
+          "netSalesGas": {
+            "$ref": "#/components/schemas/NetSalesGas"
+          },
+          "co2Emissions": {
+            "$ref": "#/components/schemas/Co2Emissions"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DrainageStrategyDto": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "nglYield": {
+            "type": "number",
+            "format": "double"
+          },
+          "artificialLift": {
+            "$ref": "#/components/schemas/ArtificialLift"
+          },
+          "productionProfileOil": {
+            "$ref": "#/components/schemas/ProductionProfileOilDto"
+          },
+          "productionProfileGas": {
+            "$ref": "#/components/schemas/ProductionProfileGasDto"
+          },
+          "productionProfileWater": {
+            "$ref": "#/components/schemas/ProductionProfileWaterDto"
+          },
+          "productionProfileWaterInjection": {
+            "$ref": "#/components/schemas/ProductionProfileWaterInjectionDto"
+          },
+          "fuelFlaringAndLosses": {
+            "$ref": "#/components/schemas/FuelFlaringAndLossesDto"
+          },
+          "netSalesGas": {
+            "$ref": "#/components/schemas/NetSalesGasDto"
+          },
+          "co2Emissions": {
+            "$ref": "#/components/schemas/Co2EmissionsDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DrillingSchedule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Int32YearValue"
+            },
+            "nullable": true
+          },
+          "wellProject": {
+            "$ref": "#/components/schemas/WellProject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Exploration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "wellType": {
+            "$ref": "#/components/schemas/WellType"
+          },
+          "costProfile": {
+            "$ref": "#/components/schemas/ExplorationCostProfile"
+          },
+          "drillingSchedule": {
+            "$ref": "#/components/schemas/ExplorationDrillingSchedule"
+          },
+          "gAndGAdminCost": {
+            "$ref": "#/components/schemas/GAndGAdminCost"
+          },
+          "rigMobDemob": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExplorationCostProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "epaVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "exploration": {
+            "$ref": "#/components/schemas/Exploration"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExplorationDrillingSchedule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Int32YearValue"
+            },
+            "nullable": true
+          },
+          "exploration": {
+            "$ref": "#/components/schemas/Exploration"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FuelFlaringAndLosses": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "drainageStrategy": {
+            "$ref": "#/components/schemas/DrainageStrategy"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FuelFlaringAndLossesDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GAndGAdminCost": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "epaVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "exploration": {
+            "$ref": "#/components/schemas/Exploration"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Int32YearValue": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Maturity": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "NetSalesGas": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "drainageStrategy": {
+            "$ref": "#/components/schemas/DrainageStrategy"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NetSalesGasDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductionFlowline": {
+        "enum": [
+          999
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "ProductionProfileGas": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "drainageStrategy": {
+            "$ref": "#/components/schemas/DrainageStrategy"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductionProfileGasDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductionProfileOil": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "drainageStrategy": {
+            "$ref": "#/components/schemas/DrainageStrategy"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductionProfileOilDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductionProfileWater": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "drainageStrategy": {
+            "$ref": "#/components/schemas/DrainageStrategy"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductionProfileWaterDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductionProfileWaterInjection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "drainageStrategy": {
+            "$ref": "#/components/schemas/DrainageStrategy"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProductionProfileWaterInjectionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectName": {
+            "type": "string",
+            "nullable": true
+          },
+          "projectDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "type": "string",
+            "nullable": true
+          },
+          "createDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Case"
+            },
+            "nullable": true
+          },
+          "surfs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Surf"
+            },
+            "nullable": true
+          },
+          "substructures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Substructure"
+            },
+            "nullable": true
+          },
+          "topsides": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Topside"
+            },
+            "nullable": true
+          },
+          "transports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Transport"
+            },
+            "nullable": true
+          },
+          "projectPhase": {
+            "$ref": "#/components/schemas/ProjectPhase"
+          },
+          "projectCategory": {
+            "$ref": "#/components/schemas/ProjectCategory"
+          },
+          "drainageStrategies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DrainageStrategy"
+            },
+            "nullable": true
+          },
+          "wellProjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WellProject"
+            },
+            "nullable": true
+          },
+          "explorations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Exploration"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProjectCategory": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "ProjectPhase": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Substructure": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "costProfile": {
+            "$ref": "#/components/schemas/SubstructureCostProfile"
+          },
+          "dryWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "maturity": {
+            "$ref": "#/components/schemas/Maturity"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SubstructureCostProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "epaVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "substructure": {
+            "$ref": "#/components/schemas/Substructure"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Surf": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "costProfile": {
+            "$ref": "#/components/schemas/SurfCostProfile"
+          },
+          "maturity": {
+            "$ref": "#/components/schemas/Maturity"
+          },
+          "infieldPipelineSystemLength": {
+            "type": "number",
+            "format": "double"
+          },
+          "umbilicalSystemLength": {
+            "type": "number",
+            "format": "double"
+          },
+          "artificialLift": {
+            "$ref": "#/components/schemas/ArtificialLift"
+          },
+          "riserCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "templateCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productionFlowline": {
+            "$ref": "#/components/schemas/ProductionFlowline"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SurfCostProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "epaVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "surf": {
+            "$ref": "#/components/schemas/Surf"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Topside": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "costProfile": {
+            "$ref": "#/components/schemas/TopsideCostProfile"
+          },
+          "dryWeight": {
+            "type": "number",
+            "format": "double"
+          },
+          "oilCapacity": {
+            "type": "number",
+            "format": "double"
+          },
+          "gasCapacity": {
+            "type": "number",
+            "format": "double"
+          },
+          "facilitiesAvailability": {
+            "type": "number",
+            "format": "double"
+          },
+          "artificialLift": {
+            "$ref": "#/components/schemas/ArtificialLift"
+          },
+          "maturity": {
+            "$ref": "#/components/schemas/Maturity"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TopsideCostProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "epaVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "topside": {
+            "$ref": "#/components/schemas/Topside"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Transport": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "costProfile": {
+            "$ref": "#/components/schemas/TransportCostProfile"
+          },
+          "gasExportPipelineLength": {
+            "type": "number",
+            "format": "double"
+          },
+          "oilExportPipelineLength": {
+            "type": "number",
+            "format": "double"
+          },
+          "maturity": {
+            "$ref": "#/components/schemas/Maturity"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransportCostProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "epaVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "transport": {
+            "$ref": "#/components/schemas/Transport"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WellProject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "project": {
+            "$ref": "#/components/schemas/Project"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "costProfile": {
+            "$ref": "#/components/schemas/WellProjectCostProfile"
+          },
+          "drillingSchedule": {
+            "$ref": "#/components/schemas/DrillingSchedule"
+          },
+          "producerCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gasInjectorCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "waterInjectorCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "artificialLift": {
+            "$ref": "#/components/schemas/ArtificialLift"
+          },
+          "rigMobDemob": {
+            "type": "number",
+            "format": "double"
+          },
+          "annualWellInterventionCost": {
+            "type": "number",
+            "format": "double"
+          },
+          "pluggingAndAbandonment": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WellProjectCostProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "yearValues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DoubleYearValue"
+            },
+            "nullable": true
+          },
+          "epaVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "wellProject": {
+            "$ref": "#/components/schemas/WellProject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WellType": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  }
+}
