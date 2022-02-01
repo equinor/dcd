@@ -46,9 +46,9 @@ namespace api.Services
         public DrainageStrategy CreateDrainageStrategy(DrainageStrategy drainageStrategy)
         {
             AddStrategyToProject(drainageStrategy);
-            _context.DrainageStrategies!.Add(drainageStrategy);
+            var result = _context.DrainageStrategies!.Add(drainageStrategy);
             _context.SaveChanges();
-            return drainageStrategy;
+            return result.Entity;
         }
 
         private void AddStrategyToProject(DrainageStrategy drainageStrategy)
