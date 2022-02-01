@@ -1,4 +1,5 @@
-import { __BaseService } from "./__BaseService";
+import { config } from "./config"
+import { __BaseService } from "./__BaseService"
 
 export class __ProjectService extends __BaseService {
     getProjects() {
@@ -9,3 +10,8 @@ export class __ProjectService extends __BaseService {
         return this.get(`/${id}`)
     }
 }
+
+export const projectService = new __ProjectService({
+        ...config.ProjectService,
+        accessToken: window.sessionStorage.getItem('loginAccessToken')!,
+    })

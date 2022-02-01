@@ -4,10 +4,10 @@ import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Project } from '../types'
-import { useService } from '../Services'
 import DrainageStrategyView from './DrainageStrategyView'
 import ExplorationView from './ExplorationView'
 import OverviewView from './OverviewView'
+import { projectService } from '../Services/ProjectService'
 
 const { List, Tab, Panels, Panel } = Tabs
 
@@ -26,13 +26,11 @@ const CaseView = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
 
-    const ProjectService = useService('ProjectService')
-
     useEffect(() => {
-        if (ProjectService) {
+        if (projectService) {
             (async () => {
                 try {
-                    setProject(await ProjectService.getProjectByID(params.projectId!))
+                    setProject(await projectService.getProjectByID(params.projectId!))
                 } catch (error) {
                     console.error(`[CaseView] Error while fetching projet ${params.projectId}`, error)
                 }

@@ -4,16 +4,14 @@ import { createBrowserHistory } from 'history'
 import { InteractionType } from '@azure/msal-browser'
 import { Outlet } from 'react-router-dom'
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import styled from 'styled-components'
 
 import SideMenu from './Components/SideMenu/SideMenu'
 import Header from './Components/Header'
 
-import { ServicesContextProvider } from './Services'
-
 import { loginRequest } from './auth/authContextProvider'
-import { appInsightsInstrumentationKey } from './config'
+import { appInsightsInstrumentationKey, fusionApiScope } from './config'
 
 import './styles.css'
 
@@ -54,7 +52,6 @@ const MainView = styled.div`
 `
 
 const ProfileContent = () => {
-    const [accessToken, setAccessToken] = useState<string>()
     const { instance, accounts } = useMsal()
 
     useEffect(() => {
@@ -65,27 +62,34 @@ const ProfileContent = () => {
                     ...loginRequest,
                     account: accounts[0],
                 })
-                setAccessToken(accessToken)
+                window.sessionStorage.setItem('loginAccessToken', accessToken)
             } catch (error) {
-                console.error("[ProfileContent] Login failed", error)
+                console.error('[ProfileContent] Login failed', error)
+            }
+            try {
+                const { accessToken } = await instance.acquireTokenSilent({
+                    scopes: fusionApiScope,
+                    account: accounts[0],
+                })
+                window.sessionStorage.setItem('fusionAccessToken', accessToken)
+            } catch (error) {
+                console.error('[Fusion] Failed to get fusion token', error)
             }
         })()
     }, [])
 
-    if (!accessToken) return null
+    if (!window.sessionStorage.getItem('loginAccessToken')) return null
 
     return (
-        <ServicesContextProvider accessToken={accessToken}>
-            <Wrapper className="App">
-                <Header name={accounts[0].name} />
-                <Body>
-                    <SideMenu />
-                    <MainView>
-                        <Outlet />
-                    </MainView>
-                </Body>
-            </Wrapper>
-        </ServicesContextProvider>
+        <Wrapper className="App">
+            <Header name={accounts[0].name} />
+            <Body>
+                <SideMenu />
+                <MainView>
+                    <Outlet />
+                </MainView>
+            </Body>
+        </Wrapper>
     )
 }
 

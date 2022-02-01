@@ -4,4 +4,6 @@ export const AzureAd = {
     redirectUri: process.env.REACT_APP_REDIRECT_URI,
 }
 
+export const fusionApiScope = ['97978493-9777-4d48-b38a-67b0b9cd88d2/.default']
+
 export const appInsightsInstrumentationKey = 'f218caa9-c1a4-4c31-973b-c787a90af4ce'
