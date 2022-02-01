@@ -310,29 +310,5 @@ namespace tests
             ProjectService projectService = new ProjectService(fixture.context);
             Assert.Throws<NotFoundInDBException>(() => projectService.GetProject(new Guid()));
         }
-
-        [Fact]
-        public void AddNewDrainageStrategy()
-        {
-            // Arrange
-            var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.ProjectName);
-            ProjectService projectService = new ProjectService(fixture.context);
-            var project = projectFromSampleDataGenerator.FirstOrDefault();
-            var expectedDrainageStrategy = new DrainageStrategyBuilder
-            {
-                Project = project,
-                Name = "New Drainage Strategy",
-                Description = "New Drainage Strategy Description",
-                NGLYield = 5.7
-            };
-
-            // Act
-            projectService.AddDrainageStrategy(project, expectedDrainageStrategy);
-
-            // Assert
-            var actualDrainageStrategy = project.DrainageStrategies.FirstOrDefault(o => o.Name == expectedDrainageStrategy.Name);
-            Assert.NotNull(actualDrainageStrategy);
-            compareDrainageStrategies(expectedDrainageStrategy, actualDrainageStrategy);
-        }
     }
 }
