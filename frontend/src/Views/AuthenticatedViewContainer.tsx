@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { useEffect, useState, VoidFunctionComponent } from 'react'
+import { useEffect, VoidFunctionComponent } from 'react'
 import styled from 'styled-components'
 
 import Header from '../Components/Header'
