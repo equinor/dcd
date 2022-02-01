@@ -43,62 +43,6 @@ namespace tests
             TestHelper.CompareDrainageStrategies(expectedStrategy, actualStrategy);
         }
 
-        [Fact]
-        public void ThrowNotFoundInDBExceptionIfProjectNotFound()
-        {
-            // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
-            var project = new ProjectBuilder
-            {
-                Id = new Guid(),
-                ProjectName = "nonexistent project"
-            };
-            var expectedStrategy = CreateTestDrainageStrategy(project);
-
-            // Act, assert
-            Assert.Throws<NotFoundInDBException>(() => drainageStrategyService.CreateDrainageStrategy(expectedStrategy));
-        }
-
-        [Fact]
-        public void AddNewDrainageStrategyToCorrectProject()
-        {
-            // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
-            var project = fixture.context.Projects.FirstOrDefault();
-            var expectedStrategy = CreateTestDrainageStrategy(project);
-
-            // Act
-            drainageStrategyService.CreateDrainageStrategy(expectedStrategy);
-
-            // Assert
-            var drainageStrategies = fixture.context.Projects.FirstOrDefault(o => o.ProjectName == project.ProjectName).DrainageStrategies;
-            var drainageStrategy = drainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
-            Assert.NotNull(drainageStrategy);
-        }
-
-        [Fact]
-        public void NotAddDrainageStrategyToOtherProjects()
-        {
-            // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
-            var project = fixture.context.Projects.FirstOrDefault();
-            var expectedStrategy = CreateTestDrainageStrategy(project);
-
-            // Act
-            drainageStrategyService.CreateDrainageStrategy(expectedStrategy);
-
-            // Assert
-            var otherProjects = fixture.context.Projects.Where(o => o.ProjectName != project.ProjectName);
-            foreach (var otherProject in otherProjects)
-            {
-                var drainageStrategy = otherProject.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
-                Assert.Null(drainageStrategy);
-            }
-        }
-
         private static DrainageStrategy CreateTestDrainageStrategy(Project project)
         {
             return new DrainageStrategyBuilder

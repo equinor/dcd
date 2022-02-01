@@ -6,7 +6,5 @@ namespace api.Services
     {
         IEnumerable<Project> GetAll();
         Project GetProject(Guid projectId);
-        void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy);
-
     }
 }
