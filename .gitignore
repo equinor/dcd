@@ -29,3 +29,4 @@ frontend/cypress/screenshots
 #MacOS
 .DS_Store
 
+frontend/build
