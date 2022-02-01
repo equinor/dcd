@@ -21,6 +21,9 @@ namespace api.Adapters
             drainageStrategy.Project = _projectService.GetProject(drainageStrategyDto.ProjectId);
             drainageStrategy.NGLYield = drainageStrategyDto.NGLYield;
             drainageStrategy.ArtificialLift = drainageStrategyDto.ArtificialLift;
+            drainageStrategy.ProducerCount = drainageStrategyDto.ProducerCount;
+            drainageStrategy.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
+            drainageStrategy.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;
             drainageStrategy.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, drainageStrategy);
             drainageStrategy.ProductionProfileGas = Convert(drainageStrategyDto.ProductionProfileGas, drainageStrategy);
             drainageStrategy.ProductionProfileWater = Convert(drainageStrategyDto.ProductionProfileWater, drainageStrategy);

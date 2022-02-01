@@ -106,7 +106,10 @@ namespace tests
                 Name = "DrainStrat Test",
                 Description = "Some description of the strategy",
                 Project = project,
-                NGLYield = 0.5
+                NGLYield = 0.5,
+                WaterInjectorCount = 20,
+                GasInjectorCount = 22,
+                ProducerCount = 24,
             }
                 .WithProductionProfileGas(new ProductionProfileGasBuilder()
                     .WithYearValue(2030, 2.3)
