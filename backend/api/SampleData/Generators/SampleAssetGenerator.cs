@@ -19,7 +19,10 @@ public static class SampleAssetGenerator
             {
                 Name = "DrainStrat 1",
                 Description = "Desc of drain strat 1",
-                NGLYield = 0.3
+                NGLYield = 0.3,
+                ProducerCount = 2,
+                GasInjectorCount = 3,
+                WaterInjectorCount = 4,
             }
                 .WithProductionProfileGas(new ProductionProfileGasBuilder()
                     .WithYearValue(2030, 2.3)

@@ -38,6 +38,9 @@ namespace tests
             {
                 Assert.Equal(expected.NGLYield, actual.NGLYield);
                 Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.GasInjectorCount, actual.GasInjectorCount);
+                Assert.Equal(expected.WaterInjectorCount, actual.WaterInjectorCount);
+                Assert.Equal(expected.ProducerCount, actual.ProducerCount);
                 CompareVolumes(expected.ProductionProfileOil, actual.ProductionProfileOil);
                 CompareVolumes(expected.ProductionProfileGas, actual.ProductionProfileGas);
                 CompareVolumes(expected.ProductionProfileWater, actual.ProductionProfileWater);

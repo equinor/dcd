@@ -34,6 +34,9 @@ namespace tests
             Assert.Equal(drainageStrategyDto.Description, result.Description);
             Assert.Equal(drainageStrategyDto.NGLYield, result.NGLYield);
             Assert.Equal(drainageStrategyDto.ArtificialLift, result.ArtificialLift);
+            Assert.Equal(drainageStrategyDto.ProducerCount, result.ProducerCount);
+            Assert.Equal(drainageStrategyDto.WaterInjectorCount, result.WaterInjectorCount);
+            Assert.Equal(drainageStrategyDto.GasInjectorCount, result.GasInjectorCount);
 
             Assert.Equal(drainageStrategyDto.Name, result.ProductionProfileOil.DrainageStrategy.Name);
             TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileOil, result.ProductionProfileOil);
@@ -180,6 +183,10 @@ namespace tests
                 Description = "Strategy test description",
                 NGLYield = 0.5,
                 ArtificialLift = ArtificialLift.GasLift,
+                ProducerCount = 10,
+                WaterInjectorCount = 12,
+                GasInjectorCount = 14,
+
                 ProductionProfileOil = new ProductionProfileOilDto
                 {
                     YearValues = new List<YearValue<double>> {
