@@ -13,23 +13,17 @@ namespace api.Controllers
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-    public class DrainageStrategyController : ControllerBase
+    public class DrainageStrategiesController : ControllerBase
     {
         private DrainageStrategyService _drainageStrategyService;
-        private readonly ILogger<DrainageStrategyController> _logger;
+        private readonly ILogger<DrainageStrategiesController> _logger;
         private readonly DrainageStrategyAdapter _drainageStrategyAdapter;
 
-        public DrainageStrategyController(ILogger<DrainageStrategyController> logger, DrainageStrategyService drainageStrategyService, ProjectService projectService)
+        public DrainageStrategiesController(ILogger<DrainageStrategiesController> logger, DrainageStrategyService drainageStrategyService, ProjectService projectService)
         {
             _logger = logger;
             _drainageStrategyService = drainageStrategyService;
             _drainageStrategyAdapter = new DrainageStrategyAdapter(projectService);
-        }
-
-        [HttpGet("{projectId}", Name = "GetDrainageStrategies")]
-        public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
-        {
-            return _drainageStrategyService.GetDrainageStrategies(projectId);
         }
 
         [HttpPost(Name = "CreateDrainageStrategy")]

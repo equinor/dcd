@@ -11,12 +11,12 @@ namespace api.Controllers
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-    public class ProjectController : ControllerBase
+    public class ProjectsController : ControllerBase
     {
         private ProjectService _projectService;
-        private readonly ILogger<ProjectController> _logger;
+        private readonly ILogger<ProjectsController> _logger;
 
-        public ProjectController(ILogger<ProjectController> logger, ProjectService projectService)
+        public ProjectsController(ILogger<ProjectsController> logger, ProjectService projectService)
         {
             _logger = logger;
             _projectService = projectService;
