@@ -1,4 +1,3 @@
-using api.Models;
 using api.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -11,21 +10,15 @@ namespace api.Controllers
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-    public class WellProjectController : ControllerBase
+    public class WellProjectsController : ControllerBase
     {
         private WellProjectService _wellProjectService;
-        private readonly ILogger<WellProjectController> _logger;
+        private readonly ILogger<WellProjectsController> _logger;
 
-        public WellProjectController(ILogger<WellProjectController> logger, WellProjectService wellProjectService)
+        public WellProjectsController(ILogger<WellProjectsController> logger, WellProjectService wellProjectService)
         {
             _logger = logger;
             _wellProjectService = wellProjectService;
-        }
-
-        [HttpGet("{projectId}", Name = "GetWellProjects")]
-        public IEnumerable<WellProject> GetWellProjects(Guid projectId)
-        {
-            return _wellProjectService.GetWellProjects(projectId);
         }
     }
 }

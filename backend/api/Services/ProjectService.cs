@@ -11,6 +11,9 @@ namespace api.Services
         private readonly WellProjectService _wellProjectService;
         private readonly DrainageStrategyService _drainageStrategyService;
         private readonly FacilityService _facilityService;
+        private readonly SubstructureService _substructureService;
+        private readonly TopsideFacilityService _topsideFaciltyService;
+        private readonly TransportService _transportService;
 
         public ProjectService(DcdDbContext context)
         {
@@ -18,6 +21,9 @@ namespace api.Services
             _wellProjectService = new WellProjectService(_context);
             _drainageStrategyService = new DrainageStrategyService(_context, this);
             _facilityService = new FacilityService(_context);
+            _substructureService = new SubstructureService(_context);
+            _topsideFaciltyService = new TopsideFacilityService(_context);
+            _transportService = new TransportService(_context);
         }
 
         public IEnumerable<Project> GetAll()
@@ -61,9 +67,9 @@ namespace api.Services
             project.WellProjects = _wellProjectService.GetWellProjects(project.Id).ToList();
             project.DrainageStrategies = _drainageStrategyService.GetDrainageStrategies(project.Id).ToList();
             project.Surfs = _facilityService.GetSurfsForProject(project.Id).ToList();
-            project.Substructures = _facilityService.GetSubstructuresForProject(project.Id).ToList();
-            project.Topsides = _facilityService.GetTopsidesForProject(project.Id).ToList();
-            project.Transports = _facilityService.GetTransportsForProject(project.Id).ToList();
+            project.Substructures = _substructureService.GetSubstructuresForProject(project.Id).ToList();
+            project.Topsides = _topsideFaciltyService.GetTopsidesForProject(project.Id).ToList();
+            project.Transports = _transportService.GetTransportsForProject(project.Id).ToList();
             return project;
         }
         public void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy)

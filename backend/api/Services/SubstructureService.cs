@@ -5,27 +5,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
-    public class FacilityService
+    public class SubstructureService
     {
         private readonly DcdDbContext _context;
 
-        public FacilityService(DcdDbContext context)
+        public SubstructureService(DcdDbContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<Surf> GetSurfsForProject(Guid projectId)
+        public IEnumerable<Substructure> GetSubstructuresForProject(Guid projectId)
         {
-            if (_context.Surfs != null)
+            if (_context.Substructures != null)
             {
-                return _context.Surfs
+                return _context.Substructures
                         .Include(c => c.CostProfile)
                             .ThenInclude(c => c.YearValues)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
             {
-                return new List<Surf>();
+                return new List<Substructure>();
             }
         }
     }

@@ -11,21 +11,15 @@ namespace api.Controllers
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-    public class ExplorationController : ControllerBase
+    public class ExplorationsController : ControllerBase
     {
         private ExplorationService _explorationService;
-        private readonly ILogger<ExplorationController> _logger;
+        private readonly ILogger<ExplorationsController> _logger;
 
-        public ExplorationController(ILogger<ExplorationController> logger, ExplorationService explorationProjectService)
+        public ExplorationsController(ILogger<ExplorationsController> logger, ExplorationService explorationProjectService)
         {
             _logger = logger;
             _explorationService = explorationProjectService;
-        }
-
-        [HttpGet("{projectId}", Name = "GetExplorations")]
-        public IEnumerable<Exploration> GetExplorations(Guid projectId)
-        {
-            return _explorationService.GetExplorations(projectId);
         }
     }
 }

@@ -5,6 +5,7 @@ using api.SampleData.Generators;
 using api.Services;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
@@ -17,6 +18,8 @@ var config = configBuilder.Build();
 
 //POC For Azure App Config
 Console.WriteLine(config["PoC2"] ?? "Hello world!");
+
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 // Dev-Note Add this configuration to prevent circular references in the database
 // https://stackoverflow.com/questions/60197270/jsonexception-a-possible-object-cycle-was-detected-which-is-not-supported-this
@@ -74,7 +77,15 @@ builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();
 builder.Services.AddScoped<ExplorationService>();
 builder.Services.AddScoped<FacilityService>();
-builder.Services.AddControllers();
+builder.Services.AddScoped<SubstructureService>();
+builder.Services.AddScoped<TopsideFacilityService>();
+builder.Services.AddScoped<TransportService>();
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()));
+}
+
+);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
