@@ -6,7 +6,7 @@ export type ServiceConfig = {
 
 export const config = Object.freeze({
     ProjectService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/project`,
+        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/projects`,
     },
     FusionService: {
         BASE_URL: `https://pro-s-context-fprd.azurewebsites.net`
