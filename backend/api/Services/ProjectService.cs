@@ -72,5 +72,10 @@ namespace api.Services
             project.Transports = _transportService.GetTransportsForProject(project.Id).ToList();
             return project;
         }
+
+        public void AddSurfsToProject(Project project, Surf surf)
+        {
+            project.Surfs.Add(surf);
+        }
     }
 }

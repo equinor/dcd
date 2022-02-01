@@ -1,15 +1,15 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Models
+using api.Context;
+using api.Models;
+namespace api.Dtos
 {
-    public class Surf
+    public class SurfDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
-        [ForeignKey("Project.Id")]
-        public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
-        public SurfCostProfile CostProfile { get; set; } = null!;
+        public SurfCostProfileDto CostProfile { get; set; } = null!;
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }
@@ -19,14 +19,13 @@ namespace api.Models
         public ProductionFlowline ProductionFlowline { get; set; }
     }
 
-    public class SurfCostProfile : TimeSeriesCost<double>
-    {
-        [ForeignKey("Surf.Id")]
-        public Surf Surf { get; set; } = null!;
-    }
-
-    public enum ProductionFlowline
+    public enum ProductionFlowlineDto
     {
         Default = 999
+    }
+
+    public class SurfCostProfileDto : TimeSeriesCost<double>
+    {
+
     }
 }
