@@ -6,17 +6,11 @@ namespace api.Adapters
 {
     public class ExplorationAdapter
     {
-        private readonly ProjectService _projectService;
-
-        public ExplorationAdapter(ProjectService projectService)
-        {
-            _projectService = projectService;
-        }
 
         public Exploration Convert(ExplorationDto explorationDto)
         {
             var exploration = new Exploration();
-            exploration.Project = _projectService.GetProject(explorationDto.ProjectId);
+            exploration.ProjectId = explorationDto.ProjectId;
             exploration.Name = explorationDto.Name;
             exploration.RigMobDemob = explorationDto.RigMobDemob;
             exploration.WellType = explorationDto.WellType;

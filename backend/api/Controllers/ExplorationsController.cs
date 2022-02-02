@@ -20,12 +20,11 @@ namespace api.Controllers
         private readonly ExplorationAdapter _explorationAdapter;
 
         public ExplorationsController(ILogger<ExplorationsController> logger,
-                ExplorationService explorationProjectService,
-                ProjectService projectService)
+                ExplorationService explorationService)
         {
             _logger = logger;
-            _explorationService = explorationProjectService;
-            _explorationAdapter = new ExplorationAdapter(projectService);
+            _explorationService = explorationService;
+            _explorationAdapter = new ExplorationAdapter();
         }
 
         [HttpPost(Name = "CreateExploration")]

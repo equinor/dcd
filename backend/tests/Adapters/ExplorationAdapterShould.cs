@@ -33,12 +33,12 @@ public class ExplorationAdapterShould : IDisposable
     {
         var testProjectId = fixture.context.Projects.FirstOrDefault().Id;
         ProjectService projectService = new ProjectService(fixture.context);
-        var explorationAdapter = new ExplorationAdapter(projectService);
+        var explorationAdapter = new ExplorationAdapter();
         var explorationDto = CreateTestExplorationDto(testProjectId);
 
         var exploration = explorationAdapter.Convert(explorationDto);
 
-        Assert.Equal(explorationDto.ProjectId, exploration.Project.Id);
+        Assert.Equal(explorationDto.ProjectId, exploration.ProjectId);
         Assert.Equal(explorationDto.Name, exploration.Name);
         Assert.Equal(explorationDto.WellType, exploration.WellType);
         Assert.Equal(explorationDto.RigMobDemob, exploration.RigMobDemob);
@@ -70,7 +70,7 @@ public class ExplorationAdapterShould : IDisposable
     public void FailConvertingWithEmptyProjectId()
     {
         ProjectService projectService = new ProjectService(fixture.context);
-        var explorationAdapter = new ExplorationAdapter(projectService);
+        var explorationAdapter = new ExplorationAdapter();
         var explorationDto = CreateTestExplorationDto(System.Guid.Empty);
         Assert.ThrowsAny<Exception>(() =>
         {
