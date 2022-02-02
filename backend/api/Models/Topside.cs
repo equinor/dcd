@@ -7,6 +7,7 @@ namespace api.Models
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
         public Project Project { get; set; } = null!;
+        public Guid ProjectId { get; set; }
         public TopsideCostProfile CostProfile { get; set; } = null!;
         public double DryWeight { get; set; }
         public double OilCapacity { get; set; }

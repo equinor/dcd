@@ -66,6 +66,10 @@ namespace api.Services
         {
             project.Explorations.Add(exploration);
         }
+        public void AddTopside(Project project, Topside topside)
+        {
+            project.Topsides.Add(topside);
+        }
         private Project AddAssetsToProject(Project project)
         {
             project.WellProjects = _wellProjectService.GetWellProjects(project.Id).ToList();
