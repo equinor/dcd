@@ -45,68 +45,6 @@ public class ExplorationServiceShould : IDisposable
         compareExplorations(testExploration, retrievedExploration);
     }
 
-    [Fact]
-    public void NotAddExplorationToOtherProjects()
-    {
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var expectedExploration = CreateTestExploration(project);
-
-        explorationService.CreateExploration(expectedExploration);
-
-        var otherProjects = fixture.context.Projects.Where(o => o.ProjectName != project.ProjectName);
-        foreach (var otherProject in otherProjects)
-        {
-            var exploration = otherProject.DrainageStrategies.FirstOrDefault(o => o.Name == expectedExploration.Name);
-            Assert.Null(exploration);
-        }
-    }
-
-    [Fact]
-    public void NotCreateExplorationWithoutExplorationDuh()
-    {
-        ProjectService projectService = new
-            ProjectService(fixture.context);
-        ExplorationService explorationService = new
-            ExplorationService(fixture.context, projectService);
-
-        Assert.Throws<ArgumentException>(() =>
-                explorationService.CreateExploration(null));
-    }
-
-    [Fact]
-    public void NotCreateExplorationWithoutProject()
-    {
-        var testExploration = CreateTestExploration(null);
-        ProjectService projectService = new
-            ProjectService(fixture.context);
-        ExplorationService explorationService = new
-            ExplorationService(fixture.context, projectService);
-
-        Assert.Throws<ArgumentException>(() =>
-                explorationService.CreateExploration(testExploration));
-    }
-
-    [Fact]
-    public void NotCreateExplorationIfProjectNotFound()
-    {
-        var iDontExistProject = new Project
-        {
-            ProjectName = "never mind",
-            Id = new Guid(),
-        };
-        var testExploration = CreateTestExploration(iDontExistProject);
-        ProjectService projectService = new
-            ProjectService(fixture.context);
-        ExplorationService explorationService = new
-            ExplorationService(fixture.context, projectService);
-
-        Assert.Throws<NotFoundInDBException>(() =>
-                explorationService.CreateExploration(testExploration));
-    }
-
-
     void compareExplorations(Exploration expected, Exploration actual)
     {
         if (expected == null || actual == null)
