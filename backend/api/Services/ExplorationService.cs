@@ -39,22 +39,10 @@ namespace api.Services
 
         public Exploration CreateExploration(Exploration exploration)
         {
-            ValidateExploration(exploration);
             AddExplorationToProject(exploration);
             var result = _context.Explorations!.Add(exploration);
             _context.SaveChanges();
             return result.Entity;
-        }
-        private void ValidateExploration(Exploration exploration)
-        {
-            if (exploration == null)
-            {
-                throw new ArgumentException("Cannot add a null drainage strategy.");
-            }
-            if (exploration.Project == null)
-            {
-                throw new ArgumentException("The drainage strategy needs a project.");
-            }
         }
         private void AddExplorationToProject(Exploration exploration)
         {
