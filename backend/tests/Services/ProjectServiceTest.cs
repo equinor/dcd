@@ -124,18 +124,6 @@ namespace tests
             Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
         }
 
-        void compareCosts<T>(TimeSeriesCost<T> expected, TimeSeriesCost<T> actual)
-        {
-            if (expected == null || actual == null)
-            {
-                Assert.Equal(expected, actual);
-            }
-            else
-            {
-                compareYearValues(expected, actual);
-                Assert.Equal(expected.Currency, actual.Currency);
-            }
-        }
         void compareDrainageStrategies(DrainageStrategy expected, DrainageStrategy actual)
         {
             if (expected == null || actual == null)
@@ -172,8 +160,8 @@ namespace tests
                 Assert.Equal(expected.GasInjectorCount, actual.GasInjectorCount);
                 Assert.Equal(expected.WaterInjectorCount, actual.WaterInjectorCount);
                 Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-                compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
-                compareCosts(expected.CostProfile, actual.CostProfile);
+                TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
 
@@ -188,9 +176,9 @@ namespace tests
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.WellType, actual.WellType);
                 Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-                compareCosts(expected.CostProfile, actual.CostProfile);
-                compareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
-                compareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+                TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
+                TestHelper.CompareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
             }
         }
 
@@ -204,7 +192,7 @@ namespace tests
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Maturity, actual.Maturity);
-                compareCosts(expected.CostProfile, actual.CostProfile);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
                 Assert.Equal(expected.DryWeight, actual.DryWeight);
             }
         }
@@ -225,7 +213,7 @@ namespace tests
                 Assert.Equal(expected.InfieldPipelineSystemLength, actual.InfieldPipelineSystemLength);
                 Assert.Equal(expected.UmbilicalSystemLength, actual.UmbilicalSystemLength);
                 Assert.Equal(expected.ProductionFlowline, actual.ProductionFlowline);
-                compareCosts(expected.CostProfile, actual.CostProfile);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
 
@@ -244,7 +232,7 @@ namespace tests
                 Assert.Equal(expected.OilCapacity, actual.OilCapacity);
                 Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
                 Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-                compareCosts(expected.CostProfile, actual.CostProfile);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
 
@@ -260,7 +248,7 @@ namespace tests
                 Assert.Equal(expected.Maturity, actual.Maturity);
                 Assert.Equal(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
                 Assert.Equal(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
-                compareCosts(expected.CostProfile, actual.CostProfile);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
 
@@ -272,7 +260,7 @@ namespace tests
             }
             else
             {
-                compareYearValues(expected, actual);
+                TestHelper.CompareYearValues(expected, actual);
 
             }
         }
@@ -284,24 +272,7 @@ namespace tests
             }
             else
             {
-                compareYearValues(expected, actual);
-            }
-        }
-        void compareYearValues<T>(TimeSeriesBase<T> expected, TimeSeriesBase<T> actual)
-        {
-            if (expected == null || actual == null)
-            {
-                Assert.Equal(expected, actual);
-            }
-            else
-            {
-                Assert.Equal(expected.YearValues.Count(), actual.YearValues.Count());
-                var yearValuePairsXY = expected.YearValues.OrderBy(v => v.Year).Zip(actual.YearValues.OrderBy(v => v.Year));
-                foreach (var pair in yearValuePairsXY)
-                {
-                    Assert.Equal(pair.First.Year, pair.Second.Year);
-                    Assert.Equal(pair.First.Value, pair.Second.Value);
-                }
+                TestHelper.CompareYearValues(expected, actual);
             }
         }
         [Fact]
