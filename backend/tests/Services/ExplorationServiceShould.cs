@@ -13,7 +13,7 @@ namespace tests;
 [Collection("Database collection")]
 public class ExplorationServiceTest
 {
-    DatabaseFixture fixture;
+    readonly DatabaseFixture fixture;
 
     public ExplorationServiceTest(DatabaseFixture fixture)
     {
@@ -146,7 +146,7 @@ public class ExplorationServiceTest
 
     private static Exploration CreateTestExploration(Project project)
     {
-        return new ExplorationBuilder()
+        return new ExplorationBuilder
         {
             Name = "Test-exploration-23",
             Project = project,
