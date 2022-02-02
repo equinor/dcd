@@ -26,7 +26,7 @@ public class ExplorationServiceShould : IDisposable
     }
 
     [Fact]
-    public void CreateNewExplorationCorrectly()
+    public void CreateNewExploration()
     {
         var project = fixture.context.Projects.FirstOrDefault();
         var testExploration = CreateTestExploration(project);
