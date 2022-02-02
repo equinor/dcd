@@ -30,8 +30,7 @@ public class ExplorationServiceShould : IDisposable
     {
         var project = fixture.context.Projects.FirstOrDefault();
         var testExploration = CreateTestExploration(project);
-        ProjectService projectService = new
-            ProjectService(fixture.context);
+        ProjectService projectService = new ProjectService(fixture.context);
         ExplorationService explorationService = new
             ExplorationService(fixture.context, projectService);
 
