@@ -10,7 +10,7 @@ public static class SampleAssetGenerator
         var projectBuilder = new ProjectsBuilder() { }
         .WithProject(new ProjectBuilder()
         {
-            ProjectName = "P1",
+            Name = "P1",
             CreateDate = DateTimeOffset.UtcNow,
             ProjectCategory = ProjectCategory.OffshoreWind,
             ProjectPhase = ProjectPhase.DG3
@@ -192,7 +192,7 @@ public static class SampleAssetGenerator
         )
         .WithProject(new ProjectBuilder()
         {
-            ProjectName = "P2",
+            Name = "P2",
             CreateDate = DateTimeOffset.UtcNow
         }
             .WithDrainageStrategy(new DrainageStrategyBuilder()

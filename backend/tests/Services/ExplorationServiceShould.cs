@@ -37,7 +37,7 @@ public class ExplorationServiceShould : IDisposable
         explorationService.CreateExploration(testExploration);
 
         var explorations = fixture.context.Projects.FirstOrDefault(o =>
-                o.ProjectName == project.ProjectName).Explorations;
+                o.Name == project.Name).Explorations;
         var retrievedExploration = explorations.FirstOrDefault(o => o.Name ==
                 testExploration.Name);
         Assert.NotNull(retrievedExploration);
