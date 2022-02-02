@@ -11,14 +11,20 @@ using Xunit;
 namespace tests;
 
 [Collection("Database collection")]
-public class ExplorationServiceTest
+public class ExplorationServiceShould : IDisposable
 {
-    readonly DatabaseFixture fixture;
+    private readonly DatabaseFixture fixture;
 
-    public ExplorationServiceTest(DatabaseFixture fixture)
+    public ExplorationServiceShould(DatabaseFixture fixture)
     {
-        this.fixture = fixture;
+        this.fixture = new DatabaseFixture();
     }
+
+    public void Dispose()
+    {
+        fixture.Dispose();
+    }
+
     [Fact]
     public void CreateNewExplorationCorrectly()
     {
