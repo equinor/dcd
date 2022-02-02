@@ -54,6 +54,7 @@ public class ExplorationServiceShould : IDisposable
         else
         {
             Assert.Equal(expected.Project.Id, actual.Project.Id);
+            Assert.Equal(expected.ProjectId, actual.ProjectId);
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.WellType, actual.WellType);
             compareExplorationCostProfiles(expected.CostProfile, actual.CostProfile);
