@@ -62,10 +62,6 @@ namespace api.Services
             }
             throw new NotFoundInDBException($"The database contains no projects");
         }
-        public void AddExploration(Project project, Exploration exploration)
-        {
-            project.Explorations.Add(exploration);
-        }
         private Project AddAssetsToProject(Project project)
         {
             project.WellProjects = _wellProjectService.GetWellProjects(project.Id).ToList();

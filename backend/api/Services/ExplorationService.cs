@@ -39,15 +39,9 @@ namespace api.Services
 
         public Exploration CreateExploration(Exploration exploration)
         {
-            AddExplorationToProject(exploration);
             var result = _context.Explorations!.Add(exploration);
             _context.SaveChanges();
             return result.Entity;
-        }
-        private void AddExplorationToProject(Exploration exploration)
-        {
-            var project = _projectService.GetProject(exploration.Project.Id);
-            _projectService.AddExploration(project, exploration);
         }
     }
 }
