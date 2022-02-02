@@ -10,7 +10,7 @@ namespace api.Services
         private readonly DcdDbContext _context;
         private readonly WellProjectService _wellProjectService;
         private readonly DrainageStrategyService _drainageStrategyService;
-        private readonly FacilityService _facilityService;
+        private readonly SurfService _surfService;
         private readonly SubstructureService _substructureService;
         private readonly TopsideFacilityService _topsideFaciltyService;
         private readonly TransportService _transportService;
@@ -20,8 +20,8 @@ namespace api.Services
             _context = context;
             _wellProjectService = new WellProjectService(_context);
             _drainageStrategyService = new DrainageStrategyService(_context, this);
-            _facilityService = new FacilityService(_context);
-            _substructureService = new SubstructureService(_context);
+            _surfService = new SurfService(_context, this);
+            _substructureService = new SubstructureService(_context, this);
             _topsideFaciltyService = new TopsideFacilityService(_context);
             _transportService = new TransportService(_context);
         }
@@ -55,7 +55,7 @@ namespace api.Services
 
                 if (project == null)
                 {
-                    throw new NotFoundInDBException(string.Format("Project %s not found", projectId));
+                    throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
                 }
                 AddAssetsToProject(project);
                 return project;
@@ -66,16 +66,26 @@ namespace api.Services
         {
             project.WellProjects = _wellProjectService.GetWellProjects(project.Id).ToList();
             project.DrainageStrategies = _drainageStrategyService.GetDrainageStrategies(project.Id).ToList();
-            project.Surfs = _facilityService.GetSurfsForProject(project.Id).ToList();
-            project.Substructures = _substructureService.GetSubstructuresForProject(project.Id).ToList();
-            project.Topsides = _topsideFaciltyService.GetTopsidesForProject(project.Id).ToList();
-            project.Transports = _transportService.GetTransportsForProject(project.Id).ToList();
+            project.Surfs = _surfService.GetSurfs(project.Id).ToList();
+            project.Substructures = _substructureService.GetSubstructures(project.Id).ToList();
+            project.Topsides = _topsideFaciltyService.GetTopsides(project.Id).ToList();
+            project.Transports = _transportService.GetTransports(project.Id).ToList();
             return project;
         }
 
         public void AddSurfsToProject(Project project, Surf surf)
         {
             project.Surfs.Add(surf);
+        }
+
+        public void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy)
+        {
+            project.DrainageStrategies.Add(drainageStrategy);
+        }
+
+        public void AddSubstructure(Project project, Substructure substructure)
+        {
+            project.Substructures.Add(substructure);
         }
     }
 }

@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using api.Adapters;
 using api.Dtos;
 using api.Models;
-using api.Services;
-
-using Moq;
 
 using Xunit;
 
@@ -20,16 +17,14 @@ namespace tests
         {
             // Arrange
             var projectId = new Guid();
-            var projectServiceMock = new Mock<IProjectService>();
-            projectServiceMock.Setup(o => o.GetProject(projectId)).Returns(CreateTestProject(projectId));
-            var drainageStrategyAdapter = new DrainageStrategyAdapter(projectServiceMock.Object);
+            var drainageStrategyAdapter = new DrainageStrategyAdapter();
             var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
 
             // Act
             var result = drainageStrategyAdapter.Convert(drainageStrategyDto);
 
             // Assert
-            Assert.Equal(drainageStrategyDto.ProjectId, result.Project.Id);
+            Assert.Equal(drainageStrategyDto.ProjectId, result.ProjectId);
             Assert.Equal(drainageStrategyDto.Name, result.Name);
             Assert.Equal(drainageStrategyDto.Description, result.Description);
             Assert.Equal(drainageStrategyDto.NGLYield, result.NGLYield);
@@ -58,120 +53,6 @@ namespace tests
 
             Assert.Equal(drainageStrategyDto.Name, result.Co2Emissions.DrainageStrategy.Name);
             TestHelper.CompareYearValues<double>(drainageStrategyDto.Co2Emissions, result.Co2Emissions);
-        }
-
-        [Fact]
-        public void ThrowArgumentExceptionIfProductionProfileOilIsNull()
-        {
-            // Arrange
-            var projectId = new Guid();
-            var projectServiceMock = new Mock<IProjectService>();
-            projectServiceMock.Setup(o => o.GetProject(projectId)).Returns(CreateTestProject(projectId));
-            var drainageStrategyAdapter = new DrainageStrategyAdapter(projectServiceMock.Object);
-            var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
-            drainageStrategyDto.ProductionProfileOil = null;
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyAdapter.Convert(drainageStrategyDto));
-        }
-
-        [Fact]
-        public void ThrowArgumentExceptionIfProductionProfileGasIsNull()
-        {
-            // Arrange
-            var projectId = new Guid();
-            var projectServiceMock = new Mock<IProjectService>();
-            projectServiceMock.Setup(o => o.GetProject(projectId)).Returns(CreateTestProject(projectId));
-            var drainageStrategyAdapter = new DrainageStrategyAdapter(projectServiceMock.Object);
-            var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
-            drainageStrategyDto.ProductionProfileGas = null;
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyAdapter.Convert(drainageStrategyDto));
-        }
-
-        [Fact]
-        public void ThrowArgumentExceptionIfProductionProfileWaterIsNull()
-        {
-            // Arrange
-            var projectId = new Guid();
-            var projectServiceMock = new Mock<IProjectService>();
-            projectServiceMock.Setup(o => o.GetProject(projectId)).Returns(CreateTestProject(projectId));
-            var drainageStrategyAdapter = new DrainageStrategyAdapter(projectServiceMock.Object);
-            var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
-            drainageStrategyDto.ProductionProfileWater = null;
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyAdapter.Convert(drainageStrategyDto));
-        }
-
-        [Fact]
-        public void ThrowArgumentExceptionIfProductionProfileWaterInjectionIsNull()
-        {
-            // Arrange
-            var projectId = new Guid();
-            var projectServiceMock = new Mock<IProjectService>();
-            projectServiceMock.Setup(o => o.GetProject(projectId)).Returns(CreateTestProject(projectId));
-            var drainageStrategyAdapter = new DrainageStrategyAdapter(projectServiceMock.Object);
-            var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
-            drainageStrategyDto.ProductionProfileWaterInjection = null;
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyAdapter.Convert(drainageStrategyDto));
-        }
-
-        [Fact]
-        public void ThrowArgumentExceptionIfFuelFlaringAndLossesIsNull()
-        {
-            // Arrange
-            var projectId = new Guid();
-            var projectServiceMock = new Mock<IProjectService>();
-            projectServiceMock.Setup(o => o.GetProject(projectId)).Returns(CreateTestProject(projectId));
-            var drainageStrategyAdapter = new DrainageStrategyAdapter(projectServiceMock.Object);
-            var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
-            drainageStrategyDto.FuelFlaringAndLosses = null;
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyAdapter.Convert(drainageStrategyDto));
-        }
-
-        [Fact]
-        public void ThrowArgumentExceptionIfNetSalesGasIsNull()
-        {
-            // Arrange
-            var projectId = new Guid();
-            var projectServiceMock = new Mock<IProjectService>();
-            projectServiceMock.Setup(o => o.GetProject(projectId)).Returns(CreateTestProject(projectId));
-            var drainageStrategyAdapter = new DrainageStrategyAdapter(projectServiceMock.Object);
-            var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
-            drainageStrategyDto.NetSalesGas = null;
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyAdapter.Convert(drainageStrategyDto));
-        }
-
-        [Fact]
-        public void ThrowArgumentExceptionIfCo2EmmissionsIsNull()
-        {
-            // Arrange
-            var projectId = new Guid();
-            var projectServiceMock = new Mock<IProjectService>();
-            projectServiceMock.Setup(o => o.GetProject(projectId)).Returns(CreateTestProject(projectId));
-            var drainageStrategyAdapter = new DrainageStrategyAdapter(projectServiceMock.Object);
-            var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
-            drainageStrategyDto.Co2Emissions = null;
-
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => drainageStrategyAdapter.Convert(drainageStrategyDto));
-        }
-
-        private Project CreateTestProject(Guid projectId)
-        {
-            return new Project
-            {
-                Id = projectId,
-                ProjectName = "Test project"
-            };
         }
 
         private DrainageStrategyDto CreateDrainageStrategyDto(Guid projectId)

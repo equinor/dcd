@@ -14,7 +14,7 @@ namespace api.Services
             _context = context;
         }
 
-        public IEnumerable<Topside> GetTopsidesForProject(Guid projectId)
+        public IEnumerable<Topside> GetTopsides(Guid projectId)
         {
             if (_context.Topsides != null)
             {

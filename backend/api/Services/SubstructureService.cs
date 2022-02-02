@@ -8,13 +8,15 @@ namespace api.Services
     public class SubstructureService
     {
         private readonly DcdDbContext _context;
+        private readonly ProjectService _projectService;
 
-        public SubstructureService(DcdDbContext context)
+        public SubstructureService(DcdDbContext context, ProjectService projectService)
         {
             _context = context;
+            _projectService = projectService;
         }
 
-        public IEnumerable<Substructure> GetSubstructuresForProject(Guid projectId)
+        public IEnumerable<Substructure> GetSubstructures(Guid projectId)
         {
             if (_context.Substructures != null)
             {
@@ -27,6 +29,15 @@ namespace api.Services
             {
                 return new List<Substructure>();
             }
+        }
+
+        public Substructure CreateSubstructure(Substructure substructrure)
+        {
+            var project = _projectService.GetProject(substructrure.ProjectId);
+            _projectService.AddSubstructure(project, substructrure);
+            var result = _context.Substructures!.Add(substructrure);
+            _context.SaveChanges();
+            return result.Entity;
         }
     }
 }

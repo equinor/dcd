@@ -3,6 +3,7 @@ using System.Linq;
 
 using api.Models;
 using api.SampleData.Builders;
+using api.SampleData.Generators;
 using api.Services;
 
 using Xunit;
@@ -23,6 +24,28 @@ namespace tests
         public void Dispose()
         {
             fixture.Dispose();
+        }
+
+        [Fact]
+        public void GetDrainageStrategies()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault();
+            var expectedStrategies = fixture.context.DrainageStrategies.ToList().Where(o => o.Project.Id == project.Id);
+
+            // Act
+            var actualStrategies = drainageStrategyService.GetDrainageStrategies(project.Id);
+
+            // Assert
+            Assert.Equal(expectedStrategies.Count(), actualStrategies.Count());
+            var drainageStrategiesExpectedAndActual = expectedStrategies.OrderBy(d => d.Name)
+                .Zip(actualStrategies.OrderBy(d => d.Name));
+            foreach (var drainageStrategyPair in drainageStrategiesExpectedAndActual)
+            {
+                TestHelper.CompareDrainageStrategies(drainageStrategyPair.First, drainageStrategyPair.Second);
+            }
         }
 
         [Fact]
@@ -50,6 +73,7 @@ namespace tests
                 Name = "DrainStrat Test",
                 Description = "Some description of the strategy",
                 Project = project,
+                ProjectId = project.Id,
                 NGLYield = 0.5,
                 WaterInjectorCount = 20,
                 GasInjectorCount = 22,
