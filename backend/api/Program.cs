@@ -76,7 +76,7 @@ builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();
 builder.Services.AddScoped<ExplorationService>();
-builder.Services.AddScoped<FacilityService>();
+builder.Services.AddScoped<SurfService>();
 builder.Services.AddScoped<SubstructureService>();
 builder.Services.AddScoped<TopsideFacilityService>();
 builder.Services.AddScoped<TransportService>();

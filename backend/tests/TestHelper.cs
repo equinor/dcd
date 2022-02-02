@@ -74,5 +74,35 @@ namespace tests
                 CompareYearValues(expected, actual);
             }
         }
+
+        public static void CompareCosts<T>(TimeSeriesCost<T> expected, TimeSeriesCost<T> actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                CompareYearValues(expected, actual);
+                Assert.Equal(expected.Currency, actual.Currency);
+                Assert.Equal(expected.EPAVersion, actual.EPAVersion);
+            }
+        }
+
+        public static void CompareSubstructures(Substructure expected, Substructure actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                CompareCosts(expected.CostProfile, actual.CostProfile);
+                Assert.Equal(expected.DryWeight, actual.DryWeight);
+            }
+        }
     }
 }

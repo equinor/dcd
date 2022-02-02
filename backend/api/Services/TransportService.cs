@@ -14,7 +14,7 @@ namespace api.Services
             _context = context;
         }
 
-        public IEnumerable<Transport> GetTransportsForProject(Guid projectId)
+        public IEnumerable<Transport> GetTransports(Guid projectId)
         {
             if (_context.Transports != null)
             {

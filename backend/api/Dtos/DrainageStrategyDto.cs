@@ -13,13 +13,13 @@ namespace api.Dtos
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
-        public ProductionProfileOilDto? ProductionProfileOil { get; set; }
-        public ProductionProfileGasDto? ProductionProfileGas { get; set; }
-        public ProductionProfileWaterDto? ProductionProfileWater { get; set; }
-        public ProductionProfileWaterInjectionDto? ProductionProfileWaterInjection { get; set; }
-        public FuelFlaringAndLossesDto? FuelFlaringAndLosses { get; set; }
-        public NetSalesGasDto? NetSalesGas { get; set; }
-        public Co2EmissionsDto? Co2Emissions { get; set; }
+        public ProductionProfileOilDto ProductionProfileOil { get; set; } = null!;
+        public ProductionProfileGasDto ProductionProfileGas { get; set; } = null!;
+        public ProductionProfileWaterDto ProductionProfileWater { get; set; } = null!;
+        public ProductionProfileWaterInjectionDto ProductionProfileWaterInjection { get; set; } = null!;
+        public FuelFlaringAndLossesDto FuelFlaringAndLosses { get; set; } = null!;
+        public NetSalesGasDto NetSalesGas { get; set; } = null!;
+        public Co2EmissionsDto Co2Emissions { get; set; } = null!;
     }
     public class ProductionProfileOilDto : TimeSeriesVolume
     {

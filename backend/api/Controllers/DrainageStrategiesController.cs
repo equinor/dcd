@@ -19,11 +19,11 @@ namespace api.Controllers
         private readonly ILogger<DrainageStrategiesController> _logger;
         private readonly DrainageStrategyAdapter _drainageStrategyAdapter;
 
-        public DrainageStrategiesController(ILogger<DrainageStrategiesController> logger, DrainageStrategyService drainageStrategyService, ProjectService projectService)
+        public DrainageStrategiesController(ILogger<DrainageStrategiesController> logger, DrainageStrategyService drainageStrategyService)
         {
             _logger = logger;
             _drainageStrategyService = drainageStrategyService;
-            _drainageStrategyAdapter = new DrainageStrategyAdapter(projectService);
+            _drainageStrategyAdapter = new DrainageStrategyAdapter();
         }
 
         [HttpPost(Name = "CreateDrainageStrategy")]

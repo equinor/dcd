@@ -9,6 +9,7 @@ namespace api.Models
         public Guid Id { get; set; }
         [ForeignKey("Project.Id")]
         public Project Project { get; set; } = null!;
+        public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
         public double NGLYield { get; set; }
