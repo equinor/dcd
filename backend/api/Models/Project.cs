@@ -1,5 +1,3 @@
-using System.Security.Permissions;
-
 namespace api.Models
 {
     public class Project

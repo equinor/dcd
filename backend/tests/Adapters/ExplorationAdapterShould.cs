@@ -67,6 +67,17 @@ public class ExplorationAdapterShould : IDisposable
                 exploration.GAndGAdminCost.Exploration.Name);
     }
 
+    public void FailConvertingWithEmptyProjectId()
+    {
+        ProjectService projectService = new ProjectService(fixture.context);
+        var explorationAdapter = new ExplorationAdapter(projectService);
+        var explorationDto = CreateTestExplorationDto(System.Guid.Empty);
+        Assert.ThrowsAny<Exception>(() =>
+        {
+            explorationAdapter.Convert(explorationDto);
+        });
+    }
+
     private ExplorationDto CreateTestExplorationDto(Guid projectId)
     {
         return new ExplorationDto
