@@ -30,9 +30,9 @@ namespace tests
         [Fact]
         public void GetAll()
         {
-            var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.ProjectName);
+            var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.Name);
             ProjectService projectService = new ProjectService(fixture.context);
-            var projectsFromService = projectService.GetAll().OrderBy(p => p.ProjectName);
+            var projectsFromService = projectService.GetAll().OrderBy(p => p.Name);
             var projectsExpectedActual = projectFromSampleDataGenerator.Zip(projectsFromService);
             Assert.Equal(projectFromSampleDataGenerator.Count(), projectsFromService.Count());
             foreach (var projectPair in projectsExpectedActual)
@@ -51,13 +51,13 @@ namespace tests
             foreach (var project in projectsFromGetAllService)
             {
                 var projectFromGetProjectService = projectService.GetProject(project.Id);
-                var projectFromSampleDataGenerator = projectsFromSampleDataGenerator.Find(p => p.ProjectName == project.ProjectName);
+                var projectFromSampleDataGenerator = projectsFromSampleDataGenerator.Find(p => p.Name == project.Name);
                 compareProjects(projectFromSampleDataGenerator, projectFromGetProjectService);
             }
         }
         void compareProjects(Project expected, Project actual)
         {
-            Assert.Equal(expected.ProjectName, actual.ProjectName);
+            Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.ProjectPhase, actual.ProjectPhase);
             Assert.Equal(expected.ProjectCategory, actual.ProjectCategory);
             Assert.Equal(expected.Cases.Count(), actual.Cases.Count());
