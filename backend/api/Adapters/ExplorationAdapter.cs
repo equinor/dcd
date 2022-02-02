@@ -6,9 +6,9 @@ namespace api.Adapters
 {
     public class ExplorationAdapter
     {
-        private readonly IProjectService _projectService;
+        private readonly ProjectService _projectService;
 
-        public ExplorationAdapter(IProjectService projectService)
+        public ExplorationAdapter(ProjectService projectService)
         {
             _projectService = projectService;
         }
