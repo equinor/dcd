@@ -31,13 +31,54 @@ namespace api.Services
             }
         }
 
-        public Substructure CreateSubstructure(Substructure substructrure)
+        public Project CreateSubstructure(Substructure substructure)
         {
-            var project = _projectService.GetProject(substructrure.ProjectId);
-            _projectService.AddSubstructure(project, substructrure);
-            var result = _context.Substructures!.Add(substructrure);
+            var project = _projectService.GetProject(substructure.ProjectId);
+            substructure.Project = project;
+            _context.Substructures!.Add(substructure);
             _context.SaveChanges();
-            return result.Entity;
+            return _projectService.GetProject(project.Id);
+        }
+
+        public Project DeleteSubstructure(Guid substructureId)
+        {
+            var substructure = GetSubstructure(substructureId);
+            _context.Substructures!.Remove(substructure);
+            _context.SaveChanges();
+            return _projectService.GetProject(substructure.ProjectId);
+        }
+
+        public Project UpdateSubstructure(Guid substructureId, Substructure updatedSubstructure)
+        {
+            var substructure = GetSubstructure(substructureId);
+            CopyData(substructure, updatedSubstructure);
+            _context.Substructures!.Update(substructure);
+            _context.SaveChanges();
+            return _projectService.GetProject(substructure.ProjectId);
+        }
+
+        private Substructure GetSubstructure(Guid substructureId)
+        {
+            var substructure = _context.Substructures!
+                .Include(c => c.Project)
+                .Include(c => c.CostProfile)
+                    .ThenInclude(c => c.YearValues)
+                .FirstOrDefault(o => o.Id == substructureId);
+            if (substructure == null)
+            {
+                throw new ArgumentException(string.Format("Substructure {0} not found.", substructureId));
+            }
+            return substructure;
+        }
+
+        private static void CopyData(Substructure substructure, Substructure updatedSubstructure)
+        {
+            substructure.Name = updatedSubstructure.Name;
+            substructure.DryWeight = updatedSubstructure.DryWeight;
+            substructure.Maturity = updatedSubstructure.Maturity;
+            substructure.CostProfile.Currency = updatedSubstructure.CostProfile.Currency;
+            substructure.CostProfile.EPAVersion = updatedSubstructure.CostProfile.EPAVersion;
+            substructure.CostProfile.YearValues = updatedSubstructure.CostProfile.YearValues;
         }
     }
 }

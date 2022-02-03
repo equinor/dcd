@@ -111,10 +111,5 @@ namespace api.Services
         {
             project.DrainageStrategies.Add(drainageStrategy);
         }
-
-        public void AddSubstructure(Project project, Substructure substructure)
-        {
-            project.Substructures.Add(substructure);
-        }
     }
 }

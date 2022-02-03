@@ -4,7 +4,6 @@ namespace api.Dtos
 {
     public class SubstructureDto
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
         public SubstructureCostProfileDto CostProfile { get; set; } = null!;
