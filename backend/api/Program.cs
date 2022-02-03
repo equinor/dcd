@@ -80,6 +80,7 @@ builder.Services.AddScoped<SurfService>();
 builder.Services.AddScoped<SubstructureService>();
 builder.Services.AddScoped<TopsideFacilityService>();
 builder.Services.AddScoped<TransportService>();
+builder.Services.AddScoped<CaseService>();
 builder.Services.AddControllers(options =>
 {
     options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()));
