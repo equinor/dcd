@@ -53,7 +53,7 @@ namespace api.Services
             if (_context.Surfs != null)
             {
                 var project = _projectService.GetProject(surf.ProjectId);
-                _projectService.AddSurfsToProject(project, surf);
+                surf.Project = project;
                 var result = _context.Surfs.Add(surf);
                 _context.SaveChanges();
                 return result.Entity;

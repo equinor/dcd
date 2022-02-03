@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
-    public class ProjectService : IProjectService
+    public class ProjectService
     {
         private readonly DcdDbContext _context;
         private readonly WellProjectService _wellProjectService;
@@ -14,6 +14,8 @@ namespace api.Services
         private readonly SubstructureService _substructureService;
         private readonly TopsideFacilityService _topsideFaciltyService;
         private readonly TransportService _transportService;
+
+        private readonly CaseService _caseService;
 
         public ProjectService(DcdDbContext context)
         {
@@ -24,6 +26,7 @@ namespace api.Services
             _substructureService = new SubstructureService(_context, this);
             _topsideFaciltyService = new TopsideFacilityService(_context);
             _transportService = new TransportService(_context);
+            _caseService = new CaseService(_context, this);
         }
 
         public Project CreateProject(Project project)
@@ -100,11 +103,6 @@ namespace api.Services
             project.Topsides = _topsideFaciltyService.GetTopsides(project.Id).ToList();
             project.Transports = _transportService.GetTransports(project.Id).ToList();
             return project;
-        }
-
-        public void AddSurfsToProject(Project project, Surf surf)
-        {
-            project.Surfs.Add(surf);
         }
     }
 }
