@@ -50,6 +50,38 @@ namespace tests
             }
         }
 
+        public static void CompareExplorations(Exploration expected, Exploration actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, null);
+                Assert.Equal(actual, null);
+            }
+            else
+            {
+                Assert.Equal(expected.Project.Id, actual.Project.Id);
+                Assert.Equal(expected.ProjectId, actual.ProjectId);
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.WellType, actual.WellType);
+
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+                Assert.Equal(expected.CostProfile.Exploration.Name,
+                        actual.CostProfile.Exploration.Name);
+
+                TestHelper.CompareYearValues(expected.DrillingSchedule,
+                        actual.DrillingSchedule);
+                Assert.Equal(expected.DrillingSchedule.Exploration.Name,
+                        actual.DrillingSchedule.Exploration.Name);
+
+                TestHelper.CompareCosts(expected.GAndGAdminCost,
+                        actual.GAndGAdminCost);
+                Assert.Equal(expected.GAndGAdminCost.Exploration.Name,
+                        actual.GAndGAdminCost.Exploration.Name);
+
+                Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
+            }
+        }
+
         public static void CompareVolumes(TimeSeriesVolume expected, TimeSeriesVolume actual)
         {
             if (expected == null || actual == null)
