@@ -7,6 +7,5 @@ namespace api.Services
         IEnumerable<Project> GetAll();
         Project GetProject(Guid projectId);
         void AddSurfsToProject(Project project, Surf surf);
-        void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy);
     }
 }
