@@ -32,5 +32,18 @@ namespace api.Controllers
             var substructure = _substructureAdapter.Convert(substructureDto);
             return _substructureService.CreateSubstructure(substructure);
         }
+
+        [HttpDelete("{substructureId}", Name = "DeleteSubstructure")]
+        public bool DeleteSubstructure(Guid substructureId)
+        {
+            return _substructureService.DeleteSubstructure(substructureId);
+        }
+
+        [HttpPatch("{substructureId}", Name = "UpdateSubstructure")]
+        public Substructure UpdateSubstructure([FromRoute] Guid substructureId, [FromBody] SubstructureDto substructureDto)
+        {
+            var substructure = _substructureAdapter.Convert(substructureDto);
+            return _substructureService.UpdateSubstructure(substructureId, substructure);
+        }
     }
 }

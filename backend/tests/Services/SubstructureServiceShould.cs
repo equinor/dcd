@@ -66,6 +66,81 @@ namespace tests
             TestHelper.CompareSubstructures(expectedSubstructure, actualSubstructure);
         }
 
+        [Fact]
+        public void DeleteSubstructure()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var substructureService = new SubstructureService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault();
+            var substructureToDelete = CreateTestSubstructure(project);
+            fixture.context.Substructures.Add(substructureToDelete);
+            fixture.context.SaveChanges();
+
+            // Act
+            substructureService.DeleteSubstructure(substructureToDelete.Id);
+
+            // Assert
+            var actualSubstructure = fixture.context.Substructures.FirstOrDefault(o => o.Name == substructureToDelete.Name);
+            Assert.Null(actualSubstructure);
+        }
+
+        [Fact]
+        public void ThrowArgumentExceptionIfTryingToDeleteNonExistentSubstructure()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var substructureService = new SubstructureService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault();
+            var substructureToDelete = CreateTestSubstructure(project);
+            fixture.context.Substructures.Add(substructureToDelete);
+            fixture.context.SaveChanges();
+
+            // Act, assert
+            Assert.Throws<ArgumentException>(() => substructureService.DeleteSubstructure(new Guid()));
+        }
+
+        [Fact]
+        public void UpdateSubstructure()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var substructureService = new SubstructureService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault();
+            var expectedSubstructure = CreateTestSubstructure(project);
+            fixture.context.Substructures.Add(expectedSubstructure);
+            fixture.context.SaveChanges();
+
+            expectedSubstructure.DryWeight = 11.11;
+            expectedSubstructure.Maturity = Maturity.D;
+            expectedSubstructure.Name = "Updated name";
+            expectedSubstructure.CostProfile.Currency = Currency.NOK;
+            expectedSubstructure.CostProfile.EPAVersion = "another EPA version";
+
+            // Act
+            substructureService.UpdateSubstructure(expectedSubstructure.Id, expectedSubstructure);
+
+            // Assert
+            var actualSubstructure = fixture.context.Substructures.FirstOrDefault(o => o.Name == expectedSubstructure.Name);
+            Assert.NotNull(actualSubstructure);
+            TestHelper.CompareSubstructures(expectedSubstructure, actualSubstructure);
+        }
+
+        [Fact]
+        public void ThrowArgumentExceptionIfTryingToUpdateNonExistentSubstructure()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var substructureService = new SubstructureService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault();
+            var expectedSubstructure = CreateTestSubstructure(project);
+            fixture.context.Substructures.Add(expectedSubstructure);
+            fixture.context.SaveChanges();
+
+            // Act, assert
+            Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(new Guid(), expectedSubstructure));
+        }
+
         private static Substructure CreateTestSubstructure(Project project)
         {
             return new SubstructureBuilder
@@ -76,7 +151,11 @@ namespace tests
                 Project = project,
                 ProjectId = project.Id,
             }
-                .WithCostProfile(new SubstructureCostProfileBuilder()
+                .WithCostProfile(new SubstructureCostProfileBuilder
+                {
+                    Currency = Currency.USD,
+                    EPAVersion = "test EPA"
+                }
                     .WithYearValue(2030, 2.3)
                     .WithYearValue(2031, 3.3)
                     .WithYearValue(2032, 4.4)
