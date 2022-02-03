@@ -18,7 +18,7 @@ namespace api.Services
         public ProjectService(DcdDbContext context)
         {
             _context = context;
-            _wellProjectService = new WellProjectService(_context);
+            _wellProjectService = new WellProjectService(_context, this);
             _drainageStrategyService = new DrainageStrategyService(_context, this);
             _surfService = new SurfService(_context, this);
             _substructureService = new SubstructureService(_context, this);

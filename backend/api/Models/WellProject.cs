@@ -6,6 +6,7 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public Project Project { get; set; } = null!;
+        public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
 
         public WellProjectCostProfile CostProfile { get; set; } = null!;

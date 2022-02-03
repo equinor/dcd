@@ -93,7 +93,8 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, actual);
+                Assert.Null(expected);
+                Assert.Null(actual);
             }
             else
             {
@@ -101,6 +102,28 @@ namespace tests
                 Assert.Equal(expected.Maturity, actual.Maturity);
                 CompareCosts(expected.CostProfile, actual.CostProfile);
                 Assert.Equal(expected.DryWeight, actual.DryWeight);
+            }
+        }
+
+        public static void CompareWellProjects(WellProject expected, WellProject actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
+                Assert.Equal(expected.AnnualWellInterventionCost, actual.AnnualWellInterventionCost);
+                Assert.Equal(expected.PluggingAndAbandonment, actual.PluggingAndAbandonment);
+                Assert.Equal(expected.ProducerCount, actual.ProducerCount);
+                Assert.Equal(expected.GasInjectorCount, actual.GasInjectorCount);
+                Assert.Equal(expected.WaterInjectorCount, actual.WaterInjectorCount);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
+                TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
     }
