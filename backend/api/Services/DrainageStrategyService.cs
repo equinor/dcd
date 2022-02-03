@@ -43,13 +43,74 @@ namespace api.Services
             }
         }
 
-        public DrainageStrategy CreateDrainageStrategy(DrainageStrategy drainageStrategy)
+        public Project CreateDrainageStrategy(DrainageStrategy drainageStrategy)
         {
             var project = _projectService.GetProject(drainageStrategy.ProjectId);
-            _projectService.AddDrainageStrategy(project, drainageStrategy);
-            var result = _context.DrainageStrategies!.Add(drainageStrategy);
+            drainageStrategy.Project = project;
+            _context.DrainageStrategies!.Add(drainageStrategy);
             _context.SaveChanges();
-            return result.Entity;
+            return _projectService.GetProject(drainageStrategy.ProjectId);
+        }
+
+        public Project DeleteDrainageStrategy(Guid drainageStrategyId)
+        {
+            var drainageStrategy = GetDrainageStrategy(drainageStrategyId);
+            _context.DrainageStrategies!.Remove(drainageStrategy);
+            _context.SaveChanges();
+            return _projectService.GetProject(drainageStrategy.ProjectId);
+        }
+
+        public Project UpdateDrainageStrategy(Guid drainageStrategyId, DrainageStrategy updatedDrainageStrategy)
+        {
+            var drainageStrategy = GetDrainageStrategy(drainageStrategyId);
+            CopyData(drainageStrategy, updatedDrainageStrategy);
+            _context.DrainageStrategies!.Update(drainageStrategy);
+            _context.SaveChanges();
+            return _projectService.GetProject(drainageStrategy.ProjectId);
+        }
+
+        private DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
+        {
+            var drainageStrategy = _context.DrainageStrategies!
+                .Include(c => c.Project)
+                .Include(c => c.ProductionProfileOil)
+                    .ThenInclude(c => c.YearValues)
+                .Include(c => c.ProductionProfileGas)
+                    .ThenInclude(c => c.YearValues)
+                .Include(c => c.ProductionProfileWater)
+                    .ThenInclude(c => c.YearValues)
+                .Include(c => c.ProductionProfileWaterInjection)
+                    .ThenInclude(c => c.YearValues)
+                .Include(c => c.FuelFlaringAndLosses)
+                    .ThenInclude(c => c.YearValues)
+                .Include(c => c.NetSalesGas)
+                    .ThenInclude(c => c.YearValues)
+                .Include(c => c.Co2Emissions)
+                    .ThenInclude(c => c.YearValues)
+                .FirstOrDefault(o => o.Id == drainageStrategyId);
+            if (drainageStrategy == null)
+            {
+                throw new ArgumentException(string.Format("Drainage strategy {0} not found.", drainageStrategyId));
+            }
+            return drainageStrategy;
+        }
+
+        private static void CopyData(DrainageStrategy drainageStrategy, DrainageStrategy updatedDrainageStrategy)
+        {
+            drainageStrategy.Name = updatedDrainageStrategy.Name;
+            drainageStrategy.Description = updatedDrainageStrategy.Description;
+            drainageStrategy.NGLYield = updatedDrainageStrategy.NGLYield;
+            drainageStrategy.ProducerCount = updatedDrainageStrategy.ProducerCount;
+            drainageStrategy.GasInjectorCount = updatedDrainageStrategy.GasInjectorCount;
+            drainageStrategy.WaterInjectorCount = updatedDrainageStrategy.WaterInjectorCount;
+            drainageStrategy.ArtificialLift = updatedDrainageStrategy.ArtificialLift;
+            drainageStrategy.ProductionProfileOil = updatedDrainageStrategy.ProductionProfileOil;
+            drainageStrategy.ProductionProfileGas = updatedDrainageStrategy.ProductionProfileGas;
+            drainageStrategy.ProductionProfileWater = updatedDrainageStrategy.ProductionProfileWater;
+            drainageStrategy.ProductionProfileWaterInjection = updatedDrainageStrategy.ProductionProfileWaterInjection;
+            drainageStrategy.FuelFlaringAndLosses = updatedDrainageStrategy.FuelFlaringAndLosses;
+            drainageStrategy.NetSalesGas = updatedDrainageStrategy.NetSalesGas;
+            drainageStrategy.Co2Emissions = updatedDrainageStrategy.Co2Emissions;
         }
     }
 }

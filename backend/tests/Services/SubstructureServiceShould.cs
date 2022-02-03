@@ -107,23 +107,18 @@ namespace tests
             var projectService = new ProjectService(fixture.context);
             var substructureService = new SubstructureService(fixture.context, projectService);
             var project = fixture.context.Projects.FirstOrDefault();
-            var expectedSubstructure = CreateTestSubstructure(project);
-            fixture.context.Substructures.Add(expectedSubstructure);
+            var oldSubstructure = CreateTestSubstructure(project);
+            fixture.context.Substructures.Add(oldSubstructure);
             fixture.context.SaveChanges();
-
-            expectedSubstructure.DryWeight = 11.11;
-            expectedSubstructure.Maturity = Maturity.D;
-            expectedSubstructure.Name = "Updated name";
-            expectedSubstructure.CostProfile.Currency = Currency.NOK;
-            expectedSubstructure.CostProfile.EPAVersion = "another EPA version";
+            var updatedSubstructure = CreateUpdatedSubstructure(project);
 
             // Act
-            var projectResult = substructureService.UpdateSubstructure(expectedSubstructure.Id, expectedSubstructure);
+            var projectResult = substructureService.UpdateSubstructure(oldSubstructure.Id, updatedSubstructure);
 
             // Assert
-            var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == expectedSubstructure.Name);
+            var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == updatedSubstructure.Name);
             Assert.NotNull(actualSubstructure);
-            TestHelper.CompareSubstructures(expectedSubstructure, actualSubstructure);
+            TestHelper.CompareSubstructures(updatedSubstructure, actualSubstructure);
         }
 
         [Fact]
@@ -133,12 +128,13 @@ namespace tests
             var projectService = new ProjectService(fixture.context);
             var substructureService = new SubstructureService(fixture.context, projectService);
             var project = fixture.context.Projects.FirstOrDefault();
-            var expectedSubstructure = CreateTestSubstructure(project);
-            fixture.context.Substructures.Add(expectedSubstructure);
+            var oldSubstructure = CreateTestSubstructure(project);
+            fixture.context.Substructures.Add(oldSubstructure);
             fixture.context.SaveChanges();
+            var updatedSubstructure = CreateUpdatedSubstructure(project);
 
             // Act, assert
-            Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(new Guid(), expectedSubstructure));
+            Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(new Guid(), updatedSubstructure));
         }
 
         private static Substructure CreateTestSubstructure(Project project)
@@ -159,6 +155,27 @@ namespace tests
                     .WithYearValue(2030, 2.3)
                     .WithYearValue(2031, 3.3)
                     .WithYearValue(2032, 4.4)
+                );
+        }
+
+        private static Substructure CreateUpdatedSubstructure(Project project)
+        {
+            return new SubstructureBuilder
+            {
+                Name = "Updated name",
+                Maturity = Maturity.B,
+                DryWeight = 16.2,
+                Project = project,
+                ProjectId = project.Id,
+            }
+                .WithCostProfile(new SubstructureCostProfileBuilder
+                {
+                    Currency = Currency.NOK,
+                    EPAVersion = "Updated EPA"
+                }
+                    .WithYearValue(2030, 12.3)
+                    .WithYearValue(2031, 13.3)
+                    .WithYearValue(2032, 14.4)
                 );
         }
     }

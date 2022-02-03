@@ -27,10 +27,23 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateDrainageStrategy")]
-        public DrainageStrategy CreateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
+        public Project CreateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
         {
             var drainageStrategy = _drainageStrategyAdapter.Convert(drainageStrategyDto);
             return _drainageStrategyService.CreateDrainageStrategy(drainageStrategy);
+        }
+
+        [HttpDelete("{drainageStrategyId}", Name = "DeleteDrainageStrategy")]
+        public Project DeleteDrainageStrategy(Guid drainageStrategyId)
+        {
+            return _drainageStrategyService.DeleteDrainageStrategy(drainageStrategyId);
+        }
+
+        [HttpPatch("{drainageStrategyId}", Name = "UpdateDrainageStrategy")]
+        public Project UpdateDrainageStrategy([FromRoute] Guid drainageStrategyId, [FromBody] DrainageStrategyDto drainageStrategyDto)
+        {
+            var drainageStrategy = _drainageStrategyAdapter.Convert(drainageStrategyDto);
+            return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategyId, drainageStrategy);
         }
     }
 }

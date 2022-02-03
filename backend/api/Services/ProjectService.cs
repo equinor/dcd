@@ -106,10 +106,5 @@ namespace api.Services
         {
             project.Surfs.Add(surf);
         }
-
-        public void AddDrainageStrategy(Project project, DrainageStrategy drainageStrategy)
-        {
-            project.DrainageStrategies.Add(drainageStrategy);
-        }
     }
 }
