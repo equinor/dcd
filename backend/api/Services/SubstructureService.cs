@@ -31,30 +31,30 @@ namespace api.Services
             }
         }
 
-        public Substructure CreateSubstructure(Substructure substructure)
+        public Project CreateSubstructure(Substructure substructure)
         {
             var project = _projectService.GetProject(substructure.ProjectId);
             substructure.Project = project;
-            var result = _context.Substructures!.Add(substructure);
+            _context.Substructures!.Add(substructure);
             _context.SaveChanges();
-            return result.Entity;
+            return _projectService.GetProject(project.Id);
         }
 
-        public bool DeleteSubstructure(Guid substructureId)
+        public Project DeleteSubstructure(Guid substructureId)
         {
             var substructure = GetSubstructure(substructureId);
             _context.Substructures!.Remove(substructure);
             _context.SaveChanges();
-            return true;
+            return _projectService.GetProject(substructure.ProjectId);
         }
 
-        public Substructure UpdateSubstructure(Guid substructureId, Substructure updatedSubstructure)
+        public Project UpdateSubstructure(Guid substructureId, Substructure updatedSubstructure)
         {
             var substructure = GetSubstructure(substructureId);
             CopyData(substructure, updatedSubstructure);
-            var result = _context.Substructures!.Update(substructure);
+            _context.Substructures!.Update(substructure);
             _context.SaveChanges();
-            return result.Entity;
+            return _projectService.GetProject(substructure.ProjectId);
         }
 
         private Substructure GetSubstructure(Guid substructureId)

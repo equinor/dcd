@@ -58,10 +58,10 @@ namespace tests
             var expectedSubstructure = CreateTestSubstructure(project);
 
             // Act
-            substructureService.CreateSubstructure(expectedSubstructure);
+            var projectResult = substructureService.CreateSubstructure(expectedSubstructure);
 
             // Assert
-            var actualSubstructure = fixture.context.Substructures.FirstOrDefault(o => o.Name == expectedSubstructure.Name);
+            var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == expectedSubstructure.Name);
             Assert.NotNull(actualSubstructure);
             TestHelper.CompareSubstructures(expectedSubstructure, actualSubstructure);
         }
@@ -78,10 +78,10 @@ namespace tests
             fixture.context.SaveChanges();
 
             // Act
-            substructureService.DeleteSubstructure(substructureToDelete.Id);
+            var projectResult = substructureService.DeleteSubstructure(substructureToDelete.Id);
 
             // Assert
-            var actualSubstructure = fixture.context.Substructures.FirstOrDefault(o => o.Name == substructureToDelete.Name);
+            var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == substructureToDelete.Name);
             Assert.Null(actualSubstructure);
         }
 
@@ -118,10 +118,10 @@ namespace tests
             expectedSubstructure.CostProfile.EPAVersion = "another EPA version";
 
             // Act
-            substructureService.UpdateSubstructure(expectedSubstructure.Id, expectedSubstructure);
+            var projectResult = substructureService.UpdateSubstructure(expectedSubstructure.Id, expectedSubstructure);
 
             // Assert
-            var actualSubstructure = fixture.context.Substructures.FirstOrDefault(o => o.Name == expectedSubstructure.Name);
+            var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == expectedSubstructure.Name);
             Assert.NotNull(actualSubstructure);
             TestHelper.CompareSubstructures(expectedSubstructure, actualSubstructure);
         }
