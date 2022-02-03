@@ -7,7 +7,6 @@ namespace api.Models
     public class DrainageStrategy
     {
         public Guid Id { get; set; }
-        [ForeignKey("Project.Id")]
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;

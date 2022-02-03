@@ -6,7 +6,6 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
-        [ForeignKey("Project.Id")]
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public SubstructureCostProfile CostProfile { get; set; } = null!;
