@@ -21,7 +21,7 @@ namespace tests
         {
             //arrange
             this.fixture = new DatabaseFixture();
-            projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.ProjectName);
+            projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.Name);
 
         }
 

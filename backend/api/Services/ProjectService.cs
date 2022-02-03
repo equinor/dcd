@@ -26,6 +26,31 @@ namespace api.Services
             _transportService = new TransportService(_context);
         }
 
+        public Project CreateProject(Project project)
+        {
+            project.Cases = new List<Case>();
+            project.DrainageStrategies = new List<DrainageStrategy>();
+            project.Substructures = new List<Substructure>();
+            project.Surfs = new List<Surf>();
+            project.Topsides = new List<Topside>();
+            project.Transports = new List<Transport>();
+            project.WellProjects = new List<WellProject>();
+            project.Explorations = new List<Exploration>();
+
+            if (_context.Projects == null)
+            {
+                var projects = new List<Project>();
+                projects.AddRange(projects);
+                _context.AddRange(projects);
+            }
+            else
+            {
+                _context.Projects.AddRange(project);
+            }
+            _context.SaveChanges();
+            return project;
+        }
+
         public IEnumerable<Project> GetAll()
         {
             if (_context.Projects != null)
@@ -61,6 +86,10 @@ namespace api.Services
                 return project;
             }
             throw new NotFoundInDBException($"The database contains no projects");
+        }
+        public void AddExploration(Project project, Exploration exploration)
+        {
+            project.Explorations.Add(exploration);
         }
         private Project AddAssetsToProject(Project project)
         {

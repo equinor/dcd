@@ -1,12 +1,10 @@
-using System.Security.Permissions;
-
 namespace api.Models
 {
     public class Project
     {
         public Guid Id { get; set; }
-        public string ProjectName { get; set; } = string.Empty;
-        public string ProjectDescription { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
         public DateTimeOffset CreateDate { get; set; }
         public ICollection<Case> Cases { get; set; } = null!;

@@ -74,7 +74,6 @@ namespace tests
                 CompareYearValues(expected, actual);
             }
         }
-
         public static void CompareCosts<T>(TimeSeriesCost<T> expected, TimeSeriesCost<T> actual)
         {
             if (expected == null || actual == null)
