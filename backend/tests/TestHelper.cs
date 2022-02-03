@@ -100,6 +100,23 @@ namespace tests
             }
         }
 
+        public static void CompareTransports(Transport expected, Transport actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
+                Assert.Equal(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                CompareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
+
         public static void CompareExplorations(Exploration expected, Exploration actual)
         {
             if (expected == null || actual == null)
@@ -203,21 +220,6 @@ namespace tests
                 Assert.Equal(expected.InfieldPipelineSystemLength, actual.InfieldPipelineSystemLength);
                 Assert.Equal(expected.UmbilicalSystemLength, actual.UmbilicalSystemLength);
                 Assert.Equal(expected.ProductionFlowline, actual.ProductionFlowline);
-                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
-            }
-        }
-        public static void CompareTransports(Transport expected, Transport actual)
-        {
-            if (expected == null || actual == null)
-            {
-                Assert.Equal(expected, actual);
-            }
-            else
-            {
-                Assert.Equal(expected.Name, actual.Name);
-                Assert.Equal(expected.Maturity, actual.Maturity);
-                Assert.Equal(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
-                Assert.Equal(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }

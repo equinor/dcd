@@ -26,9 +26,9 @@ namespace api.Services
             _surfService = new SurfService(_context, this);
             _substructureService = new SubstructureService(_context, this);
             _topsideFaciltyService = new TopsideService(_context, this);
-            _transportService = new TransportService(_context);
             _caseService = new CaseService(_context, this);
             _explorationService = new ExplorationService(_context, this);
+            _transportService = new TransportService(_context, this);
         }
 
         public Project CreateProject(Project project)
@@ -103,6 +103,11 @@ namespace api.Services
             project.Transports = _transportService.GetTransports(project.Id).ToList();
             project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
             return project;
+        }
+
+        public void AddSurfsToProject(Project project, Surf surf)
+        {
+            project.Surfs.Add(surf);
         }
     }
 }
