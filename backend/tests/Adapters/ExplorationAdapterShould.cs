@@ -48,20 +48,12 @@ public class ExplorationAdapterShould : IDisposable
         Assert.Equal(exploration.Name,
                 exploration.DrillingSchedule.Exploration.Name);
 
-        Assert.Equal(explorationDto.CostProfile.Currency,
-                exploration.CostProfile.Currency);
-        Assert.Equal(explorationDto.CostProfile.EPAVersion,
-                exploration.CostProfile.EPAVersion);
-        TestHelper.CompareYearValues(explorationDto.CostProfile,
+        TestHelper.CompareCosts(explorationDto.CostProfile,
                 exploration.CostProfile);
         Assert.Equal(exploration.Name,
                 exploration.CostProfile.Exploration.Name);
 
-        Assert.Equal(explorationDto.GAndGAdminCost.Currency,
-                exploration.GAndGAdminCost.Currency);
-        Assert.Equal(explorationDto.GAndGAdminCost.EPAVersion,
-                exploration.GAndGAdminCost.EPAVersion);
-        TestHelper.CompareYearValues(explorationDto.GAndGAdminCost,
+        TestHelper.CompareCosts(explorationDto.GAndGAdminCost,
                 exploration.GAndGAdminCost);
         Assert.Equal(exploration.Name,
                 exploration.GAndGAdminCost.Exploration.Name);

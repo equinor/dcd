@@ -57,35 +57,23 @@ public class ExplorationServiceShould : IDisposable
             Assert.Equal(expected.ProjectId, actual.ProjectId);
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.WellType, actual.WellType);
-            compareExplorationCostProfiles(expected.CostProfile, actual.CostProfile);
-            compareExplorationDrillingSchedules(expected.DrillingSchedule,
+
+            TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            Assert.Equal(expected.CostProfile.Exploration.Name,
+                    actual.CostProfile.Exploration.Name);
+
+            TestHelper.CompareYearValues(expected.DrillingSchedule,
                     actual.DrillingSchedule);
-            compareGAndGAdminCosts(expected.GAndGAdminCost,
+            Assert.Equal(expected.DrillingSchedule.Exploration.Name,
+                    actual.DrillingSchedule.Exploration.Name);
+
+            TestHelper.CompareCosts(expected.GAndGAdminCost,
                     actual.GAndGAdminCost);
+            Assert.Equal(expected.GAndGAdminCost.Exploration.Name,
+                    actual.GAndGAdminCost.Exploration.Name);
+
             Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
         }
-    }
-
-    void compareExplorationCostProfiles(ExplorationCostProfile expected, ExplorationCostProfile actual)
-    {
-        Assert.Equal(expected.Currency, actual.Currency);
-        Assert.Equal(expected.EPAVersion, actual.EPAVersion);
-        Assert.Equal(expected.YearValues, actual.YearValues);
-    }
-
-
-    void compareExplorationDrillingSchedules(ExplorationDrillingSchedule expected,
-            ExplorationDrillingSchedule actual)
-    {
-        Assert.Equal(expected.YearValues, actual.YearValues);
-    }
-
-    void compareGAndGAdminCosts(GAndGAdminCost expected,
-            GAndGAdminCost actual)
-    {
-        Assert.Equal(expected.Currency, actual.Currency);
-        Assert.Equal(expected.EPAVersion, actual.EPAVersion);
-        Assert.Equal(expected.YearValues, actual.YearValues);
     }
 
     private static Exploration CreateTestExploration(Project project)
