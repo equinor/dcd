@@ -53,7 +53,7 @@ namespace tests
             // Arrange
             var projectService = new ProjectService(fixture.context);
             var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
-            var project = fixture.context.Projects.FirstOrDefault();
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedStrategy = CreateTestDrainageStrategy(project);
 
