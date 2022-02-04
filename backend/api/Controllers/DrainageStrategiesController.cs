@@ -30,7 +30,7 @@ namespace api.Controllers
         public Project CreateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
         {
             var drainageStrategy = _drainageStrategyAdapter.Convert(drainageStrategyDto);
-            return _drainageStrategyService.CreateDrainageStrategy(drainageStrategy);
+            return _drainageStrategyService.CreateDrainageStrategy(drainageStrategy, drainageStrategyDto.SourceCaseId);
         }
 
         [HttpDelete("{drainageStrategyId}", Name = "DeleteDrainageStrategy")]
