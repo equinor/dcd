@@ -78,7 +78,7 @@ builder.Services.AddScoped<WellProjectService>();
 builder.Services.AddScoped<ExplorationService>();
 builder.Services.AddScoped<SurfService>();
 builder.Services.AddScoped<SubstructureService>();
-builder.Services.AddScoped<TopsideFacilityService>();
+builder.Services.AddScoped<TopsideService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddControllers(options =>

@@ -126,5 +126,24 @@ namespace tests
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
+
+        public static void CompareTopsides(Topside expected, Topside actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Equal(expected, actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                Assert.Equal(expected.DryWeight, actual.DryWeight);
+                Assert.Equal(expected.GasCapacity, actual.GasCapacity);
+                Assert.Equal(expected.OilCapacity, actual.OilCapacity);
+                Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
     }
 }

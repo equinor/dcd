@@ -1,14 +1,12 @@
-using System.ComponentModel.DataAnnotations.Schema;
+using api.Models;
 
-namespace api.Models
+namespace api.Dtos
 {
-    public class Topside
+    public class TopsideDto
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
-        public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
-        public TopsideCostProfile CostProfile { get; set; } = null!;
+        public TopsideCostProfileDto CostProfile { get; set; } = null!;
         public double DryWeight { get; set; }
         public double OilCapacity { get; set; }
         public double GasCapacity { get; set; }
@@ -17,9 +15,7 @@ namespace api.Models
         public Maturity Maturity { get; set; }
     }
 
-    public class TopsideCostProfile : TimeSeriesCost<double>
+    public class TopsideCostProfileDto : TimeSeriesCost<double>
     {
-        [ForeignKey("Topside.Id")]
-        public Topside Topside { get; set; } = null!;
     }
 }
