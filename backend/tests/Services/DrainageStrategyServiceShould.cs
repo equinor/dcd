@@ -53,11 +53,12 @@ namespace tests
             // Arrange
             var projectService = new ProjectService(fixture.context);
             var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
-            var project = fixture.context.Projects.FirstOrDefault();
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var caseId = project.Cases.FirstOrDefault().Id;
             var expectedStrategy = CreateTestDrainageStrategy(project);
 
             // Act
-            var projectResult = drainageStrategyService.CreateDrainageStrategy(expectedStrategy);
+            var projectResult = drainageStrategyService.CreateDrainageStrategy(expectedStrategy, caseId);
 
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
