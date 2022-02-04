@@ -5,8 +5,8 @@ namespace api.Dtos
     public class WellProjectDto
     {
         public Guid ProjectId { get; set; }
+        public Guid SourceCaseId { get; set; }
         public string Name { get; set; } = string.Empty;
-
         public WellProjectCostProfileDto CostProfile { get; set; } = null!;
         public DrillingScheduleDto DrillingSchedule { get; set; } = null!;
         public int ProducerCount { get; set; }

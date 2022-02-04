@@ -50,20 +50,49 @@ public class TopsideServiceShould : IDisposable
     public void CreateNewTopside()
     {
         // Arrange
-        var project = fixture.context.Projects.FirstOrDefault();
+        var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+        var caseId = project.Cases.FirstOrDefault().Id;
         var testTopside = CreateTestTopside(project);
         ProjectService projectService = new ProjectService(fixture.context);
-        TopsideService topsideService = new
-            TopsideService(fixture.context, projectService);
+        TopsideService topsideService = new TopsideService(fixture.context, projectService);
 
         // Act
-        var projectResult = topsideService.CreateTopside(testTopside);
+        var projectResult = topsideService.CreateTopside(testTopside, caseId);
 
         // Assert
         var retrievedTopside = projectResult.Topsides.FirstOrDefault(o => o.Name ==
                 testTopside.Name);
         Assert.NotNull(retrievedTopside);
         TestHelper.CompareTopsides(testTopside, retrievedTopside);
+        var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
+        Assert.Equal(retrievedTopside.Id, case_.TopsideLink);
+    }
+
+    [Fact]
+    public void ThrowNotInDatabaseExceptionWhenCreatingTopsideWithBadProjectId()
+    {
+        // Arrange
+        var projectService = new ProjectService(fixture.context);
+        var topsideService = new TopsideService(fixture.context, projectService);
+        var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+        var caseId = project.Cases.FirstOrDefault().Id;
+        var expectedTopside = CreateTestTopside(new Project { Id = new Guid() });
+
+        // Act, assert
+        Assert.Throws<NotFoundInDBException>(() => topsideService.CreateTopside(expectedTopside, caseId));
+    }
+
+    [Fact]
+    public void ThrowNotFoundInDatabaseExceptionWhenCreatingTopsideWithBadCaseId()
+    {
+        // Arrange
+        var projectService = new ProjectService(fixture.context);
+        var topsideService = new TopsideService(fixture.context, projectService);
+        var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+        var expectedTopside = CreateTestTopside(project);
+
+        // Act, assert
+        Assert.Throws<NotFoundInDBException>(() => topsideService.CreateTopside(expectedTopside, new Guid()));
     }
 
     [Fact]
@@ -75,6 +104,11 @@ public class TopsideServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault();
         var topsideToDelete = CreateTestTopside(project);
         fixture.context.Topsides.Add(topsideToDelete);
+        fixture.context.Cases.Add(new Case
+        {
+            Project = project,
+            TopsideLink = topsideToDelete.Id
+        });
         fixture.context.SaveChanges();
 
         // Act
@@ -83,6 +117,8 @@ public class TopsideServiceShould : IDisposable
         // Assert
         var actualTopside = projectResult.Topsides.FirstOrDefault(o => o.Name == topsideToDelete.Name);
         Assert.Null(actualTopside);
+        var casesWithTopsideLink = projectResult.Cases.Where(o => o.TopsideLink == topsideToDelete.Id);
+        Assert.Equal(0, casesWithTopsideLink.Count());
     }
 
     [Fact]

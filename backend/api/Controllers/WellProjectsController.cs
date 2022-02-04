@@ -30,7 +30,7 @@ namespace api.Controllers
         public Project CreateWellProject([FromBody] WellProjectDto wellProjectDto)
         {
             var wellProject = _wellProjectAdapter.Convert(wellProjectDto);
-            return _wellProjectService.CreateWellProject(wellProject);
+            return _wellProjectService.CreateWellProject(wellProject, wellProjectDto.SourceCaseId);
         }
 
         [HttpDelete("{wellProjectId}", Name = "DeleteWellProject")]

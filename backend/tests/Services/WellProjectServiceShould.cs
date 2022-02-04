@@ -53,16 +53,46 @@ namespace tests
             // Arrange
             var projectService = new ProjectService(fixture.context);
             var wellProjectService = new WellProjectService(fixture.context, projectService);
-            var project = fixture.context.Projects.FirstOrDefault();
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var caseId = project.Cases.FirstOrDefault().Id;
             var expectedWellProject = CreateTestWellProject(project);
 
             // Act
-            var projectResult = wellProjectService.CreateWellProject(expectedWellProject);
+            var projectResult = wellProjectService.CreateWellProject(expectedWellProject, caseId);
 
             // Assert
             var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == expectedWellProject.Name);
             Assert.NotNull(actualWellProject);
             TestHelper.CompareWellProjects(expectedWellProject, actualWellProject);
+            var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
+            Assert.Equal(actualWellProject.Id, case_.WellProjectLink);
+        }
+
+        [Fact]
+        public void ThrowNotInDatabaseExceptionWhenCreatingWellProjectWithBadProjectId()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var caseId = project.Cases.FirstOrDefault().Id;
+            var expectedWellProject = CreateTestWellProject(new Project { Id = new Guid() });
+
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => wellProjectService.CreateWellProject(expectedWellProject, caseId));
+        }
+
+        [Fact]
+        public void ThrowNotFoundInDatabaseExceptionWhenCreatingWellProjectWithBadCaseId()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var expectedWellProject = CreateTestWellProject(project);
+
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => wellProjectService.CreateWellProject(expectedWellProject, new Guid()));
         }
 
         [Fact]
@@ -74,6 +104,11 @@ namespace tests
             var project = fixture.context.Projects.FirstOrDefault();
             var wellProjectToDelete = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(wellProjectToDelete);
+            fixture.context.Cases.Add(new Case
+            {
+                Project = project,
+                WellProjectLink = wellProjectToDelete.Id
+            });
             fixture.context.SaveChanges();
 
             // Act
@@ -82,6 +117,8 @@ namespace tests
             // Assert
             var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == wellProjectToDelete.Name);
             Assert.Null(actualWellProject);
+            var casesWithWellProjectLink = projectResult.Cases.Where(o => o.WellProjectLink == wellProjectToDelete.Id);
+            Assert.Equal(0, casesWithWellProjectLink.Count());
         }
 
         [Fact]

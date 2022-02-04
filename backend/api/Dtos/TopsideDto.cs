@@ -6,6 +6,7 @@ namespace api.Dtos
     {
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
+        public Guid SourceCaseId { get; set; }
         public TopsideCostProfileDto CostProfile { get; set; } = null!;
         public double DryWeight { get; set; }
         public double OilCapacity { get; set; }

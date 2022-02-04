@@ -104,6 +104,11 @@ namespace tests
             var project = fixture.context.Projects.FirstOrDefault();
             var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(drainageStrategyToDelete);
+            fixture.context.Cases.Add(new Case
+            {
+                Project = project,
+                DrainageStrategyLink = drainageStrategyToDelete.Id
+            });
             fixture.context.SaveChanges();
 
             // Act
@@ -112,6 +117,8 @@ namespace tests
             // Assert
             var actualDrainageStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == drainageStrategyToDelete.Name);
             Assert.Null(actualDrainageStrategy);
+            var casesWithDrainageStrategyLink = projectResult.Cases.Where(o => o.DrainageStrategyLink == drainageStrategyToDelete.Id);
+            Assert.Equal(0, casesWithDrainageStrategyLink.Count());
         }
 
         [Fact]
