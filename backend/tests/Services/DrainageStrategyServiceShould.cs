@@ -64,6 +64,35 @@ namespace tests
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
             Assert.NotNull(actualStrategy);
             TestHelper.CompareDrainageStrategies(expectedStrategy, actualStrategy);
+            var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
+            Assert.Equal(actualStrategy.Id, case_.DrainageStrategyLink);
+        }
+
+        [Fact]
+        public void ThrowNotInDatabaseExceptionWhenCreatingDrainageStrategyWithBadProjectId()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var caseId = project.Cases.FirstOrDefault().Id;
+            var expectedStrategy = CreateTestDrainageStrategy(new Project { Id = new Guid() });
+
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => drainageStrategyService.CreateDrainageStrategy(expectedStrategy, caseId));
+        }
+
+        [Fact]
+        public void ThrowNotFoundInDatabaseExceptionWhenCreatingDrainageStrategyWithBadCaseId()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var expectedStrategy = CreateTestDrainageStrategy(project);
+
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => drainageStrategyService.CreateDrainageStrategy(expectedStrategy, new Guid()));
         }
 
         [Fact]
