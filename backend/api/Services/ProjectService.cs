@@ -12,7 +12,7 @@ namespace api.Services
         private readonly DrainageStrategyService _drainageStrategyService;
         private readonly SurfService _surfService;
         private readonly SubstructureService _substructureService;
-        private readonly TopsideFacilityService _topsideFaciltyService;
+        private readonly TopsideService _topsideFaciltyService;
         private readonly TransportService _transportService;
 
         private readonly CaseService _caseService;
@@ -24,7 +24,7 @@ namespace api.Services
             _drainageStrategyService = new DrainageStrategyService(_context, this);
             _surfService = new SurfService(_context, this);
             _substructureService = new SubstructureService(_context, this);
-            _topsideFaciltyService = new TopsideFacilityService(_context);
+            _topsideFaciltyService = new TopsideService(_context, this);
             _transportService = new TransportService(_context);
             _caseService = new CaseService(_context, this);
         }
