@@ -28,11 +28,24 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateExploration")]
-        public Exploration CreateExploration([FromBody] ExplorationDto
+        public Project CreateExploration([FromBody] ExplorationDto
                 explorationDto)
         {
             var exploration = _explorationAdapter.Convert(explorationDto);
-            return _explorationService.CreateExploration(exploration);
+            return _explorationService.CreateExploration(exploration, explorationDto.SourceCaseId);
+        }
+
+        [HttpDelete("{explorationId}", Name = "DeleteExploration")]
+        public Project DeleteExploration(Guid drainageStrategyId)
+        {
+            return _explorationService.DeleteExploration(drainageStrategyId);
+        }
+
+        [HttpPatch("{explorationId}", Name = "UpdateExploration")]
+        public Project UpdateExploration([FromRoute] Guid drainageStrategyId, [FromBody] ExplorationDto eplorationDto)
+        {
+            var exploration = _explorationAdapter.Convert(eplorationDto);
+            return _explorationService.UpdateExploration(drainageStrategyId, exploration);
         }
     }
 }

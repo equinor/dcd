@@ -26,55 +26,46 @@ public class ExplorationServiceShould : IDisposable
     }
 
     [Fact]
+    public void GetExplorations()
+    {
+        // Arrange
+        var projectService = new ProjectService(fixture.context);
+        var explorationService = new ExplorationService(fixture.context, projectService);
+        var project = fixture.context.Projects.FirstOrDefault();
+        var expectedExplorations = fixture.context.Explorations.ToList().Where(o => o.Project.Id == project.Id);
+
+        // Act
+        var actualExplorations = explorationService.GetExplorations(project.Id);
+
+        // Assert
+        Assert.Equal(expectedExplorations.Count(), actualExplorations.Count());
+        var explorationsExpectedAndActual = expectedExplorations.OrderBy(d => d.Name)
+            .Zip(actualExplorations.OrderBy(d => d.Name));
+        foreach (var explorationPair in explorationsExpectedAndActual)
+        {
+            TestHelper.CompareExplorations(explorationPair.First, explorationPair.Second);
+        }
+    }
+
+    [Fact]
     public void CreateNewExploration()
     {
-        var project = fixture.context.Projects.FirstOrDefault();
+        // Arrange
+        var projectService = new ProjectService(fixture.context);
+        var explorationService = new ExplorationService(fixture.context, projectService);
+        var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+        var caseId = project.Cases.FirstOrDefault().Id;
         var testExploration = CreateTestExploration(project);
-        ProjectService projectService = new ProjectService(fixture.context);
-        ExplorationService explorationService = new
-            ExplorationService(fixture.context, projectService);
-
-        explorationService.CreateExploration(testExploration);
+        explorationService.CreateExploration(testExploration, caseId);
 
         var explorations = fixture.context.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Explorations;
         var retrievedExploration = explorations.FirstOrDefault(o => o.Name ==
                 testExploration.Name);
         Assert.NotNull(retrievedExploration);
-        compareExplorations(testExploration, retrievedExploration);
+        TestHelper.CompareExplorations(testExploration, retrievedExploration);
     }
 
-    void compareExplorations(Exploration expected, Exploration actual)
-    {
-        if (expected == null || actual == null)
-        {
-            Assert.Equal(expected, null);
-            Assert.Equal(actual, null);
-        }
-        else
-        {
-            Assert.Equal(expected.Project.Id, actual.Project.Id);
-            Assert.Equal(expected.ProjectId, actual.ProjectId);
-            Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.WellType, actual.WellType);
-
-            TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
-            Assert.Equal(expected.CostProfile.Exploration.Name,
-                    actual.CostProfile.Exploration.Name);
-
-            TestHelper.CompareYearValues(expected.DrillingSchedule,
-                    actual.DrillingSchedule);
-            Assert.Equal(expected.DrillingSchedule.Exploration.Name,
-                    actual.DrillingSchedule.Exploration.Name);
-
-            TestHelper.CompareCosts(expected.GAndGAdminCost,
-                    actual.GAndGAdminCost);
-            Assert.Equal(expected.GAndGAdminCost.Exploration.Name,
-                    actual.GAndGAdminCost.Exploration.Name);
-
-            Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-        }
-    }
 
     private static Exploration CreateTestExploration(Project project)
     {
@@ -82,6 +73,7 @@ public class ExplorationServiceShould : IDisposable
         {
             Name = "Test-exploration-23",
             Project = project,
+            ProjectId = project.Id,
             WellType = WellType.Gas,
             RigMobDemob = 32.7
         }

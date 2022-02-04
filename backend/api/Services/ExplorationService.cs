@@ -37,17 +37,71 @@ namespace api.Services
             }
         }
 
-        public Exploration CreateExploration(Exploration exploration)
+        public Project CreateExploration(Exploration exploration, Guid sourceCaseId)
         {
-            AddExplorationToProject(exploration);
-            var result = _context.Explorations!.Add(exploration);
+            var project = _projectService.GetProject(exploration.ProjectId);
+            exploration.Project = project;
+            _context.Explorations!.Add(exploration);
             _context.SaveChanges();
-            return result.Entity;
+            SetCaseLink(exploration, sourceCaseId, project);
+            return _projectService.GetProject(exploration.ProjectId);
         }
-        private void AddExplorationToProject(Exploration exploration)
+
+        private void SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
         {
-            var project = _projectService.GetProject(exploration.Project.Id);
-            _projectService.AddExploration(project, exploration);
+            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            if (case_ == null)
+            {
+                throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
+            }
+            case_.ExplorationLink = exploration.Id;
+            _context.SaveChanges();
+        }
+
+        public Project DeleteExploration(Guid explorationId)
+        {
+            var exploration = GetExploration(explorationId);
+            _context.Explorations!.Remove(exploration);
+            _context.SaveChanges();
+            return _projectService.GetProject(exploration.ProjectId);
+        }
+
+        public Project UpdateExploration(Guid explorationId, Exploration updatedExploration)
+        {
+            var exploration = GetExploration(explorationId);
+            CopyData(exploration, updatedExploration);
+            _context.Explorations!.Update(exploration);
+            _context.SaveChanges();
+            return _projectService.GetProject(exploration.ProjectId);
+        }
+
+        public Exploration GetExploration(Guid explorationId)
+        {
+
+            var exploration = _context.Explorations!
+                        .Include(c => c.CostProfile)
+                            .ThenInclude(c => c.YearValues)
+                        .Include(c => c.GAndGAdminCost)
+                            .ThenInclude(c => c.YearValues)
+                        .Include(c => c.DrillingSchedule)
+                            .ThenInclude(c => c.YearValues)
+                             .FirstOrDefault(o => o.Id == explorationId);
+            if (exploration == null)
+            {
+                throw new ArgumentException(string.Format("Exploration {0} not found.", explorationId));
+            }
+            return exploration;
+        }
+
+        private static void CopyData(Exploration exploration, Exploration updatedExploration)
+        {
+            exploration.Name = updatedExploration.Name;
+            exploration.RigMobDemob = updatedExploration.RigMobDemob;
+            exploration.WellType = updatedExploration.WellType;
+            exploration.GAndGAdminCost = updatedExploration.GAndGAdminCost;
+            exploration.DrillingSchedule = updatedExploration.DrillingSchedule;
+            exploration.CostProfile = updatedExploration.CostProfile;
         }
     }
 }
+
