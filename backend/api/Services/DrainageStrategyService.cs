@@ -43,13 +43,25 @@ namespace api.Services
             }
         }
 
-        public Project CreateDrainageStrategy(DrainageStrategy drainageStrategy)
+        public Project CreateDrainageStrategy(DrainageStrategy drainageStrategy, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(drainageStrategy.ProjectId);
             drainageStrategy.Project = project;
             _context.DrainageStrategies!.Add(drainageStrategy);
             _context.SaveChanges();
+            SetCaseLink(drainageStrategy, sourceCaseId, project);
             return _projectService.GetProject(drainageStrategy.ProjectId);
+        }
+
+        private void SetCaseLink(DrainageStrategy drainageStrategy, Guid sourceCaseId, Project project)
+        {
+            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            if (case_ == null)
+            {
+                throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
+            }
+            case_.DrainageStrategyLink = drainageStrategy.Id;
+            _context.SaveChanges();
         }
 
         public Project DeleteDrainageStrategy(Guid drainageStrategyId)
