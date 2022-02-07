@@ -31,21 +31,45 @@ namespace api.Services
             }
         }
 
-        public Project CreateTopside(Topside topside)
+        public Project CreateTopside(Topside topside, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(topside.ProjectId);
             topside.Project = project;
             _context.Topsides!.Add(topside);
             _context.SaveChanges();
+            SetCaseLink(topside, sourceCaseId, project);
             return _projectService.GetProject(project.Id);
+        }
+
+        private void SetCaseLink(Topside topside, Guid sourceCaseId, Project project)
+        {
+            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            if (case_ == null)
+            {
+                throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
+            }
+            case_.TopsideLink = topside.Id;
+            _context.SaveChanges();
         }
 
         public Project DeleteTopside(Guid topsideId)
         {
             var topside = GetTopside(topsideId);
             _context.Topsides!.Remove(topside);
+            DeleteCaseLinks(topsideId);
             _context.SaveChanges();
             return _projectService.GetProject(topside.ProjectId);
+        }
+
+        private void DeleteCaseLinks(Guid topsideId)
+        {
+            foreach (Case c in _context.Cases!)
+            {
+                if (c.TopsideLink == topsideId)
+                {
+                    c.TopsideLink = Guid.Empty;
+                }
+            }
         }
 
         public Project UpdateTopside(Guid topsideId, Topside updatedTopside)

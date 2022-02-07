@@ -68,8 +68,20 @@ namespace api.Services
         {
             var drainageStrategy = GetDrainageStrategy(drainageStrategyId);
             _context.DrainageStrategies!.Remove(drainageStrategy);
+            DeleteCaseLinks(drainageStrategyId);
             _context.SaveChanges();
             return _projectService.GetProject(drainageStrategy.ProjectId);
+        }
+
+        private void DeleteCaseLinks(Guid drainageStrategyId)
+        {
+            foreach (Case c in _context.Cases!)
+            {
+                if (c.DrainageStrategyLink == drainageStrategyId)
+                {
+                    c.DrainageStrategyLink = Guid.Empty;
+                }
+            }
         }
 
         public Project UpdateDrainageStrategy(Guid drainageStrategyId, DrainageStrategy updatedDrainageStrategy)

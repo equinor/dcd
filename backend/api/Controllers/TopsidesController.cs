@@ -30,7 +30,7 @@ namespace api.Controllers
         public Project CreateTopside([FromBody] TopsideDto topsideDto)
         {
             var topside = _topsideAdapter.Convert(topsideDto);
-            return _topsideService.CreateTopside(topside);
+            return _topsideService.CreateTopside(topside, topsideDto.SourceCaseId);
         }
 
         [HttpDelete("{topsideId}", Name = "DeleteTopside")]

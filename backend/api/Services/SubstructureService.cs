@@ -31,21 +31,45 @@ namespace api.Services
             }
         }
 
-        public Project CreateSubstructure(Substructure substructure)
+        public Project CreateSubstructure(Substructure substructure, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(substructure.ProjectId);
             substructure.Project = project;
             _context.Substructures!.Add(substructure);
             _context.SaveChanges();
+            SetCaseLink(substructure, sourceCaseId, project);
             return _projectService.GetProject(project.Id);
+        }
+
+        private void SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)
+        {
+            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            if (case_ == null)
+            {
+                throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
+            }
+            case_.SubstructureLink = substructure.Id;
+            _context.SaveChanges();
         }
 
         public Project DeleteSubstructure(Guid substructureId)
         {
             var substructure = GetSubstructure(substructureId);
             _context.Substructures!.Remove(substructure);
+            DeleteCaseLinks(substructureId);
             _context.SaveChanges();
             return _projectService.GetProject(substructure.ProjectId);
+        }
+
+        private void DeleteCaseLinks(Guid substructureId)
+        {
+            foreach (Case c in _context.Cases!)
+            {
+                if (c.SubstructureLink == substructureId)
+                {
+                    c.SubstructureLink = Guid.Empty;
+                }
+            }
         }
 
         public Project UpdateSubstructure(Guid substructureId, Substructure updatedSubstructure)

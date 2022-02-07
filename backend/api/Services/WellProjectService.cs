@@ -35,21 +35,45 @@ namespace api.Services
             }
         }
 
-        public Project CreateWellProject(WellProject wellProject)
+        public Project CreateWellProject(WellProject wellProject, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(wellProject.ProjectId);
             wellProject.Project = project;
             _context.WellProjects!.Add(wellProject);
             _context.SaveChanges();
+            SetCaseLink(wellProject, sourceCaseId, project);
             return _projectService.GetProject(project.Id);
+        }
+
+        private void SetCaseLink(WellProject wellProject, Guid sourceCaseId, Project project)
+        {
+            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            if (case_ == null)
+            {
+                throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
+            }
+            case_.WellProjectLink = wellProject.Id;
+            _context.SaveChanges();
         }
 
         public Project DeleteWellProject(Guid wellProjectId)
         {
             var wellProject = GetWellProject(wellProjectId);
             _context.WellProjects!.Remove(wellProject);
+            DeleteCaseLinks(wellProjectId);
             _context.SaveChanges();
             return _projectService.GetProject(wellProject.ProjectId);
+        }
+
+        private void DeleteCaseLinks(Guid wellProjectId)
+        {
+            foreach (Case c in _context.Cases!)
+            {
+                if (c.WellProjectLink == wellProjectId)
+                {
+                    c.WellProjectLink = Guid.Empty;
+                }
+            }
         }
 
         public Project UpdateWellProject(Guid wellProjectId, WellProject updatedWellProject)

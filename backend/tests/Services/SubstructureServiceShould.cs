@@ -53,16 +53,46 @@ namespace tests
             // Arrange
             var projectService = new ProjectService(fixture.context);
             var substructureService = new SubstructureService(fixture.context, projectService);
-            var project = fixture.context.Projects.FirstOrDefault();
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var caseId = project.Cases.FirstOrDefault().Id;
             var expectedSubstructure = CreateTestSubstructure(project);
 
             // Act
-            var projectResult = substructureService.CreateSubstructure(expectedSubstructure);
+            var projectResult = substructureService.CreateSubstructure(expectedSubstructure, caseId);
 
             // Assert
             var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == expectedSubstructure.Name);
             Assert.NotNull(actualSubstructure);
             TestHelper.CompareSubstructures(expectedSubstructure, actualSubstructure);
+            var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
+            Assert.Equal(actualSubstructure.Id, case_.SubstructureLink);
+        }
+
+        [Fact]
+        public void ThrowNotInDatabaseExceptionWhenCreatingSubstructureWithBadProjectId()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var substructureService = new SubstructureService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var caseId = project.Cases.FirstOrDefault().Id;
+            var expectedSubstructure = CreateTestSubstructure(new Project { Id = new Guid() });
+
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => substructureService.CreateSubstructure(expectedSubstructure, caseId));
+        }
+
+        [Fact]
+        public void ThrowNotFoundInDatabaseExceptionWhenCreatingSubstructureWithBadCaseId()
+        {
+            // Arrange
+            var projectService = new ProjectService(fixture.context);
+            var substructureService = new SubstructureService(fixture.context, projectService);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var expectedSubstructure = CreateTestSubstructure(project);
+
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => substructureService.CreateSubstructure(expectedSubstructure, new Guid()));
         }
 
         [Fact]
@@ -74,6 +104,11 @@ namespace tests
             var project = fixture.context.Projects.FirstOrDefault();
             var substructureToDelete = CreateTestSubstructure(project);
             fixture.context.Substructures.Add(substructureToDelete);
+            fixture.context.Cases.Add(new Case
+            {
+                Project = project,
+                SubstructureLink = substructureToDelete.Id
+            });
             fixture.context.SaveChanges();
 
             // Act
@@ -82,6 +117,8 @@ namespace tests
             // Assert
             var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == substructureToDelete.Name);
             Assert.Null(actualSubstructure);
+            var casesWithSubstructureLink = projectResult.Cases.Where(o => o.SubstructureLink == substructureToDelete.Id);
+            Assert.Equal(0, casesWithSubstructureLink.Count());
         }
 
         [Fact]

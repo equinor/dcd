@@ -30,7 +30,7 @@ namespace api.Controllers
         public Project CreateSubstructure([FromBody] SubstructureDto substructureDto)
         {
             var substructure = _substructureAdapter.Convert(substructureDto);
-            return _substructureService.CreateSubstructure(substructure);
+            return _substructureService.CreateSubstructure(substructure, substructureDto.SourceCaseId);
         }
 
         [HttpDelete("{substructureId}", Name = "DeleteSubstructure")]
