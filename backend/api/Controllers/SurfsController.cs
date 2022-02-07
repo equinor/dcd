@@ -26,7 +26,7 @@ namespace api.Controllers
         {
             _logger = logger;
             _surfService = surfService;
-            _surfAdapter = new SurfAdapter(_surfService);
+            _surfAdapter = new SurfAdapter();
         }
 
         [HttpPatch("{surfId}", Name = "surfs")]

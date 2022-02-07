@@ -6,12 +6,7 @@ namespace api.Adapters
 {
     public class SurfAdapter
     {
-        private readonly ISurfService _surfService = null!;
 
-        public SurfAdapter(ISurfService surfService)
-        {
-            _surfService = surfService;
-        }
 
         public Surf Convert(SurfDto surfDto)
         {
