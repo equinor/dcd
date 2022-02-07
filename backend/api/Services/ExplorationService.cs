@@ -62,8 +62,8 @@ namespace api.Services
         {
             var exploration = GetExploration(explorationId);
             _context.Explorations!.Remove(exploration);
-            _context.SaveChanges();
             DeleteCaseLinks(explorationId);
+            _context.SaveChanges();
             return _projectService.GetProject(exploration.ProjectId);
         }
 
