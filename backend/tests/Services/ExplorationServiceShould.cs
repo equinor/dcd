@@ -76,12 +76,17 @@ public class ExplorationServiceShould : IDisposable
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var ExplorationToDelete = CreateTestExploration(project);
         explorationService.CreateExploration(ExplorationToDelete, sourceCaseId);
-
+        var deletedExplorationId = ExplorationToDelete.Id;
         // Act
         var projectResult = explorationService.DeleteExploration(ExplorationToDelete.Id);
 
         // Assert
         var actualExploration = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == ExplorationToDelete.Name);
+        // No case links to deleted exploration
+        foreach (Case c in fixture.context.Cases!)
+        {
+            Assert.NotEqual(c.ExplorationLink, deletedExplorationId);
+        }
         Assert.Null(actualExploration);
     }
 
