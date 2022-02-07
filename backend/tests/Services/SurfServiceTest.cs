@@ -15,7 +15,7 @@ namespace tests
     public class SurfServiceTest
     {
         readonly DatabaseFixture fixture;
-        IOrderedEnumerable<api.SampleData.Builders.ProjectBuilder> projectsFromSampleDataGenerator;
+        readonly IOrderedEnumerable<api.SampleData.Builders.ProjectBuilder> projectsFromSampleDataGenerator;
 
         public SurfServiceTest(DatabaseFixture fixture)
         {
@@ -31,8 +31,8 @@ namespace tests
             ProjectService projectService = new ProjectService(fixture.context);
             SurfService surfService = new SurfService(fixture.context, projectService);
             var project = projectsFromSampleDataGenerator.First();
-            var surfsFromProject = surfService.GetSurfs(project.Id);
-            // var surfsExpectedActual = projectsFromSampleDataGenerator.Zip(surfsFromProject);
+            surfService.GetSurfs(project.Id);
+
         }
     }
 }
