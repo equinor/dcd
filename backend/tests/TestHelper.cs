@@ -187,7 +187,7 @@ namespace tests
             }
         }
 
-         public static void CompareSurfs(Surf expected, Surf actual)
+        public static void CompareSurfs(Surf expected, Surf actual)
         {
             if (expected == null || actual == null)
             {
@@ -206,7 +206,7 @@ namespace tests
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
-         public static void CompareTransports(Transport expected, Transport actual)
+        public static void CompareTransports(Transport expected, Transport actual)
         {
             if (expected == null || actual == null)
             {

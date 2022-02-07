@@ -14,6 +14,7 @@ namespace api.Services
         private readonly SubstructureService _substructureService;
         private readonly TopsideService _topsideFaciltyService;
         private readonly TransportService _transportService;
+        private readonly ExplorationService _explorationService;
 
         private readonly CaseService _caseService;
 
@@ -27,6 +28,7 @@ namespace api.Services
             _topsideFaciltyService = new TopsideService(_context, this);
             _transportService = new TransportService(_context);
             _caseService = new CaseService(_context, this);
+            _explorationService = new ExplorationService(_context, this);
         }
 
         public Project CreateProject(Project project)
@@ -102,6 +104,7 @@ namespace api.Services
             project.Substructures = _substructureService.GetSubstructures(project.Id).ToList();
             project.Topsides = _topsideFaciltyService.GetTopsides(project.Id).ToList();
             project.Transports = _transportService.GetTransports(project.Id).ToList();
+            project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
             return project;
         }
     }
