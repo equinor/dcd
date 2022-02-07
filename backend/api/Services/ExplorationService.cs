@@ -63,9 +63,20 @@ namespace api.Services
             var exploration = GetExploration(explorationId);
             _context.Explorations!.Remove(exploration);
             _context.SaveChanges();
+            DeleteCaseLinks(explorationId);
             return _projectService.GetProject(exploration.ProjectId);
         }
 
+        private void DeleteCaseLinks(Guid explorationId)
+        {
+            foreach (Case c in _context.Cases!)
+            {
+                if (c.ExplorationLink == explorationId)
+                {
+                    c.ExplorationLink = Guid.Empty;
+                }
+            }
+        }
         public Project UpdateExploration(Guid explorationId, Exploration updatedExploration)
         {
             var exploration = GetExploration(explorationId);
