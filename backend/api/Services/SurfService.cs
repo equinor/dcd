@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
-    public class SurfService : ISurfService
+    public class SurfService
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
