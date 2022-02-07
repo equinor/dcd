@@ -66,6 +66,46 @@ public class ExplorationServiceShould : IDisposable
         TestHelper.CompareExplorations(testExploration, retrievedExploration);
     }
 
+    [Fact]
+    public void DeleteExploration()
+    {
+        // Arrange
+        var projectService = new ProjectService(fixture.context);
+        var explorationService = new ExplorationService(fixture.context, projectService);
+        var project = fixture.context.Projects.FirstOrDefault();
+        var sourceCaseId = project.Cases.FirstOrDefault().Id;
+        var ExplorationToDelete = CreateTestExploration(project);
+        explorationService.CreateExploration(ExplorationToDelete, sourceCaseId);
+
+        // Act
+        var projectResult = explorationService.DeleteExploration(ExplorationToDelete.Id);
+
+        // Assert
+        var actualExploration = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == ExplorationToDelete.Name);
+        Assert.Null(actualExploration);
+    }
+
+    [Fact]
+    public void UpdateExploration()
+    {
+        // Arrange
+        var projectService = new ProjectService(fixture.context);
+        var explorationService = new ExplorationService(fixture.context, projectService);
+        var project = fixture.context.Projects.FirstOrDefault();
+        var sourceCaseId = project.Cases.FirstOrDefault().Id;
+        var oldExploration = CreateTestExploration(project);
+        explorationService.CreateExploration(oldExploration, sourceCaseId);
+
+        var updatedExploration = CreateUpdatedTestExploration(project);
+
+        // Act
+        var projectResult = explorationService.UpdateExploration(oldExploration.Id, updatedExploration);
+
+        // Assert
+        var actualExploration = projectResult.Explorations.FirstOrDefault(o => o.Name == updatedExploration.Name);
+        Assert.NotNull(actualExploration);
+        TestHelper.CompareExplorations(updatedExploration, actualExploration);
+    }
 
     private static Exploration CreateTestExploration(Project project)
     {
@@ -88,6 +128,30 @@ public class ExplorationServiceShould : IDisposable
                 .WithGAndGAdminCost(new WithGAndGAdminCostBuilder()
                     .WithYearValue(2023, 60.7)
                     .WithYearValue(2024, 67.4)
+                );
+    }
+
+    private static Exploration CreateUpdatedTestExploration(Project project)
+    {
+        return new ExplorationBuilder
+        {
+            Name = "Test-exploration-23",
+            Project = project,
+            ProjectId = project.Id,
+            WellType = WellType.Gas,
+            RigMobDemob = 32.7
+        }
+                .WithExplorationCostProfile(new ExplorationCostBuilder()
+                    .WithYearValue(2023, 55.2)
+                    .WithYearValue(2024, 48.7)
+                )
+                .WithExplorationDrillingSchedule(new ExplorationDrillingScheduleBuilder()
+                    .WithYearValue(2023, 8)
+                    .WithYearValue(2024, 37)
+                )
+                .WithGAndGAdminCost(new WithGAndGAdminCostBuilder()
+                    .WithYearValue(2023, 64.7)
+                    .WithYearValue(2024, 37.4)
                 );
     }
 
