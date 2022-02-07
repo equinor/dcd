@@ -6,17 +6,20 @@ public class ExplorationBuilder : Exploration
 {
     public ExplorationBuilder WithExplorationCostProfile(ExplorationCostBuilder e)
     {
+        e.Exploration = this;
         this.CostProfile = e;
         return this;
     }
     public ExplorationBuilder WithExplorationDrillingSchedule(ExplorationDrillingScheduleBuilder d)
     {
+        d.Exploration = this;
         this.DrillingSchedule = d;
         return this;
     }
 
     public ExplorationBuilder WithGAndGAdminCost(WithGAndGAdminCostBuilder d)
     {
+        d.Exploration = this;
         this.GAndGAdminCost = d;
         return this;
     }
