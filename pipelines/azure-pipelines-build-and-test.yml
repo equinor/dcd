@@ -77,6 +77,15 @@ jobs:
           command: "test"
           projects: "backend/tests/tests.csproj"
 
+      - script: |
+          mkdir $(Build.SourcesDirectory)\results
+          dotnet tool install JetBrains.dotCover.GlobalTool -g
+          cd $(Build.SourcesDirectory)/backend/tests/
+          dotnet dotcover test
+          dotnet dotcover report --source=dotCover.Output.dcvr --reportType=DetailedXml          
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r dotCover.Output.xml
+
+        displayName: "Backend Tests With Code Coverage"
   - job: Test_Frontend
     steps:
       - task: NodeTool@0
