@@ -8,7 +8,6 @@ namespace api.Models
         public string Name { get; set; } = string.Empty!;
 
         public Project Project { get; set; } = null!;
-        [ForeignKey("Project.Id")]
         public Guid ProjectId { get; set; }
         public SurfCostProfile CostProfile { get; set; } = null!;
         public Maturity Maturity { get; set; }

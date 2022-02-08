@@ -36,16 +36,16 @@ namespace api.Controllers
         }
 
         [HttpDelete("{explorationId}", Name = "DeleteExploration")]
-        public Project DeleteExploration(Guid drainageStrategyId)
+        public Project DeleteExploration(Guid explorationId)
         {
-            return _explorationService.DeleteExploration(drainageStrategyId);
+            return _explorationService.DeleteExploration(explorationId);
         }
 
         [HttpPatch("{explorationId}", Name = "UpdateExploration")]
-        public Project UpdateExploration([FromRoute] Guid drainageStrategyId, [FromBody] ExplorationDto eplorationDto)
+        public Project UpdateExploration([FromRoute] Guid explorationId, [FromBody] ExplorationDto eplorationDto)
         {
             var exploration = _explorationAdapter.Convert(eplorationDto);
-            return _explorationService.UpdateExploration(drainageStrategyId, exploration);
+            return _explorationService.UpdateExploration(explorationId, exploration);
         }
     }
 }

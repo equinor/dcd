@@ -7,7 +7,6 @@ namespace api.Models
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
         public Project Project { get; set; } = null!;
-        [ForeignKey("Project.Id")]
         public Guid ProjectId { get; set; }
         public TransportCostProfile CostProfile { get; set; } = null!;
         public double GasExportPipelineLength { get; set; }

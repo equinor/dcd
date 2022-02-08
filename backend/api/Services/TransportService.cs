@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
-    public class TransportService : ITransportService
+    public class TransportService
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
@@ -15,50 +15,59 @@ namespace api.Services
             _context = context;
             _projectService = projectService;
         }
-        public Project CreateTransport(Transport transport)
+        public Project CreateTransport(Transport transport, Guid sourceCaseId)
         {
-            if (_context.Transports != null)
-            {
-                var result = _context.Transports.Add(transport);
-                _context.SaveChanges();
-                return _projectService.GetProject(result.Entity.ProjectId);
-            }
-            else
-            {
-                throw new Exception(); //TODO FIX EXCEPTION
-            }
+            var project = _projectService.GetProject(transport.ProjectId);
+            transport.Project = project;
+            _context.Transports!.Add(transport);
+            _context.SaveChanges();
+            SetCaseLink(transport, sourceCaseId, project);
+            return _projectService.GetProject(transport.ProjectId);
         }
 
-
-        public Project DeleteTransport(Transport transport)
+        private void SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
         {
-            if (_context.Transports != null)
+            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            if (case_ == null)
             {
-                var transportFromDb = GetTransport(transport.Id);
-                _context.Transports.Remove(transportFromDb);
-                _context.SaveChanges();
-                return _projectService.GetProject(transportFromDb.ProjectId);
+                throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
             }
-            else
-            {
-                throw new Exception(); //TODO FIX EXCEPTION
-            }
+            case_.TransportLink = transport.Id;
+            _context.SaveChanges();
         }
 
+        public Project DeleteTransport(Guid transportId)
+        {
+            var transport = GetTransport(transportId);
+            _context.Transports!.Remove(transport);
+            DeleteCaseLinks(transportId);
+            _context.SaveChanges();
+            return _projectService.GetProject(transport.ProjectId);
+        }
 
         public Transport GetTransport(Guid transportId)
         {
-            if (_context.Transports != null)
+            var transport = _context.Transports!
+                    .Include(c => c.CostProfile)
+                        .ThenInclude(c => c.YearValues)
+                .Where(c => c.Id == transportId).First();
+            if (transport == null)
             {
-                return _context.Transports
-                        .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
-                    .Where(c => c.Id.Equals(transportId)).First();
+                throw new ArgumentException(string.Format("Transport {0} not found.", transportId));
             }
-            else
+            return transport;
+        }
+
+        private void DeleteCaseLinks(Guid transportId)
+        {
+            foreach (Case c in _context.Cases!)
             {
-                return new Transport();
+                if (c.TransportLink == transportId)
+                {
+                    c.TransportLink = Guid.Empty;
+                }
             }
+            _context.SaveChanges();
         }
 
         public IEnumerable<Transport> GetTransports(Guid projectId)
@@ -76,24 +85,16 @@ namespace api.Services
             }
         }
 
-
-        public Project UpdateTransport(Guid OldTransportId, Transport changedtransport)
+        public Project UpdateTransport(Guid transportId, Transport changedtransport)
         {
-            if (_context.Transports != null)
-            {
-                var transportFromDb = GetTransport(OldTransportId);
-                var updatedTransport = CopyData(transportFromDb, changedtransport);
-                _context.Transports.Update(updatedTransport);
-                _context.SaveChanges();
-                return _projectService.GetProject(transportFromDb.ProjectId);
-            }
-            else
-            {
-                throw new Exception(); //TODO FIX EXCEPTION
-            }
+            var transport = GetTransport(transportId);
+            CopyData(transport, changedtransport);
+            _context.Transports!.Update(transport);
+            _context.SaveChanges();
+            return _projectService.GetProject(transport.ProjectId);
         }
 
-        private Transport CopyData(Transport transport, Transport updatedTransport)
+        private static void CopyData(Transport transport, Transport updatedTransport)
         {
             transport.Name = updatedTransport.Name;
             transport.GasExportPipelineLength = updatedTransport.GasExportPipelineLength;
@@ -102,7 +103,6 @@ namespace api.Services
             transport.Project = updatedTransport.Project;
             transport.ProjectId = updatedTransport.ProjectId;
             transport.CostProfile = updatedTransport.CostProfile;
-            return transport;
         }
 
     }

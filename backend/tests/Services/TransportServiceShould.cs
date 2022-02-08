@@ -51,10 +51,11 @@ namespace tests
             var projectService = new ProjectService(fixture.context);
             var transportService = new TransportService(fixture.context, projectService);
             var project = fixture.context.Projects.FirstOrDefault();
+            var caseId = project.Cases.FirstOrDefault().Id;
             var expectedTransport = CreateTestTransport(project);
 
             // Act
-            var projectResult = transportService.CreateTransport(expectedTransport);
+            var projectResult = transportService.CreateTransport(expectedTransport, caseId);
 
             // Assert
             var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == expectedTransport.Name);
@@ -75,7 +76,7 @@ namespace tests
             fixture.context.SaveChanges();
 
             // Act
-            var projectResult = transportService.DeleteTransport(transportToDelete);
+            var projectResult = transportService.DeleteTransport(transportToDelete.Id);
 
             // Assert
             var actualDrainageStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == transportToDelete.Name);
