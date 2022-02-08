@@ -110,3 +110,5 @@ app.UseCors(_accessControlPolicyName);
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
