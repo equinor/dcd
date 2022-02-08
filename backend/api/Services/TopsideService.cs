@@ -81,7 +81,7 @@ namespace api.Services
             return _projectService.GetProject(topside.ProjectId);
         }
 
-        private Topside GetTopside(Guid topsideId)
+        public Topside GetTopside(Guid topsideId)
         {
             var topside = _context.Topsides!
                 .Include(c => c.Project)

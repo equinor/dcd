@@ -15,11 +15,11 @@ namespace tests
         [Fact]
         public void ConvertProjectDtoToDataModel()
         {
-            var projectAdapter = new ProjectAdapter();
+
             var expected = createProjectDto();
 
             // Act
-            var actual = projectAdapter.Convert(expected);
+            var actual = ProjectAdapter.Convert(expected);
 
             Assert.Equal(actual.Name, expected.Name);
             Assert.Equal(actual.Description, expected.Description);

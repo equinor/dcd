@@ -15,13 +15,13 @@ namespace api.Models
 
         public DateTimeOffset DG4Date { get; set; }
         public Project Project { get; set; } = null!;
-        public Guid DrainageStrategyLink { get; set; }
-        public Guid WellProjectLink { get; set; }
-        public Guid SurfLink { get; set; }
-        public Guid SubstructureLink { get; set; }
-        public Guid TopsideLink { get; set; }
-        public Guid TransportLink { get; set; }
-        public Guid ExplorationLink { get; set; }
+        public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
+        public Guid WellProjectLink { get; set; } = Guid.Empty;
+        public Guid SurfLink { get; set; } = Guid.Empty;
+        public Guid SubstructureLink { get; set; } = Guid.Empty;
+        public Guid TopsideLink { get; set; } = Guid.Empty;
+        public Guid TransportLink { get; set; } = Guid.Empty;
+        public Guid ExplorationLink { get; set; } = Guid.Empty;
     }
 
     public enum ArtificialLift

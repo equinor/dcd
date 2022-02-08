@@ -17,19 +17,17 @@ namespace api.Controllers
     {
         private CaseService _caseService;
         private readonly ILogger<CaseController> _logger;
-        private readonly CaseAdapter _caseAdapter;
 
         public CaseController(ILogger<CaseController> logger, CaseService caseService)
         {
             _logger = logger;
             _caseService = caseService;
-            _caseAdapter = new CaseAdapter();
         }
 
         [HttpPost(Name = "CreateCase")]
         public Project CreateCase([FromBody] CaseDto caseDto)
         {
-            var case_ = _caseAdapter.Convert(caseDto);
+            var case_ = CaseAdapter.Convert(caseDto);
             return _caseService.CreateCase(case_);
         }
     }

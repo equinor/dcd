@@ -81,7 +81,7 @@ namespace api.Services
             return _projectService.GetProject(substructure.ProjectId);
         }
 
-        private Substructure GetSubstructure(Guid substructureId)
+        public Substructure GetSubstructure(Guid substructureId)
         {
             var substructure = _context.Substructures!
                 .Include(c => c.Project)
