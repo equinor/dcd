@@ -1,5 +1,7 @@
 # Digital Concept Development (DCD)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings)
+
 ### Prerequisites
 
 -   [.NET 6.0+](https://dotnet.microsoft.com/download/dotnet/6.0)
