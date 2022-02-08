@@ -8,13 +8,6 @@ namespace api.Adapters
     public class TransportAdapter
     {
 
-        private readonly ITransportService _transportService = null!;
-
-        public TransportAdapter(ITransportService transportService)
-        {
-            _transportService = transportService;
-        }
-
         public Transport Convert(TransportDto transportDto)
         {
             var transport = new Transport();

@@ -23,7 +23,7 @@ namespace api.Controllers
         {
             _logger = logger;
             _transportService = transportService;
-            _transportAdapter = new TransportAdapter(_transportService);
+            _transportAdapter = new TransportAdapter();
 
 
         }
