@@ -1,6 +1,7 @@
 # Digital Concept Development (DCD)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings) [![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url]
 
 ### Prerequisites
 
@@ -23,9 +24,11 @@ npm start
 ```
 
 ## Backend
+
 The backend is built with .NET 6
 
 ### Run backend
+
 Create a file `backend/api/Properties/launchSettings.json` with the provided
 template file.
 
@@ -51,11 +54,26 @@ To run the Cypress tests locally, type
 `npm run cyopen` to open the Cypress interactive runner. This requires the application to be run locally.
 
 ## Deployment
+
 We have 4 different environments in use; dev, pr, qa and prod. Dev is built
 when PR's are merged to master. The pr env is built on push to the pr branch. The
 qa and prod environments are deployed with [Azure Pipeline](https://dev.azure.com/Shellvis/DCD/_build?definitionId=40)
 manually and when a new tag is created.
 
 ### Team
+
 DCD is developed by the Shellvis team in TDI EDT DSD EDB.
 
+[contributors-shield]: https://img.shields.io/github/contributors/equinor/dcd.svg?style=for-the-badge
+[contributors-url]: https://github.com/equinor/dcd/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/equinor/dcd.svg?style=for-the-badge
+[forks-url]: https://github.com/equinor/dcd/network/members
+[stars-shield]: https://img.shields.io/github/stars/equinor/dcd.svg?style=for-the-badge
+[stars-url]: https://github.com/equinor/dcd/stargazers
+[issues-shield]: https://img.shields.io/github/issues/equinor/dcd.svg?style=for-the-badge
+[issues-url]: https://github.com/equinor/dcd/issues
+[license-shield]: https://img.shields.io/github/license/equinor/dcd.svg?style=for-the-badge
+[license-url]: https://github.com/equinor/dcd/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/othneildrew
+[product-screenshot]: images/screenshot.png
