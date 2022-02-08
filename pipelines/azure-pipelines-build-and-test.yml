@@ -78,7 +78,6 @@ jobs:
           projects: "backend/tests/tests.csproj"
 
       - script: |
-          mkdir $(Build.SourcesDirectory)\results
           dotnet tool install JetBrains.dotCover.GlobalTool -g
           cd $(Build.SourcesDirectory)/backend/tests/
           dotnet dotcover test
@@ -102,3 +101,6 @@ jobs:
           command: "custom"
           workingDir: "frontend"
           customCommand: "run test:ci"
+      - script: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r $(Build.SourcesDirectory)/frontend/coverage/clover.xml
+        displayName: Upload Code Coverage
