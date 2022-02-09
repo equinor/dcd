@@ -9,6 +9,7 @@ namespace api.Adapters
         public static CaseDto Convert(Case case_)
         {
             var caseDto = new CaseDto();
+            caseDto.Id = case_.Id;
             caseDto.ProjectId = case_.ProjectId;
             caseDto.Name = case_.Name;
             caseDto.Description = case_.Description;

@@ -7,14 +7,15 @@ namespace api.Adapters
     public static class TransportDtoAdapter
     {
 
-        public static TransportDto Convert(Transport transportDto)
+        public static TransportDto Convert(Transport transport)
         {
-            var transport = new TransportDto();
-            transport.ProjectId = transportDto.ProjectId;
-            transport.Name = transportDto.Name;
-            transport.Maturity = transportDto.Maturity;
-            transport.CostProfile = Convert(transportDto.CostProfile);
-            return transport;
+            var transportDto = new TransportDto();
+            transportDto.Id = transport.Id;
+            transportDto.ProjectId = transport.ProjectId;
+            transportDto.Name = transport.Name;
+            transportDto.Maturity = transport.Maturity;
+            transportDto.CostProfile = Convert(transport.CostProfile);
+            return transportDto;
         }
 
         private static TransportCostProfileDto Convert(TransportCostProfile costprofile)

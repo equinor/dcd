@@ -5,19 +5,20 @@ namespace api.Adapters
 {
     public static class TopsideDtoAdapter
     {
-        public static TopsideDto Convert(Topside topside_)
+        public static TopsideDto Convert(Topside topside)
         {
-            var topside = new TopsideDto();
-            topside.Name = topside_.Name;
-            topside.ProjectId = topside_.ProjectId;
-            topside.CostProfile = Convert(topside_.CostProfile);
-            topside.DryWeight = topside_.DryWeight;
-            topside.OilCapacity = topside_.OilCapacity;
-            topside.GasCapacity = topside_.GasCapacity;
-            topside.FacilitiesAvailability = topside_.FacilitiesAvailability;
-            topside.ArtificialLift = topside_.ArtificialLift;
-            topside.Maturity = topside_.Maturity;
-            return topside;
+            var topsideDto = new TopsideDto();
+            topsideDto.Id = topside.Id;
+            topsideDto.Name = topside.Name;
+            topsideDto.ProjectId = topside.ProjectId;
+            topsideDto.CostProfile = Convert(topside.CostProfile);
+            topsideDto.DryWeight = topside.DryWeight;
+            topsideDto.OilCapacity = topside.OilCapacity;
+            topsideDto.GasCapacity = topside.GasCapacity;
+            topsideDto.FacilitiesAvailability = topside.FacilitiesAvailability;
+            topsideDto.ArtificialLift = topside.ArtificialLift;
+            topsideDto.Maturity = topside.Maturity;
+            return topsideDto;
         }
 
         private static TopsideCostProfileDto Convert(TopsideCostProfile topsideCostProfile)

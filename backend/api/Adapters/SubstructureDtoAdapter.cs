@@ -8,6 +8,7 @@ namespace api.Adapters
         public static SubstructureDto Convert(Substructure substructure)
         {
             var substructureDto = new SubstructureDto();
+            substructureDto.Id = substructure.Id;
             substructureDto.ProjectId = substructure.ProjectId;
             substructureDto.Name = substructure.Name;
             substructureDto.DryWeight = substructure.DryWeight;

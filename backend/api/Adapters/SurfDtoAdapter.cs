@@ -10,6 +10,7 @@ namespace api.Adapters
         public static SurfDto Convert(Surf surf_)
         {
             var surfDto = new SurfDto();
+            surfDto.Id = surf_.Id;
             surfDto.ProjectId = surf_.ProjectId;
             surfDto.Name = surf_.Name;
             surfDto.ArtificialLift = surf_.ArtificialLift;
