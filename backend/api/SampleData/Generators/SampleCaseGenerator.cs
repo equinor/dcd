@@ -10,7 +10,6 @@ public static class SampleCaseGenerator
     {
         const string project1 = "P1";
         string project1DrainageStrategyName1 = projectsBuilder.ForProject(project1).DrainageStrategies.ToList()[0].Name;
-        string project1DrainageStrategyName2 = projectsBuilder.ForProject(project1).DrainageStrategies.ToList()[1].Name;
         string wellProjectName = projectsBuilder.ForProject(project1).WellProjects.ToList()[0].Name;
         string project1SurfName = projectsBuilder.ForProject(project1).Surfs.ToList()[0].Name;
         string project1SubstructureName = projectsBuilder.ForProject(project1).Substructures.ToList()[0].Name;

@@ -67,7 +67,6 @@ namespace api.Services
                     c.TransportLink = Guid.Empty;
                 }
             }
-            _context.SaveChanges();
         }
 
         public IEnumerable<Transport> GetTransports(Guid projectId)

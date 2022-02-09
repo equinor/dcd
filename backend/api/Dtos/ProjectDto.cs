@@ -1,8 +1,5 @@
-using System.Drawing;
 
 using api.Models;
-
-using Microsoft.Identity.Client;
 
 namespace api.Dtos
 {
@@ -15,6 +12,16 @@ namespace api.Dtos
         public string Country { get; set; } = null!;
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
+        public ICollection<CaseDto> Cases { get; set; } = null!;
+
+        public ICollection<ExplorationDto> Explorations { get; set; } = null!;
+        public ICollection<SurfDto> Surfs { get; set; } = null!;
+        public ICollection<SubstructureDto> Substructures { get; set; } = null!;
+        public ICollection<TopsideDto> Topsides { get; set; } = null!;
+        public ICollection<TransportDto> Transports { get; set; } = null!;
+        public ICollection<DrainageStrategyDto> DrainageStrategies { get; set; } = null!;
+        public ICollection<WellProjectDto> WellProjects { get; set; } = null!;
+
 
     }
 }

@@ -1,13 +1,16 @@
+using System.Linq;
+
 using api.Dtos;
 using api.Models;
 using api.Services;
 
+
 namespace api.Adapters
 {
-    public class ProjectAdapter
+    public static class ProjectAdapter
     {
 
-        public Project Convert(ProjectDto projectDto)
+        public static Project Convert(ProjectDto projectDto)
         {
             var project = new Project();
             project.Name = projectDto.Name;

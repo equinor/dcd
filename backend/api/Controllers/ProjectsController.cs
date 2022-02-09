@@ -16,32 +16,30 @@ namespace api.Controllers
     public class ProjectsController : ControllerBase
     {
         private ProjectService _projectService;
-        private readonly ProjectAdapter _projectAdapter;
         private readonly ILogger<ProjectsController> _logger;
 
         public ProjectsController(ILogger<ProjectsController> logger, ProjectService projectService)
         {
             _logger = logger;
             _projectService = projectService;
-            _projectAdapter = new ProjectAdapter();
         }
 
         [HttpGet("{projectId}", Name = "GetProject")]
-        public Project Get(Guid projectId)
+        public ProjectDto Get(Guid projectId)
         {
-            return _projectService.GetProject(projectId);
+            return _projectService.GetProjectDto(projectId);
         }
 
         [HttpGet(Name = "GetProjects")]
-        public IEnumerable<Project>? GetProjects()
+        public IEnumerable<ProjectDto>? GetProjects()
         {
-            return _projectService.GetAll();
+            return _projectService.GetAllDtos();
         }
 
         [HttpPost(Name = "CreateProject")]
         public Project CreateProject([FromBody] ProjectDto projectDto)
         {
-            var project = _projectAdapter.Convert(projectDto);
+            var project = ProjectAdapter.Convert(projectDto);
             return _projectService.CreateProject(project);
         }
     }

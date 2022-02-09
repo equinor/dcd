@@ -41,8 +41,7 @@ namespace api.Services
             _context.SaveChanges();
             return _projectService.GetProject(surf.ProjectId);
         }
-
-        private Surf GetSurf(Guid surfId)
+        public Surf GetSurf(Guid surfId)
         {
             var surf = _context.Surfs!
                 .Include(c => c.CostProfile)

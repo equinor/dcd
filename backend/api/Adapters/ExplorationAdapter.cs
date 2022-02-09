@@ -3,10 +3,10 @@ using api.Models;
 
 namespace api.Adapters
 {
-    public class ExplorationAdapter
+    public static class ExplorationAdapter
     {
 
-        public Exploration Convert(ExplorationDto explorationDto)
+        public static Exploration Convert(ExplorationDto explorationDto)
         {
             var exploration = new Exploration();
             exploration.ProjectId = explorationDto.ProjectId;
@@ -19,7 +19,7 @@ namespace api.Adapters
             return exploration;
         }
 
-        private ExplorationCostProfile Convert(ExplorationCostProfileDto? costProfileDto, Exploration exploration)
+        private static ExplorationCostProfile Convert(ExplorationCostProfileDto? costProfileDto, Exploration exploration)
         {
             if (costProfileDto == null)
             {
@@ -33,7 +33,7 @@ namespace api.Adapters
                 YearValues = costProfileDto.YearValues,
             };
         }
-        private ExplorationDrillingSchedule Convert(ExplorationDrillingScheduleDto? drillingScheduleDto, Exploration exploration)
+        private static ExplorationDrillingSchedule Convert(ExplorationDrillingScheduleDto? drillingScheduleDto, Exploration exploration)
         {
             if (drillingScheduleDto == null)
             {
@@ -45,7 +45,7 @@ namespace api.Adapters
                 YearValues = drillingScheduleDto.YearValues,
             };
         }
-        private GAndGAdminCost Convert(GAndGAdminCostDto? gAndGAdminCostDto, Exploration exploration)
+        private static GAndGAdminCost Convert(GAndGAdminCostDto? gAndGAdminCostDto, Exploration exploration)
         {
             if (gAndGAdminCostDto == null)
             {
@@ -59,5 +59,6 @@ namespace api.Adapters
                 YearValues = gAndGAdminCostDto.YearValues,
             };
         }
+
     }
 }

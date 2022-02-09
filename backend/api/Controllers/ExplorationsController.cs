@@ -17,21 +17,19 @@ namespace api.Controllers
     {
         private ExplorationService _explorationService;
         private readonly ILogger<ExplorationsController> _logger;
-        private readonly ExplorationAdapter _explorationAdapter;
 
         public ExplorationsController(ILogger<ExplorationsController> logger,
                 ExplorationService explorationService)
         {
             _logger = logger;
             _explorationService = explorationService;
-            _explorationAdapter = new ExplorationAdapter();
         }
 
         [HttpPost(Name = "CreateExploration")]
         public Project CreateExploration([FromBody] ExplorationDto
                 explorationDto)
         {
-            var exploration = _explorationAdapter.Convert(explorationDto);
+            var exploration = ExplorationAdapter.Convert(explorationDto);
             return _explorationService.CreateExploration(exploration, explorationDto.SourceCaseId);
         }
 
@@ -44,7 +42,7 @@ namespace api.Controllers
         [HttpPatch("{explorationId}", Name = "UpdateExploration")]
         public Project UpdateExploration([FromRoute] Guid explorationId, [FromBody] ExplorationDto eplorationDto)
         {
-            var exploration = _explorationAdapter.Convert(eplorationDto);
+            var exploration = ExplorationAdapter.Convert(eplorationDto);
             return _explorationService.UpdateExploration(explorationId, exploration);
         }
     }

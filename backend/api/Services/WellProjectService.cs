@@ -85,7 +85,7 @@ namespace api.Services
             return _projectService.GetProject(wellProject.ProjectId);
         }
 
-        private WellProject GetWellProject(Guid wellProjectId)
+        public WellProject GetWellProject(Guid wellProjectId)
         {
             var wellProject = _context.WellProjects!
                 .Include(c => c.CostProfile)

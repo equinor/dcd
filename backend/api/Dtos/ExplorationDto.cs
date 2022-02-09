@@ -5,6 +5,7 @@ namespace api.Dtos
 
     public class ExplorationDto
     {
+        public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
         public Guid SourceCaseId { get; set; }
         public string Name { get; set; } = string.Empty;

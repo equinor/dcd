@@ -1,4 +1,6 @@
+using api.Adapters;
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -75,6 +77,27 @@ namespace api.Services
             }
         }
 
+        public IEnumerable<ProjectDto> GetAllDtos()
+        {
+            if (GetAll() != null)
+            {
+                var projects = GetAll();
+                var projectDtos = new List<ProjectDto>();
+                foreach (Project project in projects)
+                {
+                    var projectDto = ProjectDtoAdapter.Convert(project);
+                    AddCapexToCases(projectDto);
+                    projectDtos.Add(projectDto);
+                }
+
+                return projectDtos;
+            }
+            else
+            {
+                return new List<ProjectDto>();
+            }
+        }
+
         public Project GetProject(Guid projectId)
         {
             if (_context.Projects != null)
@@ -88,9 +111,18 @@ namespace api.Services
                     throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
                 }
                 AddAssetsToProject(project);
+
                 return project;
             }
             throw new NotFoundInDBException($"The database contains no projects");
+        }
+
+        public ProjectDto GetProjectDto(Guid projectId)
+        {
+            var project = GetProject(projectId);
+            var projectDto = ProjectDtoAdapter.Convert(project);
+            AddCapexToCases(projectDto);
+            return projectDto;
         }
 
         private Project AddAssetsToProject(Project project)
@@ -105,9 +137,47 @@ namespace api.Services
             return project;
         }
 
-        public void AddSurfsToProject(Project project, Surf surf)
+        private void AddCapexToCases(ProjectDto projectDto)
         {
-            project.Surfs.Add(surf);
+            foreach (CaseDto c in projectDto.Cases)
+            {
+                c.Capex = 0;
+                if (c.WellProjectLink != Guid.Empty)
+                {
+                    var wellProject = _wellProjectService.GetWellProject(c.WellProjectLink);
+                    c.Capex += sumValues(wellProject.CostProfile);
+                }
+                if (c.SubstructureLink != Guid.Empty)
+                {
+                    var substructure = _substructureService.GetSubstructure(c.SubstructureLink);
+                    c.Capex += sumValues(substructure.CostProfile);
+                }
+                if (c.SurfLink != Guid.Empty)
+                {
+                    var surf = _surfService.GetSurf(c.SurfLink);
+                    c.Capex += sumValues(surf.CostProfile);
+                }
+                if (c.TopsideLink != Guid.Empty)
+                {
+                    var topside = _topsideFaciltyService.GetTopside(c.TopsideLink);
+                    c.Capex += sumValues(topside.CostProfile);
+                }
+                if (c.TransportLink != Guid.Empty)
+                {
+                    var transport = _transportService.GetTransport(c.TransportLink);
+                    c.Capex += sumValues(transport.CostProfile);
+                }
+            }
+        }
+
+        private double sumValues(TimeSeriesCost<double> timeSeries)
+        {
+            double sum = 0;
+            foreach (YearValue<double> yearValue in timeSeries.YearValues)
+            {
+                sum += yearValue.Value;
+            }
+            return sum;
         }
     }
 }

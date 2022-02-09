@@ -4,9 +4,9 @@ using api.Services;
 
 namespace api.Adapters
 {
-    public class CaseAdapter
+    public static class CaseAdapter
     {
-        public Case Convert(CaseDto caseDto)
+        public static Case Convert(CaseDto caseDto)
         {
             var case_ = new Case();
             case_.ProjectId = caseDto.ProjectId;
@@ -19,7 +19,8 @@ namespace api.Adapters
 
             return case_;
         }
-    }
 
+
+    }
 }
 
