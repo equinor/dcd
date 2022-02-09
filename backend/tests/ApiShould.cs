@@ -1,10 +1,11 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
+using api.Models;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using Xunit;
@@ -58,5 +59,10 @@ public class ApiShould : IClassFixture<WebApplicationFactory<Program>>
         response.EnsureSuccessStatusCode(); // Status Code 200-299
         Assert.Equal("application/json; charset=utf-8",
             response.Content.Headers.ContentType.ToString());
+        var responseProjects = await response.Content.ReadFromJsonAsync<List<Project>>();
+        foreach (var responseProject in responseProjects)
+        {
+            Assert.NotNull(responseProject.DrainageStrategies);
+        }
     }
 }
