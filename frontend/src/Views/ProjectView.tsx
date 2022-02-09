@@ -5,8 +5,8 @@ import styled from 'styled-components'
 
 import CasesTable from '../Components/CasesTable/CasesTable'
 import BarChart from '../Components/BarChart'
-import { Project } from '../types'
 import { projectService } from '../Services/ProjectService'
+import { GetDrainageStrategy } from '../Utils/common'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -28,7 +28,7 @@ const Charts = styled.div`
 
 const ProjectView = () => {
     let params = useParams()
-    const [project, setProject] = useState<Project>()
+    const [project, setProject] = useState<Components.Schemas.Project>()
 
     useEffect(() => {
         if (projectService) {
@@ -46,13 +46,24 @@ const ProjectView = () => {
     if (!project) return null
 
     const dataX: string[] = []
-    let dataProdProfileGas: number[] = []
-    let dataProdProfileOil: number[] = []
+    let dataProdProfileGas: number [] = []
+    let dataProdProfileOil: number [] = []
 
-    project.cases.forEach(c => {
-        dataProdProfileGas = c.drainageStrategy?.productionProfileGas?.yearValues?.map(v => v.value)
-        dataProdProfileOil = c.drainageStrategy?.productionProfileOil?.yearValues?.map(v => v.value)
-        dataX.push(c.name)
+    project.cases?.forEach(c => {
+        const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
+        if (drainageStrategy === undefined)
+          return;
+        if (drainageStrategy.productionProfileGas !== undefined 
+            && drainageStrategy.productionProfileGas !== null
+            && drainageStrategy.productionProfileGas.yearValues !== undefined
+            && drainageStrategy.productionProfileGas.yearValues !== null)
+            dataProdProfileGas = drainageStrategy.productionProfileGas.yearValues.map(v => v.value!)
+        if (drainageStrategy.productionProfileOil !== undefined 
+            && drainageStrategy.productionProfileOil !== null
+            && drainageStrategy.productionProfileOil.yearValues !== undefined
+            && drainageStrategy.productionProfileOil.yearValues !== null)
+            dataProdProfileOil = drainageStrategy.productionProfileOil.yearValues.map(v => v.value!)
+        dataX.push(c.name!)
     })
 
     return (
@@ -63,7 +74,7 @@ const ProjectView = () => {
                 <BarChart data={{ x: dataX, y: dataProdProfileOil }} title="Production profile oil" />
             </Charts>
             <CasesHeader variant="h3">Cases</CasesHeader>
-            <CasesTable key={project.id} projectId={project.id} cases={project.cases} />
+            <CasesTable key={project.id} project={project} cases={project.cases!} />
         </Wrapper>
     )
 }

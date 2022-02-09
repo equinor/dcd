@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Link, useParams } from 'react-router-dom'
 import { file, folder, dashboard } from '@equinor/eds-icons'
 
-import { Project } from '../../types'
 import MenuItem from './MenuItem'
 import ProjectMenuItemComponent from './ProjectMenuItemComponent'
 
@@ -45,7 +44,7 @@ const projectMenuItems = [
 ]
 
 interface Props {
-    project: Project
+    project: Components.Schemas.Project
 }
 
 const ProjectMenu = ({ project }: Props) => {
@@ -57,7 +56,7 @@ const ProjectMenu = ({ project }: Props) => {
             <nav>
                 <LinkWithoutStyle to={'/project/' + project.id}>
                     <MenuItem
-                        title={project.name}
+                        title={project.name!}
                         isSelected={params.projectId === project.id}
                         icon={folder}
                         isOpen={isOpen}
@@ -73,12 +72,12 @@ const ProjectMenu = ({ project }: Props) => {
                                 {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                     <nav>
                                         <LinkWithoutStyle to={'/project/' + project.id}>
-                                            <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id} />
+                                            <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id!} />
                                         </LinkWithoutStyle>
                                     </nav>
                                 )}
                                 {projectMenuItem.name === ProjectMenuItemType.CASES && (
-                                    <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id} subItems={project.cases} />
+                                    <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id!} subItems={project.cases!} />
                                 )}
                             </Item>
                         )

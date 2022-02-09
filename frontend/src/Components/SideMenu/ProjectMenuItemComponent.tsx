@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Link, useParams } from 'react-router-dom'
 import { IconData } from '@equinor/eds-icons'
 
-import { Case } from '../../types'
 import { ProjectMenuItemType } from './ProjectMenu'
 import MenuItem from './MenuItem'
 
@@ -41,7 +40,7 @@ export type ProjectMenuItem = {
 interface Props {
     item: ProjectMenuItem
     projectId: string
-    subItems?: Case[]
+    subItems?: Components.Schemas.Case[]
 }
 
 const ProjectMenuItemComponent = ({ item, projectId, subItems }: Props) => {
@@ -72,7 +71,7 @@ const ProjectMenuItemComponent = ({ item, projectId, subItems }: Props) => {
                             <nav>
                                 <LinkWithoutStyle to={'/project/' + projectId + '/case/' + subItem.id}>
                                     <MenuItem
-                                        title={subItem.name}
+                                        title={subItem.name!}
                                         isSelected={isSelected && params.caseId === subItem.id}
                                         padding={'0.25rem 2rem'}
                                     />

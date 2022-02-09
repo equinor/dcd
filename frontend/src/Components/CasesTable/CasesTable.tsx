@@ -5,7 +5,8 @@ import { Table, Typography } from '@equinor/eds-core-react'
 
 import { sort } from './helpers'
 import SortableTable, { Column, SortDirection } from './SortableTable'
-import { Case } from '../../types'
+import { GetDrainageStrategy } from '../../Utils/common'
+
 
 const { Row, Cell } = Table
 
@@ -25,23 +26,25 @@ const columns: Column[] = [
 ]
 
 interface Props {
-    projectId: string | undefined
-    cases: Case[]
+    project: Components.Schemas.Project
+    cases: Components.Schemas.Case[]
 }
 
-const CasesTable = ({ cases, projectId }: Props) => {
-    const getPpg = useCallback((c: Case) => {
-        return c.drainageStrategy?.productionProfileGas?.yearValues?.reduce((sum, yearValue) => sum + yearValue.value, 0) ?? 0
+const CasesTable = ({ cases, project }: Props) => {
+    const getPpg = useCallback((c: Components.Schemas.Case) => {
+        const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
+        return drainageStrategy?.productionProfileGas?.yearValues?.reduce((sum, yearValue) => sum + yearValue.value!, 0) ?? 0
     }, [])
 
-    const getPpo = useCallback((c: Case) => {
-        return c.drainageStrategy?.productionProfileOil?.yearValues?.reduce((sum, yearValue) => sum + yearValue.value, 0) ?? 0
+    const getPpo = useCallback((c: Components.Schemas.Case) => {
+        const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
+        return drainageStrategy?.productionProfileOil?.yearValues?.reduce((sum, yearValue) => sum + yearValue.value!, 0) ?? 0
     }, [])
 
-    const sortOnAccessor = (a: Case, b: Case, accessor: string, sortDirection: SortDirection) => {
+    const sortOnAccessor = (a: Components.Schemas.Case, b: Components.Schemas.Case, accessor: string, sortDirection: SortDirection) => {
         switch (accessor) {
             case 'name': {
-                return sort(a.name.toLowerCase(), b.name.toLowerCase(), sortDirection)
+                return sort(a.name!.toLowerCase(), b.name!.toLowerCase(), sortDirection)
             }
             case 'ppg': {
                 return sort(getPpg(a), getPpg(b), sortDirection)
@@ -50,18 +53,20 @@ const CasesTable = ({ cases, projectId }: Props) => {
                 return sort(getPpo(a), getPpo(b), sortDirection)
             }
             case 'nglYield': {
-                return sort(a.drainageStrategy.nglYield, b.drainageStrategy.nglYield, sortDirection)
+                const drainageStrategyA = GetDrainageStrategy(project, a.drainageStrategyLink);
+                const drainageStrategyB = GetDrainageStrategy(project, b.drainageStrategyLink);
+                return sort(drainageStrategyA!.nglYield!, drainageStrategyB!.nglYield!, sortDirection)
             }
             default:
-                return sort(a.name.toLowerCase(), b.name.toLowerCase(), sortDirection)
+                return sort(a.name!.toLowerCase(), b.name!.toLowerCase(), sortDirection)
         }
     }
 
-    const renderRow = (caseItem: Case, index: number) => {
+    const renderRow = (caseItem: Components.Schemas.Case, index: number) => {
         return (
             <Row key={index}>
                 <CellWithBorder>
-                    <LinkWithoutStyle to={`/project/${projectId}/case/${caseItem.id}`}>
+                    <LinkWithoutStyle to={`/project/${project.id}/case/${caseItem.id}`}>
                         <Typography
                             color="primary"
                             variant="body_short"
@@ -80,7 +85,7 @@ const CasesTable = ({ cases, projectId }: Props) => {
                     <Typography>{getPpo(caseItem)} USD</Typography>
                 </CellWithBorder>
                 <CellWithBorder>
-                    <Typography>{caseItem.drainageStrategy.nglYield}</Typography>
+                    <Typography>{GetDrainageStrategy(project, caseItem.drainageStrategyLink)?.nglYield}</Typography>
                 </CellWithBorder>
             </Row>
         )
