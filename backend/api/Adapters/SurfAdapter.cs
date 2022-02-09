@@ -7,7 +7,6 @@ namespace api.Adapters
     public class SurfAdapter
     {
 
-
         public Surf Convert(SurfDto surfDto)
         {
             var surf = new Surf();
@@ -19,7 +18,6 @@ namespace api.Adapters
             surf.ProductionFlowline = surfDto.ProductionFlowline;
             surf.RiserCount = surfDto.RiserCount;
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
-            surf.Id = surfDto.Id;
             return surf;
         }
 

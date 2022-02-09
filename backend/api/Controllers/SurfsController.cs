@@ -29,32 +29,24 @@ namespace api.Controllers
             _surfAdapter = new SurfAdapter();
         }
 
-        [HttpPatch("{surfId}", Name = "surfs")]
-        public Surf UpdateSurf([FromBody] SurfDto surfDto)
+        [HttpPatch("{surfId}", Name = "UpdateSurf")]
+        public Project UpdateSurf([FromRoute] Guid surfId, [FromBody] SurfDto surfDto)
         {
             var surf = _surfAdapter.Convert(surfDto);
-            return _surfService.UpdateSurf(surf);
+            return _surfService.UpdateSurf(surfId, surf);
         }
 
-        [HttpPost("{projectId}", Name = "surf")]
-        public Surf CreateSurf([FromBody] SurfDto surfDto)
+        [HttpPost(Name = "CreateSurf")]
+        public Project CreateSurf([FromBody] SurfDto surfDto)
         {
             var surf = _surfAdapter.Convert(surfDto);
-            return _surfService.CreateSurf(surf);
+            return _surfService.CreateSurf(surf, surfDto.SourceCaseId);
         }
 
-        [HttpDelete("{surfId}", Name = "surfs")]
-        public bool DeleteSurf([FromBody] SurfDto surfDto)
+        [HttpDelete("{surfId}", Name = "DeleteSurf")]
+        public Project DeleteSurf(Guid surfId)
         {
-            var surf = _surfAdapter.Convert(surfDto);
-            if (_surfService.DeleteSurf(surf))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return _surfService.DeleteSurf(surfId);
         }
 
     }

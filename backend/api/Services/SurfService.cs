@@ -25,7 +25,6 @@ namespace api.Services
                 return _context.Surfs
                     .Include(c => c.CostProfile)
                         .ThenInclude(c => c.YearValues)
-                    .Include(c => c.Project)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -34,52 +33,78 @@ namespace api.Services
             }
         }
 
-        public Surf UpdateSurf(Surf surf)
+        public Project UpdateSurf(Guid surfId, Surf updatedSurf)
         {
-            if (_context.Surfs != null)
-            {
-                var result = _context.Surfs.Update(surf);
-                _context.SaveChanges();
-                return result.Entity;
-            }
-            else
-            {
-                throw new Exception(); //TODO FIX EXCEPTION
-            }
+            var surf = GetSurf(surfId);
+            CopyData(surf, updatedSurf);
+            _context.Surfs!.Update(surf);
+            _context.SaveChanges();
+            return _projectService.GetProject(surf.ProjectId);
         }
 
-        public Surf CreateSurf(Surf surf)
+        private Surf GetSurf(Guid surfId)
         {
-            if (_context.Surfs != null)
+            var surf = _context.Surfs!
+                .Include(c => c.CostProfile)
+                    .ThenInclude(c => c.YearValues)
+                .FirstOrDefault(o => o.Id == surfId);
+            if (surf == null)
             {
-                var project = _projectService.GetProject(surf.ProjectId);
-                surf.Project = project;
-                var result = _context.Surfs.Add(surf);
-                _context.SaveChanges();
-                return result.Entity;
+                throw new ArgumentException(string.Format("Surf {0} not found.", surfId));
             }
-            else
-            {
-                throw new Exception(); //TODO FIX EXCEPTION
-            }
+            return surf;
         }
 
-        public bool DeleteSurf(Surf surf)
+        private static void CopyData(Surf surf, Surf updatedSurf)
         {
-            if (_context.Surfs != null)
-            {
-                _context.Surfs.Remove(surf);
-                _context.SaveChanges();
-                return true;
-            }
-            else
-            {
-                throw new Exception(); //TODO FIX EXCEPTION
-            }
+            surf.Name = updatedSurf.Name;
+            surf.ArtificialLift = updatedSurf.ArtificialLift;
+            surf.Maturity = updatedSurf.Maturity;
+            surf.InfieldPipelineSystemLength = updatedSurf.InfieldPipelineSystemLength;
+            surf.ProductionFlowline = updatedSurf.ProductionFlowline;
+            surf.RiserCount = updatedSurf.RiserCount;
+            surf.CostProfile = updatedSurf.CostProfile;
         }
 
+        public Project CreateSurf(Surf surf, Guid sourceCaseId)
+        {
+            var project = _projectService.GetProject(surf.ProjectId);
+            surf.Project = project;
+            _context.Surfs!.Add(surf);
+            _context.SaveChanges();
+            SetCaseLink(surf, sourceCaseId, project);
+            return _projectService.GetProject(surf.ProjectId);
+        }
 
+        private void SetCaseLink(Surf surf, Guid sourceCaseId, Project project)
+        {
+            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            if (case_ == null)
+            {
+                throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
+            }
+            case_.SurfLink = surf.Id;
+            _context.SaveChanges();
+        }
 
+        public Project DeleteSurf(Guid surfId)
+        {
+            var surf = GetSurf(surfId);
+            _context.Surfs!.Remove(surf);
+            DeleteCaseLinks(surfId);
+            return _projectService.GetProject(surf.ProjectId);
+        }
 
+        private void DeleteCaseLinks(Guid surfId)
+        {
+            foreach (Case c in _context.Cases!)
+            {
+                if (c.SurfLink == surfId)
+                {
+                    c.SurfLink = Guid.Empty;
+                }
+            }
+            _context.SaveChanges();
+        }
     }
 }
