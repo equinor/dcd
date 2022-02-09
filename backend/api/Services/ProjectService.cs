@@ -33,7 +33,7 @@ namespace api.Services
             _transportService = new TransportService(_context, this);
         }
 
-        public Project CreateProject(Project project)
+        public ProjectDto CreateProject(Project project)
         {
             project.Cases = new List<Case>();
             project.DrainageStrategies = new List<DrainageStrategy>();
@@ -47,15 +47,15 @@ namespace api.Services
             if (_context.Projects == null)
             {
                 var projects = new List<Project>();
-                projects.AddRange(projects);
+                projects.Add(project);
                 _context.AddRange(projects);
             }
             else
             {
-                _context.Projects.AddRange(project);
+                _context.Projects.Add(project);
             }
             _context.SaveChanges();
-            return project;
+            return GetProjectDto(project.Id);
         }
 
         public IEnumerable<Project> GetAll()

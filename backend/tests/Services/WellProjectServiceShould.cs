@@ -118,7 +118,7 @@ namespace tests
             var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == wellProjectToDelete.Name);
             Assert.Null(actualWellProject);
             var casesWithWellProjectLink = projectResult.Cases.Where(o => o.WellProjectLink == wellProjectToDelete.Id);
-            Assert.Equal(0, casesWithWellProjectLink.Count());
+            Assert.Empty(casesWithWellProjectLink);
         }
 
         [Fact]

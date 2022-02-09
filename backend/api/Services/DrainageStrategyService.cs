@@ -1,4 +1,5 @@
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -43,14 +44,14 @@ namespace api.Services
             }
         }
 
-        public Project CreateDrainageStrategy(DrainageStrategy drainageStrategy, Guid sourceCaseId)
+        public ProjectDto CreateDrainageStrategy(DrainageStrategy drainageStrategy, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(drainageStrategy.ProjectId);
             drainageStrategy.Project = project;
             _context.DrainageStrategies!.Add(drainageStrategy);
             _context.SaveChanges();
             SetCaseLink(drainageStrategy, sourceCaseId, project);
-            return _projectService.GetProject(drainageStrategy.ProjectId);
+            return _projectService.GetProjectDto(drainageStrategy.ProjectId);
         }
 
         private void SetCaseLink(DrainageStrategy drainageStrategy, Guid sourceCaseId, Project project)
@@ -64,13 +65,13 @@ namespace api.Services
             _context.SaveChanges();
         }
 
-        public Project DeleteDrainageStrategy(Guid drainageStrategyId)
+        public ProjectDto DeleteDrainageStrategy(Guid drainageStrategyId)
         {
             var drainageStrategy = GetDrainageStrategy(drainageStrategyId);
             _context.DrainageStrategies!.Remove(drainageStrategy);
             DeleteCaseLinks(drainageStrategyId);
             _context.SaveChanges();
-            return _projectService.GetProject(drainageStrategy.ProjectId);
+            return _projectService.GetProjectDto(drainageStrategy.ProjectId);
         }
 
         private void DeleteCaseLinks(Guid drainageStrategyId)
@@ -84,13 +85,13 @@ namespace api.Services
             }
         }
 
-        public Project UpdateDrainageStrategy(Guid drainageStrategyId, DrainageStrategy updatedDrainageStrategy)
+        public ProjectDto UpdateDrainageStrategy(Guid drainageStrategyId, DrainageStrategy updatedDrainageStrategy)
         {
             var drainageStrategy = GetDrainageStrategy(drainageStrategyId);
             CopyData(drainageStrategy, updatedDrainageStrategy);
             _context.DrainageStrategies!.Update(drainageStrategy);
             _context.SaveChanges();
-            return _projectService.GetProject(drainageStrategy.ProjectId);
+            return _projectService.GetProjectDto(drainageStrategy.ProjectId);
         }
 
         private DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)

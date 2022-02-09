@@ -25,7 +25,7 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateCase")]
-        public Project CreateCase([FromBody] CaseDto caseDto)
+        public ProjectDto CreateCase([FromBody] CaseDto caseDto)
         {
             var case_ = CaseAdapter.Convert(caseDto);
             return _caseService.CreateCase(case_);

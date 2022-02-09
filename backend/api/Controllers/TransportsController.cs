@@ -29,21 +29,21 @@ namespace api.Controllers
         }
 
         [HttpPatch("{transportId}", Name = "UpdateTransport")]
-        public Project UpdateTransport([FromRoute] Guid transportId, [FromBody] TransportDto transportDto)
+        public ProjectDto UpdateTransport([FromRoute] Guid transportId, [FromBody] TransportDto transportDto)
         {
             var transport = _transportAdapter.Convert(transportDto);
             return _transportService.UpdateTransport(transportId, transport);
         }
 
         [HttpPost(Name = "CreateTransport")]
-        public Project CreateTransport([FromBody] TransportDto transportDto)
+        public ProjectDto CreateTransport([FromBody] TransportDto transportDto)
         {
             var transport = _transportAdapter.Convert(transportDto);
             return _transportService.CreateTransport(transport, transportDto.SourceCaseId);
         }
 
         [HttpDelete("{transportId}", Name = "DeleteTransport")]
-        public Project DeleteTransport(Guid transportId)
+        public ProjectDto DeleteTransport(Guid transportId)
         {
             return _transportService.DeleteTransport(transportId);
         }

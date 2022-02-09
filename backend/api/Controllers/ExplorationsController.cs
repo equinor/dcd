@@ -26,7 +26,7 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateExploration")]
-        public Project CreateExploration([FromBody] ExplorationDto
+        public ProjectDto CreateExploration([FromBody] ExplorationDto
                 explorationDto)
         {
             var exploration = ExplorationAdapter.Convert(explorationDto);
@@ -34,13 +34,13 @@ namespace api.Controllers
         }
 
         [HttpDelete("{explorationId}", Name = "DeleteExploration")]
-        public Project DeleteExploration(Guid explorationId)
+        public ProjectDto DeleteExploration(Guid explorationId)
         {
             return _explorationService.DeleteExploration(explorationId);
         }
 
         [HttpPatch("{explorationId}", Name = "UpdateExploration")]
-        public Project UpdateExploration([FromRoute] Guid explorationId, [FromBody] ExplorationDto eplorationDto)
+        public ProjectDto UpdateExploration([FromRoute] Guid explorationId, [FromBody] ExplorationDto eplorationDto)
         {
             var exploration = ExplorationAdapter.Convert(eplorationDto);
             return _explorationService.UpdateExploration(explorationId, exploration);

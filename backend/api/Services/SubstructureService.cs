@@ -1,4 +1,5 @@
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -31,14 +32,14 @@ namespace api.Services
             }
         }
 
-        public Project CreateSubstructure(Substructure substructure, Guid sourceCaseId)
+        public ProjectDto CreateSubstructure(Substructure substructure, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(substructure.ProjectId);
             substructure.Project = project;
             _context.Substructures!.Add(substructure);
             _context.SaveChanges();
             SetCaseLink(substructure, sourceCaseId, project);
-            return _projectService.GetProject(project.Id);
+            return _projectService.GetProjectDto(project.Id);
         }
 
         private void SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)
@@ -52,13 +53,13 @@ namespace api.Services
             _context.SaveChanges();
         }
 
-        public Project DeleteSubstructure(Guid substructureId)
+        public ProjectDto DeleteSubstructure(Guid substructureId)
         {
             var substructure = GetSubstructure(substructureId);
             _context.Substructures!.Remove(substructure);
             DeleteCaseLinks(substructureId);
             _context.SaveChanges();
-            return _projectService.GetProject(substructure.ProjectId);
+            return _projectService.GetProjectDto(substructure.ProjectId);
         }
 
         private void DeleteCaseLinks(Guid substructureId)
@@ -72,13 +73,13 @@ namespace api.Services
             }
         }
 
-        public Project UpdateSubstructure(Guid substructureId, Substructure updatedSubstructure)
+        public ProjectDto UpdateSubstructure(Guid substructureId, Substructure updatedSubstructure)
         {
             var substructure = GetSubstructure(substructureId);
             CopyData(substructure, updatedSubstructure);
             _context.Substructures!.Update(substructure);
             _context.SaveChanges();
-            return _projectService.GetProject(substructure.ProjectId);
+            return _projectService.GetProjectDto(substructure.ProjectId);
         }
 
         public Substructure GetSubstructure(Guid substructureId)

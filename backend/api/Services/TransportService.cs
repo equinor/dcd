@@ -1,4 +1,5 @@
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +16,14 @@ namespace api.Services
             _context = context;
             _projectService = projectService;
         }
-        public Project CreateTransport(Transport transport, Guid sourceCaseId)
+        public ProjectDto CreateTransport(Transport transport, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(transport.ProjectId);
             transport.Project = project;
             _context.Transports!.Add(transport);
             _context.SaveChanges();
             SetCaseLink(transport, sourceCaseId, project);
-            return _projectService.GetProject(transport.ProjectId);
+            return _projectService.GetProjectDto(transport.ProjectId);
         }
 
         private void SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
@@ -36,13 +37,13 @@ namespace api.Services
             _context.SaveChanges();
         }
 
-        public Project DeleteTransport(Guid transportId)
+        public ProjectDto DeleteTransport(Guid transportId)
         {
             var transport = GetTransport(transportId);
             _context.Transports!.Remove(transport);
             DeleteCaseLinks(transportId);
             _context.SaveChanges();
-            return _projectService.GetProject(transport.ProjectId);
+            return _projectService.GetProjectDto(transport.ProjectId);
         }
 
         public Transport GetTransport(Guid transportId)
@@ -84,13 +85,13 @@ namespace api.Services
             }
         }
 
-        public Project UpdateTransport(Guid transportId, Transport changedtransport)
+        public ProjectDto UpdateTransport(Guid transportId, Transport changedtransport)
         {
             var transport = GetTransport(transportId);
             CopyData(transport, changedtransport);
             _context.Transports!.Update(transport);
             _context.SaveChanges();
-            return _projectService.GetProject(transport.ProjectId);
+            return _projectService.GetProjectDto(transport.ProjectId);
         }
 
         private static void CopyData(Transport transport, Transport updatedTransport)
