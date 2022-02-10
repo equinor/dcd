@@ -25,7 +25,8 @@ namespace api.Models
             }
         }
 
-        public static T convertStringToGeneric(string pf)
+
+        private static T convertStringToGeneric(string pf)
         {
             return (T)Convert.ChangeType(pf, typeof(T));
         }
@@ -46,6 +47,17 @@ namespace api.Models
     {
         public string EPAVersion { get; set; } = string.Empty;
         public Currency Currency { get; set; }
+        [NotMapped]
+        public double Sum
+        {
+            get
+            {
+                double s = 0.0;
+                Array.ForEach(Values, i => s += i);
+                return s;
+            }
+            private set { }
+        }
     }
     public enum Currency
     {

@@ -37,43 +37,34 @@ namespace api.Adapters
                 if (c.WellProjectLink != Guid.Empty)
                 {
                     var wellProject = wellProjectService.GetWellProject(c.WellProjectLink);
-                    c.Capex += sumValues(wellProject.CostProfile.Values);
+                    c.Capex += wellProject.CostProfile.Sum;
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
                     var substructure = substructureService.GetSubstructure(c.SubstructureLink);
-                    c.Capex += sumValues(substructure.CostProfile.Values);
+                    c.Capex += substructure.CostProfile.Sum;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
                     var surf = surfService.GetSurf(c.SurfLink);
-                    c.Capex += sumValues(surf.CostProfile.Values);
+                    c.Capex += surf.CostProfile.Sum;
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {
                     var topside = topsideService.GetTopside(c.TopsideLink);
-                    c.Capex += sumValues(topside.CostProfile.Values);
+                    c.Capex += topside.CostProfile.Sum;
                 }
                 if (c.TransportLink != Guid.Empty)
                 {
                     var transport = transportService.GetTransport(c.TransportLink);
-                    c.Capex += sumValues(transport.CostProfile.Values);
+                    c.Capex += transport.CostProfile.Sum;
                 }
                 if (c.ExplorationLink != Guid.Empty)
                 {
                     var exploration = explorationService.GetExploration(c.ExplorationLink);
-                    c.Capex += sumValues(exploration.CostProfile.Values);
+                    c.Capex += exploration.CostProfile.Sum;
                 }
             }
-        }
-        private static double sumValues(double[] timeSeries)
-        {
-            double sum = 0;
-            foreach (double value in timeSeries)
-            {
-                sum += value;
-            }
-            return sum;
         }
     }
 }
