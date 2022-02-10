@@ -27,10 +27,10 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateWellProject")]
-        public ProjectDto CreateWellProject([FromBody] WellProjectDto wellProjectDto)
+        public ProjectDto CreateWellProject([FromQuery] Guid sourceCaseId, [FromBody] WellProjectDto wellProjectDto)
         {
             var wellProject = _wellProjectAdapter.Convert(wellProjectDto);
-            return _wellProjectService.CreateWellProject(wellProject, wellProjectDto.SourceCaseId);
+            return _wellProjectService.CreateWellProject(wellProject, sourceCaseId);
         }
 
         [HttpDelete("{wellProjectId}", Name = "DeleteWellProject")]

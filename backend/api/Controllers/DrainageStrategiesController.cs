@@ -27,10 +27,10 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateDrainageStrategy")]
-        public ProjectDto CreateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
+        public ProjectDto CreateDrainageStrategy([FromQuery] Guid sourceCaseId, [FromBody] DrainageStrategyDto drainageStrategyDto)
         {
             var drainageStrategy = _drainageStrategyAdapter.Convert(drainageStrategyDto);
-            return _drainageStrategyService.CreateDrainageStrategy(drainageStrategy, drainageStrategyDto.SourceCaseId);
+            return _drainageStrategyService.CreateDrainageStrategy(drainageStrategy, sourceCaseId);
         }
 
         [HttpDelete("{drainageStrategyId}", Name = "DeleteDrainageStrategy")]

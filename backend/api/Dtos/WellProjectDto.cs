@@ -6,7 +6,6 @@ namespace api.Dtos
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
-        public Guid SourceCaseId { get; set; }
         public string Name { get; set; } = string.Empty;
         public WellProjectCostProfileDto CostProfile { get; set; } = null!;
         public DrillingScheduleDto DrillingSchedule { get; set; } = null!;

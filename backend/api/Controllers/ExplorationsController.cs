@@ -26,11 +26,10 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateExploration")]
-        public ProjectDto CreateExploration([FromBody] ExplorationDto
-                explorationDto)
+        public ProjectDto CreateExploration([FromQuery] Guid sourceCaseId, [FromBody] ExplorationDto explorationDto)
         {
             var exploration = ExplorationAdapter.Convert(explorationDto);
-            return _explorationService.CreateExploration(exploration, explorationDto.SourceCaseId);
+            return _explorationService.CreateExploration(exploration, sourceCaseId);
         }
 
         [HttpDelete("{explorationId}", Name = "DeleteExploration")]

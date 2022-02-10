@@ -36,10 +36,10 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateSurf")]
-        public ProjectDto CreateSurf([FromBody] SurfDto surfDto)
+        public ProjectDto CreateSurf([FromQuery] Guid sourceCaseId, [FromBody] SurfDto surfDto)
         {
             var surf = _surfAdapter.Convert(surfDto);
-            return _surfService.CreateSurf(surf, surfDto.SourceCaseId);
+            return _surfService.CreateSurf(surf, sourceCaseId);
         }
 
         [HttpDelete("{surfId}", Name = "DeleteSurf")]
