@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import ProjectMenu from './ProjectMenu'
-import { Project } from '../../types'
 import { projectService } from '../../Services/ProjectService'
 
 const SidebarDiv = styled.div`
@@ -76,7 +75,7 @@ export const projects = [
 ]
 
 const SideMenu = () => {
-    const [project, setProject] = useState<Project>()
+    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
     const navigate = useNavigate()
     const params = useParams()
 

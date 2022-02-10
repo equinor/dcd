@@ -37,7 +37,8 @@
         "test": "react-scripts test",
         "cyopen": "./node_modules/.bin/cypress open",
         "cyrun": "./node_modules/.bin/cypress run",
-        "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage"
+        "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
+        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url https://ase-dcd-backend-dev.azurewebsites.net/swagger/v1/swagger.json"
     },
     "eslintConfig": {
         "extends": [
@@ -60,6 +61,7 @@
     "devDependencies": {
         "@types/react-plotly.js": "^2.5.0",
         "@types/styled-components": "^5.1.18",
-        "cypress": "^9.1.0"
+        "cypress": "^9.1.0",
+        "dtsgenerator": "^3.15.0"
     }
 }
