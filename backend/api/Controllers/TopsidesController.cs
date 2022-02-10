@@ -27,10 +27,10 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateTopside")]
-        public ProjectDto CreateTopside([FromBody] TopsideDto topsideDto)
+        public ProjectDto CreateTopside([FromQuery] Guid sourceCaseId, [FromBody] TopsideDto topsideDto)
         {
             var topside = _topsideAdapter.Convert(topsideDto);
-            return _topsideService.CreateTopside(topside, topsideDto.SourceCaseId);
+            return _topsideService.CreateTopside(topside, sourceCaseId);
         }
 
         [HttpDelete("{topsideId}", Name = "DeleteTopside")]

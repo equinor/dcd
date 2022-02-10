@@ -36,10 +36,10 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateTransport")]
-        public ProjectDto CreateTransport([FromBody] TransportDto transportDto)
+        public ProjectDto CreateTransport([FromQuery] Guid sourceCaseId, [FromBody] TransportDto transportDto)
         {
             var transport = _transportAdapter.Convert(transportDto);
-            return _transportService.CreateTransport(transport, transportDto.SourceCaseId);
+            return _transportService.CreateTransport(transport, sourceCaseId);
         }
 
         [HttpDelete("{transportId}", Name = "DeleteTransport")]

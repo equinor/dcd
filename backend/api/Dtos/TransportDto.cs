@@ -6,7 +6,6 @@ namespace api.Dtos
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
-        public Guid SourceCaseId { get; set; }
         public TransportCostProfileDto CostProfile { get; set; } = null!;
         public Maturity Maturity { get; set; }
         public double GasExportPipelineLength { get; set; }
