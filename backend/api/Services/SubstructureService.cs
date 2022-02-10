@@ -23,7 +23,6 @@ namespace api.Services
             {
                 return _context.Substructures
                         .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -87,7 +86,6 @@ namespace api.Services
             var substructure = _context.Substructures!
                 .Include(c => c.Project)
                 .Include(c => c.CostProfile)
-                    .ThenInclude(c => c.YearValues)
                 .FirstOrDefault(o => o.Id == substructureId);
             if (substructure == null)
             {
@@ -103,7 +101,8 @@ namespace api.Services
             substructure.Maturity = updatedSubstructure.Maturity;
             substructure.CostProfile.Currency = updatedSubstructure.CostProfile.Currency;
             substructure.CostProfile.EPAVersion = updatedSubstructure.CostProfile.EPAVersion;
-            substructure.CostProfile.YearValues = updatedSubstructure.CostProfile.YearValues;
+            substructure.CostProfile.StartYear = updatedSubstructure.CostProfile.StartYear;
+            substructure.CostProfile.Values = updatedSubstructure.CostProfile.Values;
         }
     }
 }

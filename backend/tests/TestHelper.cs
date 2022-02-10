@@ -345,7 +345,7 @@ namespace tests
             }
         }
 
-        public static void CompareYearValues<T>(TimeSeriesBase<T> expected, TimeSeriesBase<T> actual)
+        public static void CompareYearValues<T>(TimeSeries<T> expected, TimeSeries<T> actual)
         {
             if (expected == null || actual == null)
             {
@@ -354,12 +354,12 @@ namespace tests
             }
             else
             {
-                Assert.Equal(expected.YearValues.Count, actual.YearValues.Count);
-                var yearValuePairsXY = expected.YearValues.OrderBy(v => v.Year).Zip(actual.YearValues.OrderBy(v => v.Year));
+                Assert.Equal(expected.Values.Length, actual.Values.Length);
+                var yearValuePairsXY = expected.Values.OrderBy(v => v).Zip(actual.Values.OrderBy(v => v));
                 foreach (var pair in yearValuePairsXY)
                 {
-                    Assert.Equal(pair.First.Year, pair.Second.Year);
-                    Assert.Equal(pair.First.Value, pair.Second.Value);
+                    Assert.Equal(pair.First, pair.Second);
+                    Assert.Equal(pair.First, pair.Second);
                 }
             }
         }
@@ -390,7 +390,7 @@ namespace tests
             }
         }
 
-        public static void CompareCosts<T>(TimeSeriesCost<T> expected, TimeSeriesCost<T> actual)
+        public static void CompareCosts(TimeSeriesCost expected, TimeSeriesCost actual)
         {
             if (expected == null || actual == null)
             {

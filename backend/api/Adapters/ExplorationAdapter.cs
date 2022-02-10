@@ -30,7 +30,8 @@ namespace api.Adapters
                 Currency = costProfileDto.Currency,
                 EPAVersion = costProfileDto.EPAVersion,
                 Exploration = exploration,
-                YearValues = costProfileDto.YearValues,
+                StartYear = costProfileDto.StartYear,
+                Values = costProfileDto.Values,
             };
         }
         private static ExplorationDrillingSchedule Convert(ExplorationDrillingScheduleDto? drillingScheduleDto, Exploration exploration)
@@ -42,7 +43,8 @@ namespace api.Adapters
             return new ExplorationDrillingSchedule
             {
                 Exploration = exploration,
-                YearValues = drillingScheduleDto.YearValues,
+                StartYear = drillingScheduleDto.StartYear,
+                Values = drillingScheduleDto.Values
             };
         }
         private static GAndGAdminCost Convert(GAndGAdminCostDto? gAndGAdminCostDto, Exploration exploration)
@@ -56,9 +58,9 @@ namespace api.Adapters
                 Currency = gAndGAdminCostDto.Currency,
                 EPAVersion = gAndGAdminCostDto.EPAVersion,
                 Exploration = exploration,
-                YearValues = gAndGAdminCostDto.YearValues,
+                Values = gAndGAdminCostDto.Values,
+                StartYear = gAndGAdminCostDto.StartYear
             };
         }
-
     }
 }

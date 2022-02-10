@@ -60,11 +60,8 @@ public class TopsideAdapterShould : IDisposable
             {
                 Currency = Currency.USD,
                 EPAVersion = "GT 1",
-                YearValues = new List<YearValue<double>> {
-                    new YearValue<double> (2023, 1.2e6),
-                    new YearValue<double> (2024, 1.3e6),
-                    new YearValue<double> (2025, 1.1e6),
-                },
+                StartYear = 2010,
+                Values = new double[] { 3.4564, 18.9, 62.3 }
             },
             DryWeight = 0.6e12,
             OilCapacity = 10,

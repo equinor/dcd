@@ -4,24 +4,10 @@ namespace api.SampleData.Builders;
 
 public class TransportBuilder : Transport
 {
-    public TransportBuilder WithCostProfile(TransportCostProfileBuilder builder)
+    public TransportBuilder WithCostProfile(TransportCostProfile costProfile)
     {
-        builder.Transport = this;
-        this.CostProfile = builder;
-        return this;
-    }
-}
-
-public class TransportCostProfileBuilder : TransportCostProfile
-{
-    public TransportCostProfileBuilder()
-    {
-        YearValues = new List<YearValue<double>>();
-    }
-
-    public TransportCostProfileBuilder WithYearValue(int year, double value)
-    {
-        this.YearValues.Add(new YearValue<double>(year, value));
+        costProfile.Transport = this;
+        this.CostProfile = costProfile;
         return this;
     }
 }

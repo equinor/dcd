@@ -30,7 +30,8 @@ namespace api.Adapters
             {
                 surfCostProfile.Currency = costprofile.Currency;
                 surfCostProfile.EPAVersion = costprofile.EPAVersion;
-                surfCostProfile.YearValues = costprofile.YearValues;
+                surfCostProfile.Values = costprofile.Values;
+                surfCostProfile.StartYear = costprofile.StartYear;
             }
             return surfCostProfile;
         }

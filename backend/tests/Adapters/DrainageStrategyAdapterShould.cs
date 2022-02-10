@@ -70,59 +70,38 @@ namespace tests
 
                 ProductionProfileOil = new ProductionProfileOilDto
                 {
-                    YearValues = new List<YearValue<double>> {
-                        new YearValue<double> (2050, 5.5),
-                        new YearValue<double> (2051, 5.3),
-                        new YearValue<double> (2052, 4.5),
-                    }
+                    StartYear = 2030,
+                    Values = new double[] { 33.4, 18.9, 62.3 }
                 },
                 ProductionProfileGas = new ProductionProfileGasDto
                 {
-                    YearValues = new List<YearValue<double>> {
-                        new YearValue<double> (2050, 5.5),
-                        new YearValue<double> (2051, 5.3),
-                        new YearValue<double> (2052, 4.5),
-                    }
+                    StartYear = 2031,
+                    Values = new double[] { 33.4, 14.9, 62.3 }
                 },
                 ProductionProfileWater = new ProductionProfileWaterDto
                 {
-                    YearValues = new List<YearValue<double>> {
-                        new YearValue<double> (2050, 1.5),
-                        new YearValue<double> (2051, 1.3),
-                        new YearValue<double> (2052, 1.5),
-                    }
+                    StartYear = 2040,
+                    Values = new double[] { 3.4, 18.9, 62.3 }
                 },
                 ProductionProfileWaterInjection = new ProductionProfileWaterInjectionDto
                 {
-                    YearValues = new List<YearValue<double>> {
-                        new YearValue<double> (2050, 2.5),
-                        new YearValue<double> (2051, 2.3),
-                        new YearValue<double> (2052, 2.5),
-                    }
+                    StartYear = 2050,
+                    Values = new double[] { 3.4, 48.9, 62.3 }
                 },
                 FuelFlaringAndLosses = new FuelFlaringAndLossesDto
                 {
-                    YearValues = new List<YearValue<double>> {
-                        new YearValue<double> (2050, 3.5),
-                        new YearValue<double> (2051, 3.3),
-                        new YearValue<double> (2052, 3.5),
-                    }
+                    StartYear = 2010,
+                    Values = new double[] { 3.4564, 18.9, 62.3 }
                 },
                 NetSalesGas = new NetSalesGasDto
                 {
-                    YearValues = new List<YearValue<double>> {
-                        new YearValue<double> (2050, 9.5),
-                        new YearValue<double> (2051, 9.3),
-                        new YearValue<double> (2052, 9.5),
-                    }
+                    StartYear = 2110,
+                    Values = new double[] { 3.4564, 18.9, 67.3 }
                 },
                 Co2Emissions = new Co2EmissionsDto
                 {
-                    YearValues = new List<YearValue<double>> {
-                        new YearValue<double> (2050, 8.5),
-                        new YearValue<double> (2051, 8.3),
-                        new YearValue<double> (2052, 8.5),
-                    }
+                    StartYear = 3010,
+                    Values = new double[] { 34.4564, 18.9, 62.3 }
                 },
             };
         }

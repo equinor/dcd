@@ -50,7 +50,6 @@ namespace api.Services
         {
             var transport = _context.Transports!
                     .Include(c => c.CostProfile)
-                        .ThenInclude(c => c.YearValues)
                 .Where(c => c.Id == transportId).First();
             if (transport == null)
             {
@@ -76,7 +75,6 @@ namespace api.Services
             {
                 return _context.Transports
                         .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else

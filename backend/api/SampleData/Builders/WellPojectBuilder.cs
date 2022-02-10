@@ -4,40 +4,14 @@ namespace api.SampleData.Builders;
 
 public class WellProjectBuilder : WellProject
 {
-    public WellProjectBuilder WithWellProjectCostProfile(WellProjectCostProfileBuilder w)
+    public WellProjectBuilder WithWellProjectCostProfile(WellProjectCostProfile w)
     {
         this.CostProfile = w;
         return this;
     }
-    public WellProjectBuilder WithDrillingSchedule(DrillingScheduleBuilder d)
+    public WellProjectBuilder WithDrillingSchedule(DrillingSchedule d)
     {
         this.DrillingSchedule = d;
-        return this;
-    }
-}
-
-public class WellProjectCostProfileBuilder : WellProjectCostProfile
-{
-    public WellProjectCostProfileBuilder()
-    {
-        YearValues = new List<YearValue<double>>();
-    }
-    public WellProjectCostProfileBuilder WithYearValue(int y, double v)
-    {
-        this.YearValues.Add(new YearValue<double>(y, v));
-        return this;
-    }
-}
-
-public class DrillingScheduleBuilder : DrillingSchedule
-{
-    public DrillingScheduleBuilder()
-    {
-        YearValues = new List<YearValue<int>>();
-    }
-    public DrillingScheduleBuilder WithYearValue(int year, int numberOfWells)
-    {
-        this.YearValues.Add(new YearValue<int>(year, numberOfWells));
         return this;
     }
 }

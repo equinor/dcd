@@ -122,17 +122,26 @@ public class ExplorationServiceShould : IDisposable
             WellType = WellType.Gas,
             RigMobDemob = 32.7
         }
-                .WithExplorationCostProfile(new ExplorationCostBuilder()
-                    .WithYearValue(2023, 44)
-                    .WithYearValue(2024, 45.7)
+              .WithExplorationCostProfile(new ExplorationCostProfile()
+              {
+                  Currency = Currency.USD,
+                  StartYear = 2230,
+                  Values = new double[] { 131.4, 28.2, 334.3 }
+              }
                 )
-                .WithExplorationDrillingSchedule(new ExplorationDrillingScheduleBuilder()
-                    .WithYearValue(2023, 4)
-                    .WithYearValue(2024, 3)
+                .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule()
+                {
+                    StartYear = 2050,
+                    Values = new int[] { 143, 5, 45 }
+                }
                 )
-                .WithGAndGAdminCost(new WithGAndGAdminCostBuilder()
-                    .WithYearValue(2023, 60.7)
-                    .WithYearValue(2024, 67.4)
+                .WithGAndGAdminCost(new GAndGAdminCost()
+                {
+                    Currency = Currency.NOK,
+                    StartYear = 2010,
+                    Values = new double[] { 314.4, 281.2, 34.3 }
+                }
+
                 );
     }
 
@@ -146,17 +155,26 @@ public class ExplorationServiceShould : IDisposable
             WellType = WellType.Gas,
             RigMobDemob = 32.7
         }
-                .WithExplorationCostProfile(new ExplorationCostBuilder()
-                    .WithYearValue(2023, 55.2)
-                    .WithYearValue(2024, 48.7)
+                 .WithExplorationCostProfile(new ExplorationCostProfile()
+                 {
+                     Currency = Currency.NOK,
+                     StartYear = 2010,
+                     Values = new double[] { 11.4, 28.2, 34.3 }
+                 }
                 )
-                .WithExplorationDrillingSchedule(new ExplorationDrillingScheduleBuilder()
-                    .WithYearValue(2023, 8)
-                    .WithYearValue(2024, 37)
+                .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule()
+                {
+                    StartYear = 2030,
+                    Values = new int[] { 123, 5, 5 }
+                }
                 )
-                .WithGAndGAdminCost(new WithGAndGAdminCostBuilder()
-                    .WithYearValue(2023, 64.7)
-                    .WithYearValue(2024, 37.4)
+                .WithGAndGAdminCost(new GAndGAdminCost()
+                {
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 31.4, 282.2, 34.3 }
+                }
+
                 );
     }
 

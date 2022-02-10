@@ -20,7 +20,7 @@ namespace api.Models
         public double PluggingAndAbandonment { get; set; }
     }
 
-    public class WellProjectCostProfile : TimeSeriesCost<double>
+    public class WellProjectCostProfile : TimeSeriesCost
     {
         [ForeignKey("WellProject.Id")]
         public WellProject WellProject { get; set; } = null!;

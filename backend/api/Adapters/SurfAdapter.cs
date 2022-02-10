@@ -26,7 +26,8 @@ namespace api.Adapters
             var surfCostProfile = new SurfCostProfile();
             surfCostProfile.Currency = costprofile.Currency;
             surfCostProfile.EPAVersion = costprofile.EPAVersion;
-            surfCostProfile.YearValues = costprofile.YearValues;
+            surfCostProfile.StartYear = costprofile.StartYear;
+            surfCostProfile.Values = costprofile.Values;
             surfCostProfile.Surf = surf;
             return surfCostProfile;
         }

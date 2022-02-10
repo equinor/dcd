@@ -31,7 +31,8 @@ namespace api.Adapters
             return new ProductionProfileOil
             {
                 DrainageStrategy = drainageStrategy,
-                YearValues = productionProfileOilDto.YearValues
+                StartYear = productionProfileOilDto.StartYear,
+                Values = productionProfileOilDto.Values
             };
         }
 
@@ -40,7 +41,8 @@ namespace api.Adapters
             return new ProductionProfileGas
             {
                 DrainageStrategy = drainageStrategy,
-                YearValues = productionProfileGasDto.YearValues
+                StartYear = productionProfileGasDto.StartYear,
+                Values = productionProfileGasDto.Values
             };
         }
 
@@ -49,7 +51,8 @@ namespace api.Adapters
             return new ProductionProfileWater
             {
                 DrainageStrategy = drainageStrategy,
-                YearValues = productionProfileWaterDto.YearValues
+                StartYear = productionProfileWaterDto.StartYear,
+                Values = productionProfileWaterDto.Values
             };
         }
 
@@ -58,7 +61,8 @@ namespace api.Adapters
             return new ProductionProfileWaterInjection
             {
                 DrainageStrategy = drainageStrategy,
-                YearValues = productionProfileWaterInjectionDto.YearValues
+                StartYear = productionProfileWaterInjectionDto.StartYear,
+                Values = productionProfileWaterInjectionDto.Values
             };
         }
 
@@ -67,7 +71,8 @@ namespace api.Adapters
             return new FuelFlaringAndLosses
             {
                 DrainageStrategy = drainageStrategy,
-                YearValues = fuelFlaringAndLossesDto.YearValues
+                StartYear = fuelFlaringAndLossesDto.StartYear,
+                Values = fuelFlaringAndLossesDto.Values
             };
         }
 
@@ -76,7 +81,8 @@ namespace api.Adapters
             return new NetSalesGas
             {
                 DrainageStrategy = drainageStrategy,
-                YearValues = netSalesGasDto.YearValues
+                StartYear = netSalesGasDto.StartYear,
+                Values = netSalesGasDto.Values
             };
         }
 
@@ -85,7 +91,8 @@ namespace api.Adapters
             return new Co2Emissions
             {
                 DrainageStrategy = drainageStrategy,
-                YearValues = co2EmissionsDto.YearValues
+                StartYear = co2EmissionsDto.StartYear,
+                Values = co2EmissionsDto.Values
             };
         }
     }

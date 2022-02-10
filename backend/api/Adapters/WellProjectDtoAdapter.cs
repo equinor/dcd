@@ -29,7 +29,8 @@ namespace api.Adapters
             {
                 EPAVersion = wellProjectCostProfile.EPAVersion,
                 Currency = wellProjectCostProfile.Currency,
-                YearValues = wellProjectCostProfile.YearValues
+                StartYear = wellProjectCostProfile.StartYear,
+                Values = wellProjectCostProfile.Values
             };
         }
 
@@ -37,7 +38,8 @@ namespace api.Adapters
         {
             return new DrillingScheduleDto
             {
-                YearValues = wellProjectDrillingSchedule_.YearValues
+                StartYear = wellProjectDrillingSchedule_.StartYear,
+                Values = wellProjectDrillingSchedule_.Values
             };
         }
     }

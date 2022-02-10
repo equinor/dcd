@@ -4,24 +4,10 @@ namespace api.SampleData.Builders;
 
 public class TopsideBuilder : Topside
 {
-    public TopsideBuilder WithCostProfile(TopsideCostProfileBuilder builder)
+    public TopsideBuilder WithCostProfile(TopsideCostProfile topside)
     {
-        builder.Topside = this;
-        this.CostProfile = builder;
-        return this;
-    }
-}
-
-public class TopsideCostProfileBuilder : TopsideCostProfile
-{
-    public TopsideCostProfileBuilder()
-    {
-        YearValues = new List<YearValue<double>>();
-    }
-
-    public TopsideCostProfileBuilder WithYearValue(int year, double value)
-    {
-        this.YearValues.Add(new YearValue<double>(year, value));
+        topside.Topside = this;
+        this.CostProfile = topside;
         return this;
     }
 }

@@ -4,24 +4,10 @@ namespace api.SampleData.Builders;
 
 public class SurfBuilder : Surf
 {
-    public SurfBuilder WithCostProfile(SurfCostProfileBuilder builder)
+    public SurfBuilder WithCostProfile(SurfCostProfile costProfile)
     {
-        builder.Surf = this;
-        this.CostProfile = builder;
-        return this;
-    }
-}
-
-public class SurfCostProfileBuilder : SurfCostProfile
-{
-    public SurfCostProfileBuilder()
-    {
-        YearValues = new List<YearValue<double>>();
-    }
-
-    public SurfCostProfileBuilder WithYearValue(int year, double value)
-    {
-        this.YearValues.Add(new YearValue<double>(year, value));
+        costProfile.Surf = this;
+        this.CostProfile = costProfile;
         return this;
     }
 }

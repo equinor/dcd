@@ -17,7 +17,7 @@ namespace api.Dtos
         public Maturity Maturity { get; set; }
     }
 
-    public class TopsideCostProfileDto : TimeSeriesCost<double>
+    public class TopsideCostProfileDto : TimeSeriesCost
     {
     }
 }

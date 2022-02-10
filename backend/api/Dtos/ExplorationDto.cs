@@ -15,7 +15,7 @@ namespace api.Dtos
         public double RigMobDemob { get; set; }
     }
 
-    public class ExplorationCostProfileDto : TimeSeriesCost<double> { }
+    public class ExplorationCostProfileDto : TimeSeriesCost { }
     public class ExplorationDrillingScheduleDto : TimeSeriesSchedule { }
-    public class GAndGAdminCostDto : TimeSeriesCost<double> { }
+    public class GAndGAdminCostDto : TimeSeriesCost { }
 }

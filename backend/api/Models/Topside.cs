@@ -17,7 +17,7 @@ namespace api.Models
         public Maturity Maturity { get; set; }
     }
 
-    public class TopsideCostProfile : TimeSeriesCost<double>
+    public class TopsideCostProfile : TimeSeriesCost
     {
         [ForeignKey("Topside.Id")]
         public Topside Topside { get; set; } = null!;

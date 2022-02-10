@@ -186,10 +186,12 @@ public class TopsideServiceShould : IDisposable
             ArtificialLift = ArtificialLift.GasLift,
             Maturity = Maturity.B
         }
-                .WithCostProfile(new TopsideCostProfileBuilder()
-                    .WithYearValue(2023, 44)
-                    .WithYearValue(2024, 45.7)
-                    .WithYearValue(2025, 42.3)
+                .WithCostProfile(new TopsideCostProfile()
+                {
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 13.4, 18.9, 34.3 }
+                }
                 );
     }
 
@@ -207,10 +209,12 @@ public class TopsideServiceShould : IDisposable
             ArtificialLift = ArtificialLift.NoArtificialLift,
             Maturity = Maturity.C
         }
-            .WithCostProfile(new TopsideCostProfileBuilder()
-                .WithYearValue(2023, 55)
-                .WithYearValue(2024, 55.7)
-                .WithYearValue(2025, 52.3)
+            .WithCostProfile(new TopsideCostProfile()
+            {
+                Currency = Currency.NOK,
+                StartYear = 2030,
+                Values = new double[] { 13.4, 183.9, 34.3 }
+            }
             );
     }
 
