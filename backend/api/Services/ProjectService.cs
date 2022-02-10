@@ -14,7 +14,7 @@ namespace api.Services
         private readonly DrainageStrategyService _drainageStrategyService;
         private readonly SurfService _surfService;
         private readonly SubstructureService _substructureService;
-        private readonly TopsideService _topsideFaciltyService;
+        private readonly TopsideService _topsideService;
         private readonly TransportService _transportService;
         private readonly ExplorationService _explorationService;
 
@@ -27,7 +27,7 @@ namespace api.Services
             _drainageStrategyService = new DrainageStrategyService(_context, this);
             _surfService = new SurfService(_context, this);
             _substructureService = new SubstructureService(_context, this);
-            _topsideFaciltyService = new TopsideService(_context, this);
+            _topsideService = new TopsideService(_context, this);
             _caseService = new CaseService(_context, this);
             _explorationService = new ExplorationService(_context, this);
             _transportService = new TransportService(_context, this);
@@ -86,7 +86,8 @@ namespace api.Services
                 foreach (Project project in projects)
                 {
                     var projectDto = ProjectDtoAdapter.Convert(project);
-                    AddCapexToCases(projectDto);
+                    CaseDtoAdapter.AddCapexToCases(projectDto.Cases, _wellProjectService, _substructureService, _surfService,
+                        _topsideService, _transportService, _explorationService);
                     projectDtos.Add(projectDto);
                 }
 
@@ -121,7 +122,8 @@ namespace api.Services
         {
             var project = GetProject(projectId);
             var projectDto = ProjectDtoAdapter.Convert(project);
-            AddCapexToCases(projectDto);
+            CaseDtoAdapter.AddCapexToCases(projectDto.Cases, _wellProjectService, _substructureService, _surfService,
+             _topsideService, _transportService, _explorationService);
             return projectDto;
         }
 
@@ -131,53 +133,10 @@ namespace api.Services
             project.DrainageStrategies = _drainageStrategyService.GetDrainageStrategies(project.Id).ToList();
             project.Surfs = _surfService.GetSurfs(project.Id).ToList();
             project.Substructures = _substructureService.GetSubstructures(project.Id).ToList();
-            project.Topsides = _topsideFaciltyService.GetTopsides(project.Id).ToList();
+            project.Topsides = _topsideService.GetTopsides(project.Id).ToList();
             project.Transports = _transportService.GetTransports(project.Id).ToList();
             project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
             return project;
-        }
-
-        private void AddCapexToCases(ProjectDto projectDto)
-        {
-            foreach (CaseDto c in projectDto.Cases)
-            {
-                c.Capex = 0;
-                if (c.WellProjectLink != Guid.Empty)
-                {
-                    var wellProject = _wellProjectService.GetWellProject(c.WellProjectLink);
-                    c.Capex += sumValues(wellProject.CostProfile);
-                }
-                if (c.SubstructureLink != Guid.Empty)
-                {
-                    var substructure = _substructureService.GetSubstructure(c.SubstructureLink);
-                    c.Capex += sumValues(substructure.CostProfile);
-                }
-                if (c.SurfLink != Guid.Empty)
-                {
-                    var surf = _surfService.GetSurf(c.SurfLink);
-                    c.Capex += sumValues(surf.CostProfile);
-                }
-                if (c.TopsideLink != Guid.Empty)
-                {
-                    var topside = _topsideFaciltyService.GetTopside(c.TopsideLink);
-                    c.Capex += sumValues(topside.CostProfile);
-                }
-                if (c.TransportLink != Guid.Empty)
-                {
-                    var transport = _transportService.GetTransport(c.TransportLink);
-                    c.Capex += sumValues(transport.CostProfile);
-                }
-            }
-        }
-
-        private double sumValues(TimeSeriesCost<double> timeSeries)
-        {
-            double sum = 0;
-            foreach (YearValue<double> yearValue in timeSeries.YearValues)
-            {
-                sum += yearValue.Value;
-            }
-            return sum;
         }
     }
 }
