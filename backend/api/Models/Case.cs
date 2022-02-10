@@ -31,7 +31,7 @@ namespace api.Models
         ElectricalSubmergedPumps,
         SubseaBoosterPumps
     }
-    public class CessationCost : TimeSeriesCost<double>
+    public class CessationCost : TimeSeriesCost
     {
         [ForeignKey("Case.Id")]
         public Case Case { get; set; } = null!;

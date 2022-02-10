@@ -23,7 +23,6 @@ namespace api.Services
             {
                 return _context.Topsides
                         .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -87,7 +86,6 @@ namespace api.Services
             var topside = _context.Topsides!
                 .Include(c => c.Project)
                 .Include(c => c.CostProfile)
-                    .ThenInclude(c => c.YearValues)
                 .FirstOrDefault(o => o.Id == topsideId);
             if (topside == null)
             {
@@ -107,7 +105,8 @@ namespace api.Services
             topside.Maturity = updatedTopside.Maturity;
             topside.CostProfile.Currency = updatedTopside.CostProfile.Currency;
             topside.CostProfile.EPAVersion = updatedTopside.CostProfile.EPAVersion;
-            topside.CostProfile.YearValues = updatedTopside.CostProfile.YearValues;
+            topside.CostProfile.StartYear = updatedTopside.CostProfile.StartYear;
+            topside.CostProfile.Values = updatedTopside.CostProfile.Values;
         }
     }
 }

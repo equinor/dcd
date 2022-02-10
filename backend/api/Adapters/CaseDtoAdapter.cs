@@ -37,41 +37,41 @@ namespace api.Adapters
                 if (c.WellProjectLink != Guid.Empty)
                 {
                     var wellProject = wellProjectService.GetWellProject(c.WellProjectLink);
-                    c.Capex += sumValues(wellProject.CostProfile);
+                    c.Capex += sumValues(wellProject.CostProfile.Values);
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
                     var substructure = substructureService.GetSubstructure(c.SubstructureLink);
-                    c.Capex += sumValues(substructure.CostProfile);
+                    c.Capex += sumValues(substructure.CostProfile.Values);
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
                     var surf = surfService.GetSurf(c.SurfLink);
-                    c.Capex += sumValues(surf.CostProfile);
+                    c.Capex += sumValues(surf.CostProfile.Values);
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {
                     var topside = topsideService.GetTopside(c.TopsideLink);
-                    c.Capex += sumValues(topside.CostProfile);
+                    c.Capex += sumValues(topside.CostProfile.Values);
                 }
                 if (c.TransportLink != Guid.Empty)
                 {
                     var transport = transportService.GetTransport(c.TransportLink);
-                    c.Capex += sumValues(transport.CostProfile);
+                    c.Capex += sumValues(transport.CostProfile.Values);
                 }
                 if (c.ExplorationLink != Guid.Empty)
                 {
                     var exploration = explorationService.GetExploration(c.ExplorationLink);
-                    c.Capex += sumValues(exploration.CostProfile);
+                    c.Capex += sumValues(exploration.CostProfile.Values);
                 }
             }
         }
-        private static double sumValues(TimeSeriesCost<double> timeSeries)
+        private static double sumValues(double[] timeSeries)
         {
             double sum = 0;
-            foreach (YearValue<double> yearValue in timeSeries.YearValues)
+            foreach (double value in timeSeries)
             {
-                sum += yearValue.Value;
+                sum += value;
             }
             return sum;
         }

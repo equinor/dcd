@@ -70,29 +70,20 @@ public class ExplorationAdapterShould : IDisposable
             {
                 Currency = Currency.USD,
                 EPAVersion = "GT 1",
-                YearValues = new List<YearValue<double>> {
-                    new YearValue<double> (2023, 1.2e6),
-                    new YearValue<double> (2023, 1.3e6),
-                    new YearValue<double> (2023, 1.1e6),
-                },
+                StartYear = 2010,
+                Values = new double[] { 3.4564, 18.9, 62.3 }
             },
             DrillingSchedule = new ExplorationDrillingScheduleDto
             {
-                YearValues = new List<YearValue<int>> {
-                    new YearValue<int> (2023, 500),
-                    new YearValue<int> (2023, 401),
-                    new YearValue<int> (2023, 860),
-                },
+                StartYear = 2010,
+                Values = new int[] { 3, 18, 62 }
             },
             GAndGAdminCost = new GAndGAdminCostDto
             {
                 Currency = Currency.USD,
                 EPAVersion = "GT 1",
-                YearValues = new List<YearValue<double>> {
-                    new YearValue<double> (2023, 0.3e6),
-                    new YearValue<double> (2023, 0.4e6),
-                    new YearValue<double> (2023, 0.3e6),
-                },
+                StartYear = 2010,
+                Values = new double[] { 3.4564, 18.9, 62.3 }
             },
             RigMobDemob = 2.3e6
         };

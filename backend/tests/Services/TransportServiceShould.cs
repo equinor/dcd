@@ -113,10 +113,12 @@ namespace tests
                 ProjectId = project.Id,
                 GasExportPipelineLength = 100,
                 OilExportPipelineLength = 100,
-            }.WithCostProfile(new TransportCostProfileBuilder()
-                .WithYearValue(2023, 55)
-                .WithYearValue(2024, 55.7)
-                .WithYearValue(2025, 52.3)
+            }.WithCostProfile(new TransportCostProfile()
+            {
+                Currency = Currency.USD,
+                StartYear = 2030,
+                Values = new double[] { 13.4, 18.9, 34.3 }
+            }
             );
 
         }
@@ -131,8 +133,18 @@ namespace tests
                 GasExportPipelineLength = 999,
                 OilExportPipelineLength = 999,
 
-            }.WithCostProfile(new TransportCostProfileBuilder().WithYearValue(2023, 10))
-            .WithCostProfile(new TransportCostProfileBuilder().WithYearValue(2024, 24));
+            }.WithCostProfile(new TransportCostProfile()
+            {
+                Currency = Currency.USD,
+                StartYear = 2030,
+                Values = new double[] { 13.4, 18.9, 34.3 }
+            })
+            .WithCostProfile(new TransportCostProfile()
+            {
+                Currency = Currency.USD,
+                StartYear = 2030,
+                Values = new double[] { 13.4, 18.9, 34.3 }
+            });
         }
     }
 }

@@ -18,7 +18,7 @@ namespace api.Dtos
         public double PluggingAndAbandonment { get; set; }
     }
 
-    public class WellProjectCostProfileDto : TimeSeriesCost<double>
+    public class WellProjectCostProfileDto : TimeSeriesCost
     {
     }
     public class DrillingScheduleDto : TimeSeriesSchedule

@@ -17,7 +17,7 @@ namespace api.Models
 
     }
 
-    public class ExplorationCostProfile : TimeSeriesCost<double>
+    public class ExplorationCostProfile : TimeSeriesCost
     {
         [ForeignKey("Exploration.Id")]
         public Exploration Exploration { get; set; } = null!;
@@ -29,7 +29,7 @@ namespace api.Models
         public Exploration Exploration { get; set; } = null!;
     }
 
-    public class GAndGAdminCost : TimeSeriesCost<double>
+    public class GAndGAdminCost : TimeSeriesCost
     {
         [ForeignKey("Exploration.Id")]
         public Exploration Exploration { get; set; } = null!;

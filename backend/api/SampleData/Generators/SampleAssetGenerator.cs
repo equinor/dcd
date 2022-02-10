@@ -15,7 +15,7 @@ public static class SampleAssetGenerator
             ProjectCategory = ProjectCategory.OffshoreWind,
             ProjectPhase = ProjectPhase.DG3
         }
-            .WithDrainageStrategy(new DrainageStrategyBuilder()
+            .WithDrainageStrategy(new DrainageStrategyBuilder
             {
                 Name = "DrainStrat 1",
                 Description = "Desc of drain strat 1",
@@ -24,55 +24,63 @@ public static class SampleAssetGenerator
                 GasInjectorCount = 3,
                 WaterInjectorCount = 4,
             }
-                .WithProductionProfileGas(new ProductionProfileGasBuilder()
-                    .WithYearValue(2030, 2.3)
-                    .WithYearValue(2031, 3.3)
-                    .WithYearValue(2032, 4.4)
+                .WithProductionProfileGas(new ProductionProfileGas
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 2.3, 3.3, 4.4 }
+                }
                 )
-                .WithProductionProfileOil(new ProductionProfileOilBuilder()
-                    .WithYearValue(2030, 10.3)
-                    .WithYearValue(2031, 13.3)
-                    .WithYearValue(2032, 24.4)
+                .WithProductionProfileOil(new ProductionProfileOil
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 10.3, 13.3, 24.4 }
+                }
                 )
-                .WithProductionProfileWater(new ProductionProfileWaterBuilder()
-                    .WithYearValue(2030, 12.34)
-                    .WithYearValue(2031, 13.45)
-                    .WithYearValue(2032, 14.56)
+                .WithProductionProfileWater(new ProductionProfileWater
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 12.34, 13.45, 14.56 }
+                }
                 )
-                .WithProductionProfileWaterInjection(new ProductionProfileWaterInjectionBuilder()
-                    .WithYearValue(2030, 7.89)
-                    .WithYearValue(2031, 8.91)
-                    .WithYearValue(2032, 9.01)
+                .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 7.89, 8.91, 9.01 }
+                }
                 )
-                .WithFuelFlaringAndLosses(new FuelFlaringAndLossesBuilder()
-                    .WithYearValue(2030, 7.89)
-                    .WithYearValue(2031, 8.91)
-                    .WithYearValue(2032, 9.01)
+                .WithFuelFlaringAndLosses(new FuelFlaringAndLosses
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 8.45, 4.78, 8, 74 }
+                }
                 )
-                .WithNetSalesGas(new NetSalesGasBuilder()
-                    .WithYearValue(2030, 11.23)
-                    .WithYearValue(2031, 11.45)
-                    .WithYearValue(2032, 11.56)
-                    )
-                .WithCo2Emissions(new Co2EmissionsBuilder()
-                    .WithYearValue(2030, 21.23)
-                    .WithYearValue(2031, 22.45)
-                    .WithYearValue(2032, 23.56)
+                .WithNetSalesGas(new NetSalesGas
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 3.4, 8.9, 2.3 }
+                }
+                )
+                .WithCo2Emissions(new Co2Emissions
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 33.4, 18.9, 62.3 }
+                }
                 )
             )
-            .WithDrainageStrategy(new DrainageStrategyBuilder()
+            .WithDrainageStrategy(new DrainageStrategyBuilder
             {
                 Name = "DrainStrat 2",
                 Description = "Desc of drain strategy 2",
                 NGLYield = 0.3
             }
-                .WithProductionProfileGas(new ProductionProfileGasBuilder()
-                    .WithYearValue(2035, 5.3)
-                    .WithYearValue(2036, 6.3)
-                    .WithYearValue(2037, 7.4)
+                .WithProductionProfileGas(new ProductionProfileGas
+                {
+                    StartYear = 2031,
+                    Values = new double[] { 12.34, 13.45, 14.56 }
+                }
                 )
             )
-            .WithWellProject(new WellProjectBuilder()
+            .WithWellProject(new WellProjectBuilder
             {
                 RigMobDemob = 100.0,
                 AnnualWellInterventionCost = 200.0,
@@ -82,19 +90,19 @@ public static class SampleAssetGenerator
                 WaterInjectorCount = 4,
                 ArtificialLift = ArtificialLift.GasLift
             }
-                .WithWellProjectCostProfile(new WellProjectCostProfileBuilder()
+                .WithWellProjectCostProfile(new WellProjectCostProfile
                 {
-                    Currency = Currency.USD
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 33.4, 18.9, 62.3 }
                 }
-                    .WithYearValue(2035, 55.3)
-                    .WithYearValue(2036, 66.3)
-                    .WithYearValue(2037, 75.4)
                 )
-                .WithDrillingSchedule(new DrillingScheduleBuilder()
-                    .WithYearValue(2035, 10)
-                    .WithYearValue(2036, 12)
-                    .WithYearValue(2037, 20)
-                    )
+                .WithDrillingSchedule(new DrillingSchedule
+                {
+                    StartYear = 2030,
+                    Values = new int[] { 33, 3, 62 }
+                }
+                )
             )
             .WithSurf(new SurfBuilder
             {
@@ -107,13 +115,12 @@ public static class SampleAssetGenerator
                 TemplateCount = 6,
                 ArtificialLift = ArtificialLift.GasLift
             }
-                .WithCostProfile(new SurfCostProfileBuilder
+                .WithCostProfile(new SurfCostProfile
                 {
-                    Currency = Currency.USD
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 33.4, 18.9, 62.3 }
                 }
-                    .WithYearValue(2035, 5.3)
-                    .WithYearValue(2036, 6.3)
-                    .WithYearValue(2037, 7.4)
                 )
             )
             .WithSubstructure(new SubstructureBuilder
@@ -122,13 +129,12 @@ public static class SampleAssetGenerator
                 Maturity = Maturity.B,
                 DryWeight = 4.5,
             }
-                .WithCostProfile(new SubstructureCostProfileBuilder
+                .WithCostProfile(new SubstructureCostProfile
                 {
-                    Currency = Currency.USD
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 23.4, 28.9, 32.3 }
                 }
-                    .WithYearValue(2035, 5.4)
-                    .WithYearValue(2036, 6.4)
-                    .WithYearValue(2037, 7.5)
                 )
             )
             .WithTopside(new TopsideBuilder
@@ -141,13 +147,12 @@ public static class SampleAssetGenerator
                 FacilitiesAvailability = 0.8,
                 ArtificialLift = ArtificialLift.GasLift
             }
-                .WithCostProfile(new TopsideCostProfileBuilder
+                .WithCostProfile(new TopsideCostProfile
                 {
-
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 123.4, 218.9, 312.3 }
                 }
-                    .WithYearValue(2035, 5.2)
-                    .WithYearValue(2036, 6.2)
-                    .WithYearValue(2037, 7.3)
                 )
             )
             .WithTransport(new TransportBuilder
@@ -155,13 +160,12 @@ public static class SampleAssetGenerator
                 Name = "Transport 1",
                 Maturity = Maturity.D
             }
-                .WithCostProfile(new TransportCostProfileBuilder
+                .WithCostProfile(new TransportCostProfile
                 {
-                    Currency = Currency.USD
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 13.4, 18.9, 34.3 }
                 }
-                    .WithYearValue(2035, 1.2)
-                    .WithYearValue(2036, 2.2)
-                    .WithYearValue(2037, 3.3)
                 )
             )
             .WithExploration(new ExplorationBuilder
@@ -170,45 +174,46 @@ public static class SampleAssetGenerator
                 WellType = WellType.Oil,
                 RigMobDemob = 122.4
             }
-                .WithExplorationCostProfile(new ExplorationCostBuilder()
-                    .WithYearValue(2040, 78.9)
-                    .WithYearValue(2041, 79.8)
-                    .WithYearValue(2042, 77.6)
-                )
-                .WithExplorationDrillingSchedule(new ExplorationDrillingScheduleBuilder()
-                    .WithYearValue(2040, 4)
-                    .WithYearValue(2041, 5)
-                    .WithYearValue(2042, 6)
-                )
-                .WithGAndGAdminCost(new WithGAndGAdminCostBuilder()
+                .WithExplorationCostProfile(new ExplorationCostProfile
                 {
-                    Currency = Currency.NOK
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 11.4, 28.2, 34.3 }
                 }
-                    .WithYearValue(2040, 50.75)
-                    .WithYearValue(2041, 53.83)
-                    .WithYearValue(2042, 64.91)
+                )
+                .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule
+                {
+                    StartYear = 2030,
+                    Values = new int[] { 13, 5, 5 }
+                }
+                )
+                .WithGAndGAdminCost(new GAndGAdminCost
+                {
+                    Currency = Currency.NOK,
+                    StartYear = 2030,
+                    Values = new double[] { 31.4, 28.2, 34.3 }
+                }
+
                 )
             )
         )
-        .WithProject(new ProjectBuilder()
+        .WithProject(new ProjectBuilder
         {
             Name = "P2",
             CreateDate = DateTimeOffset.UtcNow
         }
-            .WithDrainageStrategy(new DrainageStrategyBuilder()
+            .WithDrainageStrategy(new DrainageStrategyBuilder
             {
                 Name = "Drainage Strategy 1",
                 Description = "Desc. of drainage strategy in P2",
                 NGLYield = 0.56,
                 ArtificialLift = ArtificialLift.GasLift
             }
-                    .WithProductionProfileGas(new ProductionProfileGasBuilder()
+                    .WithProductionProfileGas(new ProductionProfileGas
                     {
-
+                        StartYear = 2030,
+                        Values = new double[] { 12.34, 13.45, 14.56 }
                     }
-                        .WithYearValue(2040, 10.45)
-                        .WithYearValue(2041, 13.23)
-                        .WithYearValue(2042, 34.21)
                     ))
         );
         return projectBuilder;

@@ -188,19 +188,19 @@ namespace tests
                 Project = project,
                 ProjectId = project.Id,
             }
-                .WithWellProjectCostProfile(new WellProjectCostProfileBuilder
+                .WithWellProjectCostProfile(new WellProjectCostProfile
                 {
                     Currency = Currency.USD,
-                    EPAVersion = "test EPA"
+                    EPAVersion = "test EPA",
+                    StartYear = 2030,
+                    Values = new double[] { 13.4, 18.9, 34.3 }
                 }
-                    .WithYearValue(2030, 2.3)
-                    .WithYearValue(2031, 3.3)
-                    .WithYearValue(2032, 4.4)
                 )
-                .WithDrillingSchedule(new DrillingScheduleBuilder()
-                    .WithYearValue(2030, 2)
-                    .WithYearValue(2031, 3)
-                    .WithYearValue(2032, 4)
+                .WithDrillingSchedule(new DrillingSchedule()
+                {
+                    StartYear = 2030,
+                    Values = new int[] { 13, 18, 34 }
+                }
                 );
         }
 
@@ -219,19 +219,21 @@ namespace tests
                 Project = project,
                 ProjectId = project.Id,
             }
-                .WithWellProjectCostProfile(new WellProjectCostProfileBuilder
+                .WithWellProjectCostProfile(new WellProjectCostProfile
                 {
                     Currency = Currency.NOK,
-                    EPAVersion = "Updated EPA"
+                    EPAVersion = "Updated EPA",
+
+
+                    StartYear = 2030,
+                    Values = new double[] { 13.4, 18.9, 34.3 }
                 }
-                    .WithYearValue(2030, 12.3)
-                    .WithYearValue(2031, 13.3)
-                    .WithYearValue(2032, 14.4)
                 )
-                .WithDrillingSchedule(new DrillingScheduleBuilder()
-                    .WithYearValue(2030, 3)
-                    .WithYearValue(2031, 4)
-                    .WithYearValue(2032, 5)
+                .WithDrillingSchedule(new DrillingSchedule()
+                {
+                    StartYear = 2030,
+                    Values = new int[] { 13, 18, 34 }
+                }
                 );
         }
     }

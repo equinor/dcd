@@ -25,11 +25,8 @@ namespace api.Services
             {
                 return _context.Explorations
                         .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.GAndGAdminCost)
-                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.DrillingSchedule)
-                            .ThenInclude(c => c.YearValues)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
             else
@@ -92,11 +89,8 @@ namespace api.Services
 
             var exploration = _context.Explorations!
                         .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.GAndGAdminCost)
-                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.DrillingSchedule)
-                            .ThenInclude(c => c.YearValues)
                              .FirstOrDefault(o => o.Id == explorationId);
             if (exploration == null)
             {

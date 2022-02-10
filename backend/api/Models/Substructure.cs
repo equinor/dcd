@@ -13,7 +13,7 @@ namespace api.Models
         public Maturity Maturity { get; set; }
     }
 
-    public class SubstructureCostProfile : TimeSeriesCost<double>
+    public class SubstructureCostProfile : TimeSeriesCost
     {
         [ForeignKey("Substructure.Id")]
         public Substructure Substructure { get; set; } = null!;

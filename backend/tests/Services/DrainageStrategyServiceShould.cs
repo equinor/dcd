@@ -187,40 +187,47 @@ namespace tests
                 ProducerCount = 24,
                 ArtificialLift = ArtificialLift.ElectricalSubmergedPumps,
             }
-                .WithProductionProfileGas(new ProductionProfileGasBuilder()
-                    .WithYearValue(2030, 2.3)
-                    .WithYearValue(2031, 3.3)
-                    .WithYearValue(2032, 4.4)
+               .WithProductionProfileGas(new ProductionProfileGas()
+               {
+                   StartYear = 2030,
+                   Values = new double[] { 2.3, 3.3, 4.4 }
+               }
                 )
-                .WithProductionProfileOil(new ProductionProfileOilBuilder()
-                    .WithYearValue(2030, 10.3)
-                    .WithYearValue(2031, 13.3)
-                    .WithYearValue(2032, 24.4)
+                .WithProductionProfileOil(new ProductionProfileOil()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 10.3, 13.3, 24.4 }
+                }
                 )
-                .WithProductionProfileWater(new ProductionProfileWaterBuilder()
-                    .WithYearValue(2030, 12.34)
-                    .WithYearValue(2031, 13.45)
-                    .WithYearValue(2032, 14.56)
+                .WithProductionProfileWater(new ProductionProfileWater()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 12.34, 13.45, 14.56 }
+                }
                 )
-                .WithProductionProfileWaterInjection(new ProductionProfileWaterInjectionBuilder()
-                    .WithYearValue(2030, 7.89)
-                    .WithYearValue(2031, 8.91)
-                    .WithYearValue(2032, 9.01)
+                .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 7.89, 8.91, 9.01 }
+                }
                 )
-                .WithFuelFlaringAndLosses(new FuelFlaringAndLossesBuilder()
-                    .WithYearValue(2030, 7.89)
-                    .WithYearValue(2031, 8.91)
-                    .WithYearValue(2032, 9.01)
+                .WithFuelFlaringAndLosses(new FuelFlaringAndLosses()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 8.45, 4.78, 8, 74 }
+                }
                 )
-                .WithNetSalesGas(new NetSalesGasBuilder()
-                    .WithYearValue(2030, 11.23)
-                    .WithYearValue(2031, 11.45)
-                    .WithYearValue(2032, 11.56)
-                    )
-                .WithCo2Emissions(new Co2EmissionsBuilder()
-                    .WithYearValue(2030, 21.23)
-                    .WithYearValue(2031, 22.45)
-                    .WithYearValue(2032, 23.56)
+                .WithNetSalesGas(new NetSalesGas()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 3.4, 8.9, 2.3 }
+                }
+                )
+                .WithCo2Emissions(new Co2Emissions()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 33.4, 18.9, 62.3 }
+                }
                 );
         }
 
@@ -233,45 +240,52 @@ namespace tests
                 Project = project,
                 ProjectId = project.Id,
                 NGLYield = 1.5,
-                WaterInjectorCount = 21,
+                WaterInjectorCount = 23,
                 GasInjectorCount = 23,
-                ProducerCount = 25,
+                ProducerCount = 21,
                 ArtificialLift = ArtificialLift.GasLift,
             }
-                .WithProductionProfileGas(new ProductionProfileGasBuilder()
-                    .WithYearValue(2030, 12.3)
-                    .WithYearValue(2031, 13.3)
-                    .WithYearValue(2032, 14.4)
+                .WithProductionProfileGas(new ProductionProfileGas()
+                {
+                    StartYear = 2130,
+                    Values = new double[] { 2.3, 23.3, 4.4 }
+                }
                 )
-                .WithProductionProfileOil(new ProductionProfileOilBuilder()
-                    .WithYearValue(2030, 20.3)
-                    .WithYearValue(2031, 23.3)
-                    .WithYearValue(2032, 34.4)
+                .WithProductionProfileOil(new ProductionProfileOil()
+                {
+                    StartYear = 2230,
+                    Values = new double[] { 10.23, 13.3, 24.4 }
+                }
                 )
-                .WithProductionProfileWater(new ProductionProfileWaterBuilder()
-                    .WithYearValue(2030, 22.34)
-                    .WithYearValue(2031, 23.45)
-                    .WithYearValue(2032, 24.56)
+                .WithProductionProfileWater(new ProductionProfileWater()
+                {
+                    StartYear = 2230,
+                    Values = new double[] { 12.34, 13.425, 14.56 }
+                }
                 )
-                .WithProductionProfileWaterInjection(new ProductionProfileWaterInjectionBuilder()
-                    .WithYearValue(2030, 17.89)
-                    .WithYearValue(2031, 18.91)
-                    .WithYearValue(2032, 19.01)
+                .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection()
+                {
+                    StartYear = 20230,
+                    Values = new double[] { 7.89, 28.91, 9.01 }
+                }
                 )
-                .WithFuelFlaringAndLosses(new FuelFlaringAndLossesBuilder()
-                    .WithYearValue(2030, 17.89)
-                    .WithYearValue(2031, 18.91)
-                    .WithYearValue(2032, 19.01)
+                .WithFuelFlaringAndLosses(new FuelFlaringAndLosses()
+                {
+                    StartYear = 20230,
+                    Values = new double[] { 8.425, 4.78, 8, 74 }
+                }
                 )
-                .WithNetSalesGas(new NetSalesGasBuilder()
-                    .WithYearValue(2030, 21.23)
-                    .WithYearValue(2031, 21.45)
-                    .WithYearValue(2032, 21.56)
-                    )
-                .WithCo2Emissions(new Co2EmissionsBuilder()
-                    .WithYearValue(2030, 31.23)
-                    .WithYearValue(2031, 32.45)
-                    .WithYearValue(2032, 33.56)
+                .WithNetSalesGas(new NetSalesGas()
+                {
+                    StartYear = 1030,
+                    Values = new double[] { 3.4, 8.9, 2.3 }
+                }
+                )
+                .WithCo2Emissions(new Co2Emissions()
+                {
+                    StartYear = 2034,
+                    Values = new double[] { 33.4, 181.9, 62.3 }
+                }
                 );
         }
     }

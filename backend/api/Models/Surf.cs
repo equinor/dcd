@@ -19,7 +19,7 @@ namespace api.Models
         public ProductionFlowline ProductionFlowline { get; set; }
     }
 
-    public class SurfCostProfile : TimeSeriesCost<double>
+    public class SurfCostProfile : TimeSeriesCost
     {
         [ForeignKey("Surf.Id")]
         public Surf Surf { get; set; } = null!;

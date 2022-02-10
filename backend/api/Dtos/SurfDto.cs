@@ -24,7 +24,7 @@ namespace api.Dtos
         Default = 999
     }
 
-    public class SurfCostProfileDto : TimeSeriesCost<double>
+    public class SurfCostProfileDto : TimeSeriesCost
     {
 
     }

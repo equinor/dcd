@@ -25,7 +25,8 @@ namespace api.Adapters
             var transportCostProfile = new TransportCostProfileDto();
             transportCostProfile.Currency = costprofile.Currency;
             transportCostProfile.EPAVersion = costprofile.EPAVersion;
-            transportCostProfile.YearValues = costprofile.YearValues;
+            transportCostProfile.StartYear = costprofile.StartYear;
+            transportCostProfile.Values = costprofile.Values;
             return transportCostProfile;
         }
     }

@@ -54,19 +54,13 @@ namespace tests
                 {
                     EPAVersion = "one version",
                     Currency = Currency.NOK,
-                    YearValues = new List<YearValue<double>> {
-                        new YearValue<double> (2050, 5.5),
-                        new YearValue<double> (2051, 5.3),
-                        new YearValue<double> (2052, 4.5),
-                    }
+                    StartYear = 2010,
+                    Values = new double[] { 3.4564, 18.9, 62.3 }
                 },
                 DrillingSchedule = new DrillingScheduleDto
                 {
-                    YearValues = new List<YearValue<int>> {
-                        new YearValue<int> (2050, 5),
-                        new YearValue<int> (2051, 5),
-                        new YearValue<int> (2052, 4),
-                    }
+                    StartYear = 2030,
+                    Values = new int[] { 5, 18, 62 }
                 }
             };
         }

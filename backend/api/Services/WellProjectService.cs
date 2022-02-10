@@ -23,9 +23,7 @@ namespace api.Services
             {
                 return _context.WellProjects
                         .Include(c => c.CostProfile)
-                            .ThenInclude(c => c.YearValues)
                         .Include(c => c.DrillingSchedule)
-                            .ThenInclude(c => c.YearValues)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
             else
@@ -88,9 +86,7 @@ namespace api.Services
         {
             var wellProject = _context.WellProjects!
                 .Include(c => c.CostProfile)
-                    .ThenInclude(c => c.YearValues)
                 .Include(c => c.DrillingSchedule)
-                    .ThenInclude(c => c.YearValues)
                 .FirstOrDefault(o => o.Id == wellProjectId);
             if (wellProject == null)
             {
@@ -111,8 +107,10 @@ namespace api.Services
             wellProject.PluggingAndAbandonment = updatedWellProject.PluggingAndAbandonment;
             wellProject.CostProfile.Currency = updatedWellProject.CostProfile.Currency;
             wellProject.CostProfile.EPAVersion = updatedWellProject.CostProfile.EPAVersion;
-            wellProject.CostProfile.YearValues = updatedWellProject.CostProfile.YearValues;
-            wellProject.DrillingSchedule.YearValues = updatedWellProject.DrillingSchedule.YearValues;
+            wellProject.CostProfile.Values = updatedWellProject.CostProfile.Values;
+            wellProject.CostProfile.StartYear = updatedWellProject.CostProfile.StartYear;
+            wellProject.DrillingSchedule.Values = updatedWellProject.DrillingSchedule.Values;
+            wellProject.DrillingSchedule.StartYear = updatedWellProject.DrillingSchedule.StartYear;
         }
     }
 }

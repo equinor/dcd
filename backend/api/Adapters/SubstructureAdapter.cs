@@ -24,7 +24,8 @@ namespace api.Adapters
                 Substructure = substructure,
                 EPAVersion = substructureCostProfileDto.EPAVersion,
                 Currency = substructureCostProfileDto.Currency,
-                YearValues = substructureCostProfileDto.YearValues
+                StartYear = substructureCostProfileDto.StartYear,
+                Values = substructureCostProfileDto.Values
             };
         }
     }

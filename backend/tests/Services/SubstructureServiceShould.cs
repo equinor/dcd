@@ -103,13 +103,8 @@ namespace tests
             var substructureService = new SubstructureService(fixture.context, projectService);
             var project = fixture.context.Projects.FirstOrDefault();
             var substructureToDelete = CreateTestSubstructure(project);
-            fixture.context.Substructures.Add(substructureToDelete);
-            fixture.context.Cases.Add(new Case
-            {
-                Project = project,
-                SubstructureLink = substructureToDelete.Id
-            });
-            fixture.context.SaveChanges();
+            var sourceCaseId = project.Cases.FirstOrDefault().Id;
+            substructureService.CreateSubstructure(substructureToDelete, sourceCaseId);
 
             // Act
             var projectResult = substructureService.DeleteSubstructure(substructureToDelete.Id);
@@ -127,10 +122,6 @@ namespace tests
             // Arrange
             var projectService = new ProjectService(fixture.context);
             var substructureService = new SubstructureService(fixture.context, projectService);
-            var project = fixture.context.Projects.FirstOrDefault();
-            var substructureToDelete = CreateTestSubstructure(project);
-            fixture.context.Substructures.Add(substructureToDelete);
-            fixture.context.SaveChanges();
 
             // Act, assert
             Assert.Throws<ArgumentException>(() => substructureService.DeleteSubstructure(new Guid()));
@@ -177,42 +168,39 @@ namespace tests
         {
             return new SubstructureBuilder
             {
-                Name = "DrainStrat Test",
-                Maturity = Maturity.A,
-                DryWeight = 7.2,
                 Project = project,
                 ProjectId = project.Id,
+                Name = "Substructure 11",
+                Maturity = Maturity.A,
+                DryWeight = 423.5,
             }
-                .WithCostProfile(new SubstructureCostProfileBuilder
+                .WithCostProfile(new SubstructureCostProfile
                 {
                     Currency = Currency.USD,
-                    EPAVersion = "test EPA"
+                    StartYear = 1030,
+                    Values = new double[] { 23.4, 238.9, 32.3 }
                 }
-                    .WithYearValue(2030, 2.3)
-                    .WithYearValue(2031, 3.3)
-                    .WithYearValue(2032, 4.4)
                 );
+
         }
 
         private static Substructure CreateUpdatedSubstructure(Project project)
         {
             return new SubstructureBuilder
             {
-                Name = "Updated name",
-                Maturity = Maturity.B,
-                DryWeight = 16.2,
                 Project = project,
-                ProjectId = project.Id,
+                Name = "Substructure 1",
+                Maturity = Maturity.B,
+                DryWeight = 4.5,
             }
-                .WithCostProfile(new SubstructureCostProfileBuilder
+                .WithCostProfile(new SubstructureCostProfile
                 {
-                    Currency = Currency.NOK,
-                    EPAVersion = "Updated EPA"
+                    Currency = Currency.USD,
+                    StartYear = 2030,
+                    Values = new double[] { 23.4, 28.9, 32.3 }
                 }
-                    .WithYearValue(2030, 12.3)
-                    .WithYearValue(2031, 13.3)
-                    .WithYearValue(2032, 14.4)
                 );
+
         }
     }
 }

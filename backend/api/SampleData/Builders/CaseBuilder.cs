@@ -66,16 +66,3 @@ public class CaseBuilder : Case
         return this;
     }
 }
-
-public class CessationCostBuilder : CessationCost
-{
-    public CessationCostBuilder()
-    {
-        YearValues = new List<YearValue<double>>();
-    }
-    public CessationCostBuilder WithYearValue(int y, double v)
-    {
-        this.YearValues.Add(new YearValue<double>(y, v));
-        return this;
-    }
-}

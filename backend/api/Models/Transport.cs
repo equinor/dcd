@@ -14,7 +14,7 @@ namespace api.Models
         public Maturity Maturity { get; set; }
     }
 
-    public class TransportCostProfile : TimeSeriesCost<double>
+    public class TransportCostProfile : TimeSeriesCost
     {
         [ForeignKey("Transport.Id")]
         public Transport Transport { get; set; } = null!;

@@ -23,7 +23,7 @@ namespace api.Services
             {
                 return _context.Surfs
                     .Include(c => c.CostProfile)
-                        .ThenInclude(c => c.YearValues)
+                    //          .ThenInclude(c => c.YearValues)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -44,7 +44,6 @@ namespace api.Services
         {
             var surf = _context.Surfs!
                 .Include(c => c.CostProfile)
-                    .ThenInclude(c => c.YearValues)
                 .FirstOrDefault(o => o.Id == surfId);
             if (surf == null)
             {

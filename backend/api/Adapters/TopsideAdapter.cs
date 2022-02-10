@@ -27,7 +27,8 @@ namespace api.Adapters
                 Currency = topsideCostProfileDto.Currency,
                 EPAVersion = topsideCostProfileDto.EPAVersion,
                 Topside = topside,
-                YearValues = topsideCostProfileDto.YearValues
+                StartYear = topsideCostProfileDto.StartYear,
+                Values = topsideCostProfileDto.Values
             };
         }
     }
