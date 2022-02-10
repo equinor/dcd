@@ -36,33 +36,27 @@ namespace api.Adapters
                 c.Capex = 0;
                 if (c.WellProjectLink != Guid.Empty)
                 {
-                    var wellProject = wellProjectService.GetWellProject(c.WellProjectLink);
-                    c.Capex += wellProject.CostProfile.Sum;
+                    c.Capex += wellProjectService.GetWellProject(c.WellProjectLink).CostProfile.Sum;
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
-                    var substructure = substructureService.GetSubstructure(c.SubstructureLink);
-                    c.Capex += substructure.CostProfile.Sum;
+                    c.Capex += substructureService.GetSubstructure(c.SubstructureLink).CostProfile.Sum;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
-                    var surf = surfService.GetSurf(c.SurfLink);
-                    c.Capex += surf.CostProfile.Sum;
+                    c.Capex += surfService.GetSurf(c.SurfLink).CostProfile.Sum;
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {
-                    var topside = topsideService.GetTopside(c.TopsideLink);
-                    c.Capex += topside.CostProfile.Sum;
+                    c.Capex += topsideService.GetTopside(c.TopsideLink).CostProfile.Sum;
                 }
                 if (c.TransportLink != Guid.Empty)
                 {
-                    var transport = transportService.GetTransport(c.TransportLink);
-                    c.Capex += transport.CostProfile.Sum;
+                    c.Capex += transportService.GetTransport(c.TransportLink).CostProfile.Sum;
                 }
                 if (c.ExplorationLink != Guid.Empty)
                 {
-                    var exploration = explorationService.GetExploration(c.ExplorationLink);
-                    c.Capex += exploration.CostProfile.Sum;
+                    c.Capex += explorationService.GetExploration(c.ExplorationLink).CostProfile.Sum;
                 }
             }
         }
