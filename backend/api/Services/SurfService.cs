@@ -1,6 +1,5 @@
-using System.Linq;
-
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -33,13 +32,13 @@ namespace api.Services
             }
         }
 
-        public Project UpdateSurf(Guid surfId, Surf updatedSurf)
+        public ProjectDto UpdateSurf(Guid surfId, Surf updatedSurf)
         {
             var surf = GetSurf(surfId);
             CopyData(surf, updatedSurf);
             _context.Surfs!.Update(surf);
             _context.SaveChanges();
-            return _projectService.GetProject(surf.ProjectId);
+            return _projectService.GetProjectDto(surf.ProjectId);
         }
         public Surf GetSurf(Guid surfId)
         {
@@ -65,14 +64,14 @@ namespace api.Services
             surf.CostProfile = updatedSurf.CostProfile;
         }
 
-        public Project CreateSurf(Surf surf, Guid sourceCaseId)
+        public ProjectDto CreateSurf(Surf surf, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(surf.ProjectId);
             surf.Project = project;
             _context.Surfs!.Add(surf);
             _context.SaveChanges();
             SetCaseLink(surf, sourceCaseId, project);
-            return _projectService.GetProject(surf.ProjectId);
+            return _projectService.GetProjectDto(surf.ProjectId);
         }
 
         private void SetCaseLink(Surf surf, Guid sourceCaseId, Project project)
@@ -86,12 +85,12 @@ namespace api.Services
             _context.SaveChanges();
         }
 
-        public Project DeleteSurf(Guid surfId)
+        public ProjectDto DeleteSurf(Guid surfId)
         {
             var surf = GetSurf(surfId);
             _context.Surfs!.Remove(surf);
             DeleteCaseLinks(surfId);
-            return _projectService.GetProject(surf.ProjectId);
+            return _projectService.GetProjectDto(surf.ProjectId);
         }
 
         private void DeleteCaseLinks(Guid surfId)

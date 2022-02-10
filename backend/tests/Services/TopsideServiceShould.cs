@@ -118,7 +118,7 @@ public class TopsideServiceShould : IDisposable
         var actualTopside = projectResult.Topsides.FirstOrDefault(o => o.Name == topsideToDelete.Name);
         Assert.Null(actualTopside);
         var casesWithTopsideLink = projectResult.Cases.Where(o => o.TopsideLink == topsideToDelete.Id);
-        Assert.Equal(0, casesWithTopsideLink.Count());
+        Assert.Empty(casesWithTopsideLink);
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -37,14 +38,14 @@ namespace api.Services
             }
         }
 
-        public Project CreateExploration(Exploration exploration, Guid sourceCaseId)
+        public ProjectDto CreateExploration(Exploration exploration, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(exploration.ProjectId);
             exploration.Project = project;
             _context.Explorations!.Add(exploration);
             _context.SaveChanges();
             SetCaseLink(exploration, sourceCaseId, project);
-            return _projectService.GetProject(exploration.ProjectId);
+            return _projectService.GetProjectDto(exploration.ProjectId);
         }
 
         private void SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
@@ -58,13 +59,13 @@ namespace api.Services
             _context.SaveChanges();
         }
 
-        public Project DeleteExploration(Guid explorationId)
+        public ProjectDto DeleteExploration(Guid explorationId)
         {
             var exploration = GetExploration(explorationId);
             _context.Explorations!.Remove(exploration);
             DeleteCaseLinks(explorationId);
             _context.SaveChanges();
-            return _projectService.GetProject(exploration.ProjectId);
+            return _projectService.GetProjectDto(exploration.ProjectId);
         }
 
         private void DeleteCaseLinks(Guid explorationId)
@@ -77,13 +78,13 @@ namespace api.Services
                 }
             }
         }
-        public Project UpdateExploration(Guid explorationId, Exploration updatedExploration)
+        public ProjectDto UpdateExploration(Guid explorationId, Exploration updatedExploration)
         {
             var exploration = GetExploration(explorationId);
             CopyData(exploration, updatedExploration);
             _context.Explorations!.Update(exploration);
             _context.SaveChanges();
-            return _projectService.GetProject(exploration.ProjectId);
+            return _projectService.GetProjectDto(exploration.ProjectId);
         }
 
         public Exploration GetExploration(Guid explorationId)

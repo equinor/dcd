@@ -1,5 +1,6 @@
 using System.Linq;
 
+using api.Dtos;
 using api.Models;
 
 using Xunit;
@@ -100,7 +101,47 @@ namespace tests
             }
         }
 
+        public static void CompareDrainageStrategies(DrainageStrategy expected, DrainageStrategyDto actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.NGLYield, actual.NGLYield);
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.GasInjectorCount, actual.GasInjectorCount);
+                Assert.Equal(expected.WaterInjectorCount, actual.WaterInjectorCount);
+                Assert.Equal(expected.ProducerCount, actual.ProducerCount);
+                CompareVolumes(expected.ProductionProfileOil, actual.ProductionProfileOil);
+                CompareVolumes(expected.ProductionProfileGas, actual.ProductionProfileGas);
+                CompareVolumes(expected.ProductionProfileWater, actual.ProductionProfileWater);
+                CompareVolumes(expected.ProductionProfileWaterInjection, actual.ProductionProfileWaterInjection);
+                CompareVolumes(expected.NetSalesGas, actual.NetSalesGas);
+                CompareMasses(expected.Co2Emissions, actual.Co2Emissions);
+            }
+        }
+
         public static void CompareTransports(Transport expected, Transport actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
+                Assert.Equal(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                CompareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
+
+        public static void CompareTransports(Transport expected, TransportDto actual)
         {
             if (expected == null || actual == null)
             {
@@ -121,8 +162,8 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, null);
-                Assert.Equal(actual, null);
+                Assert.Null(expected);
+                Assert.Null(actual);
             }
             else
             {
@@ -147,7 +188,43 @@ namespace tests
             }
         }
 
+        public static void CompareExplorations(Exploration expected, ExplorationDto actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.WellType, actual.WellType);
+
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+                TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
+                TestHelper.CompareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
+
+                Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
+            }
+        }
+
         public static void CompareSubstructures(Substructure expected, Substructure actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                CompareCosts(expected.CostProfile, actual.CostProfile);
+                Assert.Equal(expected.DryWeight, actual.DryWeight);
+            }
+        }
+
+        public static void CompareSubstructures(Substructure expected, SubstructureDto actual)
         {
             if (expected == null || actual == null)
             {
@@ -185,11 +262,54 @@ namespace tests
             }
         }
 
+        public static void CompareWellProjects(WellProject expected, WellProjectDto actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
+                Assert.Equal(expected.AnnualWellInterventionCost, actual.AnnualWellInterventionCost);
+                Assert.Equal(expected.PluggingAndAbandonment, actual.PluggingAndAbandonment);
+                Assert.Equal(expected.ProducerCount, actual.ProducerCount);
+                Assert.Equal(expected.GasInjectorCount, actual.GasInjectorCount);
+                Assert.Equal(expected.WaterInjectorCount, actual.WaterInjectorCount);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
+                TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
+
         public static void CompareTopsides(Topside expected, Topside actual)
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, actual);
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                Assert.Equal(expected.DryWeight, actual.DryWeight);
+                Assert.Equal(expected.GasCapacity, actual.GasCapacity);
+                Assert.Equal(expected.OilCapacity, actual.OilCapacity);
+                Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
+
+        public static void CompareTopsides(Topside expected, TopsideDto actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
             }
             else
             {
@@ -208,7 +328,8 @@ namespace tests
         {
             if (expected == null || actual == null)
             {
-                Assert.Equal(expected, actual);
+                Assert.Null(expected);
+                Assert.Null(actual);
             }
             else
             {

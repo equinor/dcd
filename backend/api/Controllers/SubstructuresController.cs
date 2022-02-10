@@ -27,20 +27,20 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateSubstructure")]
-        public Project CreateSubstructure([FromBody] SubstructureDto substructureDto)
+        public ProjectDto CreateSubstructure([FromBody] SubstructureDto substructureDto)
         {
             var substructure = _substructureAdapter.Convert(substructureDto);
             return _substructureService.CreateSubstructure(substructure, substructureDto.SourceCaseId);
         }
 
         [HttpDelete("{substructureId}", Name = "DeleteSubstructure")]
-        public Project DeleteSubstructure(Guid substructureId)
+        public ProjectDto DeleteSubstructure(Guid substructureId)
         {
             return _substructureService.DeleteSubstructure(substructureId);
         }
 
         [HttpPatch("{substructureId}", Name = "UpdateSubstructure")]
-        public Project UpdateSubstructure([FromRoute] Guid substructureId, [FromBody] SubstructureDto substructureDto)
+        public ProjectDto UpdateSubstructure([FromRoute] Guid substructureId, [FromBody] SubstructureDto substructureDto)
         {
             var substructure = _substructureAdapter.Convert(substructureDto);
             return _substructureService.UpdateSubstructure(substructureId, substructure);

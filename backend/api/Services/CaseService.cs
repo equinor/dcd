@@ -1,4 +1,5 @@
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 namespace api.Services
@@ -14,13 +15,13 @@ namespace api.Services
             _projectService = projectService;
         }
 
-        public Project CreateCase(Case case_)
+        public ProjectDto CreateCase(Case case_)
         {
             var project = _projectService.GetProject(case_.ProjectId);
             case_.Project = project;
             _context.Cases!.Add(case_);
             _context.SaveChanges();
-            return _projectService.GetProject(project.Id);
+            return _projectService.GetProjectDto(project.Id);
         }
     }
 

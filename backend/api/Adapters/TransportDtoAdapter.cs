@@ -14,6 +14,8 @@ namespace api.Adapters
             transportDto.ProjectId = transport.ProjectId;
             transportDto.Name = transport.Name;
             transportDto.Maturity = transport.Maturity;
+            transportDto.GasExportPipelineLength = transport.GasExportPipelineLength;
+            transportDto.OilExportPipelineLength = transport.OilExportPipelineLength;
             transportDto.CostProfile = Convert(transport.CostProfile);
             return transportDto;
         }

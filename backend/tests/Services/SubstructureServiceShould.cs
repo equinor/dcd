@@ -118,7 +118,7 @@ namespace tests
             var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == substructureToDelete.Name);
             Assert.Null(actualSubstructure);
             var casesWithSubstructureLink = projectResult.Cases.Where(o => o.SubstructureLink == substructureToDelete.Id);
-            Assert.Equal(0, casesWithSubstructureLink.Count());
+            Assert.Empty(casesWithSubstructureLink);
         }
 
         [Fact]

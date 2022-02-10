@@ -27,20 +27,20 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateWellProject")]
-        public Project CreateWellProject([FromBody] WellProjectDto wellProjectDto)
+        public ProjectDto CreateWellProject([FromBody] WellProjectDto wellProjectDto)
         {
             var wellProject = _wellProjectAdapter.Convert(wellProjectDto);
             return _wellProjectService.CreateWellProject(wellProject, wellProjectDto.SourceCaseId);
         }
 
         [HttpDelete("{wellProjectId}", Name = "DeleteWellProject")]
-        public Project DeleteWellProject(Guid wellProjectId)
+        public ProjectDto DeleteWellProject(Guid wellProjectId)
         {
             return _wellProjectService.DeleteWellProject(wellProjectId);
         }
 
         [HttpPatch("{wellProjectId}", Name = "UpdateWellProject")]
-        public Project UpdateWellProject([FromRoute] Guid wellProjectId, [FromBody] WellProjectDto wellProjectDto)
+        public ProjectDto UpdateWellProject([FromRoute] Guid wellProjectId, [FromBody] WellProjectDto wellProjectDto)
         {
             var wellProject = _wellProjectAdapter.Convert(wellProjectDto);
             return _wellProjectService.UpdateWellProject(wellProjectId, wellProject);

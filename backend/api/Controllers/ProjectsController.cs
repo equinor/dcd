@@ -37,7 +37,7 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "CreateProject")]
-        public Project CreateProject([FromBody] ProjectDto projectDto)
+        public ProjectDto CreateProject([FromBody] ProjectDto projectDto)
         {
             var project = ProjectAdapter.Convert(projectDto);
             return _projectService.CreateProject(project);

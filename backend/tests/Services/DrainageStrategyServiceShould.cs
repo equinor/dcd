@@ -118,7 +118,7 @@ namespace tests
             var actualDrainageStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == drainageStrategyToDelete.Name);
             Assert.Null(actualDrainageStrategy);
             var casesWithDrainageStrategyLink = projectResult.Cases.Where(o => o.DrainageStrategyLink == drainageStrategyToDelete.Id);
-            Assert.Equal(0, casesWithDrainageStrategyLink.Count());
+            Assert.Empty(casesWithDrainageStrategyLink);
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -31,14 +32,14 @@ namespace api.Services
             }
         }
 
-        public Project CreateTopside(Topside topside, Guid sourceCaseId)
+        public ProjectDto CreateTopside(Topside topside, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(topside.ProjectId);
             topside.Project = project;
             _context.Topsides!.Add(topside);
             _context.SaveChanges();
             SetCaseLink(topside, sourceCaseId, project);
-            return _projectService.GetProject(project.Id);
+            return _projectService.GetProjectDto(project.Id);
         }
 
         private void SetCaseLink(Topside topside, Guid sourceCaseId, Project project)
@@ -52,13 +53,13 @@ namespace api.Services
             _context.SaveChanges();
         }
 
-        public Project DeleteTopside(Guid topsideId)
+        public ProjectDto DeleteTopside(Guid topsideId)
         {
             var topside = GetTopside(topsideId);
             _context.Topsides!.Remove(topside);
             DeleteCaseLinks(topsideId);
             _context.SaveChanges();
-            return _projectService.GetProject(topside.ProjectId);
+            return _projectService.GetProjectDto(topside.ProjectId);
         }
 
         private void DeleteCaseLinks(Guid topsideId)
@@ -72,13 +73,13 @@ namespace api.Services
             }
         }
 
-        public Project UpdateTopside(Guid topsideId, Topside updatedTopside)
+        public ProjectDto UpdateTopside(Guid topsideId, Topside updatedTopside)
         {
             var topside = GetTopside(topsideId);
             CopyData(topside, updatedTopside);
             _context.Topsides!.Update(topside);
             _context.SaveChanges();
-            return _projectService.GetProject(topside.ProjectId);
+            return _projectService.GetProjectDto(topside.ProjectId);
         }
 
         public Topside GetTopside(Guid topsideId)

@@ -1,6 +1,5 @@
-using System.Linq;
-
 using api.Context;
+using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -35,14 +34,14 @@ namespace api.Services
             }
         }
 
-        public Project CreateWellProject(WellProject wellProject, Guid sourceCaseId)
+        public ProjectDto CreateWellProject(WellProject wellProject, Guid sourceCaseId)
         {
             var project = _projectService.GetProject(wellProject.ProjectId);
             wellProject.Project = project;
             _context.WellProjects!.Add(wellProject);
             _context.SaveChanges();
             SetCaseLink(wellProject, sourceCaseId, project);
-            return _projectService.GetProject(project.Id);
+            return _projectService.GetProjectDto(project.Id);
         }
 
         private void SetCaseLink(WellProject wellProject, Guid sourceCaseId, Project project)
@@ -56,13 +55,13 @@ namespace api.Services
             _context.SaveChanges();
         }
 
-        public Project DeleteWellProject(Guid wellProjectId)
+        public ProjectDto DeleteWellProject(Guid wellProjectId)
         {
             var wellProject = GetWellProject(wellProjectId);
             _context.WellProjects!.Remove(wellProject);
             DeleteCaseLinks(wellProjectId);
             _context.SaveChanges();
-            return _projectService.GetProject(wellProject.ProjectId);
+            return _projectService.GetProjectDto(wellProject.ProjectId);
         }
 
         private void DeleteCaseLinks(Guid wellProjectId)
@@ -76,13 +75,13 @@ namespace api.Services
             }
         }
 
-        public Project UpdateWellProject(Guid wellProjectId, WellProject updatedWellProject)
+        public ProjectDto UpdateWellProject(Guid wellProjectId, WellProject updatedWellProject)
         {
             var wellProject = GetWellProject(wellProjectId);
             CopyData(wellProject, updatedWellProject);
             _context.WellProjects!.Update(wellProject);
             _context.SaveChanges();
-            return _projectService.GetProject(wellProject.ProjectId);
+            return _projectService.GetProjectDto(wellProject.ProjectId);
         }
 
         public WellProject GetWellProject(Guid wellProjectId)
