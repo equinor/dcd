@@ -1,6 +1,6 @@
 
-
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace api.Models
 {
@@ -48,6 +48,7 @@ namespace api.Models
         public string EPAVersion { get; set; } = string.Empty;
         public Currency Currency { get; set; }
         [NotMapped]
+        [JsonIgnore]
         public double Sum
         {
             get
