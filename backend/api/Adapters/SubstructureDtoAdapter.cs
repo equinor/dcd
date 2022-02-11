@@ -18,7 +18,7 @@ namespace api.Adapters
             return substructureDto;
         }
 
-        private static SubstructureCostProfileDto Convert(SubstructureCostProfile substructureCostProfile)
+        public static SubstructureCostProfileDto Convert(SubstructureCostProfile substructureCostProfile)
         {
             return new SubstructureCostProfileDto
             {

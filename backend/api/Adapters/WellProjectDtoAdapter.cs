@@ -23,7 +23,7 @@ namespace api.Adapters
             return wellProjectDto;
         }
 
-        private static WellProjectCostProfileDto Convert(WellProjectCostProfile wellProjectCostProfile)
+        public static WellProjectCostProfileDto Convert(WellProjectCostProfile wellProjectCostProfile)
         {
             return new WellProjectCostProfileDto
             {

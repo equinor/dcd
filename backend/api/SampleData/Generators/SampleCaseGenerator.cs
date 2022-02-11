@@ -15,6 +15,7 @@ public static class SampleCaseGenerator
         string project1SubstructureName = projectsBuilder.ForProject(project1).Substructures.ToList()[0].Name;
         string project1TopsideName = projectsBuilder.ForProject(project1).Topsides.ToList()[0].Name;
         string project1TransportName = projectsBuilder.ForProject(project1).Transports.ToList()[0].Name;
+        string projectExplorationName = projectsBuilder.ForProject(project1).Explorations.ToList()[0].Name;
         projectsBuilder.ForProject(project1)
         .WithCase(new CaseBuilder()
         {
@@ -29,6 +30,9 @@ public static class SampleCaseGenerator
             .WithWellProject(wellProjectName, projectsBuilder.ForProject(project1))
             .WithSurf(project1SurfName, projectsBuilder.ForProject(project1))
             .WithTopside(project1TopsideName, projectsBuilder.ForProject(project1))
+            .WithTransport(project1TransportName, projectsBuilder.ForProject(project1))
+            .WithSubstructure(project1SubstructureName, projectsBuilder.ForProject(project1))
+            .WithExploration(projectExplorationName, projectsBuilder.ForProject(project1))
             )
         .WithCase(new CaseBuilder()
         {

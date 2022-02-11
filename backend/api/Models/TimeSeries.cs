@@ -2,6 +2,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.Identity.Client;
+
 namespace api.Models
 {
 
@@ -15,6 +18,10 @@ namespace api.Models
         {
             get
             {
+                if (this.InternalData == null)
+                {
+                    throw new Exception("Timeseries contains no values");
+                }
                 string[] tab = this.InternalData.Split(';');
                 return Array.ConvertAll(InternalData.Split(';'), new Converter<string, T>(convertStringToGeneric));
             }
@@ -54,7 +61,10 @@ namespace api.Models
             get
             {
                 double s = 0.0;
-                Array.ForEach(Values, i => s += i);
+                if (Values != null)
+                {
+                    Array.ForEach(Values, i => s += i);
+                }
                 return s;
             }
             private set { }

@@ -87,7 +87,7 @@ namespace api.Services
             return _projectService.GetProjectDto(drainageStrategy.ProjectId);
         }
 
-        private DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
+        public DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
         {
             var drainageStrategy = _context.DrainageStrategies!
                 .Include(c => c.Project)
