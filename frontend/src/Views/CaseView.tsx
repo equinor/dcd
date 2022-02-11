@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { Project } from '../types'
 import DrainageStrategyView from './DrainageStrategyView'
 import ExplorationView from './ExplorationView'
 import OverviewView from './OverviewView'
@@ -22,7 +21,7 @@ const CaseHeader = styled(Typography)`
 `
 
 const CaseView = () => {
-    const [project, setProject] = useState<Project>()
+    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
 

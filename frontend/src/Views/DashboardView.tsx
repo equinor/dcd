@@ -69,7 +69,7 @@ const DashboardView = () => {
                 <ProjectDropdown
                     label={''}
                     placeholder={'Search projects'}
-                    items={projects.map(p => p.projectName)}
+                    items={projects.map(p => p.name)}
                     handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
                 />
             </ProjectSelect>

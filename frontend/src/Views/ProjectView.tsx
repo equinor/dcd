@@ -5,8 +5,8 @@ import styled from 'styled-components'
 
 import CasesTable from '../Components/CasesTable/CasesTable'
 import BarChart from '../Components/BarChart'
-import { Project } from '../types'
 import { projectService } from '../Services/ProjectService'
+import { GetDrainageStrategy } from '../Utils/common'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -28,7 +28,7 @@ const Charts = styled.div`
 
 const ProjectView = () => {
     let params = useParams()
-    const [project, setProject] = useState<Project>()
+    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
 
     useEffect(() => {
         if (projectService) {
@@ -49,10 +49,11 @@ const ProjectView = () => {
     let dataProdProfileGas: number[] = []
     let dataProdProfileOil: number[] = []
 
-    project.cases.forEach(c => {
-        dataProdProfileGas = c.drainageStrategy?.productionProfileGas?.yearValues?.map(v => v.value)
-        dataProdProfileOil = c.drainageStrategy?.productionProfileOil?.yearValues?.map(v => v.value)
-        dataX.push(c.name)
+    project.cases?.forEach(c => {
+        const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
+        dataProdProfileGas = drainageStrategy?.productionProfileGas?.yearValues?.map(v => v.value!)!
+        dataProdProfileOil = drainageStrategy?.productionProfileOil?.yearValues?.map(v => v.value!)!
+        dataX.push(c.name!)
     })
 
     return (
@@ -63,7 +64,7 @@ const ProjectView = () => {
                 <BarChart data={{ x: dataX, y: dataProdProfileOil }} title="Production profile oil" />
             </Charts>
             <CasesHeader variant="h3">Cases</CasesHeader>
-            <CasesTable key={project.id} projectId={project.id} cases={project.cases} />
+            <CasesTable key={project.projectId} project={project} cases={project.cases!} />
         </Wrapper>
     )
 }
