@@ -4,6 +4,8 @@ using api.Context;
 using api.SampleData.Generators;
 using api.Services;
 
+using Equinor.TI.CommonLibrary.Client;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
@@ -15,6 +17,11 @@ var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
 configBuilder.AddAzureAppConfiguration(azureAppConfigConnectionString);
 var config = configBuilder.Build();
+
+string commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
+                builder.Configuration.GetSection("AzureAd:ClientId").Value,
+                builder.Configuration.GetSection("AzureAd:TenantId").Value,
+                Environment.GetEnvironmentVariable("AzureAd__ClientSecret")!);
 
 //POC For Azure App Config
 Console.WriteLine(config["PoC2"] ?? "Hello world!");
@@ -81,6 +88,8 @@ builder.Services.AddScoped<SubstructureService>();
 builder.Services.AddScoped<TopsideService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
+builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryClientOptions { TokenProviderConnectionString = commonLibTokenConnection });
+builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddControllers(options =>
 {
     options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()));
