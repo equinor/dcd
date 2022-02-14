@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-using api.Models;
+using api.Dtos;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -59,7 +59,7 @@ public class ApiShould : IClassFixture<WebApplicationFactory<Program>>
         response.EnsureSuccessStatusCode(); // Status Code 200-299
         Assert.Equal("application/json; charset=utf-8",
             response.Content.Headers.ContentType.ToString());
-        var responseProjects = await response.Content.ReadFromJsonAsync<List<Project>>();
+        var responseProjects = await response.Content.ReadFromJsonAsync<List<ProjectDto>>();
         foreach (var responseProject in responseProjects)
         {
             Assert.NotNull(responseProject.DrainageStrategies);
