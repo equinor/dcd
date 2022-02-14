@@ -7,6 +7,11 @@ pr:
 pool:
   vmImage: "ubuntu-latest"
 
+variables:
+  - group: DCD
+  - name: unquotedAppConfigConnectionString
+    value: $[replace(variables['azureAppConfig'], '''', '')]
+
 jobs:
   - job: Lint_CSharp
     continueOnError: true
@@ -76,6 +81,8 @@ jobs:
         inputs:
           command: "test"
           projects: "backend/tests/tests.csproj"
+        env:
+          AppConfiguration__ConnectionString: $(unquotedAppConfigConnectionString)
 
       - script: |
           dotnet tool install JetBrains.dotCover.GlobalTool -g
@@ -83,7 +90,6 @@ jobs:
           dotnet dotcover test
           dotnet dotcover report --source=dotCover.Output.dcvr --reportType=DetailedXml          
           bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r dotCover.Output.xml
-
         displayName: "Backend Tests With Code Coverage"
   - job: Test_Frontend
     steps:
