@@ -1,5 +1,5 @@
-import { chevron_up, search } from '@equinor/eds-icons'
-import { Icon, SingleSelect, Typography } from '@equinor/eds-core-react'
+import { search } from '@equinor/eds-icons'
+import { Icon, SingleSelect, Typography, Card } from '@equinor/eds-core-react'
 import { tokens } from '@equinor/eds-tokens'
 import { UseComboboxStateChange } from 'downshift'
 import { useEffect, useState } from 'react'
@@ -11,6 +11,11 @@ import { projectService } from '../Services/ProjectService'
 const Wrapper = styled.div`
     margin: 2rem;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 4rem;
 `
 
 const ProjectSelect = styled.div`
@@ -23,13 +28,13 @@ const ProjectDropdown = styled(SingleSelect)`
     margin-left: 0.5rem;
 `
 
-const ArrowUp = styled(Icon)`
-    margin-left: 7rem;
-    margin-top: 0.5rem;
+const FindProjectText = styled(Typography)`
+    width: 25rem;
+    margin-left: 2rem;
+    margin-bottom: 1rem;
 `
 
-const ChooseProjectText = styled(Typography)`
-    margin-left: 2rem;
+const RecentProjectCard = styled(Card)`
 `
 
 const DashboardView = () => {
@@ -64,6 +69,7 @@ const DashboardView = () => {
 
     return (
         <Wrapper>
+            <FindProjectText variant="h2">Find a project</FindProjectText>
             <ProjectSelect>
                 <Icon data={search} color={grey}></Icon>
                 <ProjectDropdown
@@ -73,8 +79,18 @@ const DashboardView = () => {
                     handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
                 />
             </ProjectSelect>
-            <ArrowUp data={chevron_up} color={grey}></ArrowUp>
-            <ChooseProjectText>Start by choosing a project.</ChooseProjectText>
+            <RecentProjectCard>
+				<Card.Header>
+				  <Card.HeaderTitle>
+					<Typography variant="h5">
+					  Helo.
+					</Typography>
+					<Typography variant="body_short">
+					  Hi.
+					</Typography>
+				  </Card.HeaderTitle>
+				</Card.Header>
+            </RecentProjectCard>
         </Wrapper>
     )
 }
