@@ -1,5 +1,6 @@
 import { Typography, Card } from '@equinor/eds-core-react'
 import styled from 'styled-components'
+import { ProjectPhaseNumberToText } from '../Utils/common'
 
 const Wrapper = styled.div``
 
@@ -66,7 +67,7 @@ const RecentProjects = ({ projects }: Props) => {
                                 {project.name}
                             </CardHeaderTitleText>
                             <ProjectDG variant="caption">
-                                {project.projectPhase}
+                                {ProjectPhaseNumberToText(project.projectPhase!)}
                             </ProjectDG>
                         </CardHeaderTitle>
                     </Card.Header>
