@@ -51,8 +51,8 @@ const ProjectView = () => {
 
     project.cases?.forEach(c => {
         const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
-        dataProdProfileGas = drainageStrategy?.productionProfileGas?.yearValues?.map(v => v.value!)!
-        dataProdProfileOil = drainageStrategy?.productionProfileOil?.yearValues?.map(v => v.value!)!
+        dataProdProfileGas = drainageStrategy?.productionProfileGas?.values?.map(v => v)!
+        dataProdProfileOil = drainageStrategy?.productionProfileOil?.values?.map(v => v)!
         dataX.push(c.name!)
     })
 
