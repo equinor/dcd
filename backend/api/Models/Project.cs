@@ -21,27 +21,41 @@ namespace api.Models
 
     public enum ProjectPhase
     {
-        DG1,
-        DG2,
-        DG3,
-        DG4
+        Null,
+        BidPreparations,
+        BusinessIdentification,
+        BusinessPlanning,
+        ConceptPlanning,
+        ConcessionNegotiations,
+        Definition,
+        Execution,
+        Operation,
+        ScreeningBusinessOpportunities
     }
 
     public enum ProjectCategory
     {
-        OffshoreWind,
-        Hydrogen,
-        CarbonCaptureAndStorage,
-        Solar,
-        FPSO,
-        Platform,
-        TieIn,
-        Electrification,
+        Null,
         Brownfield,
+        Cessation,
+        DrillingUpgrade,
         Onshore,
         Pipeline,
+        PlatformFpso,
         Subsea,
-        DrillingUpgrade,
-        Cessation,
+        Solar,
+        Co2Storage,
+        Efuel,
+        Nuclear,
+        Co2Capture,
+        Fpso,
+        Hydrogen,
+        Hse,
+        OffshoreWind,
+        Platform,
+        PowerFromShore,
+        TieIn,
+        RenewableOther,
+        Ccs
     }
 }
