@@ -1,10 +1,5 @@
-using System.Linq;
-
 using api.Dtos;
 using api.Models;
-using api.SampleData.Builders;
-using api.Services;
-
 
 namespace api.Adapters
 {
@@ -59,6 +54,24 @@ namespace api.Adapters
             {
                 projectDto.Transports.Add(TransportDtoAdapter.Convert(t));
             }
+
+            return projectDto;
+        }
+
+        public static ProjectDto Convert(dynamic project)
+        {
+            var projectDto = new ProjectDto();
+            projectDto.Name = project.Name;
+            projectDto.Description = project.Description;
+            projectDto.Country = project.Country;
+            projectDto.Cases = new List<CaseDto>();
+            projectDto.Explorations = new List<ExplorationDto>();
+            projectDto.DrainageStrategies = new List<DrainageStrategyDto>();
+            projectDto.WellProjects = new List<WellProjectDto>();
+            projectDto.Substructures = new List<SubstructureDto>();
+            projectDto.Surfs = new List<SurfDto>();
+            projectDto.Topsides = new List<TopsideDto>();
+            projectDto.Transports = new List<TransportDto>();
 
             return projectDto;
         }
