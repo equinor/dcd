@@ -52,9 +52,9 @@ const DashboardView = () => {
     }, [])
 
     const onSelected = (selectedValue: string | null | undefined) => {
-        const project = projects?.find(p => p.projectName === selectedValue)
+        const project = projects?.find(p => p.name === selectedValue)
         if (project) {
-            navigate(`/project/${project.id}`)
+            navigate(`/project/${project.projectId}`)
         }
     }
 
