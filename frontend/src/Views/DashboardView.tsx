@@ -34,7 +34,53 @@ const FindProjectText = styled(Typography)`
     margin-bottom: 1rem;
 `
 
+const RecentProjectsWrapper = styled.div``
+
+const RecentProjectTitle = styled(Typography)`
+    margin: 4rem 2rem 0rem .5rem;
+    align-self: flex-start;
+`
+
+const RecentProjects = styled.div`
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    height: 10rem;
+    justify-content: start;
+`
+
 const RecentProjectCard = styled(Card)`
+    margin: .5rem;
+    width: 20rem;
+    fill: rgba(255, 255, 255, 1.0);
+    box-shadow: 0.0px 1.0px 5.0px 0px rgba(0, 0, 0, 0.2),0.0px 3.0px 4.0px 0px rgba(0, 0, 0, 0.12),0.0px 2.0px 4.0px 0px rgba(0, 0, 0, 0.14);
+`
+
+const CardHeaderTitle = styled(Card.HeaderTitle)`
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    height: 1.5rem;
+    align-content: space-between;
+`
+
+const CardHeaderTitleText = styled(Typography)`
+    padding-top: 2px;
+`
+
+const ProjectDG = styled(Typography)`
+    background: #D5EAF4;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 6px 7px 5px 8px;
+`
+
+const CardFooter = styled(Typography)`
+    margin-top: 1rem;
+    color: rgb(111, 111, 111);
 `
 
 const DashboardView = () => {
@@ -79,18 +125,101 @@ const DashboardView = () => {
                     handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
                 />
             </ProjectSelect>
-            <RecentProjectCard>
-				<Card.Header>
-				  <Card.HeaderTitle>
-					<Typography variant="h5">
-					  Helo.
-					</Typography>
-					<Typography variant="body_short">
-					  Hi.
-					</Typography>
-				  </Card.HeaderTitle>
-				</Card.Header>
-            </RecentProjectCard>
+            <RecentProjectsWrapper>
+                <RecentProjectTitle variant="h3">
+                    Recently used Projects
+                </RecentProjectTitle>
+                <RecentProjects>
+                    <RecentProjectCard>
+                        <Card.Header>
+                            <CardHeaderTitle>
+                                <CardHeaderTitleText variant="h5">
+                                    Some Project Name
+                                </CardHeaderTitleText>
+                                <ProjectDG variant="caption">
+                                    DG1
+                                </ProjectDG>
+                            </CardHeaderTitle>
+                        </Card.Header>
+                        <Card.Content>
+                            <Typography variant="caption" lines={4}>
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua.
+                            </Typography>
+                            <CardFooter variant="meta">
+                                Created Feb 15, 2022
+                            </CardFooter>
+                        </Card.Content>
+                    </RecentProjectCard>
+                    <RecentProjectCard>
+                        <Card.Header>
+                            <CardHeaderTitle>
+                                <CardHeaderTitleText variant="h5">
+                                    Some Project Name
+                                </CardHeaderTitleText>
+                                <ProjectDG variant="caption">
+                                    DG1
+                                </ProjectDG>
+                            </CardHeaderTitle>
+                        </Card.Header>
+                        <Card.Content>
+                            <Typography variant="caption" lines={4}>
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua.
+                            </Typography>
+                            <CardFooter variant="meta" color="tertiary">
+                                Created Feb 15, 2022
+                            </CardFooter>
+                        </Card.Content>
+                    </RecentProjectCard>
+                    <RecentProjectCard>
+                        <Card.Header>
+                            <CardHeaderTitle>
+                                <CardHeaderTitleText variant="h5">
+                                    Some Project Name
+                                </CardHeaderTitleText>
+                                <ProjectDG variant="caption">
+                                    DG1
+                                </ProjectDG>
+                            </CardHeaderTitle>
+                        </Card.Header>
+                        <Card.Content>
+                            <Typography variant="caption" lines={4}>
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua.
+                            </Typography>
+                            <CardFooter variant="meta" color="tertiary">
+                                Created Feb 15, 2022
+                            </CardFooter>
+                        </Card.Content>
+                    </RecentProjectCard>
+                    <RecentProjectCard>
+                        <Card.Header>
+                            <CardHeaderTitle>
+                                <CardHeaderTitleText variant="h5">
+                                    Some Project Name
+                                </CardHeaderTitleText>
+                                <ProjectDG variant="caption">
+                                    DG1
+                                </ProjectDG>
+                            </CardHeaderTitle>
+                        </Card.Header>
+                        <Card.Content>
+                            <Typography variant="caption" lines={4}>
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua.
+                            </Typography>
+                            <CardFooter variant="meta" color="tertiary">
+                                Created Feb 15, 2022
+                            </CardFooter>
+                        </Card.Content>
+                    </RecentProjectCard>
+                </RecentProjects>
+            </RecentProjectsWrapper>
         </Wrapper>
     )
 }
