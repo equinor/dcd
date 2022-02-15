@@ -83,6 +83,8 @@ const RecentProjects = ({ projects }: Props) => {
             )
         }
 
+    if (!projects) return null
+
     return (
         <Wrapper>
             <RecentProjectTitle variant="h3">
