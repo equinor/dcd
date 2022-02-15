@@ -5,9 +5,11 @@ import { UseComboboxStateChange } from 'downshift'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import Cookies from 'universal-cookie'
 
 import { projectService } from '../Services/ProjectService'
 import RecentProjects from '../Components/RecentProjects'
+import { IsRecentProjectCookieKey, ExtractProjectIdFromCookieKey } from '../Utils/common'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -40,6 +42,37 @@ const DashboardView = () => {
     const navigate = useNavigate()
 
     const [projects, setProjects] = useState<any[]>()
+    const [recentProjects, setRecentProjects] = useState<Components.Schemas.ProjectDto[] | any>()
+
+    const getRecentProjectsFromCookies =
+        (projects: Components.Schemas.ProjectDto[]) => {
+        const cookies = new Cookies()
+        const fetchedCookies = cookies.getAll()
+        console.log(fetchedCookies)
+        const recentProjectCookies = Object.entries(fetchedCookies)
+            .filter(([key, _]) => IsRecentProjectCookieKey(key))
+                .sort(([_, oneTimestamp], [__, otherTimestamp]) => {
+                    return parseInt(otherTimestamp as string,10) -
+                        parseInt(oneTimestamp as string,10)
+                })
+        console.log(recentProjectCookies)
+
+        const filterRecentProjects = (
+            collectedProjects: Components.Schemas.ProjectDto[],
+            [cookieKey, _] : [string, any]) => {
+                const cookieProjectId = ExtractProjectIdFromCookieKey(cookieKey)
+                console.log(cookieProjectId)
+                const cookieProject = projects.find(proj => proj.projectId === cookieProjectId)
+                if (cookieProject !== undefined) {
+                    collectedProjects.push(cookieProject)
+                }
+                return collectedProjects
+            }
+        const recentProjects = recentProjectCookies.reduce(filterRecentProjects, [])
+        console.log(recentProjects)
+        return recentProjects
+    }
+
 
     useEffect(() => {
         if (projectService) {
@@ -48,6 +81,8 @@ const DashboardView = () => {
                     const res = await projectService.getProjects()
                     console.log(res)
                     setProjects(res)
+                    const recPro = getRecentProjectsFromCookies(res)
+                    setRecentProjects(recPro)
                 } catch (error) {
                     console.error(error)
                 }
@@ -78,7 +113,7 @@ const DashboardView = () => {
                     handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
                 />
             </ProjectSelect>
-            <RecentProjects projects={projects} />
+            <RecentProjects projects={recentProjects} />
         </Wrapper>
     )
 }

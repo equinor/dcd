@@ -2,11 +2,12 @@ import { Typography } from '@equinor/eds-core-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import Cookies from 'universal-cookie'
 
 import CasesTable from '../Components/CasesTable/CasesTable'
 import BarChart from '../Components/BarChart'
 import { projectService } from '../Services/ProjectService'
-import { GetDrainageStrategy } from '../Utils/common'
+import { GetDrainageStrategy, StoreRecentProject } from '../Utils/common'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -44,6 +45,9 @@ const ProjectView = () => {
     }, [])
 
     if (!project) return null
+
+    const cookies = new Cookies()
+    StoreRecentProject(project.projectId!, cookies)
 
     const dataX: string[] = []
     let dataProdProfileGas: number[] = []
