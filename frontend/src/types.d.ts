@@ -21,14 +21,11 @@ declare namespace Components {
         }
         export interface Co2EmissionsDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
         }
         export type Currency = 0 | 1; // int32
-        export interface DoubleYearValue {
-            id?: number; // int32
-            year?: number; // int32
-            value?: number; // double
-        }
         export interface DrainageStrategyDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -49,17 +46,23 @@ declare namespace Components {
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid
-            yearValues?: Int32YearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* int32 */[] | null;
         }
         export interface ExplorationCostProfileDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
         export interface ExplorationDrillingScheduleDto {
             id?: string; // uuid
-            yearValues?: Int32YearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* int32 */[] | null;
         }
         export interface ExplorationDto {
             id?: string; // uuid
@@ -73,40 +76,49 @@ declare namespace Components {
         }
         export interface FuelFlaringAndLossesDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
         }
         export interface GAndGAdminCostDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
-        }
-        export interface Int32YearValue {
-            id?: number; // int32
-            year?: number; // int32
-            value?: number; // int32
         }
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
         }
         export type ProductionFlowline = 999; // int32
         export interface ProductionProfileGasDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
         }
         export interface ProductionProfileOilDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
         }
         export interface ProductionProfileWaterDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
         }
         export interface ProductionProfileWaterInjectionDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
         }
         export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
         export interface ProjectDto {
@@ -128,7 +140,9 @@ declare namespace Components {
         export type ProjectPhase = 0 | 1 | 2 | 3; // int32
         export interface SubstructureCostProfileDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
@@ -142,7 +156,9 @@ declare namespace Components {
         }
         export interface SurfCostProfileDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
@@ -161,7 +177,9 @@ declare namespace Components {
         }
         export interface TopsideCostProfileDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
@@ -179,7 +197,9 @@ declare namespace Components {
         }
         export interface TransportCostProfileDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
@@ -194,7 +214,9 @@ declare namespace Components {
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid
-            yearValues?: DoubleYearValue[] | null;
+            startYear?: number; // int32
+            internalData?: string | null;
+            values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
@@ -401,6 +423,11 @@ declare namespace Paths {
         }
     }
     namespace GetProjects {
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto[];
+        }
+    }
+    namespace GetProjectsFromCommonLibrary {
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto[];
         }

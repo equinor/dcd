@@ -33,12 +33,12 @@ interface Props {
 const CasesTable = ({ cases, project }: Props) => {
     const getPpg = useCallback((c: Components.Schemas.CaseDto) => {
         const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
-        return drainageStrategy?.productionProfileGas?.yearValues?.reduce((sum, yearValue) => sum + yearValue.value!, 0) ?? 0
+        return drainageStrategy?.productionProfileGas?.values?.reduce((sum, value) => sum + value, 0) ?? 0
     }, [])
 
     const getPpo = useCallback((c: Components.Schemas.CaseDto) => {
         const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
-        return drainageStrategy?.productionProfileOil?.yearValues?.reduce((sum, yearValue) => sum + yearValue.value!, 0) ?? 0
+        return drainageStrategy?.productionProfileOil?.values?.reduce((sum, value) => sum + value, 0) ?? 0
     }, [])
 
     const sortOnAccessor = (a: Components.Schemas.CaseDto, b: Components.Schemas.CaseDto, accessor: string, sortDirection: SortDirection) => {
