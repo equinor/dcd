@@ -5,7 +5,7 @@ import { Table, Typography } from '@equinor/eds-core-react'
 
 import { sort } from './helpers'
 import SortableTable, { Column, SortDirection } from './SortableTable'
-import { GetDrainageStrategy } from '../../Utils/common'
+import { GetDrainageStrategy, CasePath } from '../../Utils/common'
 
 
 const { Row, Cell } = Table
@@ -66,7 +66,7 @@ const CasesTable = ({ cases, project }: Props) => {
         return (
             <Row key={index}>
                 <CellWithBorder>
-                    <LinkWithoutStyle to={`/project/${project.projectId}/case/${caseItem.id}`}>
+                    <LinkWithoutStyle to={`${CasePath(project.projectId!, caseItem.id!)}`}>
                         <Typography
                             color="primary"
                             variant="body_short"

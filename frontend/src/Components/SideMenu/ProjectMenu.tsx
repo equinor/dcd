@@ -6,6 +6,8 @@ import { file, folder, dashboard } from '@equinor/eds-icons'
 import MenuItem from './MenuItem'
 import ProjectMenuItemComponent from './ProjectMenuItemComponent'
 
+import { ProjectPath } from '../../Utils/common'
+
 const ExpandableDiv = styled.div`
     display: flex;
     flex-direction: column;
@@ -54,7 +56,7 @@ const ProjectMenu = ({ project }: Props) => {
     return (
         <ExpandableDiv>
             <nav>
-                <LinkWithoutStyle to={'/project/' + project.projectId}>
+                <LinkWithoutStyle to={ProjectPath(project.projectId!)}>
                     <MenuItem
                         title={project.name!}
                         isSelected={params.projectId === project.projectId}
