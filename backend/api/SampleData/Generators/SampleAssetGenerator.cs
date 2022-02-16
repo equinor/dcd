@@ -11,6 +11,7 @@ public static class SampleAssetGenerator
         .WithProject(new ProjectBuilder()
         {
             Name = "P1",
+            CommonLibraryName = "P1 from common lib",
             CreateDate = DateTimeOffset.UtcNow,
             ProjectCategory = ProjectCategory.OffshoreWind,
             ProjectPhase = ProjectPhase.BusinessPlanning
@@ -200,6 +201,7 @@ public static class SampleAssetGenerator
         .WithProject(new ProjectBuilder
         {
             Name = "P2",
+            CommonLibraryName = "P2 from common lib",
             CreateDate = DateTimeOffset.UtcNow
         }
             .WithDrainageStrategy(new DrainageStrategyBuilder

@@ -12,6 +12,7 @@ namespace tests
         public static void CompareProjects(Project expected, Project actual)
         {
             Assert.Equal(expected.Name, actual.Name);
+            Assert.Equal(expected.CommonLibraryName, actual.CommonLibraryName);
             Assert.Equal(expected.ProjectPhase, actual.ProjectPhase);
             Assert.Equal(expected.ProjectCategory, actual.ProjectCategory);
             Assert.Equal(expected.Cases.Count(), actual.Cases.Count());

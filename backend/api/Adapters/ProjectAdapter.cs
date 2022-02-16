@@ -14,6 +14,7 @@ namespace api.Adapters
         {
             var project = new Project();
             project.Name = projectDto.Name;
+            project.CommonLibraryName = projectDto.CommonLibraryName;
             project.Description = projectDto.Description;
             project.Country = projectDto.Country;
             project.ProjectCategory = projectDto.ProjectCategory;

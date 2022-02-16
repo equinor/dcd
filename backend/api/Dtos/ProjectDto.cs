@@ -8,6 +8,7 @@ namespace api.Dtos
     {
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;
+        public string CommonLibraryName { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string Country { get; set; } = null!;
         public ProjectPhase ProjectPhase { get; set; }

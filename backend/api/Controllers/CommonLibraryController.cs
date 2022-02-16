@@ -23,7 +23,7 @@ namespace api.Controllers
         }
 
         [HttpGet("projects", Name = "GetProjectsFromCommonLibrary")]
-        public async Task<IEnumerable<ProjectDto>>? GetProjectsFromCommonLibrary()
+        public async Task<IEnumerable<CommonLibraryProjectDto>>? GetProjectsFromCommonLibrary()
         {
             return await _commonLibraryService.GetProjectsFromCommonLibrary();
         }
