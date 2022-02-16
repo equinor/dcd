@@ -35,7 +35,7 @@ namespace tests
                 Name = "First Project",
                 Description = "Description",
                 ProjectCategory = ProjectCategory.OffshoreWind,
-                ProjectPhase = ProjectPhase.DG2,
+                ProjectPhase = ProjectPhase.Execution,
                 Country = "Barbados"
             };
         }

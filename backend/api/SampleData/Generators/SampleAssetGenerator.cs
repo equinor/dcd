@@ -13,7 +13,7 @@ public static class SampleAssetGenerator
             Name = "P1",
             CreateDate = DateTimeOffset.UtcNow,
             ProjectCategory = ProjectCategory.OffshoreWind,
-            ProjectPhase = ProjectPhase.DG3
+            ProjectPhase = ProjectPhase.BusinessPlanning
         }
             .WithDrainageStrategy(new DrainageStrategyBuilder
             {
