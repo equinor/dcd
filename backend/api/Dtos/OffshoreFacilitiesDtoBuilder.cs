@@ -19,43 +19,43 @@ namespace api.Dtos
         {
             offshoreFacilitiesDto = new OffshoreFacilitiesCostProfileDto();
         }
-        public OffshoreFacilitiesDtoBuilder WithTopside(TopsideService topsideService, Guid topsideLink)
+        public OffshoreFacilitiesDtoBuilder WithTopside(ProjectDto projectDto, Guid topsideLink)
         {
             if (topsideLink != Guid.Empty)
             {
-                topsideCostProfile = TopsideDtoAdapter.Convert(topsideService.GetTopside(topsideLink)).CostProfile;
+                topsideCostProfile = projectDto.Topsides.FirstOrDefault(l => l.Id == topsideLink)!.CostProfile;
                 years.Add(topsideCostProfile.StartYear);
                 lengths.Add(topsideCostProfile.Values.Length);
             }
             return this;
         }
 
-        public OffshoreFacilitiesDtoBuilder WithSurf(SurfService surfService, Guid surfLink)
+        public OffshoreFacilitiesDtoBuilder WithSurf(ProjectDto projectDto, Guid surfLink)
         {
             if (surfLink != Guid.Empty)
             {
-                surfCostProfile = SurfDtoAdapter.Convert(surfService.GetSurf(surfLink)).CostProfile;
+                surfCostProfile = projectDto.Surfs.FirstOrDefault(l => l.Id == surfLink)!.CostProfile;
                 years.Add(surfCostProfile.StartYear);
                 lengths.Add(surfCostProfile.Values.Length);
             }
             return this;
         }
 
-        public OffshoreFacilitiesDtoBuilder WithTransport(TransportService transportService, Guid transportLink)
+        public OffshoreFacilitiesDtoBuilder WithTransport(ProjectDto projectDto, Guid transportLink)
         {
             if (transportLink != Guid.Empty)
             {
-                transportCostProfile = TransportDtoAdapter.Convert(transportService.GetTransport(transportLink)).CostProfile;
+                transportCostProfile = projectDto.Transports.FirstOrDefault(l => l.Id == transportLink)!.CostProfile;
                 years.Add(transportCostProfile.StartYear);
                 lengths.Add(transportCostProfile.Values.Length);
             }
             return this;
         }
-        public OffshoreFacilitiesDtoBuilder WithSubstructure(SubstructureService substructureService, Guid substructureLink)
+        public OffshoreFacilitiesDtoBuilder WithSubstructure(ProjectDto projectDto, Guid substructureLink)
         {
             if (substructureLink != Guid.Empty)
             {
-                substructureCostProfile = SubstructureDtoAdapter.Convert(substructureService.GetSubstructure(substructureLink)).CostProfile;
+                substructureCostProfile = projectDto.Substructures.FirstOrDefault(l => l.Id == substructureLink)!.CostProfile;
                 years.Add(substructureCostProfile.StartYear);
                 lengths.Add(substructureCostProfile.Values.Length);
             }
