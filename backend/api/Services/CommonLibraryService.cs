@@ -23,11 +23,11 @@ namespace api.Services
             return $"RunAs=App;AppId={clientId};TenantId={tenantId};AppKey={clientSecret}";
         }
 
-        public async Task<List<ProjectDto>> GetProjectsFromCommonLibrary()
+        public async Task<List<CommonLibraryProjectDto>> GetProjectsFromCommonLibrary()
         {
             _logger.LogInformation("Attempting to retrieve project list from Common Library.");
 
-            var projects = new List<ProjectDto>();
+            var projects = new List<CommonLibraryProjectDto>();
             try
             {
                 projects = await GetProjects();
@@ -43,7 +43,7 @@ namespace api.Services
             return projects;
         }
 
-        private async Task<List<ProjectDto>> GetProjects()
+        private async Task<List<CommonLibraryProjectDto>> GetProjects()
         {
             var query = QuerySpec
                 .Library("ProjectMaster")
@@ -54,17 +54,17 @@ namespace api.Services
                         "DGADate", "DGBDate", "DGCDate", "DG0FDate",
                         "DG0Date", "DG1Date", "DG2Date", "DG3Date",
                         "DG4Date", "ProductionStartupDate", "InternalComment"}
-                );
+                        );
             var dynamicProjects = await _commonLibraryClient.GenericViewsQueryAsync(query);
             return ConvertDynamicProjectsToProjectDtos(dynamicProjects);
         }
 
-        private static List<ProjectDto> ConvertDynamicProjectsToProjectDtos(List<dynamic> dynamicProjects)
+        private static List<CommonLibraryProjectDto> ConvertDynamicProjectsToProjectDtos(List<dynamic> dynamicProjects)
         {
-            var projects = new List<ProjectDto>();
+            var projects = new List<CommonLibraryProjectDto>();
             foreach (dynamic project in dynamicProjects)
             {
-                projects.Add(ProjectDtoAdapter.Convert(project));
+                projects.Add(CommonLibraryProjectDtoAdapter.Convert(project));
             }
             return projects;
         }

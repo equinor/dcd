@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 using api.Adapters;
 using api.Dtos;
 using api.Models;
@@ -22,6 +19,7 @@ namespace tests
             var actual = ProjectAdapter.Convert(expected);
 
             Assert.Equal(actual.Name, expected.Name);
+            Assert.Equal(actual.CommonLibraryName, expected.CommonLibraryName);
             Assert.Equal(actual.Description, expected.Description);
             Assert.Equal(actual.Country, expected.Country);
             Assert.Equal(actual.ProjectPhase, expected.ProjectPhase);
@@ -33,6 +31,7 @@ namespace tests
             return new ProjectDto
             {
                 Name = "First Project",
+                CommonLibraryName = "Common lib first project",
                 Description = "Description",
                 ProjectCategory = ProjectCategory.OffshoreWind,
                 ProjectPhase = ProjectPhase.Execution,
