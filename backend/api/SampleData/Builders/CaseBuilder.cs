@@ -65,4 +65,14 @@ public class CaseBuilder : Case
         TransportLink = transport.Id;
         return this;
     }
+    public CaseBuilder WithExploration(string explorationName, Project project)
+    {
+        var transport = project.Explorations.FirstOrDefault(d => d.Name.Equals(explorationName));
+        if (transport == null)
+        {
+            throw new Exception(string.Format("Exploration {0} not found", explorationName));
+        }
+        ExplorationLink = transport.Id;
+        return this;
+    }
 }

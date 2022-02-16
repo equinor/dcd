@@ -27,19 +27,19 @@ public static class SampleAssetGenerator
             }
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
-                    StartYear = 2030,
+                    StartYear = 2031,
                     Values = new double[] { 2.3, 3.3, 4.4 }
                 }
                 )
                 .WithProductionProfileOil(new ProductionProfileOil
                 {
-                    StartYear = 2030,
-                    Values = new double[] { 10.3, 13.3, 24.4 }
+                    StartYear = 2032,
+                    Values = new double[] { 10.3, 13.3, 24.4, 1.2 }
                 }
                 )
                 .WithProductionProfileWater(new ProductionProfileWater
                 {
-                    StartYear = 2030,
+                    StartYear = 2033,
                     Values = new double[] { 12.34, 13.45, 14.56 }
                 }
                 )
@@ -51,13 +51,13 @@ public static class SampleAssetGenerator
                 )
                 .WithFuelFlaringAndLosses(new FuelFlaringAndLosses
                 {
-                    StartYear = 2030,
+                    StartYear = 2034,
                     Values = new double[] { 8.45, 4.78, 8, 74 }
                 }
                 )
                 .WithNetSalesGas(new NetSalesGas
                 {
-                    StartYear = 2030,
+                    StartYear = 2035,
                     Values = new double[] { 3.4, 8.9, 2.3 }
                 }
                 )
@@ -100,7 +100,7 @@ public static class SampleAssetGenerator
                 )
                 .WithDrillingSchedule(new DrillingSchedule
                 {
-                    StartYear = 2030,
+                    StartYear = 2031,
                     Values = new int[] { 33, 3, 62 }
                 }
                 )
@@ -119,7 +119,7 @@ public static class SampleAssetGenerator
                 .WithCostProfile(new SurfCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2030,
+                    StartYear = 2032,
                     Values = new double[] { 33.4, 18.9, 62.3 }
                 }
                 )
@@ -133,7 +133,7 @@ public static class SampleAssetGenerator
                 .WithCostProfile(new SubstructureCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2030,
+                    StartYear = 2033,
                     Values = new double[] { 23.4, 28.9, 32.3 }
                 }
                 )
@@ -151,7 +151,7 @@ public static class SampleAssetGenerator
                 .WithCostProfile(new TopsideCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2030,
+                    StartYear = 2034,
                     Values = new double[] { 123.4, 218.9, 312.3 }
                 }
                 )
@@ -164,7 +164,7 @@ public static class SampleAssetGenerator
                 .WithCostProfile(new TransportCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2030,
+                    StartYear = 2035,
                     Values = new double[] { 13.4, 18.9, 34.3 }
                 }
                 )
@@ -178,20 +178,20 @@ public static class SampleAssetGenerator
                 .WithExplorationCostProfile(new ExplorationCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2030,
+                    StartYear = 2036,
                     Values = new double[] { 11.4, 28.2, 34.3 }
                 }
                 )
                 .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule
                 {
-                    StartYear = 2030,
+                    StartYear = 2037,
                     Values = new int[] { 13, 5, 5 }
                 }
                 )
                 .WithGAndGAdminCost(new GAndGAdminCost
                 {
                     Currency = Currency.NOK,
-                    StartYear = 2030,
+                    StartYear = 2038,
                     Values = new double[] { 31.4, 28.2, 34.3 }
                 }
 
