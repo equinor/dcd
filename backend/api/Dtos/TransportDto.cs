@@ -12,7 +12,7 @@ namespace api.Dtos
         public double OilExportPipelineLength { get; set; }
     }
 
-    public class TransportCostProfileDto : TimeSeriesCost
+    public class TransportCostProfileDto : TimeSeriesCostDto
     {
 
     }
