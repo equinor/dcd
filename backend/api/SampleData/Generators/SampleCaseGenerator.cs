@@ -8,6 +8,20 @@ public static class SampleCaseGenerator
 
     public static ProjectsBuilder initializeCases(ProjectsBuilder projectsBuilder)
     {
+        const string projectSkarven = "Skarven";
+        const string drainStratSkarven = "SkarvenDrainStrat";
+        projectsBuilder.ForProject(projectSkarven)
+        .WithCase(new CaseBuilder()
+        {
+            Name = "BusCase 1",
+            Description = "Desc Bus Case 1"
+        }
+            .WithDrainageStrategy(drainStratSkarven, projectsBuilder.ForProject(projectSkarven))
+            .WithWellProject("SkarvenWell", projectsBuilder.ForProject(projectSkarven))
+            .WithSubstructure("SkarvenSub", projectsBuilder.ForProject(projectSkarven))
+            .WithExploration("SkarvenExpl", projectsBuilder.ForProject(projectSkarven))
+            );
+
         const string project1 = "P1";
         string project1DrainageStrategyName1 = projectsBuilder.ForProject(project1).DrainageStrategies.ToList()[0].Name;
         string wellProjectName = projectsBuilder.ForProject(project1).WellProjects.ToList()[0].Name;

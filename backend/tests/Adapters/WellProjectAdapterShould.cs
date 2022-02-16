@@ -34,7 +34,7 @@ namespace tests
             Assert.Equal(wellProjectDto.AnnualWellInterventionCost, result.AnnualWellInterventionCost);
             Assert.Equal(wellProjectDto.PluggingAndAbandonment, result.PluggingAndAbandonment);
             //  TestHelper.CompareCosts(wellProjectDto.CostProfile, result.CostProfile);
-            TestHelper.CompareYearValues(wellProjectDto.DrillingSchedule, result.DrillingSchedule);
+            //   TestHelper.CompareYearValues(wellProjectDto.DrillingSchedule, result.DrillingSchedule);
         }
 
         private WellProjectDto CreateWellProjectDto(Guid projectId)
