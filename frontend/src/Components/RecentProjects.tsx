@@ -1,6 +1,6 @@
 import { Typography, Card } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import { ProjectPhaseNumberToText } from '../Utils/common'
+import { ProjectPhaseNumberToText, ProjectPath } from '../Utils/common'
 
 const Wrapper = styled.div``
 
@@ -47,8 +47,12 @@ const ProjectDG = styled(Typography)`
 `
 
 const CardFooter = styled(Typography)`
-    margin-top: 1rem;
+    margin: 1rem 0rem;
     color: rgb(111, 111, 111);
+`
+
+const OpenProject = styled(Typography)`
+    width: fit-content;
 `
 
 interface Props {
@@ -78,6 +82,9 @@ const RecentProjects = ({ projects }: Props) => {
                         <CardFooter variant="meta">
                             Created Feb 15, 2022
                         </CardFooter>
+                        <OpenProject link href={ProjectPath(project.projectId!)}>
+                            Open
+                        </OpenProject>
                     </Card.Content>
                 </RecentProjectCard>
             )
