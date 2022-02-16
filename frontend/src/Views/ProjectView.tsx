@@ -2,7 +2,6 @@ import { Typography } from '@equinor/eds-core-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import Cookies from 'universal-cookie'
 
 import CasesTable from '../Components/CasesTable/CasesTable'
 import BarChart from '../Components/BarChart'
@@ -46,8 +45,7 @@ const ProjectView = () => {
 
     if (!project) return null
 
-    const cookies = new Cookies()
-    StoreRecentProject(project.projectId!, cookies)
+    StoreRecentProject(project.projectId!)
 
     const dataX: string[] = []
     let dataProdProfileGas: number[] = []

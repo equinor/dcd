@@ -1,27 +1,27 @@
 import { Typography, Card } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { ProjectPhaseNumberToText, ProjectPath } from '../Utils/common'
+import { tokens } from '@equinor/eds-tokens'
 
-const Wrapper = styled.div``
+const Wrapper = styled.div`
+    margin-top: 4rem;
+    width: 90%;
+`
 
 const RecentProjectTitle = styled(Typography)`
-    margin: 4rem 2rem 0rem .5rem;
-    align-self: flex-start;
+    margin: 0rem 2rem 0rem .5rem;
 `
 
 const RecentProjectCardWrapper = styled.div`
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    height: 10rem;
-    justify-content: start;
 `
 
 const RecentProjectCard = styled(Card)`
     margin: .5rem;
     width: 20rem;
-    fill: rgba(255, 255, 255, 1.0);
-    box-shadow: 0.0px 1.0px 5.0px 0px rgba(0, 0, 0, 0.2),0.0px 3.0px 4.0px 0px rgba(0, 0, 0, 0.12),0.0px 2.0px 4.0px 0px rgba(0, 0, 0, 0.14);
+    box-shadow: ${tokens.elevation.raised};
 `
 
 const CardHeaderTitle = styled(Card.HeaderTitle)`
@@ -38,7 +38,6 @@ const CardHeaderTitleText = styled(Typography)`
 `
 
 const ProjectDG = styled(Typography)`
-    background: #D5EAF4;
     border-radius: 3px;
     display: flex;
     flex-direction: row;
@@ -48,12 +47,13 @@ const ProjectDG = styled(Typography)`
 
 const CardFooter = styled(Typography)`
     margin: 1rem 0rem;
-    color: rgb(111, 111, 111);
+    color: ${tokens.colors.text.static_icons__tertiary.rgba}
 `
 
 const OpenProject = styled(Typography)`
     width: fit-content;
 `
+
 
 interface Props {
     projects: Components.Schemas.ProjectDto[]
@@ -61,36 +61,28 @@ interface Props {
 
 const RecentProjects = ({ projects }: Props) => {
 
-    const renderCard = (project: Components.Schemas.ProjectDto,
-        index: number) => {
-            return (
-                <RecentProjectCard key={index}>
-                    <Card.Header>
-                        <CardHeaderTitle>
-                            <CardHeaderTitleText variant="h5">
-                                {project.name}
-                            </CardHeaderTitleText>
-                            <ProjectDG variant="caption">
-                                {ProjectPhaseNumberToText(project.projectPhase!)}
-                            </ProjectDG>
-                        </CardHeaderTitle>
-                    </Card.Header>
-                    <Card.Content>
-                        <Typography variant="caption" lines={4}>
-                            {project.description}
-                        </Typography>
-                        <CardFooter variant="meta">
-                            Created Feb 15, 2022
-                        </CardFooter>
-                        <OpenProject link href={ProjectPath(project.projectId!)}>
-                            Open
-                        </OpenProject>
-                    </Card.Content>
-                </RecentProjectCard>
-            )
-        }
+    const renderProjectDG = (phase: Components.Schemas.ProjectPhase | undefined) => {
+        const backgroundColor = phase === undefined ?
+            tokens.colors.ui.background__danger.rgba :
+                tokens.colors.ui.background__info.rgba
+        const labelText = phase === undefined ? 'TBD' : ProjectPhaseNumberToText(phase)
+        return <ProjectDG style={{background: backgroundColor}} variant="caption">
+            {labelText}
+        </ProjectDG>
+    }
 
-    if (!projects) return null
+    const renderDescription = (description: string | null | undefined) => {
+        if (!description) {
+            return null
+        }
+        return (
+            <Typography variant="caption" lines={4}>
+                {description}
+            </Typography>
+        )
+    }
+
+    if (!projects || projects.length === 0) return null
 
     return (
         <Wrapper>
@@ -98,7 +90,30 @@ const RecentProjects = ({ projects }: Props) => {
                 Recently used Projects
             </RecentProjectTitle>
             <RecentProjectCardWrapper>
-                {projects.map((project, index) => renderCard(project, index))}
+                {projects.map((project) => { return (
+                    <RecentProjectCard key={project.projectId}>
+                        <Card.Header>
+                            <CardHeaderTitle>
+                                <CardHeaderTitleText variant="h5">
+                                    {project.name}
+                                </CardHeaderTitleText>
+                                {renderProjectDG(project.projectPhase)}
+                            </CardHeaderTitle>
+                        </Card.Header>
+                        <Card.Content>
+                            {renderDescription(project.description)}
+                            <CardFooter variant="meta">
+                                {/* TODO replace once projectDto has date*/}
+                                Created Feb 15, 2022
+                            </CardFooter>
+                            <OpenProject link
+                                href={ProjectPath(project.projectId!)}>
+                                Open
+                            </OpenProject>
+                        </Card.Content>
+                    </RecentProjectCard>
+                    )
+                })}
             </RecentProjectCardWrapper>
         </Wrapper>
     )
