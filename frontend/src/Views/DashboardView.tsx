@@ -9,7 +9,7 @@ import Cookies from 'universal-cookie'
 
 import { projectService } from '../Services/ProjectService'
 import RecentProjects from '../Components/RecentProjects'
-import { IsRecentProjectCookieKey, ExtractProjectIdFromCookieKey } from '../Utils/common'
+import { IsRecentProjectCookieKey, ExtractProjectIdFromCookieKey, ProjectPath } from '../Utils/common'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -93,7 +93,7 @@ const DashboardView = () => {
     const onSelected = (selectedValue: string | null | undefined) => {
         const project = projects?.find(p => p.name === selectedValue)
         if (project) {
-            navigate(`/project/${project.projectId}`)
+            navigate(ProjectPath(project.projectId))
         }
     }
 

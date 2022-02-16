@@ -22,3 +22,11 @@ export function IsRecentProjectCookieKey(key: string) {
 export function ExtractProjectIdFromCookieKey(key: string) {
     return key.substring(recentProjectCookieKeyPrefix.length)
 }
+
+export function ProjectPath(projectId: string) {
+    return `/project/${projectId}`
+}
+
+export function CasePath(projectId: string, caseId: string) {
+    return `${ProjectPath(projectId)}/case/${caseId}`
+}
