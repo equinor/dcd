@@ -20,7 +20,17 @@ namespace api.Dtos
 
     }
 
+    public class TimeSeriesMassDto : TimeSeriesDto<double>
+    {
+
+    }
+
     public class TimeMassVolumeDto : TimeSeriesDto<double>
+    {
+
+    }
+
+    public class TimeSeriesScheduleDto : TimeSeries<int>
     {
 
     }

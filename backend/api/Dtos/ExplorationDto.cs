@@ -16,6 +16,6 @@ namespace api.Dtos
     }
 
     public class ExplorationCostProfileDto : TimeSeriesCostDto { }
-    public class ExplorationDrillingScheduleDto : TimeSeriesSchedule { }
+    public class ExplorationDrillingScheduleDto : TimeSeriesScheduleDto { }
     public class GAndGAdminCostDto : TimeSeriesCostDto { }
 }

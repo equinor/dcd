@@ -21,7 +21,7 @@ namespace api.Dtos
     public class WellProjectCostProfileDto : TimeSeriesCostDto
     {
     }
-    public class DrillingScheduleDto : TimeSeriesSchedule
+    public class DrillingScheduleDto : TimeSeriesScheduleDto
     {
     }
 }

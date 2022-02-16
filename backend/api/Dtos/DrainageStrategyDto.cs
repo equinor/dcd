@@ -22,26 +22,26 @@ namespace api.Dtos
         public NetSalesGasDto NetSalesGas { get; set; } = null!;
         public Co2EmissionsDto Co2Emissions { get; set; } = null!;
     }
-    public class ProductionProfileOilDto : TimeSeriesVolume
+    public class ProductionProfileOilDto : TimeSeriesVolumeDto
     {
     }
 
-    public class ProductionProfileGasDto : TimeSeriesVolume
+    public class ProductionProfileGasDto : TimeSeriesVolumeDto
     {
     }
-    public class ProductionProfileWaterDto : TimeSeriesVolume
+    public class ProductionProfileWaterDto : TimeSeriesVolumeDto
     {
     }
-    public class ProductionProfileWaterInjectionDto : TimeSeriesVolume
+    public class ProductionProfileWaterInjectionDto : TimeSeriesVolumeDto
     {
     }
-    public class FuelFlaringAndLossesDto : TimeSeriesVolume
+    public class FuelFlaringAndLossesDto : TimeSeriesVolumeDto
     {
     }
-    public class NetSalesGasDto : TimeSeriesVolume
+    public class NetSalesGasDto : TimeSeriesVolumeDto
     {
     }
-    public class Co2EmissionsDto : TimeSeriesMass
+    public class Co2EmissionsDto : TimeSeriesMassDto
     {
     }
 }
