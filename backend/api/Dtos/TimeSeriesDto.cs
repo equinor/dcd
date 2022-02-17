@@ -30,7 +30,7 @@ namespace api.Dtos
 
     }
 
-    public class TimeSeriesScheduleDto : TimeSeries<int>
+    public class TimeSeriesScheduleDto : TimeSeriesDto<int>
     {
 
     }
