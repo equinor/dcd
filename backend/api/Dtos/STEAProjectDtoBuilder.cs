@@ -1,6 +1,7 @@
 using api.Dtos;
-using api.Models;
-using api.Services;
+
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.IdentityModel.Tokens;
 
 namespace api.Adapters
 {
@@ -11,9 +12,19 @@ namespace api.Adapters
             var sTEAprojectDto = new STEAProjectDto();
             sTEAprojectDto.Name = project.Name;
             sTEAprojectDto.STEACases = new List<STEACaseDto>();
+            List<int> startYears = new List<int>();
+
             foreach (CaseDto c in project.Cases)
             {
-                sTEAprojectDto.STEACases.Add(STEACaseDtoBuilder.Build(c, project));
+                var sTEACaseDto = STEACaseDtoBuilder.Build(c, project);
+                sTEAprojectDto.STEACases.Add(sTEACaseDto);
+                startYears.Add(sTEACaseDto.StartYear);
+            }
+
+            if (!startYears.IsNullOrEmpty())
+            {
+                startYears.Sort();
+                sTEAprojectDto.StartYear = startYears.Find(e => e > 0);
             }
             return sTEAprojectDto;
         }

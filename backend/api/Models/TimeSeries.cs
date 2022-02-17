@@ -2,8 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.Identity.Client;
 
 namespace api.Models
 {
@@ -55,7 +53,6 @@ namespace api.Models
         public string EPAVersion { get; set; } = string.Empty;
         public Currency Currency { get; set; }
         [NotMapped]
-        [JsonIgnore]
         public double Sum
         {
             get
