@@ -1,6 +1,10 @@
 declare namespace Components {
     namespace Schemas {
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
+        export interface CapexDto {
+            drilling?: WellProjectCostProfileDto;
+            offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
+        }
         export interface CaseDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -20,10 +24,15 @@ declare namespace Components {
             capex?: number; // double
         }
         export interface Co2EmissionsDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
+        }
+        export interface CommonLibraryProjectDto {
+            name?: string | null;
+            description?: string | null;
+            country?: string | null;
+            projectPhase?: ProjectPhase /* int32 */;
+            projectCategory?: ProjectCategory /* int32 */;
         }
         export type Currency = 0 | 1; // int32
         export interface DrainageStrategyDto {
@@ -45,23 +54,17 @@ declare namespace Components {
             co2Emissions?: Co2EmissionsDto;
         }
         export interface DrillingScheduleDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* int32 */[] | null;
         }
         export interface ExplorationCostProfileDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
         export interface ExplorationDrillingScheduleDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* int32 */[] | null;
         }
         export interface ExplorationDto {
@@ -75,55 +78,53 @@ declare namespace Components {
             rigMobDemob?: number; // double
         }
         export interface FuelFlaringAndLossesDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
         }
         export interface GAndGAdminCostDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
+        }
+        export interface OffshoreFacilitiesCostProfileDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+        }
+        export interface ProductionAndSalesVolumesDto {
+            totalAndAnnualOil?: ProductionProfileOilDto;
+            totalAndAnnualSalesGas?: NetSalesGasDto;
+            co2Emissions?: Co2EmissionsDto;
         }
         export type ProductionFlowline = 999; // int32
         export interface ProductionProfileGasDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
         }
         export interface ProductionProfileOilDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
         }
         export interface ProductionProfileWaterDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
         }
         export interface ProductionProfileWaterInjectionDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
         }
-        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
+        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
+            commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
             projectPhase?: ProjectPhase /* int32 */;
@@ -137,11 +138,19 @@ declare namespace Components {
             drainageStrategies?: DrainageStrategyDto[] | null;
             wellProjects?: WellProjectDto[] | null;
         }
-        export type ProjectPhase = 0 | 1 | 2 | 3; // int32
+        export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
+        export interface STEACaseDto {
+            name?: string | null;
+            exploration?: ExplorationCostProfileDto;
+            capex?: CapexDto;
+            productionAndSalesVolumes?: ProductionAndSalesVolumesDto;
+        }
+        export interface STEAProjectDto {
+            name?: string | null;
+            steaCases?: STEACaseDto[] | null;
+        }
         export interface SubstructureCostProfileDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
@@ -155,9 +164,7 @@ declare namespace Components {
             maturity?: Maturity /* int32 */;
         }
         export interface SurfCostProfileDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
@@ -176,9 +183,7 @@ declare namespace Components {
             productionFlowline?: ProductionFlowline /* int32 */;
         }
         export interface TopsideCostProfileDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
@@ -196,9 +201,7 @@ declare namespace Components {
             maturity?: Maturity /* int32 */;
         }
         export interface TransportCostProfileDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
@@ -213,9 +216,7 @@ declare namespace Components {
             oilExportPipelineLength?: number; // double
         }
         export interface WellProjectCostProfileDto {
-            id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
@@ -411,6 +412,17 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace GetInputToSTEA {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface PathParameters {
+            ProjectId: Parameters.ProjectId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.STEAProjectDto;
+        }
+    }
     namespace GetProject {
         namespace Parameters {
             export type ProjectId = string; // uuid
@@ -429,7 +441,7 @@ declare namespace Paths {
     }
     namespace GetProjectsFromCommonLibrary {
         namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto[];
+            export type $200 = Components.Schemas.CommonLibraryProjectDto[];
         }
     }
     namespace UpdateDrainageStrategy {

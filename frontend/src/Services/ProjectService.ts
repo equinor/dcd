@@ -9,6 +9,10 @@ export class __ProjectService extends __BaseService {
     getProjectByID(id: string) {
         return this.get(`/${id}`)
     }
+
+    createProject(project: Components.Schemas.ProjectDto) {
+        return this.post(``, { body: project })
+    }
 }
 
 export const projectService = new __ProjectService({

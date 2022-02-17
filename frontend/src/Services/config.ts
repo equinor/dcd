@@ -5,6 +5,9 @@ export type ServiceConfig = {
 }
 
 export const config = Object.freeze({
+    CommonLibraryService: {
+        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/common-library`,
+    },
     ProjectService: {
         BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/projects`,
     },
