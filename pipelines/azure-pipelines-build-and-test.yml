@@ -9,8 +9,6 @@ pool:
 
 variables:
   - group: DCD
-  - name: unquotedAppConfigConnectionString
-    value: $[replace(variables['azureAppConfig'], '''', '')]
 
 jobs:
   - job: Lint_CSharp
@@ -82,7 +80,7 @@ jobs:
           command: "test"
           projects: "backend/tests/tests.csproj"
         env:
-          AppConfiguration__ConnectionString: $(unquotedAppConfigConnectionString)
+          AppConfiguration__ConnectionString: $(azureAppConfigConnString)
 
       - script: |
           dotnet tool install JetBrains.dotCover.GlobalTool -g
