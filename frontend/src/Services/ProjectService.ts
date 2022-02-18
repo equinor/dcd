@@ -1,13 +1,16 @@
+import { Project, ProjectConstructor } from "../models/Project"
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
 export class __ProjectService extends __BaseService {
-    getProjects() {
-        return this.get('')
+    async getProjects() {
+        const projects = await this.get<ProjectConstructor[]>('')
+        return projects.map(Project.fromJSON)
     }
 
-    getProjectByID(id: string) {
-        return this.get(`/${id}`)
+    async getProjectByID(id: string) {
+        const project = await this.get<ProjectConstructor>(`/${id}`)
+        return Project.fromJSON(project)
     }
 
     createProject(project: Components.Schemas.ProjectDto) {
@@ -15,7 +18,7 @@ export class __ProjectService extends __BaseService {
     }
 }
 
-export const projectService = new __ProjectService({
+export const ProjectService = new __ProjectService({
         ...config.ProjectService,
         accessToken: window.sessionStorage.getItem('loginAccessToken')!,
     })

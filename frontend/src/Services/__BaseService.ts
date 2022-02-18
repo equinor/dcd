@@ -48,6 +48,6 @@ export class __BaseService {
     }
 
     protected post<T = any>(path: string, options?: RequestOptions): Promise<T> {
-        return this.request(path, { ...options, method: 'POST', })
+        return this.request(path, { ...options, method: 'POST' })
     }
 }
