@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import ProjectMenu from './ProjectMenu'
-import { projectService } from '../../Services/ProjectService'
+import { Project } from '../../models/Project'
+import { ProjectService } from '../../Services/ProjectService'
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -75,15 +76,15 @@ export const projects = [
 ]
 
 const SideMenu = () => {
-    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
+    const [project, setProject] = useState<Project>()
     const navigate = useNavigate()
     const params = useParams()
 
     useEffect(() => {
-        if (projectService && params.projectId) {
+        if (params.projectId) {
             (async () => {
                 try {
-                    setProject(await projectService.getProjectByID(params.projectId!))
+                    setProject(await ProjectService.getProjectByID(params.projectId!))
                 } catch (error) {
                     console.error()
                 }

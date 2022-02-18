@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import { Link, useParams } from 'react-router-dom'
 import { file, folder, dashboard } from '@equinor/eds-icons'
 
+import { Project } from '../../models/Project'
 import MenuItem from './MenuItem'
 import ProjectMenuItemComponent from './ProjectMenuItemComponent'
 
@@ -46,20 +47,20 @@ const projectMenuItems = [
 ]
 
 interface Props {
-    project: Components.Schemas.ProjectDto
+    project: Project
 }
 
 const ProjectMenu = ({ project }: Props) => {
     const params = useParams()
-    const [isOpen, setIsOpen] = useState<boolean>(params.projectId === project.projectId)
+    const [isOpen, setIsOpen] = useState<boolean>(params.projectId === project.id)
 
     return (
         <ExpandableDiv>
             <nav>
-                <LinkWithoutStyle to={ProjectPath(project.projectId!)}>
+                <LinkWithoutStyle to={ProjectPath(project.id!)}>
                     <MenuItem
                         title={project.name!}
-                        isSelected={params.projectId === project.projectId}
+                        isSelected={params.projectId === project.id}
                         icon={folder}
                         isOpen={isOpen}
                         onClick={() => setIsOpen(!isOpen)}
@@ -73,13 +74,13 @@ const ProjectMenu = ({ project }: Props) => {
                             <Item key={index}>
                                 {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                     <nav>
-                                        <LinkWithoutStyle to={'/project/' + project.projectId}>
-                                            <ProjectMenuItemComponent item={projectMenuItem} projectId={project.projectId!} />
+                                        <LinkWithoutStyle to={'/project/' + project.id}>
+                                            <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id!} />
                                         </LinkWithoutStyle>
                                     </nav>
                                 )}
                                 {projectMenuItem.name === ProjectMenuItemType.CASES && (
-                                    <ProjectMenuItemComponent item={projectMenuItem} projectId={project.projectId!} subItems={project.cases!} />
+                                    <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id!} subItems={project.cases!} />
                                 )}
                             </Item>
                         )
