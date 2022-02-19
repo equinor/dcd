@@ -10,9 +10,9 @@ namespace api.Models
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
         public WellType WellType { get; set; }
-        public ExplorationCostProfile CostProfile { get; set; } = null!;
-        public ExplorationDrillingSchedule DrillingSchedule { get; set; } = null!;
-        public GAndGAdminCost GAndGAdminCost { get; set; } = null!;
+        public ExplorationCostProfile? CostProfile { get; set; }
+        public ExplorationDrillingSchedule? DrillingSchedule { get; set; }
+        public GAndGAdminCost? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
 
     }

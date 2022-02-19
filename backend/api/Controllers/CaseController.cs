@@ -1,6 +1,5 @@
 using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +12,12 @@ namespace api.Controllers
     [ApiController]
     [Route("[controller]")]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-    public class CaseController : ControllerBase
+    public class CasesController : ControllerBase
     {
         private CaseService _caseService;
-        private readonly ILogger<CaseController> _logger;
+        private readonly ILogger<CasesController> _logger;
 
-        public CaseController(ILogger<CaseController> logger, CaseService caseService)
+        public CasesController(ILogger<CasesController> logger, CaseService caseService)
         {
             _logger = logger;
             _caseService = caseService;

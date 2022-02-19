@@ -16,13 +16,34 @@ namespace api.Adapters
             drainageStrategy.ProducerCount = drainageStrategyDto.ProducerCount;
             drainageStrategy.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
             drainageStrategy.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;
-            drainageStrategy.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, drainageStrategy);
-            drainageStrategy.ProductionProfileGas = Convert(drainageStrategyDto.ProductionProfileGas, drainageStrategy);
-            drainageStrategy.ProductionProfileWater = Convert(drainageStrategyDto.ProductionProfileWater, drainageStrategy);
-            drainageStrategy.ProductionProfileWaterInjection = Convert(drainageStrategyDto.ProductionProfileWaterInjection, drainageStrategy);
-            drainageStrategy.FuelFlaringAndLosses = Convert(drainageStrategyDto.FuelFlaringAndLosses, drainageStrategy);
-            drainageStrategy.NetSalesGas = Convert(drainageStrategyDto.NetSalesGas, drainageStrategy);
-            drainageStrategy.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, drainageStrategy);
+            if (drainageStrategyDto.ProductionProfileOil != null)
+            {
+                drainageStrategy.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, drainageStrategy);
+            }
+            if (drainageStrategyDto.ProductionProfileGas != null)
+            {
+                drainageStrategy.ProductionProfileGas = Convert(drainageStrategyDto.ProductionProfileGas, drainageStrategy);
+            }
+            if (drainageStrategyDto.ProductionProfileWater != null)
+            {
+                drainageStrategy.ProductionProfileWater = Convert(drainageStrategyDto.ProductionProfileWater, drainageStrategy);
+            }
+            if (drainageStrategyDto.ProductionProfileWaterInjection != null)
+            {
+                drainageStrategy.ProductionProfileWaterInjection = Convert(drainageStrategyDto.ProductionProfileWaterInjection, drainageStrategy);
+            }
+            if (drainageStrategyDto.FuelFlaringAndLosses != null)
+            {
+                drainageStrategy.FuelFlaringAndLosses = Convert(drainageStrategyDto.FuelFlaringAndLosses, drainageStrategy);
+            }
+            if (drainageStrategyDto.NetSalesGas != null)
+            {
+                drainageStrategy.NetSalesGas = Convert(drainageStrategyDto.NetSalesGas, drainageStrategy);
+            }
+            if (drainageStrategyDto.Co2Emissions != null)
+            {
+                drainageStrategy.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, drainageStrategy);
+            }
             return drainageStrategy;
         }
 

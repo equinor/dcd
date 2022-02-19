@@ -1,6 +1,5 @@
 using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
 using Microsoft.AspNetCore.Authorization;
