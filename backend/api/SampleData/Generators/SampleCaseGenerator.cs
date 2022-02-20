@@ -20,7 +20,12 @@ public static class SampleCaseGenerator
             .WithWellProject("SkarvenWell", projectsBuilder.ForProject(projectSkarven))
             .WithSubstructure("SkarvenSub", projectsBuilder.ForProject(projectSkarven))
             .WithExploration("SkarvenExpl", projectsBuilder.ForProject(projectSkarven))
-            );
+        ).WithCase(SampleAssetGenerator.case2Case()
+            .WithDrainageStrategy("SkarvenDrainStratCase2", projectsBuilder.ForProject(projectSkarven))
+            .WithWellProject("SkarvenWellCase2", projectsBuilder.ForProject(projectSkarven))
+            .WithSubstructure("SkarvenSubCase2", projectsBuilder.ForProject(projectSkarven))
+            .WithExploration("SkarvenExplCase2", projectsBuilder.ForProject(projectSkarven))
+        );
 
         const string project1 = "P1";
         string project1DrainageStrategyName1 = projectsBuilder.ForProject(project1).DrainageStrategies.ToList()[0].Name;
