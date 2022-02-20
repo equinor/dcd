@@ -13,6 +13,7 @@ namespace api.Adapters
             projectDto.CommonLibraryName = project.CommonLibraryName;
             projectDto.Description = project.Description;
             projectDto.Country = project.Country;
+            projectDto.CreateDate = project.CreateDate;
             projectDto.ProjectCategory = project.ProjectCategory;
             projectDto.ProjectPhase = project.ProjectPhase;
             projectDto.Cases = new List<CaseDto>();

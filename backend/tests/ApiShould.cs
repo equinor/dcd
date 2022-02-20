@@ -62,6 +62,8 @@ public class ApiShould : IClassFixture<WebApplicationFactory<Program>>
         var responseProjects = await response.Content.ReadFromJsonAsync<List<ProjectDto>>();
         foreach (var responseProject in responseProjects)
         {
+            Assert.Equal(responseProject.CreateDate.Date,
+                    DateTimeOffset.UtcNow.Date);
             Assert.NotNull(responseProject.DrainageStrategies);
         }
     }
