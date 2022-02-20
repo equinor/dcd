@@ -3,9 +3,9 @@ using api.Models;
 
 namespace api.Adapters
 {
-    public class DrainageStrategyAdapter
+    public static class DrainageStrategyAdapter
     {
-        public DrainageStrategy Convert(DrainageStrategyDto drainageStrategyDto)
+        public static DrainageStrategy Convert(DrainageStrategyDto drainageStrategyDto)
         {
             var drainageStrategy = new DrainageStrategy();
             drainageStrategy.Name = drainageStrategyDto.Name;
@@ -47,7 +47,7 @@ namespace api.Adapters
             return drainageStrategy;
         }
 
-        private ProductionProfileOil Convert(ProductionProfileOilDto productionProfileOilDto, DrainageStrategy drainageStrategy)
+        private static ProductionProfileOil Convert(ProductionProfileOilDto productionProfileOilDto, DrainageStrategy drainageStrategy)
         {
             return new ProductionProfileOil
             {
@@ -57,7 +57,7 @@ namespace api.Adapters
             };
         }
 
-        private ProductionProfileGas Convert(ProductionProfileGasDto productionProfileGasDto, DrainageStrategy drainageStrategy)
+        private static ProductionProfileGas Convert(ProductionProfileGasDto productionProfileGasDto, DrainageStrategy drainageStrategy)
         {
             return new ProductionProfileGas
             {
@@ -67,7 +67,7 @@ namespace api.Adapters
             };
         }
 
-        private ProductionProfileWater Convert(ProductionProfileWaterDto productionProfileWaterDto, DrainageStrategy drainageStrategy)
+        private static ProductionProfileWater Convert(ProductionProfileWaterDto productionProfileWaterDto, DrainageStrategy drainageStrategy)
         {
             return new ProductionProfileWater
             {
@@ -77,7 +77,7 @@ namespace api.Adapters
             };
         }
 
-        private ProductionProfileWaterInjection Convert(ProductionProfileWaterInjectionDto productionProfileWaterInjectionDto, DrainageStrategy drainageStrategy)
+        private static ProductionProfileWaterInjection Convert(ProductionProfileWaterInjectionDto productionProfileWaterInjectionDto, DrainageStrategy drainageStrategy)
         {
             return new ProductionProfileWaterInjection
             {
@@ -87,7 +87,7 @@ namespace api.Adapters
             };
         }
 
-        private FuelFlaringAndLosses Convert(FuelFlaringAndLossesDto fuelFlaringAndLossesDto, DrainageStrategy drainageStrategy)
+        private static FuelFlaringAndLosses Convert(FuelFlaringAndLossesDto fuelFlaringAndLossesDto, DrainageStrategy drainageStrategy)
         {
             return new FuelFlaringAndLosses
             {
@@ -97,7 +97,7 @@ namespace api.Adapters
             };
         }
 
-        private NetSalesGas Convert(NetSalesGasDto netSalesGasDto, DrainageStrategy drainageStrategy)
+        private static NetSalesGas Convert(NetSalesGasDto netSalesGasDto, DrainageStrategy drainageStrategy)
         {
             return new NetSalesGas
             {
@@ -107,7 +107,7 @@ namespace api.Adapters
             };
         }
 
-        private Co2Emissions Convert(Co2EmissionsDto co2EmissionsDto, DrainageStrategy drainageStrategy)
+        private static Co2Emissions Convert(Co2EmissionsDto co2EmissionsDto, DrainageStrategy drainageStrategy)
         {
             return new Co2Emissions
             {

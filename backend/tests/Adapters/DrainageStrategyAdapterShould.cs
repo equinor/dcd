@@ -17,11 +17,10 @@ namespace tests
         {
             // Arrange
             var projectId = new Guid();
-            var drainageStrategyAdapter = new DrainageStrategyAdapter();
             var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
 
             // Act
-            var result = drainageStrategyAdapter.Convert(drainageStrategyDto);
+            var result = DrainageStrategyAdapter.Convert(drainageStrategyDto);
 
             // Assert
             Assert.Equal(drainageStrategyDto.ProjectId, result.ProjectId);

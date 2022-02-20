@@ -16,19 +16,17 @@ namespace api.Controllers
     {
         private DrainageStrategyService _drainageStrategyService;
         private readonly ILogger<DrainageStrategiesController> _logger;
-        private readonly DrainageStrategyAdapter _drainageStrategyAdapter;
 
         public DrainageStrategiesController(ILogger<DrainageStrategiesController> logger, DrainageStrategyService drainageStrategyService)
         {
             _logger = logger;
             _drainageStrategyService = drainageStrategyService;
-            _drainageStrategyAdapter = new DrainageStrategyAdapter();
         }
 
         [HttpPost(Name = "CreateDrainageStrategy")]
         public ProjectDto CreateDrainageStrategy([FromQuery] Guid sourceCaseId, [FromBody] DrainageStrategyDto drainageStrategyDto)
         {
-            var drainageStrategy = _drainageStrategyAdapter.Convert(drainageStrategyDto);
+            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);
             return _drainageStrategyService.CreateDrainageStrategy(drainageStrategy, sourceCaseId);
         }
 
@@ -41,7 +39,7 @@ namespace api.Controllers
         [HttpPatch("{drainageStrategyId}", Name = "UpdateDrainageStrategy")]
         public ProjectDto UpdateDrainageStrategy([FromRoute] Guid drainageStrategyId, [FromBody] DrainageStrategyDto drainageStrategyDto)
         {
-            var drainageStrategy = _drainageStrategyAdapter.Convert(drainageStrategyDto);
+            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);
             return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategyId, drainageStrategy);
         }
     }
