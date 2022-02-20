@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { Typography, Card } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { ProjectPhaseNumberToText, ProjectPath } from '../Utils/common'
@@ -61,17 +62,18 @@ interface Props {
 
 const RecentProjects = ({ projects }: Props) => {
 
-    const renderProjectDG = (phase: Components.Schemas.ProjectPhase | undefined) => {
-        const backgroundColor = phase === undefined ?
-            tokens.colors.ui.background__danger.rgba :
-                tokens.colors.ui.background__info.rgba
-        const labelText = phase === undefined ? 'TBD' : ProjectPhaseNumberToText(phase)
+    const renderProjectDG = useCallback(
+        (phase?: Components.Schemas.ProjectPhase) => {
+        const backgroundColor = phase ?
+             tokens.colors.ui.background__info.rgba :
+                tokens.colors.ui.background__danger.rgba
+        const labelText = phase ? ProjectPhaseNumberToText(phase) : 'TBD'
         return <ProjectDG style={{background: backgroundColor}} variant="caption">
             {labelText}
         </ProjectDG>
-    }
+    }, [])
 
-    const renderDescription = (description: string | null | undefined) => {
+    const renderDescription = useCallback((description?: string | null) => {
         if (!description) {
             return null
         }
@@ -80,9 +82,9 @@ const RecentProjects = ({ projects }: Props) => {
                 {description}
             </Typography>
         )
-    }
+    }, [])
 
-    if (!projects || projects.length === 0) return null
+    if (projects?.length === 0) return null
 
     return (
         <Wrapper>
@@ -90,7 +92,7 @@ const RecentProjects = ({ projects }: Props) => {
                 Recently used Projects
             </RecentProjectTitle>
             <RecentProjectCardWrapper>
-                {projects.map((project) => { return (
+                {projects.map((project) => (
                     <RecentProjectCard key={project.projectId}>
                         <Card.Header>
                             <CardHeaderTitle>
@@ -113,7 +115,7 @@ const RecentProjects = ({ projects }: Props) => {
                         </Card.Content>
                     </RecentProjectCard>
                     )
-                })}
+                )}
             </RecentProjectCardWrapper>
         </Wrapper>
     )
