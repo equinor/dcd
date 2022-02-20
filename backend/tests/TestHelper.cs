@@ -9,13 +9,20 @@ namespace tests
 {
     public static class TestHelper
     {
-        public static void CompareProjects(Project expected, Project actual)
+        public static void CompareProjectsIgnoreAssets(Project expected, Project actual)
         {
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.CommonLibraryId, actual.CommonLibraryId);
             Assert.Equal(expected.CommonLibraryName, actual.CommonLibraryName);
+            Assert.Equal(expected.Description, actual.Description);
+            Assert.Equal(expected.Country, actual.Country);
+            Assert.Equal(expected.CreateDate.Date, actual.CreateDate.Date);
             Assert.Equal(expected.ProjectPhase, actual.ProjectPhase);
             Assert.Equal(expected.ProjectCategory, actual.ProjectCategory);
+        }
+        public static void CompareProjects(Project expected, Project actual)
+        {
+            CompareProjectsIgnoreAssets(expected, actual);
             Assert.Equal(expected.Cases.Count(), actual.Cases.Count());
             var casesSourceAndTarget = expected.Cases.OrderBy(c => c.Name).Zip(actual.Cases.OrderBy(c => c.Name));
             foreach (var casePair in casesSourceAndTarget)
