@@ -11,6 +11,7 @@ namespace api.Dtos
         public string CommonLibraryName { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string Country { get; set; } = null!;
+        public DateTimeOffset CreateDate { get; set; }
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
         public ICollection<CaseDto> Cases { get; set; } = null!;
