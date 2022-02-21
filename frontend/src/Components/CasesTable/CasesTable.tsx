@@ -1,93 +1,48 @@
-import { useCallback } from 'react'
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
 import { Table, Typography } from '@equinor/eds-core-react'
+import { VoidFunctionComponent } from 'react'
+import styled from 'styled-components'
+
+import { SortableTable } from '../SortableTable'
+import { Column, SortDirection } from '../SortableTable/types'
 
 import { sort } from './helpers'
-import SortableTable, { Column, SortDirection } from './SortableTable'
-import { GetDrainageStrategy, CasePath } from '../../Utils/common'
 
+import { Case } from '../../models/Case'
 
-const { Row, Cell } = Table
-
-const CellWithBorder = styled(Cell)`
+const CellWithBorder = styled(Table.Cell)`
     border-right: 1px solid lightgrey;
 `
 
-const LinkWithoutStyle = styled(Link)`
-    text-decoration: none;
-`
-
 const columns: Column[] = [
-    { name: 'Name', accessor: 'name', sortable: true },
-    { name: 'PPG', accessor: 'ppg', sortable: true },
-    { name: 'PPO', accessor: 'ppo', sortable: true },
-    { name: 'NGL Yield', accessor: 'nglYield', sortable: true },
+    { name: 'Case', accessor: 'caseName', sortable: true },
+    { name: 'Gas injectors', accessor: 'gasInjectorsCount', sortable: true },
+    { name: 'Well injectors', accessor: 'wellInjectorsCount', sortable: true },
+    { name: 'Producers', accessor: 'producersCount', sortable: true },
+    { name: 'Templates', accessor: 'templatesCount', sortable: true },
+    { name: 'Gas capacity', accessor: 'gasCapacity', sortable: true },
+    { name: 'Oil capacity', accessor: 'oilCapacity', sortable: true },
+    { name: 'DG4 Date', accessor: 'dg4Date', sortable: true },
 ]
 
-interface Props {
-    project: Components.Schemas.ProjectDto
-    cases: Components.Schemas.CaseDto[]
+type Props = {
+    projectId?: string
+    cases: Case[]
 }
 
-const CasesTable = ({ cases, project }: Props) => {
-    const getPpg = useCallback((c: Components.Schemas.CaseDto) => {
-        const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
-        return drainageStrategy?.productionProfileGas?.values?.reduce((sum, value) => sum + value, 0) ?? 0
-    }, [])
-
-    const getPpo = useCallback((c: Components.Schemas.CaseDto) => {
-        const drainageStrategy = GetDrainageStrategy(project, c.drainageStrategyLink);
-        return drainageStrategy?.productionProfileOil?.values?.reduce((sum, value) => sum + value, 0) ?? 0
-    }, [])
-
-    const sortOnAccessor = (a: Components.Schemas.CaseDto, b: Components.Schemas.CaseDto, accessor: string, sortDirection: SortDirection) => {
-        switch (accessor) {
-            case 'name': {
-                return sort(a.name!.toLowerCase(), b.name!.toLowerCase(), sortDirection)
-            }
-            case 'ppg': {
-                return sort(getPpg(a), getPpg(b), sortDirection)
-            }
-            case 'ppo': {
-                return sort(getPpo(a), getPpo(b), sortDirection)
-            }
-            case 'nglYield': {
-                const drainageStrategyA = GetDrainageStrategy(project, a.drainageStrategyLink);
-                const drainageStrategyB = GetDrainageStrategy(project, b.drainageStrategyLink);
-                return sort(drainageStrategyA!.nglYield!, drainageStrategyB!.nglYield!, sortDirection)
-            }
-            default:
-                return sort(a.name!.toLowerCase(), b.name!.toLowerCase(), sortDirection)
-        }
+const CasesTable: VoidFunctionComponent<Props> = ({ cases, projectId }) => {
+    const sortOnAccessor = (a: any, b: any, _accessor: string, sortDirection: SortDirection) => {
+        return sort(a, b, sortDirection)
     }
 
     const renderRow = (caseItem: Components.Schemas.CaseDto, index: number) => {
         return (
-            <Row key={index}>
-                <CellWithBorder>
-                    <LinkWithoutStyle to={`${CasePath(project.projectId!, caseItem.id!)}`}>
-                        <Typography
-                            color="primary"
-                            variant="body_short"
-                            token={{
-                                fontSize: '1.2rem',
-                            }}
-                        >
-                            {caseItem.name}
-                        </Typography>
-                    </LinkWithoutStyle>
-                </CellWithBorder>
-                <CellWithBorder>
-                    <Typography>{getPpg(caseItem)} USD</Typography>
-                </CellWithBorder>
-                <CellWithBorder>
-                    <Typography>{getPpo(caseItem)} USD</Typography>
-                </CellWithBorder>
-                <CellWithBorder>
-                    <Typography>{GetDrainageStrategy(project, caseItem.drainageStrategyLink)?.nglYield}</Typography>
-                </CellWithBorder>
-            </Row>
+            <Table.Row key={index}>
+                {columns.map((c) => (
+                    <CellWithBorder key={c.accessor}>
+                        <Typography>{c.accessor}</Typography>
+                    </CellWithBorder>
+                ))}
+            </Table.Row>
         )
     }
 
