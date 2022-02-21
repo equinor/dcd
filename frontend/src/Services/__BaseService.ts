@@ -2,7 +2,9 @@ import axios, { Axios } from 'axios'
 
 import { ServiceConfig } from './config'
 
-type RequestOptions = RequestInit & {
+type RequestOptions = {
+    credentials?: RequestCredentials
+    headers?: Record<string, string>
     method?: 'GET'
         | 'DELETE'
         | 'HEAD'
@@ -13,7 +15,7 @@ type RequestOptions = RequestInit & {
         | 'PURGE'
         | 'LINK'
         | 'UNLINK'
-    headers?: Record<string, string>
+    body?: Record<string, any>
 }
 
 export class __BaseService {
@@ -30,17 +32,22 @@ export class __BaseService {
         }
     }
 
-    private async request(path: string, options?: RequestOptions) {
+    private async request(path: string, options?: RequestOptions): Promise<any> {
         const { data } = await this.client.request({
             method: options?.method,
             headers: options?.headers,
             withCredentials: options?.credentials === "include",
-            url: path
+            url: path,
+            data: options?.body
         })
         return data
     }
 
-    protected get(path: string, options?: RequestOptions) {
+    protected get<T = any>(path: string, options?: RequestOptions): Promise<T> {
         return this.request(path, { ...options, method: 'GET' })
+    }
+
+    protected post<T = any>(path: string, options?: RequestOptions): Promise<T> {
+        return this.request(path, { ...options, method: 'POST', })
     }
 }
