@@ -5,12 +5,22 @@ export class ProjectPhase {
         this.phase = phase
     }
 
+    valueOf(): number {
+        return this.phase
+    }
+
     toString(): string | undefined {
         return {
-            0: "DG1",
-            1: "DG2",
-            2: "DG3",
-            3: "DG4",
+            0: "Unknown",
+            1: "Bid preparations",
+            2: "Business identification",
+            3: "Business planning",
+            4: "Concept planning",
+            5: "Concessions / Negotiations",
+            6: "Defintion",
+            7: "Execution",
+            8: "Operation",
+            9: "Screening business opportunities",
         }[this.phase];
     }
 }
