@@ -1,0 +1,9 @@
+{
+  "lint-staged": {
+      "./frontend/src/**/*.{j,t}s?(x)": "pushd frontend && npm run lint -- --fix && popd"
+  },
+  "devDependencies": {
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.4"
+  }
+}
