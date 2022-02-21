@@ -1,42 +1,23 @@
-export type CaseConstructor = {
-    capex: number
-    createTime: string
-    description: string
-    dG4Date: string
-    drainageStrategyLink: string
-    explorationLink: string
-    id: string
-    modifyTime: string
-    name: string
-    projectId: string
-    referenceCase: boolean
-    substructureLink: string
-    surfLink: string
-    topsideLink: string
-    transportLink: string
-    wellProjectLink: string
-}
-
 export class Case {
-    capex: number
-    createdAt: Date
-    description: string
-    lastDecisionGate: Date
-    id: string
-    modifiedAt: Date
-    name: string
+    capex?: number
+    createdAt?: Date | null
+    description?: string
+    lastDecisionGate?: Date | null
+    id?: string
+    updatedAt?: Date | null
+    name?: string
     isRef: boolean
-    links: Record<string, string>
+    links?: Record<string, string>
 
-    constructor(data: CaseConstructor) {
+    constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
-        this.createdAt = new Date(data.createTime)
-        this.description = data.description
-        this.lastDecisionGate = new Date(data.dG4Date)
+        this.createdAt = data.createTime ? new Date(data.createTime) : null
+        this.description = data.description ?? ""
+        this.lastDecisionGate = data.dG4Date ? new Date(data.dG4Date) : null
         this.id = data.id
-        this.modifiedAt = new Date(data.modifyTime)
-        this.name = data.name
-        this.isRef = data.referenceCase
+        this.updatedAt = data.modifyTime ? new Date(data.modifyTime) : null
+        this.name = data.name ?? ""
+        this.isRef = data.referenceCase ?? false
         this.links = Object.entries(data)
             .filter(([key]) => key.toLowerCase().endsWith('link'))
             .reduce((tmp, [key, value]) => {
@@ -45,7 +26,7 @@ export class Case {
             }, {})
     }
 
-    static fromJSON(data: CaseConstructor): Case {
+    static fromJSON(data: Components.Schemas.CaseDto): Case {
         return new Case(data)
     }
 }

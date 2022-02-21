@@ -1,8 +1,11 @@
-import { useCallback } from 'react'
-import { Typography, Card } from '@equinor/eds-core-react'
-import styled from 'styled-components'
-import { ProjectPhaseNumberToText, ProjectPath } from '../Utils/common'
 import { tokens } from '@equinor/eds-tokens'
+import { Typography, Card } from '@equinor/eds-core-react'
+import { useCallback } from 'react'
+import styled from 'styled-components'
+
+import { Project } from '../models/Project'
+
+import { ProjectPhaseNumberToText, ProjectPath } from '../Utils/common'
 
 const Wrapper = styled.div`
     margin-top: 4rem;
@@ -55,22 +58,23 @@ const OpenProject = styled(Typography)`
     width: fit-content;
 `
 
-
 interface Props {
-    projects: Components.Schemas.ProjectDto[]
+    projects: Project[]
 }
 
 const RecentProjects = ({ projects }: Props) => {
+    const renderProjectDG = useCallback((phase?: string) => {
+        const backgroundColor = phase
+            ? tokens.colors.ui.background__info.rgba
+            : tokens.colors.ui.background__danger.rgba
 
-    const renderProjectDG = useCallback(
-        (phase?: Components.Schemas.ProjectPhase) => {
-        const backgroundColor = phase ?
-             tokens.colors.ui.background__info.rgba :
-                tokens.colors.ui.background__danger.rgba
-        const labelText = phase ? ProjectPhaseNumberToText(phase) : 'TBD'
-        return <ProjectDG style={{background: backgroundColor}} variant="caption">
-            {labelText}
-        </ProjectDG>
+        const labelText = phase ?? 'TBD'
+
+        return (
+            <ProjectDG style={{background: backgroundColor}} variant="caption">
+                {labelText}
+            </ProjectDG>
+        )
     }, [])
 
     const renderDescription = useCallback((description?: string | null) => {
@@ -92,14 +96,14 @@ const RecentProjects = ({ projects }: Props) => {
                 Recently used Projects
             </RecentProjectTitle>
             <RecentProjectCardWrapper>
-                {projects.map((project) => (
-                    <RecentProjectCard key={project.projectId}>
+                {projects?.map((project) => (
+                    <RecentProjectCard key={project.id}>
                         <Card.Header>
                             <CardHeaderTitle>
                                 <CardHeaderTitleText variant="h5">
                                     {project.name}
                                 </CardHeaderTitleText>
-                                {renderProjectDG(project.projectPhase)}
+                                {renderProjectDG(project.phase?.toString())}
                             </CardHeaderTitle>
                         </Card.Header>
                         <Card.Content>
@@ -109,7 +113,7 @@ const RecentProjects = ({ projects }: Props) => {
                                 Created Feb 15, 2022
                             </CardFooter>
                             <OpenProject link
-                                href={ProjectPath(project.projectId!)}>
+                                href={ProjectPath(project.id!)}>
                                 Open
                             </OpenProject>
                         </Card.Content>
