@@ -1,4 +1,4 @@
-import { SortDirection } from './SortableTable'
+import { SortDirection } from "../SortableTable/types"
 
 export const sort = (a: string | boolean | number, b: string | boolean | number, sortDirection: SortDirection) => {
     if (a < b) {

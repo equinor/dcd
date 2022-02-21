@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { Icon, Table } from '@equinor/eds-core-react'
 import { chevron_down, chevron_up } from '@equinor/eds-icons'
+import { Icon, Table } from '@equinor/eds-core-react'
+import { useMemo, useState, ReactElement } from 'react'
+import styled from 'styled-components'
+import { Column, SortDirection } from './types'
 
 const { Body, Row, Cell, Head } = Table
 
@@ -26,29 +27,20 @@ const SortIcon = styled(Icon)<{
     visibility: ${({ isSelected }) => (isSelected ? 'visible' : 'hidden')};
 `
 
-export type SortDirection = 'ascending' | 'descending' | 'none'
-
-export type Column = {
-    name: string
-    accessor: string
-    sortable: boolean
-}
-
-interface Props<DataType> {
+type Props<T> = {
     columns: Column[]
-    data: DataType[]
-    sortOnAccessor: (a: DataType, b: DataType, accessor: string, sortDirection: SortDirection) => number
-    renderRow: (dataObject: DataType, index: number) => React.ReactChild
-    style?: object
+    data: T[]
+    sortOnAccessor: (a: T, b: T, accessor: string, sortDirection: SortDirection) => number
+    renderRow: (dataObject: T, index: number) => React.ReactChild
 }
 
-const SortableTable = <DataType,>({ columns, data, sortOnAccessor, renderRow, style = {} }: Props<DataType>) => {
+const SortableTable = <T extends unknown>({ columns, data, sortOnAccessor, renderRow }: Props<T>): ReactElement | null => {
     const [sortDirection, setSortDirection] = useState<SortDirection>('none')
     const [columnToSortBy, setColumnToSortBy] = useState<Column>()
 
     const sortedData = useMemo(() => {
         if (columnToSortBy) {
-            return [...data].sort((a: DataType, b: DataType) => {
+            return [...data].sort((a: T, b: T) => {
                 const { accessor } = columnToSortBy
 
                 return sortOnAccessor(a, b, accessor, sortDirection)
