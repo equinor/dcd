@@ -4,10 +4,6 @@ namespace api.Dtos
 
     public class STEACaseDto
     {
-        public STEACaseDto()
-        {
-
-        }
         public string Name { get; set; } = null!;
         public int StartYear { get; set; }
         public ExplorationCostProfileDto Exploration { get; set; } = null!;
@@ -19,11 +15,6 @@ namespace api.Dtos
 
     public class CapexDto : TimeSeriesCostDto
     {
-
-        public CapexDto()
-        {
-
-        }
         public WellProjectCostProfileDto Drilling { get; set; } = null!;
 
         public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = null!;
