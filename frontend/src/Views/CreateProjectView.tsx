@@ -6,7 +6,7 @@ import { tokens } from '@equinor/eds-tokens';
 import { search } from '@equinor/eds-icons';
 import { Icon, SingleSelect, TextField, Button } from '@equinor/eds-core-react';
 import { CommonLibraryService } from '../Services/CommonLibraryService';
-import { projectService } from '../Services/ProjectService'
+import { ProjectService } from '../Services/ProjectService'
 import { Modal } from '../Components/Modal';
 import { ConvertProjectPhaseEnumToString, ConvertProjectCategoryEnumToString } from '../Utils/common';
 
@@ -50,7 +50,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         let project;
         if (pressedOkButton === true) {
             project = convertCommonLibProjectToProject(selectedProject!);
-            var createdProject = await projectService.createProject(project);
+            var createdProject = await ProjectService.createProject(project);
             navigate('/project/' + createdProject.projectId);
         }
         setSelectedProject(undefined);
