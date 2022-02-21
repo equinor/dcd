@@ -1,6 +1,6 @@
 {
   "lint-staged": {
-      "./frontend/src/**/*.{j,t}s?(x)": "pushd frontend && npm run lint -- --fix && popd"
+      "*.{j,t}s?(x)": "npx eslint --fix"
   },
   "devDependencies": {
     "husky": "^7.0.4",
