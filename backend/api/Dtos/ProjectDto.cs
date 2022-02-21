@@ -23,7 +23,5 @@ namespace api.Dtos
         public ICollection<TransportDto> Transports { get; set; } = null!;
         public ICollection<DrainageStrategyDto> DrainageStrategies { get; set; } = null!;
         public ICollection<WellProjectDto> WellProjects { get; set; } = null!;
-
-
     }
 }
