@@ -5,22 +5,30 @@ export class ProjectCategory {
         this.category = category
     }
 
-    toString(): string {
+    toString(): string | undefined {
         return {
-            0: 'Offshore wind',
-            1: 'Hydrogen',
-            2: 'Carbon capture and storage',
-            3: 'Solar',
-            4: 'FPSO',
-            5: 'Platform',
-            6: 'Tie in',
-            7: 'Electrification',
-            8: 'Brownfield',
-            9: 'Onshore',
-            10: 'Pipeline',
-            11: 'Subsea',
-            12: 'Drilling upgrade',
-            13: 'Cessation',
-        }[this.category]!
+            0: "Unknown",
+            1: "Brownfield",
+            2: "Cessation",
+            3: "Drilling upgrade",
+            4: "Onshore",
+            5: "Pipeline",
+            6: "Platform FPSO",
+            7: "Subsea",
+            8: "Solar",
+            9: "CO2 storage",
+            10: "Efuel",
+            11: "Nuclear",
+            12: "CO2 Capture",
+            13: "FPSO",
+            14: "Hydrogen",
+            15: "Hse",
+            16: "Offshore wind",
+            17: "Platform",
+            18: "Power from shore",
+            19: "Tie-in",
+            20: "Renewable other",
+            21: "CCS",
+        }[this.category]
     }
 }
