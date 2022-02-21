@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { Project } from '../models/Project'
 import DrainageStrategyView from './DrainageStrategyView'
 import ExplorationView from './ExplorationView'
 import OverviewView from './OverviewView'
-import { projectService } from '../Services/ProjectService'
+import { ProjectService } from '../Services/ProjectService'
 
 const { List, Tab, Panels, Panel } = Tabs
 
@@ -21,20 +22,18 @@ const CaseHeader = styled(Typography)`
 `
 
 const CaseView = () => {
-    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
+    const [project, setProject] = useState<Project>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
 
     useEffect(() => {
-        if (projectService) {
-            (async () => {
-                try {
-                    setProject(await projectService.getProjectByID(params.projectId!))
-                } catch (error) {
-                    console.error(`[CaseView] Error while fetching projet ${params.projectId}`, error)
-                }
-            })()
-        }
+        (async () => {
+            try {
+                setProject(await ProjectService.getProjectByID(params.projectId!))
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching projet ${params.projectId}`, error)
+            }
+        })()
     })
 
     const handleTabChange = (index: number) => {

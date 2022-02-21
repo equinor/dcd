@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { projectService } from '../Services/ProjectService'
 import RecentProjects from '../Components/RecentProjects'
 import { ProjectPath, RetrieveLastVisitForProject } from '../Utils/common'
+import { ProjectService } from '../Services/ProjectService'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -43,12 +43,10 @@ const DashboardView = () => {
     const [projects, setProjects] = useState<any[]>()
     const [recentProjects, setRecentProjects] = useState<Components.Schemas.ProjectDto[] | any>()
 
-    const getRecentProjects =
-    (projects: Components.Schemas.ProjectDto[]) => {
-
-        const recentProjectsWithTimeStamp = projects.map( project => {
-            return [project, RetrieveLastVisitForProject(project.projectId!)]
-            }).filter(([_, timeStamp]) => timeStamp !== null )
+    const getRecentProjects = (projects: Components.Schemas.ProjectDto[]) => {
+        const recentProjectsWithTimeStamp = projects
+            .map((project) => [project, RetrieveLastVisitForProject(project.projectId!)])
+            .filter(([_, timeStamp]) => timeStamp !== null )
             .map(([project, timeStamp]) => [project, parseInt(timeStamp! as string)])
             .sort((oneTimeStampedProject, otherTimeStampedProject) => {
                 const oneTimeStamp = oneTimeStampedProject[1] as number
@@ -56,27 +54,22 @@ const DashboardView = () => {
                 return otherTimeStamp - oneTimeStamp
             })
 
-        const recentProjects =
-            recentProjectsWithTimeStamp.map(timeStampedProject =>
-                { return timeStampedProject[0]})
-        return recentProjects
+        return recentProjectsWithTimeStamp.map(timeStampedProject => timeStampedProject[0])
     }
 
 
     useEffect(() => {
-        if (projectService) {
-            (async () => {
-                try {
-                    const res = await projectService.getProjects()
-                    console.log(res)
-                    setProjects(res)
-                    const recPro = getRecentProjects(res)
-                    setRecentProjects(recPro)
-                } catch (error) {
-                    console.error(error)
-                }
-            })()
-        }
+        (async () => {
+            try {
+                const res = await ProjectService.getProjects()
+                console.log(res)
+                setProjects(res)
+                const recPro = getRecentProjects(res)
+                setRecentProjects(recPro)
+            } catch (error) {
+                console.error(error)
+            }
+        })()
     }, [])
 
     const onSelected = (selectedValue: string | null | undefined) => {
