@@ -62,7 +62,7 @@ const DashboardView = () => {
         (async () => {
             try {
                 const res = await ProjectService.getProjects()
-                console.log(res)
+                console.log('[DashboardView]', res)
                 setProjects(res)
                 const recPro = getRecentProjects(res)
                 setRecentProjects(recPro)
