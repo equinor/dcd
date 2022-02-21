@@ -32,8 +32,7 @@
         "cyopen": "./node_modules/.bin/cypress open",
         "cyrun": "./node_modules/.bin/cypress run",
         "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
-        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url https://ase-dcd-backend-dev.azurewebsites.net/swagger/v1/swagger.json",
-        "lint": "eslint \"./src/**/*.{j,t}s?(x)\""
+        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url https://ase-dcd-backend-dev.azurewebsites.net/swagger/v1/swagger.json"
     },
     "eslintConfig": {
         "extends": [
