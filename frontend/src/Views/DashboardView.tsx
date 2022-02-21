@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import RecentProjects from '../Components/RecentProjects'
 import { ProjectPath, RetrieveLastVisitForProject } from '../Utils/common'
 import { ProjectService } from '../Services/ProjectService'
+import { Project } from '../models/Project'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -43,9 +44,9 @@ const DashboardView = () => {
     const [projects, setProjects] = useState<any[]>()
     const [recentProjects, setRecentProjects] = useState<Components.Schemas.ProjectDto[] | any>()
 
-    const getRecentProjects = (projects: Components.Schemas.ProjectDto[]) => {
+    const getRecentProjects = (projects: Project[]) => {
         const recentProjectsWithTimeStamp = projects
-            .map((project) => [project, RetrieveLastVisitForProject(project.projectId!)])
+            .map((project) => [project, RetrieveLastVisitForProject(project.id!)])
             .filter(([_, timeStamp]) => timeStamp !== null )
             .map(([project, timeStamp]) => [project, parseInt(timeStamp! as string)])
             .sort((oneTimeStampedProject, otherTimeStampedProject) => {
@@ -75,7 +76,7 @@ const DashboardView = () => {
     const onSelected = (selectedValue: string | null | undefined) => {
         const project = projects?.find(p => p.name === selectedValue)
         if (project) {
-            navigate(ProjectPath(project.projectId))
+            navigate(ProjectPath(project.id))
         }
     }
 

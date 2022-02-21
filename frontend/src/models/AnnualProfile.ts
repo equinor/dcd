@@ -1,15 +1,15 @@
-type AnnualProfileConstructor = {
-    startYear: number
-    values: number[]
+interface AnnualProfileConstructor {
+    startYear?: number
+    values?: number[] | null
 }
 
 export class AnnualProfile {
-    startsAt: number
+    startsAt: number | null
     values: number[]
 
     constructor(data: AnnualProfileConstructor) {
-        this.startsAt = data.startYear
-        this.values = data.values
+        this.startsAt = data.startYear ?? null
+        this.values = data.values ?? []
     }
 
     static fromJSON(data: AnnualProfileConstructor): AnnualProfile {

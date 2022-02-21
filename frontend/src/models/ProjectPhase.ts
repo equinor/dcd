@@ -1,10 +1,3 @@
-enum ProjectPhases {
-    DG1,
-    DG2,
-    DG3,
-    DG4,
-}
-
 export class ProjectPhase {
     private phase: number
 
@@ -12,7 +5,12 @@ export class ProjectPhase {
         this.phase = phase
     }
 
-    toString(): string {
-        return ProjectPhases[this.phase];
+    toString(): string | undefined {
+        return {
+            0: "DG1",
+            1: "DG2",
+            2: "DG3",
+            3: "DG4",
+        }[this.phase];
     }
 }

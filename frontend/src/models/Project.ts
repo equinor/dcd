@@ -3,60 +3,42 @@ import { DrainageStrategy } from "./DrainageStrategy"
 import { ProjectCategory } from "./ProjectCategory"
 import { ProjectPhase } from "./ProjectPhase"
 
-export type ProjectConstructor = {
-    cases: any[]
-    country: string
-    createdDate: string
-    description: string
-    drainageStrategies: any[]
-    explorations: any[]
-    projectId: string
-    name: string
-    projectCategory: number
-    projectPhase: number
-    substructures: any[]
-    surfs: any[]
-    topsides: any[]
-    transports: any[]
-    wellProjects: any[]
-}
-
 export class Project {
     cases: Case[]
-    category: ProjectCategory
-    country: string
-    createdAt: Date
-    description: string
+    category: ProjectCategory | null
+    country: string | null
+    createdAt: Date | null
+    description: string | null
     drainageStrategies: DrainageStrategy[]
     explorations: any[]
     id: string
     name: string
-    phase: ProjectPhase
+    phase: ProjectPhase | null
     substructures: any[]
     surfs: any[]
     topsides: any[]
     transports: any[]
     wellProjects: any[]
 
-    constructor(data: ProjectConstructor) {
-        this.cases = data.cases
-        this.category = new ProjectCategory(data.projectCategory)
-        this.country = data.country
-        this.createdAt = new Date(data.createdDate)
-        this.description = data.description
-        this.drainageStrategies = data.drainageStrategies.map(DrainageStrategy.fromJSON)
-        this.explorations = data.explorations
-        this.id = data.projectId
-        this.name = data.name
-        this.phase = new ProjectPhase(data.projectPhase)
-        this.substructures = data.substructures
-        this.surfs = data.surfs
-        this.topsides = data.topsides
-        this.transports = data.transports
-        this.wellProjects = data.wellProjects
+    constructor(data: Components.Schemas.ProjectDto) {
+        this.cases = data.cases?.map(Case.fromJSON) ?? []
+        this.category = data.projectCategory ? new ProjectCategory(data.projectCategory) : null
+        this.country = data.country ?? null
+        this.createdAt = null
+        this.description = data.description ?? null
+        this.drainageStrategies = data.drainageStrategies?.map(DrainageStrategy.fromJSON) ?? []
+        this.explorations = data.explorations ?? []
+        this.id = data.projectId ?? ""
+        this.name = data.name ?? ""
+        this.phase = data.projectPhase ? new ProjectPhase(data.projectPhase) : null
+        this.substructures = data.substructures ?? []
+        this.surfs = data.surfs ?? []
+        this.topsides = data.topsides ?? []
+        this.transports = data.transports ?? []
+        this.wellProjects = data.wellProjects ?? []
     }
 
-    static fromJSON(data: ProjectConstructor): Project {
+    static fromJSON(data: Components.Schemas.ProjectDto): Project {
         return new Project(data)
     }
 }

@@ -54,8 +54,8 @@ const ProjectView = () => {
 
     const chartData = useMemo(() => {
         return project ? {
-            x: project?.cases.map((c) => c.name),
-            y: project?.cases.map((c) => c.capex),
+            x: project?.cases.map((c) => c.name ?? ""),
+            y: project?.cases.map((c) => c.capex ?? 0),
         } : { x: [], y: [] }
     }, [project])
 
