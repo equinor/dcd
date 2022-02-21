@@ -32,7 +32,8 @@
         "cyopen": "./node_modules/.bin/cypress open",
         "cyrun": "./node_modules/.bin/cypress run",
         "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
-        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url https://ase-dcd-backend-dev.azurewebsites.net/swagger/v1/swagger.json"
+        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url https://ase-dcd-backend-dev.azurewebsites.net/swagger/v1/swagger.json",
+        "lint": "eslint \"./src/**/*.{j,t}s?(x)\""
     },
     "eslintConfig": {
         "extends": [
@@ -62,9 +63,16 @@
         "@types/react-dom": "^17.0.11",
         "@types/react-plotly.js": "^2.5.0",
         "@types/styled-components": "^5.1.18",
+        "@typescript-eslint/eslint-plugin": "^5.12.0",
+        "@typescript-eslint/parser": "^5.12.0",
         "cypress": "^9.1.0",
         "dtsgenerator": "^3.15.0",
-        "prettier": "^2.5.1",
+        "eslint": "^8.9.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-plugin-import": "^2.25.4",
+        "eslint-plugin-jsx-a11y": "^6.5.1",
+        "eslint-plugin-react": "^7.28.0",
+        "eslint-plugin-react-hooks": "^4.3.0",
         "react-scripts": "^5.0.0",
         "typescript": "^4.5.5"
     }
