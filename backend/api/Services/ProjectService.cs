@@ -86,8 +86,6 @@ namespace api.Services
                 foreach (Project project in projects)
                 {
                     var projectDto = ProjectDtoAdapter.Convert(project);
-                    CaseDtoAdapter.AddCapexToCases(projectDto.Cases, _wellProjectService, _substructureService, _surfService,
-                        _topsideService, _transportService, _explorationService);
                     projectDtos.Add(projectDto);
                 }
 
@@ -122,8 +120,6 @@ namespace api.Services
         {
             var project = GetProject(projectId);
             var projectDto = ProjectDtoAdapter.Convert(project);
-            CaseDtoAdapter.AddCapexToCases(projectDto.Cases, _wellProjectService, _substructureService, _surfService,
-             _topsideService, _transportService, _explorationService);
             return projectDto;
         }
 

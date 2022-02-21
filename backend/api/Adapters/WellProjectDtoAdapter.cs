@@ -25,6 +25,10 @@ namespace api.Adapters
 
         private static WellProjectCostProfileDto Convert(WellProjectCostProfile wellProjectCostProfile)
         {
+            if (wellProjectCostProfile == null)
+            {
+                return null!;
+            }
             return new WellProjectCostProfileDto
             {
                 EPAVersion = wellProjectCostProfile.EPAVersion,
@@ -34,12 +38,16 @@ namespace api.Adapters
             };
         }
 
-        private static DrillingScheduleDto Convert(DrillingSchedule wellProjectDrillingSchedule_)
+        private static DrillingScheduleDto Convert(DrillingSchedule wellProjectDrillingSchedule)
         {
+            if (wellProjectDrillingSchedule == null)
+            {
+                return null!;
+            }
             return new DrillingScheduleDto
             {
-                StartYear = wellProjectDrillingSchedule_.StartYear,
-                Values = wellProjectDrillingSchedule_.Values
+                StartYear = wellProjectDrillingSchedule.StartYear,
+                Values = wellProjectDrillingSchedule.Values
             };
         }
     }

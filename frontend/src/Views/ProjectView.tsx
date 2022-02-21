@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import CasesTable from '../Components/CasesTable/CasesTable'
 import BarChart from '../Components/BarChart'
 import { projectService } from '../Services/ProjectService'
-import { GetDrainageStrategy } from '../Utils/common'
+import { GetDrainageStrategy, StoreRecentProject } from '../Utils/common'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -44,6 +44,8 @@ const ProjectView = () => {
     }, [])
 
     if (!project) return null
+
+    StoreRecentProject(project.projectId!)
 
     const dataX: string[] = []
     let dataProdProfileGas: number[] = []

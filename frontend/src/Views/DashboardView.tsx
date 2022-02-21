@@ -1,4 +1,4 @@
-import { chevron_up, search } from '@equinor/eds-icons'
+import { search } from '@equinor/eds-icons'
 import { Icon, SingleSelect, Typography } from '@equinor/eds-core-react'
 import { tokens } from '@equinor/eds-tokens'
 import { UseComboboxStateChange } from 'downshift'
@@ -7,10 +7,17 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { projectService } from '../Services/ProjectService'
+import RecentProjects from '../Components/RecentProjects'
+import { ProjectPath, RetrieveLastVisitForProject } from '../Utils/common'
 
 const Wrapper = styled.div`
     margin: 2rem;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 4rem;
 `
 
 const ProjectSelect = styled.div`
@@ -23,19 +30,38 @@ const ProjectDropdown = styled(SingleSelect)`
     margin-left: 0.5rem;
 `
 
-const ArrowUp = styled(Icon)`
-    margin-left: 7rem;
-    margin-top: 0.5rem;
+const FindProjectText = styled(Typography)`
+    width: 25rem;
+    margin-left: 2rem;
+    margin-bottom: 1rem;
 `
 
-const ChooseProjectText = styled(Typography)`
-    margin-left: 2rem;
-`
 
 const DashboardView = () => {
     const navigate = useNavigate()
 
     const [projects, setProjects] = useState<any[]>()
+    const [recentProjects, setRecentProjects] = useState<Components.Schemas.ProjectDto[] | any>()
+
+    const getRecentProjects =
+    (projects: Components.Schemas.ProjectDto[]) => {
+
+        const recentProjectsWithTimeStamp = projects.map( project => {
+            return [project, RetrieveLastVisitForProject(project.projectId!)]
+            }).filter(([_, timeStamp]) => timeStamp !== null )
+            .map(([project, timeStamp]) => [project, parseInt(timeStamp! as string)])
+            .sort((oneTimeStampedProject, otherTimeStampedProject) => {
+                const oneTimeStamp = oneTimeStampedProject[1] as number
+                const otherTimeStamp = otherTimeStampedProject[1] as number
+                return otherTimeStamp - oneTimeStamp
+            })
+
+        const recentProjects =
+            recentProjectsWithTimeStamp.map(timeStampedProject =>
+                { return timeStampedProject[0]})
+        return recentProjects
+    }
+
 
     useEffect(() => {
         if (projectService) {
@@ -44,6 +70,8 @@ const DashboardView = () => {
                     const res = await projectService.getProjects()
                     console.log(res)
                     setProjects(res)
+                    const recPro = getRecentProjects(res)
+                    setRecentProjects(recPro)
                 } catch (error) {
                     console.error(error)
                 }
@@ -52,9 +80,9 @@ const DashboardView = () => {
     }, [])
 
     const onSelected = (selectedValue: string | null | undefined) => {
-        const project = projects?.find(p => p.projectName === selectedValue)
+        const project = projects?.find(p => p.name === selectedValue)
         if (project) {
-            navigate(`/project/${project.id}`)
+            navigate(ProjectPath(project.projectId))
         }
     }
 
@@ -64,6 +92,7 @@ const DashboardView = () => {
 
     return (
         <Wrapper>
+            <FindProjectText variant="h2">Find a project</FindProjectText>
             <ProjectSelect>
                 <Icon data={search} color={grey}></Icon>
                 <ProjectDropdown
@@ -73,8 +102,7 @@ const DashboardView = () => {
                     handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
                 />
             </ProjectSelect>
-            <ArrowUp data={chevron_up} color={grey}></ArrowUp>
-            <ChooseProjectText>Start by choosing a project.</ChooseProjectText>
+            <RecentProjects projects={recentProjects} />
         </Wrapper>
     )
 }

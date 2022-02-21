@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
+
 namespace api.Models
 {
 
@@ -15,6 +16,10 @@ namespace api.Models
         {
             get
             {
+                if (this.InternalData == null)
+                {
+                    throw new Exception("Timeseries contains no values");
+                }
                 string[] tab = this.InternalData.Split(';');
                 return Array.ConvertAll(InternalData.Split(';'), new Converter<string, T>(convertStringToGeneric));
             }
@@ -47,19 +52,8 @@ namespace api.Models
     {
         public string EPAVersion { get; set; } = string.Empty;
         public Currency Currency { get; set; }
-        [NotMapped]
-        [JsonIgnore]
-        public double Sum
-        {
-            get
-            {
-                double s = 0.0;
-                Array.ForEach(Values, i => s += i);
-                return s;
-            }
-            private set { }
-        }
     }
+
     public enum Currency
     {
         USD,

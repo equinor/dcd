@@ -30,7 +30,7 @@ namespace api.Adapters
                 Currency = costProfile.Currency,
                 EPAVersion = costProfile.EPAVersion,
                 StartYear = costProfile.StartYear,
-                Values = costProfile.Values
+                Values = costProfile.Values,
             };
         }
 
