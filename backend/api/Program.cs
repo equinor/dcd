@@ -4,27 +4,40 @@ using api.Context;
 using api.SampleData.Generators;
 using api.Services;
 
+using Azure.Identity;
+
 using Equinor.TI.CommonLibrary.Client;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Identity.Web;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
-configBuilder.AddAzureAppConfiguration(azureAppConfigConnectionString);
+var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
+Console.WriteLine("Loding config for: " + environment);
+
+configBuilder.AddAzureAppConfiguration(options =>
+    options
+    .Connect(azureAppConfigConnectionString)
+    .ConfigureKeyVault(x =>
+    {
+        x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true }));
+    })
+    .Select(KeyFilter.Any, LabelFilter.Null)
+    .Select(KeyFilter.Any, environment)
+);
 var config = configBuilder.Build();
 
 string commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
-                builder.Configuration.GetSection("AzureAd:ClientId").Value,
-                builder.Configuration.GetSection("AzureAd:TenantId").Value,
-                Environment.GetEnvironmentVariable("AzureAd__ClientSecret")!);
-
-//POC For Azure App Config
-Console.WriteLine(config["PoC2"] ?? "Hello world!");
+                config["AzureAd:ClientId"],
+                config["AzureAd:TenantId"],
+                config["AzureAd:ClientSecret"]);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
