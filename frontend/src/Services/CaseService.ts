@@ -1,7 +1,7 @@
-import { __BaseService } from "./__BaseService";
+import { __BaseService } from "./__BaseService"
 
-import { Project } from "../models/Project";
-import { config } from "./config";
+import { Project } from "../models/Project"
+import { config } from "./config"
 
 class __CaseService extends __BaseService {
     public async createCase(data: Components.Schemas.CaseDto): Promise<Project> {

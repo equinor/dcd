@@ -1,10 +1,10 @@
-import { FunctionComponent } from 'react';
-import ReactDom from 'react-dom';
+import { FunctionComponent } from "react"
+import ReactDOM from "react-dom"
 
-const portalElement = document.getElementById('portal')!
+const portalElement = document.getElementById("portal")!
 
 type Props = {}
 
-export const Portal: FunctionComponent<Props> = ({ children }) => {
-    return ReactDom.createPortal(children, portalElement);
-}
+export const Portal: FunctionComponent<Props> = ({ children }) => (
+    ReactDOM.createPortal(children, portalElement)
+)

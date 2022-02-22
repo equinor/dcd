@@ -21,6 +21,6 @@ export class ProjectPhase {
             7: "Execution",
             8: "Operation",
             9: "Screening business opportunities",
-        }[this.phase];
+        }[this.phase]
     }
 }

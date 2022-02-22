@@ -1,13 +1,13 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Typography } from '@equinor/eds-core-react'
+import React from "react"
+import styled from "styled-components"
+import { Typography } from "@equinor/eds-core-react"
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `
 
-const OverviewView = () => {
+function OverviewView() {
     return (
         <Wrapper>
             <Typography variant="h3">Overview</Typography>

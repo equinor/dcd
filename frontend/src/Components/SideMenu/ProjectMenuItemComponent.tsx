@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Link, useParams } from 'react-router-dom'
-import { IconData } from '@equinor/eds-icons'
+import React, { useEffect, useState } from "react"
+import styled from "styled-components"
+import { Link, useParams } from "react-router-dom"
+import { IconData } from "@equinor/eds-icons"
 
-import { ProjectMenuItemType } from './ProjectMenu'
-import MenuItem from './MenuItem'
-import { CasePath } from '../../Utils/common'
+import { ProjectMenuItemType } from "./ProjectMenu"
+import MenuItem from "./MenuItem"
+import { CasePath } from "../../Utils/common"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -44,11 +44,11 @@ interface Props {
     subItems?: Components.Schemas.CaseDto[]
 }
 
-const ProjectMenuItemComponent = ({ item, projectId, subItems }: Props) => {
+function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
     const params = useParams()
-    const isSelectedProjectMenuItem =
-        (item.name === ProjectMenuItemType.OVERVIEW && params.caseId === undefined) ||
-        (item.name === ProjectMenuItemType.CASES && params.caseId !== undefined)
+    // eslint-disable-next-line max-len
+    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && params.caseId === undefined)
+        || (item.name === ProjectMenuItemType.CASES && params.caseId !== undefined)
     const isSelected = params.projectId === projectId && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 
@@ -68,13 +68,13 @@ const ProjectMenuItemComponent = ({ item, projectId, subItems }: Props) => {
             {subItems && isOpen && (
                 <SubItems>
                     {subItems.map((subItem, index) => (
-                        <SubItem key={index}>
+                        <SubItem key={`menu-sub-item-${index + 1}`}>
                             <nav>
                                 <LinkWithoutStyle to={CasePath(projectId, subItem.id!)}>
                                     <MenuItem
                                         title={subItem.name!}
                                         isSelected={isSelected && params.caseId === subItem.id}
-                                        padding={'0.25rem 2rem'}
+                                        padding="0.25rem 2rem"
                                     />
                                 </LinkWithoutStyle>
                             </nav>

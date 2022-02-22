@@ -1,16 +1,18 @@
-import { Tabs, Typography } from '@equinor/eds-core-react'
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import styled from 'styled-components'
+import { Tabs, Typography } from "@equinor/eds-core-react"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import styled from "styled-components"
 
-import { Project } from '../models/Project'
-import { Case } from '../models/Case'
-import DrainageStrategyView from './DrainageStrategyView'
-import ExplorationView from './ExplorationView'
-import OverviewView from './OverviewView'
-import { ProjectService } from '../Services/ProjectService'
+import { Project } from "../models/Project"
+import { Case } from "../models/Case"
+import DrainageStrategyView from "./DrainageStrategyView"
+import ExplorationView from "./ExplorationView"
+import OverviewView from "./OverviewView"
+import { ProjectService } from "../Services/ProjectService"
 
-const { List, Tab, Panels, Panel } = Tabs
+const {
+    List, Tab, Panels, Panel,
+} = Tabs
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -22,7 +24,7 @@ const CaseHeader = styled(Typography)`
     margin-bottom: 2rem;
 `
 
-const CaseView = () => {
+function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
@@ -33,7 +35,7 @@ const CaseView = () => {
             try {
                 const projectResult = await ProjectService.getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find(o => o.id === params.caseId)
+                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -50,7 +52,10 @@ const CaseView = () => {
     return (
         <CaseViewDiv>
             <CaseHeader variant="h2">
-                {project.name} - {caseItem?.name}
+                {project.name}
+                {" "}
+                -
+                {caseItem?.name}
             </CaseHeader>
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
                 <List>

@@ -4,7 +4,7 @@ import { __BaseService } from "./__BaseService"
 
 export class __ProjectService extends __BaseService {
     async getProjects() {
-        const projects = await this.get<Components.Schemas.ProjectDto[]>('')
+        const projects = await this.get<Components.Schemas.ProjectDto[]>("")
         return projects.map(Project.fromJSON)
     }
 
@@ -14,11 +14,11 @@ export class __ProjectService extends __BaseService {
     }
 
     createProject(project: Components.Schemas.ProjectDto) {
-        return this.post(``, { body: project })
+        return this.post("", { body: project })
     }
 }
 
 export const ProjectService = new __ProjectService({
-        ...config.ProjectService,
-        accessToken: window.sessionStorage.getItem('loginAccessToken')!,
-    })
+    ...config.ProjectService,
+    accessToken: window.sessionStorage.getItem("loginAccessToken")!,
+})

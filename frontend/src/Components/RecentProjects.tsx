@@ -1,11 +1,11 @@
-import { tokens } from '@equinor/eds-tokens'
-import { Typography, Card } from '@equinor/eds-core-react'
-import { useCallback } from 'react'
-import styled from 'styled-components'
+import { tokens } from "@equinor/eds-tokens"
+import { Typography, Card } from "@equinor/eds-core-react"
+import { useCallback } from "react"
+import styled from "styled-components"
 
-import { Project } from '../models/Project'
+import { Project } from "../models/Project"
 
-import { ProjectPhaseNumberToText, ProjectPath } from '../Utils/common'
+import { ProjectPath } from "../Utils/common"
 
 const Wrapper = styled.div`
     margin-top: 4rem;
@@ -62,16 +62,16 @@ interface Props {
     projects: Project[]
 }
 
-const RecentProjects = ({ projects }: Props) => {
+function RecentProjects({ projects }: Props) {
     const renderProjectDG = useCallback((phase?: string) => {
         const backgroundColor = phase
             ? tokens.colors.ui.background__info.rgba
             : tokens.colors.ui.background__danger.rgba
 
-        const labelText = phase ?? 'TBD'
+        const labelText = phase ?? "TBD"
 
         return (
-            <ProjectDG style={{background: backgroundColor}} variant="caption">
+            <ProjectDG style={{ background: backgroundColor }} variant="caption">
                 {labelText}
             </ProjectDG>
         )
@@ -109,17 +109,18 @@ const RecentProjects = ({ projects }: Props) => {
                         <Card.Content>
                             {renderDescription(project.description)}
                             <CardFooter variant="meta">
-                                {/* TODO replace once projectDto has date*/}
+                                {/* TODO replace once projectDto has date */}
                                 Created Feb 15, 2022
                             </CardFooter>
-                            <OpenProject link
-                                href={ProjectPath(project.id!)}>
+                            <OpenProject
+                                link
+                                href={ProjectPath(project.id!)}
+                            >
                                 Open
                             </OpenProject>
                         </Card.Content>
                     </RecentProjectCard>
-                    )
-                )}
+                ))}
             </RecentProjectCardWrapper>
         </Wrapper>
     )

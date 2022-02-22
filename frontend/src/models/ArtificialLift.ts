@@ -7,10 +7,10 @@ export class ArtificialLift {
 
     toString(): string {
         return {
-            0: 'None',
-            1: 'Gas lift',
-            2: 'Electrical submerged pumps',
-            3: 'Subsea booster pumps',
+            0: "None",
+            1: "Gas lift",
+            2: "Electrical submerged pumps",
+            3: "Subsea booster pumps",
         }[this.type]!
     }
 }

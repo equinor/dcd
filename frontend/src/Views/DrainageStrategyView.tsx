@@ -1,10 +1,10 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Button, Scrim, Typography } from '@equinor/eds-core-react'
+import React from "react"
+import styled from "styled-components"
+import { Button, Scrim, Typography } from "@equinor/eds-core-react"
 
-import ExcelImport from '../Components/ExcelImport/ExcelImport'
-import DataTable, { CellValue } from '../Components/DataTable/DataTable'
-import { generateNewGrid, replaceOldData } from '../Components/DataTable/helpers'
+import ExcelImport from "../Components/ExcelImport/ExcelImport"
+import DataTable, { CellValue } from "../Components/DataTable/DataTable"
+import { generateNewGrid, replaceOldData } from "../Components/DataTable/helpers"
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,7 +34,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: 'Production profile oil',
+            value: "Production profile oil",
         },
         { value: 453678 },
         { value: 383920 },
@@ -45,7 +45,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: 'Production profile gas',
+            value: "Production profile gas",
         },
         { value: 678290 },
         { value: 647382 },
@@ -56,7 +56,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: 'Production profile water',
+            value: "Production profile water",
         },
         { value: 363728 },
         { value: 281726 },
@@ -67,7 +67,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: 'Production profile water injection',
+            value: "Production profile water injection",
         },
         { value: 373638 },
         { value: 237389 },
@@ -78,29 +78,29 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: 'Fuel flaring and losses',
-        },
-        { value: 373638 },
-        { value: 237389 },
-        { value: 363728 },
-        { value: 381724 },
-        { value: 281726 },
-    ],
-    [
-        {
-            readOnly: true,
-            value: 'Net sales gas',
+            value: "Fuel flaring and losses",
         },
         { value: 373638 },
         { value: 237389 },
         { value: 363728 },
+        { value: 381724 },
+        { value: 281726 },
+    ],
+    [
+        {
+            readOnly: true,
+            value: "Net sales gas",
+        },
+        { value: 373638 },
+        { value: 237389 },
+        { value: 363728 },
         { value: 281726 },
         { value: 381724 },
     ],
     [
         {
             readOnly: true,
-            value: 'CO2 emissions',
+            value: "CO2 emissions",
         },
         { value: 373638 },
         { value: 237389 },
@@ -111,18 +111,18 @@ const initialGridData = [
 ]
 
 const rowTitles = [
-    'Production profile oil',
-    'Production profile gas',
-    'Production profile water',
-    'Production profile water injection',
-    'Fuel flaring and losses',
-    'Net sales gas',
-    'CO2 emissions',
+    "Production profile oil",
+    "Production profile gas",
+    "Production profile water",
+    "Production profile water injection",
+    "Fuel flaring and losses",
+    "Net sales gas",
+    "CO2 emissions",
 ]
 
-const columnTitles = ['2022', '2023', '2024', '2025', '2026']
+const columnTitles = ["2022", "2023", "2024", "2025", "2026"]
 
-const DrainageStrategyView = () => {
+function DrainageStrategyView() {
     const [isImportOpen, setIsImportOpen] = React.useState<boolean>(false)
     const [dataIsChanged, setDataIsChanged] = React.useState<boolean>(false)
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
@@ -164,13 +164,13 @@ const DrainageStrategyView = () => {
             <Typography variant="h3">Drainage Strategy</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
-                <ScrimBackground isDismissable={true} onClose={closeImportView}>
+                <ScrimBackground isDismissable onClose={closeImportView}>
                     <ExcelImport onClose={closeImportView} onImport={onImport} />
                 </ScrimBackground>
             )}
             {dataIsChanged && (
                 <Buttons>
-                    <CancelButton variant={'outlined'} onClick={revertChange}>
+                    <CancelButton variant="outlined" onClick={revertChange}>
                         Cancel change
                     </CancelButton>
                     <Button onClick={saveDataImport}>Save new data</Button>
