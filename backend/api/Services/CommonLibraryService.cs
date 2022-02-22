@@ -64,7 +64,11 @@ namespace api.Services
             var projects = new List<CommonLibraryProjectDto>();
             foreach (dynamic project in dynamicProjects)
             {
-                projects.Add(CommonLibraryProjectDtoAdapter.Convert(project));
+                var convertedProject = CommonLibraryProjectDtoAdapter.Convert(project);
+                if (convertedProject != null)
+                {
+                    projects.Add(convertedProject);
+                }
             }
             return projects;
         }
