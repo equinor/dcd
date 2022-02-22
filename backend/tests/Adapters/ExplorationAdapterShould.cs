@@ -43,18 +43,18 @@ public class ExplorationAdapterShould : IDisposable
         Assert.Equal(explorationDto.WellType, exploration.WellType);
         Assert.Equal(explorationDto.RigMobDemob, exploration.RigMobDemob);
 
-        // TestHelper.CompareYearValues(explorationDto.DrillingSchedule,
-        //         exploration.DrillingSchedule);
+        TestHelper.CompareYearValues(explorationDto.DrillingSchedule,
+                exploration.DrillingSchedule);
         Assert.Equal(exploration.Name,
                 exploration.DrillingSchedule.Exploration.Name);
 
-        // TestHelper.CompareCosts(explorationDto.CostProfile,
-        //         exploration.CostProfile);
+        TestHelper.CompareCosts(explorationDto.CostProfile,
+                exploration.CostProfile);
         Assert.Equal(exploration.Name,
                 exploration.CostProfile.Exploration.Name);
 
-        // TestHelper.CompareCosts(explorationDto.GAndGAdminCost,
-        //         exploration.GAndGAdminCost);
+        TestHelper.CompareCosts(explorationDto.GAndGAdminCost,
+                exploration.GAndGAdminCost);
         Assert.Equal(exploration.Name,
                 exploration.GAndGAdminCost.Exploration.Name);
     }
