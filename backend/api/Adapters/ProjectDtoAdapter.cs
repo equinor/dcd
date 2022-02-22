@@ -85,10 +85,6 @@ namespace api.Adapters
                 {
                     c.Capex += p.Transports.FirstOrDefault(l => l.Id == c.TransportLink)!.CostProfile.Sum;
                 }
-                if (c.ExplorationLink != Guid.Empty)
-                {
-                    c.Capex += p.Explorations.FirstOrDefault(l => l.Id == c.ExplorationLink)!.CostProfile.Sum;
-                }
             }
         }
     }
