@@ -10,6 +10,7 @@ namespace api.Adapters
             var projectDto = new ProjectDto();
             projectDto.ProjectId = project.Id;
             projectDto.Name = project.Name;
+            projectDto.CommonLibraryId = project.CommonLibraryId;
             projectDto.CommonLibraryName = project.CommonLibraryName;
             projectDto.Description = project.Description;
             projectDto.Country = project.Country;

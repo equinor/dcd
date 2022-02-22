@@ -31,6 +31,7 @@ namespace tests
             return new ProjectDto
             {
                 Name = "First Project",
+                CommonLibraryId = new Guid(),
                 CommonLibraryName = "Common lib first project",
                 Description = "Description",
                 ProjectCategory = ProjectCategory.OffshoreWind,

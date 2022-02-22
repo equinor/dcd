@@ -5,9 +5,15 @@ namespace api.Adapters
 {
     public static class CommonLibraryProjectDtoAdapter
     {
-        public static CommonLibraryProjectDto Convert(dynamic project)
+        public static CommonLibraryProjectDto? Convert(dynamic project)
         {
             var projectDto = new CommonLibraryProjectDto();
+            Guid guid;
+            if (!Guid.TryParse(project.GUID.ToString(), out guid))
+            {
+                return null as CommonLibraryProjectDto;
+            }
+            projectDto.Id = guid;
             projectDto.Name = project.Name;
             projectDto.Description = project.Description;
             projectDto.Country = project.Country;
