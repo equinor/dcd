@@ -1,10 +1,9 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { UseComboboxStateChange } from 'downshift';
 import { tokens } from '@equinor/eds-tokens';
 import { search } from '@equinor/eds-icons';
-import { Icon, SingleSelect, TextField, Button } from '@equinor/eds-core-react';
+import { Icon, NativeSelect, TextField, Button } from '@equinor/eds-core-react';
 import { CommonLibraryService } from '../Services/CommonLibraryService';
 import { ProjectService } from '../Services/ProjectService'
 import { Modal } from '../Components/Modal';
@@ -15,7 +14,7 @@ const ProjectSelect = styled.div`
     align-items: center;
 `
 
-const ProjectDropdown = styled(SingleSelect)`
+const ProjectDropdown = styled(NativeSelect)`
     width: 25rem;
     margin-left: 0.5rem;
 `
@@ -34,8 +33,9 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>();
     const [inputName, setName] = useState<string>();
     const [inputDescription, setDescription] = useState<string>();
-    const onSelected = (selectedValue: string | null | undefined) => {
-        const project = projects?.find(p => p.name === selectedValue);
+
+    const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const project = projects?.find(p => p.id === event.currentTarget.selectedOptions[0].value);
         setSelectedProject(project);
     }
 
@@ -104,12 +104,14 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                 <ProjectSelect>
                     <Icon data={search} color={grey} />
                     <ProjectDropdown
-                        id="textfield-name"
+                        id="select-project"
                         label={'CommonLib project'}
                         placeholder={'Select a CommonLib project'}
-                        items={projects!.map(p => p.name!)}
-                        handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
-                    />
+                        onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
+                    >
+                        <option disabled selected />
+                        {projects.map(project => ( <option value={project.id!} key={project.id}>{project.name!}</option>))}
+                    </ProjectDropdown>
                 </ProjectSelect>
                 <div>
                     <TextField

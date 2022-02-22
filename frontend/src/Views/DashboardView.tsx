@@ -1,8 +1,7 @@
 import { search } from '@equinor/eds-icons'
-import { Icon, SingleSelect, Typography } from '@equinor/eds-core-react'
+import { Icon, NativeSelect, Typography } from '@equinor/eds-core-react'
 import { tokens } from '@equinor/eds-tokens'
-import { UseComboboxStateChange } from 'downshift'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -26,7 +25,7 @@ const ProjectSelect = styled.div`
     align-items: center;
 `
 
-const ProjectDropdown = styled(SingleSelect)`
+const ProjectDropdown = styled(NativeSelect)`
     width: 25rem;
     margin-left: 0.5rem;
 `
@@ -73,8 +72,8 @@ const DashboardView = () => {
         })()
     }, [])
 
-    const onSelected = (selectedValue: string | null | undefined) => {
-        const project = projects?.find(p => p.name === selectedValue)
+    const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const project = projects?.find(p => p.id === event.currentTarget.selectedOptions[0].value)
         if (project) {
             navigate(ProjectPath(project.id))
         }
@@ -90,11 +89,14 @@ const DashboardView = () => {
             <ProjectSelect>
                 <Icon data={search} color={grey}></Icon>
                 <ProjectDropdown
+                    id="select-project"
                     label={''}
                     placeholder={'Search projects'}
-                    items={projects.map(p => p.name)}
-                    handleSelectedItemChange={(changes: UseComboboxStateChange<string>) => onSelected(changes.selectedItem)}
-                />
+                    onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
+                >
+                    <option disabled selected />
+                    {projects.map(project => ( <option value={project.id!} key={project.id}>{project.name!}</option>))}
+                </ProjectDropdown>
             </ProjectSelect>
             <RecentProjects projects={recentProjects} />
         </Wrapper>
