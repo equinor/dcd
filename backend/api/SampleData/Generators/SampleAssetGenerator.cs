@@ -17,27 +17,51 @@ public static class SampleAssetGenerator
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
                     StartYear = 2030,
-                    Values = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }
+                    Values = new double[] { 0.1382328e9,   0.129461160089552e9,
+                    0.101858662653302e9,   0.0793845923999293e9,
+                    0.061869195474839e9,   0.0482183914155514e9,
+                    0.0375794974034997e9,  0.0292879663473024e9,
+                    0.0228258766622245e9,  0.0177895808544964e9,
+                    0.0138644921140046e9,  0.0108054339869784e9,
+                    0.00735035059831965e9 }
                 }
                 )
                 .WithProductionProfileOil(new ProductionProfileOil
                 {
                     StartYear = 2030,
-                    Values = new double[] { 1.3, 1.2, 1.0, 0.8, 0.6, 0.5, 0.4, 0.3, 0.2, 0.2, 0.1, 0.1, 0.1 }
+                    Values = new double[] { 1.314e6,   1.23061939248623e6,
+                    0.968238238149264e6,   0.754606391634305e6,
+                    0.588110223144857e6,   0.458349728284721e6,
+                    0.357219557067497e6,   0.278402721932525e6,
+                    0.216976013899468e6,   0.169102479605479e6,
+                    0.131791750133118e6,   0.102713250826803e6,
+                    0.069870252835732 }
                 }
                 )
                 .WithNetSalesGas(new NetSalesGas
                 {
                     StartYear = 2030,
-                    Values = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }
+                    Values = new double[] { 0.136602283840308e9,
+                    0.127934109247939e9,   0.100657195306473e9,
+                    0.0784482165127401e9,  0.0611394213328925e9,
+                    0.0476496344606362e9,  0.0371362308431066e9,
+                    0.0289425020116759e9,  0.022556635492568e9,
+                    0.017579744990234e9,   0.013700954383178e9,
+                    0.0106779791808235e9,  0.00726365000750502e9 }
                 }
                 )
                 .WithCo2Emissions(new Co2Emissions
                 {
                     StartYear = 2029,
-                    Values = new double[] { 0.01, 0.01, 0.01, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 }
+                    Values = new double[] { 0.0135e6,  0.00608182527565116e6,
+                    0.00569589963921555e6, 0.00448147320367438e6,
+                    0.00349268205921571e6, 0.00272205754946061e6,
+                    0.00212146344183398e6, 0.00165338427026637e6,
+                    0.00128858197188685e6, 0.00100426956281874e6,
+                    0.000782687773698545e6, 0.000609995735983182e6,
+                    0.000475406426957946e6, 0.000323393203738581e6 }
                 }
-                    )
+                )
                 )
             .WithSubstructure(new SubstructureBuilder
             {
@@ -46,7 +70,8 @@ public static class SampleAssetGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2027,
-                Values = new double[] { 391000000, 478000000, 474000000, 45000000 }
+                Values = new double[] { 391.073152662903e6, 477.737937405167e6,
+                474.497638477598e6, 44.5750914242851e6 }
             }))
             .WithWellProject(new WellProjectBuilder
             {
@@ -55,7 +80,7 @@ public static class SampleAssetGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2029,
-                Values = new double[] { 1146000000 }
+                Values = new double[] { 1146e6 }
             }))
             .WithExploration(new ExplorationBuilder
             {
@@ -64,13 +89,13 @@ public static class SampleAssetGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2023,
-                Values = new double[] { 280000000 }
+                Values = new double[] { 280e6 }
 
             }).WithGAndGAdminCost(new GAndGAdminCost
             {
                 Currency = Currency.NOK,
                 StartYear = 2022,
-                Values = new double[] { 9000000, 9000000, 9000000 }
+                Values = new double[] { 8.5e6, 8.5e6, 8.5e6 }
             }))
             )
 
