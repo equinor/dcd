@@ -14,8 +14,18 @@ namespace api.Services
 
         public CommonLibraryService(ILogger<CommonLibraryService> logger, CommonLibraryClientOptions clientOptions)
         {
-            _commonLibraryClient = new CommonLibraryClient(clientOptions);
             _logger = logger;
+            _logger.LogInformation("Attempting to create a Commmon Library client.");
+            try
+            {
+                _commonLibraryClient = new CommonLibraryClient(clientOptions);
+            }
+            catch (Exception)
+            {
+                _logger.LogError("Failed to create a Commmon Library client.");
+                throw;
+            }
+            _logger.LogInformation("Successfully created a Commmon Library client.");
         }
 
         public static string BuildTokenConnectionString(string clientId, string tenantId, string clientSecret)
