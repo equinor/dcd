@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { tokens } from '@equinor/eds-tokens';
 import { search } from '@equinor/eds-icons';
-import { Icon, NativeSelect, TextField, Button } from '@equinor/eds-core-react';
+import { Icon, NativeSelect, TextField, Button, Typography } from '@equinor/eds-core-react';
 import { CommonLibraryService } from '../Services/CommonLibraryService';
 import { ProjectService } from '../Services/ProjectService'
 import { Modal } from '../Components/Modal';
@@ -33,7 +33,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>();
     const [inputName, setName] = useState<string>();
     const [inputDescription, setDescription] = useState<string>();
-
+    const [error, setError] = useState<boolean>();
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const project = projects?.find(p => p.id === event.currentTarget.selectedOptions[0].value);
         setSelectedProject(project);
@@ -88,15 +88,28 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     useEffect(() => {
         (async () => {
             try {
+                setError(false);
                 const res = await CommonLibraryService.getProjects();
                 setProjects(res);
             } catch (error) {
+                setError(true);
                 console.error(`[CreateProjectView] Error while fetching common library projects.`, error);
             }
         })()
     }, []);
 
-    if (!projects) return null;
+    if (error)
+        return (<Modal isOpen={isOpen} title='Oops!' shards={shards}>
+                <Typography>Something went wrong while retrieving projects from Common Library. Unable to create a new DCD project right now.</Typography>
+                <Button onClick={handleCancelClick}>Close</Button>
+            </Modal>
+	    );
+    
+    if (!projects)
+        return (<Modal isOpen={isOpen} title='Getting data' shards={shards}>
+            <Typography>Retrieving projects from Common Library.</Typography>
+        </Modal>
+        );
 
 	return (
 		<Modal isOpen={isOpen} title='Create Project' shards={shards}>
