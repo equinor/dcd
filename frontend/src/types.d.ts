@@ -2,6 +2,11 @@ declare namespace Components {
     namespace Schemas {
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
         export interface CapexDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
             drilling?: WellProjectCostProfileDto;
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
         }
@@ -26,8 +31,10 @@ declare namespace Components {
         export interface Co2EmissionsDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export interface CommonLibraryProjectDto {
+            id?: string; // uuid
             name?: string | null;
             description?: string | null;
             country?: string | null;
@@ -62,6 +69,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface ExplorationDrillingScheduleDto {
             startYear?: number; // int32
@@ -80,25 +88,31 @@ declare namespace Components {
         export interface FuelFlaringAndLossesDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export interface GAndGAdminCostDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export interface OffshoreFacilitiesCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface ProductionAndSalesVolumesDto {
+            startYear?: number; // int32
+            endYear?: number; // int32
             totalAndAnnualOil?: ProductionProfileOilDto;
             totalAndAnnualSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
@@ -107,26 +121,32 @@ declare namespace Components {
         export interface ProductionProfileGasDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export interface ProductionProfileOilDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export interface ProductionProfileWaterDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export interface ProductionProfileWaterInjectionDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
+            commonLibraryId?: string; // uuid
             commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
+            createDate?: string; // date-time
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
             cases?: CaseDto[] | null;
@@ -141,12 +161,14 @@ declare namespace Components {
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface STEACaseDto {
             name?: string | null;
+            startYear?: number; // int32
             exploration?: ExplorationCostProfileDto;
             capex?: CapexDto;
             productionAndSalesVolumes?: ProductionAndSalesVolumesDto;
         }
         export interface STEAProjectDto {
             name?: string | null;
+            startYear?: number; // int32
             steaCases?: STEACaseDto[] | null;
         }
         export interface SubstructureCostProfileDto {
@@ -154,6 +176,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface SubstructureDto {
             id?: string; // uuid
@@ -168,6 +191,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface SurfDto {
             id?: string; // uuid
@@ -187,6 +211,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface TopsideDto {
             id?: string; // uuid
@@ -205,6 +230,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface TransportDto {
             id?: string; // uuid
@@ -220,6 +246,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface WellProjectDto {
             id?: string; // uuid
