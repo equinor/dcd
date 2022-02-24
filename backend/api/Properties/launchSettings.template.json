@@ -11,7 +11,10 @@
                 "ApplicationInsights__InstrumentationKey": "",
                 "AzureAd__ClientSecret": "",
                 "AppConfiguration__ConnectionString": "",
-                "AppConfiguration__Environment": ""
+                "AppConfiguration__Environment": "",
+                "AZURE_CLIENT_ID": "",
+                "AZURE_TENANT_ID": "",
+                "AZURE_CLIENT_SECRET": ""
             }
         }
     }
