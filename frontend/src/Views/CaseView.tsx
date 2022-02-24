@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Project } from '../models/Project'
+import { Case } from '../models/Case'
 import DrainageStrategyView from './DrainageStrategyView'
 import ExplorationView from './ExplorationView'
 import OverviewView from './OverviewView'
@@ -23,31 +24,33 @@ const CaseHeader = styled(Typography)`
 
 const CaseView = () => {
     const [project, setProject] = useState<Project>()
+    const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
 
     useEffect(() => {
         (async () => {
             try {
-                setProject(await ProjectService.getProjectByID(params.projectId!))
+                const projectResult = await ProjectService.getProjectByID(params.projectId!)
+                setProject(projectResult)
+                const caseResult = projectResult.cases.find(o => o.id === params.caseId)
+                setCase(caseResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching projet ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
         })()
-    })
+    }, [params.projectId, params.caseId])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
     }
-
-    const caseItem: any = {}
 
     if (!project) return null
 
     return (
         <CaseViewDiv>
             <CaseHeader variant="h2">
-                {project.name} - {caseItem.title}
+                {project.name} - {caseItem?.name}
             </CaseHeader>
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
                 <List>
