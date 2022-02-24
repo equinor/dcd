@@ -41,14 +41,6 @@ string commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionStrin
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-// Dev-Note Add this configuration to prevent circular references in the database
-// https://stackoverflow.com/questions/60197270/jsonexception-a-possible-object-cycle-was-detected-which-is-not-supported-this
-builder.Services.AddMvc()
- .AddJsonOptions(o =>
- {
-     o.JsonSerializerOptions
-        .ReferenceHandler = ReferenceHandler.IgnoreCycles;
- });
 // Add services to the container.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
