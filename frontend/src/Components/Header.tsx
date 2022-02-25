@@ -21,22 +21,22 @@ interface Props {
 const Header = ({ name }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const openModal = () => {
-      setIsOpen(true);
+        setIsOpen(true);
     };
     const closeModal = () => {
-      setIsOpen(false);
+        setIsOpen(false);
     };
     const buttonRef = useRef<HTMLButtonElement>(null);
     return (
         <>
             <Wrapper>
                 <PageTitle>DCD - Digital Concept Development</PageTitle>
-                <Button ref={buttonRef} onClick={openModal}>Create Project</Button>
+                <Button onClick={openModal}>Create Project</Button>
                 <Typography>
                     Welcome to DCD <b>{name}</b>!
                 </Typography>
             </Wrapper>
-            <CreateProjectView isOpen={isOpen} shards={[buttonRef]} closeModal={closeModal}></CreateProjectView>
+            <CreateProjectView isOpen={isOpen} closeModal={closeModal}></CreateProjectView>
         </>
     )
 }

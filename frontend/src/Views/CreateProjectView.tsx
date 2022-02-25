@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { tokens } from '@equinor/eds-tokens';
 import { search } from '@equinor/eds-icons';
-import { Icon, NativeSelect, TextField, Button, Typography } from '@equinor/eds-core-react';
+import { Dialog, Icon, NativeSelect, TextField, Button, Typography } from '@equinor/eds-core-react';
 import { CommonLibraryService } from '../Services/CommonLibraryService';
 import { ProjectService } from '../Services/ProjectService'
-import { Modal } from '../Components/Modal';
 import { ConvertProjectPhaseEnumToString, ConvertProjectCategoryEnumToString } from '../Utils/common';
 
 const ProjectSelect = styled.div`
@@ -22,12 +21,11 @@ const ProjectDropdown = styled(NativeSelect)`
 const grey = tokens.colors.ui.background__scrim.rgba;
 
 interface Props {
-	isOpen: boolean;
-	closeModal: Function;
-    shards: any[];
+    isOpen: boolean;
+    closeModal: Function;
 }
 
-const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
+const CreateProjectView = ({ isOpen, closeModal }: Props) => {
     const navigate = useNavigate();
     const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>();
     const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>();
@@ -98,22 +96,35 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         })()
     }, []);
 
+    if (!isOpen) {
+        return null;
+    }
+
     if (error)
-        return (<Modal isOpen={isOpen} title='Oops!' shards={shards}>
-                <Typography>Something went wrong while retrieving projects from Common Library. Unable to create a new DCD project right now.</Typography>
-                <Button onClick={handleCancelClick}>Close</Button>
-            </Modal>
-	    );
-    
-    if (!projects)
-        return (<Modal isOpen={isOpen} title='Getting data' shards={shards}>
-            <Typography>Retrieving projects from Common Library.</Typography>
-        </Modal>
+        return (
+            <Dialog title='Oops!'>
+                <Dialog.CustomContent>
+                    <Typography>Something went wrong while retrieving projects from Common Library. Unable to create a new DCD project right now.</Typography>
+                    <Button onClick={handleCancelClick}>Close</Button>
+                </Dialog.CustomContent>
+            </Dialog>
         );
 
-	return (
-		<Modal isOpen={isOpen} title='Create Project' shards={shards}>
-            <div>
+    if (!projects)
+        return (
+            <Dialog title='Getting data'>
+                <Dialog.CustomContent>
+                    <Typography>Retrieving projects from Common Library.</Typography>
+                </Dialog.CustomContent>
+            </Dialog>
+        );
+
+    return (
+        <Dialog>
+            <Dialog.Title>
+                Create Project
+            </Dialog.Title>
+            <Dialog.CustomContent>
                 <ProjectSelect>
                     <Icon data={search} color={grey} />
                     <ProjectDropdown
@@ -123,61 +134,51 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                     >
                         <option disabled selected />
-                        {projects.map(project => ( <option value={project.id!} key={project.id}>{project.name!}</option>))}
+                        {projects.map(project => (<option value={project.id!} key={project.id}>{project.name!}</option>))}
                     </ProjectDropdown>
                 </ProjectSelect>
-                <div>
-                    <TextField
-                        label="Name"
-                        id="textfield-name"
-                        placeholder={selectedProject?.name!}
-                        autoComplete="off"
-                        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => updateNameHandler(event)}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        label="Description"
-                        id="textfield-description"
-                        placeholder={selectedProject?.description!}
-                        autoComplete="off"
-                        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => updateDescriptionHandler(event)}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        label="Category"
-                        id="textfield-description"
-                        placeholder={ConvertProjectCategoryEnumToString(selectedProject?.projectCategory!)}
-                        autoComplete="off"
-                        readOnly={true}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        label="Phase"
-                        id="textfield-description"
-                        placeholder={ConvertProjectPhaseEnumToString(selectedProject?.projectPhase!)}
-                        autoComplete="off"
-                        readOnly={true}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        label="Country"
-                        id="textfield-description"
-                        placeholder={selectedProject?.country!}
-                        autoComplete="off"
-                        readOnly={true}
-                    />
-                </div>
-                <div>
-                    <Button onClick={handleOkClick}>Create Project</Button>
-                    <Button onClick={handleCancelClick} variant='outlined'>Cancel</Button>
-                </div>
-            </div>
-		</Modal>
-	);
+                <TextField
+                    label="Name"
+                    id="textfield-name"
+                    placeholder={selectedProject?.name!}
+                    autoComplete="off"
+                    onChange={(event: ChangeEvent<HTMLTextAreaElement>) => updateNameHandler(event)}
+                />
+                <TextField
+                    label="Description"
+                    id="textfield-description"
+                    placeholder={selectedProject?.description!}
+                    autoComplete="off"
+                    onChange={(event: ChangeEvent<HTMLTextAreaElement>) => updateDescriptionHandler(event)}
+                />
+                <TextField
+                    label="Category"
+                    id="textfield-description"
+                    placeholder={ConvertProjectCategoryEnumToString(selectedProject?.projectCategory!)}
+                    autoComplete="off"
+                    readOnly={true}
+                />
+                <TextField
+                    label="Phase"
+                    id="textfield-description"
+                    placeholder={ConvertProjectPhaseEnumToString(selectedProject?.projectPhase!)}
+                    autoComplete="off"
+                    readOnly={true}
+                />
+                <TextField
+                    label="Country"
+                    id="textfield-description"
+                    placeholder={selectedProject?.country!}
+                    autoComplete="off"
+                    readOnly={true}
+                />
+            </Dialog.CustomContent>
+            <Dialog.Actions>
+                <Button onClick={handleOkClick}>Create Project</Button>
+                <Button onClick={handleCancelClick} variant='outlined'>Cancel</Button>
+            </Dialog.Actions>
+        </Dialog>
+    );
 }
 
 export default CreateProjectView;
