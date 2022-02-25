@@ -1,5 +1,5 @@
-import { add, delete_to_trash, edit } from "@equinor/eds-icons"
-import { Button, EdsProvider, Icon, Input, Label, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
+import { add, delete_to_trash, edit } from '@equinor/eds-icons'
+import { Button, EdsProvider, Icon, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
 import { ChangeEventHandler, MouseEventHandler, useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -10,8 +10,8 @@ import { Project } from '../models/Project'
 import { ProjectService } from '../Services/ProjectService'
 
 import { StoreRecentProject } from '../Utils/common'
-import { Modal } from "../Components/Modal"
-import { CaseService } from "../Services/CaseService"
+import { Modal } from '../Components/Modal'
+import { CaseService } from '../Services/CaseService'
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -67,7 +67,7 @@ const ProjectView = () => {
     const [submitIsDisabled, setSubmitIsDisabled] = useState<boolean>(false)
 
     useEffect(() => {
-        (async () => {
+        ;(async () => {
             try {
                 const res = await ProjectService.getProjectByID(params.projectId!)
                 console.log('[ProjectView]', res)
@@ -79,22 +79,24 @@ const ProjectView = () => {
     }, [params.projectId])
 
     const chartData = useMemo(() => {
-        return project ? {
-            x: project?.cases.map((c) => c.name ?? ""),
-            y: project?.cases.map((c) => c.capex ?? 0),
-        } : { x: [], y: [] }
+        return project
+            ? {
+                  x: project?.cases.map(c => c.name ?? ''),
+                  y: project?.cases.map(c => c.capex ?? 0),
+              }
+            : { x: [], y: [] }
     }, [project])
 
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const handleCreateCaseFormFieldChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const handleCreateCaseFormFieldChange: ChangeEventHandler<HTMLInputElement> = e => {
         setCreateCaseFormData({
             ...createCaseFormData,
             [e.target.name]: e.target.value,
         })
     }
 
-    const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async e => {
         e.preventDefault()
         setSubmitIsDisabled(true)
 
@@ -110,7 +112,7 @@ const ProjectView = () => {
             navigate('/project/' + projectResult.id + '/case/' + projectResult.cases.find(o => o.name === createCaseFormData.name)?.id)
         } catch (error) {
             setSubmitIsDisabled(false)
-            console.error("[ProjectView] error while submitting form data", error)
+            console.error('[ProjectView] error while submitting form data', error)
         }
     }
 
@@ -152,32 +154,21 @@ const ProjectView = () => {
                 <CreateCaseForm>
                     <TextField label="Name" id="name" name="name" placeholder="Enter a name" onChange={handleCreateCaseFormFieldChange} />
 
-                    <HorizontalInputGroup>
-                        <div>
-                            <Label label="DG1 (optional)" htmlFor="dg1Date" />
-                            <Input type="date" id="dg1Date" name="dg1Date" onChange={handleCreateCaseFormFieldChange} />
-                        </div>
-                        <div>
-                            <Label label="DG2 (optional)" htmlFor="dg2Date" />
-                            <Input type="date" id="dg2Date" name="dg2Date" onChange={handleCreateCaseFormFieldChange} />
-                        </div>
-                    </HorizontalInputGroup>
-                    <HorizontalInputGroup>
-                        <div>
-                            <Label label="DG3 (optional)" htmlFor="dg3Date" />
-                            <Input type="date" id="dg3Date" name="dg3Date" onChange={handleCreateCaseFormFieldChange} />
-                        </div>
-                        <div>
-                            <Label label="DG4 (optional)" htmlFor="dg4Date" />
-                            <Input type="date" id="dg4Date" name="dg4Date" onChange={handleCreateCaseFormFieldChange} />
-                        </div>
-                    </HorizontalInputGroup>
-
-                    <TextField label="Description" id="description" name="description" placeholder="Enter a description" onChange={handleCreateCaseFormFieldChange} />
+                    <TextField
+                        label="Description"
+                        id="description"
+                        name="description"
+                        placeholder="Enter a description"
+                        onChange={handleCreateCaseFormFieldChange}
+                    />
 
                     <div>
-                        <Button type="submit" onClick={submitCreateCaseForm} disabled={submitIsDisabled}>Create case</Button>
-                        <Button type="button" color="secondary" variant="ghost" onClick={toggleCreateCaseModal}>Cancel</Button>
+                        <Button type="submit" onClick={submitCreateCaseForm} disabled={submitIsDisabled}>
+                            Create case
+                        </Button>
+                        <Button type="button" color="secondary" variant="ghost" onClick={toggleCreateCaseModal}>
+                            Cancel
+                        </Button>
                     </div>
                 </CreateCaseForm>
             </Modal>
