@@ -7,7 +7,8 @@ import { Icon, NativeSelect, TextField, Button, Typography } from '@equinor/eds-
 import { CommonLibraryService } from '../Services/CommonLibraryService';
 import { ProjectService } from '../Services/ProjectService'
 import { Modal } from '../Components/Modal';
-import { ConvertProjectPhaseEnumToString, ConvertProjectCategoryEnumToString } from '../Utils/common';
+import { ProjectCategory } from "../models/ProjectCategory";
+import { ProjectPhase } from "../models/ProjectPhase";
 
 const ProjectSelect = styled.div`
     display: flex;
@@ -148,7 +149,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     <TextField
                         label="Category"
                         id="textfield-description"
-                        placeholder={ConvertProjectCategoryEnumToString(selectedProject?.projectCategory!)}
+                        placeholder={new ProjectCategory(selectedProject?.projectCategory!).toString()}
                         autoComplete="off"
                         readOnly={true}
                     />
@@ -157,7 +158,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     <TextField
                         label="Phase"
                         id="textfield-description"
-                        placeholder={ConvertProjectPhaseEnumToString(selectedProject?.projectPhase!)}
+                        placeholder={new ProjectPhase(selectedProject?.projectPhase!).toString()}
                         autoComplete="off"
                         readOnly={true}
                     />
