@@ -61,6 +61,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     const convertCommonLibProjectToProject = (commonLibraryProject: Components.Schemas.CommonLibraryProjectDto): Components.Schemas.ProjectDto => {
         let project: Components.Schemas.ProjectDto = {
             name: inputName ?? commonLibraryProject?.name,
+            commonLibraryId: commonLibraryProject?.id,
             commonLibraryName: commonLibraryProject?.name,
             description: inputDescription ?? commonLibraryProject?.description,
             country: commonLibraryProject?.country ?? '',
