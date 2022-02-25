@@ -4,8 +4,6 @@ import {
     Button,
     EdsProvider,
     Icon,
-    Input,
-    Label,
     TextField,
     Tooltip,
     Typography,
@@ -59,18 +57,6 @@ const CreateCaseForm = styled.form`
 
     > * {
         margin-bottom: 1.5rem;
-    }
-`
-
-const HorizontalInputGroup = styled.div`
-    display: flex;
-
-    > * {
-        flex: 1;
-    }
-
-    > *:not(:last-child) {
-        margin-right: 0.5rem;
     }
 `
 
@@ -174,27 +160,6 @@ const ProjectView = () => {
                         placeholder="Enter a name"
                         onChange={handleCreateCaseFormFieldChange}
                     />
-
-                    <HorizontalInputGroup>
-                        <div>
-                            <Label label="DG1 (optional)" htmlFor="dg1Date" />
-                            <Input type="date" id="dg1Date" name="dg1Date" onChange={handleCreateCaseFormFieldChange} />
-                        </div>
-                        <div>
-                            <Label label="DG2 (optional)" htmlFor="dg2Date" />
-                            <Input type="date" id="dg2Date" name="dg2Date" onChange={handleCreateCaseFormFieldChange} />
-                        </div>
-                    </HorizontalInputGroup>
-                    <HorizontalInputGroup>
-                        <div>
-                            <Label label="DG3 (optional)" htmlFor="dg3Date" />
-                            <Input type="date" id="dg3Date" name="dg3Date" onChange={handleCreateCaseFormFieldChange} />
-                        </div>
-                        <div>
-                            <Label label="DG4 (optional)" htmlFor="dg4Date" />
-                            <Input type="date" id="dg4Date" name="dg4Date" onChange={handleCreateCaseFormFieldChange} />
-                        </div>
-                    </HorizontalInputGroup>
 
                     <TextField
                         label="Description"
