@@ -1,15 +1,31 @@
+// eslint-disable-next-line camelcase
 import { add, delete_to_trash, edit } from "@equinor/eds-icons"
-import { Button, EdsProvider, Icon, Input, Label, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
-import { ChangeEventHandler, MouseEventHandler, useEffect, useMemo, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
+import {
+    Button,
+    EdsProvider,
+    Icon,
+    Input,
+    Label,
+    TextField,
+    Tooltip,
+    Typography,
+} from "@equinor/eds-core-react"
+import {
+    ChangeEventHandler,
+    MouseEventHandler,
+    useEffect,
+    useMemo,
+    useState,
+} from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import styled from "styled-components"
 
-import BarChart from '../Components/BarChart'
+import BarChart from "../Components/BarChart"
 
-import { Project } from '../models/Project'
-import { ProjectService } from '../Services/ProjectService'
+import { Project } from "../models/Project"
+import { ProjectService } from "../Services/ProjectService"
 
-import { StoreRecentProject } from '../Utils/common'
+import { StoreRecentProject } from "../Utils/common"
 import { Modal } from "../Components/Modal"
 import { CaseService } from "../Services/CaseService"
 
@@ -60,7 +76,7 @@ const HorizontalInputGroup = styled.div`
 
 const ProjectView = () => {
     const navigate = useNavigate()
-    let params = useParams()
+    const params = useParams()
     const [project, setProject] = useState<Project>()
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseFormData, setCreateCaseFormData] = useState<Record<string, any>>({})
@@ -70,7 +86,7 @@ const ProjectView = () => {
         (async () => {
             try {
                 const res = await ProjectService.getProjectByID(params.projectId!)
-                console.log('[ProjectView]', res)
+                console.log("[ProjectView]", res)
                 setProject(res)
             } catch (error) {
                 console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
@@ -78,12 +94,10 @@ const ProjectView = () => {
         })()
     }, [params.projectId])
 
-    const chartData = useMemo(() => {
-        return project ? {
-            x: project?.cases.map((c) => c.name ?? ""),
-            y: project?.cases.map((c) => c.capex ?? 0),
-        } : { x: [], y: [] }
-    }, [project])
+    const chartData = useMemo(() => (project ? {
+        x: project?.cases.map((c) => c.name ?? ""),
+        y: project?.cases.map((c) => c.capex ?? 0),
+    } : { x: [], y: [] }), [project])
 
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
@@ -107,7 +121,9 @@ const ProjectView = () => {
             })
             setSubmitIsDisabled(false)
             toggleCreateCaseModal()
-            navigate('/project/' + projectResult.id + '/case/' + projectResult.cases.find(o => o.name === createCaseFormData.name)?.id)
+            navigate(`/project/${projectResult.id}/case/${projectResult.cases.find((o) => (
+                o.name === createCaseFormData.name
+            ))?.id}`)
         } catch (error) {
             setSubmitIsDisabled(false)
             console.error("[ProjectView] error while submitting form data", error)
@@ -137,6 +153,7 @@ const ProjectView = () => {
                         </Tooltip>
                         <Tooltip title={`Delete ${project.name}`}>
                             <Button variant="ghost_icon" color="danger" aria-label={`Delete ${project.name}`}>
+                                {/* eslint-disable-next-line camelcase */}
                                 <Icon data={delete_to_trash} />
                             </Button>
                         </Tooltip>
@@ -150,7 +167,13 @@ const ProjectView = () => {
 
             <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
                 <CreateCaseForm>
-                    <TextField label="Name" id="name" name="name" placeholder="Enter a name" onChange={handleCreateCaseFormFieldChange} />
+                    <TextField
+                        label="Name"
+                        id="name"
+                        name="name"
+                        placeholder="Enter a name"
+                        onChange={handleCreateCaseFormFieldChange}
+                    />
 
                     <HorizontalInputGroup>
                         <div>
@@ -173,11 +196,30 @@ const ProjectView = () => {
                         </div>
                     </HorizontalInputGroup>
 
-                    <TextField label="Description" id="description" name="description" placeholder="Enter a description" onChange={handleCreateCaseFormFieldChange} />
+                    <TextField
+                        label="Description"
+                        id="description"
+                        name="description"
+                        placeholder="Enter a description"
+                        onChange={handleCreateCaseFormFieldChange}
+                    />
 
                     <div>
-                        <Button type="submit" onClick={submitCreateCaseForm} disabled={submitIsDisabled}>Create case</Button>
-                        <Button type="button" color="secondary" variant="ghost" onClick={toggleCreateCaseModal}>Cancel</Button>
+                        <Button
+                            type="submit"
+                            onClick={submitCreateCaseForm}
+                            disabled={submitIsDisabled}
+                        >
+                            Create case
+                        </Button>
+                        <Button
+                            type="button"
+                            color="secondary"
+                            variant="ghost"
+                            onClick={toggleCreateCaseModal}
+                        >
+                            Cancel
+                        </Button>
                     </div>
                 </CreateCaseForm>
             </Modal>

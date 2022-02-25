@@ -1,14 +1,15 @@
 const recentProjectKeyPrefix = "projectid:"
 
-export const GetDrainageStrategy = (project: Components.Schemas.ProjectDto, drainageStrategyId?: string) => {
-    return project.drainageStrategies?.find(o => o.id === drainageStrategyId);
-};
+export const GetDrainageStrategy = (
+    project: Components.Schemas.ProjectDto,
+    drainageStrategyId?: string,
+) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
 export function ProjectPhaseNumberToText(phaseNumber: Components.Schemas.ProjectPhase) {
-    return "DG" + (phaseNumber+1).toString()
+    return `DG${(phaseNumber + 1).toString()}`
 }
 function recentProjectKey(projectId: string) {
-    return recentProjectKeyPrefix+projectId
+    return recentProjectKeyPrefix + projectId
 }
 export function StoreRecentProject(projectId: string) {
     const timeStamp = new Date().getTime()

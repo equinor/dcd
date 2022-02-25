@@ -4,8 +4,9 @@ backend/*/obj
 backend/api/Properties/launchSettings.json
 backend/api/app
 
+node_modules/
+
 # frontend
-/frontend/node_modules/
 /.pnp
 .pnp.js
 /coverage

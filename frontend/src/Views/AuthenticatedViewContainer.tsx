@@ -1,14 +1,13 @@
-import { Outlet } from 'react-router-dom'
-import { useEffect, VoidFunctionComponent } from 'react'
-import styled from 'styled-components'
+import { Outlet } from "react-router-dom"
+import { useEffect, VoidFunctionComponent } from "react"
+import styled from "styled-components"
 
-import Header from '../Components/Header'
-import SideMenu from '../Components/SideMenu/SideMenu'
+import { useMsal } from "@azure/msal-react"
+import Header from "../Components/Header"
+import SideMenu from "../Components/SideMenu/SideMenu"
 
-import { fusionApiScope } from '../config'
-import { loginRequest } from '../auth/authContextProvider'
-
-import { useMsal } from '@azure/msal-react'
+import { fusionApiScope } from "../config"
+import { loginRequest } from "../auth/authContextProvider"
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,16 +34,17 @@ export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
 
     useEffect(() => {
         if (instance && accounts) {
-            ;(async () => {
-                // Silently acquires an access token which is then attached to a request for MS Graph data
+            (async () => {
+                // Silently acquires an access token
+                // which is then attached to a request for MS Graph data
                 try {
                     const { accessToken } = await instance.acquireTokenSilent({
                         ...loginRequest,
                         account: accounts[0],
                     })
-                    window.sessionStorage.setItem('loginAccessToken', accessToken)
+                    window.sessionStorage.setItem("loginAccessToken", accessToken)
                 } catch (error) {
-                    console.error('[AuthenticatedViewContainer] Login failed', error)
+                    console.error("[AuthenticatedViewContainer] Login failed", error)
                 }
 
                 try {
@@ -52,9 +52,9 @@ export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
                         scopes: fusionApiScope,
                         account: accounts[0],
                     })
-                    window.sessionStorage.setItem('fusionAccessToken', accessToken)
+                    window.sessionStorage.setItem("fusionAccessToken", accessToken)
                 } catch (error) {
-                    console.error('[AuthenticatedViewContainer] Failed to get fusion token', error)
+                    console.error("[AuthenticatedViewContainer] Failed to get fusion token", error)
                 }
             })()
         }

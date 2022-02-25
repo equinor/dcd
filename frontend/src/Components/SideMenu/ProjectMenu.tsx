@@ -1,13 +1,13 @@
-import { useState } from 'react'
-import styled from 'styled-components'
-import { Link, useParams } from 'react-router-dom'
-import { file, folder, dashboard } from '@equinor/eds-icons'
+import { useState } from "react"
+import styled from "styled-components"
+import { Link, useParams } from "react-router-dom"
+import { file, folder, dashboard } from "@equinor/eds-icons"
 
-import { Project } from '../../models/Project'
-import MenuItem from './MenuItem'
-import ProjectMenuItemComponent from './ProjectMenuItemComponent'
+import { Project } from "../../models/Project"
+import MenuItem from "./MenuItem"
+import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
 
-import { ProjectPath } from '../../Utils/common'
+import { ProjectPath } from "../../Utils/common"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -37,8 +37,8 @@ const MenuItems = styled.ul`
 `
 
 export enum ProjectMenuItemType {
-    OVERVIEW = 'Overview',
-    CASES = 'Cases',
+    OVERVIEW = "Overview",
+    CASES = "Cases",
 }
 
 const projectMenuItems = [
@@ -50,7 +50,7 @@ interface Props {
     project: Project
 }
 
-const ProjectMenu = ({ project }: Props) => {
+function ProjectMenu({ project }: Props) {
     const params = useParams()
     const [isOpen, setIsOpen] = useState<boolean>(params.projectId === project.id)
 
@@ -69,22 +69,27 @@ const ProjectMenu = ({ project }: Props) => {
             </nav>
             {isOpen && (
                 <MenuItems>
-                    {projectMenuItems.map((projectMenuItem, index) => {
-                        return (
-                            <Item key={index}>
-                                {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
-                                    <nav>
-                                        <LinkWithoutStyle to={'/project/' + project.id}>
-                                            <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id!} />
-                                        </LinkWithoutStyle>
-                                    </nav>
-                                )}
-                                {projectMenuItem.name === ProjectMenuItemType.CASES && (
-                                    <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id!} subItems={project.cases!} />
-                                )}
-                            </Item>
-                        )
-                    })}
+                    {projectMenuItems.map((projectMenuItem, index) => (
+                        <Item key={`project-menu-item-${index + 1}`}>
+                            {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
+                                <nav>
+                                    <LinkWithoutStyle to={`/project/${project.id}`}>
+                                        <ProjectMenuItemComponent
+                                            item={projectMenuItem}
+                                            projectId={project.id!}
+                                        />
+                                    </LinkWithoutStyle>
+                                </nav>
+                            )}
+                            {projectMenuItem.name === ProjectMenuItemType.CASES && (
+                                <ProjectMenuItemComponent
+                                    item={projectMenuItem}
+                                    projectId={project.id!}
+                                    subItems={project.cases!}
+                                />
+                            )}
+                        </Item>
+                    ))}
                 </MenuItems>
             )}
         </ExpandableDiv>

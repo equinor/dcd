@@ -1,10 +1,13 @@
-import { chevron_down, chevron_up } from '@equinor/eds-icons'
-import { Icon, Table } from '@equinor/eds-core-react'
-import { useMemo, useState, ReactElement } from 'react'
-import styled from 'styled-components'
-import { Column, SortDirection } from './types'
+// eslint-disable-next-line camelcase
+import { chevron_down, chevron_up } from "@equinor/eds-icons"
+import { Icon, Table } from "@equinor/eds-core-react"
+import { useMemo, useState, ReactElement } from "react"
+import styled from "styled-components"
+import { Column, SortDirection } from "./types"
 
-const { Body, Row, Cell, Head } = Table
+const {
+    Body, Row, Cell, Head,
+} = Table
 
 const Wrapper = styled.div`
     width: 40rem;
@@ -15,16 +18,17 @@ const StyledTable = styled(Table)`
 `
 
 const StyledCell = styled(Cell)<{ sortable?: boolean }>`
-    cursor: ${props => (props.sortable ? 'pointer' : 'default')};
+    cursor: ${(props) => (props.sortable ? "pointer" : "default")};
 `
 
+// eslint-disable-next-line camelcase
 Icon.add({ chevron_down, chevron_up })
 
 const SortIcon = styled(Icon)<{
     name: string
     isSelected: boolean
 }>`
-    visibility: ${({ isSelected }) => (isSelected ? 'visible' : 'hidden')};
+    visibility: ${({ isSelected }) => (isSelected ? "visible" : "hidden")};
 `
 
 type Props<T> = {
@@ -34,8 +38,10 @@ type Props<T> = {
     renderRow: (dataObject: T, index: number) => React.ReactChild
 }
 
-const SortableTable = <T extends unknown>({ columns, data, sortOnAccessor, renderRow }: Props<T>): ReactElement | null => {
-    const [sortDirection, setSortDirection] = useState<SortDirection>('none')
+function SortableTable<T extends unknown>({
+    columns, data, sortOnAccessor, renderRow,
+}: Props<T>): ReactElement | null {
+    const [sortDirection, setSortDirection] = useState<SortDirection>("none")
     const [columnToSortBy, setColumnToSortBy] = useState<Column>()
 
     const sortedData = useMemo(() => {
@@ -51,15 +57,15 @@ const SortableTable = <T extends unknown>({ columns, data, sortOnAccessor, rende
 
     const setSortOn = (selectedColumn: Column) => {
         if (columnToSortBy && selectedColumn.name === columnToSortBy.name) {
-            if (sortDirection === 'ascending') {
-                setSortDirection('descending')
+            if (sortDirection === "ascending") {
+                setSortDirection("descending")
             } else {
-                setSortDirection('none')
+                setSortDirection("none")
                 setColumnToSortBy(undefined)
             }
         } else {
             setColumnToSortBy(selectedColumn)
-            setSortDirection('ascending')
+            setSortDirection("ascending")
         }
     }
 
@@ -68,19 +74,22 @@ const SortableTable = <T extends unknown>({ columns, data, sortOnAccessor, rende
             <StyledTable>
                 <Head>
                     <Row>
-                        {columns.map(column => {
-                            const isSelected = columnToSortBy ? column.name === columnToSortBy.name : false
+                        {columns.map((column) => {
+                            const isSelected = columnToSortBy
+                                ? column.name === columnToSortBy.name
+                                : false
+
                             return (
                                 <StyledCell
                                     key={column.name}
                                     onClick={column.sortable ? () => setSortOn(column) : undefined}
-                                    sort={isSelected ? sortDirection : 'none'}
+                                    sort={isSelected ? sortDirection : "none"}
                                     sortable={column.sortable}
                                 >
                                     {column.name}
                                     {column.sortable && (
                                         <SortIcon
-                                            name={sortDirection === 'descending' ? 'chevron_up' : 'chevron_down'}
+                                            name={sortDirection === "descending" ? "chevron_up" : "chevron_down"}
                                             isSelected={isSelected}
                                         />
                                     )}

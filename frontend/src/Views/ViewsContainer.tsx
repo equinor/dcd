@@ -1,8 +1,8 @@
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsalAuthentication } from '@azure/msal-react'
-import { InteractionType } from '@azure/msal-browser'
-import { VoidFunctionComponent } from 'react'
+import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsalAuthentication } from "@azure/msal-react"
+import { InteractionType } from "@azure/msal-browser"
+import { VoidFunctionComponent } from "react"
 
-import { AuthenticatedViewContainer } from './AuthenticatedViewContainer'
+import { AuthenticatedViewContainer } from "./AuthenticatedViewContainer"
 
 export const ViewsContainer: VoidFunctionComponent = () => {
     useMsalAuthentication(InteractionType.Redirect)

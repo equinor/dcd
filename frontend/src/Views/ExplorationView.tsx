@@ -1,10 +1,10 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Button, Scrim, Typography } from '@equinor/eds-core-react'
+import React from "react"
+import styled from "styled-components"
+import { Button, Scrim, Typography } from "@equinor/eds-core-react"
 
-import ExcelImport from '../Components/ExcelImport/ExcelImport'
-import DataTable, { CellValue } from '../Components/DataTable/DataTable'
-import { generateNewGrid, replaceOldData } from '../Components/DataTable/helpers'
+import ExcelImport from "../Components/ExcelImport/ExcelImport"
+import DataTable, { CellValue } from "../Components/DataTable/DataTable"
+import { generateNewGrid, replaceOldData } from "../Components/DataTable/helpers"
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,7 +34,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: 'Cost profile',
+            value: "Cost profile",
         },
         { value: 453678 },
         { value: 383920 },
@@ -47,7 +47,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: 'G&G and admin cost',
+            value: "G&G and admin cost",
         },
         { value: 678290 },
         { value: 647382 },
@@ -59,11 +59,11 @@ const initialGridData = [
     ],
 ]
 
-const rowTitles = ['Cost profile', 'G&G and admin cost']
+const rowTitles = ["Cost profile", "G&G and admin cost"]
 
-const columnTitles = ['2022', '2023', '2024', '2025', '2026', '2027', '2028']
+const columnTitles = ["2022", "2023", "2024", "2025", "2026", "2027", "2028"]
 
-const ExplorationView = () => {
+function ExplorationView() {
     const [isImportOpen, setIsImportOpen] = React.useState<boolean>(false)
     const [dataIsChanged, setDataIsChanged] = React.useState<boolean>(false)
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
@@ -105,13 +105,13 @@ const ExplorationView = () => {
             <Typography variant="h3">Exploration</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
-                <ScrimBackground isDismissable={true} onClose={closeImportView}>
+                <ScrimBackground isDismissable onClose={closeImportView}>
                     <ExcelImport onClose={closeImportView} onImport={onImport} />
                 </ScrimBackground>
             )}
             {dataIsChanged && (
                 <Buttons>
-                    <CancelButton variant={'outlined'} onClick={revertChange}>
+                    <CancelButton variant="outlined" onClick={revertChange}>
                         Cancel change
                     </CancelButton>
                     <Button onClick={saveDataImport}>Save new data</Button>

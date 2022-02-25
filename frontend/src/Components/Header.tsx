@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
-import styled from 'styled-components'
-import { Typography, Button } from '@equinor/eds-core-react'
-import CreateProjectView from '../Views/CreateProjectView'
+import React, { useRef, useState } from "react"
+import styled from "styled-components"
+import { Typography, Button } from "@equinor/eds-core-react"
+import CreateProjectView from "../Views/CreateProjectView"
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,25 +18,28 @@ interface Props {
     name: string | undefined
 }
 
-const Header = ({ name }: Props) => {
-    const [isOpen, setIsOpen] = useState(false);
+function Header({ name }: Props) {
+    const [isOpen, setIsOpen] = useState(false)
     const openModal = () => {
-      setIsOpen(true);
-    };
+        setIsOpen(true)
+    }
     const closeModal = () => {
-      setIsOpen(false);
-    };
-    const buttonRef = useRef<HTMLButtonElement>(null);
+        setIsOpen(false)
+    }
+    const buttonRef = useRef<HTMLButtonElement>(null)
     return (
         <>
             <Wrapper>
                 <PageTitle>DCD - Digital Concept Development</PageTitle>
                 <Button ref={buttonRef} onClick={openModal}>Create Project</Button>
                 <Typography>
-                    Welcome to DCD <b>{name}</b>!
+                    Welcome to DCD
+                    {" "}
+                    <b>{name}</b>
+                    !
                 </Typography>
             </Wrapper>
-            <CreateProjectView isOpen={isOpen} shards={[buttonRef]} closeModal={closeModal}></CreateProjectView>
+            <CreateProjectView isOpen={isOpen} shards={[buttonRef]} closeModal={closeModal} />
         </>
     )
 }
