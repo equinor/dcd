@@ -7,7 +7,7 @@ public static class TestDataGenerator
 {
     public static ProjectDto SpreadSheetProject()
     {
-        return new ProjectDto()
+        return new ProjectDto
         {
             Name = "Skarven",
             CommonLibraryName = "The Skarven Project",
@@ -37,7 +37,7 @@ public static class TestDataGenerator
             ProductionProfileGas = new ProductionProfileGasDto
             {
                 StartYear = 2030,
-                Values = new double[] { 0.0460776e9, 0.0459552635016671e9,
+                Values = new[] { 0.0460776e9, 0.0459552635016671e9,
                 0.0411623281639219e9, 0.0347990402399031e9,
                 0.0294194535546169e9, 0.02487149764722e9,
                 0.0210266106427589e9, 0.017776105057815e9,
@@ -51,7 +51,7 @@ public static class TestDataGenerator
             ProductionProfileOil = new ProductionProfileOilDto
             {
                 StartYear = 2030,
-                Values = new double[] { 0.438e6, 0.436837105529155e6,
+                Values = new[] { 0.438e6, 0.436837105529155e6,
                 0.391276883687471e6, 0.330789355892615e6, 0.279652600329056e6,
                 0.236421080296768e6, 0.199872724741057e6, 0.168974382678855e6,
                 0.142852618028251e6, 0.120769019267905e6, 0.102099325978384e6,
@@ -62,7 +62,7 @@ public static class TestDataGenerator
             NetSalesGas = new NetSalesGasDto
             {
                 StartYear = 2030,
-                Values = new double[] { 0.045534094613436e9,
+                Values = new[] { 0.045534094613436e9,
                 0.0454132011274522e9, 0.0406768005522276e9,
                 0.0343885703843194e9, 0.0290724382700382e9,
                 0.0245781274859447e9, 0.0207785926004667e9,
@@ -76,7 +76,7 @@ public static class TestDataGenerator
             Co2Emissions = new Co2EmissionsDto
             {
                 StartYear = 2029,
-                Values = new double[] { 0.009e6, 0.00202727509188372e6,
+                Values = new[] { 0.009e6, 0.00202727509188372e6,
                 0.00202189265582155e6, 0.00181101799161985e6,
                 0.0015310525613273e6, 0.00129436701147856e6,
                 0.0010942707015568e6, 0.000925107297749942e6,
@@ -99,7 +99,7 @@ public static class TestDataGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2027,
-                Values = new double[] { 349.95166651869e6, 427.288025880945e6,
+                Values = new[] { 349.95166651869e6, 427.288025880945e6,
                 424.163092995196e6, 39.8227522796791e6
                 }
             }
@@ -115,7 +115,7 @@ public static class TestDataGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2029,
-                Values = new double[] { 764e6 }
+                Values = new[] { 764e6 }
             }
         };
     }
@@ -128,14 +128,14 @@ public static class TestDataGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2023,
-                Values = new double[] { 280e6 }
+                Values = new[] { 280e6 }
 
             },
             GAndGAdminCost = new GAndGAdminCostDto
             {
                 Currency = Currency.NOK,
                 StartYear = 2022,
-                Values = new double[] { 9e6, 9e6, 9e6 }
+                Values = new[] { 9e6, 9e6, 9e6 }
             }
         };
     }

@@ -17,7 +17,7 @@ public static class SampleAssetGenerator
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
                     StartYear = 2030,
-                    Values = new double[] { 0.1382328e9,   0.129461160089552e9,
+                    Values = new[] { 0.1382328e9,   0.129461160089552e9,
                     0.101858662653302e9,   0.0793845923999293e9,
                     0.061869195474839e9,   0.0482183914155514e9,
                     0.0375794974034997e9,  0.0292879663473024e9,
@@ -29,7 +29,7 @@ public static class SampleAssetGenerator
                 .WithProductionProfileOil(new ProductionProfileOil
                 {
                     StartYear = 2030,
-                    Values = new double[] { 1.314e6,   1.23061939248623e6,
+                    Values = new[] { 1.314e6,   1.23061939248623e6,
                     0.968238238149264e6,   0.754606391634305e6,
                     0.588110223144857e6,   0.458349728284721e6,
                     0.357219557067497e6,   0.278402721932525e6,
@@ -41,7 +41,7 @@ public static class SampleAssetGenerator
                 .WithNetSalesGas(new NetSalesGas
                 {
                     StartYear = 2030,
-                    Values = new double[] { 0.136602283840308e9,
+                    Values = new[] { 0.136602283840308e9,
                     0.127934109247939e9,   0.100657195306473e9,
                     0.0784482165127401e9,  0.0611394213328925e9,
                     0.0476496344606362e9,  0.0371362308431066e9,
@@ -53,7 +53,7 @@ public static class SampleAssetGenerator
                 .WithCo2Emissions(new Co2Emissions
                 {
                     StartYear = 2029,
-                    Values = new double[] { 0.0135e6,  0.00608182527565116e6,
+                    Values = new[] { 0.0135e6,  0.00608182527565116e6,
                     0.00569589963921555e6, 0.00448147320367438e6,
                     0.00349268205921571e6, 0.00272205754946061e6,
                     0.00212146344183398e6, 0.00165338427026637e6,
@@ -70,7 +70,7 @@ public static class SampleAssetGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2027,
-                Values = new double[] { 391.073152662903e6, 477.737937405167e6,
+                Values = new[] { 391.073152662903e6, 477.737937405167e6,
                 474.497638477598e6, 44.5750914242851e6 }
             }))
             .WithWellProject(new WellProjectBuilder
@@ -80,7 +80,7 @@ public static class SampleAssetGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2029,
-                Values = new double[] { 1146e6 }
+                Values = new[] { 1146e6 }
             }))
             .WithExploration(new ExplorationBuilder
             {
@@ -89,13 +89,13 @@ public static class SampleAssetGenerator
             {
                 Currency = Currency.NOK,
                 StartYear = 2023,
-                Values = new double[] { 280e6 }
+                Values = new[] { 280e6 }
 
             }).WithGAndGAdminCost(new GAndGAdminCost
             {
                 Currency = Currency.NOK,
                 StartYear = 2022,
-                Values = new double[] { 8.5e6, 8.5e6, 8.5e6 }
+                Values = new[] { 8.5e6, 8.5e6, 8.5e6 }
             }))
             )
 
@@ -120,43 +120,43 @@ public static class SampleAssetGenerator
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
                     StartYear = 2031,
-                    Values = new double[] { 2.3, 3.3, 4.4 }
+                    Values = new[] { 2.3, 3.3, 4.4 }
                 }
                 )
                 .WithProductionProfileOil(new ProductionProfileOil
                 {
                     StartYear = 2032,
-                    Values = new double[] { 10.3, 13.3, 24.4, 1.2 }
+                    Values = new[] { 10.3, 13.3, 24.4, 1.2 }
                 }
                 )
                 .WithProductionProfileWater(new ProductionProfileWater
                 {
                     StartYear = 2033,
-                    Values = new double[] { 12.34, 13.45, 14.56 }
+                    Values = new[] { 12.34, 13.45, 14.56 }
                 }
                 )
                 .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection
                 {
                     StartYear = 2030,
-                    Values = new double[] { 7.89, 8.91, 9.01 }
+                    Values = new[] { 7.89, 8.91, 9.01 }
                 }
                 )
                 .WithFuelFlaringAndLosses(new FuelFlaringAndLosses
                 {
                     StartYear = 2034,
-                    Values = new double[] { 8.45, 4.78, 8, 74 }
+                    Values = new[] { 8.45, 4.78, 8, 74 }
                 }
                 )
                 .WithNetSalesGas(new NetSalesGas
                 {
                     StartYear = 2035,
-                    Values = new double[] { 3.4, 8.9, 2.3 }
+                    Values = new[] { 3.4, 8.9, 2.3 }
                 }
                 )
                 .WithCo2Emissions(new Co2Emissions
                 {
                     StartYear = 2030,
-                    Values = new double[] { 33.4, 18.9, 62.3 }
+                    Values = new[] { 33.4, 18.9, 62.3 }
                 }
                 )
             )
@@ -169,7 +169,7 @@ public static class SampleAssetGenerator
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
                     StartYear = 2031,
-                    Values = new double[] { 12.34, 13.45, 14.56 }
+                    Values = new[] { 12.34, 13.45, 14.56 }
                 }
                 )
             )
@@ -187,7 +187,7 @@ public static class SampleAssetGenerator
                 {
                     Currency = Currency.USD,
                     StartYear = 2030,
-                    Values = new double[] { 33.4, 18.9, 62.3 }
+                    Values = new[] { 33.4, 18.9, 62.3 }
                 }
                 )
                 .WithDrillingSchedule(new DrillingSchedule
@@ -212,7 +212,7 @@ public static class SampleAssetGenerator
                 {
                     Currency = Currency.USD,
                     StartYear = 2032,
-                    Values = new double[] { 33.4, 18.9, 62.3 }
+                    Values = new[] { 33.4, 18.9, 62.3 }
                 }
                 )
             )
@@ -226,7 +226,7 @@ public static class SampleAssetGenerator
                 {
                     Currency = Currency.USD,
                     StartYear = 2033,
-                    Values = new double[] { 23.4, 28.9, 32.3 }
+                    Values = new[] { 23.4, 28.9, 32.3 }
                 }
                 )
             )
@@ -244,7 +244,7 @@ public static class SampleAssetGenerator
                 {
                     Currency = Currency.USD,
                     StartYear = 2034,
-                    Values = new double[] { 123.4, 218.9, 312.3 }
+                    Values = new[] { 123.4, 218.9, 312.3 }
                 }
                 )
             )
@@ -257,7 +257,7 @@ public static class SampleAssetGenerator
                 {
                     Currency = Currency.USD,
                     StartYear = 2035,
-                    Values = new double[] { 13.4, 18.9, 34.3 }
+                    Values = new[] { 13.4, 18.9, 34.3 }
                 }
                 )
             )
@@ -271,7 +271,7 @@ public static class SampleAssetGenerator
                 {
                     Currency = Currency.USD,
                     StartYear = 2036,
-                    Values = new double[] { 11.4, 28.2, 34.3 }
+                    Values = new[] { 11.4, 28.2, 34.3 }
                 }
                 )
                 .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule
@@ -284,7 +284,7 @@ public static class SampleAssetGenerator
                 {
                     Currency = Currency.NOK,
                     StartYear = 2038,
-                    Values = new double[] { 31.4, 28.2, 34.3 }
+                    Values = new[] { 31.4, 28.2, 34.3 }
                 }
 
                 )
@@ -307,7 +307,7 @@ public static class SampleAssetGenerator
                     .WithProductionProfileGas(new ProductionProfileGas
                     {
                         StartYear = 2030,
-                        Values = new double[] { 12.34, 13.45, 14.56 }
+                        Values = new[] { 12.34, 13.45, 14.56 }
                     }
                     ))
         );
@@ -325,7 +325,7 @@ public static class SampleAssetGenerator
 
     public static ProjectBuilder spreadSheetProject()
     {
-        return new ProjectBuilder()
+        return new ProjectBuilder
         {
             Name = "Skarven",
             CommonLibraryId = new Guid(),
@@ -356,7 +356,7 @@ public static class SampleAssetGenerator
             .WithProductionProfileGas(new ProductionProfileGas
             {
                 StartYear = 2030,
-                Values = new double[] { 0.0460776e6, 0.0459552635016671e6,
+                Values = new[] { 0.0460776e6, 0.0459552635016671e6,
                 0.0411623281639219e6,  0.0347990402399031e6,
                 0.0294194535546169e6, 0.02487149764722e6,
                 0.0210266106427589e6,  0.017776105057815e6,
@@ -371,7 +371,7 @@ public static class SampleAssetGenerator
             .WithProductionProfileOil(new ProductionProfileOil
             {
                 StartYear = 2030,
-                Values = new double[] { 0.438e6, 0.436837105529155e6,
+                Values = new[] { 0.438e6, 0.436837105529155e6,
                 0.391276883687471e6, 0.330789355892615e6, 0.279652600329056e6,
                 0.236421080296768e6, 0.199872724741057e6, 0.168974382678855e6,
                 0.142852618028251e6, 0.120769019267905e6, 0.102099325978384e6,
@@ -383,7 +383,7 @@ public static class SampleAssetGenerator
             .WithNetSalesGas(new NetSalesGas
             {
                 StartYear = 2030,
-                Values = new double[] { 0.045534094613436e6,
+                Values = new[] { 0.045534094613436e6,
                 0.0454132011274522e6,  0.0406768005522276e6,
                 0.0343885703843194e6, 0.0290724382700382e6,
                 0.0245781274859447e6,  0.0207785926004667e6,
@@ -398,7 +398,7 @@ public static class SampleAssetGenerator
             .WithCo2Emissions(new Co2Emissions
             {
                 StartYear = 2029,
-                Values = new double[] { 0.009e6, 0.00202727509188372e6,
+                Values = new[] { 0.009e6, 0.00202727509188372e6,
                 0.00202189265582155e6, 0.00181101799161985e6,
                 0.0015310525613273e6, 0.00129436701147856e6,
                 0.0010942707015568e6, 0.000925107297749942e6,
@@ -420,7 +420,7 @@ public static class SampleAssetGenerator
         {
             Currency = Currency.NOK,
             StartYear = 2027,
-            Values = new double[] { 349.95166651869e6, 427.288025880945e6,
+            Values = new[] { 349.95166651869e6, 427.288025880945e6,
             424.163092995196e6,  39.8227522796791e6
             }
         });
@@ -435,7 +435,7 @@ public static class SampleAssetGenerator
         {
             Currency = Currency.NOK,
             StartYear = 2029,
-            Values = new double[] { 764e6 }
+            Values = new[] { 764e6 }
         });
     }
     public static ExplorationBuilder case2Exploration()
@@ -447,13 +447,13 @@ public static class SampleAssetGenerator
         {
             Currency = Currency.NOK,
             StartYear = 2023,
-            Values = new double[] { 280e6 }
+            Values = new[] { 280e6 }
 
         }).WithGAndGAdminCost(new GAndGAdminCost
         {
             Currency = Currency.NOK,
             StartYear = 2022,
-            Values = new double[] { 9e6, 9e6, 9e6 }
+            Values = new[] { 9e6, 9e6, 9e6 }
         });
     }
 }

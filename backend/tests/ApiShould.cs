@@ -140,8 +140,6 @@ public class ApiShould : IClassFixture<WebApplicationFactory<Program>>
             doJsonRequest<ProjectDto, ProjectDto>(client, _projectsApiPath,
                     "POST", projectDto);
         var projectId = responseProject.ProjectId;
-        var earlyFetchedProjectDto = await getJson<ProjectDto>(client,
-                _projectsApiPath + "/" + projectId);
 
         // create CASE, send it, save id as query for asset requests
         var caseDto = TestDataGenerator.Case2Case();
