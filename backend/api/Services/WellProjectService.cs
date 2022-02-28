@@ -44,7 +44,7 @@ namespace api.Services
 
         private void SetCaseLink(WellProject wellProject, Guid sourceCaseId, Project project)
         {
-            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
             if (case_ == null)
             {
                 throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
@@ -105,12 +105,26 @@ namespace api.Services
             wellProject.RigMobDemob = updatedWellProject.RigMobDemob;
             wellProject.AnnualWellInterventionCost = updatedWellProject.AnnualWellInterventionCost;
             wellProject.PluggingAndAbandonment = updatedWellProject.PluggingAndAbandonment;
-            wellProject.CostProfile.Currency = updatedWellProject.CostProfile.Currency;
-            wellProject.CostProfile.EPAVersion = updatedWellProject.CostProfile.EPAVersion;
-            wellProject.CostProfile.Values = updatedWellProject.CostProfile.Values;
-            wellProject.CostProfile.StartYear = updatedWellProject.CostProfile.StartYear;
-            wellProject.DrillingSchedule.Values = updatedWellProject.DrillingSchedule.Values;
-            wellProject.DrillingSchedule.StartYear = updatedWellProject.DrillingSchedule.StartYear;
+            if (updatedWellProject.CostProfile != null)
+            {
+                if (wellProject.CostProfile == null)
+                {
+                    wellProject.CostProfile = new WellProjectCostProfile { };
+                }
+                wellProject.CostProfile.Currency = updatedWellProject.CostProfile.Currency;
+                wellProject.CostProfile.EPAVersion = updatedWellProject.CostProfile.EPAVersion;
+                wellProject.CostProfile.Values = updatedWellProject.CostProfile.Values;
+                wellProject.CostProfile.StartYear = updatedWellProject.CostProfile.StartYear;
+            }
+            if (updatedWellProject.DrillingSchedule != null)
+            {
+                if (wellProject.DrillingSchedule == null)
+                {
+                    wellProject.DrillingSchedule = new DrillingSchedule { };
+                }
+                wellProject.DrillingSchedule.Values = updatedWellProject.DrillingSchedule.Values;
+                wellProject.DrillingSchedule.StartYear = updatedWellProject.DrillingSchedule.StartYear;
+            }
         }
     }
 }

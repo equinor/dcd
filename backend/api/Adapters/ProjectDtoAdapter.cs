@@ -82,34 +82,41 @@ namespace api.Adapters
                     projectDto.Transports.Add(TransportDtoAdapter.Convert(t));
                 }
             }
-            AddCapexToCases(projectDto);
+            if (projectDto.Cases != null)
+            {
+                AddCapexToCases(projectDto);
+            }
             return projectDto;
         }
 
         public static void AddCapexToCases(ProjectDto p)
         {
-            foreach (CaseDto c in p.Cases)
+            foreach (CaseDto c in p.Cases!)
             {
                 c.Capex = 0;
                 if (c.WellProjectLink != Guid.Empty)
                 {
-                    c.Capex += p.WellProjects.FirstOrDefault(l => l.Id == c.WellProjectLink)!.CostProfile.Sum;
+                    var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
+                    if (wellProject.CostProfile != null)
+                    {
+                        c.Capex += wellProject.CostProfile.Sum;
+                    }
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
-                    c.Capex += p.Substructures.FirstOrDefault(l => l.Id == c.SubstructureLink)!.CostProfile.Sum;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile.Sum;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
-                    c.Capex += p.Surfs.FirstOrDefault(l => l.Id == c.SurfLink)!.CostProfile.Sum;
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile.Sum;
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {
-                    c.Capex += p.Topsides.FirstOrDefault(l => l.Id == c.TopsideLink)!.CostProfile.Sum;
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile.Sum;
                 }
                 if (c.TransportLink != Guid.Empty)
                 {
-                    c.Capex += p.Transports.FirstOrDefault(l => l.Id == c.TransportLink)!.CostProfile.Sum;
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink).CostProfile.Sum;
                 }
             }
         }
