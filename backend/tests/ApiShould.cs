@@ -123,7 +123,7 @@ public class ApiShould : IClassFixture<WebApplicationFactory<Program>>
         var responseProjects = await getJson<List<ProjectDto>>(client, _projectsApiPath);
         foreach (var responseProject in responseProjects)
         {
-            Assert.Equal(responseProject.CreateDate.Date,
+            Assert.Equal(responseProject.CreateDate,
                     DateTimeOffset.UtcNow.Date);
             Assert.NotNull(responseProject.DrainageStrategies);
         }
@@ -185,6 +185,8 @@ public class ApiShould : IClassFixture<WebApplicationFactory<Program>>
 
         // establish correctness of received fetchedProjectDto
         // basic comparisons of project data
+        // set expected date on test project instance, for comparison
+        projectDto.CreateDate = DateTimeOffset.UtcNow.Date;
         TestHelper.CompareProjectsData(projectDto, fetchedProjectDto);
         // check that case on project is expected case
         var fetchedCaseDto = fetchedProjectDto.Cases.First();

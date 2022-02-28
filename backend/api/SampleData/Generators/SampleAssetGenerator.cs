@@ -104,7 +104,7 @@ public static class SampleAssetGenerator
             Name = "P1",
             CommonLibraryId = new Guid(),
             CommonLibraryName = "P1 from common lib",
-            CreateDate = DateTimeOffset.UtcNow,
+            CreateDate = DateTimeOffset.UtcNow.Date,
             ProjectCategory = ProjectCategory.OffshoreWind,
             ProjectPhase = ProjectPhase.BusinessPlanning
         }
@@ -295,7 +295,7 @@ public static class SampleAssetGenerator
             Name = "P2",
             CommonLibraryId = new Guid(),
             CommonLibraryName = "P2 from common lib",
-            CreateDate = DateTimeOffset.UtcNow
+            CreateDate = DateTimeOffset.UtcNow.Date
         }
             .WithDrainageStrategy(new DrainageStrategyBuilder
             {
@@ -331,7 +331,7 @@ public static class SampleAssetGenerator
             CommonLibraryId = new Guid(),
             CommonLibraryName = "Skarven",
             Description = "Project from example spread sheet",
-            CreateDate = DateTimeOffset.UtcNow,
+            CreateDate = DateTimeOffset.UtcNow.Date,
             ProjectCategory = ProjectCategory.OffshoreWind,
             ProjectPhase = ProjectPhase.BusinessPlanning
         };

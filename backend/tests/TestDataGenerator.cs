@@ -11,7 +11,6 @@ public static class TestDataGenerator
         {
             Name = "Skarven",
             CommonLibraryName = "The Skarven Project",
-            CreateDate = DateTimeOffset.UtcNow,
             Country = "Norway",
             Description = "Skarven Project from Spreadsheet",
             ProjectCategory = ProjectCategory.OffshoreWind,
