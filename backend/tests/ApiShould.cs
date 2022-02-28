@@ -130,7 +130,7 @@ public class ApiShould : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task CanCreateProjectWithCaseAndAssetsAndRetrieveAllData()
+    public async Task CreateProjectWithCaseAndAssetsAndRetrieveAllData()
     {
         var client = getNoAuthApiClient();
 
