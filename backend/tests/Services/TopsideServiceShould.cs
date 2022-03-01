@@ -46,27 +46,27 @@ public class TopsideServiceShould : IDisposable
         }
     }
 
-    [Fact]
-    public void CreateNewTopside()
-    {
-        // Arrange
-        var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
-        var caseId = project.Cases.FirstOrDefault().Id;
-        var testTopside = CreateTestTopside(project);
-        ProjectService projectService = new ProjectService(fixture.context);
-        TopsideService topsideService = new TopsideService(fixture.context, projectService);
+    // [Fact]
+    // public void CreateNewTopside()
+    // {
+    //     // Arrange
+    //     var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+    //     var caseId = project.Cases.FirstOrDefault().Id;
+    //     var testTopside = CreateTestTopside(project);
+    //     ProjectService projectService = new ProjectService(fixture.context);
+    //     TopsideService topsideService = new TopsideService(fixture.context, projectService);
 
-        // Act
-        var projectResult = topsideService.CreateTopside(testTopside, caseId);
+    //     // Act
+    //     var projectResult = topsideService.CreateTopside(testTopside, caseId);
 
-        // Assert
-        var retrievedTopside = projectResult.Topsides.FirstOrDefault(o => o.Name ==
-                testTopside.Name);
-        Assert.NotNull(retrievedTopside);
-        TestHelper.CompareTopsides(testTopside, retrievedTopside);
-        var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
-        Assert.Equal(retrievedTopside.Id, case_.TopsideLink);
-    }
+    //     // Assert
+    //     var retrievedTopside = projectResult.Topsides.FirstOrDefault(o => o.Name ==
+    //             testTopside.Name);
+    //     Assert.NotNull(retrievedTopside);
+    //     TestHelper.CompareTopsides(testTopside, retrievedTopside);
+    //     var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
+    //     Assert.Equal(retrievedTopside.Id, case_.TopsideLink);
+    // }
 
     [Fact]
     public void ThrowNotInDatabaseExceptionWhenCreatingTopsideWithBadProjectId()
@@ -136,26 +136,26 @@ public class TopsideServiceShould : IDisposable
         Assert.Throws<ArgumentException>(() => topsideService.DeleteTopside(new Guid()));
     }
 
-    [Fact]
-    public void UpdateTopside()
-    {
-        // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var oldTopside = CreateTestTopside(project);
-        fixture.context.Topsides.Add(oldTopside);
-        fixture.context.SaveChanges();
-        var updatedTopside = CreateUpdatedTopside(project);
+    // [Fact]
+    // public void UpdateTopside()
+    // {
+    //     // Arrange
+    //     var projectService = new ProjectService(fixture.context);
+    //     var topsideService = new TopsideService(fixture.context, projectService);
+    //     var project = fixture.context.Projects.FirstOrDefault();
+    //     var oldTopside = CreateTestTopside(project);
+    //     fixture.context.Topsides.Add(oldTopside);
+    //     fixture.context.SaveChanges();
+    //     var updatedTopside = CreateUpdatedTopside(project);
 
-        // Act
-        var projectResult = topsideService.UpdateTopside(oldTopside.Id, updatedTopside);
+    //     // Act
+    //     var projectResult = topsideService.UpdateTopside(oldTopside.Id, updatedTopside);
 
-        // Assert
-        var actualTopside = projectResult.Topsides.FirstOrDefault(o => o.Name == updatedTopside.Name);
-        Assert.NotNull(actualTopside);
-        TestHelper.CompareTopsides(updatedTopside, actualTopside);
-    }
+    //     // Assert
+    //     var actualTopside = projectResult.Topsides.FirstOrDefault(o => o.Name == updatedTopside.Name);
+    //     Assert.NotNull(actualTopside);
+    //     TestHelper.CompareTopsides(updatedTopside, actualTopside);
+    // }
 
     [Fact]
     public void ThrowArgumentExceptionIfTryingToUpdateNonExistentTopside()

@@ -15,7 +15,6 @@ namespace tests
             Assert.Equal(expected.CommonLibraryName, actual.CommonLibraryName);
             Assert.Equal(expected.Description, actual.Description);
             Assert.Equal(expected.Country, actual.Country);
-            Assert.Equal(expected.CreateDate.Date, actual.CreateDate.Date);
             Assert.Equal(expected.ProjectPhase, actual.ProjectPhase);
             Assert.Equal(expected.ProjectCategory, actual.ProjectCategory);
         }
@@ -259,7 +258,7 @@ namespace tests
                 Assert.Null(actual);
                 return;
             }
-            Assert.Equal(expected.ProjectId, actual.ProjectId);
+            //Assert.Equal(expected.ProjectId, actual.ProjectId);
             Assert.Equal(expected.Name, actual.Name);
             Assert.Equal(expected.Description, actual.Description);
             Assert.Equal(expected.NGLYield, actual.NGLYield);
@@ -282,7 +281,7 @@ namespace tests
             CompareMasses(expected.Co2Emissions, actual.Co2Emissions);
         }
 
-        public static void CompareTransports(Transport expected, Transport actual)
+        public static void CompareTransports(TransportDto expected, TransportDto actual)
         {
             if (expected == null || actual == null)
             {
@@ -299,7 +298,7 @@ namespace tests
             }
         }
 
-        public static void CompareTransports(Transport expected, TransportDto actual)
+        public static void CompareTransports(Transport expected, Transport actual)
         {
             if (expected == null || actual == null)
             {
@@ -494,11 +493,6 @@ namespace tests
                     actual.CostProfile);
         }
 
-        public static void CompareWellProjects(WellProjectDto expected, WellProject actual)
-        {
-            CompareWellProjects(actual, expected);
-        }
-
         public static void CompareWellProjects(WellProjectDto expected, WellProjectDto actual)
         {
             if (expected == null || actual == null)
@@ -525,6 +519,26 @@ namespace tests
                     actual.CostProfile);
         }
 
+        public static void CompareTopsides(TopsideDto expected, TopsideDto actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Maturity, actual.Maturity);
+                Assert.Equal(expected.DryWeight, actual.DryWeight);
+                Assert.Equal(expected.GasCapacity, actual.GasCapacity);
+                Assert.Equal(expected.OilCapacity, actual.OilCapacity);
+                Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
+                Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
+                TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            }
+        }
+
         public static void CompareTopsides(Topside expected, Topside actual)
         {
             if (expected == null || actual == null)
@@ -545,7 +559,7 @@ namespace tests
             }
         }
 
-        public static void CompareTopsides(Topside expected, TopsideDto actual)
+        public static void CompareSurfs(Surf expected, Surf actual)
         {
             if (expected == null || actual == null)
             {
@@ -556,16 +570,17 @@ namespace tests
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Maturity, actual.Maturity);
-                Assert.Equal(expected.DryWeight, actual.DryWeight);
-                Assert.Equal(expected.GasCapacity, actual.GasCapacity);
-                Assert.Equal(expected.OilCapacity, actual.OilCapacity);
-                Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
+                Assert.Equal(expected.RiserCount, actual.RiserCount);
+                Assert.Equal(expected.TemplateCount, actual.TemplateCount);
                 Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
+                Assert.Equal(expected.InfieldPipelineSystemLength, actual.InfieldPipelineSystemLength);
+                Assert.Equal(expected.UmbilicalSystemLength, actual.UmbilicalSystemLength);
+                Assert.Equal(expected.ProductionFlowline, actual.ProductionFlowline);
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
             }
         }
 
-        public static void CompareSurfs(Surf expected, Surf actual)
+        public static void CompareSurfs(SurfDto expected, SurfDto actual)
         {
             if (expected == null || actual == null)
             {

@@ -3,7 +3,7 @@ using api.Models;
 
 namespace tests;
 
-public static class TestDataGenerator
+public static class BCCST_Example_Case2_TestDataGenerator
 {
     public static ProjectDto SpreadSheetProject()
     {
@@ -24,7 +24,8 @@ public static class TestDataGenerator
             Name = "Case 2",
             CreateTime = DateTimeOffset.UtcNow,
             Description = "case 2 from example spreadsheet",
-            ModifyTime = DateTimeOffset.UtcNow
+            ModifyTime = DateTimeOffset.UtcNow,
+            DG4Date = DateTime.Parse("Jan 01 2030")
         };
     }
     public static DrainageStrategyDto Case2DrainageStrategy()
@@ -35,7 +36,7 @@ public static class TestDataGenerator
             Description = "Skarvens drainage strategy",
             ProductionProfileGas = new ProductionProfileGasDto
             {
-                StartYear = 2030,
+                StartYear = -1,
                 Values = new[] { 0.0460776e9, 0.0459552635016671e9,
                 0.0411623281639219e9, 0.0347990402399031e9,
                 0.0294194535546169e9, 0.02487149764722e9,
@@ -49,7 +50,7 @@ public static class TestDataGenerator
             },
             ProductionProfileOil = new ProductionProfileOilDto
             {
-                StartYear = 2030,
+                StartYear = 0,
                 Values = new[] { 0.438e6, 0.436837105529155e6,
                 0.391276883687471e6, 0.330789355892615e6, 0.279652600329056e6,
                 0.236421080296768e6, 0.199872724741057e6, 0.168974382678855e6,
@@ -60,7 +61,7 @@ public static class TestDataGenerator
             },
             NetSalesGas = new NetSalesGasDto
             {
-                StartYear = 2030,
+                StartYear = 0,
                 Values = new[] { 0.045534094613436e9,
                 0.0454132011274522e9, 0.0406768005522276e9,
                 0.0343885703843194e9, 0.0290724382700382e9,
@@ -74,7 +75,7 @@ public static class TestDataGenerator
             },
             Co2Emissions = new Co2EmissionsDto
             {
-                StartYear = 2029,
+                StartYear = -1,
                 Values = new[] { 0.009e6, 0.00202727509188372e6,
                 0.00202189265582155e6, 0.00181101799161985e6,
                 0.0015310525613273e6, 0.00129436701147856e6,
@@ -97,7 +98,7 @@ public static class TestDataGenerator
             CostProfile = new SubstructureCostProfileDto
             {
                 Currency = Currency.NOK,
-                StartYear = 2027,
+                StartYear = -3,
                 Values = new[] { 349.95166651869e6, 427.288025880945e6,
                 424.163092995196e6, 39.8227522796791e6
                 }
@@ -113,7 +114,7 @@ public static class TestDataGenerator
             CostProfile = new WellProjectCostProfileDto
             {
                 Currency = Currency.NOK,
-                StartYear = 2029,
+                StartYear = -2,
                 Values = new[] { 764e6 }
             }
         };
@@ -126,14 +127,14 @@ public static class TestDataGenerator
             CostProfile = new ExplorationCostProfileDto
             {
                 Currency = Currency.NOK,
-                StartYear = 2023,
+                StartYear = -7,
                 Values = new[] { 280e6 }
 
             },
             GAndGAdminCost = new GAndGAdminCostDto
             {
                 Currency = Currency.NOK,
-                StartYear = 2022,
+                StartYear = -8,
                 Values = new[] { 9e6, 9e6, 9e6 }
             }
         };
