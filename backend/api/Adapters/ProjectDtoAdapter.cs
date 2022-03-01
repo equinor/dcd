@@ -18,73 +18,105 @@ namespace api.Adapters
             projectDto.ProjectCategory = project.ProjectCategory;
             projectDto.ProjectPhase = project.ProjectPhase;
             projectDto.Cases = new List<CaseDto>();
-            foreach (Case c in project.Cases)
+            if (project.Cases != null)
             {
-                projectDto.Cases.Add(CaseDtoAdapter.Convert(c));
+                foreach (Case c in project.Cases)
+                {
+                    projectDto.Cases.Add(CaseDtoAdapter.Convert(c));
+                }
             }
-            projectDto.Explorations = new List<ExplorationDto>();
-            foreach (Exploration e in project.Explorations)
+            if (project.Explorations != null)
             {
-                projectDto.Explorations.Add(ExplorationDtoAdapter.Convert(e));
+                projectDto.Explorations = new List<ExplorationDto>();
+                foreach (Exploration e in project.Explorations)
+                {
+                    projectDto.Explorations.Add(ExplorationDtoAdapter.Convert(e));
+                }
             }
-            projectDto.DrainageStrategies = new List<DrainageStrategyDto>();
-            foreach (DrainageStrategy d in project.DrainageStrategies)
+            if (project.DrainageStrategies != null)
             {
-                projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d));
+                projectDto.DrainageStrategies = new List<DrainageStrategyDto>();
+                foreach (DrainageStrategy d in project.DrainageStrategies)
+                {
+                    projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d));
+                }
             }
-            projectDto.WellProjects = new List<WellProjectDto>();
-            foreach (WellProject w in project.WellProjects)
+            if (project.WellProjects != null)
             {
-                projectDto.WellProjects.Add(WellProjectDtoAdapter.Convert(w));
+                projectDto.WellProjects = new List<WellProjectDto>();
+                foreach (WellProject w in project.WellProjects)
+                {
+                    projectDto.WellProjects.Add(WellProjectDtoAdapter.Convert(w));
+                }
             }
-            projectDto.Substructures = new List<SubstructureDto>();
-            foreach (Substructure s in project.Substructures)
+            if (project.Substructures != null)
             {
-                projectDto.Substructures.Add(SubstructureDtoAdapter.Convert(s));
+                projectDto.Substructures = new List<SubstructureDto>();
+                foreach (Substructure s in project.Substructures)
+                {
+
+                    projectDto.Substructures.Add(SubstructureDtoAdapter.Convert(s));
+                }
             }
-            projectDto.Surfs = new List<SurfDto>();
-            foreach (Surf s in project.Surfs)
+            if (project.Surfs != null)
             {
-                projectDto.Surfs.Add(SurfDtoAdapter.Convert(s));
+                projectDto.Surfs = new List<SurfDto>();
+                foreach (Surf s in project.Surfs)
+                {
+                    projectDto.Surfs.Add(SurfDtoAdapter.Convert(s));
+                }
             }
-            projectDto.Topsides = new List<TopsideDto>();
-            foreach (Topside t in project.Topsides)
+            if (project.Topsides != null)
             {
-                projectDto.Topsides.Add(TopsideDtoAdapter.Convert(t));
+                projectDto.Topsides = new List<TopsideDto>();
+                foreach (Topside t in project.Topsides)
+                {
+                    projectDto.Topsides.Add(TopsideDtoAdapter.Convert(t));
+                }
             }
-            projectDto.Transports = new List<TransportDto>();
-            foreach (Transport t in project.Transports)
+            if (project.Transports != null)
             {
-                projectDto.Transports.Add(TransportDtoAdapter.Convert(t));
+                projectDto.Transports = new List<TransportDto>();
+                foreach (Transport t in project.Transports)
+                {
+                    projectDto.Transports.Add(TransportDtoAdapter.Convert(t));
+                }
             }
-            AddCapexToCases(projectDto);
+            if (projectDto.Cases != null)
+            {
+                AddCapexToCases(projectDto);
+            }
             return projectDto;
         }
 
         public static void AddCapexToCases(ProjectDto p)
         {
-            foreach (CaseDto c in p.Cases)
+            foreach (CaseDto c in p.Cases!)
             {
                 c.Capex = 0;
                 if (c.WellProjectLink != Guid.Empty)
                 {
-                    c.Capex += p.WellProjects.FirstOrDefault(l => l.Id == c.WellProjectLink)!.CostProfile.Sum;
+                    var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
+                    if (wellProject.CostProfile != null)
+                    {
+                        c.Capex += wellProject.CostProfile.Sum;
+                    }
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
-                    c.Capex += p.Substructures.FirstOrDefault(l => l.Id == c.SubstructureLink)!.CostProfile.Sum;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile.Sum;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
-                    c.Capex += p.Surfs.FirstOrDefault(l => l.Id == c.SurfLink)!.CostProfile.Sum;
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile.Sum;
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {
-                    c.Capex += p.Topsides.FirstOrDefault(l => l.Id == c.TopsideLink)!.CostProfile.Sum;
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile.Sum;
                 }
                 if (c.TransportLink != Guid.Empty)
                 {
-                    c.Capex += p.Transports.FirstOrDefault(l => l.Id == c.TransportLink)!.CostProfile.Sum;
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink).CostProfile.Sum;
                 }
             }
         }

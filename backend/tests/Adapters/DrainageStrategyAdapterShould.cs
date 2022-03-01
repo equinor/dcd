@@ -17,11 +17,10 @@ namespace tests
         {
             // Arrange
             var projectId = new Guid();
-            var drainageStrategyAdapter = new DrainageStrategyAdapter();
             var drainageStrategyDto = CreateDrainageStrategyDto(projectId);
 
             // Act
-            var result = drainageStrategyAdapter.Convert(drainageStrategyDto);
+            var result = DrainageStrategyAdapter.Convert(drainageStrategyDto);
 
             // Assert
             Assert.Equal(drainageStrategyDto.ProjectId, result.ProjectId);
@@ -34,25 +33,25 @@ namespace tests
             Assert.Equal(drainageStrategyDto.GasInjectorCount, result.GasInjectorCount);
 
             Assert.Equal(drainageStrategyDto.Name, result.ProductionProfileOil.DrainageStrategy.Name);
-            //      TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileOil, result.ProductionProfileOil);
+            TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileOil, result.ProductionProfileOil);
 
             Assert.Equal(drainageStrategyDto.Name, result.ProductionProfileGas.DrainageStrategy.Name);
-            //      TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileGas, result.ProductionProfileGas);
+            TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileGas, result.ProductionProfileGas);
 
             Assert.Equal(drainageStrategyDto.Name, result.ProductionProfileWater.DrainageStrategy.Name);
-            //       TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileWater, result.ProductionProfileWater);
+            TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileWater, result.ProductionProfileWater);
 
             Assert.Equal(drainageStrategyDto.Name, result.ProductionProfileWaterInjection.DrainageStrategy.Name);
-            //        TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileWaterInjection, result.ProductionProfileWaterInjection);
+            TestHelper.CompareYearValues<double>(drainageStrategyDto.ProductionProfileWaterInjection, result.ProductionProfileWaterInjection);
 
             Assert.Equal(drainageStrategyDto.Name, result.FuelFlaringAndLosses.DrainageStrategy.Name);
-            //     TestHelper.CompareYearValues<double>(drainageStrategyDto.FuelFlaringAndLosses, result.FuelFlaringAndLosses);
+            TestHelper.CompareYearValues<double>(drainageStrategyDto.FuelFlaringAndLosses, result.FuelFlaringAndLosses);
 
             Assert.Equal(drainageStrategyDto.Name, result.NetSalesGas.DrainageStrategy.Name);
-            //       TestHelper.CompareYearValues<double>(drainageStrategyDto.NetSalesGas, result.NetSalesGas);
+            TestHelper.CompareYearValues<double>(drainageStrategyDto.NetSalesGas, result.NetSalesGas);
 
             Assert.Equal(drainageStrategyDto.Name, result.Co2Emissions.DrainageStrategy.Name);
-            //       TestHelper.CompareYearValues<double>(drainageStrategyDto.Co2Emissions, result.Co2Emissions);
+            TestHelper.CompareYearValues<double>(drainageStrategyDto.Co2Emissions, result.Co2Emissions);
         }
 
         private DrainageStrategyDto CreateDrainageStrategyDto(Guid projectId)
