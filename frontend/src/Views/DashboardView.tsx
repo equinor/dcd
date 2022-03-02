@@ -9,7 +9,7 @@ import { Project } from "../models/Project"
 
 import RecentProjects from "../Components/RecentProjects"
 
-import { ProjectService } from "../Services/ProjectService"
+import { GetProjectService } from "../Services/ProjectService"
 
 import { ProjectPath, RetrieveLastVisitForProject } from "../Utils/common"
 
@@ -41,6 +41,8 @@ const FindProjectText = styled(Typography)`
 
 function DashboardView() {
     const navigate = useNavigate()
+
+    const ProjectService = GetProjectService()
 
     const [projects, setProjects] = useState<any[]>()
     const [recentProjects, setRecentProjects] = useState<Components.Schemas.ProjectDto[] | any>()

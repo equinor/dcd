@@ -1,5 +1,8 @@
 const recentProjectKeyPrefix = "projectid:"
 
+export const LoginAccessTokenKey = "loginAccessToken"
+export const FusionAccessTokenKey = "fusionAccessToken"
+
 export const GetDrainageStrategy = (
     project: Components.Schemas.ProjectDto,
     drainageStrategyId?: string,
@@ -27,4 +30,12 @@ export function ProjectPath(projectId: string) {
 
 export function CasePath(projectId: string, caseId: string) {
     return `${ProjectPath(projectId)}/case/${caseId}`
+}
+
+export function StoreToken(keyName: string, token: string) {
+    window.sessionStorage.setItem(keyName, token)
+}
+
+export function GetToken(keyName: string) {
+    return window.sessionStorage.getItem(keyName)
 }

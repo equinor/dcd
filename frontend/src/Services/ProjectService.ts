@@ -2,6 +2,8 @@ import { Project } from "../models/Project"
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
+import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+
 export class __ProjectService extends __BaseService {
     async getProjects() {
         const projects = await this.get<Components.Schemas.ProjectDto[]>("")
@@ -18,7 +20,9 @@ export class __ProjectService extends __BaseService {
     }
 }
 
-export const ProjectService = new __ProjectService({
-    ...config.ProjectService,
-    accessToken: window.sessionStorage.getItem("loginAccessToken")!,
-})
+export function GetProjectService() {
+    return new __ProjectService({
+        ...config.ProjectService,
+        accessToken: GetToken(LoginAccessTokenKey)!,
+    })
+}

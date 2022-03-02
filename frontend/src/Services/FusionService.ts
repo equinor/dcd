@@ -1,5 +1,6 @@
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
+import { GetToken, FusionAccessTokenKey } from "../Utils/common"
 
 export class __FusionService extends __BaseService {
     getFusionProjects() {
@@ -7,7 +8,9 @@ export class __FusionService extends __BaseService {
     }
 }
 
-export const fusionService = new __FusionService({
-    ...config.FusionService,
-    accessToken: window.sessionStorage.getItem("fusionAccessToken")!,
-})
+export function GetFusionService() {
+    return new __FusionService({
+        ...config.FusionService,
+        accessToken: GetToken(FusionAccessTokenKey)!,
+    })
+}

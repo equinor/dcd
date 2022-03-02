@@ -8,6 +8,7 @@ import SideMenu from "../Components/SideMenu/SideMenu"
 
 import { fusionApiScope } from "../config"
 import { loginRequest } from "../auth/authContextProvider"
+import { LoginAccessTokenKey, FusionAccessTokenKey, StoreToken } from "../Utils/common"
 
 const Wrapper = styled.div`
     display: flex;
@@ -41,7 +42,7 @@ export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
                         ...loginRequest,
                         account: accounts[0],
                     })
-                    window.sessionStorage.setItem("loginAccessToken", accessToken)
+                    StoreToken(LoginAccessTokenKey, accessToken)
                 } catch (error) {
                     console.error("[AuthenticatedViewContainer] Login failed", error)
                 }
@@ -51,7 +52,7 @@ export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
                         scopes: fusionApiScope,
                         account: accounts[0],
                     })
-                    window.sessionStorage.setItem("fusionAccessToken", accessToken)
+                    StoreToken(FusionAccessTokenKey, accessToken)
                 } catch (error) {
                     console.error("[AuthenticatedViewContainer] Failed to get fusion token", error)
                 }
