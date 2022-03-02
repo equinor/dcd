@@ -60,6 +60,36 @@ when PR's are merged to master. The pr env is built on push to the pr branch. Th
 qa and prod environments are deployed with [Azure Pipeline](https://dev.azure.com/Shellvis/DCD/_build?definitionId=40)
 manually and when a new tag is created.
 
+## Development
+
+### Git Hooks
+
+There are various git hooks provided in the `git-hooks` folder. Using these is
+voluntary. Various checks are performed that are also performed in CI. The
+intention is to shorten the development cycle and avoid pushing code that will
+not pass CI.
+
+To use e.g. the pre-commit hook, copy the file `pre-commit` into `.git/hooks/`
+in the project root, or (more elegant, as this will automate the hook
+automatically) link the script like such, running in the project root:
+
+```
+ln -s $PWD/git-hooks/pre-commit .git/hooks/pre-commit
+```
+
+The above requires having `ln` available.
+
+#### Prerequisites
+
+The scripts rely on
+
+```
+- /bin/sh
+- git
+- dotnet
+- basic *nix utils (grep, tail, awk, ...)
+```
+
 ### Team
 
 DCD is developed by the Shellvis team in TDI EDT DSD EDB.
