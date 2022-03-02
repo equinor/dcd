@@ -30,7 +30,18 @@ The backend is built with .NET 6
 ### Run backend
 
 Create a file `backend/api/Properties/launchSettings.json` with the provided
-template file.
+template file. You need to populate the app configuration connection string
+(navigate to azure portal, find app configuration resource, navigate to
+settings -> access keys), and choose an AppConfiguration Environment (`dev` for
+local development at time of writing).
+
+Finally, to be able to use secrets referenced in the app config, you need to
+authenticate yourself on the command line. [Get a hold of the azure CLI
+`az`](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and run `az
+login` in the command line. NB: You will need to use a browser for the
+authentication, as far as I know.
+
+Then, to start the backend, you can run
 
 ```
 cd backend/api
