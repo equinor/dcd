@@ -4,7 +4,7 @@
         "WelcomeToDCD": "Welcome to DCD"
     },
     "CasesTable": {
-        "Case" : "Case",
+        "Case": "Case",
         "GasInjectors": "Gas injectors",
         "WellInjectors": "Well injectors",
         "Producers": "Producers",
@@ -19,5 +19,8 @@
         "PasteInformationHere": "Paste your information here:",
         "Import": "Import",
         "Cancel": "Cancel"
+    },
+    "OverviewView": {
+        "Overview": "Overview"
     }
 }

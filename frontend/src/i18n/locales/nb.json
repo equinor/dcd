@@ -19,5 +19,8 @@
         "PasteInformationHere": "TODO",
         "Import": "Importer",
         "Cancel": "TODO"
+    },
+    "OverviewView": {
+        "Overview": "Oversikt"
     }
 }

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Button, Dialog, Typography } from '@equinor/eds-core-react'
-import { Trans } from 'react-i18next';
 
 import { useTranslation } from "react-i18next";
 
@@ -73,7 +72,6 @@ const ExcelImport = ({ onClose, onImport }: Props) => {
         <StyledDialog>
             <Dialog.Title>{t('ExcelImport.ImportDataFromExcel')}</Dialog.Title>
             <Main>
-                <Trans></Trans>
                 <Typography>
                     {t('ExcelImport.ToPasteValuesCorrectly')}
                 </Typography>
