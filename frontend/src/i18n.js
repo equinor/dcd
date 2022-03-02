@@ -1,10 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+
 import translationNB from '../src/i18n/locales/nb.json';
 import translationEN from '../src/i18n/locales/en.json';
 
-// the translations
+//Implementation based upon documentation from https://react.i18next.com/legacy-v9/step-by-step-guide
 const resources = {
   nb: {
     translation: translationNB

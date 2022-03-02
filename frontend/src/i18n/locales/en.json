@@ -1,4 +1,16 @@
 {
-    "HeaderCreateProject" : "Create the projectasd",
-    "Halla" : "English Halla"
+    "Header": {
+        "CreateProject": "Create Project",
+        "WelcomeToDCD": "Welcome to DCD"
+    },
+    "CasesTable": {
+        "Case" : "Case",
+        "GasInjectors": "Gas injectors",
+        "WellInjectors": "Well injectors",
+        "Producers": "Producers",
+        "Templates": "Templates",
+        "GasCapacity": "Gas capacity",
+        "OilCapacity": "Oil capacity",
+        "DG4Date": "DG4 date"
+    }
 }

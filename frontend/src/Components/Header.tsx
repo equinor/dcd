@@ -35,9 +35,9 @@ const Header = ({ name }: Props) => {
             <Wrapper>
                 <PageTitle>DCD - Digital Concept Development</PageTitle>
                 <ChangeLanguageSelect/>
-                <Button ref={buttonRef} onClick={openModal}>{t('Halla')}</Button>
+                <Button ref={buttonRef} onClick={openModal}>{t('Header.CreateProject')}</Button>
                 <Typography>
-                    Welcome to DCD <b>{name}</b>!
+                    {t('Header.WelcomeToDCD')} <b>{name}</b>!
                 </Typography>
                 
             </Wrapper>

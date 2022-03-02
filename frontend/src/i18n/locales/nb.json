@@ -1,4 +1,16 @@
 {
-    "HeaderCreateProject" : "Lag et",
-    "Halla" : "Norsk Halla"
+    "Header": {
+        "CreateProject": "Lag prosjekt",
+        "WelcomeToDCD": "Velkommen til DCD"
+    },
+    "CasesTable": {
+        "Case" : "",
+        "GasInjectors": "",
+        "WellInjectors": "",
+        "Producers": "",
+        "Templates": "",
+        "GasCapacity": "",
+        "OilCapacity": "",
+        "DG4Date": ""
+    }
 }
