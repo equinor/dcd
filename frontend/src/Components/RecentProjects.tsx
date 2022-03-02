@@ -3,7 +3,7 @@ import { Typography, Card } from "@equinor/eds-core-react"
 import { useCallback } from "react"
 import styled from "styled-components"
 
-import { Project } from "../models/Project"
+import { RecentProject } from "../models/RecentProject"
 
 import { ProjectPath } from "../Utils/common"
 
@@ -59,7 +59,7 @@ const OpenProject = styled(Typography)`
 `
 
 interface Props {
-    projects: Project[]
+    projects: RecentProject[]
 }
 
 function RecentProjects({ projects }: Props) {
@@ -68,7 +68,7 @@ function RecentProjects({ projects }: Props) {
             ? tokens.colors.ui.background__info.rgba
             : tokens.colors.ui.background__danger.rgba
 
-        const labelText = phase ?? "TBD"
+        const labelText = phase || "TBD"
 
         return (
             <ProjectDG style={{ background: backgroundColor }} variant="caption">
@@ -103,13 +103,13 @@ function RecentProjects({ projects }: Props) {
                                 <CardHeaderTitleText variant="h5">
                                     {project.name}
                                 </CardHeaderTitleText>
-                                {renderProjectDG(project.phase?.toString())}
+                                {renderProjectDG(project.phase)}
                             </CardHeaderTitle>
                         </Card.Header>
                         <Card.Content>
                             {renderDescription(project.description)}
                             <CardFooter variant="meta">
-                                { `Created ${project.createdAt!.toDateString()}` }
+                                { `Created ${project.createdAt}` }
                             </CardFooter>
                             <OpenProject
                                 link
