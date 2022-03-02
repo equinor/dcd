@@ -79,7 +79,7 @@ ln -s $PWD/git-hooks/pre-commit .git/hooks/pre-commit
 
 The above requires having `ln` available.
 
-#### Prerequisites
+#### Dependencies
 
 The scripts rely on
 
