@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { useEffect, VoidFunctionComponent } from "react"
+import { useEffect, useState, VoidFunctionComponent } from "react"
 import styled from "styled-components"
 
 import { useMsal } from "@azure/msal-react"
@@ -32,6 +32,8 @@ const MainView = styled.div`
 
 export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
     const { instance, accounts } = useMsal()
+    const [haveLoginToken, setHaveLoginToken] = useState<boolean>(false)
+    const [haveFusionToken, setHaveFusionToken] = useState<boolean>(false)
 
     useEffect(() => {
         if (instance && accounts) {
@@ -43,6 +45,7 @@ export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
                         account: accounts[0],
                     })
                     StoreToken(LoginAccessTokenKey, accessToken)
+                    setHaveLoginToken(true)
                 } catch (error) {
                     console.error("[AuthenticatedViewContainer] Login failed", error)
                 }
@@ -53,12 +56,17 @@ export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
                         account: accounts[0],
                     })
                     StoreToken(FusionAccessTokenKey, accessToken)
+                    setHaveFusionToken(true)
                 } catch (error) {
                     console.error("[AuthenticatedViewContainer] Failed to get fusion token", error)
                 }
             })()
         }
     }, [instance, accounts])
+
+    if (!haveLoginToken || !haveFusionToken) {
+        return (<p>waiting on token...</p>)
+    }
 
     return (
         <Wrapper>
