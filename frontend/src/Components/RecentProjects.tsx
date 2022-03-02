@@ -109,8 +109,7 @@ function RecentProjects({ projects }: Props) {
                         <Card.Content>
                             {renderDescription(project.description)}
                             <CardFooter variant="meta">
-                                {/* TODO replace once projectDto has date */}
-                                Created Feb 15, 2022
+                                { `Created ${project.createdAt!.toDateString()}` }
                             </CardFooter>
                             <OpenProject
                                 link

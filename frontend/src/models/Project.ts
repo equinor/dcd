@@ -24,7 +24,7 @@ export class Project {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
         this.category = data.projectCategory ? new ProjectCategory(data.projectCategory) : null
         this.country = data.country ?? null
-        this.createdAt = null
+        this.createdAt = data.createDate ? new Date(data.createDate) : null
         this.description = data.description ?? null
         this.drainageStrategies = data.drainageStrategies?.map(DrainageStrategy.fromJSON) ?? []
         this.explorations = data.explorations ?? []
