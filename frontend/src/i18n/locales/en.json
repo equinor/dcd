@@ -12,5 +12,12 @@
         "GasCapacity": "Gas capacity",
         "OilCapacity": "Oil capacity",
         "DG4Date": "DG4 date"
+    },
+    "ExcelImport": {
+        "ImportDataFromExcel": "Import data from Excel",
+        "ToPasteValuesCorrectly": "To paste values correctly in the table, make sure that column titles are part of the paste.",
+        "PasteInformationHere": "Paste your information here:",
+        "Import": "Import",
+        "Cancel": "Cancel"
     }
 }

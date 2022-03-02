@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Button, Dialog, Typography } from '@equinor/eds-core-react'
+import { Trans } from 'react-i18next';
+
+import { useTranslation } from "react-i18next";
 
 import { tsvToJson } from './helpers'
 
@@ -41,6 +44,8 @@ interface Props {
 }
 
 const ExcelImport = ({ onClose, onImport }: Props) => {
+
+    const { t } = useTranslation();
     const [dataInput, setDataInput] = useState<string>('')
 
     const example =
@@ -66,18 +71,19 @@ const ExcelImport = ({ onClose, onImport }: Props) => {
 
     return (
         <StyledDialog>
-            <Dialog.Title>Import data from Excel</Dialog.Title>
+            <Dialog.Title>{t('ExcelImport.ImportDataFromExcel')}</Dialog.Title>
             <Main>
+                <Trans></Trans>
                 <Typography>
-                    To paste values correctly in the table, make sure that <Bold>column titles</Bold> are part of the paste.
+                    {t('ExcelImport.ToPasteValuesCorrectly')}
                 </Typography>
-                <Label>Paste your information here:</Label>
+                <Label>{t('ExcelImport.PasteInformationHere')}</Label>
                 <TextArea cols={30} rows={10} placeholder={example} value={dataInput} onChange={onChangeInput}></TextArea>
             </Main>
             <Dialog.Actions>
-                <ImportButton onClick={onClickImport}>Import</ImportButton>
+                <ImportButton onClick={onClickImport}>{t('ExcelImport.Import')}</ImportButton>
                 <Button variant="outlined" onClick={onClose}>
-                    Cancel
+                    {t('ExcelImport.Cancel')}
                 </Button>
             </Dialog.Actions>
         </StyledDialog>

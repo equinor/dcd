@@ -12,5 +12,12 @@
         "GasCapacity": "",
         "OilCapacity": "",
         "DG4Date": ""
+    },
+    "ExcelImport": {
+        "ImportDataFromExcel": "Importer data fra Excel",
+        "ToPasteValuesCorrectly": "TODO",
+        "PasteInformationHere": "TODO",
+        "Import": "Importer",
+        "Cancel": "TODO"
     }
 }
