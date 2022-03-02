@@ -36,7 +36,6 @@ export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
         if (instance && accounts) {
             (async () => {
                 // Silently acquires an access token
-                // which is then attached to a request for MS Graph data
                 try {
                     const { accessToken } = await instance.acquireTokenSilent({
                         ...loginRequest,
