@@ -92,11 +92,12 @@ function DashboardView() {
                 <ProjectDropdown
                     id="select-project"
                     label=""
+                    defaultValue="empty"
                     placeholder="Search projects"
                     onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                 >
                     {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                    <option disabled selected />
+                    <option value="empty" disabled />
                     {projects.map((project) => <option value={project.id!} key={project.id}>{project.name!}</option>)}
                 </ProjectDropdown>
             </ProjectSelect>
