@@ -2,6 +2,7 @@ import { tokens } from '@equinor/eds-tokens'
 import { Typography, Card } from '@equinor/eds-core-react'
 import { useCallback } from 'react'
 import styled from 'styled-components'
+import { useTranslation } from "react-i18next";
 
 import { Project } from '../models/Project'
 
@@ -63,6 +64,9 @@ interface Props {
 }
 
 const RecentProjects = ({ projects }: Props) => {
+
+    const { t } = useTranslation();
+
     const renderProjectDG = useCallback((phase?: string) => {
         const backgroundColor = phase
             ? tokens.colors.ui.background__info.rgba
@@ -93,7 +97,7 @@ const RecentProjects = ({ projects }: Props) => {
     return (
         <Wrapper>
             <RecentProjectTitle variant="h3">
-                Recently used Projects
+                {t('RecentProjects.RecentlyUsedProjects')}
             </RecentProjectTitle>
             <RecentProjectCardWrapper>
                 {projects?.map((project) => (
@@ -110,11 +114,11 @@ const RecentProjects = ({ projects }: Props) => {
                             {renderDescription(project.description)}
                             <CardFooter variant="meta">
                                 {/* TODO replace once projectDto has date*/}
-                                Created Feb 15, 2022
+                                {t('RecentProjects.CreatedDate')}
                             </CardFooter>
                             <OpenProject link
                                 href={ProjectPath(project.id!)}>
-                                Open
+                                {('RecentProjects.Open')}
                             </OpenProject>
                         </Card.Content>
                     </RecentProjectCard>

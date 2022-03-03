@@ -29,5 +29,10 @@
     },
     "SideMenu": {
         "BackToSearch": "TODO"
+    },
+    "RecentProjects": {
+        "RecentlyUsedProjects": "TODO",
+        "CreatedDate": "TODO",
+        "Open": "Åpne"
     }
 }
