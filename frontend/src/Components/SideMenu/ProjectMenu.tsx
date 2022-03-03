@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { Link, useParams } from 'react-router-dom'
 import { file, folder, dashboard } from '@equinor/eds-icons'
 
+import { useTranslation } from "react-i18next";
+
 import { Project } from '../../models/Project'
 import MenuItem from './MenuItem'
 import ProjectMenuItemComponent from './ProjectMenuItemComponent'
@@ -35,10 +37,10 @@ const MenuItems = styled.ul`
     margin: 0;
     width: 100%;
 `
-
+//TODO, need to translate enums. 
 export enum ProjectMenuItemType {
     OVERVIEW = 'Overview',
-    CASES = 'Cases',
+    CASES = 'Cases'
 }
 
 const projectMenuItems = [
@@ -51,6 +53,7 @@ interface Props {
 }
 
 const ProjectMenu = ({ project }: Props) => {
+    const { t } = useTranslation();
     const params = useParams()
     const [isOpen, setIsOpen] = useState<boolean>(params.projectId === project.id)
 

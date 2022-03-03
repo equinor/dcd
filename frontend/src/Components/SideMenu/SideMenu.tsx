@@ -4,6 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+import { useTranslation } from "react-i18next";
+
 import ProjectMenu from './ProjectMenu'
 import { Project } from '../../models/Project'
 import { ProjectService } from '../../Services/ProjectService'
@@ -76,6 +78,7 @@ export const projects = [
 ]
 
 const SideMenu = () => {
+    const { t } = useTranslation();
     const [project, setProject] = useState<Project>()
     const navigate = useNavigate()
     const params = useParams()
@@ -101,7 +104,7 @@ const SideMenu = () => {
             <SidebarDiv>
                 <ReturnToSearch onClick={returnToSearch}>
                     <Icon data={chevron_left} size={24} />
-                    <Typography>Back to search</Typography>
+                    <Typography>{t('SideMenu.BackToSearch')}</Typography>
                 </ReturnToSearch>
                 <StyledDivider />
                 <ProjectMenu project={project} />

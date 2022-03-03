@@ -22,5 +22,12 @@
     },
     "OverviewView": {
         "Overview": "Overview"
+    },
+    "ProjectMenu": {
+        "Overview": "Overview",
+        "Cases": "Cases"
+    },
+    "SideMenu": {
+        "BackToSearch": "Back to search"
     }
 }

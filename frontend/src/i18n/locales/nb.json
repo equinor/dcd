@@ -22,5 +22,12 @@
     },
     "OverviewView": {
         "Overview": "Oversikt"
+    },
+    "ProjectMenu": {
+        "Overview": "Oversikt",
+        "Cases": "Saker"
+    },
+    "SideMenu": {
+        "BackToSearch": "TODO"
     }
 }
