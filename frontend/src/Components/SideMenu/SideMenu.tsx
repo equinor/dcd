@@ -128,6 +128,7 @@ function SideMenu() {
     }, [params])
 
     const returnToSearch = () => {
+        setProject(undefined)
         navigate("/")
     }
 
