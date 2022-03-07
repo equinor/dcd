@@ -2,6 +2,7 @@ import { add, delete_to_trash, edit } from "@equinor/eds-icons"
 import { Button, EdsProvider, Icon, Input, Label, TextField, Tooltip, Typography } from '@equinor/eds-core-react'
 import { ChangeEventHandler, MouseEventHandler, useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from "react-i18next";
 import styled from 'styled-components'
 
 import BarChart from '../Components/BarChart'
@@ -59,6 +60,7 @@ const HorizontalInputGroup = styled.div`
 `
 
 const ProjectView = () => {
+    const { t } = useTranslation()
     const navigate = useNavigate()
     let params = useParams()
     const [project, setProject] = useState<Project>()
@@ -176,8 +178,8 @@ const ProjectView = () => {
                     <TextField label="Description" id="description" name="description" placeholder="Enter a description" onChange={handleCreateCaseFormFieldChange} />
 
                     <div>
-                        <Button type="submit" onClick={submitCreateCaseForm} disabled={submitIsDisabled}>Create case</Button>
-                        <Button type="button" color="secondary" variant="ghost" onClick={toggleCreateCaseModal}>Cancel</Button>
+                        <Button type="submit" onClick={submitCreateCaseForm} disabled={submitIsDisabled}>{t('ProjectView.CreateCase')}</Button>
+                        <Button type="button" color="secondary" variant="ghost" onClick={toggleCreateCaseModal}>{t('ProjectView.Cancel')}</Button>
                     </div>
                 </CreateCaseForm>
             </Modal>

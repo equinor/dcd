@@ -55,5 +55,17 @@
         "DrainageStrategy": "Drainage Strategy",
         "CancelChange": "Cancel change",
         "SaveNewData": "Save new data"
+    },
+    "ExplorationView": {
+        "CostProfile": "Cost profile",
+        "C&GCost": "G&G and admin cost",
+        "Import": "Import...",
+        "Exploration": "Exploration",
+        "CancelChange": "Cancel change",
+        "SaveNewData": "Save new data"
+    },
+    "ProjectView": {
+        "CreateCase": "Create case",
+        "Cancel": "Cancel"
     }
 }

@@ -55,5 +55,17 @@
         "DrainageStrategy": "TODO",
         "CancelChange": "Kanseller endring",
         "SaveNewData": "Lagre ny data"
+    },
+    "ExplorationView": {
+        "CostProfile": "TODO",
+        "C&GCost": "G&G TODO",
+        "Import": "Importer...",
+        "Exploration": "Utforsk",
+        "CancelChange": "TODO",
+        "SaveNewData": "TODO"
+    },
+    "ProjectView": {
+        "CreateCase": "Opprett sak",
+        "Cancel": "Kanseller"
     }
 }

@@ -25,11 +25,11 @@ const ChangeLanguageSelect = () => {
     const [selectedLanguage, setSelectedLanguage] = useState<String>();
 
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        // const project = projects?.find(p => p.id === event.currentTarget.selectedOptions[0].value);
-        // setSelectedLanguage(project);
+     
         const selectedLanguage = event.currentTarget.selectedOptions[0].value
         setSelectedLanguage(selectedLanguage) //Visual
         i18n.changeLanguage(selectedLanguage) //Functional
+        
         console.log('Current language is: ' + i18n.language)
     }
 
