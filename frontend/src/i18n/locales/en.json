@@ -34,5 +34,26 @@
         "RecentlyUsedProjects": "Recently used Projects",
         "CreatedDate": "Created Feb 15, 2022",
         "Open": "Open"
+    },
+    "CaseView": {
+        "Overview": "Overview",
+        "InputData": "Input data",
+        "TechnicalInput": "Technical input",
+        "SateliteProduction": "Satelite production",
+        "PipelinesUmbilicals": "Pipelines umbilicals",
+        "FlexibleRiser": "Flexible riser"
+    },
+    "DrainageStrategyView": {
+        "ProductionProfileOil": "Production profile oil",
+        "ProductionProfileGas": "Production profile gas",
+        "ProductionProfileWater": "Production profile water",
+        "ProductionProfileWaterInjection": "Production profile water injection",
+        "FuelFlaringAndLosses": "Fuel flaring and losses",
+        "NetSalesGas": "Net sales gas",
+        "CO2Emissions": "CO2 emissions",
+        "Import": "Import...",
+        "DrainageStrategy": "Drainage Strategy",
+        "CancelChange": "Cancel change",
+        "SaveNewData": "Save new data"
     }
 }

@@ -34,5 +34,26 @@
         "RecentlyUsedProjects": "TODO",
         "CreatedDate": "TODO",
         "Open": "Åpne"
+    },
+    "CaseView": {
+        "Overview": "Oversikt",
+        "InputData": "TODO",
+        "TechnicalInput": "TODO",
+        "SateliteProduction": "Satelitt produksjon",
+        "PipelinesUmbilicals": "TODO",
+        "FlexibleRiser": "TODO"
+    },
+    "DrainageStrategyView": {
+        "ProductionProfileOil": "TODO",
+        "ProductionProfileGas": "TODO",
+        "ProductionProfileWater": "TODO",
+        "ProductionProfileWaterInjection": "TODO",
+        "FuelFlaringAndLosses": "TODO",
+        "NetSalesGas": "TODO",
+        "CO2Emissions": "TODO",
+        "Import": "Importer...",
+        "DrainageStrategy": "TODO",
+        "CancelChange": "Kanseller endring",
+        "SaveNewData": "Lagre ny data"
     }
 }

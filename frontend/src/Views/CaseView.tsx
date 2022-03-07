@@ -2,6 +2,7 @@ import { Tabs, Typography } from '@equinor/eds-core-react'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import { useTranslation } from "react-i18next";
 
 import { Project } from '../models/Project'
 import { Case } from '../models/Case'
@@ -23,6 +24,7 @@ const CaseHeader = styled(Typography)`
 `
 
 const CaseView = () => {
+    const { t } = useTranslation();
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
@@ -54,12 +56,12 @@ const CaseView = () => {
             </CaseHeader>
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
                 <List>
-                    <Tab>Overview</Tab>
-                    <Tab>Input data</Tab>
-                    <Tab>Technical input</Tab>
-                    <Tab>Satelite production</Tab>
-                    <Tab>Pipelines umbilicals</Tab>
-                    <Tab>Flexible riser</Tab>
+                    <Tab>{t('CaseView.Overview')}</Tab>
+                    <Tab>{t('CaseView.InputData')}</Tab>
+                    <Tab>{t('CaseView.TechnicalInput')}</Tab>
+                    <Tab>{t('CaseView.SateliteProduction')}</Tab>
+                    <Tab>{t('CaseView.PipelinesUmbilicals')}</Tab>
+                    <Tab>{t('CaseView.FlexibleRiser')}</Tab>
                 </List>
                 <Panels>
                     <Panel>
@@ -71,8 +73,8 @@ const CaseView = () => {
                     <Panel>
                         <ExplorationView />
                     </Panel>
-                    <Panel>Satelite production</Panel>
-                    <Panel>Pipelines umbilicals</Panel>
+                    <Panel>{t('CaseView.SateliteProduction')}</Panel>
+                    <Panel>{t('CaseView.PipelinesUmbilicals')}</Panel>
                 </Panels>
             </Tabs>
         </CaseViewDiv>
