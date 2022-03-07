@@ -16,8 +16,8 @@ import { Modal } from "../Components/Modal"
 import { ProjectCategory } from "../models/ProjectCategory"
 import { ProjectPhase } from "../models/ProjectPhase"
 
-import { CommonLibraryService } from "../Services/CommonLibraryService"
-import { ProjectService } from "../Services/ProjectService"
+import { GetCommonLibraryService } from "../Services/CommonLibraryService"
+import { GetProjectService } from "../Services/ProjectService"
 
 const ProjectSelect = styled.div`
     display: flex;
@@ -48,6 +48,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         setSelectedProject(project)
     }
+    const CommonLibraryService = GetCommonLibraryService()
 
     const convertCommonLibProjectToProject = (
         commonLibraryProject: Components.Schemas.CommonLibraryProjectDto,
@@ -76,7 +77,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         let project
         if (pressedOkButton === true) {
             project = convertCommonLibProjectToProject(selectedProject!)
-            const createdProject = await ProjectService.createProject(project)
+            const createdProject = await GetProjectService().createProject(project)
             navigate(`/project/${createdProject.projectId}`)
         }
         setSelectedProject(undefined)
