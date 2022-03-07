@@ -67,5 +67,8 @@
     "ProjectView": {
         "CreateCase": "Create case",
         "Cancel": "Cancel"
+    },
+    "ViewsContainer": {
+        "PleaseSignIn": "Please sign in to DCD"
     }
 }
