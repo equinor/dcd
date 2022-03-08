@@ -14,14 +14,11 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class CasesController : ControllerBase
     {
-<<<<<<< HEAD
+
         private readonly CaseService _caseService;
         private readonly CaseAdapter _caseAdapter;
         private readonly ILogger<CasesController> _logger;
-=======
-        private CaseService _caseService;
-        private readonly ILogger<CasesController> _logger;
->>>>>>> upstream/main
+
 
         public CasesController(ILogger<CasesController> logger, CaseService caseService)
         {
