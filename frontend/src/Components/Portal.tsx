@@ -3,8 +3,6 @@ import ReactDOM from "react-dom"
 
 const portalElement = document.getElementById("portal")!
 
-type Props = {}
-
-export const Portal: FunctionComponent<Props> = ({ children }) => (
+export const Portal: FunctionComponent = ({ children }) => (
     ReactDOM.createPortal(children, portalElement)
 )

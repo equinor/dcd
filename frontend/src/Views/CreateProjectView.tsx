@@ -1,35 +1,20 @@
-import {
-    Button,
-    Icon,
-    NativeSelect,
-    TextField,
-    Typography,
-} from "@equinor/eds-core-react"
-import { ChangeEvent, useEffect, useState } from "react"
-import { search } from "@equinor/eds-icons"
-import { tokens } from "@equinor/eds-tokens"
-import { useNavigate } from "react-router-dom"
-import styled from "styled-components"
+import { NativeSelect, TextField, Button, Typography } from '@equinor/eds-core-react';
+import { useEffect, useState, VoidFunctionComponent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-import { Modal } from "../Components/Modal"
+import { Modal, ModalActionsContainer } from '../Components/Modal';
 
-import { ProjectCategory } from "../models/ProjectCategory"
-import { ProjectPhase } from "../models/ProjectPhase"
+import { GetCommonLibraryService } from '../Services/CommonLibraryService';
+import { GetProjectService } from '../Services/ProjectService'
 
-import { GetCommonLibraryService } from "../Services/CommonLibraryService"
-import { GetProjectService } from "../Services/ProjectService"
+import { ConvertProjectPhaseEnumToString, ConvertProjectCategoryEnumToString } from '../Utils/common';
 
-const ProjectSelect = styled.div`
-    display: flex;
-    align-items: center;
+const ProjectForm = styled.form`
+    > *:not(:last-child) {
+        margin-bottom: 1rem;
+    }
 `
-
-const ProjectDropdown = styled(NativeSelect)`
-    width: 25rem;
-    margin-left: 0.5rem;
-`
-
-const grey = tokens.colors.ui.background__scrim.rgba
 
 type Props = {
     isOpen: boolean;
@@ -48,12 +33,12 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         setSelectedProject(project)
     }
-    const CommonLibraryService = GetCommonLibraryService()
 
-    const convertCommonLibProjectToProject = (
-        commonLibraryProject: Components.Schemas.CommonLibraryProjectDto,
-    ): Components.Schemas.ProjectDto => {
-        const project: Components.Schemas.ProjectDto = {
+    const CommonLibraryService = GetCommonLibraryService()
+    const ProjectService = GetProjectService()
+
+    const convertCommonLibProjectToProject = (commonLibraryProject: Components.Schemas.CommonLibraryProjectDto): Components.Schemas.ProjectDto => {
+        let project: Components.Schemas.ProjectDto = {
             name: inputName ?? commonLibraryProject?.name,
             commonLibraryId: commonLibraryProject?.id,
             commonLibraryName: commonLibraryProject?.name,
@@ -77,7 +62,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         let project
         if (pressedOkButton === true) {
             project = convertCommonLibProjectToProject(selectedProject!)
-            const createdProject = await GetProjectService().createProject(project)
+            const createdProject = await ProjectService.createProject(project)
             navigate(`/project/${createdProject.projectId}`)
         }
         setSelectedProject(undefined)
@@ -88,8 +73,8 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         closeCreateProjectView(true)
     }
 
-    const handleCancelClick = () => {
-        closeCreateProjectView(false)
+    const handleModalDismiss = () => {
+        closeCreateProjectView(false);
     }
 
     const updateNameHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -113,101 +98,87 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         })()
     }, [])
 
+    if (!isOpen) return null;
+
     if (commonLibFetchError) {
         return (
-            <Modal isOpen={isOpen} title="Oops!" shards={shards}>
+            <Modal title="Oops!" onDismiss={handleModalDismiss}>
                 <Typography>
                     Something went wrong while retrieving projects from Common Library.
                     {" "}
                     Unable to create a new DCD project right now.
                 </Typography>
-                <Button onClick={handleCancelClick}>Close</Button>
+                <Button onClick={handleModalDismiss}>Close</Button>
             </Modal>
         )
     }
 
     if (!projects) {
         return (
-            <Modal isOpen={isOpen} title="Getting data" shards={shards}>
-                <Typography>Retrieving projects from Common Library.</Typography>
+            <Modal title="Oops!" onDismiss={handleModalDismiss}>
+                <Typography>Something went wrong while retrieving projects from Common Library. Unable to create a new DCD project right now.</Typography>
+                <Button onClick={handleModalDismiss}>Close</Button>
             </Modal>
-        )
+        );
     }
 
     return (
-        <Modal isOpen={isOpen} title="Create Project" shards={shards}>
-            <div>
-                <ProjectSelect>
-                    <Icon data={search} color={grey} />
-                    <ProjectDropdown
-                        id="select-project"
-                        label="CommonLib project"
-                        placeholder="Select a CommonLib project"
-                        onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
-                    >
-                        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                        <option disabled selected />
-                        {projects.map((project) => (
-                            <option value={project.id!} key={project.id}>{project.name!}</option>
-                        ))}
-                    </ProjectDropdown>
-                </ProjectSelect>
-                <div>
-                    <TextField
-                        label="Name"
-                        id="textfield-name"
-                        placeholder={selectedProject?.name!}
-                        autoComplete="off"
-                        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
-                            updateNameHandler(event)
-                        )}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        label="Description"
-                        id="textfield-description"
-                        placeholder={selectedProject?.description!}
-                        autoComplete="off"
-                        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
-                            updateDescriptionHandler(event)
-                        )}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        label="Category"
-                        id="textfield-description"
-                        placeholder={new ProjectCategory(selectedProject?.projectCategory!).toString()}
-                        autoComplete="off"
-                        readOnly
-                    />
-                </div>
-                <div>
-                    <TextField
-                        label="Phase"
-                        id="textfield-description"
-                        placeholder={new ProjectPhase(selectedProject?.projectPhase!).toString()}
-                        autoComplete="off"
-                        readOnly
-                    />
-                </div>
-                <div>
-                    <TextField
-                        label="Country"
-                        id="textfield-description"
-                        placeholder={selectedProject?.country!}
-                        autoComplete="off"
-                        readOnly
-                    />
-                </div>
-                <div>
-                    <Button onClick={handleOkClick}>Create Project</Button>
-                    <Button onClick={handleCancelClick} variant="outlined">Cancel</Button>
-                </div>
-            </div>
+        <Modal title="Create a project" onDismiss={handleModalDismiss}>
+            <ProjectForm>
+                <NativeSelect
+                    id="select-project"
+                    label="CommonLib project"
+                    defaultValue="Select a CommonLib project"
+                    onChange={onSelected}
+                >
+                    {projects.map((project) => (
+                        <option value={project.id!} key={project.id}>{project.name!}</option>
+                    ))}
+                </NativeSelect>
+                <TextField
+                    label="Name"
+                    id="textfield-name"
+                    placeholder={selectedProject?.name!}
+                    autoComplete="off"
+                    onChange={updateNameHandler}
+                />
+                <TextField
+                    label="Description"
+                    id="textfield-description"
+                    placeholder={selectedProject?.description!}
+                    autoComplete="off"
+                    onChange={updateDescriptionHandler}
+                    multiline
+                />
+                <TextField
+                    label="Category"
+                    id="textfield-description"
+                    placeholder={ConvertProjectCategoryEnumToString(selectedProject?.projectCategory!)}
+                    autoComplete="off"
+                    readOnly={true}
+                />
+                <TextField
+                    label="Phase"
+                    id="textfield-description"
+                    placeholder={ConvertProjectPhaseEnumToString(selectedProject?.projectPhase!)}
+                    autoComplete="off"
+                    readOnly={true}
+                />
+                <TextField
+                    label="Country"
+                    id="textfield-description"
+                    placeholder={selectedProject?.country!}
+                    autoComplete="off"
+                    readOnly={true}
+                />
+
+                <ModalActionsContainer>
+                    <Button onClick={handleOkClick} type="submit">Create Project</Button>
+                    <Button onClick={handleModalDismiss} variant="outlined" type="button">Cancel</Button>
+                </ModalActionsContainer>
+            </ProjectForm>
         </Modal>
-    )
+    );
 }
 
 export default CreateProjectView

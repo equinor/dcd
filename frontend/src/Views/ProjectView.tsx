@@ -18,13 +18,13 @@ import {
 import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
+import { Modal, ModalActionsContainer } from "../Components/Modal"
 import BarChart from "../Components/BarChart"
 
 import { Project } from "../models/Project"
-import { GetProjectService } from "../Services/ProjectService"
 
-import { Modal } from "../Components/Modal"
 import { CaseService } from "../Services/CaseService"
+import { GetProjectService } from "../Services/ProjectService"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -150,43 +150,45 @@ const ProjectView = () => {
                 <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>
 
-            <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
-                <CreateCaseForm>
-                    <TextField
-                        label="Name"
-                        id="name"
-                        name="name"
-                        placeholder="Enter a name"
-                        onChange={handleCreateCaseFormFieldChange}
-                    />
+            {createCaseModalIsOpen && (
+                <Modal title="Create a case">
+                    <CreateCaseForm>
+                        <TextField
+                            label="Name"
+                            id="name"
+                            name="name"
+                            placeholder="Enter a name"
+                            onChange={handleCreateCaseFormFieldChange}
+                        />
 
-                    <TextField
-                        label="Description"
-                        id="description"
-                        name="description"
-                        placeholder="Enter a description"
-                        onChange={handleCreateCaseFormFieldChange}
-                    />
+                        <TextField
+                            label="Description"
+                            id="description"
+                            name="description"
+                            placeholder="Enter a description"
+                            onChange={handleCreateCaseFormFieldChange}
+                        />
 
-                    <div>
-                        <Button
-                            type="submit"
-                            onClick={submitCreateCaseForm}
-                            disabled={submitIsDisabled}
-                        >
-                            Create case
-                        </Button>
-                        <Button
-                            type="button"
-                            color="secondary"
-                            variant="ghost"
-                            onClick={toggleCreateCaseModal}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </CreateCaseForm>
-            </Modal>
+                        <ModalActionsContainer>
+                            <Button
+                                type="submit"
+                                onClick={submitCreateCaseForm}
+                                disabled={submitIsDisabled}
+                            >
+                                Create case
+                            </Button>
+                            <Button
+                                type="button"
+                                color="secondary"
+                                variant="ghost"
+                                onClick={toggleCreateCaseModal}
+                            >
+                                Cancel
+                            </Button>
+                        </ModalActionsContainer>
+                    </CreateCaseForm>
+                </Modal>
+            )}
         </Wrapper>
     )
 }

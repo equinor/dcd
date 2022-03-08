@@ -1,38 +1,69 @@
-import { FunctionComponent } from "react"
-import { FocusOn } from "react-focus-on"
-import styled from "styled-components"
-import { Typography } from "@equinor/eds-core-react"
-import { Portal } from "./Portal"
+import { FunctionComponent } from 'react';
+import { FocusOn } from 'react-focus-on';
+import styled from 'styled-components';
+import { Divider, Typography } from '@equinor/eds-core-react';
+import { Portal } from './Portal';
+import { tokens } from '@equinor/eds-tokens';
 
-const ModalDiv = styled.div`
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 50px;
-    z-index: 1000;
-    background-color: white;
-    border: 2px solid gray;
+export const ModalActionsContainer = styled.div`
+    display: flex;
+    align-items: baseline;
+
+    > button:not(:last-child),
+    > a:not(:last-child) {
+        margin-right: 1rem;
+    }
+`
+
+const Backdrop = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.4);
+`
+
+const Container = styled.div`
+    background-color: ${tokens.colors.ui.background__default.hex};
+    border-radius: 4px;
+    box-shadow: ${tokens.elevation.above_scrim};
+`
+
+const Header = styled.div`
+    padding: 1rem 1rem 0;
+`
+
+const Content = styled.div`
+    padding: 0 1rem 1rem;
 `
 
 type Props = {
     title: string;
-    isOpen: boolean;
-    shards: any[];
+    onDismiss?: (e: Event) => void
 }
 
-export const Modal: FunctionComponent<Props> = ({
-    isOpen, title, shards, children,
-}) => {
-    if (!isOpen) return null
+export const Modal: FunctionComponent<Props> = ({ title, onDismiss, children }) => {
     return (
         <Portal>
-            <FocusOn shards={shards}>
-                <ModalDiv>
-                    {title && <Typography variant="h1">{title}</Typography>}
-                    <div>{children}</div>
-                </ModalDiv>
-            </FocusOn>
+            <Backdrop>
+                <FocusOn onClickOutside={onDismiss} onEscapeKey={onDismiss}>
+                    <Container>
+                        {title && (
+                            <>
+                                <Header>
+                                    <Typography variant="body_short_bold">{title}</Typography>
+                                </Header>
+                                <Divider />
+                            </>
+                        )}
+                        <Content>{children}</Content>
+                    </Container>
+                </FocusOn>
+            </Backdrop>
         </Portal>
     )
 }
