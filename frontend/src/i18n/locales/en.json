@@ -1,5 +1,6 @@
 {
     "Header": {
+        "DCD": "DCD - Digital Concept Development",
         "CreateProject": "Create Project",
         "WelcomeToDCD": "Welcome to DCD"
     },
@@ -65,10 +66,38 @@
         "SaveNewData": "Save new data"
     },
     "ProjectView": {
+        "Edit": "Edit",
+        "AddCase": "Add a case",
+        "Delete": "Delete",
+        "CapexCase": "Capex / case",
+        "Name": "Name",
+        "EnterName": "Enter a name",
+        "DG1Optional": "DG1 (optional)",
         "CreateCase": "Create case",
         "Cancel": "Cancel"
     },
     "ViewsContainer": {
         "PleaseSignIn": "Please sign in to DCD"
+    }, 
+    "CreateProjectView": {
+        "Oops": "Oops!",
+        "SomethingWrong": "Something went wrong while retrieving projects from Common Library. Unable to create a new DCD project right now.",
+        "Close": "Close",
+        "GettingData": "Getting data",
+        "RetrievingProjects": "Retrieving projects from Common Library.",
+        "CreateProject": "Create Project",
+        "ComLibProject": "CommonLib project",
+        "SelectComLibProject": "Select a CommonLib project",
+        "Name": "Name",
+        "Description": "Description",
+        "Category": "Category",
+        "Phase": "Phase",
+        "Country": "Country",
+        "Create Project": "Create Project",
+        "Cancel": "Cancel"
+    },
+    "DashboardView": {
+        "FindProject": "Find a project",
+        "SearchProjects": "Search projects"
     }
 }

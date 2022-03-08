@@ -1,5 +1,6 @@
 {
     "Header": {
+        "DCD": "DCD - Digital Concept Development",
         "CreateProject": "Lag prosjekt",
         "WelcomeToDCD": "Velkommen til DCD"
     },
@@ -70,5 +71,26 @@
     },
     "ViewsContainer": {
         "PleaseSignIn": "Vennligst logg inn i DCD"
+    }, 
+    "CreateProjectView": {
+        "Oops": "Oops!",
+        "SomethingWrong": "Something went wrong while retrieving projects from Common Library. Unable to create a new DCD project right now.",
+        "Close": "Close",
+        "GettingData": "Getting data",
+        "RetrievingProjects": "Retrieving projects from Common Library.",
+        "CreateProject": "Create Project",
+        "ComLibProject": "CommonLib project",
+        "SelectComLibProject": "Select a CommonLib project",
+        "Name": "Name",
+        "Description": "Description",
+        "Category": "Category",
+        "Phase": "Phase",
+        "Country": "Country",
+        "Create Project": "Create Project",
+        "Cancel": "Cancel"
+    },
+    "DashboardView": {
+        "FindProject": "Finn et prosjekt",
+        "SearchProjects": "Søk gjennom prosjekter"
     }
 }

@@ -1,9 +1,8 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { search, language } from '@equinor/eds-icons';
+import { language } from '@equinor/eds-icons';
 import { Icon, NativeSelect} from '@equinor/eds-core-react';
 import { useTranslation } from 'react-i18next';
-
 
 //TODO: Remove border-color & border-style
 const LanguageSelect = styled.div`
@@ -20,17 +19,22 @@ const LanguageDropdown = styled(NativeSelect)`
 
 const ChangeLanguageSelect = () => {
 
-    const {t, i18n} = useTranslation();
+    const {i18n} = useTranslation();
     const languagesArray = ['nb', 'en']
     const [selectedLanguage, setSelectedLanguage] = useState<String>();
+
+    useEffect(() => {
+        const prevLang = localStorage.getItem('CurrentLanguage') || 'en'
+        const prevLanguageStringValue = prevLang.toString()
+        setSelectedLanguage(prevLanguageStringValue)
+      }, []);
 
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
      
         const selectedLanguage = event.currentTarget.selectedOptions[0].value
         setSelectedLanguage(selectedLanguage) //Visual
         i18n.changeLanguage(selectedLanguage) //Functional
-        
-        console.log('Current language is: ' + i18n.language)
+        localStorage.setItem("CurrentLanguage", selectedLanguage)
     }
 
     return(
@@ -41,9 +45,10 @@ const ChangeLanguageSelect = () => {
                 label={'Language'}
                 placeholder={'Select a language'}
                 onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
+                
             >
-                <option disabled selected />
-                {languagesArray.map(language => ( <option value={language} key={language}>{language}</option>))}
+                <option value = {selectedLanguage as string} disabled selected={selectedLanguage == null || undefined} />
+                {languagesArray.map(language => ( <option value={language} key={language} selected={language === selectedLanguage}>{language}</option>))}
             </LanguageDropdown>
         </LanguageSelect>
                     

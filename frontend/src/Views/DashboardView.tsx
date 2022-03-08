@@ -4,6 +4,7 @@ import { tokens } from '@equinor/eds-tokens'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { useTranslation } from "react-i18next";
 
 import RecentProjects from '../Components/RecentProjects'
 import { ProjectPath, RetrieveLastVisitForProject } from '../Utils/common'
@@ -38,6 +39,7 @@ const FindProjectText = styled(Typography)`
 
 
 const DashboardView = () => {
+    const { t } = useTranslation()
     const navigate = useNavigate()
 
     const [projects, setProjects] = useState<any[]>()
@@ -85,7 +87,7 @@ const DashboardView = () => {
 
     return (
         <Wrapper>
-            <FindProjectText variant="h2">Find a project</FindProjectText>
+            <FindProjectText variant="h2">{t('DashboardView.FindProject')}</FindProjectText>
             <ProjectSelect>
                 <Icon data={search} color={grey}></Icon>
                 <ProjectDropdown

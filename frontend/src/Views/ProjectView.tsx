@@ -127,18 +127,18 @@ const ProjectView = () => {
 
                 <EdsProvider density="compact">
                     <ActionsContainer>
-                        <Tooltip title={`Edit ${project.name}`}>
-                            <Button variant="ghost_icon" aria-label={`Edit ${project.name}`}>
+                        <Tooltip title={`${t('ProjectView.Edit')} ${project.name}`}>
+                            <Button variant="ghost_icon" aria-label={`${t('ProjectView.Edit')} ${project.name}`}>
                                 <Icon data={edit} />
                             </Button>
                         </Tooltip>
-                        <Tooltip title="Add a case">
+                        <Tooltip title={t('ProjectView.AddCase')}>
                             <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
                                 <Icon data={add} />
                             </Button>
                         </Tooltip>
-                        <Tooltip title={`Delete ${project.name}`}>
-                            <Button variant="ghost_icon" color="danger" aria-label={`Delete ${project.name}`}>
+                        <Tooltip title={`${t('ProjectView.Delete')} ${project.name}`}>
+                            <Button variant="ghost_icon" color="danger" aria-label={`${t('ProjectView.Delete')} ${project.name}`}>
                                 <Icon data={delete_to_trash} />
                             </Button>
                         </Tooltip>
@@ -147,16 +147,16 @@ const ProjectView = () => {
             </Header>
 
             <ChartsContainer>
-                <BarChart data={chartData!} title="Capex / case" />
+                <BarChart data={chartData!} title={t('ProjectView.CapexCase')} />
             </ChartsContainer>
 
-            <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
+            <Modal isOpen={createCaseModalIsOpen} title={t('ProjectView.CreateCase')} shards={[]}>
                 <CreateCaseForm>
-                    <TextField label="Name" id="name" name="name" placeholder="Enter a name" onChange={handleCreateCaseFormFieldChange} />
+                    <TextField label={t('ProjectView.Name')} id="name" name="name" placeholder="Enter a name" onChange={handleCreateCaseFormFieldChange} />
 
                     <HorizontalInputGroup>
                         <div>
-                            <Label label="DG1 (optional)" htmlFor="dg1Date" />
+                            <Label label={t('ProjectView.DG1Optional')} htmlFor="dg1Date" />
                             <Input type="date" id="dg1Date" name="dg1Date" onChange={handleCreateCaseFormFieldChange} />
                         </div>
                         <div>
