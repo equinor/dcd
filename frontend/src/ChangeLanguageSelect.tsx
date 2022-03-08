@@ -4,7 +4,6 @@ import { language } from '@equinor/eds-icons';
 import { Icon, NativeSelect} from '@equinor/eds-core-react';
 import { useTranslation } from 'react-i18next';
 
-//TODO: Remove border-color & border-style
 const LanguageSelect = styled.div`
     display: flex;
     align-items: center;

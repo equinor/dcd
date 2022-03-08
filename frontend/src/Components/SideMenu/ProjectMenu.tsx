@@ -11,6 +11,7 @@ import ProjectMenuItemComponent from './ProjectMenuItemComponent'
 
 import { ProjectPath } from '../../Utils/common'
 import { initializePlugins } from '@microsoft/applicationinsights-core-js';
+import i18n from '../../i18n';
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -38,7 +39,6 @@ const MenuItems = styled.ul`
     margin: 0;
     width: 100%;
 `
-//TODO, need to translate enums. 
 
 export const ProjectMenuItemType = {
     OVERVIEW: 'Overview',
