@@ -107,7 +107,7 @@ function CaseView() {
             toggleCreateAssetModal()
         } catch (error) {
             setSubmitIsDisabled(false)
-            console.error("[ProjectView] error while submitting form data", error)
+            console.error("[CaseView] error while submitting form data", error)
         }
     }
 
@@ -120,7 +120,7 @@ function CaseView() {
             toggleLinkAssetModal()
         } catch (error) {
             setSubmitIsDisabled(false)
-            console.error("[ProjectView] error while submitting form data", error)
+            console.error("[CaseView] error while submitting form data", error)
         }
     }
 
