@@ -11,7 +11,6 @@ import ProjectMenuItemComponent from './ProjectMenuItemComponent'
 
 import { ProjectPath } from '../../Utils/common'
 import { initializePlugins } from '@microsoft/applicationinsights-core-js';
-import i18n from '../../i18n';
 
 const ExpandableDiv = styled.div`
     display: flex;
