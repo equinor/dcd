@@ -155,18 +155,7 @@ const DrainageStrategyView = () => {
         setGridData(initialGridData)
         setColumns(columnTitles)
         setDataIsChanged(false)
-    }
-
-    const reloadGridDataWithTranslation = () => {
-        var currentGridData = gridData
-        for (let i = 0; i<rowTitles.length; i++) {
-            currentGridData[0][i].value = rowTitles[i]
-        }
-          
-        setGridData(currentGridData)
-        setDataIsChanged(true)
-    }
-    
+    }   
 
     const saveDataImport = () => {
         // TODO CODE TO SAVE DATA HERE
