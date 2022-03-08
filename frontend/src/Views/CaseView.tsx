@@ -8,7 +8,7 @@ import { Case } from "../models/Case"
 import DrainageStrategyView from "./DrainageStrategyView"
 import ExplorationView from "./ExplorationView"
 import OverviewView from "./OverviewView"
-import { ProjectService } from "../Services/ProjectService"
+import { GetProjectService } from "../Services/ProjectService"
 
 const {
     List, Tab, Panels, Panel,
@@ -33,7 +33,7 @@ function CaseView() {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await ProjectService.getProjectByID(params.projectId!)
+                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)

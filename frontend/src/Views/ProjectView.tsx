@@ -21,7 +21,7 @@ import styled from "styled-components"
 import BarChart from "../Components/BarChart"
 
 import { Project } from "../models/Project"
-import { ProjectService } from "../Services/ProjectService"
+import { GetProjectService } from "../Services/ProjectService"
 
 import { StoreRecentProject } from "../Utils/common"
 import { Modal } from "../Components/Modal"
@@ -71,7 +71,7 @@ const ProjectView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const res = await ProjectService.getProjectByID(params.projectId!)
+                const res = await GetProjectService().getProjectByID(params.projectId!)
                 console.log("[ProjectView]", res)
                 setProject(res)
             } catch (error) {

@@ -19,7 +19,7 @@ public static class SaveSampleDataToDB
         projectsBuilder = SampleCaseGenerator.initializeCases(projectsBuilder);
         foreach (ProjectBuilder p in projectsBuilder.Projects)
         {
-            context.AddRange(p.Cases);
+            context.AddRange(p.Cases!);
         }
         context.SaveChanges();
     }

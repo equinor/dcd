@@ -7,7 +7,7 @@ import styled from "styled-components"
 
 import ProjectMenu from "./ProjectMenu"
 import { Project } from "../../models/Project"
-import { ProjectService } from "../../Services/ProjectService"
+import { GetProjectService } from "../../Services/ProjectService"
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -119,7 +119,7 @@ function SideMenu() {
         if (params.projectId) {
             (async () => {
                 try {
-                    setProject(await ProjectService.getProjectByID(params.projectId!))
+                    setProject(await GetProjectService().getProjectByID(params.projectId!))
                 } catch (error) {
                     console.error()
                 }
@@ -128,6 +128,7 @@ function SideMenu() {
     }, [params])
 
     const returnToSearch = () => {
+        setProject(undefined)
         navigate("/")
     }
 

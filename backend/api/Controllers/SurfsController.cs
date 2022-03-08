@@ -28,7 +28,7 @@ namespace api.Controllers
             _surfAdapter = new SurfAdapter();
         }
 
-        [HttpPatch("{surfId}", Name = "UpdateSurf")]
+        [HttpPut("{surfId}", Name = "UpdateSurf")]
         public ProjectDto UpdateSurf([FromRoute] Guid surfId, [FromBody] SurfDto surfDto)
         {
             var surf = _surfAdapter.Convert(surfDto);

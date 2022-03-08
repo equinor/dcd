@@ -17,8 +17,14 @@ namespace api.Adapters
             wellProject.RigMobDemob = wellProjectDto.RigMobDemob;
             wellProject.AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost;
             wellProject.PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment;
-            wellProject.CostProfile = Convert(wellProjectDto.CostProfile, wellProject);
-            wellProject.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, wellProject);
+            if (wellProjectDto.CostProfile != null)
+            {
+                wellProject.CostProfile = Convert(wellProjectDto.CostProfile, wellProject);
+            }
+            if (wellProjectDto.DrillingSchedule != null)
+            {
+                wellProject.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, wellProject);
+            }
             return wellProject;
         }
 

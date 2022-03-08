@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import { useEffect, VoidFunctionComponent } from "react"
+import { useEffect, useState, VoidFunctionComponent } from "react"
 import styled from "styled-components"
 
 import { useMsal } from "@azure/msal-react"
@@ -8,6 +8,7 @@ import SideMenu from "../Components/SideMenu/SideMenu"
 
 import { fusionApiScope } from "../config"
 import { loginRequest } from "../auth/authContextProvider"
+import { LoginAccessTokenKey, FusionAccessTokenKey, StoreToken } from "../Utils/common"
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,18 +32,20 @@ const MainView = styled.div`
 
 export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
     const { instance, accounts } = useMsal()
+    const [haveLoginToken, setHaveLoginToken] = useState<boolean>(false)
+    const [haveFusionToken, setHaveFusionToken] = useState<boolean>(false)
 
     useEffect(() => {
         if (instance && accounts) {
             (async () => {
                 // Silently acquires an access token
-                // which is then attached to a request for MS Graph data
                 try {
                     const { accessToken } = await instance.acquireTokenSilent({
                         ...loginRequest,
                         account: accounts[0],
                     })
-                    window.sessionStorage.setItem("loginAccessToken", accessToken)
+                    StoreToken(LoginAccessTokenKey, accessToken)
+                    setHaveLoginToken(true)
                 } catch (error) {
                     console.error("[AuthenticatedViewContainer] Login failed", error)
                 }
@@ -52,13 +55,18 @@ export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
                         scopes: fusionApiScope,
                         account: accounts[0],
                     })
-                    window.sessionStorage.setItem("fusionAccessToken", accessToken)
+                    StoreToken(FusionAccessTokenKey, accessToken)
+                    setHaveFusionToken(true)
                 } catch (error) {
                     console.error("[AuthenticatedViewContainer] Failed to get fusion token", error)
                 }
             })()
         }
     }, [instance, accounts])
+
+    if (!haveLoginToken || !haveFusionToken) {
+        return (<p>waiting on token...</p>)
+    }
 
     return (
         <Wrapper>
