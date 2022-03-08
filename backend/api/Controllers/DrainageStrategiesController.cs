@@ -36,7 +36,7 @@ namespace api.Controllers
             return _drainageStrategyService.DeleteDrainageStrategy(drainageStrategyId);
         }
 
-        [HttpPatch("{drainageStrategyId}", Name = "UpdateDrainageStrategy")]
+        [HttpPut("{drainageStrategyId}", Name = "UpdateDrainageStrategy")]
         public ProjectDto UpdateDrainageStrategy([FromRoute] Guid drainageStrategyId, [FromBody] DrainageStrategyDto drainageStrategyDto)
         {
             var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);

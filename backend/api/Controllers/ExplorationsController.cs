@@ -38,7 +38,7 @@ namespace api.Controllers
             return _explorationService.DeleteExploration(explorationId);
         }
 
-        [HttpPatch("{explorationId}", Name = "UpdateExploration")]
+        [HttpPut("{explorationId}", Name = "UpdateExploration")]
         public ProjectDto UpdateExploration([FromRoute] Guid explorationId, [FromBody] ExplorationDto eplorationDto)
         {
             var exploration = ExplorationAdapter.Convert(eplorationDto);
