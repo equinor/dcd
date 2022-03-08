@@ -23,7 +23,6 @@ import BarChart from "../Components/BarChart"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
-import { StoreRecentProject } from "../Utils/common"
 import { Modal } from "../Components/Modal"
 import { CaseService } from "../Services/CaseService"
 
@@ -118,7 +117,7 @@ const ProjectView = () => {
 
     if (!project) return null
 
-    StoreRecentProject(project.id!)
+    Project.storeRecentProject(project)
 
     return (
         <Wrapper>
