@@ -167,6 +167,7 @@ const ProjectView = () => {
                             name="description"
                             placeholder="Enter a description"
                             onChange={handleCreateCaseFormFieldChange}
+                            multiline
                         />
 
                         <ModalActionsContainer>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import { useState } from "react"
 import styled from "styled-components"
 import { Typography, Button } from "@equinor/eds-core-react"
 import CreateProjectView from "../Views/CreateProjectView"
@@ -26,7 +26,6 @@ function Header({ name }: Props) {
     const closeModal = () => {
         setIsOpen(false)
     }
-    const buttonRef = useRef<HTMLButtonElement>(null)
     return (
         <>
             <Wrapper>
@@ -39,7 +38,7 @@ function Header({ name }: Props) {
                     !
                 </Typography>
             </Wrapper>
-            <CreateProjectView isOpen={isOpen} shards={[buttonRef]} closeModal={closeModal} />
+            <CreateProjectView isOpen={isOpen} closeModal={closeModal} />
         </>
     )
 }

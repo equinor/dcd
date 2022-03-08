@@ -1,14 +1,19 @@
-import { NativeSelect, TextField, Button, Typography } from '@equinor/eds-core-react';
-import { useEffect, useState, VoidFunctionComponent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import {
+    NativeSelect,
+    TextField,
+    Button,
+    Typography,
+} from "@equinor/eds-core-react"
+import { useEffect, useState, VoidFunctionComponent } from "react"
+import { useNavigate } from "react-router-dom"
+import styled from "styled-components"
 
-import { Modal, ModalActionsContainer } from '../Components/Modal';
+import { Modal, ModalActionsContainer } from "../Components/Modal"
+import { ProjectCategory } from "../models/ProjectCategory"
+import { ProjectPhase } from "../models/ProjectPhase"
 
-import { GetCommonLibraryService } from '../Services/CommonLibraryService';
-import { GetProjectService } from '../Services/ProjectService'
-
-import { ConvertProjectPhaseEnumToString, ConvertProjectCategoryEnumToString } from '../Utils/common';
+import { GetCommonLibraryService } from "../Services/CommonLibraryService"
+import { GetProjectService } from "../Services/ProjectService"
 
 const ProjectForm = styled.form`
     > *:not(:last-child) {
@@ -19,10 +24,9 @@ const ProjectForm = styled.form`
 type Props = {
     isOpen: boolean;
     closeModal: Function;
-    shards: any[];
 }
 
-const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
+const CreateProjectView: VoidFunctionComponent<Props> = ({ isOpen, closeModal }) => {
     const navigate = useNavigate()
     const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>()
     const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>()
@@ -37,8 +41,10 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     const CommonLibraryService = GetCommonLibraryService()
     const ProjectService = GetProjectService()
 
-    const convertCommonLibProjectToProject = (commonLibraryProject: Components.Schemas.CommonLibraryProjectDto): Components.Schemas.ProjectDto => {
-        let project: Components.Schemas.ProjectDto = {
+    const convertCommonLibProjectToProject = (
+        commonLibraryProject: Components.Schemas.CommonLibraryProjectDto,
+    ): Components.Schemas.ProjectDto => {
+        const project: Components.Schemas.ProjectDto = {
             name: inputName ?? commonLibraryProject?.name,
             commonLibraryId: commonLibraryProject?.id,
             commonLibraryName: commonLibraryProject?.name,
@@ -74,7 +80,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     }
 
     const handleModalDismiss = () => {
-        closeCreateProjectView(false);
+        closeCreateProjectView(false)
     }
 
     const updateNameHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -98,7 +104,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         })()
     }, [])
 
-    if (!isOpen) return null;
+    if (!isOpen) return null
 
     if (commonLibFetchError) {
         return (
@@ -116,10 +122,14 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     if (!projects) {
         return (
             <Modal title="Oops!" onDismiss={handleModalDismiss}>
-                <Typography>Something went wrong while retrieving projects from Common Library. Unable to create a new DCD project right now.</Typography>
+                <Typography>
+                    Something went wrong while retrieving projects from Common Library.
+                    {" "}
+                    Unable to create a new DCD project right now.
+                </Typography>
                 <Button onClick={handleModalDismiss}>Close</Button>
             </Modal>
-        );
+        )
     }
 
     return (
@@ -153,23 +163,23 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                 <TextField
                     label="Category"
                     id="textfield-description"
-                    placeholder={ConvertProjectCategoryEnumToString(selectedProject?.projectCategory!)}
+                    placeholder={new ProjectCategory(selectedProject?.projectCategory!).toString()}
                     autoComplete="off"
-                    readOnly={true}
+                    readOnly
                 />
                 <TextField
                     label="Phase"
                     id="textfield-description"
-                    placeholder={ConvertProjectPhaseEnumToString(selectedProject?.projectPhase!)}
+                    placeholder={new ProjectPhase(selectedProject?.projectPhase!).toString()}
                     autoComplete="off"
-                    readOnly={true}
+                    readOnly
                 />
                 <TextField
                     label="Country"
                     id="textfield-description"
                     placeholder={selectedProject?.country!}
                     autoComplete="off"
-                    readOnly={true}
+                    readOnly
                 />
 
                 <ModalActionsContainer>
@@ -178,7 +188,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                 </ModalActionsContainer>
             </ProjectForm>
         </Modal>
-    );
+    )
 }
 
 export default CreateProjectView

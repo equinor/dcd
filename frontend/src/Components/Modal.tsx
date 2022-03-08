@@ -1,9 +1,9 @@
-import { FunctionComponent } from 'react';
-import { FocusOn } from 'react-focus-on';
-import styled from 'styled-components';
-import { Divider, Typography } from '@equinor/eds-core-react';
-import { Portal } from './Portal';
-import { tokens } from '@equinor/eds-tokens';
+import { FunctionComponent } from "react"
+import { FocusOn } from "react-focus-on"
+import styled from "styled-components"
+import { Divider, Typography } from "@equinor/eds-core-react"
+import { tokens } from "@equinor/eds-tokens"
+import { Portal } from "./Portal"
 
 export const ModalActionsContainer = styled.div`
     display: flex;
@@ -46,24 +46,22 @@ type Props = {
     onDismiss?: (e: Event) => void
 }
 
-export const Modal: FunctionComponent<Props> = ({ title, onDismiss, children }) => {
-    return (
-        <Portal>
-            <Backdrop>
-                <FocusOn onClickOutside={onDismiss} onEscapeKey={onDismiss}>
-                    <Container>
-                        {title && (
-                            <>
-                                <Header>
-                                    <Typography variant="body_short_bold">{title}</Typography>
-                                </Header>
-                                <Divider />
-                            </>
-                        )}
-                        <Content>{children}</Content>
-                    </Container>
-                </FocusOn>
-            </Backdrop>
-        </Portal>
-    )
-}
+export const Modal: FunctionComponent<Props> = ({ title, onDismiss, children }) => (
+    <Portal>
+        <Backdrop>
+            <FocusOn onClickOutside={onDismiss} onEscapeKey={onDismiss}>
+                <Container>
+                    {title && (
+                        <>
+                            <Header>
+                                <Typography variant="body_short_bold">{title}</Typography>
+                            </Header>
+                            <Divider />
+                        </>
+                    )}
+                    <Content>{children}</Content>
+                </Container>
+            </FocusOn>
+        </Backdrop>
+    </Portal>
+)
