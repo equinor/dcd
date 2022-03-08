@@ -28,7 +28,7 @@ namespace api.Controllers
 
         }
 
-        [HttpPatch("{transportId}", Name = "UpdateTransport")]
+        [HttpPut("{transportId}", Name = "UpdateTransport")]
         public ProjectDto UpdateTransport([FromRoute] Guid transportId, [FromBody] TransportDto transportDto)
         {
             var transport = _transportAdapter.Convert(transportDto);

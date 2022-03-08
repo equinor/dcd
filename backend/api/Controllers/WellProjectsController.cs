@@ -39,7 +39,7 @@ namespace api.Controllers
             return _wellProjectService.DeleteWellProject(wellProjectId);
         }
 
-        [HttpPatch("{wellProjectId}", Name = "UpdateWellProject")]
+        [HttpPut("{wellProjectId}", Name = "UpdateWellProject")]
         public ProjectDto UpdateWellProject([FromRoute] Guid wellProjectId, [FromBody] WellProjectDto wellProjectDto)
         {
             var wellProject = _wellProjectAdapter.Convert(wellProjectDto);

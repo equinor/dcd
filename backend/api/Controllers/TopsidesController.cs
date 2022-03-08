@@ -39,7 +39,7 @@ namespace api.Controllers
             return _topsideService.DeleteTopside(topsideId);
         }
 
-        [HttpPatch("{topsideId}", Name = "UpdateTopside")]
+        [HttpPut("{topsideId}", Name = "UpdateTopside")]
         public ProjectDto UpdateTopside([FromRoute] Guid topsideId, [FromBody] TopsideDto topsideDto)
         {
             var topside = _topsideAdapter.Convert(topsideDto);
