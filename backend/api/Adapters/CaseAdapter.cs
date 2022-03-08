@@ -4,20 +4,20 @@ using api.Services;
 
 namespace api.Adapters
 {
-    public static class CaseAdapter
+    public class CaseAdapter
     {
-        public static Case Convert(CaseDto caseDto)
+        public Case Convert(CaseDto caseDto)
         {
-            var case_ = new Case();
-            case_.ProjectId = caseDto.ProjectId;
-            case_.Name = caseDto.Name;
-            case_.Description = caseDto.Description;
-            case_.ReferenceCase = caseDto.ReferenceCase;
-            case_.DG4Date = caseDto.DG4Date;
-            case_.CreateTime = caseDto.CreateTime;
-            case_.ModifyTime = caseDto.ModifyTime;
-
-            return case_;
+            return new Case
+            {
+                ProjectId = caseDto.ProjectId,
+                Name = caseDto.Name,
+                Description = caseDto.Description,
+                ReferenceCase = caseDto.ReferenceCase,
+                DG4Date = caseDto.DG4Date,
+                CreateTime = caseDto.CreateTime,
+                ModifyTime = caseDto.ModifyTime
+            };
         }
 
 
