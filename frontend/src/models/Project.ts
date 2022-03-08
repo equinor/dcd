@@ -44,7 +44,7 @@ export class Project {
 
     static readonly recentProjectsKey = "recentProjects"
 
-    Strip() {
+    private strip() {
         this.cases = []
         this.drainageStrategies = []
         this.explorations = []
@@ -56,29 +56,29 @@ export class Project {
         return this
     }
 
-    public static Deserialize(data: string): Project[] {
-        return JSON.parse(data, Project.ParseComplexFields)
+    public static deserialize(data: string): Project[] {
+        return JSON.parse(data, Project.parseComplexFields)
     }
 
-    private static ParseComplexFields(key: any, value: any): any {
+    private static parseComplexFields(key: any, value: any): any {
         if (key === "createdAt" && typeof value === "string") {
             return new Date(value)
         }
         if (key === "phase" && typeof value === "object" && value) {
-            return ProjectPhase.ParseJSON(value)
+            return ProjectPhase.parseJSON(value)
         }
 
         return value
     }
 
-    static RetrieveRecentProjects() {
+    static retrieveRecentProjects() {
         const recentProjectJSON = localStorage.getItem(Project.recentProjectsKey)
-        const recentProjects: Project[] = Project.Deserialize(recentProjectJSON ?? "[]")
+        const recentProjects: Project[] = Project.deserialize(recentProjectJSON ?? "[]")
         return recentProjects
     }
 
-    static StoreRecentProject(recentProject: Project) {
-        let currentRecentProjects = Project.RetrieveRecentProjects()
+    static storeRecentProject(recentProject: Project) {
+        let currentRecentProjects = Project.retrieveRecentProjects()
         // find possible duplicate, remove it
         const projectAlreadyNotedIndex = currentRecentProjects.findIndex(
             (recordedProject) => recordedProject.id === recentProject.id,
@@ -90,7 +90,7 @@ export class Project {
                     currentRecentProjects.slice(projectAlreadyNotedIndex + 1),
                 )
         }
-        const strippedRecentProject = recentProject.Strip()
+        const strippedRecentProject = recentProject.strip()
         currentRecentProjects.unshift(strippedRecentProject)
         const recentProjects = currentRecentProjects.slice(0, 4)
         localStorage.setItem(Project.recentProjectsKey, JSON.stringify(recentProjects))

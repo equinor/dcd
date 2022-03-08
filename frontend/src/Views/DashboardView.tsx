@@ -66,7 +66,7 @@ function DashboardView() {
 
     const grey = tokens.colors.ui.background__scrim.rgba
 
-    const recentProjects = Project.RetrieveRecentProjects()
+    const recentProjects = Project.retrieveRecentProjects()
 
     if (!projects) return null
 

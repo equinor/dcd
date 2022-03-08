@@ -117,7 +117,7 @@ const ProjectView = () => {
 
     if (!project) return null
 
-    Project.StoreRecentProject(project)
+    Project.storeRecentProject(project)
 
     return (
         <Wrapper>
