@@ -99,5 +99,8 @@
     "DashboardView": {
         "FindProject": "Find a project",
         "SearchProjects": "Search projects"
+    },
+    "ChangeLanguageSelect": {
+        "Language": "Language"
     }
 }

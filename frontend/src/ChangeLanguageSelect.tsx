@@ -6,8 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 //TODO: Remove border-color & border-style
 const LanguageSelect = styled.div`
-    border-color: coral; 
-    border-style: solid;
     display: flex;
     align-items: center;
 `
@@ -19,7 +17,7 @@ const LanguageDropdown = styled(NativeSelect)`
 
 const ChangeLanguageSelect = () => {
 
-    const {i18n} = useTranslation();
+    const { t , i18n} = useTranslation();
     const languagesArray = ['nb', 'en']
     const [selectedLanguage, setSelectedLanguage] = useState<String>();
 
@@ -30,10 +28,9 @@ const ChangeLanguageSelect = () => {
       }, []);
 
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
-     
         const selectedLanguage = event.currentTarget.selectedOptions[0].value
-        setSelectedLanguage(selectedLanguage) //Visual
-        i18n.changeLanguage(selectedLanguage) //Functional
+        setSelectedLanguage(selectedLanguage) 
+        i18n.changeLanguage(selectedLanguage) 
         localStorage.setItem("CurrentLanguage", selectedLanguage)
     }
 
@@ -42,10 +39,9 @@ const ChangeLanguageSelect = () => {
             <Icon data={language} />
             <LanguageDropdown
                 id="select-language"
-                label={'Language'}
+                label={t('ChangeLanguageSelect.Language')}
                 placeholder={'Select a language'}
                 onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
-                
             >
                 <option value = {selectedLanguage as string} disabled selected={selectedLanguage == null || undefined} />
                 {languagesArray.map(language => ( <option value={language} key={language} selected={language === selectedLanguage}>{language}</option>))}

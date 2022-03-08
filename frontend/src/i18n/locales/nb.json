@@ -5,21 +5,21 @@
         "WelcomeToDCD": "Velkommen til DCD"
     },
     "CasesTable": {
-        "Case" : "",
-        "GasInjectors": "",
-        "WellInjectors": "",
-        "Producers": "",
-        "Templates": "",
-        "GasCapacity": "",
-        "OilCapacity": "",
-        "DG4Date": ""
+        "Case" : "Sak",
+        "GasInjectors": "Gassinjektor",
+        "WellInjectors": "Brønninjektor",
+        "Producers": "Produsenter",
+        "Templates": "Maler",
+        "GasCapacity": "Gasskapasitet",
+        "OilCapacity": "Oljekapasitet",
+        "DG4Date": "DG4 Dato"
     },
     "ExcelImport": {
         "ImportDataFromExcel": "Importer data fra Excel",
-        "ToPasteValuesCorrectly": "TODO",
-        "PasteInformationHere": "TODO",
+        "ToPasteValuesCorrectly": "For å lime inn verdier riktig i tabellen, sørg for at kolonnetitler er en del av innlimingen.",
+        "PasteInformationHere": "Lim inn informasjonen din her:",
         "Import": "Importer",
-        "Cancel": "TODO"
+        "Cancel": "Kanseller"
     },
     "OverviewView": {
         "Overview": "Oversikt"
@@ -29,20 +29,20 @@
         "Cases": "Saker"
     },
     "SideMenu": {
-        "BackToSearch": "TODO"
+        "BackToSearch": "Tilbake til søk"
     },
     "RecentProjects": {
-        "RecentlyUsedProjects": "TODO",
-        "CreatedDate": "TODO",
+        "RecentlyUsedProjects": "Nylig åpnet prosjekter",
+        "CreatedDate": "Opprettet Feb 15, 2022",
         "Open": "Åpne"
     },
     "CaseView": {
         "Overview": "Oversikt",
-        "InputData": "TODO",
-        "TechnicalInput": "TODO",
+        "InputData": "Inndata",
+        "TechnicalInput": "Tekniske innspill",
         "SateliteProduction": "Satelitt produksjon",
-        "PipelinesUmbilicals": "TODO",
-        "FlexibleRiser": "TODO"
+        "PipelinesUmbilicals": "Rørledninger ....",
+        "FlexibleRiser": "Fleksibel stigerør"
     },
     "DrainageStrategyView": {
         "ProductionProfileOil": "TODO",
@@ -92,5 +92,8 @@
     "DashboardView": {
         "FindProject": "Finn et prosjekt",
         "SearchProjects": "Søk gjennom prosjekter"
+    },
+    "ChangeLanguageSelect": {
+        "Language": "Språk"
     }
 }
