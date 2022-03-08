@@ -9,7 +9,8 @@ import RecentProjects from "../Components/RecentProjects"
 
 import { GetProjectService } from "../Services/ProjectService"
 
-import { ProjectPath, RetrieveRecentProjects } from "../Utils/common"
+import { ProjectPath } from "../Utils/common"
+import { Project } from "../models/Project"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -65,7 +66,7 @@ function DashboardView() {
 
     const grey = tokens.colors.ui.background__scrim.rgba
 
-    const recentProjects = RetrieveRecentProjects()
+    const recentProjects = Project.RetrieveRecentProjects()
 
     if (!projects) return null
 

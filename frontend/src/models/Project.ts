@@ -41,4 +41,58 @@ export class Project {
     static fromJSON(data: Components.Schemas.ProjectDto): Project {
         return new Project(data)
     }
+
+    static readonly recentProjectsKey = "recentProjects"
+
+    Strip() {
+        this.cases = []
+        this.drainageStrategies = []
+        this.explorations = []
+        this.substructures = []
+        this.surfs = []
+        this.topsides = []
+        this.transports = []
+        this.wellProjects = []
+        return this
+    }
+
+    public static Deserialize(data: string): Project[] {
+        return JSON.parse(data, Project.ParseComplexFields)
+    }
+
+    private static ParseComplexFields(key: any, value: any): any {
+        if (key === "createdAt" && typeof value === "string") {
+            return new Date(value)
+        }
+        if (key === "phase" && typeof value === "object" && value) {
+            return ProjectPhase.ParseJSON(value)
+        }
+
+        return value
+    }
+
+    static RetrieveRecentProjects() {
+        const recentProjectJSON = localStorage.getItem(Project.recentProjectsKey)
+        const recentProjects: Project[] = Project.Deserialize(recentProjectJSON ?? "[]")
+        return recentProjects
+    }
+
+    static StoreRecentProject(recentProject: Project) {
+        let currentRecentProjects = Project.RetrieveRecentProjects()
+        // find possible duplicate, remove it
+        const projectAlreadyNotedIndex = currentRecentProjects.findIndex(
+            (recordedProject) => recordedProject.id === recentProject.id,
+        )
+        if (projectAlreadyNotedIndex >= 0) {
+            currentRecentProjects = currentRecentProjects
+                .slice(0, projectAlreadyNotedIndex)
+                .concat(
+                    currentRecentProjects.slice(projectAlreadyNotedIndex + 1),
+                )
+        }
+        const strippedRecentProject = recentProject.Strip()
+        currentRecentProjects.unshift(strippedRecentProject)
+        const recentProjects = currentRecentProjects.slice(0, 4)
+        localStorage.setItem(Project.recentProjectsKey, JSON.stringify(recentProjects))
+    }
 }

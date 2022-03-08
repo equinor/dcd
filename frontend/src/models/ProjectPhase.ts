@@ -5,6 +5,10 @@ export class ProjectPhase {
         this.phase = phase
     }
 
+    static ParseJSON(value: ProjectPhase) {
+        return new ProjectPhase(value.phase)
+    }
+
     valueOf(): number {
         return this.phase
     }
