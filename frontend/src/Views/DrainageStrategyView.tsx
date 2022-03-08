@@ -133,10 +133,9 @@ const DrainageStrategyView = () => {
     
     const closeImportView = () => setIsImportOpen(false)
     const openImportView = () => setIsImportOpen(true)
+    
     const onCellsChanged = (changes: any[]) => {
-        
         const newGridData = replaceOldData(gridData, changes)
-        
         setGridData(newGridData)
         setDataIsChanged(true)
     }
