@@ -14,12 +14,11 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class CasesController : ControllerBase
     {
-        private CaseService _caseService;
-        private readonly ILogger<CasesController> _logger;
 
-        public CasesController(ILogger<CasesController> logger, CaseService caseService)
+        private readonly CaseService _caseService;
+
+        public CasesController(CaseService caseService)
         {
-            _logger = logger;
             _caseService = caseService;
         }
 
@@ -28,6 +27,13 @@ namespace api.Controllers
         {
             var case_ = CaseAdapter.Convert(caseDto);
             return _caseService.CreateCase(case_);
+        }
+
+        [HttpPut(Name = "UpdateCase")]
+        public ProjectDto UpdateCase([FromBody] CaseDto caseDto)
+        {
+            var case_ = CaseAdapter.Convert(caseDto);
+            return _caseService.UpdateCase(case_);
         }
     }
 }

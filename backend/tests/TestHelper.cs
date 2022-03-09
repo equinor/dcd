@@ -172,9 +172,34 @@ namespace tests
 
         public static void CompareCases(Case expected, Case actual)
         {
-            Assert.Equal(expected.Name, actual.Name);
-            Assert.Equal(expected.Description, actual.Description);
-            Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Description, actual.Description);
+                Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
+            }
+
+        }
+
+        public static void CompareCases(Case expected, CaseDto actual)
+        {
+            if (expected == null || actual == null)
+            {
+                Assert.Null(expected);
+                Assert.Null(actual);
+            }
+            else
+            {
+                Assert.Equal(expected.Name, actual.Name);
+                Assert.Equal(expected.Description, actual.Description);
+                Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
+            }
+
         }
 
         public static void CompareCases(CaseDto expected, CaseDto actual)
