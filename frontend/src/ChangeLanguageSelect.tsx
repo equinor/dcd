@@ -1,8 +1,8 @@
-import { ChangeEvent, useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { language } from '@equinor/eds-icons';
-import { Icon, NativeSelect} from '@equinor/eds-core-react';
-import { useTranslation } from 'react-i18next';
+import { ChangeEvent, useState, useEffect } from "react"
+import styled from "styled-components"
+import { language } from "@equinor/eds-icons"
+import { Icon, NativeSelect } from "@equinor/eds-core-react"
+import { useTranslation } from "react-i18next"
 
 const LanguageSelect = styled.div`
     display: flex;
@@ -15,8 +15,7 @@ const LanguageDropdown = styled(NativeSelect)`
 `
 
 const ChangeLanguageSelect = () => {
-
-    const { t , i18n} = useTranslation();
+    const { t, i18n } = useTranslation();
     const languagesArray = ['nb', 'en']
     const [selectedLanguage, setSelectedLanguage] = useState<String>();
 
