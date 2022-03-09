@@ -23,7 +23,6 @@
         "import/prefer-default-export": "off",
         "semi": ["error", "never"],
         "quotes": ["error", "double"],
-        "linebreak-style":["error", "windows"],
         "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
         "indent": ["error", 4],
         "import/extensions": 0,
