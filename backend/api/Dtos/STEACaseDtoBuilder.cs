@@ -17,84 +17,84 @@ namespace api.Adapters
             Array.Sort(startYearsCase);
             sTEACaseDto.StartYear = Array.Find(startYearsCase, e => e > 0);
 
-            SetStartYearsAbsolute(sTEACaseDto, c.DG4Date.Year);
-
             return sTEACaseDto;
-        }
-
-        private static void SetStartYearsAbsolute(STEACaseDto dto, int dG4Year)
-        {
-            dto.StartYear += dG4Year;
-            dto.ProductionAndSalesVolumes.StartYear += dG4Year;
-            Add(dto.Exploration, dG4Year);
-            Add(dto.Capex, dG4Year);
-            Add(dto.Capex?.Drilling, dG4Year);
-            Add(dto.Capex?.OffshoreFacilities, dG4Year);
-            Add(dto.ProductionAndSalesVolumes?.TotalAndAnnualOil, dG4Year);
-            Add(dto.ProductionAndSalesVolumes?.TotalAndAnnualSalesGas, dG4Year);
-            Add(dto.ProductionAndSalesVolumes?.Co2Emissions, dG4Year);
-
-            void Add<T>(T? tsd, int dG4Year)
-            where T : TimeSeriesDto<double>
-            {
-                if (tsd == null) return;
-                tsd.StartYear += dG4Year;
-            }
         }
 
         private static void AddCapex(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
         {
             sTEACaseDto.Capex = new CapexDto();
+            sTEACaseDto.Capex.Drilling = new WellProjectCostProfileDto();
+            int dg4Year = c.DG4Date.Year;
             if (c.WellProjectLink != Guid.Empty)
             {
                 var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
                 if (wellProject.CostProfile != null)
                 {
                     sTEACaseDto.Capex.Drilling = wellProject.CostProfile;
+                    sTEACaseDto.Capex.Drilling.StartYear += dg4Year;
                     sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.Drilling);
                 }
             }
             sTEACaseDto.Capex.OffshoreFacilities = new OffshoreFacilitiesCostProfileDto();
             if (c.SubstructureLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)!.CostProfile);
+                SubstructureCostProfileDto substructureCostProfileDto = p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)!.CostProfile;
+                substructureCostProfileDto.StartYear += dg4Year;
+                sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfileDto);
             }
             if (c.SurfLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile);
+                SurfCostProfileDto surfCostProfileDto = p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile;
+                surfCostProfileDto.StartYear += dg4Year;
+                sTEACaseDto.Capex.OffshoreFacilities.AddValues(surfCostProfileDto);
             }
             if (c.TopsideLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile);
+                TopsideCostProfileDto topsideCostProfileDto = p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile;
+                topsideCostProfileDto.StartYear += dg4Year;
+                sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCostProfileDto);
             }
             if (c.TransportLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Transports!.First(l => l.Id == c.TransportLink).CostProfile);
+                TransportCostProfileDto transportCostProfileDto = p.Transports!.First(l => l.Id == c.TransportLink).CostProfile;
+                transportCostProfileDto.StartYear += dg4Year;
+                sTEACaseDto.Capex.OffshoreFacilities.AddValues(transportCostProfileDto);
             }
-
             sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.OffshoreFacilities);
         }
 
         private static void AddProductionSalesAndVolumes(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
         {
             sTEACaseDto.ProductionAndSalesVolumes = new ProductionAndSalesVolumesDto();
+            sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = new ProductionProfileOilDto();
+            sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = new NetSalesGasDto();
+            sTEACaseDto.ProductionAndSalesVolumes.Co2Emissions = new Co2EmissionsDto();
+            int dg4Year = c.DG4Date.Year;
             if (c.DrainageStrategyLink != Guid.Empty)
             {
                 DrainageStrategyDto drainageStrategyDto = p.DrainageStrategies!.First(d => d.Id == c.DrainageStrategyLink);
-                sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = drainageStrategyDto.ProductionProfileOil == null
-                ? new ProductionProfileOilDto() : drainageStrategyDto.ProductionProfileOil;
-                sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = drainageStrategyDto.NetSalesGas == null
-                ? new NetSalesGasDto() : drainageStrategyDto.NetSalesGas;
-                sTEACaseDto.ProductionAndSalesVolumes.Co2Emissions = drainageStrategyDto.Co2Emissions == null
-                ? new Co2EmissionsDto() : drainageStrategyDto.Co2Emissions;
+                List<int> startYearsProductionSalesAndVolumes = new List<int>();
+                if (drainageStrategyDto.ProductionProfileOil != null)
+                {
+                    sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = drainageStrategyDto.ProductionProfileOil;
+                    startYearsProductionSalesAndVolumes.Add(drainageStrategyDto.ProductionProfileOil.StartYear += dg4Year);
+                }
 
-                int[] startYearsProductionSalesAndVolumes = new int[] {
-                    sTEACaseDto.ProductionAndSalesVolumes.Co2Emissions.StartYear,
-                    sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear,
-                    sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear
-                };
-                Array.Sort(startYearsProductionSalesAndVolumes);
-                sTEACaseDto.ProductionAndSalesVolumes.StartYear = Array.Find(startYearsProductionSalesAndVolumes, e => e > 0);
+                if (drainageStrategyDto.NetSalesGas != null)
+                {
+                    sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = drainageStrategyDto.NetSalesGas;
+                    startYearsProductionSalesAndVolumes.Add(drainageStrategyDto.NetSalesGas.StartYear += dg4Year);
+                }
+
+                if (drainageStrategyDto.Co2Emissions != null)
+                {
+                    sTEACaseDto.ProductionAndSalesVolumes.Co2Emissions = drainageStrategyDto.Co2Emissions;
+                    startYearsProductionSalesAndVolumes.Add(drainageStrategyDto.Co2Emissions.StartYear += dg4Year);
+                }
+                if (startYearsProductionSalesAndVolumes.Count() > 0)
+                {
+                    sTEACaseDto.ProductionAndSalesVolumes.StartYear = startYearsProductionSalesAndVolumes.Min();
+                }
             }
         }
 
@@ -107,6 +107,7 @@ namespace api.Adapters
                 if (exploration.CostProfile != null)
                 {
                     sTEACaseDto.Exploration = exploration.CostProfile;
+                    sTEACaseDto.Exploration.StartYear += caseDto.DG4Date.Year;
                 }
             }
         }
