@@ -34,8 +34,8 @@ namespace api.Controllers
             return _caseService.CreateCase(case_);
         }
 
-        [HttpPut("{caseId}", Name = "UpdateCase")]
-        public ProjectDto UpdateCase([FromRoute] Guid caseId, [FromBody] CaseDto caseDto)
+        [HttpPut(Name = "UpdateCase")]
+        public ProjectDto UpdateCase([FromBody] CaseDto caseDto)
         {
             var case_ = _caseAdapter.Convert(caseDto);
             return _caseService.UpdateCase(case_);
