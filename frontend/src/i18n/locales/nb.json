@@ -43,7 +43,14 @@
         "TechnicalInput": "Tekniske innspill",
         "SateliteProduction": "Satelitt produksjon",
         "PipelinesUmbilicals": "Rørledninger ....",
-        "FlexibleRiser": "Fleksibel stigerør"
+        "FlexibleRiser": "Fleksibel stigerør",
+        "CreateAnAsset": "Opprett en asset",
+        "LinkToAsset": "Link til asset",
+        "AssetType": "Asset type",
+        "ChooseAsset": "Velg en assett",
+        "Name": "Navn",
+        "CreateAsset": "Opprett assett",
+        "Cancel": "Avbryt"
     },
     "DrainageStrategyView": {
         "ProductionProfileOil": "Produksjon profil olje",

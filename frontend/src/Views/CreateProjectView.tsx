@@ -11,6 +11,7 @@ import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
+import { useTranslation } from "react-i18next"
 import { Modal } from "../Components/Modal"
 
 import { ProjectCategory } from "../models/ProjectCategory"
@@ -18,8 +19,6 @@ import { ProjectPhase } from "../models/ProjectPhase"
 
 import { GetCommonLibraryService } from "../Services/CommonLibraryService"
 import { GetProjectService } from "../Services/ProjectService"
-import { useTranslation } from "react-i18next";
-
 
 const ProjectSelect = styled.div`
     display: flex;
@@ -118,34 +117,34 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
 
     if (commonLibFetchError) {
         return (
-            <Modal isOpen={isOpen} title={t('CreateProjectView.Oops')} shards={shards}>
+            <Modal isOpen={isOpen} title={t("CreateProjectView.Oops")} shards={shards}>
                 <Typography>
-                    {t('CreateProjectView.SomethingWrong')}
+                    {t("CreateProjectView.SomethingWrong")}
                     {" "}
-                    {t('CreateProjectView.UnableToCreateProject')}
+                    {t("CreateProjectView.UnableToCreateProject")}
                 </Typography>
-                <Button onClick={handleCancelClick}>{t('CreateProjectView.Close')}</Button>
+                <Button onClick={handleCancelClick}>{t("CreateProjectView.Close")}</Button>
             </Modal>
         )
     }
 
     if (!projects) {
         return (
-            <Modal isOpen={isOpen} title={t('CreateProjectView.GettingData')} shards={shards}>
-                <Typography>{t('CreateProjectView.RetrievingProjects')}</Typography>
+            <Modal isOpen={isOpen} title={t("CreateProjectView.GettingData")} shards={shards}>
+                <Typography>{t("CreateProjectView.RetrievingProjects")}</Typography>
             </Modal>
         )
     }
 
     return (
-        <Modal isOpen={isOpen} title={t('CreateProjectView.CreateProject')} shards={shards}>
+        <Modal isOpen={isOpen} title={t("CreateProjectView.CreateProject")} shards={shards}>
             <div>
                 <ProjectSelect>
                     <Icon data={search} color={grey} />
                     <ProjectDropdown
                         id="select-project"
-                        label={t('CreateProjectView.ComLibProject')}
-                        placeholder={t('CreateProjectView.SelectComLibProject')}
+                        label={t("CreateProjectView.ComLibProject")}
+                        placeholder={t("CreateProjectView.SelectComLibProject")}
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                     >
                         {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
@@ -157,7 +156,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                 </ProjectSelect>
                 <div>
                     <TextField
-                        label={t('CreateProjectView.Name')}
+                        label={t("CreateProjectView.Name")}
                         id="textfield-name"
                         placeholder={selectedProject?.name!}
                         autoComplete="off"
@@ -168,7 +167,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                 </div>
                 <div>
                     <TextField
-                        label={t('CreateProjectView.Description')}
+                        label={t("CreateProjectView.Description")}
                         id="textfield-description"
                         placeholder={selectedProject?.description!}
                         autoComplete="off"
@@ -179,7 +178,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                 </div>
                 <div>
                     <TextField
-                        label={t('CreateProjectView.Category')}
+                        label={t("CreateProjectView.Category")}
                         id="textfield-description"
                         placeholder={new ProjectCategory(selectedProject?.projectCategory!).toString()}
                         autoComplete="off"
@@ -188,7 +187,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                 </div>
                 <div>
                     <TextField
-                        label={t('CreateProjectView.Phase')}
+                        label={t("CreateProjectView.Phase")}
                         id="textfield-description"
                         placeholder={new ProjectPhase(selectedProject?.projectPhase!).toString()}
                         autoComplete="off"
@@ -197,7 +196,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                 </div>
                 <div>
                     <TextField
-                        label={t('CreateProjectView.Country')}
+                        label={t("CreateProjectView.Country")}
                         id="textfield-description"
                         placeholder={selectedProject?.country!}
                         autoComplete="off"
@@ -205,8 +204,8 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     />
                 </div>
                 <div>
-                    <Button onClick={handleOkClick}>{t('CreateProjectView.CreateProject')}</Button>
-                    <Button onClick={handleCancelClick} variant="outlined">{t('CreateProjectView.Cancel')}</Button>
+                    <Button onClick={handleOkClick}>{t("CreateProjectView.CreateProject")}</Button>
+                    <Button onClick={handleCancelClick} variant="outlined">{t("CreateProjectView.Cancel")}</Button>
                 </div>
             </div>
         </Modal>

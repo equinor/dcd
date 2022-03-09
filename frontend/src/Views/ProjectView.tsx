@@ -18,11 +18,11 @@ import {
 import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
+import { useTranslation } from "react-i18next"
 import BarChart from "../Components/BarChart"
 
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
-import { useTranslation } from "react-i18next";
 
 import { Modal } from "../Components/Modal"
 import { CaseService } from "../Services/CaseService"
@@ -128,12 +128,12 @@ const ProjectView = () => {
 
                 <EdsProvider density="compact">
                     <ActionsContainer>
-                        <Tooltip title={`${t('ProjectView.Edit')} ${project.name}`}>
-                            <Button variant="ghost_icon" aria-label={`${t('ProjectView.Edit')} ${project.name}`}>
+                        <Tooltip title={`${t("ProjectView.Edit")} ${project.name}`}>
+                            <Button variant="ghost_icon" aria-label={`${t("ProjectView.Edit")} ${project.name}`}>
                                 <Icon data={edit} />
                             </Button>
                         </Tooltip>
-                        <Tooltip title={t('ProjectView.AddCase')}>
+                        <Tooltip title={t("ProjectView.AddCase")}>
                             <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
                                 <Icon data={add} />
                             </Button>
@@ -149,24 +149,24 @@ const ProjectView = () => {
             </Header>
 
             <ChartsContainer>
-                <BarChart data={chartData!} title={t('ProjectView.CapexCase')} />
+                <BarChart data={chartData!} title={t("ProjectView.CapexCase")} />
             </ChartsContainer>
 
-            <Modal isOpen={createCaseModalIsOpen} title={t('ProjectView.CreateCase')} shards={[]}>
+            <Modal isOpen={createCaseModalIsOpen} title={t("ProjectView.CreateCase")} shards={[]}>
                 <CreateCaseForm>
                     <TextField
-                        label={t('ProjectView.CreateCase')}
+                        label={t("ProjectView.CreateCase")}
                         id="name"
                         name="name"
-                        placeholder={t('ProjectView.EnterName')}
+                        placeholder={t("ProjectView.EnterName")}
                         onChange={handleCreateCaseFormFieldChange}
                     />
 
                     <TextField
-                        label={t('ProjectView.Description')}
+                        label={t("ProjectView.Description")}
                         id="description"
                         name="description"
-                        placeholder={t('ProjectView.EnterDescription')}
+                        placeholder={t("ProjectView.EnterDescription")}
                         onChange={handleCreateCaseFormFieldChange}
                     />
 
@@ -176,7 +176,7 @@ const ProjectView = () => {
                             onClick={submitCreateCaseForm}
                             disabled={submitIsDisabled}
                         >
-                            {t('ProjectView.CreateCase')}
+                            {t("ProjectView.CreateCase")}
                         </Button>
                         <Button
                             type="button"
@@ -184,7 +184,7 @@ const ProjectView = () => {
                             variant="ghost"
                             onClick={toggleCreateCaseModal}
                         >
-                            {t('ProjectView.Cancel')}
+                            {t("ProjectView.Cancel")}
                         </Button>
                     </div>
                 </CreateCaseForm>

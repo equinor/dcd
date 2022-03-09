@@ -44,7 +44,14 @@
         "TechnicalInput": "Technical input",
         "SateliteProduction": "Satelite production",
         "PipelinesUmbilicals": "Pipelines umbilicals",
-        "FlexibleRiser": "Flexible riser"
+        "FlexibleRiser": "Flexible riser",
+        "CreateAnAsset": "Create an asset",
+        "LinkToAsset": "Link to asset",
+        "AssetType": "Asset type",
+        "ChooseAsset": "Choose an asset",
+        "Name": "Name",
+        "CreateAsset": "Create asset",
+        "Cancel": "Cancel"
     },
     "DrainageStrategyView": {
         "ProductionProfileOil": "Production profile oil",

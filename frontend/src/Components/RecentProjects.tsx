@@ -127,8 +127,9 @@ function RecentProjects({ projects }: Props) {
                             </CardFooter>
                             <OpenProject
                                 link
-                                href={ProjectPath(project.id!)}/>
-                            {t('RecentProjects.Open')}
+                                href={ProjectPath(project.id!)}
+                            />
+                            {t("RecentProjects.Open")}
                         </Card.Content>
                     </RecentProjectCard>
                 ))}

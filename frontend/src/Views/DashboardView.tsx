@@ -3,7 +3,7 @@ import { Icon, NativeSelect, Typography } from "@equinor/eds-core-react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next"
 
 import styled from "styled-components"
 
@@ -40,19 +40,17 @@ const FindProjectText = styled(Typography)`
     margin-bottom: 1rem;
 `
 
-
 const DashboardView = () => {
     const { t } = useTranslation()
     const ProjectService = GetProjectService()
     const navigate = useNavigate()
 
     const [projects, setProjects] = useState<any[]>()
-    
     useEffect(() => {
         (async () => {
             try {
                 const res = await ProjectService.getProjects()
-                console.log('[DashboardView]', res)
+                console.log("[DashboardView]", res)
                 setProjects(res)
             } catch (error) {
                 console.error(error)
@@ -61,7 +59,7 @@ const DashboardView = () => {
     }, [])
 
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const project = projects?.find(p => p.id === event.currentTarget.selectedOptions[0].value)
+        const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         if (project) {
             navigate(ProjectPath(project.id))
         }
@@ -75,17 +73,23 @@ const DashboardView = () => {
 
     return (
         <Wrapper>
-            <FindProjectText variant="h2">{t('DashboardView.FindProject')}</FindProjectText>
+            <FindProjectText variant="h2">{t("DashboardView.FindProject")}</FindProjectText>
             <ProjectSelect>
-                <Icon data={search} color={grey}></Icon>
+                <Icon data={search} color={grey} />
                 <ProjectDropdown
                     id="select-project"
-                    label={''}
-                    placeholder={t('DashboardView.FindProject')}
+                    label=""
+                    placeholder={t("DashboardView.FindProject")}
                     onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                 >
-                    <option disabled selected />
-                    {projects.map(project => ( <option value={project.id!} key={project.id}>{project.name!}</option>))}
+                    <option
+                        aria-label="Selected Language"
+                        disabled
+                        selected
+                    />
+                    {projects.map((project) => (
+                        <option value={project.id!} key={project.id}>{project.name!}</option>
+                    ))}
                 </ProjectDropdown>
             </ProjectSelect>
             <RecentProjects projects={recentProjects} />

@@ -3,9 +3,9 @@ import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 import { IconData } from "@equinor/eds-icons"
 
-import { ProjectMenuItemType, projectMenuItems } from './ProjectMenu'
-import MenuItem from './MenuItem'
-import { CasePath } from '../../Utils/common'
+import { projectMenuItems } from "./ProjectMenu"
+import MenuItem from "./MenuItem"
+import { CasePath } from "../../Utils/common"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -46,9 +46,8 @@ interface Props {
 
 function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
     const params = useParams()
-    const isSelectedProjectMenuItem =
-        (item.name === projectMenuItems[0].name && params.caseId === undefined) ||
-        (item.name === projectMenuItems[1].name && params.caseId !== undefined)
+    const isSelectedProjectMenuItem = (item.name === projectMenuItems[0].name && params.caseId === undefined)
+    || (item.name === projectMenuItems[1].name && params.caseId !== undefined)
     const isSelected = params.projectId === projectId && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 

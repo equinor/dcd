@@ -5,10 +5,10 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next"
 
-import ProjectMenu from './ProjectMenu'
-import { Project } from '../../models/Project'
+import ProjectMenu from "./ProjectMenu"
+import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
 
 const SidebarDiv = styled.div`
@@ -113,7 +113,7 @@ export const projects = [
 ]
 
 const SideMenu = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     const [project, setProject] = useState<Project>()
     const navigate = useNavigate()
     const params = useParams()
@@ -141,7 +141,7 @@ const SideMenu = () => {
                 <ReturnToSearch onClick={returnToSearch}>
                     {/* eslint-disable-next-line camelcase */}
                     <Icon data={chevron_left} size={24} />
-                    <Typography>{t('SideMenu.BackToSearch')}</Typography>
+                    <Typography>{t("SideMenu.BackToSearch")}</Typography>
                 </ReturnToSearch>
                 <StyledDivider />
                 <ProjectMenu project={project} />

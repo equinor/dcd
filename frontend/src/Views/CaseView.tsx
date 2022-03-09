@@ -1,19 +1,31 @@
-
-import { Tabs, Typography } from "@equinor/eds-core-react"
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import styled from 'styled-components'
-import { useTranslation } from "react-i18next";
-
+import {
+    Tabs,
+    Typography,
+    Button,
+    EdsProvider,
+    TextField,
+    Tooltip,
+    NativeSelect,
+    Icon,
+} from "@equinor/eds-core-react"
+import {
+    useEffect,
+    useState,
+    ChangeEventHandler,
+    MouseEventHandler,
+} from "react"
+import { useParams } from "react-router-dom"
+import styled from "styled-components"
+import { add, link } from "@equinor/eds-icons"
+import { useTranslation } from "react-i18next"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
-import DrainageStrategyView from "./DrainageStrategyView"
-import ExplorationView from "./ExplorationView"
-import OverviewView from "./OverviewView"
 import { GetProjectService } from "../Services/ProjectService"
+import DescriptionView from "./DescriptionView"
+import { Modal } from "../Components/Modal"
 
 const {
-    List, Tab, Panels, Panel,
+    Panels, Panel,
 } = Tabs
 
 const CaseViewDiv = styled.div`
@@ -24,14 +36,41 @@ const CaseViewDiv = styled.div`
 
 const CaseHeader = styled(Typography)`
     margin-bottom: 2rem;
+    display: flex;
+
+    > *:first-child {
+        margin-right: 2rem;
+    }
+`
+
+const ActionsContainer = styled.div`
+    > *:not(:last-child) {
+        margin-right: 0.5rem;
+    }
+`
+
+const CreateAssetForm = styled.form`
+    width: 30rem;
+
+    > * {
+        margin-bottom: 1.5rem;
+    }
+`
+
+const AssetDropdown = styled(NativeSelect)`
+    width: 30rem;
 `
 
 const CaseView = () => {
-    const { t } = useTranslation();
+    const { t } = useTranslation()
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
+    const [createAssetModalIsOpen, setCreateAssetModalIsOpen] = useState<boolean>(false)
+    const [createAssetFormData, setCreateAssetFormData] = useState<Record<string, any>>({})
+    const [submitIsDisabled, setSubmitIsDisabled] = useState<boolean>(false)
+    const [linkAssetModalIsOpen, setLinkAssetModalIsOpen] = useState<boolean>(false)
 
     useEffect(() => {
         (async () => {
@@ -50,37 +89,146 @@ const CaseView = () => {
         setActiveTab(index)
     }
 
+    const toggleCreateAssetModal = () => setCreateAssetModalIsOpen(!createAssetModalIsOpen)
+
+    const toggleLinkAssetModal = () => setLinkAssetModalIsOpen(!linkAssetModalIsOpen)
+
+    const handleCreateAssetFormFieldChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setCreateAssetFormData({
+            ...createAssetFormData,
+            [e.target.name]: e.target.value,
+        })
+    }
+
+    const submitCreateAssetForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        e.preventDefault()
+        setSubmitIsDisabled(true)
+
+        try {
+            setSubmitIsDisabled(false)
+            toggleCreateAssetModal()
+        } catch (error) {
+            setSubmitIsDisabled(false)
+            console.error("[CaseView] error while submitting form data", error)
+        }
+    }
+
+    const submitLinkAssetForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        e.preventDefault()
+        setSubmitIsDisabled(true)
+
+        try {
+            setSubmitIsDisabled(false)
+            toggleLinkAssetModal()
+        } catch (error) {
+            setSubmitIsDisabled(false)
+            console.error("[CaseView] error while submitting form data", error)
+        }
+    }
+
     if (!project) return null
 
     return (
         <CaseViewDiv>
-            <CaseHeader variant="h2">
-                {project.name}
-                {" "}
-                -
-                {caseItem?.name}
+            <CaseHeader>
+                <Typography variant="h2">{caseItem?.name}</Typography>
+                <EdsProvider density="compact">
+                    <ActionsContainer>
+                        <Tooltip title={t("CaseView.CreateAnAsset")}>
+                            <Button variant="ghost_icon" aria-label="Create an asset" onClick={toggleCreateAssetModal}>
+                                <Icon data={add} />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title={t("CaseView.LinkToAsset")}>
+                            <Button variant="ghost_icon" aria-label="Link to asset" onClick={toggleLinkAssetModal}>
+                                <Icon data={link} />
+                            </Button>
+                        </Tooltip>
+                    </ActionsContainer>
+                </EdsProvider>
             </CaseHeader>
+            <Modal isOpen={createAssetModalIsOpen} title={t("CaseView.CreateAnAsset")} shards={[]}>
+                <CreateAssetForm>
+                    <AssetDropdown
+                        label={t("CaseView.AssetType")}
+                        id="asset"
+                        name="asset"
+                        placeholder={t("CaseView.ChooseAnAsset")}
+                    />
+
+                    <TextField
+                        label={t("CaseView.Name")}
+                        id="name"
+                        name="name"
+                        placeholder={t("CaseView.Name")}
+                        onChange={handleCreateAssetFormFieldChange}
+                    />
+
+                    <div>
+                        <Button
+                            type="submit"
+                            onClick={submitCreateAssetForm}
+                            disabled={submitIsDisabled}
+                        >
+                            {t("CaseView.CreateAsset")}
+                        </Button>
+                        <Button
+                            type="button"
+                            color="secondary"
+                            variant="ghost"
+                            onClick={toggleCreateAssetModal}
+                        >
+                            {t("CaseView.Cancel")}
+                        </Button>
+                    </div>
+                </CreateAssetForm>
+            </Modal>
+            <Modal isOpen={linkAssetModalIsOpen} title={t("CaseView.LinkToAsset")} shards={[]}>
+                <CreateAssetForm>
+                    <AssetDropdown
+                        label={t("CaseView.AssetType")}
+                        id="asset"
+                        name="asset"
+                        placeholder={t("CaseView.ChooseAnAsset")}
+                    />
+
+                    <AssetDropdown
+                        label={t("CaseView.Name")}
+                        id="name"
+                        name="name"
+                        placeholder={t("CaseView.Name")}
+                    />
+
+                    <div>
+                        <Button
+                            type="submit"
+                            onClick={submitLinkAssetForm}
+                            disabled={submitIsDisabled}
+                        >
+                            {t("CaseView.LinkToAsset")}
+                        </Button>
+                        <Button
+                            type="button"
+                            color="secondary"
+                            variant="ghost"
+                            onClick={toggleLinkAssetModal}
+                        >
+                            {t("CaseView.Cancel")}
+                        </Button>
+                    </div>
+                </CreateAssetForm>
+            </Modal>
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
-                <List>
-                    <Tab>{t('CaseView.Overview')}</Tab>
-                    <Tab>{t('CaseView.InputData')}</Tab>
-                    <Tab>{t('CaseView.TechnicalInput')}</Tab>
-                    <Tab>{t('CaseView.SateliteProduction')}</Tab>
-                    <Tab>{t('CaseView.PipelinesUmbilicals')}</Tab>
-                    <Tab>{t('CaseView.FlexibleRiser')}</Tab>
-                </List>
                 <Panels>
                     <Panel>
-                        <OverviewView />
+                        <DescriptionView />
                     </Panel>
+                </Panels>
+                <Panels>
                     <Panel>
-                        <DrainageStrategyView />
+                        <Typography>DG4</Typography>
+                        <Typography variant="h4">DD/MM/YYYY</Typography>
                     </Panel>
-                    <Panel>
-                        <ExplorationView />
-                    </Panel>
-                    <Panel>{t('CaseView.SateliteProduction')}</Panel>
-                    <Panel>{t('CaseView.PipelinesUmbilicals')}</Panel>
                 </Panels>
             </Tabs>
         </CaseViewDiv>
