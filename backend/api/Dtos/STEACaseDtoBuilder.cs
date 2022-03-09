@@ -17,7 +17,22 @@ namespace api.Adapters
             Array.Sort(startYearsCase);
             sTEACaseDto.StartYear = Array.Find(startYearsCase, e => e > 0);
 
+            SetStartYearsAbsolute(sTEACaseDto, c.DG4Date.Year);
+
             return sTEACaseDto;
+        }
+
+        private static void SetStartYearsAbsolute(STEACaseDto dto, int dG4Year) 
+        {
+            dto.StartYear += dG4Year;
+            dto.Exploration.StartYear += dG4Year;
+            dto.Capex.StartYear += dG4Year;
+            dto.Capex.Drilling.StartYear += dG4Year;
+            dto.Capex.OffshoreFacilities.StartYear += dG4Year;
+            dto.ProductionAndSalesVolumes.StartYear += dG4Year;
+            dto.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear += dG4Year;
+            dto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear += dG4Year;
+            dto.ProductionAndSalesVolumes.Co2Emissions.StartYear += dG4Year;
         }
 
         private static void AddCapex(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
@@ -75,6 +90,7 @@ namespace api.Adapters
                 sTEACaseDto.ProductionAndSalesVolumes.StartYear = Array.Find(startYearsProductionSalesAndVolumes, e => e > 0);
             }
         }
+
         private static void AddExploration(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto caseDto)
         {
             sTEACaseDto.Exploration = new ExplorationCostProfileDto();
