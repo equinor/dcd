@@ -16,12 +16,10 @@ namespace api.Controllers
     public class TopsidesController : ControllerBase
     {
         private readonly TopsideService _topsideService;
-        private readonly ILogger<TopsidesController> _logger;
         private readonly TopsideAdapter _topsideAdapter;
 
-        public TopsidesController(ILogger<TopsidesController> logger, TopsideService topsideService)
+        public TopsidesController(TopsideService topsideService)
         {
-            _logger = logger;
             _topsideService = topsideService;
             _topsideAdapter = new TopsideAdapter();
         }
@@ -39,11 +37,11 @@ namespace api.Controllers
             return _topsideService.DeleteTopside(topsideId);
         }
 
-        [HttpPut("{topsideId}", Name = "UpdateTopside")]
-        public ProjectDto UpdateTopside([FromRoute] Guid topsideId, [FromBody] TopsideDto topsideDto)
+        [HttpPut(Name = "UpdateTopside")]
+        public ProjectDto UpdateTopside([FromBody] TopsideDto topsideDto)
         {
             var topside = _topsideAdapter.Convert(topsideDto);
-            return _topsideService.UpdateTopside(topsideId, topside);
+            return _topsideService.UpdateTopside(topside);
         }
     }
 }

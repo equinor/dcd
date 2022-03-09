@@ -16,12 +16,10 @@ namespace api.Controllers
     public class WellProjectsController : ControllerBase
     {
         private readonly WellProjectService _wellProjectService;
-        private readonly ILogger<WellProjectsController> _logger;
         private readonly WellProjectAdapter _wellProjectAdapter;
 
-        public WellProjectsController(ILogger<WellProjectsController> logger, WellProjectService wellProjectService)
+        public WellProjectsController(WellProjectService wellProjectService)
         {
-            _logger = logger;
             _wellProjectService = wellProjectService;
             _wellProjectAdapter = new WellProjectAdapter();
         }
@@ -39,11 +37,11 @@ namespace api.Controllers
             return _wellProjectService.DeleteWellProject(wellProjectId);
         }
 
-        [HttpPut("{wellProjectId}", Name = "UpdateWellProject")]
-        public ProjectDto UpdateWellProject([FromRoute] Guid wellProjectId, [FromBody] WellProjectDto wellProjectDto)
+        [HttpPut(Name = "UpdateWellProject")]
+        public ProjectDto UpdateWellProject([FromBody] WellProjectDto wellProjectDto)
         {
             var wellProject = _wellProjectAdapter.Convert(wellProjectDto);
-            return _wellProjectService.UpdateWellProject(wellProjectId, wellProject);
+            return _wellProjectService.UpdateWellProject(wellProject);
         }
     }
 }
