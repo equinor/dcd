@@ -22,17 +22,24 @@ namespace api.Adapters
             return sTEACaseDto;
         }
 
-        private static void SetStartYearsAbsolute(STEACaseDto dto, int dG4Year) 
+        private static void SetStartYearsAbsolute(STEACaseDto dto, int dG4Year)
         {
             dto.StartYear += dG4Year;
-            dto.Exploration.StartYear += dG4Year;
-            dto.Capex.StartYear += dG4Year;
-            dto.Capex.Drilling.StartYear += dG4Year;
-            dto.Capex.OffshoreFacilities.StartYear += dG4Year;
             dto.ProductionAndSalesVolumes.StartYear += dG4Year;
-            dto.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear += dG4Year;
-            dto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear += dG4Year;
-            dto.ProductionAndSalesVolumes.Co2Emissions.StartYear += dG4Year;
+            Add(dto.Exploration, dG4Year);
+            Add(dto.Capex, dG4Year);
+            Add(dto.Capex?.Drilling, dG4Year);
+            Add(dto.Capex?.OffshoreFacilities, dG4Year);
+            Add(dto.ProductionAndSalesVolumes?.TotalAndAnnualOil, dG4Year);
+            Add(dto.ProductionAndSalesVolumes?.TotalAndAnnualSalesGas, dG4Year);
+            Add(dto.ProductionAndSalesVolumes?.Co2Emissions, dG4Year);
+            
+            void Add<T>(T? tsd, int dG4Year)
+            where T : TimeSeriesDto<double>
+            {
+                if (tsd == null) return;
+                tsd.StartYear += dG4Year;
+            }
         }
 
         private static void AddCapex(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
