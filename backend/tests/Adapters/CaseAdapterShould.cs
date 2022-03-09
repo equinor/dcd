@@ -18,10 +18,9 @@ namespace tests
             // Arrange
             var projectId = new Guid();
             var caseDto = CreateCaseDto(projectId);
-            var caseAdapter = new CaseAdapter();
 
             // Act
-            var result = caseAdapter.Convert(caseDto);
+            var result = CaseAdapter.Convert(caseDto);
 
             // Assert
             Assert.Equal(caseDto.ProjectId, result.ProjectId);
