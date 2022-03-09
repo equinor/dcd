@@ -38,7 +38,7 @@ namespace api.Controllers
         public ProjectDto UpdateCase([FromRoute] Guid caseId, [FromBody] CaseDto caseDto)
         {
             var case_ = _caseAdapter.Convert(caseDto);
-            return _caseService.UpdateCase(caseId, case_);
+            return _caseService.UpdateCase(case_);
         }
     }
 }

@@ -26,20 +26,10 @@ namespace api.Services
             return _projectService.GetProjectDto(project.Id);
         }
 
-        public ProjectDto UpdateCase(Guid caseId, Case updatedCase){
-            var case_ = GetCase(caseId);
-            CopyData(case_, updatedCase);
-            _context.Cases!.Update(case_);
+        public ProjectDto UpdateCase(Case updatedCase){
+            _context.Cases!.Update(updatedCase);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(case_.ProjectId);
-        }
-
-        private static void CopyData(Case case_, Case updatedCase)
-        {
-            case_.Name = updatedCase.Name;
-            case_.Description = updatedCase.Description;
-            case_.ReferenceCase = updatedCase.ReferenceCase;
-            case_.DG4Date = updatedCase.DG4Date;
+            return _projectService.GetProjectDto(updatedCase.ProjectId);
         }
 
         public Case GetCase(Guid caseId)

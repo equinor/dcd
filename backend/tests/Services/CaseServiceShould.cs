@@ -64,7 +64,7 @@ public class CaseShould : IDisposable
         var updatedCase = CreateUpdatedCase(project);
 
         // Act
-        var projectResult = caseService.UpdateCase(oldCase.Id, updatedCase);
+        var projectResult = caseService.UpdateCase(updatedCase);
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
