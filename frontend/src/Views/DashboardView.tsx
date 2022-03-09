@@ -47,22 +47,7 @@ const DashboardView = () => {
     const navigate = useNavigate()
 
     const [projects, setProjects] = useState<any[]>()
-    const [recentProjects, setRecentProjects] = useState<Components.Schemas.ProjectDto[] | any>()
-
-    const getRecentProjects = (projects: Project[]) => {
-        const recentProjectsWithTimeStamp = projects
-            .map((project) => [project, RetrieveLastVisitForProject(project.id!)])
-            .filter(([_, timeStamp]) => timeStamp !== null )
-            .map(([project, timeStamp]) => [project, parseInt(timeStamp! as string)])
-            .sort((oneTimeStampedProject, otherTimeStampedProject) => {
-                const oneTimeStamp = oneTimeStampedProject[1] as number
-                const otherTimeStamp = otherTimeStampedProject[1] as number
-                return otherTimeStamp - oneTimeStamp
-            })
-
-        return recentProjectsWithTimeStamp.map(timeStampedProject => timeStampedProject[0])
-    }
-
+    
     useEffect(() => {
         (async () => {
             try {

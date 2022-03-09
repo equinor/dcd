@@ -1,5 +1,5 @@
 
-import { Tabs, Typography } from '@equinor/eds-core-react'
+import { Tabs, Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
