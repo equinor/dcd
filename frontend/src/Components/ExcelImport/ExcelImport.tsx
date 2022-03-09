@@ -2,9 +2,9 @@ import React, { useState } from "react"
 import styled from "styled-components"
 import { Button, Dialog, Typography } from "@equinor/eds-core-react"
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next"
 
-import { tsvToJson } from './helpers'
+import { tsvToJson } from "./helpers"
 
 const StyledDialog = styled(Dialog)`
     width: 50rem;
@@ -42,11 +42,9 @@ interface Props {
     onImport: (obj: { [key: string]: string }[]) => void
 }
 
-
 const ExcelImport = ({ onClose, onImport }: Props) => {
-
-    const { t } = useTranslation();
-    const [dataInput, setDataInput] = useState<string>('')
+    const { t } = useTranslation()
+    const [dataInput, setDataInput] = useState<string>("")
 
     const example = "E.g\n"
         + "forecastYear\tforecastMonth\toilProduction\trichGasProduction\n"
@@ -70,16 +68,16 @@ const ExcelImport = ({ onClose, onImport }: Props) => {
 
     return (
         <StyledDialog>
-            <Dialog.Title>{t('ExcelImport.ImportDataFromExcel')}</Dialog.Title>
+            <Dialog.Title>{t("ExcelImport.ImportDataFromExcel")}</Dialog.Title>
             <Main>
                 <Typography>
-                    {t('ExcelImport.ToPasteValuesCorrectly')}
+                    {t("ExcelImport.ToPasteValuesCorrectly")}
                     {" "}
-                    <Bold>{t('ExcelImport.ColumnTitles')}</Bold>
+                    <Bold>{t("ExcelImport.ColumnTitles")}</Bold>
                     {" "}
-                    {t('ExcelImport.ArePartOfPaste')}
+                    {t("ExcelImport.ArePartOfPaste")}
                 </Typography>
-                <Label>{t('ExcelImport.PasteInformationHere')}</Label>
+                <Label>{t("ExcelImport.PasteInformationHere")}</Label>
                 <TextArea
                     cols={30}
                     rows={10}
@@ -89,9 +87,9 @@ const ExcelImport = ({ onClose, onImport }: Props) => {
                 />
             </Main>
             <Dialog.Actions>
-                <ImportButton onClick={onClickImport}>{t('ExcelImport.Import')}</ImportButton>
+                <ImportButton onClick={onClickImport}>{t("ExcelImport.Import")}</ImportButton>
                 <Button variant="outlined" onClick={onClose}>
-                    {t('ExcelImport.Cancel')}
+                    {t("ExcelImport.Cancel")}
                 </Button>
             </Dialog.Actions>
         </StyledDialog>

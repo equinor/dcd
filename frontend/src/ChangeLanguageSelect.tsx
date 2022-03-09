@@ -15,38 +15,43 @@ const LanguageDropdown = styled(NativeSelect)`
 `
 
 const ChangeLanguageSelect = () => {
-    const { t, i18n } = useTranslation();
-    const languagesArray = ['nb', 'en']
-    const [selectedLanguage, setSelectedLanguage] = useState<String>();
+    const { t, i18n } = useTranslation()
+    const languagesArray = ["nb", "en"]
+    const [selectedLanguage, setSelectedLanguage] = useState<String>()
 
     useEffect(() => {
-        const prevLang = localStorage.getItem('CurrentLanguage') || 'en'
+        const prevLang = localStorage.getItem("CurrentLanguage") || "en"
         const prevLanguageStringValue = prevLang.toString()
         setSelectedLanguage(prevLanguageStringValue)
-      }, []);
+    }, [])
 
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedLanguage = event.currentTarget.selectedOptions[0].value
-        setSelectedLanguage(selectedLanguage) 
-        i18n.changeLanguage(selectedLanguage) 
-        localStorage.setItem("CurrentLanguage", selectedLanguage)
+        const newSelectedLanguage = event.currentTarget.selectedOptions[0].value
+        setSelectedLanguage(newSelectedLanguage)
+        i18n.changeLanguage(newSelectedLanguage)
+        localStorage.setItem("CurrentLanguage", newSelectedLanguage)
     }
 
-    return(
+    return (
         <LanguageSelect>
             <Icon data={language} />
             <LanguageDropdown
                 id="select-language"
-                label={t('ChangeLanguageSelect.Language')}
-                placeholder={'Select a language'}
+                label={t("ChangeLanguageSelect.Language")}
+                placeholder="Select a language"
                 onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
             >
-                <option value = {selectedLanguage as string} disabled selected={selectedLanguage == null || undefined} />
-                {languagesArray.map(language => ( <option value={language} key={language} selected={language === selectedLanguage}>{language}</option>))}
+                <option
+                    value={selectedLanguage as string}
+                    aria-label="Selected Language"
+                    disabled
+                    selected={selectedLanguage == null || undefined}
+                />
+                {languagesArray.map((lang) => (
+                    <option value={lang} key={lang} selected={lang === selectedLanguage}>{lang}</option>))}
             </LanguageDropdown>
         </LanguageSelect>
-                    
     )
 }
 
-export default ChangeLanguageSelect;
+export default ChangeLanguageSelect
