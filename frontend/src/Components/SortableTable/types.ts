@@ -1,4 +1,4 @@
-export type SortDirection = 'ascending' | 'descending' | 'none'
+export type SortDirection = "ascending" | "descending" | "none"
 
 export type Column = {
     name: string

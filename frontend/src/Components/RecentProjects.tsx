@@ -4,9 +4,9 @@ import { useCallback } from 'react'
 import styled from 'styled-components'
 import { useTranslation } from "react-i18next";
 
-import { Project } from '../models/Project'
+import { Project } from "../models/Project"
 
-import { ProjectPhaseNumberToText, ProjectPath } from '../Utils/common'
+import { ProjectPath } from "../Utils/common"
 
 const Wrapper = styled.div`
     margin-top: 4rem;
@@ -72,10 +72,10 @@ const RecentProjects = ({ projects }: Props) => {
             ? tokens.colors.ui.background__info.rgba
             : tokens.colors.ui.background__danger.rgba
 
-        const labelText = phase ?? 'TBD'
+        const labelText = phase ?? "TBD"
 
         return (
-            <ProjectDG style={{background: backgroundColor}} variant="caption">
+            <ProjectDG style={{ background: backgroundColor }} variant="caption">
                 {labelText}
             </ProjectDG>
         )
@@ -118,12 +118,11 @@ const RecentProjects = ({ projects }: Props) => {
                             </CardFooter>
                             <OpenProject link
                                 href={ProjectPath(project.id!)}>
-                                {t('RecentProjects.Open')}
                             </OpenProject>
+                            {t('RecentProjects.Open')}
                         </Card.Content>
                     </RecentProjectCard>
-                    )
-                )}
+                ))}
             </RecentProjectCardWrapper>
         </Wrapper>
     )

@@ -3,7 +3,7 @@ import { InteractionType } from '@azure/msal-browser'
 import { VoidFunctionComponent } from 'react'
 import { useTranslation } from "react-i18next";
 
-import { AuthenticatedViewContainer } from './AuthenticatedViewContainer'
+import { AuthenticatedViewContainer } from "./AuthenticatedViewContainer"
 
 export const ViewsContainer: VoidFunctionComponent = () => {
     const { t }  = useTranslation()

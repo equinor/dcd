@@ -1,8 +1,8 @@
-import { CellValue } from './DataTable'
+import { CellValue } from "./DataTable"
 
 export const generateEmptyGridWithRowTitles = (rowTitles: string[]) => {
     const grid: CellValue[][] = []
-    rowTitles.forEach(columnName => {
+    rowTitles.forEach((columnName) => {
         grid.push([{ readOnly: true, value: columnName }])
     })
     return grid
@@ -10,15 +10,16 @@ export const generateEmptyGridWithRowTitles = (rowTitles: string[]) => {
 
 export const replaceOldData = (
     oldGridData: CellValue[][],
-    changes: { cell: { value: number }; col: number; row: number; value: string }[]
+    changes: { cell: { value: number }; col: number; row: number; value: string }[],
 ) => {
     if (oldGridData.length === 0 || oldGridData[0].length === 0) {
         return []
     }
-    const gridData = oldGridData.map(row => [...row])
+    const gridData = oldGridData.map((row) => [...row])
     changes.forEach(({ row, col, value }) => {
         if (value) {
-            const newValue = parseFloat(value.replace(/\s+/g, '')) // Remove white spaces in string due to number formatting, and convert to number
+            // Remove white spaces in string due to number formatting, and convert to number
+            const newValue = parseFloat(value.replace(/\s+/g, ""))
             gridData[row][col] = { ...gridData[row][col], value: newValue }
         }
     })
@@ -38,7 +39,8 @@ export const generateNewGrid = (data: { [key: string]: string }[], rowTitles: st
                     columnIndex = newColumns.length
                     newColumns.push(key)
                 }
-                const newValue = parseFloat(value.replace(/\s+/g, '')) // Remove white spaces in string due to number formatting, and convert to number
+                // Remove white spaces in string due to number formatting, and convert to number
+                const newValue = parseFloat(value.replace(/\s+/g, ""))
                 newGridData[index][columnIndex + 1] = { value: newValue }
             })
         }

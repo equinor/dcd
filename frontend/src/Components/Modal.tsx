@@ -1,8 +1,8 @@
-import { FunctionComponent } from 'react';
-import { FocusOn } from 'react-focus-on';
-import styled from 'styled-components';
-import { Typography } from '@equinor/eds-core-react';
-import { Portal } from './Portal';
+import { FunctionComponent } from "react"
+import { FocusOn } from "react-focus-on"
+import styled from "styled-components"
+import { Typography } from "@equinor/eds-core-react"
+import { Portal } from "./Portal"
 
 const ModalDiv = styled.div`
     position: fixed;
@@ -21,16 +21,18 @@ type Props = {
     shards: any[];
 }
 
-export const Modal: FunctionComponent<Props> = ({ isOpen, title, shards, children }) => {
-    if (!isOpen) return null;
+export const Modal: FunctionComponent<Props> = ({
+    isOpen, title, shards, children,
+}) => {
+    if (!isOpen) return null
     return (
         <Portal>
             <FocusOn shards={shards}>
                 <ModalDiv>
-                    {title && <Typography variant='h1'>{title}</Typography>}
+                    {title && <Typography variant="h1">{title}</Typography>}
                     <div>{children}</div>
                 </ModalDiv>
             </FocusOn>
         </Portal>
-    );
+    )
 }

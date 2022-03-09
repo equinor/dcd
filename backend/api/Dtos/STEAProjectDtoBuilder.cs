@@ -1,6 +1,5 @@
 using api.Dtos;
 
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
 
 namespace api.Adapters
@@ -14,7 +13,7 @@ namespace api.Adapters
             sTEAprojectDto.STEACases = new List<STEACaseDto>();
             List<int> startYears = new List<int>();
 
-            foreach (CaseDto c in project.Cases)
+            foreach (CaseDto c in project.Cases!)
             {
                 var sTEACaseDto = STEACaseDtoBuilder.Build(c, project);
                 sTEAprojectDto.STEACases.Add(sTEACaseDto);

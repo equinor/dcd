@@ -17,6 +17,7 @@
     "ExcelImport": {
         "ImportDataFromExcel": "Importer data fra Excel",
         "ToPasteValuesCorrectly": "For å lime inn verdier riktig i tabellen, sørg for at kolonnetitler er en del av innlimingen.",
+        "ColumnTitles": "kolonnetitler",
         "PasteInformationHere": "Lim inn informasjonen din her:",
         "Import": "Importer",
         "Cancel": "Kanseller"
@@ -66,15 +67,24 @@
         "SaveNewData": "Lagre nye data"
     },
     "ProjectView": {
+        "Edit": "Endre",
+        "AddCase": "Legg til sak",
+        "Delete": "Slett",
+        "CapexCase": "Capex / Sak",
+        "Name": "Navn",
+        "EnterName": "Legg til navn",
+        "EnterDescription": "Legg til beskrivelse",
+        "DG1Optional": "DG1 (valgfritt)",
         "CreateCase": "Opprett sak",
-        "Cancel": "Kanseller"
+        "Cancel": "Avbryt"
     },
     "ViewsContainer": {
         "PleaseSignIn": "Vennligst logg inn i DCD"
     }, 
     "CreateProjectView": {
         "Oops": "Oops!",
-        "SomethingWrong": "Noe gikk galt under henting av prosjekter fra Common Library. Kan ikke opprette et nytt DCD-prosjekt akkurat nå.",
+        "SomethingWrong": "Noe gikk galt under henting av prosjekter fra Common Library.",
+        "UnableToCreateProject": "Kan ikke opprette et nytt DCD-prosjekt akkurat nå.",
         "Close": "Lukk",
         "GettingData": "Henter data",
         "RetrievingProjects": "Henter prosjekter fra Common Library.",
@@ -86,7 +96,6 @@
         "Category": "Kategori",
         "Phase": "Fase",
         "Country": "Land",
-        "Create Project": "Opprett Prosjekt",
         "Cancel": "Avbryt"
     },
     "DashboardView": {

@@ -47,7 +47,7 @@ namespace api.Services
 
         private void SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
         {
-            var case_ = project.Cases.FirstOrDefault(o => o.Id == sourceCaseId);
+            var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
             if (case_ == null)
             {
                 throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));

@@ -25,25 +25,29 @@ namespace api.Adapters
             sTEACaseDto.Capex = new CapexDto();
             if (c.WellProjectLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.Drilling = p.WellProjects.FirstOrDefault(l => l.Id == c.WellProjectLink)!.CostProfile;
-                sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.Drilling);
+                var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
+                if (wellProject.CostProfile != null)
+                {
+                    sTEACaseDto.Capex.Drilling = wellProject.CostProfile;
+                    sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.Drilling);
+                }
             }
             sTEACaseDto.Capex.OffshoreFacilities = new OffshoreFacilitiesCostProfileDto();
             if (c.SubstructureLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Substructures.FirstOrDefault(l => l.Id == c.SubstructureLink)!.CostProfile);
+                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)!.CostProfile);
             }
             if (c.SurfLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Surfs.FirstOrDefault(l => l.Id == c.SurfLink)!.CostProfile);
+                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile);
             }
             if (c.TopsideLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Topsides.FirstOrDefault(l => l.Id == c.TopsideLink)!.CostProfile);
+                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile);
             }
             if (c.TransportLink != Guid.Empty)
             {
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Transports.FirstOrDefault(l => l.Id == c.TransportLink)!.CostProfile);
+                sTEACaseDto.Capex.OffshoreFacilities.AddValues(p.Transports!.First(l => l.Id == c.TransportLink).CostProfile);
             }
 
             sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.OffshoreFacilities);
@@ -54,7 +58,7 @@ namespace api.Adapters
             sTEACaseDto.ProductionAndSalesVolumes = new ProductionAndSalesVolumesDto();
             if (c.DrainageStrategyLink != Guid.Empty)
             {
-                DrainageStrategyDto drainageStrategyDto = p.DrainageStrategies.FirstOrDefault(d => d.Id == c.DrainageStrategyLink)!;
+                DrainageStrategyDto drainageStrategyDto = p.DrainageStrategies!.First(d => d.Id == c.DrainageStrategyLink);
                 sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = drainageStrategyDto.ProductionProfileOil == null
                 ? new ProductionProfileOilDto() : drainageStrategyDto.ProductionProfileOil;
                 sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualSalesGas = drainageStrategyDto.NetSalesGas == null
@@ -76,7 +80,11 @@ namespace api.Adapters
             sTEACaseDto.Exploration = new ExplorationCostProfileDto();
             if (caseDto.ExplorationLink != Guid.Empty)
             {
-                sTEACaseDto.Exploration = p.Explorations.FirstOrDefault(e => e.Id == caseDto.ExplorationLink)!.CostProfile;
+                var exploration = p.Explorations!.First(e => e.Id == caseDto.ExplorationLink);
+                if (exploration.CostProfile != null)
+                {
+                    sTEACaseDto.Exploration = exploration.CostProfile;
+                }
             }
         }
     }

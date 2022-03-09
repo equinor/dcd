@@ -118,9 +118,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(_accessControlPolicyName);
 
 app.MapControllers();
 

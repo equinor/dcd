@@ -39,7 +39,7 @@ public class TopsideAdapterShould : IDisposable
         // Assert
         Assert.Equal(topsideDto.Name, topside.Name);
         Assert.Equal(topsideDto.ProjectId, topside.ProjectId);
-        //    TestHelper.CompareCosts(topsideDto.CostProfile, topside.CostProfile);
+        TestHelper.CompareCosts(topsideDto.CostProfile, topside.CostProfile);
         Assert.Equal(topsideDto.Name, topside.CostProfile.Topside.Name);
         Assert.Equal(topsideDto.DryWeight, topside.DryWeight);
         Assert.Equal(topsideDto.OilCapacity, topside.OilCapacity);

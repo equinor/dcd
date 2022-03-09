@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import styled from 'styled-components'
-import { Link, useParams } from 'react-router-dom'
-import { file, folder, dashboard } from '@equinor/eds-icons'
+import { useState } from "react"
+import styled from "styled-components"
+import { Link, useParams } from "react-router-dom"
+import { file, folder, dashboard } from "@equinor/eds-icons"
 
 import { useTranslation } from "react-i18next";
 
@@ -81,13 +81,19 @@ const ProjectMenu = ({ project }: Props) => {
                             <Item key={index}>
                                 {projectMenuItem.name === projectMenuItems[0].name && (
                                     <nav>
-                                        <LinkWithoutStyle to={'/project/' + project.id}>
-                                            <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id!} />
+                                        <LinkWithoutStyle
+                                         to={'/project/' + project.id}>
+                                            <ProjectMenuItemComponent 
+                                            item={projectMenuItem} 
+                                            projectId={project.id!} />
                                         </LinkWithoutStyle>
                                     </nav>
                                 )}
                                 {projectMenuItem.name === projectMenuItems[1].name && (
-                                    <ProjectMenuItemComponent item={projectMenuItem} projectId={project.id!} subItems={project.cases!} />
+                                    <ProjectMenuItemComponent
+                                     item={projectMenuItem}
+                                     projectId={project.id!}
+                                     subItems={project.cases!} />
                                 )}
                             </Item>
                         )

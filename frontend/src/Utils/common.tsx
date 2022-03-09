@@ -1,14 +1,18 @@
 const recentProjectKeyPrefix = "projectid:"
 
-export const GetDrainageStrategy = (project: Components.Schemas.ProjectDto, drainageStrategyId?: string) => {
-    return project.drainageStrategies?.find(o => o.id === drainageStrategyId);
-};
+export const LoginAccessTokenKey = "loginAccessToken"
+export const FusionAccessTokenKey = "fusionAccessToken"
+
+export const GetDrainageStrategy = (
+    project: Components.Schemas.ProjectDto,
+    drainageStrategyId?: string,
+) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
 export function ProjectPhaseNumberToText(phaseNumber: Components.Schemas.ProjectPhase) {
-    return "DG" + (phaseNumber+1).toString()
+    return `DG${(phaseNumber + 1).toString()}`
 }
 function recentProjectKey(projectId: string) {
-    return recentProjectKeyPrefix+projectId
+    return recentProjectKeyPrefix + projectId
 }
 export function StoreRecentProject(projectId: string) {
     const timeStamp = new Date().getTime()
@@ -26,4 +30,12 @@ export function ProjectPath(projectId: string) {
 
 export function CasePath(projectId: string, caseId: string) {
     return `${ProjectPath(projectId)}/case/${caseId}`
+}
+
+export function StoreToken(keyName: string, token: string) {
+    window.sessionStorage.setItem(keyName, token)
+}
+
+export function GetToken(keyName: string) {
+    return window.sessionStorage.getItem(keyName)
 }

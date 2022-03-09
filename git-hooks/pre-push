@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo running backend tests...
+cd backend/tests
+dotnet test

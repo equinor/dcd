@@ -23,13 +23,14 @@ interface Props {
 const Header = ({ name }: Props) => {
     const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
+
     const openModal = () => {
-      setIsOpen(true);
-    };
+        setIsOpen(true)
+    }
     const closeModal = () => {
-      setIsOpen(false);
-    };
-    const buttonRef = useRef<HTMLButtonElement>(null);
+        setIsOpen(false)
+    }
+    const buttonRef = useRef<HTMLButtonElement>(null)
     return (
         <>
             <Wrapper>
@@ -37,12 +38,14 @@ const Header = ({ name }: Props) => {
                 <ChangeLanguageSelect/>
                 <Button ref={buttonRef} onClick={openModal}>{t('Header.CreateProject')}</Button>
                 <Typography>
-                    {t('Header.WelcomeToDCD')} <b>{name}</b>!
+                    {t('Header.WelcomeToDCD')}
+                    {" "}
+                    <b>{name}</b>
+                    !
                 </Typography>
                 
             </Wrapper>
-            <CreateProjectView isOpen={isOpen} shards={[buttonRef]} closeModal={closeModal}></CreateProjectView>
-            
+            <CreateProjectView isOpen={isOpen} shards={[buttonRef]} closeModal={closeModal} />
         </>
     )
 }

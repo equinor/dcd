@@ -4,9 +4,9 @@ import { Button, Scrim, Typography } from '@equinor/eds-core-react'
 import { useTranslation } from "react-i18next";
 import i18n from '../i18n';
 
-import ExcelImport from '../Components/ExcelImport/ExcelImport'
-import DataTable, { CellValue } from '../Components/DataTable/DataTable'
-import { generateNewGrid, replaceOldData } from '../Components/DataTable/helpers'
+import ExcelImport from "../Components/ExcelImport/ExcelImport"
+import DataTable, { CellValue } from "../Components/DataTable/DataTable"
+import { generateNewGrid, replaceOldData } from "../Components/DataTable/helpers"
 
 const Wrapper = styled.div`
     display: flex;
@@ -110,13 +110,13 @@ const ExplorationView = () => {
             <Typography variant="h3">{t('ExplorationView.Exploration')}</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
-                <ScrimBackground isDismissable={true} onClose={closeImportView}>
+                <ScrimBackground isDismissable onClose={closeImportView}>
                     <ExcelImport onClose={closeImportView} onImport={onImport} />
                 </ScrimBackground>
             )}
             {dataIsChanged && (
                 <Buttons>
-                    <CancelButton variant={'outlined'} onClick={revertChange}>
+                    <CancelButton variant='outlined' onClick={revertChange}>
                     {t('ExplorationView.CancelChange')}
                     </CancelButton>
                     <Button onClick={saveDataImport}>{t('ExplorationView.SaveNewData')}</Button>

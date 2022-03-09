@@ -167,13 +167,13 @@ const DrainageStrategyView = () => {
             <Typography variant="h3">{t('DrainageStrategyView.DrainageStrategy')}</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
-                <ScrimBackground isDismissable={true} onClose={closeImportView}>
+                <ScrimBackground isDismissable onClose={closeImportView}>
                     <ExcelImport onClose={closeImportView} onImport={onImport} />
                 </ScrimBackground>
             )}
             {dataIsChanged && (
                 <Buttons>
-                    <CancelButton variant={'outlined'} onClick={revertChange}>
+                    <CancelButton variant='outlined' onClick={revertChange}>
                         {t('DrainageStrategyView.CancelChange')}
                     </CancelButton>
                     <Button onClick={saveDataImport}>{t('DrainageStrategyView.SaveNewData')}</Button>

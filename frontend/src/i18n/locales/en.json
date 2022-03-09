@@ -16,7 +16,9 @@
     },
     "ExcelImport": {
         "ImportDataFromExcel": "Import data from Excel",
-        "ToPasteValuesCorrectly": "To paste values correctly in the table, make sure that column titles are part of the paste.",
+        "ToPasteValuesCorrectly": "To paste values correctly in the table, make sure that",
+        "ColumnTitles": "column titles",
+        "ArePartOfPaste": "are part of the paste",
         "PasteInformationHere": "Paste your information here:",
         "Import": "Import",
         "Cancel": "Cancel"
@@ -72,6 +74,7 @@
         "CapexCase": "Capex / case",
         "Name": "Name",
         "EnterName": "Enter a name",
+        "EnterDescription": "Enter a description",
         "DG1Optional": "DG1 (optional)",
         "CreateCase": "Create case",
         "Cancel": "Cancel"
@@ -81,7 +84,8 @@
     }, 
     "CreateProjectView": {
         "Oops": "Oops!",
-        "SomethingWrong": "Something went wrong while retrieving projects from Common Library. Unable to create a new DCD project right now.",
+        "SomethingWrong": "Something went wrong while retrieving projects from Common Library.",
+        "UnableToCreateProject": "Unable to create a new DCD project right now.",
         "Close": "Close",
         "GettingData": "Getting data",
         "RetrievingProjects": "Retrieving projects from Common Library.",
@@ -93,7 +97,6 @@
         "Category": "Category",
         "Phase": "Phase",
         "Country": "Country",
-        "Create Project": "Create Project",
         "Cancel": "Cancel"
     },
     "DashboardView": {

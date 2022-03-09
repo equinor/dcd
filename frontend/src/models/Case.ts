@@ -19,7 +19,7 @@ export class Case {
         this.name = data.name ?? ""
         this.isRef = data.referenceCase ?? false
         this.links = Object.entries(data)
-            .filter(([key]) => key.toLowerCase().endsWith('link'))
+            .filter(([key]) => key.toLowerCase().endsWith("link"))
             .reduce((tmp, [key, value]) => {
                 if (key in tmp) return tmp
                 return { ...tmp, [key]: value }

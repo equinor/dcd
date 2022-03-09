@@ -9,8 +9,8 @@ namespace api.Models
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
 
-        public WellProjectCostProfile CostProfile { get; set; } = null!;
-        public DrillingSchedule DrillingSchedule { get; set; } = null!;
+        public WellProjectCostProfile? CostProfile { get; set; }
+        public DrillingSchedule? DrillingSchedule { get; set; }
         public int ProducerCount { get; set; }
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }

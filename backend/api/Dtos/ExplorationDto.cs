@@ -9,9 +9,9 @@ namespace api.Dtos
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
         public WellType WellType { get; set; }
-        public ExplorationCostProfileDto CostProfile { get; set; } = null!;
-        public ExplorationDrillingScheduleDto DrillingSchedule { get; set; } = null!;
-        public GAndGAdminCostDto GAndGAdminCost { get; set; } = null!;
+        public ExplorationCostProfileDto? CostProfile { get; set; }
+        public ExplorationDrillingScheduleDto? DrillingSchedule { get; set; }
+        public GAndGAdminCostDto? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
     }
 

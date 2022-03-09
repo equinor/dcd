@@ -1,15 +1,25 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import { tokens } from '@equinor/eds-tokens';
-import { search } from '@equinor/eds-icons';
-import { Icon, NativeSelect, TextField, Button, Typography } from '@equinor/eds-core-react';
-import { CommonLibraryService } from '../Services/CommonLibraryService';
-import { ProjectService } from '../Services/ProjectService'
-import { Modal } from '../Components/Modal';
-import { ProjectCategory } from "../models/ProjectCategory";
-import { ProjectPhase } from "../models/ProjectPhase";
+import {
+    Button,
+    Icon,
+    NativeSelect,
+    TextField,
+    Typography,
+} from "@equinor/eds-core-react"
+import { ChangeEvent, useEffect, useState } from "react"
+import { search } from "@equinor/eds-icons"
+import { tokens } from "@equinor/eds-tokens"
+import { useNavigate } from "react-router-dom"
+import styled from "styled-components"
+
+import { Modal } from "../Components/Modal"
+
+import { ProjectCategory } from "../models/ProjectCategory"
+import { ProjectPhase } from "../models/ProjectPhase"
+
+import { GetCommonLibraryService } from "../Services/CommonLibraryService"
+import { GetProjectService } from "../Services/ProjectService"
 import { useTranslation } from "react-i18next";
+
 
 const ProjectSelect = styled.div`
     display: flex;
@@ -21,51 +31,37 @@ const ProjectDropdown = styled(NativeSelect)`
     margin-left: 0.5rem;
 `
 
-const grey = tokens.colors.ui.background__scrim.rgba;
+const grey = tokens.colors.ui.background__scrim.rgba
 
-interface Props {
-	isOpen: boolean;
-	closeModal: Function;
+type Props = {
+    isOpen: boolean;
+    closeModal: Function;
     shards: any[];
 }
 
 const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     const { t } = useTranslation()
-    const navigate = useNavigate();
-    const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>();
-    const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>();
-    const [inputName, setName] = useState<string>();
-    const [inputDescription, setDescription] = useState<string>();
-    const [error, setError] = useState<boolean>();
+    const navigate = useNavigate()
+    const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>()
+    const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>()
+    const [inputName, setName] = useState<string>()
+    const [inputDescription, setDescription] = useState<string>()
+    const [commonLibFetchError, setCommonLibFetchError] = useState<boolean>()
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const project = projects?.find(p => p.id === event.currentTarget.selectedOptions[0].value);
-        setSelectedProject(project);
+        const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
+        setSelectedProject(project)
     }
+    const CommonLibraryService = GetCommonLibraryService()
 
-    const handleOkClick = () => {
-        closeCreateProjectView(true);
-    }
-    const handleCancelClick = () => {
-        closeCreateProjectView(false);
-    }
-
-    const closeCreateProjectView = async (pressedOkButton: boolean) => {
-        let project;
-        if (pressedOkButton === true) {
-            project = convertCommonLibProjectToProject(selectedProject!);
-            var createdProject = await ProjectService.createProject(project);
-            navigate('/project/' + createdProject.projectId);
-        }
-        setSelectedProject(undefined);
-        closeModal();
-    }
-
-    const convertCommonLibProjectToProject = (commonLibraryProject: Components.Schemas.CommonLibraryProjectDto): Components.Schemas.ProjectDto => {
-        let project: Components.Schemas.ProjectDto = {
+    const convertCommonLibProjectToProject = (
+        commonLibraryProject: Components.Schemas.CommonLibraryProjectDto,
+    ): Components.Schemas.ProjectDto => {
+        const project: Components.Schemas.ProjectDto = {
             name: inputName ?? commonLibraryProject?.name,
+            commonLibraryId: commonLibraryProject?.id,
             commonLibraryName: commonLibraryProject?.name,
             description: inputDescription ?? commonLibraryProject?.description,
-            country: commonLibraryProject?.country ?? '',
+            country: commonLibraryProject?.country ?? "",
             projectPhase: commonLibraryProject?.projectPhase,
             projectCategory: commonLibraryProject?.projectCategory,
             cases: [],
@@ -75,47 +71,74 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
             topsides: [],
             transports: [],
             drainageStrategies: [],
-            wellProjects: []
+            wellProjects: [],
         }
-        return project;
+        return project
+    }
+
+    const closeCreateProjectView = async (pressedOkButton: boolean) => {
+        let project
+        if (pressedOkButton === true) {
+            project = convertCommonLibProjectToProject(selectedProject!)
+            const createdProject = await GetProjectService().createProject(project)
+            navigate(`/project/${createdProject.projectId}`)
+        }
+        setSelectedProject(undefined)
+        closeModal()
+    }
+
+    const handleOkClick = () => {
+        closeCreateProjectView(true)
+    }
+
+    const handleCancelClick = () => {
+        closeCreateProjectView(false)
     }
 
     const updateNameHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setName(event.target.value);
+        setName(event.target.value)
     }
 
     const updateDescriptionHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setDescription(event.target.value);
+        setDescription(event.target.value)
     }
 
     useEffect(() => {
         (async () => {
             try {
-                setError(false);
-                const res = await CommonLibraryService.getProjects();
-                setProjects(res);
+                setCommonLibFetchError(false)
+                const res = await CommonLibraryService.getProjects()
+                setProjects(res)
             } catch (error) {
-                setError(true);
-                console.error(`[CreateProjectView] Error while fetching common library projects.`, error);
+                setCommonLibFetchError(true)
+                console.error("[CreateProjectView] Error while fetching common library projects.", error)
             }
         })()
-    }, []);
+    }, [])
 
-    if (error)
-        return (<Modal isOpen={isOpen} title={t('CreateProjectView.Oops')} shards={shards}>
-                <Typography>{t('CreateProjectView.SomethingWrong')}</Typography>
+    if (commonLibFetchError) {
+        return (
+            <Modal isOpen={isOpen} title={t('CreateProjectView.Oops')} shards={shards}>
+                <Typography>
+                    {t('CreateProjectView.SomethingWrong')}
+                    {" "}
+                    {t('CreateProjectView.UnableToCreateProject')}
+                </Typography>
                 <Button onClick={handleCancelClick}>{t('CreateProjectView.Close')}</Button>
             </Modal>
-	    );
-    
-    if (!projects)
-        return (<Modal isOpen={isOpen} title={t('CreateProjectView.GettingData')} shards={shards}>
-            <Typography>{t('CreateProjectView.RetrievingProjects')}</Typography>
-        </Modal>
-        );
+        )
+    }
 
-	return (
-		<Modal isOpen={isOpen} title={t('CreateProjectView.CreateProject')} shards={shards}>
+    if (!projects) {
+        return (
+            <Modal isOpen={isOpen} title={t('CreateProjectView.GettingData')} shards={shards}>
+                <Typography>{t('CreateProjectView.RetrievingProjects')}</Typography>
+            </Modal>
+        )
+    }
+
+    return (
+        <Modal isOpen={isOpen} title={t('CreateProjectView.CreateProject')} shards={shards}>
             <div>
                 <ProjectSelect>
                     <Icon data={search} color={grey} />
@@ -125,8 +148,11 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         placeholder={t('CreateProjectView.SelectComLibProject')}
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                     >
+                        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                         <option disabled selected />
-                        {projects.map(project => ( <option value={project.id!} key={project.id}>{project.name!}</option>))}
+                        {projects.map((project) => (
+                            <option value={project.id!} key={project.id}>{project.name!}</option>
+                        ))}
                     </ProjectDropdown>
                 </ProjectSelect>
                 <div>
@@ -135,7 +161,9 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         id="textfield-name"
                         placeholder={selectedProject?.name!}
                         autoComplete="off"
-                        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => updateNameHandler(event)}
+                        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
+                            updateNameHandler(event)
+                        )}
                     />
                 </div>
                 <div>
@@ -144,7 +172,9 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         id="textfield-description"
                         placeholder={selectedProject?.description!}
                         autoComplete="off"
-                        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => updateDescriptionHandler(event)}
+                        onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
+                            updateDescriptionHandler(event)
+                        )}
                     />
                 </div>
                 <div>
@@ -153,7 +183,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         id="textfield-description"
                         placeholder={new ProjectCategory(selectedProject?.projectCategory!).toString()}
                         autoComplete="off"
-                        readOnly={true}
+                        readOnly
                     />
                 </div>
                 <div>
@@ -162,7 +192,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         id="textfield-description"
                         placeholder={new ProjectPhase(selectedProject?.projectPhase!).toString()}
                         autoComplete="off"
-                        readOnly={true}
+                        readOnly
                     />
                 </div>
                 <div>
@@ -171,16 +201,16 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         id="textfield-description"
                         placeholder={selectedProject?.country!}
                         autoComplete="off"
-                        readOnly={true}
+                        readOnly
                     />
                 </div>
                 <div>
                     <Button onClick={handleOkClick}>{t('CreateProjectView.CreateProject')}</Button>
-                    <Button onClick={handleCancelClick} variant='outlined'>{t('CreateProjectView.Cancel')}</Button>
+                    <Button onClick={handleCancelClick} variant="outlined">{t('CreateProjectView.Cancel')}</Button>
                 </div>
             </div>
-		</Modal>
-	);
+        </Modal>
+    )
 }
 
-export default CreateProjectView;
+export default CreateProjectView

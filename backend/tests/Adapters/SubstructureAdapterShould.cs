@@ -28,7 +28,7 @@ namespace tests
             Assert.Equal(substructureDto.Name, result.Name);
             Assert.Equal(substructureDto.DryWeight, result.DryWeight);
             Assert.Equal(substructureDto.Maturity, result.Maturity);
-            //         TestHelper.CompareCosts(substructureDto.CostProfile, result.CostProfile);
+            TestHelper.CompareCosts(substructureDto.CostProfile, result.CostProfile);
         }
 
         private SubstructureDto CreateSubstructureDto(Guid projectId)

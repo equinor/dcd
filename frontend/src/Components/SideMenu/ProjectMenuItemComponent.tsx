@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { Link, useParams } from 'react-router-dom'
-import { IconData } from '@equinor/eds-icons'
+import React, { useEffect, useState } from "react"
+import styled from "styled-components"
+import { Link, useParams } from "react-router-dom"
+import { IconData } from "@equinor/eds-icons"
 
 import { ProjectMenuItemType, projectMenuItems } from './ProjectMenu'
 import MenuItem from './MenuItem'
@@ -44,7 +44,7 @@ interface Props {
     subItems?: Components.Schemas.CaseDto[]
 }
 
-const ProjectMenuItemComponent = ({ item, projectId, subItems }: Props) => {
+function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
     const params = useParams()
     const isSelectedProjectMenuItem =
         (item.name === projectMenuItems[0].name && params.caseId === undefined) ||
@@ -68,13 +68,13 @@ const ProjectMenuItemComponent = ({ item, projectId, subItems }: Props) => {
             {subItems && isOpen && (
                 <SubItems>
                     {subItems.map((subItem, index) => (
-                        <SubItem key={index}>
+                        <SubItem key={`menu-sub-item-${index + 1}`}>
                             <nav>
                                 <LinkWithoutStyle to={CasePath(projectId, subItem.id!)}>
                                     <MenuItem
                                         title={subItem.name!}
                                         isSelected={isSelected && params.caseId === subItem.id}
-                                        padding={'0.25rem 2rem'}
+                                        padding="0.25rem 2rem"
                                     />
                                 </LinkWithoutStyle>
                             </nav>

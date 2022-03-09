@@ -143,7 +143,7 @@ namespace tests
             var projectResult = substructureService.UpdateSubstructure(oldSubstructure.Id, updatedSubstructure);
 
             // Assert
-            var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == updatedSubstructure.Name);
+            var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Id == oldSubstructure.Id);
             Assert.NotNull(actualSubstructure);
             TestHelper.CompareSubstructures(updatedSubstructure, actualSubstructure);
         }

@@ -35,6 +35,7 @@ namespace api.Services
 
         public ProjectDto CreateProject(Project project)
         {
+            project.CreateDate = DateTimeOffset.UtcNow.Date;
             project.Cases = new List<Case>();
             project.DrainageStrategies = new List<DrainageStrategy>();
             project.Substructures = new List<Substructure>();
