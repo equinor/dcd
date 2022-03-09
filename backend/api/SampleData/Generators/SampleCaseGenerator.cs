@@ -13,7 +13,8 @@ public static class SampleCaseGenerator
         .WithCase(new CaseBuilder()
         {
             Name = "BusCase 1",
-            Description = "Desc Bus Case 1"
+            Description = "Desc Bus Case 1",
+            DG4Date = DateTimeOffset.Now
         }
             .WithDrainageStrategy(drainStratSkarven, projectsBuilder.ForProject(projectSkarven))
             .WithWellProject("SkarvenWell", projectsBuilder.ForProject(projectSkarven))
@@ -55,7 +56,8 @@ public static class SampleCaseGenerator
         .WithCase(new CaseBuilder()
         {
             Name = "Case 2 in P1",
-            Description = "Description 2 in Case 2 in P1"
+            Description = "Description 2 in Case 2 in P1",
+            DG4Date = DateTimeOffset.Now
         }
             .WithDrainageStrategy(project1DrainageStrategyName1, projectsBuilder.ForProject(project1))
             .WithSubstructure(project1SubstructureName, projectsBuilder.ForProject(project1))
@@ -64,7 +66,8 @@ public static class SampleCaseGenerator
         .WithCase(new CaseBuilder()
         {
             Name = "Case 3 in P1",
-            Description = "Description 2 in Case 1 in P1"
+            Description = "Description 2 in Case 1 in P1",
+            DG4Date = DateTimeOffset.Now
         });
 
         const string project2 = "P2";
@@ -73,7 +76,8 @@ public static class SampleCaseGenerator
         .WithCase(new CaseBuilder()
         {
             Name = "Case 1 in P2",
-            Description = "Description Case 1 P2"
+            Description = "Description Case 1 P2",
+            DG4Date = DateTimeOffset.Now
         }
             .WithDrainageStrategy(project2DrainageStrategyName1, projectsBuilder.ForProject(project2))
         );
