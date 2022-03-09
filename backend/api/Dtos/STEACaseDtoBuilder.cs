@@ -33,7 +33,7 @@ namespace api.Adapters
             Add(dto.ProductionAndSalesVolumes?.TotalAndAnnualOil, dG4Year);
             Add(dto.ProductionAndSalesVolumes?.TotalAndAnnualSalesGas, dG4Year);
             Add(dto.ProductionAndSalesVolumes?.Co2Emissions, dG4Year);
-            
+
             void Add<T>(T? tsd, int dG4Year)
             where T : TimeSeriesDto<double>
             {
