@@ -13,5 +13,6 @@ module WebApps 'webapp/main.bicep' = {
   name: 'webApps'
   params: {
     baseAppName: baseAppName
+    
   }
 }

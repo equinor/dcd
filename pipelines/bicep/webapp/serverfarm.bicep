@@ -1,11 +1,11 @@
 param baseAppName string = 'dcd'
-
+param location string = 'norwayeast'
 // NB: ae8e was taken from the deployed example, unsure how it came about
 var serverfarmName = 'plan-${baseAppName}'
 
 resource serverfarms 'Microsoft.Web/serverfarms@2021-03-01' = {
   name: serverfarmName
-  location: 'Norway East'
+  location: location
   sku: {
     name: 'P3v2'
     tier: 'PremiumV2'

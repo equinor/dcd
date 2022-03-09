@@ -2,7 +2,7 @@
 // az bicep publish --file webapp.bicep --target "br:crdcd.azurecr.io/bicep/webapp:v1"
 //
 param environment string = 'dev'
-param azureLocation string = resourceGroup().location
+param location string = resourceGroup().location
 param baseAppName string = 'dcd'
 param serverfarmId string
 // frontend or backend ?
@@ -18,7 +18,7 @@ var dockerImageTag = '${containerRegistry}/${dockerImageName}:${dockerImageVersi
 resource webApplication 'Microsoft.Web/sites@2021-03-01' = {
   kind: 'app,linux,container'
   name: webAppName
-  location: azureLocation
+  location: location
 
   tags: {
     'hidden-related:${resourceGroup().id}/providers/Microsoft.Web/serverfarms/appServicePlan': 'Resource'
@@ -69,7 +69,7 @@ resource webApplication 'Microsoft.Web/sites@2021-03-01' = {
 resource pubCredsPolFTP 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2021-03-01' = {
   parent: webApplication
   name: 'ftp'
-  location: 'Norway East'
+  location: location
   properties: {
     allow: true
   }
@@ -78,7 +78,7 @@ resource pubCredsPolFTP 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@
 resource pubCredsPolSCM 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2021-03-01' = {
   parent: webApplication
   name: 'scm'
-  location: 'Norway East'
+  location: location
   properties: {
     allow: true
   }
@@ -97,7 +97,7 @@ var allowedOrigins = {
 resource config 'Microsoft.Web/sites/config@2021-03-01' = {
   parent: webApplication
   name: 'web'
-  location: 'Norway East'
+  location: location
   properties: {
     numberOfWorkers: 1
     defaultDocuments: [
@@ -179,7 +179,7 @@ resource config 'Microsoft.Web/sites/config@2021-03-01' = {
 resource hostnameBinding 'Microsoft.Web/sites/hostNameBindings@2021-03-01' = {
   parent: webApplication
   name: '${webAppName}.azurewebsites.net'
-  location: 'Norway East'
+  location: location
   properties: {
     siteName: webAppName
     hostNameType: 'Verified'

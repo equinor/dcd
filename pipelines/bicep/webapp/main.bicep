@@ -1,4 +1,5 @@
 param baseAppName string = 'dcd'
+param location string = 'norwayeast'
 
 var deployments = [
   {
@@ -39,6 +40,7 @@ module serverFarmDeploy 'serverfarm.bicep' = {
   name: 'serverfarm'
   params: {
     baseAppName: baseAppName
+    location: location
   }
 }
 
@@ -50,5 +52,6 @@ module webApplicationDeploy 'webapp.bicep' = [for deployment in deployments: {
     environment: deployment.env
     baseAppName: baseAppName
     serverfarmId: serverFarmDeploy.outputs.serverfarmId
+    location: location
   }
 }]
