@@ -177,7 +177,7 @@ namespace tests
                 Assert.Null(expected);
                 Assert.Null(actual);
             }
-            else 
+            else
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Description, actual.Description);
@@ -186,14 +186,14 @@ namespace tests
 
         }
 
-         public static void CompareCases(Case expected, CaseDto actual)
+        public static void CompareCases(Case expected, CaseDto actual)
         {
             if (expected == null || actual == null)
             {
                 Assert.Null(expected);
                 Assert.Null(actual);
             }
-            else 
+            else
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.Description, actual.Description);
