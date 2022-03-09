@@ -16,28 +16,23 @@ namespace api.Controllers
     {
 
         private readonly CaseService _caseService;
-        private readonly CaseAdapter _caseAdapter;
-        private readonly ILogger<CasesController> _logger;
 
-
-        public CasesController(ILogger<CasesController> logger, CaseService caseService)
+        public CasesController(CaseService caseService)
         {
-            _logger = logger;
             _caseService = caseService;
-            _caseAdapter = new CaseAdapter();
         }
 
         [HttpPost(Name = "CreateCase")]
         public ProjectDto CreateCase([FromBody] CaseDto caseDto)
         {
-            var case_ = _caseAdapter.Convert(caseDto);
+            var case_ = CaseAdapter.Convert(caseDto);
             return _caseService.CreateCase(case_);
         }
 
         [HttpPut(Name = "UpdateCase")]
         public ProjectDto UpdateCase([FromBody] CaseDto caseDto)
         {
-            var case_ = _caseAdapter.Convert(caseDto);
+            var case_ = CaseAdapter.Convert(caseDto);
             return _caseService.UpdateCase(case_);
         }
     }
