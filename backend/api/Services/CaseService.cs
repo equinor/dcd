@@ -26,21 +26,11 @@ namespace api.Services
             return _projectService.GetProjectDto(project.Id);
         }
 
-        public ProjectDto UpdateCase(Case updatedCase){
+        public ProjectDto UpdateCase(Case updatedCase)
+        {
             _context.Cases!.Update(updatedCase);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedCase.ProjectId);
-        }
-
-        public Case GetCase(Guid caseId)
-        {
-            var case_ = _context.Cases!.FirstOrDefault(o => o.Id == caseId);
-
-            if ( case_ == null){
-                throw new ArgumentException(string.Format("Case {0} not found.", caseId));
-            }
-
-            return case_;
         }
     }
 
