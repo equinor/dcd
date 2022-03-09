@@ -39,7 +39,7 @@ namespace api.Controllers
             return _substructureService.DeleteSubstructure(substructureId);
         }
 
-        [HttpPatch("{substructureId}", Name = "UpdateSubstructure")]
+        [HttpPut("{substructureId}", Name = "UpdateSubstructure")]
         public ProjectDto UpdateSubstructure([FromRoute] Guid substructureId, [FromBody] SubstructureDto substructureDto)
         {
             var substructure = _substructureAdapter.Convert(substructureDto);

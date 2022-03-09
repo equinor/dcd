@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { useTranslation } from "react-i18next";
 
 import { Project } from "../models/Project"
+import { ProjectPhase } from "../models/ProjectPhase"
 
 import { ProjectPath } from "../Utils/common"
 
@@ -63,16 +64,22 @@ interface Props {
     projects: Project[]
 }
 
-const RecentProjects = ({ projects }: Props) => {
-
+function RecentProjects({ projects }: Props) {
     const { t } = useTranslation();
-
-    const renderProjectDG = useCallback((phase?: string) => {
+    const renderProjectDG = useCallback((phase: ProjectPhase | null) => {
+     
         const backgroundColor = phase
             ? tokens.colors.ui.background__info.rgba
             : tokens.colors.ui.background__danger.rgba
 
-        const labelText = phase ?? "TBD"
+        const noPhaseText = "TBD"
+        const unmappedPhaseText = "???"
+        const labelText = phase
+            ? phase.toString() ?? unmappedPhaseText
+            : noPhaseText
+        if (labelText === unmappedPhaseText) {
+            console.error("Got unmapped phase number!")
+        }
 
         return (
             <ProjectDG style={{ background: backgroundColor }} variant="caption">
@@ -94,6 +101,10 @@ const RecentProjects = ({ projects }: Props) => {
 
     if (projects?.length === 0) return null
 
+    const createdAt = (date : Date | null) => (
+        `Created  ${(date ? date.toDateString() : "at unknown date")}`
+    )
+
     return (
         <Wrapper>
             <RecentProjectTitle variant="h3">
@@ -107,14 +118,13 @@ const RecentProjects = ({ projects }: Props) => {
                                 <CardHeaderTitleText variant="h5">
                                     {project.name}
                                 </CardHeaderTitleText>
-                                {renderProjectDG(project.phase?.toString())}
+                                {renderProjectDG(project.phase)}
                             </CardHeaderTitle>
                         </Card.Header>
                         <Card.Content>
                             {renderDescription(project.description)}
                             <CardFooter variant="meta">
-                                {/* TODO replace once projectDto has date*/}
-                                {t('RecentProjects.CreatedDate')}
+                                { createdAt(project.createdAt) }
                             </CardFooter>
                             <OpenProject link
                                 href={ProjectPath(project.id!)}>

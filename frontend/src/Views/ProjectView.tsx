@@ -24,7 +24,6 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { useTranslation } from "react-i18next";
 
-import { StoreRecentProject } from "../Utils/common"
 import { Modal } from "../Components/Modal"
 import { CaseService } from "../Services/CaseService"
 
@@ -120,7 +119,7 @@ const ProjectView = () => {
 
     if (!project) return null
 
-    StoreRecentProject(project.id!)
+    Project.storeRecentProject(project)
 
     return (
         <Wrapper>
