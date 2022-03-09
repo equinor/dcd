@@ -4,6 +4,7 @@ import { useCallback } from "react"
 import styled from "styled-components"
 
 import { Project } from "../models/Project"
+import { ProjectPhase } from "../models/ProjectPhase"
 
 import { ProjectPath } from "../Utils/common"
 
@@ -63,12 +64,19 @@ interface Props {
 }
 
 function RecentProjects({ projects }: Props) {
-    const renderProjectDG = useCallback((phase?: string) => {
+    const renderProjectDG = useCallback((phase: ProjectPhase | null) => {
         const backgroundColor = phase
             ? tokens.colors.ui.background__info.rgba
             : tokens.colors.ui.background__danger.rgba
 
-        const labelText = phase ?? "TBD"
+        const noPhaseText = "TBD"
+        const unmappedPhaseText = "???"
+        const labelText = phase
+            ? phase.toString() ?? unmappedPhaseText
+            : noPhaseText
+        if (labelText === unmappedPhaseText) {
+            console.error("Got unmapped phase number!")
+        }
 
         return (
             <ProjectDG style={{ background: backgroundColor }} variant="caption">
@@ -90,6 +98,10 @@ function RecentProjects({ projects }: Props) {
 
     if (projects?.length === 0) return null
 
+    const createdAt = (date : Date | null) => (
+        `Created  ${(date ? date.toDateString() : "at unknown date")}`
+    )
+
     return (
         <Wrapper>
             <RecentProjectTitle variant="h3">
@@ -103,14 +115,13 @@ function RecentProjects({ projects }: Props) {
                                 <CardHeaderTitleText variant="h5">
                                     {project.name}
                                 </CardHeaderTitleText>
-                                {renderProjectDG(project.phase?.toString())}
+                                {renderProjectDG(project.phase)}
                             </CardHeaderTitle>
                         </Card.Header>
                         <Card.Content>
                             {renderDescription(project.description)}
                             <CardFooter variant="meta">
-                                {/* TODO replace once projectDto has date */}
-                                Created Feb 15, 2022
+                                { createdAt(project.createdAt) }
                             </CardFooter>
                             <OpenProject
                                 link
