@@ -5,13 +5,12 @@ import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
-import { Project } from "../models/Project"
-
 import RecentProjects from "../Components/RecentProjects"
 
 import { GetProjectService } from "../Services/ProjectService"
 
-import { ProjectPath, RetrieveLastVisitForProject } from "../Utils/common"
+import { ProjectPath } from "../Utils/common"
+import { Project } from "../models/Project"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -45,21 +44,6 @@ function DashboardView() {
     const ProjectService = GetProjectService()
 
     const [projects, setProjects] = useState<any[]>()
-    const [recentProjects, setRecentProjects] = useState<Components.Schemas.ProjectDto[] | any>()
-
-    const getRecentProjects = (incomingProjects: Project[]) => {
-        const recentProjectsWithTimeStamp = incomingProjects
-            .map((project) => [project, RetrieveLastVisitForProject(project.id!)])
-            .filter(([_, timeStamp]) => timeStamp !== null)
-            .map(([project, timeStamp]) => [project, parseInt(timeStamp! as string, 10)])
-            .sort((oneTimeStampedProject, otherTimeStampedProject) => {
-                const oneTimeStamp = oneTimeStampedProject[1] as number
-                const otherTimeStamp = otherTimeStampedProject[1] as number
-                return otherTimeStamp - oneTimeStamp
-            })
-
-        return recentProjectsWithTimeStamp.map((timeStampedProject) => timeStampedProject[0])
-    }
 
     useEffect(() => {
         (async () => {
@@ -67,8 +51,6 @@ function DashboardView() {
                 const res = await ProjectService.getProjects()
                 console.log("[DashboardView]", res)
                 setProjects(res)
-                const recPro = getRecentProjects(res)
-                setRecentProjects(recPro)
             } catch (error) {
                 console.error(error)
             }
@@ -83,6 +65,8 @@ function DashboardView() {
     }
 
     const grey = tokens.colors.ui.background__scrim.rgba
+
+    const recentProjects = Project.retrieveRecentProjects()
 
     if (!projects) return null
 
