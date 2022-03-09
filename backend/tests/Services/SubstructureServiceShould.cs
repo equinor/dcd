@@ -140,7 +140,7 @@ namespace tests
             var updatedSubstructure = CreateUpdatedSubstructure(project);
 
             // Act
-            var projectResult = substructureService.UpdateSubstructure(oldSubstructure.Id, updatedSubstructure);
+            var projectResult = substructureService.UpdateSubstructure(updatedSubstructure);
 
             // Assert
             var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Id == oldSubstructure.Id);
@@ -161,7 +161,7 @@ namespace tests
             var updatedSubstructure = CreateUpdatedSubstructure(project);
 
             // Act, assert
-            Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(new Guid(), updatedSubstructure));
+            Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(updatedSubstructure));
         }
 
         private static Substructure CreateTestSubstructure(Project project)

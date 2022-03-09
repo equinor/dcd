@@ -149,7 +149,7 @@ namespace tests
             var updatedWellProject = CreateUpdatedWellProject(project);
 
             // Act
-            var projectResult = wellProjectService.UpdateWellProject(oldWellProject.Id, updatedWellProject);
+            var projectResult = wellProjectService.UpdateWellProject(updatedWellProject);
 
             // Assert
             var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == updatedWellProject.Name);
@@ -170,7 +170,7 @@ namespace tests
             var updatedWellProject = CreateUpdatedWellProject(project);
 
             // Act, assert
-            Assert.Throws<ArgumentException>(() => wellProjectService.UpdateWellProject(new Guid(), updatedWellProject));
+            Assert.Throws<ArgumentException>(() => wellProjectService.UpdateWellProject(updatedWellProject));
         }
 
         private static WellProject CreateTestWellProject(Project project)

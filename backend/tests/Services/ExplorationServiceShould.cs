@@ -104,7 +104,7 @@ public class ExplorationServiceShould : IDisposable
         var updatedExploration = CreateUpdatedTestExploration(project);
 
         // Act
-        var projectResult = explorationService.UpdateExploration(oldExploration.Id, updatedExploration);
+        var projectResult = explorationService.UpdateExploration(updatedExploration);
 
         // Assert
         var actualExploration = projectResult.Explorations.FirstOrDefault(o => o.Name == updatedExploration.Name);
