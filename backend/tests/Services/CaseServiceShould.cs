@@ -52,6 +52,38 @@ public class CaseShould : IDisposable
 
     }
 
+    [Fact]
+    public void UpdateCase()
+    {
+        var projectService = new ProjectService(fixture.context);
+        var caseService = new CaseService(fixture.context, projectService);
+        var project = fixture.context.Projects.FirstOrDefault();
+        var oldCase = CreateCase(project);
+        fixture.context.Cases.Add(oldCase);
+        fixture.context.SaveChanges();
+        var updatedCase = CreateUpdatedCase(project);
+
+        // Act
+        var projectResult = caseService.UpdateCase(updatedCase);
+
+        // Assert
+        var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
+        Assert.NotNull(actualCase);
+        TestHelper.CompareCases(updatedCase, actualCase);
+    }
+
+    private static Case CreateUpdatedCase(Project project)
+    {
+        return new CaseBuilder
+        {
+            ProjectId = project.Id,
+            Name = "Test-exploration-34",
+            Project = project,
+            Description = "descUpdated",
+            ReferenceCase = false,
+            DG4Date = DateTimeOffset.Now.AddDays(1)
+        };
+    }
 
     private static Case CreateCase(Project project)
     {

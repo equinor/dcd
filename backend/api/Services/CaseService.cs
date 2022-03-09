@@ -2,6 +2,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Newtonsoft.Json;
+
 namespace api.Services
 {
     public class CaseService
@@ -22,6 +24,13 @@ namespace api.Services
             _context.Cases!.Add(case_);
             _context.SaveChanges();
             return _projectService.GetProjectDto(project.Id);
+        }
+
+        public ProjectDto UpdateCase(Case updatedCase)
+        {
+            _context.Cases!.Update(updatedCase);
+            _context.SaveChanges();
+            return _projectService.GetProjectDto(updatedCase.ProjectId);
         }
     }
 
