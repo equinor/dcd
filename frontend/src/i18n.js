@@ -19,7 +19,7 @@ i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
-        resources: resources,
+        resources,
         fallbackLng: "en",
         debug: true,
 

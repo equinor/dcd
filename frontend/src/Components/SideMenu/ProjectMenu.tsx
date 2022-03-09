@@ -49,7 +49,7 @@ export const projectMenuItems = [
 ]
 
 interface Props {
-    project: Project
+    project: Project;
 }
 
 const ProjectMenu = ({ project }: Props) => {
@@ -58,7 +58,9 @@ const ProjectMenu = ({ project }: Props) => {
     projectMenuItems[1].name = t("ProjectMenu.Cases")
 
     const params = useParams()
-    const [isOpen, setIsOpen] = useState<boolean>(params.projectId === project.id)
+    const [isOpen, setIsOpen] = useState<boolean>(
+        params.projectId === project.id,
+    )
 
     return (
         <ExpandableDiv>
@@ -75,9 +77,10 @@ const ProjectMenu = ({ project }: Props) => {
             </nav>
             {isOpen && (
                 <MenuItems>
-                    {projectMenuItems.map((projectMenuItem, index) => (
-                        <Item key={index}>
-                            {projectMenuItem.name === projectMenuItems[0].name && (
+                    {projectMenuItems.map((projectMenuItem) => (
+                        <Item key={projectMenuItem.name}>
+                            {projectMenuItem.name
+                                === projectMenuItems[0].name && (
                                 <nav>
                                     <LinkWithoutStyle
                                         to={"/project/".concat(project.id)}
@@ -89,13 +92,15 @@ const ProjectMenu = ({ project }: Props) => {
                                     </LinkWithoutStyle>
                                 </nav>
                             )}
-                        {projectMenuItem.name === projectMenuItems[1].name && (
-                            <ProjectMenuItemComponent
-                             item={projectMenuItem}
-                             projectId={project.id!}
-                             subItems={project.cases!} />
-                        )}
-                    </Item>
+                            {projectMenuItem.name
+                                === projectMenuItems[1].name && (
+                                <ProjectMenuItemComponent
+                                    item={projectMenuItem}
+                                    projectId={project.id!}
+                                    subItems={project.cases!}
+                                />
+                            )}
+                        </Item>
                     ))}
                 </MenuItems>
             )}
