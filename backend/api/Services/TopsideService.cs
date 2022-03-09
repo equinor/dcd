@@ -72,13 +72,11 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateTopside(Guid topsideId, Topside updatedTopside)
+        public ProjectDto UpdateTopside(Topside updatedTopside)
         {
-            var topside = GetTopside(topsideId);
-            CopyData(topside, updatedTopside);
-            _context.Topsides!.Update(topside);
+            _context.Topsides!.Update(updatedTopside);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(topside.ProjectId);
+            return _projectService.GetProjectDto(updatedTopside.ProjectId);
         }
 
         public Topside GetTopside(Guid topsideId)
@@ -92,21 +90,6 @@ namespace api.Services
                 throw new ArgumentException(string.Format("Topside {0} not found.", topsideId));
             }
             return topside;
-        }
-
-        private static void CopyData(Topside topside, Topside updatedTopside)
-        {
-            topside.Name = updatedTopside.Name;
-            topside.DryWeight = updatedTopside.DryWeight;
-            topside.OilCapacity = updatedTopside.OilCapacity;
-            topside.GasCapacity = updatedTopside.GasCapacity;
-            topside.FacilitiesAvailability = updatedTopside.FacilitiesAvailability;
-            topside.ArtificialLift = updatedTopside.ArtificialLift;
-            topside.Maturity = updatedTopside.Maturity;
-            topside.CostProfile.Currency = updatedTopside.CostProfile.Currency;
-            topside.CostProfile.EPAVersion = updatedTopside.CostProfile.EPAVersion;
-            topside.CostProfile.StartYear = updatedTopside.CostProfile.StartYear;
-            topside.CostProfile.Values = updatedTopside.CostProfile.Values;
         }
     }
 }
