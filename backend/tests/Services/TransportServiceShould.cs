@@ -96,7 +96,7 @@ namespace tests
             var updatedTransport = CreateUpdatedTransport(project);
 
             // Act
-            var projectResult = transportService.UpdateTransport(oldTransport.Id, updatedTransport);
+            var projectResult = transportService.UpdateTransport(updatedTransport);
 
             // Assert
             var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == updatedTransport.Name);

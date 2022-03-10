@@ -149,7 +149,7 @@ public class TopsideServiceShould : IDisposable
         var updatedTopside = CreateUpdatedTopside(project);
 
         // Act
-        var projectResult = topsideService.UpdateTopside(oldTopside.Id, updatedTopside);
+        var projectResult = topsideService.UpdateTopside(updatedTopside);
 
         // Assert
         var actualTopside = projectResult.Topsides.FirstOrDefault(o => o.Name == updatedTopside.Name);
@@ -169,8 +169,8 @@ public class TopsideServiceShould : IDisposable
         fixture.context.SaveChanges();
         var updatedTopside = CreateUpdatedTopside(project);
 
-        // Act, assert
-        Assert.Throws<ArgumentException>(() => topsideService.UpdateTopside(new Guid(), updatedTopside));
+        //     // Act, assert
+        //     Assert.Throws<ArgumentException>(() => topsideService.UpdateTopside(updatedTopside));
     }
     private static Topside CreateTestTopside(Project project)
     {

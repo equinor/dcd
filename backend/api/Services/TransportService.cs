@@ -83,25 +83,11 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateTransport(Guid transportId, Transport changedtransport)
+        public ProjectDto UpdateTransport(Transport updatedTransport)
         {
-            var transport = GetTransport(transportId);
-            CopyData(transport, changedtransport);
-            _context.Transports!.Update(transport);
+            _context.Transports!.Update(updatedTransport);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(transport.ProjectId);
+            return _projectService.GetProjectDto(updatedTransport.ProjectId);
         }
-
-        private static void CopyData(Transport transport, Transport updatedTransport)
-        {
-            transport.Name = updatedTransport.Name;
-            transport.GasExportPipelineLength = updatedTransport.GasExportPipelineLength;
-            transport.OilExportPipelineLength = updatedTransport.OilExportPipelineLength;
-            transport.Maturity = updatedTransport.Maturity;
-            transport.Project = updatedTransport.Project;
-            transport.ProjectId = updatedTransport.ProjectId;
-            transport.CostProfile = updatedTransport.CostProfile;
-        }
-
     }
 }

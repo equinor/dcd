@@ -15,13 +15,11 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class SubstructuresController : ControllerBase
     {
-        private SubstructureService _substructureService;
-        private readonly ILogger<SubstructuresController> _logger;
+        private readonly SubstructureService _substructureService;
         private readonly SubstructureAdapter _substructureAdapter;
 
-        public SubstructuresController(ILogger<SubstructuresController> logger, SubstructureService substructureService)
+        public SubstructuresController(SubstructureService substructureService)
         {
-            _logger = logger;
             _substructureService = substructureService;
             _substructureAdapter = new SubstructureAdapter();
         }
@@ -39,11 +37,11 @@ namespace api.Controllers
             return _substructureService.DeleteSubstructure(substructureId);
         }
 
-        [HttpPut("{substructureId}", Name = "UpdateSubstructure")]
-        public ProjectDto UpdateSubstructure([FromRoute] Guid substructureId, [FromBody] SubstructureDto substructureDto)
+        [HttpPut(Name = "UpdateSubstructure")]
+        public ProjectDto UpdateSubstructure([FromBody] SubstructureDto substructureDto)
         {
             var substructure = _substructureAdapter.Convert(substructureDto);
-            return _substructureService.UpdateSubstructure(substructureId, substructure);
+            return _substructureService.UpdateSubstructure(substructure);
         }
     }
 }

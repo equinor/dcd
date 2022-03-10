@@ -15,13 +15,10 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class ExplorationsController : ControllerBase
     {
-        private ExplorationService _explorationService;
-        private readonly ILogger<ExplorationsController> _logger;
+        private readonly ExplorationService _explorationService;
 
-        public ExplorationsController(ILogger<ExplorationsController> logger,
-                ExplorationService explorationService)
+        public ExplorationsController(ExplorationService explorationService)
         {
-            _logger = logger;
             _explorationService = explorationService;
         }
 
@@ -38,11 +35,11 @@ namespace api.Controllers
             return _explorationService.DeleteExploration(explorationId);
         }
 
-        [HttpPut("{explorationId}", Name = "UpdateExploration")]
-        public ProjectDto UpdateExploration([FromRoute] Guid explorationId, [FromBody] ExplorationDto eplorationDto)
+        [HttpPut(Name = "UpdateExploration")]
+        public ProjectDto UpdateExploration([FromBody] ExplorationDto eplorationDto)
         {
             var exploration = ExplorationAdapter.Convert(eplorationDto);
-            return _explorationService.UpdateExploration(explorationId, exploration);
+            return _explorationService.UpdateExploration(exploration);
         }
     }
 }

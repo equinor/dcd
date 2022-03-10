@@ -19,20 +19,18 @@ namespace api.Controllers
 
         private readonly SurfAdapter _surfAdapter;
 
-        private readonly ILogger<SurfsController> _logger;
 
-        public SurfsController(ILogger<SurfsController> logger, SurfService surfService)
+        public SurfsController(SurfService surfService)
         {
-            _logger = logger;
             _surfService = surfService;
             _surfAdapter = new SurfAdapter();
         }
 
-        [HttpPut("{surfId}", Name = "UpdateSurf")]
-        public ProjectDto UpdateSurf([FromRoute] Guid surfId, [FromBody] SurfDto surfDto)
+        [HttpPut(Name = "UpdateSurf")]
+        public ProjectDto UpdateSurf([FromBody] SurfDto surfDto)
         {
             var surf = _surfAdapter.Convert(surfDto);
-            return _surfService.UpdateSurf(surfId, surf);
+            return _surfService.UpdateSurf(surf);
         }
 
         [HttpPost(Name = "CreateSurf")]
