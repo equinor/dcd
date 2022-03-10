@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import styled from "styled-components"
 import { Button, Dialog, Typography } from "@equinor/eds-core-react"
 
+import { useTranslation } from "react-i18next"
+
 import { tsvToJson } from "./helpers"
 
 const StyledDialog = styled(Dialog)`
@@ -40,7 +42,8 @@ interface Props {
     onImport: (obj: { [key: string]: string }[]) => void
 }
 
-function ExcelImport({ onClose, onImport }: Props) {
+const ExcelImport = ({ onClose, onImport }: Props) => {
+    const { t } = useTranslation()
     const [dataInput, setDataInput] = useState<string>("")
 
     const example = "E.g\n"
@@ -65,16 +68,16 @@ function ExcelImport({ onClose, onImport }: Props) {
 
     return (
         <StyledDialog>
-            <Dialog.Title>Import data from Excel</Dialog.Title>
+            <Dialog.Title>{t("ExcelImport.ImportDataFromExcel")}</Dialog.Title>
             <Main>
                 <Typography>
-                    To paste values correctly in the table, make sure that
+                    {t("ExcelImport.ToPasteValuesCorrectly")}
                     {" "}
-                    <Bold>column titles</Bold>
+                    <Bold>{t("ExcelImport.ColumnTitles")}</Bold>
                     {" "}
-                    are part of the paste.
+                    {t("ExcelImport.ArePartOfPaste")}
                 </Typography>
-                <Label>Paste your information here:</Label>
+                <Label>{t("ExcelImport.PasteInformationHere")}</Label>
                 <TextArea
                     cols={30}
                     rows={10}
@@ -84,9 +87,9 @@ function ExcelImport({ onClose, onImport }: Props) {
                 />
             </Main>
             <Dialog.Actions>
-                <ImportButton onClick={onClickImport}>Import</ImportButton>
+                <ImportButton onClick={onClickImport}>{t("ExcelImport.Import")}</ImportButton>
                 <Button variant="outlined" onClick={onClose}>
-                    Cancel
+                    {t("ExcelImport.Cancel")}
                 </Button>
             </Dialog.Actions>
         </StyledDialog>
