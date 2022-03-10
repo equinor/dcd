@@ -16,7 +16,7 @@ public static class SampleAssetGenerator
             }
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
-                    StartYear = 2030,
+                    StartYear = 8,
                     Values = new[] { 0.1382328e9,   0.129461160089552e9,
                     0.101858662653302e9,   0.0793845923999293e9,
                     0.061869195474839e9,   0.0482183914155514e9,
@@ -28,7 +28,7 @@ public static class SampleAssetGenerator
                 )
                 .WithProductionProfileOil(new ProductionProfileOil
                 {
-                    StartYear = 2030,
+                    StartYear = 8,
                     Values = new[] { 1.314e6,   1.23061939248623e6,
                     0.968238238149264e6,   0.754606391634305e6,
                     0.588110223144857e6,   0.458349728284721e6,
@@ -40,7 +40,7 @@ public static class SampleAssetGenerator
                 )
                 .WithNetSalesGas(new NetSalesGas
                 {
-                    StartYear = 2030,
+                    StartYear = 8,
                     Values = new[] { 0.136602283840308e9,
                     0.127934109247939e9,   0.100657195306473e9,
                     0.0784482165127401e9,  0.0611394213328925e9,
@@ -52,7 +52,7 @@ public static class SampleAssetGenerator
                 )
                 .WithCo2Emissions(new Co2Emissions
                 {
-                    StartYear = 2029,
+                    StartYear = 7,
                     Values = new[] { 0.0135e6,  0.00608182527565116e6,
                     0.00569589963921555e6, 0.00448147320367438e6,
                     0.00349268205921571e6, 0.00272205754946061e6,
@@ -69,7 +69,7 @@ public static class SampleAssetGenerator
             }.WithCostProfile(new SubstructureCostProfile
             {
                 Currency = Currency.NOK,
-                StartYear = 2027,
+                StartYear = 5,
                 Values = new[] { 391.073152662903e6, 477.737937405167e6,
                 474.497638477598e6, 44.5750914242851e6 }
             }))
@@ -79,7 +79,7 @@ public static class SampleAssetGenerator
             }.WithWellProjectCostProfile(new WellProjectCostProfile
             {
                 Currency = Currency.NOK,
-                StartYear = 2029,
+                StartYear = 7,
                 Values = new[] { 1146e6 }
             }))
             .WithExploration(new ExplorationBuilder
@@ -88,13 +88,13 @@ public static class SampleAssetGenerator
             }.WithExplorationCostProfile(new ExplorationCostProfile
             {
                 Currency = Currency.NOK,
-                StartYear = 2023,
+                StartYear = 1,
                 Values = new[] { 280e6 }
 
             }).WithGAndGAdminCost(new GAndGAdminCost
             {
                 Currency = Currency.NOK,
-                StartYear = 2022,
+                StartYear = 0,
                 Values = new[] { 8.5e6, 8.5e6, 8.5e6 }
             }))
             )
@@ -119,43 +119,43 @@ public static class SampleAssetGenerator
             }
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
-                    StartYear = 2031,
+                    StartYear = 9,
                     Values = new[] { 2.3, 3.3, 4.4 }
                 }
                 )
                 .WithProductionProfileOil(new ProductionProfileOil
                 {
-                    StartYear = 2032,
+                    StartYear = 11,
                     Values = new[] { 10.3, 13.3, 24.4, 1.2 }
                 }
                 )
                 .WithProductionProfileWater(new ProductionProfileWater
                 {
-                    StartYear = 2033,
+                    StartYear = 12,
                     Values = new[] { 12.34, 13.45, 14.56 }
                 }
                 )
                 .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection
                 {
-                    StartYear = 2030,
+                    StartYear = 8,
                     Values = new[] { 7.89, 8.91, 9.01 }
                 }
                 )
                 .WithFuelFlaringAndLosses(new FuelFlaringAndLosses
                 {
-                    StartYear = 2034,
+                    StartYear = 12,
                     Values = new[] { 8.45, 4.78, 8, 74 }
                 }
                 )
                 .WithNetSalesGas(new NetSalesGas
                 {
-                    StartYear = 2035,
+                    StartYear = 13,
                     Values = new[] { 3.4, 8.9, 2.3 }
                 }
                 )
                 .WithCo2Emissions(new Co2Emissions
                 {
-                    StartYear = 2030,
+                    StartYear = 8,
                     Values = new[] { 33.4, 18.9, 62.3 }
                 }
                 )
@@ -168,7 +168,7 @@ public static class SampleAssetGenerator
             }
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
-                    StartYear = 2031,
+                    StartYear = 9,
                     Values = new[] { 12.34, 13.45, 14.56 }
                 }
                 )
@@ -186,13 +186,13 @@ public static class SampleAssetGenerator
                 .WithWellProjectCostProfile(new WellProjectCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2030,
+                    StartYear = 8,
                     Values = new[] { 33.4, 18.9, 62.3 }
                 }
                 )
                 .WithDrillingSchedule(new DrillingSchedule
                 {
-                    StartYear = 2031,
+                    StartYear = 9,
                     Values = new int[] { 33, 3, 62 }
                 }
                 )
@@ -211,7 +211,7 @@ public static class SampleAssetGenerator
                 .WithCostProfile(new SurfCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2032,
+                    StartYear = 10,
                     Values = new[] { 33.4, 18.9, 62.3 }
                 }
                 )
@@ -225,7 +225,7 @@ public static class SampleAssetGenerator
                 .WithCostProfile(new SubstructureCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2033,
+                    StartYear = 11,
                     Values = new[] { 23.4, 28.9, 32.3 }
                 }
                 )
@@ -243,7 +243,7 @@ public static class SampleAssetGenerator
                 .WithCostProfile(new TopsideCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2034,
+                    StartYear = 12,
                     Values = new[] { 123.4, 218.9, 312.3 }
                 }
                 )
@@ -256,7 +256,7 @@ public static class SampleAssetGenerator
                 .WithCostProfile(new TransportCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2035,
+                    StartYear = 13,
                     Values = new[] { 13.4, 18.9, 34.3 }
                 }
                 )
@@ -270,20 +270,20 @@ public static class SampleAssetGenerator
                 .WithExplorationCostProfile(new ExplorationCostProfile
                 {
                     Currency = Currency.USD,
-                    StartYear = 2036,
+                    StartYear = 14,
                     Values = new[] { 11.4, 28.2, 34.3 }
                 }
                 )
                 .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule
                 {
-                    StartYear = 2037,
+                    StartYear = 15,
                     Values = new int[] { 13, 5, 5 }
                 }
                 )
                 .WithGAndGAdminCost(new GAndGAdminCost
                 {
                     Currency = Currency.NOK,
-                    StartYear = 2038,
+                    StartYear = 16,
                     Values = new[] { 31.4, 28.2, 34.3 }
                 }
 
@@ -306,7 +306,7 @@ public static class SampleAssetGenerator
             }
                     .WithProductionProfileGas(new ProductionProfileGas
                     {
-                        StartYear = 2030,
+                        StartYear = 8,
                         Values = new[] { 12.34, 13.45, 14.56 }
                     }
                     ))
@@ -343,7 +343,8 @@ public static class SampleAssetGenerator
             Name = "Case 2",
             CreateTime = DateTimeOffset.UtcNow,
             Description = "case 2 from example spreadsheet",
-            ModifyTime = DateTimeOffset.UtcNow
+            ModifyTime = DateTimeOffset.UtcNow,
+            DG4Date = DateTimeOffset.Now
         };
     }
     public static DrainageStrategyBuilder case2DrainageStrategy()
@@ -355,7 +356,7 @@ public static class SampleAssetGenerator
         }
             .WithProductionProfileGas(new ProductionProfileGas
             {
-                StartYear = 2030,
+                StartYear = 8,
                 Values = new[] { 0.0460776e6, 0.0459552635016671e6,
                 0.0411623281639219e6,  0.0347990402399031e6,
                 0.0294194535546169e6, 0.02487149764722e6,
@@ -370,7 +371,7 @@ public static class SampleAssetGenerator
             )
             .WithProductionProfileOil(new ProductionProfileOil
             {
-                StartYear = 2030,
+                StartYear = 8,
                 Values = new[] { 0.438e6, 0.436837105529155e6,
                 0.391276883687471e6, 0.330789355892615e6, 0.279652600329056e6,
                 0.236421080296768e6, 0.199872724741057e6, 0.168974382678855e6,
@@ -382,7 +383,7 @@ public static class SampleAssetGenerator
             )
             .WithNetSalesGas(new NetSalesGas
             {
-                StartYear = 2030,
+                StartYear = 8,
                 Values = new[] { 0.045534094613436e6,
                 0.0454132011274522e6,  0.0406768005522276e6,
                 0.0343885703843194e6, 0.0290724382700382e6,
@@ -397,7 +398,7 @@ public static class SampleAssetGenerator
             )
             .WithCo2Emissions(new Co2Emissions
             {
-                StartYear = 2029,
+                StartYear = 7,
                 Values = new[] { 0.009e6, 0.00202727509188372e6,
                 0.00202189265582155e6, 0.00181101799161985e6,
                 0.0015310525613273e6, 0.00129436701147856e6,
@@ -419,7 +420,7 @@ public static class SampleAssetGenerator
         }.WithCostProfile(new SubstructureCostProfile
         {
             Currency = Currency.NOK,
-            StartYear = 2027,
+            StartYear = 5,
             Values = new[] { 349.95166651869e6, 427.288025880945e6,
             424.163092995196e6,  39.8227522796791e6
             }
@@ -434,7 +435,7 @@ public static class SampleAssetGenerator
         }.WithWellProjectCostProfile(new WellProjectCostProfile
         {
             Currency = Currency.NOK,
-            StartYear = 2029,
+            StartYear = 7,
             Values = new[] { 764e6 }
         });
     }
@@ -446,13 +447,13 @@ public static class SampleAssetGenerator
         }.WithExplorationCostProfile(new ExplorationCostProfile
         {
             Currency = Currency.NOK,
-            StartYear = 2023,
+            StartYear = 1,
             Values = new[] { 280e6 }
 
         }).WithGAndGAdminCost(new GAndGAdminCost
         {
             Currency = Currency.NOK,
-            StartYear = 2022,
+            StartYear = 0,
             Values = new[] { 9e6, 9e6, 9e6 }
         });
     }
