@@ -3,6 +3,8 @@ import { Icon, NativeSelect, Typography } from "@equinor/eds-core-react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+
 import styled from "styled-components"
 
 import RecentProjects from "../Components/RecentProjects"
@@ -38,13 +40,12 @@ const FindProjectText = styled(Typography)`
     margin-bottom: 1rem;
 `
 
-function DashboardView() {
+const DashboardView = () => {
+    const { t } = useTranslation()
+    const ProjectService = GetProjectService()
     const navigate = useNavigate()
 
-    const ProjectService = GetProjectService()
-
     const [projects, setProjects] = useState<any[]>()
-
     useEffect(() => {
         (async () => {
             try {
@@ -72,19 +73,23 @@ function DashboardView() {
 
     return (
         <Wrapper>
-            <FindProjectText variant="h2">Find a project</FindProjectText>
+            <FindProjectText variant="h2">{t("DashboardView.FindProject")}</FindProjectText>
             <ProjectSelect>
                 <Icon data={search} color={grey} />
                 <ProjectDropdown
                     id="select-project"
                     label=""
-                    defaultValue="empty"
-                    placeholder="Search projects"
+                    placeholder={t("DashboardView.FindProject")}
                     onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                 >
-                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                    <option value="empty" disabled />
-                    {projects.map((project) => <option value={project.id!} key={project.id}>{project.name!}</option>)}
+                    <option
+                        aria-label="Selected Language"
+                        disabled
+                        selected
+                    />
+                    {projects.map((project) => (
+                        <option value={project.id!} key={project.id}>{project.name!}</option>
+                    ))}
                 </ProjectDropdown>
             </ProjectSelect>
             <RecentProjects projects={recentProjects} />

@@ -2,6 +2,7 @@ import { tokens } from "@equinor/eds-tokens"
 import { Typography, Card } from "@equinor/eds-core-react"
 import { useCallback } from "react"
 import styled from "styled-components"
+import { useTranslation } from "react-i18next"
 
 import { Project } from "../models/Project"
 import { ProjectPhase } from "../models/ProjectPhase"
@@ -64,6 +65,7 @@ interface Props {
 }
 
 function RecentProjects({ projects }: Props) {
+    const { t } = useTranslation()
     const renderProjectDG = useCallback((phase: ProjectPhase | null) => {
         const backgroundColor = phase
             ? tokens.colors.ui.background__info.rgba
@@ -105,7 +107,7 @@ function RecentProjects({ projects }: Props) {
     return (
         <Wrapper>
             <RecentProjectTitle variant="h3">
-                Recently used Projects
+                {t("RecentProjects.RecentlyUsedProjects")}
             </RecentProjectTitle>
             <RecentProjectCardWrapper>
                 {projects?.map((project) => (
@@ -127,7 +129,7 @@ function RecentProjects({ projects }: Props) {
                                 link
                                 href={ProjectPath(project.id!)}
                             >
-                                Open
+                                {t("RecentProjects.Open")}
                             </OpenProject>
                         </Card.Content>
                     </RecentProjectCard>

@@ -1,10 +1,12 @@
-import React from "react"
-import styled from "styled-components"
-import { Button, Scrim, Typography } from "@equinor/eds-core-react"
+import React from 'react'
+import styled from 'styled-components'
+import { Button, Scrim, Typography } from '@equinor/eds-core-react'
+import { useTranslation } from "react-i18next";
 
-import ExcelImport from "../Components/ExcelImport/ExcelImport"
-import DataTable, { CellValue } from "../Components/DataTable/DataTable"
-import { generateNewGrid, replaceOldData } from "../Components/DataTable/helpers"
+import ExcelImport from '../Components/ExcelImport/ExcelImport'
+import DataTable, { CellValue } from '../Components/DataTable/DataTable'
+import { generateNewGrid, replaceOldData } from '../Components/DataTable/helpers'
+import i18n from '../i18n';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,12 +31,22 @@ const CancelButton = styled(Button)`
     margin-right: 1rem;
 `
 
+var rowTitles = [
+    i18n.t('DrainageStrategyView.ProductionProfileOil'),
+    i18n.t('DrainageStrategyView.ProductionProfileGas'),
+    i18n.t('DrainageStrategyView.ProductionProfileWater'),
+    i18n.t('DrainageStrategyView.ProductionProfileWaterInjection'),
+    i18n.t('DrainageStrategyView.FuelFlaringAndLosses'),
+    i18n.t('DrainageStrategyView.NetSalesGas'),
+    i18n.t('DrainageStrategyView.CO2Emissions'),
+]
+
 // TODO: This data will have to be generated from the format received from the API
 const initialGridData = [
     [
         {
             readOnly: true,
-            value: "Production profile oil",
+            value: rowTitles[0],
         },
         { value: 453678 },
         { value: 383920 },
@@ -45,7 +57,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: "Production profile gas",
+            value: rowTitles[1],
         },
         { value: 678290 },
         { value: 647382 },
@@ -56,7 +68,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: "Production profile water",
+            value: rowTitles[2],
         },
         { value: 363728 },
         { value: 281726 },
@@ -67,7 +79,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: "Production profile water injection",
+            value: rowTitles[3],
         },
         { value: 373638 },
         { value: 237389 },
@@ -78,29 +90,29 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: "Fuel flaring and losses",
-        },
-        { value: 373638 },
-        { value: 237389 },
-        { value: 363728 },
-        { value: 381724 },
-        { value: 281726 },
-    ],
-    [
-        {
-            readOnly: true,
-            value: "Net sales gas",
+            value: rowTitles[4],
         },
         { value: 373638 },
         { value: 237389 },
         { value: 363728 },
+        { value: 381724 },
+        { value: 281726 },
+    ],
+    [
+        {
+            readOnly: true,
+            value: rowTitles[5],
+        },
+        { value: 373638 },
+        { value: 237389 },
+        { value: 363728 },
         { value: 281726 },
         { value: 381724 },
     ],
     [
         {
             readOnly: true,
-            value: "CO2 emissions",
+            value: rowTitles[6],
         },
         { value: 373638 },
         { value: 237389 },
@@ -110,27 +122,18 @@ const initialGridData = [
     ],
 ]
 
-const rowTitles = [
-    "Production profile oil",
-    "Production profile gas",
-    "Production profile water",
-    "Production profile water injection",
-    "Fuel flaring and losses",
-    "Net sales gas",
-    "CO2 emissions",
-]
+const columnTitles = ['2022', '2023', '2024', '2025', '2026']
 
-const columnTitles = ["2022", "2023", "2024", "2025", "2026"]
-
-function DrainageStrategyView() {
+const DrainageStrategyView = () => {
+    const { t } = useTranslation();
     const [isImportOpen, setIsImportOpen] = React.useState<boolean>(false)
     const [dataIsChanged, setDataIsChanged] = React.useState<boolean>(false)
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
     const [gridData, setGridData] = React.useState<CellValue[][]>(initialGridData)
-
+    
     const closeImportView = () => setIsImportOpen(false)
     const openImportView = () => setIsImportOpen(true)
-
+    
     const onCellsChanged = (changes: any[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
@@ -151,7 +154,7 @@ function DrainageStrategyView() {
         setGridData(initialGridData)
         setColumns(columnTitles)
         setDataIsChanged(false)
-    }
+    }   
 
     const saveDataImport = () => {
         // TODO CODE TO SAVE DATA HERE
@@ -160,8 +163,8 @@ function DrainageStrategyView() {
 
     return (
         <Wrapper>
-            <ImportButton onClick={openImportView}>Import...</ImportButton>
-            <Typography variant="h3">Drainage Strategy</Typography>
+            <ImportButton onClick={openImportView}>{t('DrainageStrategyView.Import')}</ImportButton>
+            <Typography variant="h3">{t('DrainageStrategyView.DrainageStrategy')}</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
                 <ScrimBackground isDismissable onClose={closeImportView}>
@@ -170,10 +173,10 @@ function DrainageStrategyView() {
             )}
             {dataIsChanged && (
                 <Buttons>
-                    <CancelButton variant="outlined" onClick={revertChange}>
-                        Cancel change
+                    <CancelButton variant='outlined' onClick={revertChange}>
+                        {t('DrainageStrategyView.CancelChange')}
                     </CancelButton>
-                    <Button onClick={saveDataImport}>Save new data</Button>
+                    <Button onClick={saveDataImport}>{t('DrainageStrategyView.SaveNewData')}</Button>
                 </Buttons>
             )}
         </Wrapper>
