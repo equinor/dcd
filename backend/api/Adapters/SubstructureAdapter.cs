@@ -3,9 +3,9 @@ using api.Models;
 
 namespace api.Adapters
 {
-    public class SubstructureAdapter
+    public static class SubstructureAdapter
     {
-        public Substructure Convert(SubstructureDto substructureDto)
+        public static Substructure Convert(SubstructureDto substructureDto)
         {
             var substructure = new Substructure();
             substructure.ProjectId = substructureDto.ProjectId;
@@ -17,7 +17,7 @@ namespace api.Adapters
             return substructure;
         }
 
-        private SubstructureCostProfile Convert(SubstructureCostProfileDto substructureCostProfileDto, Substructure substructure)
+        private static SubstructureCostProfile Convert(SubstructureCostProfileDto substructureCostProfileDto, Substructure substructure)
         {
             return new SubstructureCostProfile
             {

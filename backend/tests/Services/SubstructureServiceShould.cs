@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -137,10 +138,12 @@ namespace tests
             var oldSubstructure = CreateTestSubstructure(project);
             fixture.context.Substructures.Add(oldSubstructure);
             fixture.context.SaveChanges();
+
             var updatedSubstructure = CreateUpdatedSubstructure(project);
 
+
             // Act
-            var projectResult = substructureService.UpdateSubstructure(updatedSubstructure);
+            var projectResult = substructureService.UpdateSubstructure(SubstructureDtoAdapter.Convert(updatedSubstructure));
 
             //     // Assert
             //     var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Id == oldSubstructure.Id);
@@ -189,6 +192,7 @@ namespace tests
             return new SubstructureBuilder
             {
                 Project = project,
+                ProjectId = project.Id,
                 Name = "Substructure 1",
                 Maturity = Maturity.B,
                 DryWeight = 4.5,

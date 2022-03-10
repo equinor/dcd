@@ -16,19 +16,16 @@ namespace api.Controllers
     public class TopsidesController : ControllerBase
     {
         private readonly TopsideService _topsideService;
-        private readonly TopsideAdapter _topsideAdapter;
 
         public TopsidesController(TopsideService topsideService)
         {
             _topsideService = topsideService;
-            _topsideAdapter = new TopsideAdapter();
         }
 
         [HttpPost(Name = "CreateTopside")]
         public ProjectDto CreateTopside([FromQuery] Guid sourceCaseId, [FromBody] TopsideDto topsideDto)
         {
-            var topside = _topsideAdapter.Convert(topsideDto);
-            return _topsideService.CreateTopside(topside, sourceCaseId);
+            return _topsideService.CreateTopside(topsideDto, sourceCaseId);
         }
 
         [HttpDelete("{topsideId}", Name = "DeleteTopside")]
@@ -40,8 +37,7 @@ namespace api.Controllers
         [HttpPut(Name = "UpdateTopside")]
         public ProjectDto UpdateTopside([FromBody] TopsideDto topsideDto)
         {
-            var topside = _topsideAdapter.Convert(topsideDto);
-            return _topsideService.UpdateTopside(topside);
+            return _topsideService.UpdateTopside(topsideDto);
         }
     }
 }
