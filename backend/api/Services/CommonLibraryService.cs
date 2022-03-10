@@ -69,8 +69,9 @@ namespace api.Services
             return ConvertDynamicProjectsToProjectDtos(dynamicProjects);
         }
 
-        private static List<CommonLibraryProjectDto> FilterProjects(List<CommonLibraryProjectDto> projects) {
-            string[] whiteList = new string[] {"PlatformFPSO", "Subsea", "FPSO", "Platform", "TieIn", "Null"};
+        private static List<CommonLibraryProjectDto> FilterProjects(List<CommonLibraryProjectDto> projects)
+        {
+            string[] whiteList = {"PlatformFPSO", "Subsea", "FPSO", "Platform", "TieIn", "Null"};
 
             var filteredList = projects.Where(p => p.ProjectState != "COMPLETED" && whiteList.Contains(p.ProjectCategory.ToString()));
 
