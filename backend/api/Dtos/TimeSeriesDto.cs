@@ -9,6 +9,7 @@ namespace api.Dtos
     {
         public int StartYear { get; set; }
         public T[] Values { get; set; } = null!;
+
     }
 
     public class TimeSeriesCostDto : TimeSeriesDto<double>
