@@ -142,10 +142,10 @@ namespace tests
             // Act
             var projectResult = substructureService.UpdateSubstructure(updatedSubstructure);
 
-        //     // Assert
-        //     var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Id == oldSubstructure.Id);
-        //     Assert.NotNull(actualSubstructure);
-        //     // TestHelper.CompareSubstructures(updatedSubstructure, actualSubstructure);
+            //     // Assert
+            //     var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Id == oldSubstructure.Id);
+            //     Assert.NotNull(actualSubstructure);
+            //     // TestHelper.CompareSubstructures(updatedSubstructure, actualSubstructure);
         }
 
         [Fact]
@@ -160,8 +160,8 @@ namespace tests
             fixture.context.SaveChanges();
             var updatedSubstructure = CreateUpdatedSubstructure(project);
 
-        //     // Act, assert
-        //     Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(updatedSubstructure));
+            //     // Act, assert
+            //     Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(updatedSubstructure));
         }
 
         private static Substructure CreateTestSubstructure(Project project)
