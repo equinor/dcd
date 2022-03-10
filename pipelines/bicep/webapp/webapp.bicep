@@ -26,6 +26,7 @@ resource webApplication 'Microsoft.Web/sites@2021-03-01' = {
 
   properties: {
     enabled: true
+
     hostNameSslStates: [
       {
         name: '${webAppName}.azurewebsites.net'
@@ -43,6 +44,7 @@ resource webApplication 'Microsoft.Web/sites@2021-03-01' = {
     isXenon: false
     hyperV: false
     siteConfig: {
+
       acrUseManagedIdentityCreds: false
       alwaysOn: true
       http20Enabled: true
@@ -71,7 +73,7 @@ resource pubCredsPolFTP 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@
   name: 'ftp'
   location: location
   properties: {
-    allow: true
+    allow: true    
   }
 }
 
@@ -99,6 +101,7 @@ resource config 'Microsoft.Web/sites/config@2021-03-01' = {
   name: 'web'
   location: location
   properties: {
+    
     numberOfWorkers: 1
     defaultDocuments: [
       'Default.htm'

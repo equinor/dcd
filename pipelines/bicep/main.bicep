@@ -16,3 +16,19 @@ module WebApps 'webapp/main.bicep' = {
     
   }
 }
+
+module appInsights 'appi/appi.bicep' = {
+  name: 'appInsight'
+  params: {
+    baseAppName: baseAppName
+    location: location
+  }
+}
+
+module sql 'sql/sql.bicep' = {
+  name: 'SqlEnv'
+  params: {
+    baseAppName: baseAppName
+    location: location
+  }
+}
