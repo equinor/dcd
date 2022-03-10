@@ -14,12 +14,10 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class DrainageStrategiesController : ControllerBase
     {
-        private DrainageStrategyService _drainageStrategyService;
-        private readonly ILogger<DrainageStrategiesController> _logger;
+        private readonly DrainageStrategyService _drainageStrategyService;
 
-        public DrainageStrategiesController(ILogger<DrainageStrategiesController> logger, DrainageStrategyService drainageStrategyService)
+        public DrainageStrategiesController(DrainageStrategyService drainageStrategyService)
         {
-            _logger = logger;
             _drainageStrategyService = drainageStrategyService;
         }
 
@@ -36,11 +34,11 @@ namespace api.Controllers
             return _drainageStrategyService.DeleteDrainageStrategy(drainageStrategyId);
         }
 
-        [HttpPut("{drainageStrategyId}", Name = "UpdateDrainageStrategy")]
-        public ProjectDto UpdateDrainageStrategy([FromRoute] Guid drainageStrategyId, [FromBody] DrainageStrategyDto drainageStrategyDto)
+        [HttpPut(Name = "UpdateDrainageStrategy")]
+        public ProjectDto UpdateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
         {
             var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);
-            return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategyId, drainageStrategy);
+            return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategy);
         }
     }
 }

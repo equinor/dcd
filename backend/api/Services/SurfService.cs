@@ -32,13 +32,11 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateSurf(Guid surfId, Surf updatedSurf)
+        public ProjectDto UpdateSurf(Surf updatedSurf)
         {
-            var surf = GetSurf(surfId);
-            CopyData(surf, updatedSurf);
-            _context.Surfs!.Update(surf);
+            _context.Surfs!.Update(updatedSurf);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(surf.ProjectId);
+            return _projectService.GetProjectDto(updatedSurf.ProjectId);
         }
         public Surf GetSurf(Guid surfId)
         {
@@ -50,17 +48,6 @@ namespace api.Services
                 throw new ArgumentException(string.Format("Surf {0} not found.", surfId));
             }
             return surf;
-        }
-
-        private static void CopyData(Surf surf, Surf updatedSurf)
-        {
-            surf.Name = updatedSurf.Name;
-            surf.ArtificialLift = updatedSurf.ArtificialLift;
-            surf.Maturity = updatedSurf.Maturity;
-            surf.InfieldPipelineSystemLength = updatedSurf.InfieldPipelineSystemLength;
-            surf.ProductionFlowline = updatedSurf.ProductionFlowline;
-            surf.RiserCount = updatedSurf.RiserCount;
-            surf.CostProfile = updatedSurf.CostProfile;
         }
 
         public ProjectDto CreateSurf(Surf surf, Guid sourceCaseId)

@@ -15,24 +15,22 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class TransportsController : ControllerBase
     {
-        private readonly ILogger<TransportsController> _logger;
         private readonly TransportService _transportService;
         private readonly TransportAdapter _transportAdapter;
 
-        public TransportsController(ILogger<TransportsController> logger, TransportService transportService)
+        public TransportsController(TransportService transportService)
         {
-            _logger = logger;
             _transportService = transportService;
             _transportAdapter = new TransportAdapter();
 
 
         }
 
-        [HttpPut("{transportId}", Name = "UpdateTransport")]
-        public ProjectDto UpdateTransport([FromRoute] Guid transportId, [FromBody] TransportDto transportDto)
+        [HttpPut(Name = "UpdateTransport")]
+        public ProjectDto UpdateTransport([FromBody] TransportDto transportDto)
         {
             var transport = _transportAdapter.Convert(transportDto);
-            return _transportService.UpdateTransport(transportId, transport);
+            return _transportService.UpdateTransport(transport);
         }
 
         [HttpPost(Name = "CreateTransport")]

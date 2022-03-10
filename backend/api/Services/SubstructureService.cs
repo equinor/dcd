@@ -72,13 +72,11 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateSubstructure(Guid substructureId, Substructure updatedSubstructure)
+        public ProjectDto UpdateSubstructure(Substructure updatedSubstructure)
         {
-            var substructure = GetSubstructure(substructureId);
-            CopyData(substructure, updatedSubstructure);
-            _context.Substructures!.Update(substructure);
+            _context.Substructures!.Update(updatedSubstructure);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(substructure.ProjectId);
+            return _projectService.GetProjectDto(updatedSubstructure.ProjectId);
         }
 
         public Substructure GetSubstructure(Guid substructureId)
@@ -92,17 +90,6 @@ namespace api.Services
                 throw new ArgumentException(string.Format("Substructure {0} not found.", substructureId));
             }
             return substructure;
-        }
-
-        private static void CopyData(Substructure substructure, Substructure updatedSubstructure)
-        {
-            substructure.Name = updatedSubstructure.Name;
-            substructure.DryWeight = updatedSubstructure.DryWeight;
-            substructure.Maturity = updatedSubstructure.Maturity;
-            substructure.CostProfile.Currency = updatedSubstructure.CostProfile.Currency;
-            substructure.CostProfile.EPAVersion = updatedSubstructure.CostProfile.EPAVersion;
-            substructure.CostProfile.StartYear = updatedSubstructure.CostProfile.StartYear;
-            substructure.CostProfile.Values = updatedSubstructure.CostProfile.Values;
         }
     }
 }

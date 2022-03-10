@@ -14,12 +14,10 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class ProjectsController : ControllerBase
     {
-        private ProjectService _projectService;
-        private readonly ILogger<ProjectsController> _logger;
+        private readonly ProjectService _projectService;
 
-        public ProjectsController(ILogger<ProjectsController> logger, ProjectService projectService)
+        public ProjectsController(ProjectService projectService)
         {
-            _logger = logger;
             _projectService = projectService;
         }
 

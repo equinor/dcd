@@ -73,13 +73,11 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateWellProject(Guid wellProjectId, WellProject updatedWellProject)
+        public ProjectDto UpdateWellProject(WellProject updatedWellProject)
         {
-            var wellProject = GetWellProject(wellProjectId);
-            CopyData(wellProject, updatedWellProject);
-            _context.WellProjects!.Update(wellProject);
+            _context.WellProjects!.Update(updatedWellProject);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(wellProject.ProjectId);
+            return _projectService.GetProjectDto(updatedWellProject.ProjectId);
         }
 
         public WellProject GetWellProject(Guid wellProjectId)
@@ -93,38 +91,6 @@ namespace api.Services
                 throw new ArgumentException(string.Format("Well project {0} not found.", wellProjectId));
             }
             return wellProject;
-        }
-
-        private static void CopyData(WellProject wellProject, WellProject updatedWellProject)
-        {
-            wellProject.Name = updatedWellProject.Name;
-            wellProject.ProducerCount = updatedWellProject.ProducerCount;
-            wellProject.GasInjectorCount = updatedWellProject.GasInjectorCount;
-            wellProject.WaterInjectorCount = updatedWellProject.WaterInjectorCount;
-            wellProject.ArtificialLift = updatedWellProject.ArtificialLift;
-            wellProject.RigMobDemob = updatedWellProject.RigMobDemob;
-            wellProject.AnnualWellInterventionCost = updatedWellProject.AnnualWellInterventionCost;
-            wellProject.PluggingAndAbandonment = updatedWellProject.PluggingAndAbandonment;
-            if (updatedWellProject.CostProfile != null)
-            {
-                if (wellProject.CostProfile == null)
-                {
-                    wellProject.CostProfile = new WellProjectCostProfile { };
-                }
-                wellProject.CostProfile.Currency = updatedWellProject.CostProfile.Currency;
-                wellProject.CostProfile.EPAVersion = updatedWellProject.CostProfile.EPAVersion;
-                wellProject.CostProfile.Values = updatedWellProject.CostProfile.Values;
-                wellProject.CostProfile.StartYear = updatedWellProject.CostProfile.StartYear;
-            }
-            if (updatedWellProject.DrillingSchedule != null)
-            {
-                if (wellProject.DrillingSchedule == null)
-                {
-                    wellProject.DrillingSchedule = new DrillingSchedule { };
-                }
-                wellProject.DrillingSchedule.Values = updatedWellProject.DrillingSchedule.Values;
-                wellProject.DrillingSchedule.StartYear = updatedWellProject.DrillingSchedule.StartYear;
-            }
         }
     }
 }

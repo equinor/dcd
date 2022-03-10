@@ -75,13 +75,11 @@ namespace api.Services
                 }
             }
         }
-        public ProjectDto UpdateExploration(Guid explorationId, Exploration updatedExploration)
+        public ProjectDto UpdateExploration(Exploration updatedExploration)
         {
-            var exploration = GetExploration(explorationId);
-            CopyData(exploration, updatedExploration);
-            _context.Explorations!.Update(exploration);
+            _context.Explorations!.Update(updatedExploration);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(exploration.ProjectId);
+            return _projectService.GetProjectDto(updatedExploration.ProjectId);
         }
 
         public Exploration GetExploration(Guid explorationId)
@@ -97,16 +95,6 @@ namespace api.Services
                 throw new ArgumentException(string.Format("Exploration {0} not found.", explorationId));
             }
             return exploration;
-        }
-
-        private static void CopyData(Exploration exploration, Exploration updatedExploration)
-        {
-            exploration.Name = updatedExploration.Name;
-            exploration.RigMobDemob = updatedExploration.RigMobDemob;
-            exploration.WellType = updatedExploration.WellType;
-            exploration.GAndGAdminCost = updatedExploration.GAndGAdminCost;
-            exploration.DrillingSchedule = updatedExploration.DrillingSchedule;
-            exploration.CostProfile = updatedExploration.CostProfile;
         }
     }
 }

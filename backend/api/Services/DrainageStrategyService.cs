@@ -78,13 +78,11 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateDrainageStrategy(Guid drainageStrategyId, DrainageStrategy updatedDrainageStrategy)
+        public ProjectDto UpdateDrainageStrategy(DrainageStrategy updatedDrainageStrategy)
         {
-            var drainageStrategy = GetDrainageStrategy(drainageStrategyId);
-            CopyData(drainageStrategy, updatedDrainageStrategy);
-            _context.DrainageStrategies!.Update(drainageStrategy);
+            _context.DrainageStrategies!.Update(updatedDrainageStrategy);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(drainageStrategy.ProjectId);
+            return _projectService.GetProjectDto(updatedDrainageStrategy.ProjectId);
         }
 
         public DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
