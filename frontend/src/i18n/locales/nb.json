@@ -1,0 +1,115 @@
+{
+    "Header": {
+        "DCD": "DCD - Digital Concept Development",
+        "CreateProject": "Lag prosjekt",
+        "WelcomeToDCD": "Velkommen til DCD"
+    },
+    "CasesTable": {
+        "Case" : "Sak",
+        "GasInjectors": "Gassinjektor",
+        "WellInjectors": "Brønninjektor",
+        "Producers": "Produsenter",
+        "Templates": "Maler",
+        "GasCapacity": "Gasskapasitet",
+        "OilCapacity": "Oljekapasitet",
+        "DG4Date": "DG4 Dato"
+    },
+    "ExcelImport": {
+        "ImportDataFromExcel": "Importer data fra Excel",
+        "ToPasteValuesCorrectly": "For å lime inn verdier riktig i tabellen, sørg for at kolonnetitler er en del av innlimingen.",
+        "ColumnTitles": "kolonnetitler",
+        "PasteInformationHere": "Lim inn informasjonen din her:",
+        "Import": "Importer",
+        "Cancel": "Kanseller"
+    },
+    "OverviewView": {
+        "Overview": "Oversikt"
+    },
+    "ProjectMenu": {
+        "Overview": "Oversikt",
+        "Cases": "Saker"
+    },
+    "SideMenu": {
+        "BackToSearch": "Tilbake til søk"
+    },
+    "RecentProjects": {
+        "RecentlyUsedProjects": "Nylig åpnet prosjekter",
+        "CreatedDate": "Opprettet Feb 15, 2022",
+        "Open": "Åpne"
+    },
+    "CaseView": {
+        "Overview": "Oversikt",
+        "InputData": "Inndata",
+        "TechnicalInput": "Tekniske innspill",
+        "SateliteProduction": "Satelitt produksjon",
+        "PipelinesUmbilicals": "Rørledninger ....",
+        "FlexibleRiser": "Fleksibel stigerør",
+        "CreateAnAsset": "Opprett en asset",
+        "LinkToAsset": "Link til asset",
+        "AssetType": "Asset type",
+        "ChooseAsset": "Velg en assett",
+        "Name": "Navn",
+        "CreateAsset": "Opprett assett",
+        "Cancel": "Avbryt"
+    },
+    "DrainageStrategyView": {
+        "ProductionProfileOil": "Produksjon profil olje",
+        "ProductionProfileGas": "Produksjon profil gass",
+        "ProductionProfileWater": "Produksjon profil vann",
+        "ProductionProfileWaterInjection": "Produksjon profil vann injeksjon",
+        "FuelFlaringAndLosses": "Brennstoff fakling og tap",
+        "NetSalesGas": "Netto salgsgass",
+        "CO2Emissions": "CO2-utslipp",
+        "Import": "Importer...",
+        "DrainageStrategy": "Drenerings Strategi",
+        "CancelChange": "Kanseller endring",
+        "SaveNewData": "Lagre ny data"
+    },
+    "ExplorationView": {
+        "CostProfile": "Kostnadsprofil",
+        "C&GCost": "C&G og admin kostnader",
+        "Import": "Importer...",
+        "Exploration": "Utforsk",
+        "CancelChange": "Avbryt endring",
+        "SaveNewData": "Lagre nye data"
+    },
+    "ProjectView": {
+        "Edit": "Endre",
+        "AddCase": "Legg til sak",
+        "Delete": "Slett",
+        "CapexCase": "Capex / Sak",
+        "Name": "Navn",
+        "EnterName": "Legg til navn",
+        "EnterDescription": "Legg til beskrivelse",
+        "DG1Optional": "DG1 (valgfritt)",
+        "CreateCase": "Opprett sak",
+        "Cancel": "Avbryt"
+    },
+    "ViewsContainer": {
+        "PleaseSignIn": "Vennligst logg inn i DCD"
+    }, 
+    "CreateProjectView": {
+        "Oops": "Oops!",
+        "SomethingWrong": "Noe gikk galt under henting av prosjekter fra Common Library.",
+        "UnableToCreateProject": "Kan ikke opprette et nytt DCD-prosjekt akkurat nå.",
+        "Close": "Lukk",
+        "GettingData": "Henter data",
+        "RetrievingProjects": "Henter prosjekter fra Common Library.",
+        "CreateProject": "Opprett prosjekt",
+        "ComLibProject": "CommonLib prosjekt",
+        "SelectComLibProject": "Velg et CommonLib prosjekt",
+        "Name": "Navn",
+        "Description": "Beskrivelse",
+        "Category": "Kategori",
+        "Phase": "Fase",
+        "Country": "Land",
+        "Cancel": "Avbryt"
+    },
+    "DashboardView": {
+        "FindProject": "Finn et prosjekt",
+        "SearchProjects": "Søk gjennom prosjekter"
+    },
+    "ChangeLanguageSelect": {
+        "Language": "Språk"
+    }
+}

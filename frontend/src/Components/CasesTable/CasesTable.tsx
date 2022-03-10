@@ -1,6 +1,7 @@
-import { Table, Typography } from "@equinor/eds-core-react"
-import { VoidFunctionComponent } from "react"
-import styled from "styled-components"
+import { Table, Typography } from '@equinor/eds-core-react'
+import { VoidFunctionComponent } from 'react'
+import styled from 'styled-components'
+import { useTranslation } from "react-i18next";
 
 import { SortableTable } from "../SortableTable"
 import { Column, SortDirection } from "../SortableTable/types"
@@ -12,16 +13,17 @@ import { Case } from "../../models/Case"
 const CellWithBorder = styled(Table.Cell)`
     border-right: 1px solid lightgrey;
 `
+const { t } = useTranslation();
 
 const columns: Column[] = [
-    { name: "Case", accessor: "caseName", sortable: true },
-    { name: "Gas injectors", accessor: "gasInjectorsCount", sortable: true },
-    { name: "Well injectors", accessor: "wellInjectorsCount", sortable: true },
-    { name: "Producers", accessor: "producersCount", sortable: true },
-    { name: "Templates", accessor: "templatesCount", sortable: true },
-    { name: "Gas capacity", accessor: "gasCapacity", sortable: true },
-    { name: "Oil capacity", accessor: "oilCapacity", sortable: true },
-    { name: "DG4 Date", accessor: "dg4Date", sortable: true },
+    { name: t('CasesTable.Case'), accessor: 'caseName', sortable: true },
+    { name: t('CasesTable.GasInjectors'), accessor: 'gasInjectorsCount', sortable: true },
+    { name: t('CasesTable.WellInjectors'), accessor: 'wellInjectorsCount', sortable: true },
+    { name: t('CasesTable.Producers'), accessor: 'producersCount', sortable: true },
+    { name: t('CasesTable.Templates'), accessor: 'templatesCount', sortable: true },
+    { name: t('CasesTable.GasCapacity'), accessor: 'gasCapacity', sortable: true },
+    { name: t('CasesTable.OilCapacity'), accessor: 'oilCapacity', sortable: true },
+    { name: t('CasesTable.DG4Date'), accessor: 'dg4Date', sortable: true },
 ]
 
 type Props = {
