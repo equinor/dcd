@@ -13,6 +13,8 @@ namespace api.Adapters
             {
                 return null as CommonLibraryProjectDto;
             }
+
+            projectDto.ProjectState = project.ProjectState;
             projectDto.Id = guid;
             projectDto.Name = project.Name;
             projectDto.Description = project.Description;

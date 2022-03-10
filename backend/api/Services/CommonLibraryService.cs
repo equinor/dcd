@@ -69,6 +69,15 @@ namespace api.Services
             return ConvertDynamicProjectsToProjectDtos(dynamicProjects);
         }
 
+        private static List<CommonLibraryProjectDto> FilterProjects(List<CommonLibraryProjectDto> projects)
+        {
+            string[] whiteList = {"PlatformFPSO", "Subsea", "FPSO", "Platform", "TieIn", "Null"};
+
+            var filteredList = projects.Where(p => p.ProjectState != "COMPLETED" && whiteList.Contains(p.ProjectCategory.ToString()));
+
+            return filteredList.OrderBy(p => p.Name).ToList();
+        }
+
         private static List<CommonLibraryProjectDto> ConvertDynamicProjectsToProjectDtos(List<dynamic> dynamicProjects)
         {
             var projects = new List<CommonLibraryProjectDto>();
@@ -80,7 +89,7 @@ namespace api.Services
                     projects.Add(convertedProject);
                 }
             }
-            return projects;
+            return FilterProjects(projects);
         }
     }
 }
