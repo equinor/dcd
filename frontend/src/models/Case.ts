@@ -5,7 +5,7 @@ export class Case {
     DG1Date?: Date | null
     DG2Date?: Date | null
     DG3Date?: Date | null
-    lastDecisionGate?: Date | null
+    DG4Date?: Date | null
     id?: string
     updatedAt?: Date | null
     name?: string
@@ -19,7 +19,7 @@ export class Case {
         this.DG1Date = data.dG1Date ? new Date(data.dG1Date) : null
         this.DG2Date = data.dG2Date ? new Date(data.dG2Date) : null
         this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : null
-        this.lastDecisionGate = data.dG4Date ? new Date(data.dG4Date) : null
+        this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : null
         this.id = data.id
         this.updatedAt = data.modifyTime ? new Date(data.modifyTime) : null
         this.name = data.name ?? ""
