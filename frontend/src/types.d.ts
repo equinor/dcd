@@ -16,6 +16,9 @@ declare namespace Components {
             name?: string | null;
             description?: string | null;
             referenceCase?: boolean;
+            dG1Date?: string; // date-time
+            dG2Date?: string; // date-time
+            dG3Date?: string; // date-time
             dG4Date?: string; // date-time
             createTime?: string; // date-time
             modifyTime?: string; // date-time
@@ -37,6 +40,7 @@ declare namespace Components {
             id?: string; // uuid
             name?: string | null;
             description?: string | null;
+            projectState?: string | null;
             country?: string | null;
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
@@ -469,6 +473,12 @@ declare namespace Paths {
     namespace GetProjectsFromCommonLibrary {
         namespace Responses {
             export type $200 = Components.Schemas.CommonLibraryProjectDto[];
+        }
+    }
+    namespace UpdateCase {
+        export type RequestBody = Components.Schemas.CaseDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateDrainageStrategy {
