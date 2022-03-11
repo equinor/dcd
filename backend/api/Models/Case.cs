@@ -12,7 +12,9 @@ namespace api.Models
         public DateTimeOffset CreateTime { get; set; }
         public DateTimeOffset ModifyTime { get; set; }
         public Boolean ReferenceCase { get; set; }
-
+        public DateTimeOffset DG1Date { get; set; }
+        public DateTimeOffset DG2Date { get; set; }
+        public DateTimeOffset DG3Date { get; set; }
         public DateTimeOffset DG4Date { get; set; }
         public Project Project { get; set; } = null!;
         public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
