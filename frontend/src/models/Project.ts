@@ -44,18 +44,6 @@ export class Project {
 
     static readonly recentProjectsKey = "recentProjects"
 
-    private strip() {
-        this.cases = []
-        this.drainageStrategies = []
-        this.explorations = []
-        this.substructures = []
-        this.surfs = []
-        this.topsides = []
-        this.transports = []
-        this.wellProjects = []
-        return this
-    }
-
     public static deserialize(data: string): Project[] {
         return JSON.parse(data, Project.parseComplexFields)
     }
@@ -90,8 +78,7 @@ export class Project {
                     currentRecentProjects.slice(projectAlreadyNotedIndex + 1),
                 )
         }
-        const strippedRecentProject = recentProject.strip()
-        currentRecentProjects.unshift(strippedRecentProject)
+        currentRecentProjects.unshift(recentProject)
         const recentProjects = currentRecentProjects.slice(0, 4)
         localStorage.setItem(Project.recentProjectsKey, JSON.stringify(recentProjects))
     }
