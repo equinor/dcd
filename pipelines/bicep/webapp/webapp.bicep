@@ -12,7 +12,7 @@ var webAppName = 'ase-${baseAppName}-${end}-${environment}'
 param containerRegistry string = 'crdcd.azurecr.io'
 param dockerImageName string = end
 param dockerImageVersion string = 'latest'
-
+param appInsightInstrumentKey string = ''
 var dockerImageTag = '${containerRegistry}/${dockerImageName}:${dockerImageVersion}'
 
 resource webApplication 'Microsoft.Web/sites@2021-03-01' = {
@@ -113,6 +113,12 @@ resource config 'Microsoft.Web/sites/config@2021-03-01' = {
       'default.aspx'
       'index.php'
       'hostingstart.html'
+    ]
+    appSettings: [
+      {
+        'name': 'APPINSIGHTS_INSTRUMENTATIONKEY'
+        'value': appInsightInstrumentKey
+      }
     ]
     netFrameworkVersion: 'v4.0'
     linuxFxVersion: 'DOCKER|${dockerImageTag}'

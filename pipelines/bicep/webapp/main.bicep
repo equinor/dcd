@@ -1,5 +1,6 @@
 param baseAppName string = 'dcd'
 param location string = 'norwayeast'
+param appInsightInstrumatationKey string = ''
 
 var deployments = [
   {
@@ -53,5 +54,6 @@ module webApplicationDeploy 'webapp.bicep' = [for deployment in deployments: {
     baseAppName: baseAppName
     serverfarmId: serverFarmDeploy.outputs.serverfarmId
     location: location
+    appInsightInstrumentKey: appInsightInstrumatationKey
   }
 }]
