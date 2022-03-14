@@ -33,11 +33,6 @@
     "SideMenu": {
         "BackToSearch": "Back to search"
     }, 
-    "RecentProjects": {
-        "RecentlyUsedProjects": "Recently used Projects",
-        "CreatedDate": "Created Feb 15, 2022",
-        "Open": "Open"
-    },
     "CaseView": {
         "Overview": "Overview",
         "InputData": "Input data",

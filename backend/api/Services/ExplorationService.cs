@@ -1,7 +1,7 @@
+using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
-using api.Adapters;
 
 using Microsoft.EntityFrameworkCore;
 

@@ -7,8 +7,6 @@ import { useTranslation } from "react-i18next"
 
 import styled from "styled-components"
 
-import RecentProjects from "../Components/RecentProjects"
-
 import { GetProjectService } from "../Services/ProjectService"
 
 import { ProjectPath } from "../Utils/common"
@@ -67,8 +65,6 @@ const DashboardView = () => {
 
     const grey = tokens.colors.ui.background__scrim.rgba
 
-    const recentProjects = Project.retrieveRecentProjects()
-
     if (!projects) return null
 
     return (
@@ -92,7 +88,6 @@ const DashboardView = () => {
                     ))}
                 </ProjectDropdown>
             </ProjectSelect>
-            <RecentProjects projects={recentProjects} />
         </Wrapper>
     )
 }

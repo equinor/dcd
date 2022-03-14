@@ -42,8 +42,6 @@ export class Project {
         return new Project(data)
     }
 
-    static readonly recentProjectsKey = "recentProjects"
-
     public static deserialize(data: string): Project[] {
         return JSON.parse(data, Project.parseComplexFields)
     }
@@ -57,29 +55,5 @@ export class Project {
         }
 
         return value
-    }
-
-    static retrieveRecentProjects() {
-        const recentProjectJSON = localStorage.getItem(Project.recentProjectsKey)
-        const recentProjects: Project[] = Project.deserialize(recentProjectJSON ?? "[]")
-        return recentProjects
-    }
-
-    static storeRecentProject(recentProject: Project) {
-        let currentRecentProjects = Project.retrieveRecentProjects()
-        // find possible duplicate, remove it
-        const projectAlreadyNotedIndex = currentRecentProjects.findIndex(
-            (recordedProject) => recordedProject.id === recentProject.id,
-        )
-        if (projectAlreadyNotedIndex >= 0) {
-            currentRecentProjects = currentRecentProjects
-                .slice(0, projectAlreadyNotedIndex)
-                .concat(
-                    currentRecentProjects.slice(projectAlreadyNotedIndex + 1),
-                )
-        }
-        currentRecentProjects.unshift(recentProject)
-        const recentProjects = currentRecentProjects.slice(0, 4)
-        localStorage.setItem(Project.recentProjectsKey, JSON.stringify(recentProjects))
     }
 }
