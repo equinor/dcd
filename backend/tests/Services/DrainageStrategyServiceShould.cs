@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -58,7 +59,7 @@ namespace tests
             var expectedStrategy = CreateTestDrainageStrategy(project);
 
             // Act
-            var projectResult = drainageStrategyService.CreateDrainageStrategy(expectedStrategy, caseId);
+            var projectResult = drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), caseId);
 
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
@@ -79,7 +80,8 @@ namespace tests
             var expectedStrategy = CreateTestDrainageStrategy(new Project { Id = new Guid() });
 
             // Act, assert
-            Assert.Throws<NotFoundInDBException>(() => drainageStrategyService.CreateDrainageStrategy(expectedStrategy, caseId));
+            Assert.Throws<NotFoundInDBException>(() =>
+            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), caseId));
         }
 
         [Fact]
@@ -92,7 +94,8 @@ namespace tests
             var expectedStrategy = CreateTestDrainageStrategy(project);
 
             // Act, assert
-            Assert.Throws<NotFoundInDBException>(() => drainageStrategyService.CreateDrainageStrategy(expectedStrategy, new Guid()));
+            Assert.Throws<NotFoundInDBException>(() =>
+            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), new Guid()));
         }
 
         [Fact]
@@ -149,7 +152,7 @@ namespace tests
             var updatedStrategy = CreateUpdatedDrainageStrategy(project);
 
             // Act
-            var projectResult = drainageStrategyService.UpdateDrainageStrategy(updatedStrategy);
+            var projectResult = drainageStrategyService.UpdateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(updatedStrategy));
 
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == updatedStrategy.Name);

@@ -1,8 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+
 using api.Context;
 using api.Dtos;
 using api.Models;
-
-using Microsoft.EntityFrameworkCore;
+using api.Adapters;
 
 namespace api.Services
 {
@@ -32,8 +33,9 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateSurf(Surf updatedSurf)
+        public ProjectDto UpdateSurf(SurfDto updatedSurfDto)
         {
+            var updatedSurf = SurfAdapter.Convert(updatedSurfDto);
             _context.Surfs!.Update(updatedSurf);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedSurf.ProjectId);
@@ -50,8 +52,9 @@ namespace api.Services
             return surf;
         }
 
-        public ProjectDto CreateSurf(Surf surf, Guid sourceCaseId)
+        public ProjectDto CreateSurf(SurfDto surfDto, Guid sourceCaseId)
         {
+            var surf = SurfAdapter.Convert(surfDto);
             var project = _projectService.GetProject(surf.ProjectId);
             surf.Project = project;
             _context.Surfs!.Add(surf);

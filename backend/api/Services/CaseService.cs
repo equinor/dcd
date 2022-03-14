@@ -1,8 +1,6 @@
 using api.Context;
 using api.Dtos;
-using api.Models;
-
-using Newtonsoft.Json;
+using api.Adapters;
 
 namespace api.Services
 {
@@ -17,8 +15,9 @@ namespace api.Services
             _projectService = projectService;
         }
 
-        public ProjectDto CreateCase(Case case_)
+        public ProjectDto CreateCase(CaseDto caseDto)
         {
+            var case_ = CaseAdapter.Convert(caseDto);
             var project = _projectService.GetProject(case_.ProjectId);
             case_.Project = project;
             _context.Cases!.Add(case_);
@@ -26,8 +25,9 @@ namespace api.Services
             return _projectService.GetProjectDto(project.Id);
         }
 
-        public ProjectDto UpdateCase(Case updatedCase)
+        public ProjectDto UpdateCase(CaseDto updatedCaseDto)
         {
+            var updatedCase = CaseAdapter.Convert(updatedCaseDto);
             _context.Cases!.Update(updatedCase);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedCase.ProjectId);

@@ -25,8 +25,7 @@ namespace api.Controllers
         [HttpPost(Name = "CreateExploration")]
         public ProjectDto CreateExploration([FromQuery] Guid sourceCaseId, [FromBody] ExplorationDto explorationDto)
         {
-            var exploration = ExplorationAdapter.Convert(explorationDto);
-            return _explorationService.CreateExploration(exploration, sourceCaseId);
+            return _explorationService.CreateExploration(explorationDto, sourceCaseId);
         }
 
         [HttpDelete("{explorationId}", Name = "DeleteExploration")]
@@ -38,8 +37,7 @@ namespace api.Controllers
         [HttpPut(Name = "UpdateExploration")]
         public ProjectDto UpdateExploration([FromBody] ExplorationDto eplorationDto)
         {
-            var exploration = ExplorationAdapter.Convert(eplorationDto);
-            return _explorationService.UpdateExploration(exploration);
+            return _explorationService.UpdateExploration(eplorationDto);
         }
     }
 }

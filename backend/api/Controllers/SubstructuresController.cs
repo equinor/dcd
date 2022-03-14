@@ -16,18 +16,16 @@ namespace api.Controllers
     public class SubstructuresController : ControllerBase
     {
         private readonly SubstructureService _substructureService;
-        private readonly SubstructureAdapter _substructureAdapter;
 
         public SubstructuresController(SubstructureService substructureService)
         {
             _substructureService = substructureService;
-            _substructureAdapter = new SubstructureAdapter();
         }
 
         [HttpPost(Name = "CreateSubstructure")]
         public ProjectDto CreateSubstructure([FromQuery] Guid sourceCaseId, [FromBody] SubstructureDto substructureDto)
         {
-            var substructure = _substructureAdapter.Convert(substructureDto);
+            var substructure = SubstructureAdapter.Convert(substructureDto);
             return _substructureService.CreateSubstructure(substructure, sourceCaseId);
         }
 
@@ -40,8 +38,7 @@ namespace api.Controllers
         [HttpPut(Name = "UpdateSubstructure")]
         public ProjectDto UpdateSubstructure([FromBody] SubstructureDto substructureDto)
         {
-            var substructure = _substructureAdapter.Convert(substructureDto);
-            return _substructureService.UpdateSubstructure(substructure);
+            return _substructureService.UpdateSubstructure(substructureDto);
         }
     }
 }

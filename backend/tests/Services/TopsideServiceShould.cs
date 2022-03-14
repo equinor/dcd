@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -57,7 +58,7 @@ public class TopsideServiceShould : IDisposable
         TopsideService topsideService = new TopsideService(fixture.context, projectService);
 
         // Act
-        var projectResult = topsideService.CreateTopside(testTopside, caseId);
+        var projectResult = topsideService.CreateTopside(TopsideDtoAdapter.Convert(testTopside), caseId);
 
         // Assert
         var retrievedTopside = projectResult.Topsides.FirstOrDefault(o => o.Name ==
@@ -79,7 +80,7 @@ public class TopsideServiceShould : IDisposable
         var expectedTopside = CreateTestTopside(new Project { Id = new Guid() });
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => topsideService.CreateTopside(expectedTopside, caseId));
+        Assert.Throws<NotFoundInDBException>(() => topsideService.CreateTopside(TopsideDtoAdapter.Convert(expectedTopside), caseId));
     }
 
     [Fact]
@@ -92,7 +93,7 @@ public class TopsideServiceShould : IDisposable
         var expectedTopside = CreateTestTopside(project);
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => topsideService.CreateTopside(expectedTopside, new Guid()));
+        Assert.Throws<NotFoundInDBException>(() => topsideService.CreateTopside(TopsideDtoAdapter.Convert(expectedTopside), new Guid()));
     }
 
     [Fact]
@@ -149,7 +150,7 @@ public class TopsideServiceShould : IDisposable
         var updatedTopside = CreateUpdatedTopside(project);
 
         // Act
-        var projectResult = topsideService.UpdateTopside(updatedTopside);
+        var projectResult = topsideService.UpdateTopside(TopsideDtoAdapter.Convert(updatedTopside));
 
         // Assert
         var actualTopside = projectResult.Topsides.FirstOrDefault(o => o.Name == updatedTopside.Name);
