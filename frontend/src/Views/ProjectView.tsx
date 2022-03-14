@@ -24,7 +24,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
 import { Modal } from "../Components/Modal"
-import { CaseService } from "../Services/CaseService"
+import { GetCaseService } from "../Services/CaseService"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -98,7 +98,7 @@ const ProjectView = () => {
         setSubmitIsDisabled(true)
 
         try {
-            const projectResult = await CaseService.createCase({
+            const projectResult = await GetCaseService().createCase({
                 description: createCaseFormData.description,
                 dG4Date: createCaseFormData.dg4Date,
                 name: createCaseFormData.name,
