@@ -23,6 +23,8 @@ import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import DescriptionView from "./DescriptionView"
 import { Modal } from "../Components/Modal"
+import DrainageStrategyView from "./DrainageStrategyView"
+import ExplorationView from "./ExplorationView"
 
 const {
     Panels, Panel,
@@ -230,6 +232,34 @@ const CaseView = () => {
                         <Typography variant="h4">DD/MM/YYYY</Typography>
                     </Panel>
                 </Panels>
+                <Panel>
+                    {project.drainageStrategies.length > 0 ? <DrainageStrategyView />
+                        : <p>No Drainage Strategy for case</p> }
+                </Panel>
+                <Panel>
+                    {project.explorations.length > 0 ? <ExplorationView />
+                        : <p>No Explorations for case</p>}
+                </Panel>
+                <Panel>
+                    {project.substructures.length > 0 ? <ExplorationView />
+                        : <p>No Subsctructures for case</p>}
+                </Panel>
+                <Panel>
+                    {project.surfs.length > 0 ? <ExplorationView />
+                        : <p>No Surfs for case</p>}
+                </Panel>
+                <Panel>
+                    {project.topsides.length > 0 ? <ExplorationView />
+                        : <p>No Topsides for case</p>}
+                </Panel>
+                <Panel>
+                    {project.transports.length > 0 ? <ExplorationView />
+                        : <p>No Transports for case</p>}
+                </Panel>
+                <Panel>
+                    {project.wellProjects.length > 0 ? <ExplorationView />
+                        : <p>No Wellprojects for case</p>}
+                </Panel>
             </Tabs>
         </CaseViewDiv>
     )
