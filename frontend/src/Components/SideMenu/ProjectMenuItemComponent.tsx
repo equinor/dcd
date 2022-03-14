@@ -3,7 +3,7 @@ import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 import { IconData } from "@equinor/eds-icons"
 
-import { projectMenuItems } from "./ProjectMenu"
+import { ProjectMenuItemType } from "./ProjectMenu"
 import MenuItem from "./MenuItem"
 import { CasePath } from "../../Utils/common"
 
@@ -46,8 +46,9 @@ interface Props {
 
 function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
     const params = useParams()
-    const isSelectedProjectMenuItem = (item.name === projectMenuItems[0].name && params.caseId === undefined)
-    || (item.name === projectMenuItems[1].name && params.caseId !== undefined)
+    // eslint-disable-next-line max-len
+    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && params.caseId === undefined)
+        || (item.name === ProjectMenuItemType.CASES && params.caseId !== undefined)
     const isSelected = params.projectId === projectId && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 

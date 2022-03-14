@@ -1,8 +1,6 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Button, Scrim, Typography } from '@equinor/eds-core-react'
-import { useTranslation } from "react-i18next";
-import i18n from '../i18n';
+import React from "react"
+import styled from "styled-components"
+import { Button, Scrim, Typography } from "@equinor/eds-core-react"
 
 import ExcelImport from "../Components/ExcelImport/ExcelImport"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
@@ -30,17 +28,13 @@ const Buttons = styled.div`
 const CancelButton = styled(Button)`
     margin-right: 1rem;
 `
-var rowTitles = [
-    i18n.t('ExplorationView.CostProfile'),
-    i18n.t('ExplorationView.C&GCost'),
-]
 
 // TODO: This data will have to be generated from the format received from the API
 const initialGridData = [
     [
         {
             readOnly: true,
-            value: rowTitles[0],
+            value: "Cost profile",
         },
         { value: 453678 },
         { value: 383920 },
@@ -53,7 +47,7 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: rowTitles[1],
+            value: "G&G and admin cost",
         },
         { value: 678290 },
         { value: 647382 },
@@ -65,10 +59,11 @@ const initialGridData = [
     ],
 ]
 
-const columnTitles = ['2022', '2023', '2024', '2025', '2026', '2027', '2028']
+const rowTitles = ["Cost profile", "G&G and admin cost"]
 
-const ExplorationView = () => {
-    const { t } = useTranslation()
+const columnTitles = ["2022", "2023", "2024", "2025", "2026", "2027", "2028"]
+
+function ExplorationView() {
     const [isImportOpen, setIsImportOpen] = React.useState<boolean>(false)
     const [dataIsChanged, setDataIsChanged] = React.useState<boolean>(false)
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
@@ -106,8 +101,8 @@ const ExplorationView = () => {
 
     return (
         <Wrapper>
-            <ImportButton onClick={openImportView}>{t('ExplorationView.Import')}</ImportButton>
-            <Typography variant="h3">{t('ExplorationView.Exploration')}</Typography>
+            <ImportButton onClick={openImportView}>Import...</ImportButton>
+            <Typography variant="h3">Exploration</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
                 <ScrimBackground isDismissable onClose={closeImportView}>
@@ -116,10 +111,10 @@ const ExplorationView = () => {
             )}
             {dataIsChanged && (
                 <Buttons>
-                    <CancelButton variant='outlined' onClick={revertChange}>
-                    {t('ExplorationView.CancelChange')}
+                    <CancelButton variant="outlined" onClick={revertChange}>
+                        Cancel change
                     </CancelButton>
-                    <Button onClick={saveDataImport}>{t('ExplorationView.SaveNewData')}</Button>
+                    <Button onClick={saveDataImport}>Save new data</Button>
                 </Buttons>
             )}
         </Wrapper>

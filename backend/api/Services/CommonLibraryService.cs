@@ -71,7 +71,7 @@ namespace api.Services
 
         private static List<CommonLibraryProjectDto> FilterProjects(List<CommonLibraryProjectDto> projects)
         {
-            string[] whiteList = { "PlatformFPSO", "Subsea", "FPSO", "Platform", "TieIn", "Null" };
+            string[] whiteList = {"PlatformFPSO", "Subsea", "FPSO", "Platform", "TieIn", "Null"};
 
             var filteredList = projects.Where(p => p.ProjectState != "COMPLETED" && whiteList.Contains(p.ProjectCategory.ToString()));
 

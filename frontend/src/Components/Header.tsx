@@ -1,9 +1,7 @@
 import React, { useRef, useState } from "react"
 import styled from "styled-components"
 import { Typography, Button } from "@equinor/eds-core-react"
-import { useTranslation } from "react-i18next"
 import CreateProjectView from "../Views/CreateProjectView"
-import ChangeLanguageSelect from "../ChangeLanguageSelect"
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,10 +18,8 @@ interface Props {
     name: string | undefined
 }
 
-const Header = ({ name }: Props) => {
-    const { t } = useTranslation()
+function Header({ name }: Props) {
     const [isOpen, setIsOpen] = useState(false)
-
     const openModal = () => {
         setIsOpen(true)
     }
@@ -34,11 +30,10 @@ const Header = ({ name }: Props) => {
     return (
         <>
             <Wrapper>
-                <PageTitle>{t("Header.DCD")}</PageTitle>
-                <ChangeLanguageSelect />
-                <Button ref={buttonRef} onClick={openModal}>{t("Header.CreateProject")}</Button>
+                <PageTitle>DCD - Digital Concept Development</PageTitle>
+                <Button ref={buttonRef} onClick={openModal}>Create Project</Button>
                 <Typography>
-                    {t("Header.WelcomeToDCD")}
+                    Welcome to DCD
                     {" "}
                     <b>{name}</b>
                     !
