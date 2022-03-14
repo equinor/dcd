@@ -5,12 +5,9 @@ import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
-import RecentProjects from "../Components/RecentProjects"
-
 import { GetProjectService } from "../Services/ProjectService"
 
 import { ProjectPath } from "../Utils/common"
-import { Project } from "../models/Project"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -66,8 +63,6 @@ function DashboardView() {
 
     const grey = tokens.colors.ui.background__scrim.rgba
 
-    const recentProjects = Project.retrieveRecentProjects()
-
     if (!projects) return null
 
     return (
@@ -87,7 +82,6 @@ function DashboardView() {
                     {projects.map((project) => <option value={project.id!} key={project.id}>{project.name!}</option>)}
                 </ProjectDropdown>
             </ProjectSelect>
-            <RecentProjects projects={recentProjects} />
         </Wrapper>
     )
 }

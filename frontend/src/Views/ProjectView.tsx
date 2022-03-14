@@ -117,8 +117,6 @@ const ProjectView = () => {
 
     if (!project) return null
 
-    Project.storeRecentProject(project)
-
     return (
         <Wrapper>
             <Header>
