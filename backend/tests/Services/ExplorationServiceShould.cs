@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -56,7 +57,7 @@ public class ExplorationServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
         var testExploration = CreateTestExploration(project);
-        explorationService.CreateExploration(testExploration, caseId);
+        explorationService.CreateExploration(ExplorationDtoAdapter.Convert(testExploration), caseId);
 
         var explorations = fixture.context.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Explorations;
@@ -75,10 +76,11 @@ public class ExplorationServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var ExplorationToDelete = CreateTestExploration(project);
-        explorationService.CreateExploration(ExplorationToDelete, sourceCaseId);
-        var deletedExplorationId = ExplorationToDelete.Id;
+        explorationService.CreateExploration(ExplorationDtoAdapter.Convert(ExplorationToDelete), sourceCaseId);
+
+        var deletedExplorationId = project.Explorations.First().Id;
         // Act
-        var projectResult = explorationService.DeleteExploration(ExplorationToDelete.Id);
+        var projectResult = explorationService.DeleteExploration(deletedExplorationId);
 
         // Assert
         var actualExploration = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == ExplorationToDelete.Name);
@@ -99,12 +101,12 @@ public class ExplorationServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var oldExploration = CreateTestExploration(project);
-        explorationService.CreateExploration(oldExploration, sourceCaseId);
+        explorationService.CreateExploration(ExplorationDtoAdapter.Convert(oldExploration), sourceCaseId);
 
         var updatedExploration = CreateUpdatedTestExploration(project);
 
         // Act
-        var projectResult = explorationService.UpdateExploration(updatedExploration);
+        var projectResult = explorationService.UpdateExploration(ExplorationDtoAdapter.Convert(updatedExploration));
 
 
         //     // Assert

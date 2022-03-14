@@ -24,8 +24,7 @@ namespace api.Controllers
         [HttpPost(Name = "CreateDrainageStrategy")]
         public ProjectDto CreateDrainageStrategy([FromQuery] Guid sourceCaseId, [FromBody] DrainageStrategyDto drainageStrategyDto)
         {
-            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);
-            return _drainageStrategyService.CreateDrainageStrategy(drainageStrategy, sourceCaseId);
+            return _drainageStrategyService.CreateDrainageStrategy(drainageStrategyDto, sourceCaseId);
         }
 
         [HttpDelete("{drainageStrategyId}", Name = "DeleteDrainageStrategy")]
@@ -37,8 +36,7 @@ namespace api.Controllers
         [HttpPut(Name = "UpdateDrainageStrategy")]
         public ProjectDto UpdateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
         {
-            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);
-            return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategy);
+            return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategyDto);
         }
     }
 }

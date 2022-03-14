@@ -3,9 +3,9 @@ using api.Models;
 
 namespace api.Adapters
 {
-    public class TopsideAdapter
+    public static class TopsideAdapter
     {
-        public Topside Convert(TopsideDto topsideDto)
+        public static Topside Convert(TopsideDto topsideDto)
         {
             var topside = new Topside();
             topside.Name = topsideDto.Name;
@@ -20,7 +20,7 @@ namespace api.Adapters
             return topside;
         }
 
-        private TopsideCostProfile Convert(TopsideCostProfileDto topsideCostProfileDto, Topside topside)
+        private static TopsideCostProfile Convert(TopsideCostProfileDto topsideCostProfileDto, Topside topside)
         {
             return new TopsideCostProfile
             {
