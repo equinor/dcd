@@ -1,3 +1,4 @@
+using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
@@ -31,9 +32,10 @@ namespace api.Services
             }
         }
 
-        public ProjectDto CreateTopside(Topside topside, Guid sourceCaseId)
+        public ProjectDto CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
         {
-            var project = _projectService.GetProject(topside.ProjectId);
+            var topside = TopsideAdapter.Convert(topsideDto);
+            var project = _projectService.GetProject(topsideDto.ProjectId);
             topside.Project = project;
             _context.Topsides!.Add(topside);
             _context.SaveChanges();
@@ -72,8 +74,9 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateTopside(Topside updatedTopside)
+        public ProjectDto UpdateTopside(TopsideDto updatedTopsideDto)
         {
+            var updatedTopside = TopsideAdapter.Convert(updatedTopsideDto);
             _context.Topsides!.Update(updatedTopside);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedTopside.ProjectId);

@@ -1,8 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+
 using api.Context;
 using api.Dtos;
 using api.Models;
+using api.Adapters;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
@@ -37,8 +39,9 @@ namespace api.Services
             }
         }
 
-        public ProjectDto CreateDrainageStrategy(DrainageStrategy drainageStrategy, Guid sourceCaseId)
+        public ProjectDto CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
         {
+            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);
             var project = _projectService.GetProject(drainageStrategy.ProjectId);
             drainageStrategy.Project = project;
             _context.DrainageStrategies!.Add(drainageStrategy);
@@ -78,8 +81,9 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateDrainageStrategy(DrainageStrategy updatedDrainageStrategy)
+        public ProjectDto UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
         {
+            var updatedDrainageStrategy = DrainageStrategyAdapter.Convert(updatedDrainageStrategyDto);
             _context.DrainageStrategies!.Update(updatedDrainageStrategy);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedDrainageStrategy.ProjectId);
@@ -102,24 +106,6 @@ namespace api.Services
                 throw new ArgumentException(string.Format("Drainage strategy {0} not found.", drainageStrategyId));
             }
             return drainageStrategy;
-        }
-
-        private static void CopyData(DrainageStrategy drainageStrategy, DrainageStrategy updatedDrainageStrategy)
-        {
-            drainageStrategy.Name = updatedDrainageStrategy.Name;
-            drainageStrategy.Description = updatedDrainageStrategy.Description;
-            drainageStrategy.NGLYield = updatedDrainageStrategy.NGLYield;
-            drainageStrategy.ProducerCount = updatedDrainageStrategy.ProducerCount;
-            drainageStrategy.GasInjectorCount = updatedDrainageStrategy.GasInjectorCount;
-            drainageStrategy.WaterInjectorCount = updatedDrainageStrategy.WaterInjectorCount;
-            drainageStrategy.ArtificialLift = updatedDrainageStrategy.ArtificialLift;
-            drainageStrategy.ProductionProfileOil = updatedDrainageStrategy.ProductionProfileOil;
-            drainageStrategy.ProductionProfileGas = updatedDrainageStrategy.ProductionProfileGas;
-            drainageStrategy.ProductionProfileWater = updatedDrainageStrategy.ProductionProfileWater;
-            drainageStrategy.ProductionProfileWaterInjection = updatedDrainageStrategy.ProductionProfileWaterInjection;
-            drainageStrategy.FuelFlaringAndLosses = updatedDrainageStrategy.FuelFlaringAndLosses;
-            drainageStrategy.NetSalesGas = updatedDrainageStrategy.NetSalesGas;
-            drainageStrategy.Co2Emissions = updatedDrainageStrategy.Co2Emissions;
         }
     }
 }

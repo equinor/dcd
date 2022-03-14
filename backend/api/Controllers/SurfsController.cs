@@ -17,27 +17,22 @@ namespace api.Controllers
     {
         private readonly SurfService _surfService;
 
-        private readonly SurfAdapter _surfAdapter;
-
 
         public SurfsController(SurfService surfService)
         {
             _surfService = surfService;
-            _surfAdapter = new SurfAdapter();
         }
 
         [HttpPut(Name = "UpdateSurf")]
         public ProjectDto UpdateSurf([FromBody] SurfDto surfDto)
         {
-            var surf = _surfAdapter.Convert(surfDto);
-            return _surfService.UpdateSurf(surf);
+            return _surfService.UpdateSurf(surfDto);
         }
 
         [HttpPost(Name = "CreateSurf")]
         public ProjectDto CreateSurf([FromQuery] Guid sourceCaseId, [FromBody] SurfDto surfDto)
         {
-            var surf = _surfAdapter.Convert(surfDto);
-            return _surfService.CreateSurf(surf, sourceCaseId);
+            return _surfService.CreateSurf(surfDto, sourceCaseId);
         }
 
         [HttpDelete("{surfId}", Name = "DeleteSurf")]

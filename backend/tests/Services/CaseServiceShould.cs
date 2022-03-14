@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -34,7 +35,7 @@ public class CaseShould : IDisposable
         CaseService caseService = new
             CaseService(fixture.context, projectService);
 
-        caseService.CreateCase(actual);
+        caseService.CreateCase(CaseDtoAdapter.Convert(actual));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Cases;
@@ -64,7 +65,7 @@ public class CaseShould : IDisposable
         var updatedCase = CreateUpdatedCase(project);
 
         // Act
-        var projectResult = caseService.UpdateCase(updatedCase);
+        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase));
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
