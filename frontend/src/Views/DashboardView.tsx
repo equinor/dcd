@@ -10,7 +10,6 @@ import styled from "styled-components"
 import { GetProjectService } from "../Services/ProjectService"
 
 import { ProjectPath } from "../Utils/common"
-import { Project } from "../models/Project"
 
 const Wrapper = styled.div`
     margin: 2rem;
