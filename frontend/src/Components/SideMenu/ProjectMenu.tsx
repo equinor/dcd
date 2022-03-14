@@ -3,8 +3,6 @@ import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 import { file, folder, dashboard } from "@equinor/eds-icons"
 
-import { useTranslation } from "react-i18next"
-
 import { Project } from "../../models/Project"
 import MenuItem from "./MenuItem"
 import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
@@ -38,29 +36,23 @@ const MenuItems = styled.ul`
     width: 100%;
 `
 
-export const ProjectMenuItemType = {
-    OVERVIEW: "Overview",
-    CASES: "Cases",
+export enum ProjectMenuItemType {
+    OVERVIEW = "Overview",
+    CASES = "Cases",
 }
 
-export const projectMenuItems = [
+const projectMenuItems = [
     { name: ProjectMenuItemType.OVERVIEW, icon: dashboard },
     { name: ProjectMenuItemType.CASES, icon: file },
 ]
 
 interface Props {
-    project: Project;
+    project: Project
 }
 
-const ProjectMenu = ({ project }: Props) => {
-    const { t } = useTranslation()
-    projectMenuItems[0].name = t("ProjectMenu.Overview")
-    projectMenuItems[1].name = t("ProjectMenu.Cases")
-
+function ProjectMenu({ project }: Props) {
     const params = useParams()
-    const [isOpen, setIsOpen] = useState<boolean>(
-        params.projectId === project.id,
-    )
+    const [isOpen, setIsOpen] = useState<boolean>(params.projectId === project.id)
 
     return (
         <ExpandableDiv>
@@ -77,14 +69,11 @@ const ProjectMenu = ({ project }: Props) => {
             </nav>
             {isOpen && (
                 <MenuItems>
-                    {projectMenuItems.map((projectMenuItem) => (
-                        <Item key={projectMenuItem.name}>
-                            {projectMenuItem.name
-                                === projectMenuItems[0].name && (
+                    {projectMenuItems.map((projectMenuItem, index) => (
+                        <Item key={`project-menu-item-${index + 1}`}>
+                            {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                 <nav>
-                                    <LinkWithoutStyle
-                                        to={"/project/".concat(project.id)}
-                                    >
+                                    <LinkWithoutStyle to={`/project/${project.id}`}>
                                         <ProjectMenuItemComponent
                                             item={projectMenuItem}
                                             projectId={project.id!}
@@ -92,8 +81,7 @@ const ProjectMenu = ({ project }: Props) => {
                                     </LinkWithoutStyle>
                                 </nav>
                             )}
-                            {projectMenuItem.name
-                                === projectMenuItems[1].name && (
+                            {projectMenuItem.name === ProjectMenuItemType.CASES && (
                                 <ProjectMenuItemComponent
                                     item={projectMenuItem}
                                     projectId={project.id!}
