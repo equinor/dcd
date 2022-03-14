@@ -17,7 +17,6 @@ import {
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { add, link } from "@equinor/eds-icons"
-import { useTranslation } from "react-i18next"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
@@ -61,8 +60,7 @@ const AssetDropdown = styled(NativeSelect)`
     width: 30rem;
 `
 
-const CaseView = () => {
-    const { t } = useTranslation()
+function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
@@ -134,12 +132,12 @@ const CaseView = () => {
                 <Typography variant="h2">{caseItem?.name}</Typography>
                 <EdsProvider density="compact">
                     <ActionsContainer>
-                        <Tooltip title={t("CaseView.CreateAnAsset")}>
+                        <Tooltip title="Create an asset">
                             <Button variant="ghost_icon" aria-label="Create an asset" onClick={toggleCreateAssetModal}>
                                 <Icon data={add} />
                             </Button>
                         </Tooltip>
-                        <Tooltip title={t("CaseView.LinkToAsset")}>
+                        <Tooltip title="Link to asset">
                             <Button variant="ghost_icon" aria-label="Link to asset" onClick={toggleLinkAssetModal}>
                                 <Icon data={link} />
                             </Button>
@@ -147,20 +145,20 @@ const CaseView = () => {
                     </ActionsContainer>
                 </EdsProvider>
             </CaseHeader>
-            <Modal isOpen={createAssetModalIsOpen} title={t("CaseView.CreateAnAsset")} shards={[]}>
+            <Modal isOpen={createAssetModalIsOpen} title="Create an asset" shards={[]}>
                 <CreateAssetForm>
                     <AssetDropdown
-                        label={t("CaseView.AssetType")}
+                        label="Asset type"
                         id="asset"
                         name="asset"
-                        placeholder={t("CaseView.ChooseAnAsset")}
+                        placeholder="Choose an asset"
                     />
 
                     <TextField
-                        label={t("CaseView.Name")}
+                        label="Name"
                         id="name"
                         name="name"
-                        placeholder={t("CaseView.Name")}
+                        placeholder="Name"
                         onChange={handleCreateAssetFormFieldChange}
                     />
 
@@ -170,7 +168,7 @@ const CaseView = () => {
                             onClick={submitCreateAssetForm}
                             disabled={submitIsDisabled}
                         >
-                            {t("CaseView.CreateAsset")}
+                            Create asset
                         </Button>
                         <Button
                             type="button"
@@ -178,25 +176,25 @@ const CaseView = () => {
                             variant="ghost"
                             onClick={toggleCreateAssetModal}
                         >
-                            {t("CaseView.Cancel")}
+                            Cancel
                         </Button>
                     </div>
                 </CreateAssetForm>
             </Modal>
-            <Modal isOpen={linkAssetModalIsOpen} title={t("CaseView.LinkToAsset")} shards={[]}>
+            <Modal isOpen={linkAssetModalIsOpen} title="Link to asset" shards={[]}>
                 <CreateAssetForm>
                     <AssetDropdown
-                        label={t("CaseView.AssetType")}
+                        label="Asset type"
                         id="asset"
                         name="asset"
-                        placeholder={t("CaseView.ChooseAnAsset")}
+                        placeholder="Choose an asset"
                     />
 
                     <AssetDropdown
-                        label={t("CaseView.Name")}
+                        label="Name"
                         id="name"
                         name="name"
-                        placeholder={t("CaseView.Name")}
+                        placeholder="Name"
                     />
 
                     <div>
@@ -205,7 +203,7 @@ const CaseView = () => {
                             onClick={submitLinkAssetForm}
                             disabled={submitIsDisabled}
                         >
-                            {t("CaseView.LinkToAsset")}
+                            Link to asset
                         </Button>
                         <Button
                             type="button"
@@ -213,7 +211,7 @@ const CaseView = () => {
                             variant="ghost"
                             onClick={toggleLinkAssetModal}
                         >
-                            {t("CaseView.Cancel")}
+                            Cancel
                         </Button>
                     </div>
                 </CreateAssetForm>
