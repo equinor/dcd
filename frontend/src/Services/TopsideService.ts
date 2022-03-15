@@ -2,10 +2,12 @@ import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+import { Project } from "../models/Project"
 
 export class __TopsideService extends __BaseService {
-    createTopside(sourceCaseId: string, body: Components.Schemas.TopsideDto) {
-        return this.postWithParams("", { body }, { params: { sourceCaseId } })
+    public async createTopside(sourceCaseId: string, body: Components.Schemas.TopsideDto) :Promise<Project> {
+        const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
+        return Project.fromJSON(res)
     }
 }
 
