@@ -39,6 +39,10 @@ export class SubstructureCostProfile {
         this.currency = data.currency ?? null
         this.sum = data.sum ?? null
     }
+
+    static fromJSON(data: SubstructureCostProfileConstructor): SubstructureCostProfile {
+        return new SubstructureCostProfile(data)
+    }
 }
 
 export type Currency = 0 | 1; // int32
