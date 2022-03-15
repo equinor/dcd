@@ -4,6 +4,7 @@ import {
     Button,
     EdsProvider,
     TextField,
+    Input,
     Tooltip,
     NativeSelect,
     Icon,
@@ -22,6 +23,7 @@ import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import DescriptionView from "./DescriptionView"
 import { Modal } from "../Components/Modal"
+import { GetCaseService } from "../Services/CaseService"
 
 const {
     Panels, Panel,
@@ -60,6 +62,12 @@ const AssetDropdown = styled(NativeSelect)`
     width: 30rem;
 `
 
+const Dg4Field = styled(Typography)`
+    margin-bottom: 2rem;
+    width: 10rem;
+    display: flex;
+`
+
 function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -69,6 +77,7 @@ function CaseView() {
     const [createAssetFormData, setCreateAssetFormData] = useState<Record<string, any>>({})
     const [submitIsDisabled, setSubmitIsDisabled] = useState<boolean>(false)
     const [linkAssetModalIsOpen, setLinkAssetModalIsOpen] = useState<boolean>(false)
+    const [dg4DateRec, setDg4DateRec] = useState<Record<string, any>>({})
 
     useEffect(() => {
         (async () => {
@@ -98,6 +107,22 @@ function CaseView() {
         })
     }
 
+    const handleDg4FieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setDg4DateRec({
+            ...dg4DateRec,
+            [e.target.name]: e.target.value,
+        })
+        const updateDG4 = {
+            id: params.caseId,
+            projectId: project?.id,
+            name: caseItem?.name,
+            description: caseItem?.description,
+            dG4Date: dg4DateRec?.dg4Date,
+        }
+        const newProject = await GetCaseService().updateCase(updateDG4)
+        setProject(newProject)
+    }
+
     const submitCreateAssetForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
         setSubmitIsDisabled(true)
@@ -122,6 +147,14 @@ function CaseView() {
             setSubmitIsDisabled(false)
             console.error("[CaseView] error while submitting form data", error)
         }
+    }
+
+    const dg4ReturnDate = () => {
+        const dg4DateGet = caseItem?.DG4Date?.toLocaleDateString("en-CA")
+        if (dg4DateGet !== "0001-01-01") {
+            return dg4DateGet
+        }
+        return ""
     }
 
     if (!project) return null
@@ -225,7 +258,15 @@ function CaseView() {
                 <Panels>
                     <Panel>
                         <Typography>DG4</Typography>
-                        <Typography variant="h4">DD/MM/YYYY</Typography>
+                        <Dg4Field>
+                            <Input
+                                value={dg4ReturnDate()}
+                                id="dg4Date"
+                                type="date"
+                                name="dg4Date"
+                                onInput={handleDg4FieldChange}
+                            />
+                        </Dg4Field>
                     </Panel>
                 </Panels>
             </Tabs>
