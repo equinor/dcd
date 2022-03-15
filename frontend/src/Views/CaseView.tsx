@@ -25,6 +25,7 @@ import { Modal } from "../Components/Modal"
 import DrainageStrategyView from "./DrainageStrategyView"
 import ExplorationView from "./ExplorationView"
 import SubstructureView from "./SubstructureView"
+import SurfView from "./SurfView"
 
 const {
     Panels, Panel,
@@ -128,6 +129,8 @@ function CaseView() {
     }
 
     if (!project) return null
+
+    console.log(project)
 
     return (
         <CaseViewDiv>
@@ -244,7 +247,7 @@ function CaseView() {
                         : <p>No Subsctructures for case</p>}
                 </Panel>
                 <Panel>
-                    {project.surfs.length > 0 ? <ExplorationView />
+                    {project.surfs.length > 0 ? <SurfView />
                         : <p>No Surfs for case</p>}
                 </Panel>
                 <Panel>

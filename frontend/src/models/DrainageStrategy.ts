@@ -1,6 +1,16 @@
 import { AnnualProfile } from "./AnnualProfile"
 import { ArtificialLift } from "./ArtificialLift"
 
+const rowTitles = [
+    "Production profile oil",
+    "Production profile gas",
+    "Production profile water",
+    "Production profile water injection",
+    "Fuel flaring and losses",
+    "Net sales gas",
+    "CO2 emissions",
+]
+
 export class DrainageStrategy {
     artificialLift: ArtificialLift | null
     co2Emissions: AnnualProfile | null
