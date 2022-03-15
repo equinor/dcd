@@ -10,6 +10,11 @@ class __CaseService extends __BaseService {
         const res = await this.post("", { body: data })
         return Project.fromJSON(res)
     }
+
+    public async updateCase(body: Components.Schemas.CaseDto): Promise<Project> {
+        const res = await this.put("", { body })
+        return Project.fromJSON(res)
+    }
 }
 
 export const CaseService = new __CaseService({

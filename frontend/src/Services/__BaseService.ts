@@ -1,4 +1,4 @@
-import axios, { Axios } from "axios"
+import axios, { Axios, AxiosRequestConfig } from "axios"
 
 import { ServiceConfig } from "./config"
 
@@ -43,11 +43,25 @@ export class __BaseService {
         return data
     }
 
+    protected async postWithParams(
+        path: string,
+        options?: RequestOptions,
+        requestQuery?: AxiosRequestConfig,
+    ): Promise<any> {
+        const { data } = await this.client.post(path, options?.body, requestQuery)
+
+        return data
+    }
+
     protected get<T = any>(path: string, options?: RequestOptions): Promise<T> {
         return this.request(path, { ...options, method: "GET" })
     }
 
     protected post<T = any>(path: string, options?: RequestOptions): Promise<T> {
         return this.request(path, { ...options, method: "POST" })
+    }
+
+    protected put<T = any>(path: string, options?: RequestOptions): Promise<T> {
+        return this.request(path, { ...options, method: "PUT" })
     }
 }
