@@ -1,4 +1,4 @@
-using api.Adapters;
+
 using api.Dtos;
 using api.Services;
 
@@ -25,15 +25,13 @@ namespace api.Controllers
         [HttpPost(Name = "CreateCase")]
         public ProjectDto CreateCase([FromBody] CaseDto caseDto)
         {
-            var case_ = CaseAdapter.Convert(caseDto);
-            return _caseService.CreateCase(case_);
+            return _caseService.CreateCase(caseDto);
         }
 
         [HttpPut(Name = "UpdateCase")]
         public ProjectDto UpdateCase([FromBody] CaseDto caseDto)
         {
-            var case_ = CaseAdapter.Convert(caseDto);
-            return _caseService.UpdateCase(case_);
+            return _caseService.UpdateCase(caseDto);
         }
     }
 }

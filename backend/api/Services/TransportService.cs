@@ -1,3 +1,4 @@
+using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
@@ -16,8 +17,9 @@ namespace api.Services
             _context = context;
             _projectService = projectService;
         }
-        public ProjectDto CreateTransport(Transport transport, Guid sourceCaseId)
+        public ProjectDto CreateTransport(TransportDto transportDto, Guid sourceCaseId)
         {
+            var transport = TransportAdapter.Convert(transportDto);
             var project = _projectService.GetProject(transport.ProjectId);
             transport.Project = project;
             _context.Transports!.Add(transport);
@@ -83,8 +85,9 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateTransport(Transport updatedTransport)
+        public ProjectDto UpdateTransport(TransportDto updatedTransportDto)
         {
+            var updatedTransport = TransportAdapter.Convert(updatedTransportDto);
             _context.Transports!.Update(updatedTransport);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedTransport.ProjectId);

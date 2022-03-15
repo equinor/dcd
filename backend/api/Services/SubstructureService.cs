@@ -1,3 +1,4 @@
+using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
@@ -72,8 +73,9 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateSubstructure(Substructure updatedSubstructure)
+        public ProjectDto UpdateSubstructure(SubstructureDto updatedSubstructureDto)
         {
+            var updatedSubstructure = SubstructureAdapter.Convert(updatedSubstructureDto);
             _context.Substructures!.Update(updatedSubstructure);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedSubstructure.ProjectId);

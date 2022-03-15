@@ -4,10 +4,10 @@ using api.Services;
 
 namespace api.Adapters
 {
-    public class SurfAdapter
+    public static class SurfAdapter
     {
 
-        public Surf Convert(SurfDto surfDto)
+        public static Surf Convert(SurfDto surfDto)
         {
             var surf = new Surf();
             surf.ProjectId = surfDto.ProjectId;
@@ -21,7 +21,7 @@ namespace api.Adapters
             return surf;
         }
 
-        private SurfCostProfile Convert(SurfCostProfileDto costprofile, Surf surf)
+        private static SurfCostProfile Convert(SurfCostProfileDto costprofile, Surf surf)
         {
             var surfCostProfile = new SurfCostProfile();
             surfCostProfile.Currency = costprofile.Currency;

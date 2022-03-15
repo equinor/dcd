@@ -2,8 +2,6 @@ import React, { useState } from "react"
 import styled from "styled-components"
 import { Button, Dialog, Typography } from "@equinor/eds-core-react"
 
-import { useTranslation } from "react-i18next"
-
 import { tsvToJson } from "./helpers"
 
 const StyledDialog = styled(Dialog)`
@@ -42,8 +40,7 @@ interface Props {
     onImport: (obj: { [key: string]: string }[]) => void
 }
 
-const ExcelImport = ({ onClose, onImport }: Props) => {
-    const { t } = useTranslation()
+function ExcelImport({ onClose, onImport }: Props) {
     const [dataInput, setDataInput] = useState<string>("")
 
     const example = "E.g\n"
@@ -68,16 +65,16 @@ const ExcelImport = ({ onClose, onImport }: Props) => {
 
     return (
         <StyledDialog>
-            <Dialog.Title>{t("ExcelImport.ImportDataFromExcel")}</Dialog.Title>
+            <Dialog.Title>Import data from Excel</Dialog.Title>
             <Main>
                 <Typography>
-                    {t("ExcelImport.ToPasteValuesCorrectly")}
+                    To paste values correctly in the table, make sure that
                     {" "}
-                    <Bold>{t("ExcelImport.ColumnTitles")}</Bold>
+                    <Bold>column titles</Bold>
                     {" "}
-                    {t("ExcelImport.ArePartOfPaste")}
+                    are part of the paste.
                 </Typography>
-                <Label>{t("ExcelImport.PasteInformationHere")}</Label>
+                <Label>Paste your information here:</Label>
                 <TextArea
                     cols={30}
                     rows={10}
@@ -87,9 +84,9 @@ const ExcelImport = ({ onClose, onImport }: Props) => {
                 />
             </Main>
             <Dialog.Actions>
-                <ImportButton onClick={onClickImport}>{t("ExcelImport.Import")}</ImportButton>
+                <ImportButton onClick={onClickImport}>Import</ImportButton>
                 <Button variant="outlined" onClick={onClose}>
-                    {t("ExcelImport.Cancel")}
+                    Cancel
                 </Button>
             </Dialog.Actions>
         </StyledDialog>

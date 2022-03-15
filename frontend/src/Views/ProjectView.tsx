@@ -18,14 +18,13 @@ import {
 import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
-import { useTranslation } from "react-i18next"
 import BarChart from "../Components/BarChart"
 
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
 import { Modal } from "../Components/Modal"
-import { CaseService } from "../Services/CaseService"
+import { GetCaseService } from "../Services/CaseService"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -61,7 +60,6 @@ const CreateCaseForm = styled.form`
 `
 
 const ProjectView = () => {
-    const { t } = useTranslation()
     const navigate = useNavigate()
     const params = useParams()
     const [project, setProject] = useState<Project>()
@@ -100,7 +98,7 @@ const ProjectView = () => {
         setSubmitIsDisabled(true)
 
         try {
-            const projectResult = await CaseService.createCase({
+            const projectResult = await GetCaseService().createCase({
                 description: createCaseFormData.description,
                 dG4Date: createCaseFormData.dg4Date,
                 name: createCaseFormData.name,
@@ -119,8 +117,6 @@ const ProjectView = () => {
 
     if (!project) return null
 
-    Project.storeRecentProject(project)
-
     return (
         <Wrapper>
             <Header>
@@ -128,12 +124,12 @@ const ProjectView = () => {
 
                 <EdsProvider density="compact">
                     <ActionsContainer>
-                        <Tooltip title={`${t("ProjectView.Edit")} ${project.name}`}>
-                            <Button variant="ghost_icon" aria-label={`${t("ProjectView.Edit")} ${project.name}`}>
+                        <Tooltip title={`Edit ${project.name}`}>
+                            <Button variant="ghost_icon" aria-label={`Edit ${project.name}`}>
                                 <Icon data={edit} />
                             </Button>
                         </Tooltip>
-                        <Tooltip title={t("ProjectView.AddCase")}>
+                        <Tooltip title="Add a case">
                             <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
                                 <Icon data={add} />
                             </Button>
@@ -149,24 +145,24 @@ const ProjectView = () => {
             </Header>
 
             <ChartsContainer>
-                <BarChart data={chartData!} title={t("ProjectView.CapexCase")} />
+                <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>
 
-            <Modal isOpen={createCaseModalIsOpen} title={t("ProjectView.CreateCase")} shards={[]}>
+            <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
                 <CreateCaseForm>
                     <TextField
-                        label={t("ProjectView.CreateCase")}
+                        label="Name"
                         id="name"
                         name="name"
-                        placeholder={t("ProjectView.EnterName")}
+                        placeholder="Enter a name"
                         onChange={handleCreateCaseFormFieldChange}
                     />
 
                     <TextField
-                        label={t("ProjectView.Description")}
+                        label="Description"
                         id="description"
                         name="description"
-                        placeholder={t("ProjectView.EnterDescription")}
+                        placeholder="Enter a description"
                         onChange={handleCreateCaseFormFieldChange}
                     />
 
@@ -176,7 +172,7 @@ const ProjectView = () => {
                             onClick={submitCreateCaseForm}
                             disabled={submitIsDisabled}
                         >
-                            {t("ProjectView.CreateCase")}
+                            Create case
                         </Button>
                         <Button
                             type="button"
@@ -184,7 +180,7 @@ const ProjectView = () => {
                             variant="ghost"
                             onClick={toggleCreateCaseModal}
                         >
-                            {t("ProjectView.Cancel")}
+                            Cancel
                         </Button>
                     </div>
                 </CreateCaseForm>

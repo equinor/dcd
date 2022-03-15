@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.SampleData.Generators;
@@ -55,7 +56,7 @@ namespace tests
             var expectedTransport = CreateTestTransport(project);
 
             // Act
-            var projectResult = transportService.CreateTransport(expectedTransport, caseId);
+            var projectResult = transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), caseId);
 
             // Assert
             var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == expectedTransport.Name);
@@ -96,7 +97,7 @@ namespace tests
             var updatedTransport = CreateUpdatedTransport(project);
 
             // Act
-            var projectResult = transportService.UpdateTransport(updatedTransport);
+            var projectResult = transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport));
 
             // Assert
             var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == updatedTransport.Name);

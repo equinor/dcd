@@ -1,3 +1,4 @@
+using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
@@ -35,8 +36,9 @@ namespace api.Services
             }
         }
 
-        public ProjectDto CreateExploration(Exploration exploration, Guid sourceCaseId)
+        public ProjectDto CreateExploration(ExplorationDto eplorationDto, Guid sourceCaseId)
         {
+            var exploration = ExplorationAdapter.Convert(eplorationDto);
             var project = _projectService.GetProject(exploration.ProjectId);
             exploration.Project = project;
             _context.Explorations!.Add(exploration);
@@ -75,8 +77,11 @@ namespace api.Services
                 }
             }
         }
-        public ProjectDto UpdateExploration(Exploration updatedExploration)
+
+
+        public ProjectDto UpdateExploration(ExplorationDto updatedExplorationDto)
         {
+            var updatedExploration = ExplorationAdapter.Convert(updatedExplorationDto);
             _context.Explorations!.Update(updatedExploration);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedExploration.ProjectId);

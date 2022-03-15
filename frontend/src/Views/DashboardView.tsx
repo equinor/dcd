@@ -3,16 +3,11 @@ import { Icon, NativeSelect, Typography } from "@equinor/eds-core-react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
-import { useTranslation } from "react-i18next"
-
 import styled from "styled-components"
-
-import RecentProjects from "../Components/RecentProjects"
 
 import { GetProjectService } from "../Services/ProjectService"
 
 import { ProjectPath } from "../Utils/common"
-import { Project } from "../models/Project"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -40,12 +35,13 @@ const FindProjectText = styled(Typography)`
     margin-bottom: 1rem;
 `
 
-const DashboardView = () => {
-    const { t } = useTranslation()
-    const ProjectService = GetProjectService()
+function DashboardView() {
     const navigate = useNavigate()
 
+    const ProjectService = GetProjectService()
+
     const [projects, setProjects] = useState<any[]>()
+
     useEffect(() => {
         (async () => {
             try {
@@ -67,32 +63,25 @@ const DashboardView = () => {
 
     const grey = tokens.colors.ui.background__scrim.rgba
 
-    const recentProjects = Project.retrieveRecentProjects()
-
     if (!projects) return null
 
     return (
         <Wrapper>
-            <FindProjectText variant="h2">{t("DashboardView.FindProject")}</FindProjectText>
+            <FindProjectText variant="h2">Find a project</FindProjectText>
             <ProjectSelect>
                 <Icon data={search} color={grey} />
                 <ProjectDropdown
                     id="select-project"
                     label=""
-                    placeholder={t("DashboardView.FindProject")}
+                    defaultValue="empty"
+                    placeholder="Search projects"
                     onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                 >
-                    <option
-                        aria-label="Selected Language"
-                        disabled
-                        selected
-                    />
-                    {projects.map((project) => (
-                        <option value={project.id!} key={project.id}>{project.name!}</option>
-                    ))}
+                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                    <option value="empty" disabled />
+                    {projects.map((project) => <option value={project.id!} key={project.id}>{project.name!}</option>)}
                 </ProjectDropdown>
             </ProjectSelect>
-            <RecentProjects projects={recentProjects} />
         </Wrapper>
     )
 }
