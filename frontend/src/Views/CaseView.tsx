@@ -25,6 +25,7 @@ import DescriptionView from "./DescriptionView"
 import { Modal } from "../Components/Modal"
 import DrainageStrategyView from "./DrainageStrategyView"
 import ExplorationView from "./ExplorationView"
+import SubstructureView from "./SubstructureView"
 
 const {
     Panels, Panel,
@@ -241,7 +242,7 @@ const CaseView = () => {
                         : <p>No Explorations for case</p>}
                 </Panel>
                 <Panel>
-                    {project.substructures.length > 0 ? <ExplorationView />
+                    {project.substructures.length > 0 ? <SubstructureView />
                         : <p>No Subsctructures for case</p>}
                 </Panel>
                 <Panel>
