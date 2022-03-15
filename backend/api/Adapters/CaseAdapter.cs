@@ -10,13 +10,24 @@ namespace api.Adapters
         {
             return new Case
             {
+                Id = caseDto.Id,
                 ProjectId = caseDto.ProjectId,
                 Name = caseDto.Name,
                 Description = caseDto.Description,
                 ReferenceCase = caseDto.ReferenceCase,
+                DG1Date = caseDto.DG1Date,
+                DG2Date = caseDto.DG2Date,
+                DG3Date = caseDto.DG3Date,
                 DG4Date = caseDto.DG4Date,
                 CreateTime = caseDto.CreateTime,
-                ModifyTime = caseDto.ModifyTime
+                ModifyTime = caseDto.ModifyTime,
+                DrainageStrategyLink = caseDto.DrainageStrategyLink,
+                ExplorationLink = caseDto.ExplorationLink,
+                WellProjectLink = caseDto.WellProjectLink,
+                SurfLink = caseDto.SurfLink,
+                TopsideLink = caseDto.TopsideLink,
+                SubstructureLink = caseDto.SubstructureLink,
+                TransportLink = caseDto.TransportLink,
             };
         }
 
