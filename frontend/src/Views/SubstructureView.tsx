@@ -1,8 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Button, Scrim, Typography } from '@equinor/eds-core-react'
-import { useTranslation } from "react-i18next";
-import i18n from '../i18n';
+import { Button, Scrim, Typography } from "@equinor/eds-core-react"
 
 import ExcelImport from "../Components/ExcelImport/ExcelImport"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
@@ -30,9 +28,11 @@ const Buttons = styled.div`
 const CancelButton = styled(Button)`
     margin-right: 1rem;
 `
-var rowTitles = [
-    i18n.t('ExplorationView.CostProfile'),
-    i18n.t('ExplorationView.C&GCost'),
+
+const rowTitles = [
+    "substructureCostProfile",
+    "dryweight",
+    "maturity"
 ]
 
 // TODO: This data will have to be generated from the format received from the API
@@ -63,12 +63,25 @@ const initialGridData = [
         { value: 678290 },
         { value: 647382 },
     ],
+    [
+        {
+            readOnly: true,
+            value: rowTitles[2],
+        },
+        { value: 678290 },
+        { value: 647382 },
+        { value: 881726 },
+        { value: 363728 },
+        { value: 281726 },
+        { value: 678290 },
+        { value: 647382 },
+    ],
+    
 ]
 
-const columnTitles = ['2022', '2023', '2024', '2025', '2026', '2027', '2028']
+const columnTitles = ["2022", "2023", "2024", "2025", "2026", "2027", "2028"]
 
-const ExplorationView = () => {
-    const { t } = useTranslation()
+const SubstructureView = () => {
     const [isImportOpen, setIsImportOpen] = React.useState<boolean>(false)
     const [dataIsChanged, setDataIsChanged] = React.useState<boolean>(false)
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
@@ -106,8 +119,8 @@ const ExplorationView = () => {
 
     return (
         <Wrapper>
-            <ImportButton onClick={openImportView}>{t('ExplorationView.Import')}</ImportButton>
-            <Typography variant="h3">{t('ExplorationView.Exploration')}</Typography>
+            <ImportButton onClick={openImportView}>Import</ImportButton>
+            <Typography variant="h3">Substructure</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
                 <ScrimBackground isDismissable onClose={closeImportView}>
@@ -116,14 +129,14 @@ const ExplorationView = () => {
             )}
             {dataIsChanged && (
                 <Buttons>
-                    <CancelButton variant='outlined' onClick={revertChange}>
-                    {t('ExplorationView.CancelChange')}
-                    </CancelButton>
-                    <Button onClick={saveDataImport}>{t('ExplorationView.SaveNewData')}</Button>
+                        <CancelButton variant="outlined" onClick={revertChange}>
+                            Kanseller endring
+                        </CancelButton>
+                    <Button onClick={saveDataImport}>Lagre ny data</Button>
                 </Buttons>
             )}
         </Wrapper>
     )
 }
 
-export default ExplorationView
+export default SubstructureView
