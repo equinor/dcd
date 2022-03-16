@@ -1,8 +1,26 @@
 import React from "react"
+import { Button } from "@equinor/eds-core-react"
+import styled from "styled-components"
+import { useNavigate } from "react-router"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import LinkAsset from "./LinkAsset"
 import { GetCaseService } from "../Services/CaseService"
+import { CreateAsset } from "../Utils/CreateAsset"
+
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+`
+
+const AssetButton = styled(Button)`
+    margin-top: 1rem;
+    margin-left: 2rem;
+    &:disabled {
+        margin-top: 1rem;
+        margin-left: 2rem;
+    }
+`
 
 interface Props {
     project: Project,
@@ -19,6 +37,9 @@ const CaseAsset = ({
     setCase,
     caseId,
 }: Props) => {
+    const navigate = useNavigate()
+
+    const emptyGuid = "00000000-0000-0000-0000-000000000000"
     interface CaseDto {
         capex?: number
         createdAt?: Date | null
@@ -76,57 +97,217 @@ const CaseAsset = ({
         }
     }
 
+    const submitOpenAsset = async (
+        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+        type: string,
+        id?: string,
+    ) => {
+        event.preventDefault()
+
+        try {
+            navigate(`${type}/${id}`)
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
+    const submitCreateAsset = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
+        event.preventDefault()
+        try {
+            const result = await CreateAsset(type, caseId!, project.id)
+            setProject(result[0])
+            const caseResult = result[0]?.cases.find((o) => o.id === caseId)
+            setCase(caseResult)
+            navigate(`${type.toLowerCase()}/${result[1]}`)
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
     return (
         <>
-            <LinkAsset
-                assetName="Drainage strategy"
-                linkAsset={onSelectAsset}
-                values={project.drainageStrategies.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                currentValue={caseItem?.links?.drainageStrategyLink}
-                link="drainageStrategyLink"
-            />
-            <LinkAsset
-                assetName="Exploration"
-                linkAsset={onSelectAsset}
-                values={project.explorations.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                currentValue={caseItem?.links?.explorationLink}
-                link="explorationLink"
-            />
-            <LinkAsset
-                assetName="Well project"
-                linkAsset={onSelectAsset}
-                values={project.wellProjects.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                currentValue={caseItem?.links?.wellProjectLink}
-                link="wellProjectLink"
-            />
-            <LinkAsset
-                assetName="SURF"
-                linkAsset={onSelectAsset}
-                values={project.surfs.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                currentValue={caseItem?.links?.surfLink}
-                link="surfLink"
-            />
-            <LinkAsset
-                assetName="Topside"
-                linkAsset={onSelectAsset}
-                values={project.topsides.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                currentValue={caseItem?.links?.topsideLink}
-                link="topsideLink"
-            />
-            <LinkAsset
-                assetName="Substructure"
-                linkAsset={onSelectAsset}
-                values={project.substructures.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                currentValue={caseItem?.links?.substructureLink}
-                link="substructureLink"
-            />
-            <LinkAsset
-                assetName="Transport"
-                linkAsset={onSelectAsset}
-                values={project.transports.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                currentValue={caseItem?.links?.transportLink}
-                link="transportLink"
-            />
+            <Wrapper>
+                <LinkAsset
+                    assetName="Drainage strategy"
+                    linkAsset={onSelectAsset}
+                    values={project.drainageStrategies.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    currentValue={caseItem?.links?.drainageStrategyLink}
+                    link="drainageStrategyLink"
+                />
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitOpenAsset(event, "drainagestrategy", caseItem?.links?.drainageStrategyLink)}
+                    disabled={caseItem?.links?.drainageStrategyLink === emptyGuid}
+                >
+                    Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "DrainageStrategy")}
+                >
+                    Create new
+                </AssetButton>
+            </Wrapper>
+            <Wrapper>
+                <LinkAsset
+                    assetName="Exploration"
+                    linkAsset={onSelectAsset}
+                    values={project.explorations.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    currentValue={caseItem?.links?.explorationLink}
+                    link="explorationLink"
+                />
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitOpenAsset(event, "exploration", caseItem?.links?.explorationLink)}
+                    disabled={caseItem?.links?.explorationLink === emptyGuid}
+                >
+                    Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Exploration")}
+                >
+                    Create new
+                </AssetButton>
+            </Wrapper>
+            <Wrapper>
+                <LinkAsset
+                    assetName="Well project"
+                    linkAsset={onSelectAsset}
+                    values={project.wellProjects.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    currentValue={caseItem?.links?.wellProjectLink}
+                    link="wellProjectLink"
+                />
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitOpenAsset(event, "wellproject", caseItem?.links?.wellProjectLink)}
+                    disabled={caseItem?.links?.wellProjectLink === emptyGuid}
+                >
+                    Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "WellProject")}
+                >
+                    Create new
+                </AssetButton>
+            </Wrapper>
+            <Wrapper>
+                <LinkAsset
+                    assetName="SURF"
+                    linkAsset={onSelectAsset}
+                    values={project.surfs.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    currentValue={caseItem?.links?.surfLink}
+                    link="surfLink"
+                />
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitOpenAsset(event, "surf", caseItem?.links?.surfLink)}
+                    disabled={caseItem?.links?.surfLink === emptyGuid}
+                >
+                    Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "SURF")}
+                >
+                    Create new
+                </AssetButton>
+            </Wrapper>
+            <Wrapper>
+                <LinkAsset
+                    assetName="Topside"
+                    linkAsset={onSelectAsset}
+                    values={project.topsides.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    currentValue={caseItem?.links?.topsideLink}
+                    link="topsideLink"
+                />
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitOpenAsset(event, "topside", caseItem?.links?.topsideLink)}
+                    disabled={caseItem?.links?.topsideLink === emptyGuid}
+                >
+                    Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Topside")}
+                >
+                    Create new
+                </AssetButton>
+            </Wrapper>
+            <Wrapper>
+                <LinkAsset
+                    assetName="Substructure"
+                    linkAsset={onSelectAsset}
+                    values={project.substructures.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    currentValue={caseItem?.links?.substructureLink}
+                    link="substructureLink"
+                />
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitOpenAsset(event, "substructure", caseItem?.links?.substructureLink)}
+                    disabled={caseItem?.links?.substructureLink === emptyGuid}
+                >
+                    Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Substructure")}
+                >
+                    Create new
+                </AssetButton>
+            </Wrapper>
+            <Wrapper>
+                <LinkAsset
+                    assetName="Transport"
+                    linkAsset={onSelectAsset}
+                    values={project.transports.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    currentValue={caseItem?.links?.transportLink}
+                    link="transportLink"
+                />
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitOpenAsset(event, "transport", caseItem?.links?.transportLink)}
+                    disabled={caseItem?.links?.transportLink === emptyGuid}
+                >
+                    Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Transport")}
+                >
+                    Create new
+                </AssetButton>
+            </Wrapper>
         </>
     )
 }
