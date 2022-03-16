@@ -8,6 +8,7 @@ namespace api.Adapters
         public static DrainageStrategy Convert(DrainageStrategyDto drainageStrategyDto)
         {
             var drainageStrategy = new DrainageStrategy();
+            drainageStrategy.Id = drainageStrategyDto.Id;
             drainageStrategy.Name = drainageStrategyDto.Name;
             drainageStrategy.Description = drainageStrategyDto.Description;
             drainageStrategy.ProjectId = drainageStrategyDto.ProjectId;
