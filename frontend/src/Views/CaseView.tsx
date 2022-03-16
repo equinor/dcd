@@ -109,16 +109,20 @@ function CaseView() {
 
     const handleDg4FieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setDg4DateRec({
-            ...dg4DateRec,
+            dg4DateRec,
             [e.target.name]: e.target.value,
+            // dg4DateRec: e.target.value,
         })
+        console.log(e.target.value)
+        console.log(dg4DateRec)
         const updateDG4 = {
             id: params.caseId,
             projectId: project?.id,
             name: caseItem?.name,
             description: caseItem?.description,
-            dG4Date: dg4DateRec?.dg4Date,
+            dG4Date: e.target.value,
         }
+        console.log(updateDG4)
         const newProject = await GetCaseService().updateCase(updateDG4)
         setProject(newProject)
     }
@@ -260,11 +264,12 @@ function CaseView() {
                         <Typography>DG4</Typography>
                         <Dg4Field>
                             <Input
-                                value={dg4ReturnDate()}
+                                defaultValue={dg4ReturnDate()}
+                                key={dg4ReturnDate()}
                                 id="dg4Date"
                                 type="date"
                                 name="dg4Date"
-                                onInput={handleDg4FieldChange}
+                                onChange={handleDg4FieldChange}
                             />
                         </Dg4Field>
                     </Panel>
