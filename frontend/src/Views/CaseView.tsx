@@ -26,6 +26,9 @@ import DrainageStrategyView from "./DrainageStrategyView"
 import ExplorationView from "./ExplorationView"
 import SubstructureView from "./SubstructureView"
 import SurfView from "./SurfView"
+import TopsideView from "./TopsideView"
+import TransportView from "./TransportView"
+import WellprojectView from "./WellprojectView"
 
 const {
     Panels, Panel,
@@ -251,15 +254,15 @@ function CaseView() {
                         : <p>No Surfs for case</p>}
                 </Panel>
                 <Panel>
-                    {project.topsides.length > 0 ? <ExplorationView />
+                    {project.topsides.length > 0 ? <TopsideView />
                         : <p>No Topsides for case</p>}
                 </Panel>
                 <Panel>
-                    {project.transports.length > 0 ? <ExplorationView />
+                    {project.transports.length > 0 ? <TransportView />
                         : <p>No Transports for case</p>}
                 </Panel>
                 <Panel>
-                    {project.wellProjects.length > 0 ? <ExplorationView />
+                    {project.wellProjects.length > 0 ? <WellprojectView />
                         : <p>No Wellprojects for case</p>}
                 </Panel>
             </Tabs>

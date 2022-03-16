@@ -29,59 +29,100 @@ const CancelButton = styled(Button)`
     margin-right: 1rem;
 `
 
-const rowTitles = [
-    "Substructure Cost Profile",
-    "Dryweight",
-    "Maturity"
-]
-
 // TODO: This data will have to be generated from the format received from the API
 const initialGridData = [
     [
         {
             readOnly: true,
-            value: rowTitles[0],
+            value: "Production profile oil",
         },
         { value: 453678 },
         { value: 383920 },
         { value: 481726 },
         { value: 481726 },
         { value: 363728 },
-        { value: 453678 },
-        { value: 383920 },
     ],
     [
         {
             readOnly: true,
-            value: rowTitles[1],
+            value: "Production profile gas",
         },
         { value: 678290 },
         { value: 647382 },
         { value: 881726 },
         { value: 363728 },
         { value: 281726 },
-        { value: 678290 },
-        { value: 647382 },
     ],
     [
         {
             readOnly: true,
-            value: rowTitles[2],
+            value: "Production profile water",
         },
-        { value: 678290 },
-        { value: 647382 },
-        { value: 881726 },
         { value: 363728 },
         { value: 281726 },
-        { value: 678290 },
-        { value: 647382 },
+        { value: 381723 },
+        { value: 481726 },
+        { value: 363728 },
     ],
-    
+    [
+        {
+            readOnly: true,
+            value: "Production profile water injection",
+        },
+        { value: 373638 },
+        { value: 237389 },
+        { value: 381724 },
+        { value: 281726 },
+        { value: 373638 },
+    ],
+    [
+        {
+            readOnly: true,
+            value: "Fuel flaring and losses",
+        },
+        { value: 373638 },
+        { value: 237389 },
+        { value: 363728 },
+        { value: 381724 },
+        { value: 281726 },
+    ],
+    [
+        {
+            readOnly: true,
+            value: "Net sales gas",
+        },
+        { value: 373638 },
+        { value: 237389 },
+        { value: 363728 },
+        { value: 281726 },
+        { value: 381724 },
+    ],
+    [
+        {
+            readOnly: true,
+            value: "CO2 emissions",
+        },
+        { value: 373638 },
+        { value: 237389 },
+        { value: 381724 },
+        { value: 281726 },
+        { value: 481726 },
+    ],
 ]
 
-const columnTitles = ["2022", "2023", "2024", "2025", "2026", "2027", "2028"]
+const rowTitles = [
+    "Production profile oil",
+    "Production profile gas",
+    "Production profile water",
+    "Production profile water injection",
+    "Fuel flaring and losses",
+    "Net sales gas",
+    "CO2 emissions",
+]
 
-const SurfView = () => {
+const columnTitles = ["2022", "2023", "2024", "2025", "2026"]
+
+function TransportView() {
     const [isImportOpen, setIsImportOpen] = React.useState<boolean>(false)
     const [dataIsChanged, setDataIsChanged] = React.useState<boolean>(false)
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
@@ -90,7 +131,7 @@ const SurfView = () => {
     const closeImportView = () => setIsImportOpen(false)
     const openImportView = () => setIsImportOpen(true)
 
-    const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
+    const onCellsChanged = (changes: any[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
         setDataIsChanged(true)
@@ -119,8 +160,8 @@ const SurfView = () => {
 
     return (
         <Wrapper>
-            <ImportButton onClick={openImportView}>Import</ImportButton>
-            <Typography variant="h3">Surf</Typography>
+            <ImportButton onClick={openImportView}>Import...</ImportButton>
+            <Typography variant="h3">Drainage Strategy</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             {isImportOpen && (
                 <ScrimBackground isDismissable onClose={closeImportView}>
@@ -129,14 +170,14 @@ const SurfView = () => {
             )}
             {dataIsChanged && (
                 <Buttons>
-                        <CancelButton variant="outlined" onClick={revertChange}>
-                            Kanseller endring
-                        </CancelButton>
-                    <Button onClick={saveDataImport}>Lagre ny data</Button>
+                    <CancelButton variant="outlined" onClick={revertChange}>
+                        Cancel change
+                    </CancelButton>
+                    <Button onClick={saveDataImport}>Save new data</Button>
                 </Buttons>
             )}
         </Wrapper>
     )
 }
 
-export default SurfView
+export default TransportView
