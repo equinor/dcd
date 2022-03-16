@@ -1,31 +1,33 @@
-export class Wellproject {
+import { Schema } from "inspector"
 
-    id: string | null
-    name: string | null
-    projectId: string | null
-    costProfile: WellProjectCostProfileDto | null
-    drillingSchedule: DrillingScheduleDto | null
-    producerCount: number | null
-    gasInjectorCount: number | null
-    waterInjectorCount: number | null
-    artificialLift: number | null
-    rigMobDemob: number | null
-    annualWellInterventionCost: number | null
-    pluggingAndAbandonment: number | null
+export class Wellproject implements Components.Schemas.WellProjectDto{
+
+    id?: string | undefined
+    name?: string | null
+    projectId?: string | undefined
+    costProfile?: WellProjectCostProfileDto | undefined
+    drillingSchedule?: Components.Schemas.DrillingScheduleDto | undefined
+    producerCount?: number | undefined
+    gasInjectorCount?: number | undefined
+    waterInjectorCount?: number | undefined
+    artificialLift?: Components.Schemas.ArtificialLift | undefined
+    rigMobDemob?: number | undefined
+    annualWellInterventionCost?: number | undefined
+    pluggingAndAbandonment?: number | undefined
     
     constructor(data: Components.Schemas.WellProjectDto) {
-        this.id = data.id ?? null
+        this.id = data.id
         this.name = data.name ?? null
-        this.projectId = data.projectId ?? null
-        this.costProfile = data.costProfile ?? null
-        this.drillingSchedule = data.drillingSchedule ?? null
-        this.producerCount = data.producerCount ?? null
-        this.gasInjectorCount = data.gasInjectorCount ?? null
-        this.waterInjectorCount = data.waterInjectorCount ?? null
-        this.artificialLift = data.artificialLift ?? null
-        this.rigMobDemob = data.rigMobDemob ?? null
-        this.annualWellInterventionCost = data.annualWellInterventionCost ?? null
-        this.pluggingAndAbandonment = data.pluggingAndAbandonment ?? null
+        this.projectId = data.projectId ?? ""
+        this.costProfile = data.costProfile
+        this.drillingSchedule = data.drillingSchedule
+        this.producerCount = data.producerCount ?? 0
+        this.gasInjectorCount = data.gasInjectorCount ?? 0
+        this.waterInjectorCount = data.waterInjectorCount ?? 0
+        this.artificialLift = data.artificialLift ?? 0
+        this.rigMobDemob = data.rigMobDemob ?? 0
+        this.annualWellInterventionCost = data.annualWellInterventionCost ?? 0
+        this.pluggingAndAbandonment = data.pluggingAndAbandonment ?? 0
     }
 
     static fromJSON(data: Components.Schemas.WellProjectDto): Wellproject {
@@ -34,57 +36,38 @@ export class Wellproject {
 
 }
 
-
-
-//Wellproject
-export interface WellProjectCostProfileConstructor {
-    startYear?: number; // int32
-    values?: number /* double */[] | null;
-    epaVersion?: string | null;
-    currency?: Currency /* int32 */;
-    sum?: number; // double
-}
-
-export class WellProjectCostProfileDto { 
-    startYear?: number | null
+export class WellProjectCostProfileDto implements Components.Schemas.WellProjectCostProfileDto { 
+    startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
-    currency?: Currency | null
-    sum?: number | null
+    currency?: Components.Schemas.Currency | undefined
+    sum?: number | undefined
 
-    constructor(data: WellProjectCostProfileConstructor) {
-        this.startYear = data.startYear ?? null
+    constructor(data: Components.Schemas.WellProjectCostProfileDto) {
+        this.startYear = data.startYear
         this.values = data.values ?? []
         this.epaVersion = data.epaVersion ?? null
-        this.currency = data.currency ?? null
-        this.sum = data.sum ?? null
+        this.currency = data.currency
+        this.sum = data.sum
     }
 
-    static fromJSON(data: WellProjectCostProfileConstructor): WellProjectCostProfileDto {
+    static fromJSON(data: Components.Schemas.WellProjectCostProfileDto): WellProjectCostProfileDto {
         return new WellProjectCostProfileDto(data)
     }
 
 }
 
-export interface DrillingScheduleCostProfileConstructor {
-    startYear?: number; // int32
-    values?: number /* int32 */[] | null;
-}
-
-export class DrillingScheduleDto {
-    startYear?: number | null
+export class DrillingScheduleDto implements Components.Schemas.DrillingScheduleDto{
+    startYear?: number | undefined
     values?: number [] | null
 
-    constructor(data: DrillingScheduleCostProfileConstructor) {
-        this.startYear = data.startYear ?? null
+    constructor(data: Components.Schemas.DrillingScheduleDto) {
+        this.startYear = data.startYear ?? undefined
         this.values = data.values ?? []
     }
 
-    static fromJSON(data: DrillingScheduleCostProfileConstructor): DrillingScheduleDto {
+    static fromJSON(data: Components.Schemas.DrillingScheduleDto): DrillingScheduleDto {
         return new DrillingScheduleDto(data)
     }
 
 }
-
-export type WellType = 0 | 1; // int32
-export type Currency = 0 | 1; // int32
