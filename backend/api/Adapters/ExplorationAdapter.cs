@@ -9,6 +9,7 @@ namespace api.Adapters
         public static Exploration Convert(ExplorationDto explorationDto)
         {
             var exploration = new Exploration();
+            exploration.Id = explorationDto.Id;
             exploration.ProjectId = explorationDto.ProjectId;
             exploration.Name = explorationDto.Name;
             exploration.RigMobDemob = explorationDto.RigMobDemob;
