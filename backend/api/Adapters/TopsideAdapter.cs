@@ -8,6 +8,7 @@ namespace api.Adapters
         public static Topside Convert(TopsideDto topsideDto)
         {
             var topside = new Topside();
+            topside.Id = topsideDto.Id;
             topside.Name = topsideDto.Name;
             topside.ProjectId = topsideDto.ProjectId;
             topside.CostProfile = Convert(topsideDto.CostProfile, topside);

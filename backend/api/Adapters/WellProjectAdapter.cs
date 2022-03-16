@@ -8,6 +8,7 @@ namespace api.Adapters
         public WellProject Convert(WellProjectDto wellProjectDto)
         {
             var wellProject = new WellProject();
+            wellProject.Id = wellProjectDto.Id;
             wellProject.ProjectId = wellProjectDto.ProjectId;
             wellProject.Name = wellProjectDto.Name;
             wellProject.ProducerCount = wellProjectDto.ProducerCount;

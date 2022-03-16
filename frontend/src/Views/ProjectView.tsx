@@ -64,8 +64,8 @@ const ProjectView = () => {
     const params = useParams()
     const [project, setProject] = useState<Project>()
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
-    const [createCaseFormData, setCreateCaseFormData] = useState<Record<string, any>>({})
-    const [submitIsDisabled, setSubmitIsDisabled] = useState<boolean>(false)
+    const [caseName, setCaseName] = useState<string>("")
+    const [caseDescription, setCaseDescription] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -86,31 +86,30 @@ const ProjectView = () => {
 
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const handleCreateCaseFormFieldChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-        setCreateCaseFormData({
-            ...createCaseFormData,
-            [e.target.name]: e.target.value,
-        })
+    const handleCaseNameChange : ChangeEventHandler<HTMLInputElement> = (e) => {
+        const { value } = e.target
+        setCaseName(value)
+    }
+
+    const handleDescriptionChange : ChangeEventHandler<HTMLInputElement> = (e) => {
+        const { value } = e.target
+        setCaseDescription(value)
     }
 
     const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
-        setSubmitIsDisabled(true)
 
         try {
             const projectResult = await GetCaseService().createCase({
-                description: createCaseFormData.description,
-                dG4Date: createCaseFormData.dg4Date,
-                name: createCaseFormData.name,
+                description: caseDescription,
+                name: caseName,
                 projectId: params.projectId,
             })
-            setSubmitIsDisabled(false)
             toggleCreateCaseModal()
             navigate(`/project/${projectResult.id}/case/${projectResult.cases.find((o) => (
-                o.name === createCaseFormData.name
+                o.name === caseName
             ))?.id}`)
         } catch (error) {
-            setSubmitIsDisabled(false)
             console.error("[ProjectView] error while submitting form data", error)
         }
     }
@@ -155,7 +154,7 @@ const ProjectView = () => {
                         id="name"
                         name="name"
                         placeholder="Enter a name"
-                        onChange={handleCreateCaseFormFieldChange}
+                        onChange={handleCaseNameChange}
                     />
 
                     <TextField
@@ -163,14 +162,14 @@ const ProjectView = () => {
                         id="description"
                         name="description"
                         placeholder="Enter a description"
-                        onChange={handleCreateCaseFormFieldChange}
+                        onChange={handleDescriptionChange}
                     />
 
                     <div>
                         <Button
                             type="submit"
                             onClick={submitCreateCaseForm}
-                            disabled={submitIsDisabled}
+                            disabled={caseName === "" || caseDescription === ""}
                         >
                             Create case
                         </Button>

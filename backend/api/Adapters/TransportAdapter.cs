@@ -11,6 +11,7 @@ namespace api.Adapters
         public static Transport Convert(TransportDto transportDto)
         {
             var transport = new Transport();
+            transport.Id = transportDto.Id;
             transport.ProjectId = transportDto.ProjectId;
             transport.Name = transportDto.Name;
             transport.Maturity = transportDto.Maturity;
