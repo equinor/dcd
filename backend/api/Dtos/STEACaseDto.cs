@@ -32,14 +32,6 @@ namespace api.Dtos
     public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto
     {
 
-        public class TotalAndAnnualOil : ProductionProfileOilDto
-        {
-
-        }
-        public class TotalAndAnnualSalesGas : NetSalesGasDto
-        {
-
-        }
     }
 }
 

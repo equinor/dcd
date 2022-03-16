@@ -20,5 +20,6 @@ namespace api.Services
             var project = ProjectDtoAdapter.Convert(_projectService.GetProject(ProjectId));
             return STEAProjectDtoBuilder.Build(project);
         }
+
     }
 }
