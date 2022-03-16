@@ -111,10 +111,7 @@ function CaseView() {
         setDg4DateRec({
             dg4DateRec,
             [e.target.name]: e.target.value,
-            // dg4DateRec: e.target.value,
         })
-        console.log(e.target.value)
-        console.log(dg4DateRec)
         const updateDG4 = {
             id: params.caseId,
             projectId: project?.id,
@@ -122,7 +119,6 @@ function CaseView() {
             description: caseItem?.description,
             dG4Date: e.target.value,
         }
-        console.log(updateDG4)
         const newProject = await GetCaseService().updateCase(updateDG4)
         setProject(newProject)
     }
