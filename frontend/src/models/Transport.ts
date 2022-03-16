@@ -1,21 +1,21 @@
-export class Transport {
-    id: String | null
-    name: String | null
-    projectId: String | null
-    costProfile: TransportCostProfile | null
-    maturity:  Maturity | null
-    gasExportPipelineLength: number | null
-    oilExportPipelineLength: number | null
+export class Transport implements Components.Schemas.TransportDto{
+    id?: string | undefined
+    name?: string | null
+    projectId?: string | undefined
+    costProfile?: Components.Schemas.TransportCostProfileDto | undefined
+    maturity?: Components.Schemas.Maturity | undefined
+    gasExportPipelineLength?: number | undefined
+    oilExportPipelineLength?: number | undefined
 
     constructor(data: Components.Schemas.TransportDto)  
     {
-        this.id = data.id ?? null
-        this.name = data.name ?? null
-        this.projectId = data.projectId ?? null
-        this.costProfile = data.costProfile ?? null
-        this.maturity = data.maturity ?? null
-        this.gasExportPipelineLength = data.gasExportPipelineLength ?? null
-        this.oilExportPipelineLength = data.oilExportPipelineLength ?? null
+        this.id = data.id
+        this.name = data.name ?? ""
+        this.projectId = data.projectId
+        this.costProfile = data.costProfile
+        this.maturity = data.maturity
+        this.gasExportPipelineLength = data.gasExportPipelineLength
+        this.oilExportPipelineLength = data.oilExportPipelineLength
     }
 
     static fromJSON(data: Components.Schemas.SurfDto): Transport {
@@ -24,34 +24,22 @@ export class Transport {
 
 }
 
-export interface TransportCostProfileConstructor {
-    startYear?: number; // int32
-    values?: number /* double */[] | null;
-    epaVersion?: string | null;
-    currency?: Currency /* int32 */;
-    sum?: number; // double
-}
-
-export class TransportCostProfile {
-    startYear?: number | null
+export class TransportCostProfile implements Components.Schemas.TransportCostProfileDto{
+    startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
-    currency?: Currency | null
-    sum?: number | null
+    currency?: Components.Schemas.Currency | undefined
+    sum?: number | undefined
 
-    constructor(data: TransportCostProfileConstructor) {
-        this.startYear = data.startYear ?? null
+    constructor(data: Components.Schemas.TransportCostProfileDto) {
+        this.startYear = data.startYear
         this.values = data.values ?? []
         this.epaVersion = data.epaVersion ?? null
-        this.currency = data.currency ?? null
-        this.sum = data.sum ?? null
+        this.currency = data.currency
+        this.sum = data.sum
     }
 
-    static fromJSON(data: TransportCostProfileConstructor): TransportCostProfile {
+    static fromJSON(data: Components.Schemas.TransportCostProfileDto): TransportCostProfile {
         return new TransportCostProfile(data)
     }
 }
-
-
-export type Maturity = 0 | 1 | 2 | 3; // int32
-export type Currency = 0 | 1; // int32

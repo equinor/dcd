@@ -1,7 +1,13 @@
 import { Case } from "./Case"
 import { DrainageStrategy } from "./DrainageStrategy"
+import { Exploration } from "./Exploration"
 import { ProjectCategory } from "./ProjectCategory"
 import { ProjectPhase } from "./ProjectPhase"
+import { Substructure } from "./Substructure"
+import { Surf } from "./Surf"
+import { Topside } from "./Topside"
+import { Transport } from "./Transport"
+import { Wellproject } from "./Wellproject"
 
 export class Project {
     cases: Case[]
@@ -14,11 +20,11 @@ export class Project {
     id: string
     name: string
     phase: ProjectPhase | null
-    substructures: any[]
-    surfs: any[]
-    topsides: any[]
-    transports: any[]
-    wellProjects: any[]
+    substructures: Substructure[]
+    surfs: Surf[]
+    topsides: Topside[]
+    transports: Transport[]
+    wellProjects: Wellproject[]
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
@@ -27,20 +33,23 @@ export class Project {
         this.createdAt = data.createDate ? new Date(data.createDate) : null
         this.description = data.description ?? null
         this.drainageStrategies = data.drainageStrategies?.map(DrainageStrategy.fromJSON) ?? []
-        this.explorations = data.explorations ?? []
+        this.explorations = data.explorations?.map(Exploration.fromJSON) ?? []
         this.id = data.projectId ?? ""
         this.name = data.name ?? ""
         this.phase = data.projectPhase ? new ProjectPhase(data.projectPhase) : null
-        this.substructures = data.substructures ?? []
-        this.surfs = data.surfs ?? []
-        this.topsides = data.topsides ?? []
-        this.transports = data.transports ?? []
-        this.wellProjects = data.wellProjects ?? []
+        this.substructures = data.substructures?.map(Substructure.fromJSON) ?? []
+        this.surfs = data.surfs?.map(Surf.fromJSON) ?? []
+        this.topsides = data.topsides?.map(Topside.fromJSON) ?? []
+        this.transports = data.transports?.map(Transport.fromJSON) ?? []
+        this.wellProjects = data.wellProjects?.map(Wellproject.fromJSON) ?? []
     }
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {
+
         return new Project(data)
     }
+
+    static readonly recentProjectsKey = "recentProjects"
 
     public static deserialize(data: string): Project[] {
         return JSON.parse(data, Project.parseComplexFields)
@@ -55,5 +64,29 @@ export class Project {
         }
 
         return value
+    }
+
+    static retrieveRecentProjects() {
+        const recentProjectJSON = localStorage.getItem(Project.recentProjectsKey)
+        const recentProjects: Project[] = Project.deserialize(recentProjectJSON ?? "[]")
+        return recentProjects
+    }
+
+    static storeRecentProject(recentProject: Project) {
+        let currentRecentProjects = Project.retrieveRecentProjects()
+        // find possible duplicate, remove it
+        const projectAlreadyNotedIndex = currentRecentProjects.findIndex(
+            (recordedProject) => recordedProject.id === recentProject.id,
+        )
+        if (projectAlreadyNotedIndex >= 0) {
+            currentRecentProjects = currentRecentProjects
+                .slice(0, projectAlreadyNotedIndex)
+                .concat(
+                    currentRecentProjects.slice(projectAlreadyNotedIndex + 1),
+                )
+        }
+        currentRecentProjects.unshift(recentProject)
+        const recentProjects = currentRecentProjects.slice(0, 4)
+        localStorage.setItem(Project.recentProjectsKey, JSON.stringify(recentProjects))
     }
 }

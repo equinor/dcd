@@ -1,22 +1,22 @@
-export class Exploration {
-    id: string | null
-    projectId: string | null
-    name: string | null
-    wellType: WellType | null
-    costProfile: ExplorationCostProfileDto | null
-    drillingSchedule: ExplorationDrillingScheduleDto | null
-    gAndGAdminCost: GAndGAdminCostDto | null
-    rigMobDemob: number | null
+export class Exploration implements Components.Schemas.ExplorationDto {
+    id?: string | undefined
+    projectId?: string | undefined
+    name?: string | undefined
+    wellType?: Components.Schemas.WellType | undefined
+    costProfile?: ExplorationCostProfileDto | undefined
+    drillingSchedule?: ExplorationDrillingScheduleDto | undefined
+    gAndGAdminCost?: GAndGAdminCostDto | undefined
+    rigMobDemob?: number | undefined
 
     constructor(data: Components.Schemas.ExplorationDto) {
-        this.id = data.id ?? null
-        this.projectId = data.projectId ?? null
-        this.name = data.name ?? null
-        this.wellType = data.wellType ?? null
-        this.costProfile = data.costProfile ?? null
-        this.drillingSchedule = data.drillingSchedule ?? null
-        this.gAndGAdminCost = data.gAndGAdminCost ?? null
-        this.rigMobDemob = data.rigMobDemob ?? null
+        this.id = data.id
+        this.projectId = data.projectId
+        this.name = data.name ?? ""
+        this.wellType = data.wellType
+        this.costProfile = data.costProfile
+        this.drillingSchedule = data.drillingSchedule
+        this.gAndGAdminCost = data.gAndGAdminCost
+        this.rigMobDemob = data.rigMobDemob
     }
 
     static fromJSON(data: Components.Schemas.ExplorationDto): Exploration {
@@ -25,30 +25,22 @@ export class Exploration {
 
 }
 
-export interface ExplorationCostProfileDtoConstructor {
-    startYear?: number; // int32
-    values?: number /* double */[] | null;
-    epaVersion?: string | null;
-    currency?: Currency /* int32 */;
-    sum?: number; // double
-}
-
-export class ExplorationCostProfileDto {
-    startYear?: number | null
+export class ExplorationCostProfileDto implements Components.Schemas.ExplorationCostProfileDto {
+    startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
-    currency?: Currency | null
-    sum?: number | null 
+    currency?: Components.Schemas.Currency | undefined
+    sum?: number | undefined 
 
-    constructor(data: ExplorationCostProfileDtoConstructor) {
-        this.startYear = data.startYear ?? null
+    constructor(data: Components.Schemas.ExplorationCostProfileDto) {
+        this.startYear = data.startYear
         this.values = data.values ?? []
         this.epaVersion = data.epaVersion ?? null
-        this.currency = data.currency ?? null
-        this.sum = data.sum ?? null
+        this.currency = data.currency
+        this.sum = data.sum
     }
 
-    static fromJSON(data: ExplorationCostProfileDtoConstructor): ExplorationCostProfileDto {
+    static fromJSON(data: Components.Schemas.ExplorationCostProfileDto): ExplorationCostProfileDto {
         return new ExplorationCostProfileDto(data)
     }
 }
@@ -60,12 +52,12 @@ export interface ExplorationDrillingScheduleDtoConstructor {
     values?: number /* int32 */[] | null;
 }
 
-export class ExplorationDrillingScheduleDto {
-    startYear?: number | null
+export class ExplorationDrillingScheduleDto implements Components.Schemas.ExplorationDrillingScheduleDto {
+    startYear?: number | undefined
     values?: number [] | null
 
     constructor(data: ExplorationDrillingScheduleDto) {
-        this.startYear = data.startYear ?? null
+        this.startYear = data.startYear
         this.values = data.values ?? []
     }
 
@@ -74,31 +66,16 @@ export class ExplorationDrillingScheduleDto {
     }
 }
 
-//
-
-export interface GAndGAdminCostDtoConstructor {
-    startYear?: number; // int32
-    values?: number /* double */[] | null;
-    epaVersion?: string | null;
-    currency?: Currency /* int32 */;
-    sum?: number; // double
-}
-
-
-export class GAndGAdminCostDto {
-    startYear?: number | null
+export class GAndGAdminCostDto implements Components.Schemas.GAndGAdminCostDto {
+    startYear?: number | undefined
     values?: number [] | null
 
-    constructor(data: GAndGAdminCostDtoConstructor) {
-        this.startYear = data.startYear ?? null
+    constructor(data: Components.Schemas.GAndGAdminCostDto) {
+        this.startYear = data.startYear
         this.values = data.values ?? []
     }
 
-    static fromJSON(data: GAndGAdminCostDtoConstructor): GAndGAdminCostDto {
+    static fromJSON(data: Components.Schemas.GAndGAdminCostDto): GAndGAdminCostDto {
         return new GAndGAdminCostDto(data)
     }
 }
-
-
-export type WellType = 0 | 1; // int32
-export type Currency = 0 | 1; // int32

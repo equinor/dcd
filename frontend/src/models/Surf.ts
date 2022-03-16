@@ -1,32 +1,34 @@
-export class Surf {
+export class Surf implements Components.Schemas.SurfDto {
 
-    id: string | null
-    name: string | null
-    projectId: string | null
-    costProfile: SurfCostProfile | null
-    maturity: Maturity | null
-    infieldPipelineSystemLength: number | null
-    umbilicalSystemLength: number | null
-    artificialLift: ArtificialLift | null
-    riserCount: number | null 
-    templateCount: number | null
-    productionFlowline: ProductionFlowline | null
+    id?: string | undefined
+    name?: string | null
+    projectId?: string | undefined
+    costProfile?: Components.Schemas.SurfCostProfileDto | undefined
+    maturity?: Components.Schemas.Maturity | undefined
+    infieldPipelineSystemLength?: number | undefined
+    umbilicalSystemLength?: number | undefined
+    artificialLift?: Components.Schemas.ArtificialLift | undefined
+    riserCount?: number | undefined
+    templateCount?: number | undefined
+    productionFlowline?: Components.Schemas.ProductionFlowline | undefined
 
     constructor(data: Components.Schemas.SurfDto) {
         this.id = data.id ?? ""
         this.name = data.name ?? ""
-        this.projectId = data.projectId ?? null
-        this.costProfile = data.costProfile ?? null
-        this.maturity = data.maturity ?? null
-        this.infieldPipelineSystemLength = data.infieldPipelineSystemLength ?? null
-        this.umbilicalSystemLength = data.umbilicalSystemLength ?? null
-        this.artificialLift = data.artificialLift ?? null
-        this.riserCount = data.riserCount ?? null
-        this.templateCount = data.templateCount ?? null
-        this.productionFlowline = data.productionFlowline ?? null
+        this.projectId = data.projectId
+        this.costProfile = data.costProfile
+        this.maturity = data.maturity
+        this.infieldPipelineSystemLength = data.infieldPipelineSystemLength
+        this.umbilicalSystemLength = data.umbilicalSystemLength
+        this.artificialLift = data.artificialLift 
+        this.riserCount = data.riserCount 
+        this.templateCount = data.templateCount
+        this.productionFlowline = data.productionFlowline
     }
 
-
+    static fromJSON(data: Components.Schemas.SurfDto): Surf {
+        return new Surf(data)
+    }
 
 }
 
@@ -34,31 +36,27 @@ export interface SurfCostProfileConstructor {
     startYear?: number; // int32
     values?: number /* double */[] | null;
     epaVersion?: string | null;
-    currency?: Currency /* int32 */;
+    currency?: Components.Schemas.Currency /* int32 */;
     sum?: number; // double
 }
 
-export class SurfCostProfile {
-    startYear?: number | null
+export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto{
+    startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
-    currency?: Currency | null
-    sum?: number | null
+    currency?: Components.Schemas.Currency | undefined
+    sum?: number | undefined
 
-    constructor(data: SurfCostProfileConstructor) {
-        this.startYear = data.startYear ?? null
+    constructor(data: Components.Schemas.SurfCostProfileDto) {
+        this.startYear = data.startYear
         this.values = data.values ?? []
         this.epaVersion = data.epaVersion ?? null
-        this.currency = data.currency ?? null
-        this.sum = data.sum ?? null
+        this.currency = data.currency
+        this.sum = data.sum
     }
 
-    static fromJSON(data: SurfCostProfileConstructor): SurfCostProfile {
+    static fromJSON(data: Components.Schemas.SurfCostProfileDto): SurfCostProfile {
         return new SurfCostProfile(data)
     }
 
 }
-export type Currency = 0 | 1; // int32
-export type ProductionFlowline = 999; // int32
-export type ArtificialLift = 0 | 1 | 2 | 3; // int32
-export type Maturity = 0 | 1 | 2 | 3; // int32

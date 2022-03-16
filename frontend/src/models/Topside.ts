@@ -1,27 +1,27 @@
-export class Topside {
+export class Topside implements Components.Schemas.TopsideDto{
 
-    id: string | null
-    name: string | null
-    projectId: string | null
-    costProfile: TopsideCostProfile | null
-    dryWeight: number | null
-    oilCapacity: number | null
-    gasCapacity: number | null
-    facilitiesAvailability: number | null
-    artificialLift: ArtificialLift | null
-    maturity: Maturity | null
+    id?: string | undefined
+    name?: string | null
+    projectId?: string | undefined
+    costProfile?: Components.Schemas.TopsideCostProfileDto | undefined
+    dryWeight?: number | undefined
+    oilCapacity?: number | undefined
+    gasCapacity?: number | undefined
+    facilitiesAvailability?: number | undefined
+    artificialLift?: Components.Schemas.ArtificialLift | undefined
+    maturity?: Components.Schemas.Maturity | undefined
 
     constructor(data: Components.Schemas.TopsideDto) {
-        this.id = data.id ?? null
-        this.name = data.name ?? null
-        this.projectId = data.projectId ?? null
-        this.costProfile = data.costProfile ?? null
-        this.dryWeight = data.dryWeight ?? null
-        this.oilCapacity = data.oilCapacity ?? null
-        this.gasCapacity = data.gasCapacity ?? null
-        this.facilitiesAvailability = data.facilitiesAvailability ?? null
-        this.artificialLift = data.artificialLift ?? null
-        this.maturity = data.maturity ?? null
+        this.id = data.id
+        this.name = data.name ?? ""
+        this.projectId = data.projectId
+        this.costProfile = data.costProfile 
+        this.dryWeight = data.dryWeight 
+        this.oilCapacity = data.oilCapacity
+        this.gasCapacity = data.gasCapacity
+        this.facilitiesAvailability = data.facilitiesAvailability 
+        this.artificialLift = data.artificialLift
+        this.maturity = data.maturity 
     }
 
     static fromJSON(data: Components.Schemas.TopsideDto): Topside {
@@ -30,34 +30,22 @@ export class Topside {
 
 }
 
-interface TopsideCostProfileConstructor {
-    startYear?: number; // int32
-    values?: number /* double */[] | null;
-    epaVersion?: string | null;
-    currency?: Currency /* int32 */;
-    sum?: number; // double
-}
-
-export class TopsideCostProfile {
-    startYear?: number | null
+export class TopsideCostProfile implements Components.Schemas.TopsideCostProfileDto{
+    startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
-    currency?: Currency | null
-    sum?: number | null 
+    currency?: Components.Schemas.Currency | undefined
+    sum?: number | undefined
 
-    constructor(data: TopsideCostProfileConstructor) {
-        this.startYear = data.startYear ?? null
+    constructor(data: Components.Schemas.TopsideCostProfileDto) {
+        this.startYear = data.startYear
         this.values = data.values ?? []
         this.epaVersion = data.epaVersion ?? null
-        this.currency = data.currency ?? null
-        this.sum = data.sum ?? null
+        this.currency = data.currency
+        this.sum = data.sum
     }
 
-    static fromJSON(data: TopsideCostProfileConstructor): TopsideCostProfile {
+    static fromJSON(data: Components.Schemas.TopsideCostProfileDto): TopsideCostProfile {
         return new TopsideCostProfile(data)
     }
 }
-
-export type ArtificialLift = 0 | 1 | 2 | 3; // int32
-export type Maturity = 0 | 1 | 2 | 3; // int32
-export type Currency = 0 | 1; // int32
