@@ -32,7 +32,7 @@ const CancelButton = styled(Button)`
 const rowTitles = [
     "Substructure Cost Profile",
     "Dryweight",
-    "Maturity"
+    "Maturity",
 ]
 
 // TODO: This data will have to be generated from the format received from the API

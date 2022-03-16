@@ -127,7 +127,6 @@ function CaseView() {
             dG4Date: e.target.value,
         }
         const newProject = await GetCaseService().updateCase(updateDG4)
-        
         setProject(newProject)
     }
 
@@ -166,29 +165,6 @@ function CaseView() {
     }
 
     if (!project) return null
-
-    console.log(project)
-    console.log("Hei manni")
-    console.log("Drainage Strategy")
-    console.log(project.drainageStrategies)
-    
-    console.log("Explorations")
-    console.log(project.explorations)
-
-    console.log("Substructures")
-    console.log(project.substructures)
-    
-    console.log("Surfs")
-    console.log(project.surfs)
-
-    console.log("Topsides")
-    console.log(project.topsides)
-
-    console.log("Transports")
-    console.log(project.transports)
-
-    console.log("Well Projects")
-    console.log(project.wellProjects)
 
     return (
         <CaseViewDiv>

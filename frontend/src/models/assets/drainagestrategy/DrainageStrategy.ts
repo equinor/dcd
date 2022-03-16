@@ -1,15 +1,5 @@
-import { AnnualProfile } from "./AnnualProfile"
-import { ArtificialLift } from "./ArtificialLift"
-
-const rowTitles = [
-    "Production profile oil",
-    "Production profile gas",
-    "Production profile water",
-    "Production profile water injection",
-    "Fuel flaring and losses",
-    "Net sales gas",
-    "CO2 emissions",
-]
+import { AnnualProfile } from "../../AnnualProfile"
+import { ArtificialLift } from "../../ArtificialLift"
 
 export class DrainageStrategy {
     artificialLift: ArtificialLift | null
@@ -67,5 +57,4 @@ export class DrainageStrategy {
     static fromJSON(data: Components.Schemas.DrainageStrategyDto): DrainageStrategy {
         return new DrainageStrategy(data)
     }
-
 }

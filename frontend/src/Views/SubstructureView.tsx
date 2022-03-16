@@ -32,7 +32,7 @@ const CancelButton = styled(Button)`
 const rowTitles = [
     "Substructure Cost Profile",
     "Dryweight",
-    "Maturity"
+    "Maturity",
 ]
 
 // TODO: This data will have to be generated from the format received from the API
@@ -76,7 +76,6 @@ const initialGridData = [
         { value: 678290 },
         { value: 647382 },
     ],
-    
 ]
 
 const columnTitles = ["2022", "2023", "2024", "2025", "2026", "2027", "2028"]

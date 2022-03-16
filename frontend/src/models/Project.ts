@@ -1,13 +1,13 @@
 import { Case } from "./Case"
-import { DrainageStrategy } from "./DrainageStrategy"
-import { Exploration } from "./Exploration"
+import { DrainageStrategy } from "./assets/drainagestrategy/DrainageStrategy"
+import { Exploration } from "./assets/exploration/Exploration"
 import { ProjectCategory } from "./ProjectCategory"
 import { ProjectPhase } from "./ProjectPhase"
-import { Substructure } from "./Substructure"
-import { Surf } from "./Surf"
-import { Topside } from "./Topside"
-import { Transport } from "./Transport"
-import { Wellproject } from "./Wellproject"
+import { Substructure } from "./assets/substructure/Substructure"
+import { Surf } from "./assets/surf/Surf"
+import { Topside } from "./assets/topside/Topside"
+import { Transport } from "./assets/transport/Transport"
+import { Wellproject } from "./assets/wellproject/Wellproject"
 
 export class Project {
     cases: Case[]
@@ -45,7 +45,6 @@ export class Project {
     }
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {
-
         return new Project(data)
     }
 
