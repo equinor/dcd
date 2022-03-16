@@ -3,7 +3,7 @@ export class Surf implements Components.Schemas.SurfDto {
     id?: string | undefined
     name?: string | null
     projectId?: string | undefined
-    costProfile?: Components.Schemas.SurfCostProfileDto | undefined
+    costProfile?: SurfCostProfile | undefined
     maturity?: Components.Schemas.Maturity | undefined
     infieldPipelineSystemLength?: number | undefined
     umbilicalSystemLength?: number | undefined
@@ -16,7 +16,7 @@ export class Surf implements Components.Schemas.SurfDto {
         this.id = data.id ?? ""
         this.name = data.name ?? ""
         this.projectId = data.projectId
-        this.costProfile = data.costProfile
+        this.costProfile = SurfCostProfile.fromJSON(data.costProfile)
         this.maturity = data.maturity
         this.infieldPipelineSystemLength = data.infieldPipelineSystemLength
         this.umbilicalSystemLength = data.umbilicalSystemLength
@@ -32,30 +32,22 @@ export class Surf implements Components.Schemas.SurfDto {
 
 }
 
-export interface SurfCostProfileConstructor {
-    startYear?: number; // int32
-    values?: number /* double */[] | null;
-    epaVersion?: string | null;
-    currency?: Components.Schemas.Currency /* int32 */;
-    sum?: number; // double
-}
-
-export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto{
+export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto {
     startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
 
-    constructor(data: Components.Schemas.SurfCostProfileDto) {
-        this.startYear = data.startYear
-        this.values = data.values ?? []
-        this.epaVersion = data.epaVersion ?? null
-        this.currency = data.currency
-        this.sum = data.sum
+    constructor(data?: Components.Schemas.SurfCostProfileDto) {
+        this.startYear = data?.startYear
+        this.values = data?.values ?? []
+        this.epaVersion = data?.epaVersion ?? null
+        this.currency = data?.currency
+        this.sum = data?.sum
     }
 
-    static fromJSON(data: Components.Schemas.SurfCostProfileDto): SurfCostProfile {
+    static fromJSON(data?: Components.Schemas.SurfCostProfileDto): SurfCostProfile {
         return new SurfCostProfile(data)
     }
 

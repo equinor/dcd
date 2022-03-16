@@ -67,4 +67,5 @@ export class DrainageStrategy {
     static fromJSON(data: Components.Schemas.DrainageStrategyDto): DrainageStrategy {
         return new DrainageStrategy(data)
     }
+
 }

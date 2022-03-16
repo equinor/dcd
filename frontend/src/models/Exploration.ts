@@ -13,9 +13,9 @@ export class Exploration implements Components.Schemas.ExplorationDto {
         this.projectId = data.projectId
         this.name = data.name ?? ""
         this.wellType = data.wellType
-        this.costProfile = data.costProfile
-        this.drillingSchedule = data.drillingSchedule
-        this.gAndGAdminCost = data.gAndGAdminCost
+        this.costProfile = ExplorationCostProfileDto.fromJSON(data.costProfile)
+        this.drillingSchedule = ExplorationDrillingScheduleDto.fromJSON(data.drillingSchedule)
+        this.gAndGAdminCost = GAndGAdminCostDto.fromJSON(data.gAndGAdminCost)
         this.rigMobDemob = data.rigMobDemob
     }
 
@@ -32,36 +32,29 @@ export class ExplorationCostProfileDto implements Components.Schemas.Exploration
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined 
 
-    constructor(data: Components.Schemas.ExplorationCostProfileDto) {
-        this.startYear = data.startYear
-        this.values = data.values ?? []
-        this.epaVersion = data.epaVersion ?? null
-        this.currency = data.currency
-        this.sum = data.sum
+    constructor(data?: Components.Schemas.ExplorationCostProfileDto) {
+        this.startYear = data?.startYear
+        this.values = data?.values ?? []
+        this.epaVersion = data?.epaVersion ?? null
+        this.currency = data?.currency
+        this.sum = data?.sum
     }
 
-    static fromJSON(data: Components.Schemas.ExplorationCostProfileDto): ExplorationCostProfileDto {
+    static fromJSON(data?: Components.Schemas.ExplorationCostProfileDto): ExplorationCostProfileDto {
         return new ExplorationCostProfileDto(data)
     }
-}
-
-//asd
-
-export interface ExplorationDrillingScheduleDtoConstructor {
-    startYear?: number; // int32
-    values?: number /* int32 */[] | null;
 }
 
 export class ExplorationDrillingScheduleDto implements Components.Schemas.ExplorationDrillingScheduleDto {
     startYear?: number | undefined
     values?: number [] | null
 
-    constructor(data: ExplorationDrillingScheduleDto) {
-        this.startYear = data.startYear
-        this.values = data.values ?? []
+    constructor(data?: Components.Schemas.ExplorationDrillingScheduleDto) {
+        this.startYear = data?.startYear
+        this.values = data?.values ?? []
     }
 
-    static fromJSON(data: ExplorationDrillingScheduleDto): ExplorationDrillingScheduleDto {
+    static fromJSON(data?: Components.Schemas.ExplorationDrillingScheduleDto): ExplorationDrillingScheduleDto {
         return new ExplorationDrillingScheduleDto(data)
     }
 }
@@ -70,12 +63,12 @@ export class GAndGAdminCostDto implements Components.Schemas.GAndGAdminCostDto {
     startYear?: number | undefined
     values?: number [] | null
 
-    constructor(data: Components.Schemas.GAndGAdminCostDto) {
-        this.startYear = data.startYear
-        this.values = data.values ?? []
+    constructor(data?: Components.Schemas.GAndGAdminCostDto) {
+        this.startYear = data?.startYear
+        this.values = data?.values ?? []
     }
 
-    static fromJSON(data: Components.Schemas.GAndGAdminCostDto): GAndGAdminCostDto {
+    static fromJSON(data?: Components.Schemas.GAndGAdminCostDto): GAndGAdminCostDto {
         return new GAndGAdminCostDto(data)
     }
 }
