@@ -1,0 +1,19 @@
+import { config } from "./config"
+import { __BaseService } from "./__BaseService"
+
+import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+import { Project } from "../models/Project"
+
+export class __SubstructureService extends __BaseService {
+    public async createSubstructure(sourceCaseId: string, body: Components.Schemas.SubstructureDto) :Promise<Project> {
+        const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
+        return Project.fromJSON(res)
+    }
+}
+
+export function GetSubstructureService() {
+    return new __SubstructureService({
+        ...config.SubstructureService,
+        accessToken: GetToken(LoginAccessTokenKey)!,
+    })
+}

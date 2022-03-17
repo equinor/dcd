@@ -1,80 +1,59 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
-import { Table, Typography } from '@equinor/eds-core-react'
+import { Table, Typography } from "@equinor/eds-core-react"
+import { VoidFunctionComponent } from "react"
+import styled from "styled-components"
 
-import { sort } from './helpers'
-import SortableTable, { Column, SortDirection } from './SortableTable'
-import { Case } from '../../types'
+import { SortableTable } from "../SortableTable"
+import { Column, SortDirection } from "../SortableTable/types"
 
-const { Row, Cell } = Table
+import { sort } from "./helpers"
 
-const CellWithBorder = styled(Cell)`
+import { Case } from "../../models/Case"
+
+const CellWithBorder = styled(Table.Cell)`
     border-right: 1px solid lightgrey;
 `
 
 const columns: Column[] = [
-    { name: 'Title', accessor: 'title', sortable: true },
-    { name: 'Capex', accessor: 'capex', sortable: true },
-    { name: 'Drillex', accessor: 'drillex', sortable: true },
-    { name: 'UR', accessor: 'ur', sortable: true },
+    { name: "Case", accessor: "caseName", sortable: true },
+    { name: "Gas injectors", accessor: "gasInjectorsCount", sortable: true },
+    { name: "Well injectors", accessor: "wellInjectorsCount", sortable: true },
+    { name: "Producers", accessor: "producersCount", sortable: true },
+    { name: "Templates", accessor: "templatesCount", sortable: true },
+    { name: "Gas capacity", accessor: "gasCapacity", sortable: true },
+    { name: "Oil capacity", accessor: "oilCapacity", sortable: true },
+    { name: "DG4 Date", accessor: "dg4Date", sortable: true },
 ]
 
-interface Props {
-    projectId: string | undefined
+type Props = {
     cases: Case[]
 }
 
-const CasesTable = ({ cases, projectId }: Props) => {
-    const sortOnAccessor = (a: Case, b: Case, accessor: string, sortDirection: SortDirection) => {
-        switch (accessor) {
-            case 'title': {
-                return sort(a.title.toLowerCase(), b.title.toLowerCase(), sortDirection)
-            }
-            case 'capex': {
-                return sort(a.capex, b.capex, sortDirection)
-            }
-            case 'drillex': {
-                return sort(a.drillex, b.drillex, sortDirection)
-            }
-            case 'ur': {
-                return sort(a.ur, b.ur, sortDirection)
-            }
-            default:
-                return sort(a.title.toLowerCase(), b.title.toLowerCase(), sortDirection)
-        }
-    }
+const CasesTable: VoidFunctionComponent<Props> = ({ cases }) => {
+    const sortOnAccessor = (
+        a: any,
+        b: any,
+        _accessor: string,
+        sortDirection: SortDirection,
+    ) => sort(a, b, sortDirection)
 
-    const renderRow = (caseItem: Case, index: number) => {
-        return (
-            <Row key={index}>
-                <CellWithBorder>
-                    <Link to={`/project/${projectId}/case/${caseItem.id}`} style={{ textDecoration: 'none' }}>
-                        <Typography
-                            color="primary"
-                            variant="body_short"
-                            token={{
-                                fontSize: '1.2rem',
-                            }}
-                        >
-                            {caseItem.title}
-                        </Typography>
-                    </Link>
+    const renderRow = (caseItem: Components.Schemas.CaseDto, index: number) => (
+        <Table.Row key={index}>
+            {columns.map((c) => (
+                <CellWithBorder key={c.accessor}>
+                    <Typography>{c.accessor}</Typography>
                 </CellWithBorder>
-                <CellWithBorder>
-                    <Typography>{caseItem.capex} USD</Typography>
-                </CellWithBorder>
-                <CellWithBorder>
-                    <Typography>{caseItem.drillex} USD</Typography>
-                </CellWithBorder>
-                <CellWithBorder>
-                    <Typography>{caseItem.ur} Mbbl</Typography>
-                </CellWithBorder>
-            </Row>
-        )
-    }
+            ))}
+        </Table.Row>
+    )
 
-    return <SortableTable columns={columns} data={cases} sortOnAccessor={sortOnAccessor} renderRow={renderRow} style={{ width: '40rem' }} />
+    return (
+        <SortableTable
+            columns={columns}
+            data={cases}
+            sortOnAccessor={sortOnAccessor}
+            renderRow={renderRow}
+        />
+    )
 }
 
 export default CasesTable

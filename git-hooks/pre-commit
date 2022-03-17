@@ -1,0 +1,81 @@
+#!/bin/sh
+
+# check if any .cs files are changed
+git diff --cached --name-only --diff-filter=ACM | grep -e '\.cs' -q
+cs_files_changed=$?
+if test $cs_files_changed -ne 0
+then
+  exit 0
+fi
+
+compiler_warnings() {
+  code_base=$1
+  project_path=$2
+  if [ -z $code_base ] || [ -z $project_path ]
+  then
+    echo Usage: compiler_warnings [code_base] [project_path]
+    exit 1
+  fi
+
+  echo checking for compiler warnings in $code_base ...
+  warnings=$( dotnet build --no-incremental $project_path )
+  number_of_warnings=$( echo "${warnings}" | tail -n 4 | \
+    grep Warning\(s\) | awk '{print $1}' )
+  if [ "$number_of_warnings" != "0" ]
+  then
+    echo compiler produced following output:
+    echo "${warnings}" | grep -i warning
+    echo please fix before committing!
+    echo "run \`dotnet build --no-incremental\` for $code_base\n\
+      to see warnings with pretty colors"
+    return 1
+  fi
+  return 0
+}
+
+lint() {
+  code_base=$1
+  project_path=$2
+  if [ -z $code_base ] || [ -z $project_path ]
+  then
+    echo Usage: lint [code_base] [project_path]
+    exit 1
+  fi
+
+  echo running linter on $code_base code ...
+  dotnet format --verify-no-changes \
+    $project_path
+  lint_rc=$?
+  if test $lint_rc -ne 0
+  then
+    echo formatting on $code_base code is off... fixing it for you now
+    dotnet format $project_path
+    echo add these changes to your commit before continuing!
+    return 1
+  else
+    echo $code_base code looks fine.
+  fi
+  return 0
+}
+
+api_path=backend/api/api.csproj
+tests_path=backend/tests/tests.csproj
+
+lint api $api_path
+code_lint_rc=$?
+
+lint tests $tests_path
+test_lint_rc=$?
+
+compiler_warnings api $api_path
+code_comp_warns=$?
+compiler_warnings tests $tests_path
+test_comp_warns=$?
+
+if test $code_comp_warns -ne 0 || test $test_comp_warns -ne 0 || \
+  test $code_lint_rc -ne 0 || test $test_lint_rc -ne 0
+then
+  exit 1
+fi
+
+exit 0

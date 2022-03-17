@@ -5,13 +5,14 @@ parameters:
   - name: buildId
   - name: sourcesDirectory
   - name: appName
+  - name: azAppConfig
 
 steps:
   - script: |
       docker build -f ${{ parameters.sourcesDirectory }}/${{ parameters.appName }}/Dockerfile \
       --build-arg dt_url=${{ parameters.dt_url }} \
       --build-arg dt_tenant=${{ parameters.dt_tenant }} \
+      --build-arg azappconfig=${{ parameters.azAppConfig }} \
       ${{ parameters.sourcesDirectory }}/${{ parameters.appName }}/ \
-      -t crdcd.azurecr.io/dcd_${{ parameters.appName }}:release \
-      -t crdcd.azurecr.io/dcd_${{ parameters.appName }}:${{ parameters.buildId }}
+      -t crdcd.azurecr.io/${{ parameters.appName }}:${{ parameters.buildId }}
     displayName: "docker build with OneAgent"

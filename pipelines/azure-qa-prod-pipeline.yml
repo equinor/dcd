@@ -1,0 +1,45 @@
+trigger:
+  branches:
+    include:
+      - main
+  tags:
+    include:
+      - v*
+  paths:
+    exclude:
+      - /*
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  - group: DCD
+  - group: DCD-KeyVault
+
+stages:
+  - template: templates/stage-build.yml
+    parameters:
+      workSpace: $(Pipeline.Workspace)
+      buildId: $(Build.BuildId)
+      dt_tenant: $(dynatrace_tenant)
+      dt_password: $(dynatrace-prod-token)
+      dt_url: $(dynatrace_baseurl)
+      azAppConfig: $(azureAppConfig)
+      sourcesDirectory: $(Build.SourcesDirectory)
+      name: "DCD"
+
+  - template: templates/stage-deploy.yml
+    parameters:
+      imageTag: $(Build.BuildId)
+      webAppName: "ase-dcd"
+      serviceConnection: "dcd-pipeline-sp"
+      name: DeployQA
+      environment: qa
+
+  - template: templates/stage-deploy.yml
+    parameters:
+      imageTag: $(Build.BuildId)
+      webAppName: "ase-dcd"
+      serviceConnection: "dcd-pipeline-sp"
+      name: DeployProd
+      environment: prod
