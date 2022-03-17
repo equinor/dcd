@@ -1,5 +1,6 @@
-export class Surf implements Components.Schemas.SurfDto {
+import { SurfCostProfile } from "./SurfCostProfile"
 
+export class Surf implements Components.Schemas.SurfDto {
     id?: string | undefined
     name?: string | null
     projectId?: string | undefined
@@ -20,8 +21,8 @@ export class Surf implements Components.Schemas.SurfDto {
         this.maturity = data.maturity
         this.infieldPipelineSystemLength = data.infieldPipelineSystemLength
         this.umbilicalSystemLength = data.umbilicalSystemLength
-        this.artificialLift = data.artificialLift 
-        this.riserCount = data.riserCount 
+        this.artificialLift = data.artificialLift
+        this.riserCount = data.riserCount
         this.templateCount = data.templateCount
         this.productionFlowline = data.productionFlowline
     }
@@ -29,26 +30,4 @@ export class Surf implements Components.Schemas.SurfDto {
     static fromJSON(data: Components.Schemas.SurfDto): Surf {
         return new Surf(data)
     }
-
-}
-
-export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto {
-    startYear?: number | undefined
-    values?: number [] | null
-    epaVersion?: string | null
-    currency?: Components.Schemas.Currency | undefined
-    sum?: number | undefined
-
-    constructor(data?: Components.Schemas.SurfCostProfileDto) {
-        this.startYear = data?.startYear
-        this.values = data?.values ?? []
-        this.epaVersion = data?.epaVersion ?? null
-        this.currency = data?.currency
-        this.sum = data?.sum
-    }
-
-    static fromJSON(data?: Components.Schemas.SurfCostProfileDto): SurfCostProfile {
-        return new SurfCostProfile(data)
-    }
-
 }

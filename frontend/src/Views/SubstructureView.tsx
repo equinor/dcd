@@ -128,9 +128,9 @@ const SubstructureView = () => {
             )}
             {dataIsChanged && (
                 <Buttons>
-                        <CancelButton variant="outlined" onClick={revertChange}>
-                            Kanseller endring
-                        </CancelButton>
+                    <CancelButton variant="outlined" onClick={revertChange}>
+                        Kanseller endring
+                    </CancelButton>
                     <Button onClick={saveDataImport}>Lagre ny data</Button>
                 </Buttons>
             )}

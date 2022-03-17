@@ -1,5 +1,7 @@
-export class Wellproject implements Components.Schemas.WellProjectDto{
+import { DrillingScheduleDto } from "./DrillingScheduleDto"
+import { WellProjectCostProfileDto } from "./WellProjectCostProfileDto"
 
+export class Wellproject implements Components.Schemas.WellProjectDto {
     id?: string | undefined
     name?: string | null
     projectId?: string | undefined
@@ -12,7 +14,7 @@ export class Wellproject implements Components.Schemas.WellProjectDto{
     rigMobDemob?: number | undefined
     annualWellInterventionCost?: number | undefined
     pluggingAndAbandonment?: number | undefined
-    
+
     constructor(data: Components.Schemas.WellProjectDto) {
         this.id = data.id
         this.name = data.name ?? null
@@ -31,41 +33,4 @@ export class Wellproject implements Components.Schemas.WellProjectDto{
     static fromJSON(data: Components.Schemas.WellProjectDto): Wellproject {
         return new Wellproject(data)
     }
-
-}
-
-export class WellProjectCostProfileDto implements Components.Schemas.WellProjectCostProfileDto { 
-    startYear: number | undefined
-    values: number [] | null
-    epaVersion: string | null
-    currency: Components.Schemas.Currency | undefined
-    sum: number | undefined
-
-    constructor(data?: Components.Schemas.WellProjectCostProfileDto) {
-        this.startYear = data?.startYear
-        this.values = data?.values ?? []
-        this.epaVersion = data?.epaVersion ?? null
-        this.currency = data?.currency
-        this.sum = data?.sum
-    }
-
-    static fromJSON(data?: Components.Schemas.WellProjectCostProfileDto): WellProjectCostProfileDto {
-        return new WellProjectCostProfileDto(data!)
-    }
-
-}
-
-export class DrillingScheduleDto implements Components.Schemas.DrillingScheduleDto{
-    startYear: number | undefined
-    values: number [] | null
-
-    constructor(data?: Components.Schemas.DrillingScheduleDto) {
-        this.startYear = data?.startYear
-        this.values = data?.values ?? []
-    }
-
-    static fromJSON(data?: Components.Schemas.DrillingScheduleDto): DrillingScheduleDto {
-        return new DrillingScheduleDto(data!)
-    }
-
 }

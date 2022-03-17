@@ -76,7 +76,6 @@ const initialGridData = [
         { value: 678290 },
         { value: 647382 },
     ],
-    
 ]
 
 const columnTitles = ["2022", "2023", "2024", "2025", "2026", "2027", "2028"]
@@ -129,9 +128,9 @@ const SurfView = () => {
             )}
             {dataIsChanged && (
                 <Buttons>
-                        <CancelButton variant="outlined" onClick={revertChange}>
-                            Kanseller endring
-                        </CancelButton>
+                    <CancelButton variant="outlined" onClick={revertChange}>
+                        Kanseller endring
+                    </CancelButton>
                     <Button onClick={saveDataImport}>Lagre ny data</Button>
                 </Buttons>
             )}
