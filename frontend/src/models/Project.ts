@@ -62,5 +62,4 @@ export class Project {
 
         return value
     }
-
 }
