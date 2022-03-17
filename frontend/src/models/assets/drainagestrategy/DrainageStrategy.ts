@@ -1,5 +1,5 @@
-import { AnnualProfile } from "./AnnualProfile"
-import { ArtificialLift } from "./ArtificialLift"
+import { AnnualProfile } from "../../AnnualProfile"
+import { ArtificialLift } from "../../ArtificialLift"
 
 export class DrainageStrategy {
     artificialLift: ArtificialLift | null

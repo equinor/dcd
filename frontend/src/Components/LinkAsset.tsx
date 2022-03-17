@@ -13,7 +13,7 @@ const AssetDropdown = styled(NativeSelect)`
 
 interface Props {
     assetName: string,
-    linkAsset: (event: React.ChangeEvent<HTMLSelectElement>, link: string) => void,
+    linkAsset: (event: React.ChangeEvent<HTMLSelectElement>, link: any) => void,
     link: string,
     currentValue: string | undefined
     values: JSX.Element[]

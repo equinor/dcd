@@ -4,6 +4,7 @@ import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
+import { Project } from "../models/Project"
 
 import { GetProjectService } from "../Services/ProjectService"
 
@@ -40,7 +41,7 @@ function DashboardView() {
 
     const ProjectService = GetProjectService()
 
-    const [projects, setProjects] = useState<any[]>()
+    const [projects, setProjects] = useState<Project[]>()
 
     useEffect(() => {
         (async () => {

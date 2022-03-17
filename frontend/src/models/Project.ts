@@ -1,7 +1,13 @@
 import { Case } from "./Case"
-import { DrainageStrategy } from "./DrainageStrategy"
+import { DrainageStrategy } from "./assets/drainagestrategy/DrainageStrategy"
+import { Exploration } from "./assets/exploration/Exploration"
 import { ProjectCategory } from "./ProjectCategory"
 import { ProjectPhase } from "./ProjectPhase"
+import { Substructure } from "./assets/substructure/Substructure"
+import { Surf } from "./assets/surf/Surf"
+import { Topside } from "./assets/topside/Topside"
+import { Transport } from "./assets/transport/Transport"
+import { Wellproject } from "./assets/wellproject/Wellproject"
 
 export class Project {
     cases: Case[]
@@ -14,11 +20,11 @@ export class Project {
     id: string
     name: string
     phase: ProjectPhase | null
-    substructures: any[]
-    surfs: any[]
-    topsides: any[]
-    transports: any[]
-    wellProjects: any[]
+    substructures: Substructure[]
+    surfs: Surf[]
+    topsides: Topside[]
+    transports: Transport[]
+    wellProjects: Wellproject[]
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
@@ -27,15 +33,15 @@ export class Project {
         this.createdAt = data.createDate ? new Date(data.createDate) : null
         this.description = data.description ?? null
         this.drainageStrategies = data.drainageStrategies?.map(DrainageStrategy.fromJSON) ?? []
-        this.explorations = data.explorations ?? []
+        this.explorations = data.explorations?.map(Exploration.fromJSON) ?? []
         this.id = data.projectId ?? ""
         this.name = data.name ?? ""
         this.phase = data.projectPhase ? new ProjectPhase(data.projectPhase) : null
-        this.substructures = data.substructures ?? []
-        this.surfs = data.surfs ?? []
-        this.topsides = data.topsides ?? []
-        this.transports = data.transports ?? []
-        this.wellProjects = data.wellProjects ?? []
+        this.substructures = data.substructures?.map(Substructure.fromJSON) ?? []
+        this.surfs = data.surfs?.map(Surf.fromJSON) ?? []
+        this.topsides = data.topsides?.map(Topside.fromJSON) ?? []
+        this.transports = data.transports?.map(Transport.fromJSON) ?? []
+        this.wellProjects = data.wellProjects?.map(Wellproject.fromJSON) ?? []
     }
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {

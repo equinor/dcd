@@ -93,14 +93,14 @@ const initialGridData = [
 
 const columnTitles = ["2022", "2023", "2024", "2025", "2026"]
 
-function DrainageStrategyView() {
+function TransportView() {
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
     const [gridData, setGridData] = React.useState<CellValue[][]>(initialGridData)
 
     const onCellsChanged = (changes: any[]) => {
-        setColumns(columnTitles)
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
+        setColumns(columnTitles)
     }
 
     return (
@@ -111,4 +111,4 @@ function DrainageStrategyView() {
     )
 }
 
-export default DrainageStrategyView
+export default TransportView
