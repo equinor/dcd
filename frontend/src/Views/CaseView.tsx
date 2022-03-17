@@ -23,6 +23,13 @@ import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import DescriptionView from "./DescriptionView"
 import { Modal } from "../Components/Modal"
+import DrainageStrategyView from "./DrainageStrategyView"
+import ExplorationView from "./ExplorationView"
+import SubstructureView from "./SubstructureView"
+import SurfView from "./SurfView"
+import TopsideView from "./TopsideView"
+import TransportView from "./TransportView"
+import WellprojectView from "./WellprojectView"
 import { GetCaseService } from "../Services/CaseService"
 
 const {
@@ -270,6 +277,34 @@ function CaseView() {
                         </Dg4Field>
                     </Panel>
                 </Panels>
+                <Panel>
+                    {project.drainageStrategies.length > 0 ? <DrainageStrategyView />
+                        : <p>No Drainage Strategy for case</p> }
+                </Panel>
+                <Panel>
+                    {project.explorations.length > 0 ? <ExplorationView />
+                        : <p>No Explorations for case</p>}
+                </Panel>
+                <Panel>
+                    {project.substructures.length > 0 ? <SubstructureView />
+                        : <p>No Subsctructures for case</p>}
+                </Panel>
+                <Panel>
+                    {project.surfs.length > 0 ? <SurfView />
+                        : <p>No Surfs for case</p>}
+                </Panel>
+                <Panel>
+                    {project.topsides.length > 0 ? <TopsideView />
+                        : <p>No Topsides for case</p>}
+                </Panel>
+                <Panel>
+                    {project.transports.length > 0 ? <TransportView />
+                        : <p>No Transports for case</p>}
+                </Panel>
+                <Panel>
+                    {project.wellProjects.length > 0 ? <WellprojectView />
+                        : <p>No Wellprojects for case</p>}
+                </Panel>
             </Tabs>
         </CaseViewDiv>
     )
