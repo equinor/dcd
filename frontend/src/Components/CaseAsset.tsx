@@ -6,7 +6,6 @@ import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import LinkAsset from "./LinkAsset"
 import { GetCaseService } from "../Services/CaseService"
-import { CreateAsset } from "../Utils/CreateAsset"
 
 const Wrapper = styled.div`
     display: flex;
@@ -72,7 +71,7 @@ const CaseAsset = ({
                 projectId: project.id,
                 name: caseItem?.name ?? "",
                 description: caseItem?.description ?? "",
-                DG1Date: caseItem?.DG1Date ?? new Date(),
+                DG1Date: caseItem?.DG1Date,
                 DG2Date: caseItem?.DG2Date,
                 DG3Date: caseItem?.DG3Date,
                 DG4Date: caseItem?.DG4Date,
@@ -111,19 +110,6 @@ const CaseAsset = ({
         }
     }
 
-    const submitCreateAsset = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
-        event.preventDefault()
-        try {
-            const result = await CreateAsset(type, caseId!, project.id)
-            setProject(result[0])
-            const caseResult = result[0]?.cases.find((o) => o.id === caseId)
-            setCase(caseResult)
-            navigate(`${type.toLowerCase()}/${result[1]}`)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
     return (
         <>
             <Wrapper>
@@ -143,14 +129,6 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "DrainageStrategy")}
-                >
-                    Create new
-                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -168,14 +146,6 @@ const CaseAsset = ({
                     disabled={caseItem?.links?.explorationLink === emptyGuid}
                 >
                     Open
-                </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "Exploration")}
-                >
-                    Create new
                 </AssetButton>
             </Wrapper>
             <Wrapper>
@@ -195,14 +165,6 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "WellProject")}
-                >
-                    Create new
-                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -220,14 +182,6 @@ const CaseAsset = ({
                     disabled={caseItem?.links?.surfLink === emptyGuid}
                 >
                     Open
-                </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "SURF")}
-                >
-                    Create new
                 </AssetButton>
             </Wrapper>
             <Wrapper>
@@ -247,14 +201,6 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "Topside")}
-                >
-                    Create new
-                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -273,14 +219,6 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "Substructure")}
-                >
-                    Create new
-                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -298,14 +236,6 @@ const CaseAsset = ({
                     disabled={caseItem?.links?.transportLink === emptyGuid}
                 >
                     Open
-                </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "Transport")}
-                >
-                    Create new
                 </AssetButton>
             </Wrapper>
         </>
