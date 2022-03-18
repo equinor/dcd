@@ -93,22 +93,22 @@ const initialGridData = [
 
 const columnTitles = ["2022", "2023", "2024", "2025", "2026"]
 
-function DrainageStrategyView() {
+function TopsideView() {
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
     const [gridData, setGridData] = React.useState<CellValue[][]>(initialGridData)
 
     const onCellsChanged = (changes: any[]) => {
-        setColumns(columnTitles)
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
+        setColumns(columnTitles)
     }
 
     return (
         <Wrapper>
-            <Typography variant="h3">Drainage Strategy</Typography>
+            <Typography variant="h3">Topside</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
         </Wrapper>
     )
 }
 
-export default DrainageStrategyView
+export default TopsideView
