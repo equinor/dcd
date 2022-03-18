@@ -118,3 +118,34 @@ DCD is developed by the Shellvis team in TDI EDT DSD EDB.
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
+
+## Model overview
+@startuml
+database "CommonLib"
+node "Assets" {
+  [Drainage strategy]
+  [Exploration]
+  [Well projects]
+  [SURF]
+  [Topside Facilities]
+  [Substructure]
+  [Transport]
+}
+database "CommonLib"
+node "Digital Concept Development" {
+  folder "Project" {
+    [Business Case]
+  }
+}
+component STEA
+[Business Case] -> STEA
+STEA -> [Business Case]
+[CommonLib] -up-> [Business Case]
+[Drainage strategy] ..> [Business Case]
+[Exploration] ..> [Business Case]
+[Well projects] ..> [Business Case]
+[SURF] ..> [Business Case]
+[Topside Facilities] ..> [Business Case]
+[Substructure] ..> [Business Case]
+[Transport] ..> [Business Case]
+@enduml
