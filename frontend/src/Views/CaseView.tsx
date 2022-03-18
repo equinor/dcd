@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import {
     Tabs,
 } from "@equinor/eds-core-react"
