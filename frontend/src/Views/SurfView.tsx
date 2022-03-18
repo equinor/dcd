@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 import { useEffect, useState } from "react"
 import {
     Input, Label, Typography,
