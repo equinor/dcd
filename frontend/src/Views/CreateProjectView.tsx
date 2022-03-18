@@ -202,7 +202,12 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     />
                 </div>
                 <div>
-                    <Button onClick={handleOkClick}>Create Project</Button>
+                    <Button
+                        onClick={handleOkClick}
+                        disabled={!selectedProject}
+                    >
+                        Create Project
+                    </Button>
                     <Button onClick={handleCancelClick} variant="outlined">Cancel</Button>
                 </div>
             </div>

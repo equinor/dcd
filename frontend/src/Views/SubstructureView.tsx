@@ -10,12 +10,18 @@ const Wrapper = styled.div`
     flex-direction: column;
 `
 
+const rowTitles = [
+    "Substructure Cost Profile",
+    "Dryweight",
+    "Maturity",
+]
+
 // TODO: This data will have to be generated from the format received from the API
 const initialGridData = [
     [
         {
             readOnly: true,
-            value: "Cost profile",
+            value: rowTitles[0],
         },
         { value: 453678 },
         { value: 383920 },
@@ -28,7 +34,20 @@ const initialGridData = [
     [
         {
             readOnly: true,
-            value: "G&G and admin cost",
+            value: rowTitles[1],
+        },
+        { value: 678290 },
+        { value: 647382 },
+        { value: 881726 },
+        { value: 363728 },
+        { value: 281726 },
+        { value: 678290 },
+        { value: 647382 },
+    ],
+    [
+        {
+            readOnly: true,
+            value: rowTitles[2],
         },
         { value: 678290 },
         { value: 647382 },
@@ -42,7 +61,7 @@ const initialGridData = [
 
 const columnTitles = ["2022", "2023", "2024", "2025", "2026", "2027", "2028"]
 
-function ExplorationView() {
+const SubstructureView = () => {
     const [columns, setColumns] = React.useState<string[]>(columnTitles)
     const [gridData, setGridData] = React.useState<CellValue[][]>(initialGridData)
 
@@ -54,10 +73,10 @@ function ExplorationView() {
 
     return (
         <Wrapper>
-            <Typography variant="h3">Exploration</Typography>
+            <Typography variant="h3">Substructure</Typography>
             <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
         </Wrapper>
     )
 }
 
-export default ExplorationView
+export default SubstructureView
