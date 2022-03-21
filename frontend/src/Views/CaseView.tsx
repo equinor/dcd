@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 import {
     Switch,
     Tabs,
@@ -10,7 +9,6 @@ import {
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
-import { edit } from "@equinor/eds-icons"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
@@ -37,26 +35,6 @@ const Wrapper = styled.div`
         margin-right: 1rem;
     }
     flex-direction: row;
-`
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 70%;
-    flex-direction: row;
-`
-
-const ActionsContainer = styled.div`
-    > *:not(:last-child) {
-        margin-right: 0.5rem;
-    }
-`
-
-const CreateAssetForm = styled.form`
-    width: 30rem;
-
-    > * {
-        margin-bottom: 1.5rem;
-    }
 `
 
 function CaseView() {
@@ -236,34 +214,6 @@ function CaseView() {
                     caseId={params.caseId}
                 />
             </Tabs>
-            <Modal isOpen={caseDescriptionModalIsOpen} title="Edit description" shards={[]}>
-                <CreateAssetForm>
-                    <TextField
-                        label="Description"
-                        id="description"
-                        name="description"
-                        placeholder={caseItem?.description}
-                        onChange={handleDescriptionChange}
-                    />
-                    <div>
-                        <Button
-                            type="submit"
-                            onClick={submitUpdateDescription}
-                            disabled={caseDescription === ""}
-                        >
-                            Submit
-                        </Button>
-                        <Button
-                            type="button"
-                            color="secondary"
-                            variant="ghost"
-                            onClick={toggleEditCaseDescriptionModal}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </CreateAssetForm>
-            </Modal>
         </CaseViewDiv>
     )
 }
