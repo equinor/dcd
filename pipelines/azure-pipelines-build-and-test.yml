@@ -77,9 +77,9 @@ jobs:
           diff -q types.d.ts types-azuredevops.d.ts 1>/dev/null
           if [[ $? == "0" ]]
           then
-            echo "The same"
+            echo "model identical"
           else
-            echo "Not the same"
+            exit /b 0
           fi
 
   - job: Test_Backend
