@@ -1,17 +1,18 @@
-/* eslint-disable max-len */
-import { Input, Typography } from "@equinor/eds-core-react"
+import { Button, Input, Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import styled from "styled-components"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
-import { replaceOldData } from "../Components/DataTable/helpers"
+import {
+ buildGridData, getColumnTitles, importData, replaceOldData,
+} from "../Components/DataTable/helpers"
+import Import from "../Components/Import/Import"
 import { Substructure } from "../models/assets/substructure/Substructure"
-import { SubstructureCostProfile } from "../models/assets/substructure/SubstructureCostProfile"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
-const CaseHeader = styled.div`
+const AssetHeader = styled.div`
     margin-bottom: 2rem;
     display: flex;
 
@@ -20,7 +21,7 @@ const CaseHeader = styled.div`
     }
 `
 
-const CaseViewDiv = styled.div`
+const AssetViewDiv = styled.div`
     margin: 2rem;
     display: flex;
     flex-direction: column;
@@ -28,52 +29,36 @@ const CaseViewDiv = styled.div`
 
 const Wrapper = styled.div`
     display: flex;
+    flex-direction: row;
+`
+
+const WrapperColumn = styled.div`
+    display: flex;
     flex-direction: column;
 `
 
+const ImportButton = styled(Button)`
+    margin-left: 2rem;
+    &:disabled {
+        margin-left: 2rem;
+    }
+`
+
 const Dg4Field = styled.div`
+    margin-left: 1rem;
     margin-bottom: 2rem;
     width: 10rem;
     display: flex;
 `
 
 const SubstructureView = () => {
-    const [project, setProject] = useState<Project>()
+    const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [substructure, setSubstructure] = useState<Substructure>()
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
+    const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const params = useParams()
-
-    const getColumnTitles = (newCaseItem?: Case, newSubstructure?: Substructure) => {
-        const startYears: string[] = []
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const startYear = (newCaseItem?.DG4Date?.getFullYear() ?? 0) + (newSubstructure?.substructureCostProfile?.startYear ?? 0)
-        newSubstructure?.substructureCostProfile?.values?.forEach((_, i) => {
-            startYears.push((startYear + i).toString())
-        })
-        return startYears
-    }
-
-    const buildGridData = (costProfile?: SubstructureCostProfile) => {
-        const grid: ({readOnly: boolean, value: string} | {value: number, readOnly?: boolean})[][] = [
-            [
-                {
-                    readOnly: true,
-                    value: "Cost profile",
-                },
-            ],
-        ]
-
-        costProfile?.values?.forEach((element) => {
-            console.log(grid[0][0].value)
-            grid[0].push({ value: element })
-        })
-
-        console.log("Grid: ", grid)
-
-        return grid
-    }
 
     useEffect(() => {
         (async () => {
@@ -84,7 +69,7 @@ const SubstructureView = () => {
                 setCase(caseResult)
                 const newSubstructure = projectResult.substructures.find((s) => s.id === params.substructureId)
                 setSubstructure(newSubstructure)
-                const newColumnTitles = getColumnTitles(caseResult, newSubstructure)
+                const newColumnTitles = getColumnTitles(caseResult, newSubstructure?.substructureCostProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
                 setGridData(newGridData)
@@ -97,22 +82,45 @@ const SubstructureView = () => {
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnTitles(caseItem, substructure))
+        setColumns(getColumnTitles(caseItem, substructure?.substructureCostProfile))
+    }
+
+    const onImport = (input: string, year: number) => {
+        const newSubstructure = Substructure.Copy(substructure!)
+        newSubstructure.substructureCostProfile = {
+            ...substructure!.substructureCostProfile,
+            startYear: year,
+            values: input.split("\t").map((i) => parseFloat(i)),
+        }
+        setSubstructure(newSubstructure)
+        const newColumnTitles = getColumnTitles(caseItem, newSubstructure?.substructureCostProfile)
+        setColumns(newColumnTitles)
+        const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
+        setGridData(newGridData)
+        setCostProfileDialogOpen(!costProfileDialogOpen)
     }
 
     return (
-        <CaseViewDiv>
-            <CaseHeader>
+        <AssetViewDiv>
+            <AssetHeader>
                 <Typography variant="h2">{substructure?.name}</Typography>
-            </CaseHeader>
-            <Typography>DG4</Typography>
-            <Dg4Field>
-                <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-            </Dg4Field>
+            </AssetHeader>
             <Wrapper>
-                <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
+                <Typography variant="h4">DG4</Typography>
+                <Dg4Field>
+                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
+                </Dg4Field>
             </Wrapper>
-        </CaseViewDiv>
+            <Wrapper>
+                <Typography variant="h4">Cost profile</Typography>
+                <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+            </Wrapper>
+            <WrapperColumn>
+                <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
+            </WrapperColumn>
+            {!costProfileDialogOpen ? null
+            : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
+        </AssetViewDiv>
     )
 }
 

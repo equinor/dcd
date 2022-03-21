@@ -1,3 +1,4 @@
+import { Case } from "../../models/Case"
 import { CellValue } from "./DataTable"
 
 export const generateEmptyGridWithRowTitles = (rowTitles: string[]) => {
@@ -41,9 +42,34 @@ export const generateNewGrid = (data: { [key: string]: string }[], rowTitles: st
                 }
                 // Remove white spaces in string due to number formatting, and convert to number
                 const newValue = parseFloat(value.replace(/\s+/g, ""))
-                newGridData[index][columnIndex + 1] = { value: newValue }
+                newGridData[index][columnIndex] = { value: 1 }
             })
         }
     })
     return { newGridData, newColumns }
+}
+
+export const getColumnTitles = (newCaseItem?: Case, costProfile?: any) => {
+    const startYears: string[] = []
+    const relativeYear: number = parseInt(costProfile?.startYear, 10)
+    const startYear: number = (newCaseItem?.DG4Date?.getFullYear() ?? 0) + (relativeYear ?? 0)
+    costProfile?.values?.forEach((_: any, i: number) => {
+        startYears.push((startYear + i).toString())
+    })
+    return startYears
+}
+
+export const buildGridData = (costProfile?: any) => {
+    const grid: ({value: number, readOnly?: boolean})[][] = [
+        [
+        ],
+    ]
+    costProfile?.values?.forEach((element: number) => {
+        grid[0].push({ value: element })
+    })
+    return grid
+}
+
+export const importData = (input: string, year: number) => {
+
 }

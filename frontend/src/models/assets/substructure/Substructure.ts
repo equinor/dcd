@@ -1,19 +1,19 @@
 import { SubstructureCostProfile } from "./SubstructureCostProfile"
 
 export class Substructure implements Components.Schemas.SubstructureDto {
-    id?: string | undefined
-    name?: string | null
-    projectId?: string | undefined
+    id?: string
+    name?: string
+    projectId?: string
     substructureCostProfile?: SubstructureCostProfile | undefined
-    dryweight?: number | null
-    maturity?: Components.Schemas.Maturity | undefined
+    dryweight?: number
+    maturity?: Components.Schemas.Maturity
 
     constructor(data: Components.Schemas.SubstructureDto) {
         this.id = data.id
         this.name = data.name ?? ""
         this.projectId = data.projectId
         this.substructureCostProfile = SubstructureCostProfile.fromJSON(data.costProfile)
-        this.dryweight = data.dryWeight ?? null
+        this.dryweight = data.dryWeight
         this.maturity = data.maturity
     }
 

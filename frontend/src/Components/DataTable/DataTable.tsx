@@ -18,6 +18,7 @@ interface Props {
 
 /* eslint-disable react/no-unstable-nested-components */
 function DataTable({ columns, gridData, onCellsChanged }: Props) {
+    console.log(columns)
     return (
         <Table
             onCellsChanged={onCellsChanged}
@@ -42,9 +43,8 @@ function DataTable({ columns, gridData, onCellsChanged }: Props) {
                     <thead>
                         <tr>
                             {/* eslint-disable-next-line */}
-                            <th className="table-header" />
                             {columns.map((column, index) => (
-                                <th className="table-header" key={`table-header-${index + 1}`}>
+                                <th className="table-header" key={`table-header-${index + 0}`}>
                                     <span>{column}</span>
                                 </th>
                             ))}

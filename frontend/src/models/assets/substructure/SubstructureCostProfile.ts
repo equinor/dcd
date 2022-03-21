@@ -1,9 +1,9 @@
 export class SubstructureCostProfile implements Components.Schemas.SubstructureCostProfileDto {
-    startYear: number | undefined
-    values: number [] | null
-    epaVersion: string | null
-    currency: Components.Schemas.Currency | undefined
-    sum: number | undefined
+    startYear?: number
+    values?: number [] | null
+    epaVersion?: string | null
+    currency?: Components.Schemas.Currency
+    sum?: number
 
     constructor(data: Components.Schemas.SubstructureCostProfileDto) {
         this.startYear = data.startYear
@@ -13,7 +13,10 @@ export class SubstructureCostProfile implements Components.Schemas.SubstructureC
         this.sum = data.sum
     }
 
-    static fromJSON(data?: Components.Schemas.SubstructureCostProfileDto): SubstructureCostProfile {
-        return new SubstructureCostProfile(data!)
+    static fromJSON(data?: Components.Schemas.SubstructureCostProfileDto): SubstructureCostProfile | undefined {
+        if (data !== undefined) {
+            return new SubstructureCostProfile(data)
+        }
+        return undefined
     }
 }
