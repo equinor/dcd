@@ -13,9 +13,9 @@ import styled from "styled-components"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
-import DescriptionView from "./DescriptionView"
 import { GetCaseService } from "../Services/CaseService"
 import CaseAsset from "../Components/CaseAsset"
+import CaseDescription from "../Components/CaseDescription"
 
 const {
     Panels, Panel,
@@ -100,7 +100,11 @@ function CaseView() {
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
                 <Panels>
                     <Panel>
-                        <DescriptionView />
+                        <CaseDescription
+                            caseItem={caseItem}
+                            setProject={setProject}
+                            setCase={setCase}
+                        />
                     </Panel>
                 </Panels>
                 <Panels>
