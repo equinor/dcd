@@ -17,6 +17,14 @@ export class Substructure implements Components.Schemas.SubstructureDto {
         this.maturity = data.maturity
     }
 
+    static Copy(data: Substructure) {
+        const substructureCopy = new Substructure(data)
+        return {
+            ...substructureCopy,
+            substructureCostProfile: data.substructureCostProfile,
+        }
+    }
+
     static fromJSON(data: Components.Schemas.SubstructureDto): Substructure {
         return new Substructure(data)
     }
