@@ -482,84 +482,42 @@ declare namespace Paths {
         }
     }
     namespace UpdateDrainageStrategy {
-        namespace Parameters {
-            export type DrainageStrategyId = string; // uuid
-        }
-        export interface PathParameters {
-            drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
-        }
         export type RequestBody = Components.Schemas.DrainageStrategyDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateExploration {
-        namespace Parameters {
-            export type ExplorationId = string; // uuid
-        }
-        export interface PathParameters {
-            explorationId: Parameters.ExplorationId /* uuid */;
-        }
         export type RequestBody = Components.Schemas.ExplorationDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateSubstructure {
-        namespace Parameters {
-            export type SubstructureId = string; // uuid
-        }
-        export interface PathParameters {
-            substructureId: Parameters.SubstructureId /* uuid */;
-        }
         export type RequestBody = Components.Schemas.SubstructureDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateSurf {
-        namespace Parameters {
-            export type SurfId = string; // uuid
-        }
-        export interface PathParameters {
-            surfId: Parameters.SurfId /* uuid */;
-        }
         export type RequestBody = Components.Schemas.SurfDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateTopside {
-        namespace Parameters {
-            export type TopsideId = string; // uuid
-        }
-        export interface PathParameters {
-            topsideId: Parameters.TopsideId /* uuid */;
-        }
         export type RequestBody = Components.Schemas.TopsideDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateTransport {
-        namespace Parameters {
-            export type TransportId = string; // uuid
-        }
-        export interface PathParameters {
-            transportId: Parameters.TransportId /* uuid */;
-        }
         export type RequestBody = Components.Schemas.TransportDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateWellProject {
-        namespace Parameters {
-            export type WellProjectId = string; // uuid
-        }
-        export interface PathParameters {
-            wellProjectId: Parameters.WellProjectId /* uuid */;
-        }
         export type RequestBody = Components.Schemas.WellProjectDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
