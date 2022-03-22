@@ -42,7 +42,7 @@ export const generateNewGrid = (data: { [key: string]: string }[], rowTitles: st
                 }
                 // Remove white spaces in string due to number formatting, and convert to number
                 const newValue = parseFloat(value.replace(/\s+/g, ""))
-                newGridData[index][columnIndex] = { value: 1 }
+                newGridData[index][columnIndex] = { value: newValue }
             })
         }
     })
@@ -68,8 +68,4 @@ export const buildGridData = (costProfile?: any) => {
         grid[0].push({ value: element })
     })
     return grid
-}
-
-export const importData = (input: string, year: number) => {
-
 }
