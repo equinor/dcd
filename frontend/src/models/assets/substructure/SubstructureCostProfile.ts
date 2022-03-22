@@ -1,4 +1,5 @@
 export class SubstructureCostProfile implements Components.Schemas.SubstructureCostProfileDto {
+    id?: string | undefined
     startYear?: number
     values?: number [] | null
     epaVersion?: string | null
@@ -6,6 +7,7 @@ export class SubstructureCostProfile implements Components.Schemas.SubstructureC
     sum?: number
 
     constructor(data: Components.Schemas.SubstructureCostProfileDto) {
+        this.id = data.id
         this.startYear = data.startYear
         this.values = data.values ?? []
         this.epaVersion = data.epaVersion ?? null

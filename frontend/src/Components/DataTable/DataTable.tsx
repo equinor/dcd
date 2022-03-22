@@ -18,7 +18,6 @@ interface Props {
 
 /* eslint-disable react/no-unstable-nested-components */
 function DataTable({ columns, gridData, onCellsChanged }: Props) {
-    console.log(columns)
     return (
         <Table
             onCellsChanged={onCellsChanged}

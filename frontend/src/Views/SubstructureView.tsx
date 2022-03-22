@@ -4,13 +4,14 @@ import { useParams } from "react-router"
 import styled from "styled-components"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import {
- buildGridData, getColumnTitles, importData, replaceOldData,
+    buildGridData, getColumnTitles, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
+import { GetSubstructureService } from "../Services/SubstructureService"
 
 const AssetHeader = styled.div`
     margin-bottom: 2rem;
@@ -44,6 +45,15 @@ const ImportButton = styled(Button)`
     }
 `
 
+const SaveButton = styled(Button)`
+    margin-top: 5rem;
+    margin-left: 2rem;
+    &:disabled {
+        margin-left: 2rem;
+        margin-top: 5rem;
+    }
+`
+
 const Dg4Field = styled.div`
     margin-left: 1rem;
     margin-bottom: 2rem;
@@ -58,6 +68,7 @@ const SubstructureView = () => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
+    const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
 
     useEffect(() => {
@@ -87,17 +98,27 @@ const SubstructureView = () => {
 
     const onImport = (input: string, year: number) => {
         const newSubstructure = Substructure.Copy(substructure!)
-        newSubstructure.substructureCostProfile = {
-            ...substructure!.substructureCostProfile,
-            startYear: year,
-            values: input.split("\t").map((i) => parseFloat(i)),
-        }
+        newSubstructure.substructureCostProfile!.startYear = year
+        // eslint-disable-next-line max-len
+        newSubstructure.substructureCostProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setSubstructure(newSubstructure)
         const newColumnTitles = getColumnTitles(caseItem, newSubstructure?.substructureCostProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
+        setHasChanges(true)
+    }
+
+    const handleSave = async () => {
+        const substructureDto = Substructure.ToDto(substructure!)
+        const newProject = await GetSubstructureService().updateSubstructure(substructureDto!)
+        setProject(newProject)
+        const newCase = newProject.cases.find((o) => o.id === params.caseId)
+        setCase(newCase)
+        const newSubstructure = newProject.substructures.find((s) => s.id === params.substructureId)
+        setSubstructure(newSubstructure)
+        setHasChanges(false)
     }
 
     return (
@@ -119,7 +140,8 @@ const SubstructureView = () => {
                 <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
             </WrapperColumn>
             {!costProfileDialogOpen ? null
-            : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
+                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
+            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )
 }

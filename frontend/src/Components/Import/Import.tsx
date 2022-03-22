@@ -1,13 +1,20 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 import {
- Button, Dialog, Input, Typography,
+    Button, Dialog, Input, Typography,
 } from "@equinor/eds-core-react"
-
-import { tsvToJson } from "./helpers"
 
 const StyledDialog = styled(Dialog)`
     width: 50rem;
+    z-index: 1000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 50px;
+    z-index: 1000;
+    background-color: white;
+    border: 2px solid gray;
 `
 
 const TextArea = styled.textarea`
@@ -16,11 +23,6 @@ const TextArea = styled.textarea`
     white-space: pre;
     overflow: scroll;
     tab-size: 20;
-`
-
-const Bold = styled.em`
-    font-style: normal;
-    font-weight: bold;
 `
 
 const Label = styled.label`
@@ -50,7 +52,6 @@ function ExcelImport({ onClose, onImport }: Props) {
 
     const onChangeStartYear = (event: any) => {
         setStartYear(event.currentTarget.value)
-        console.log(startYear)
     }
 
     const onChangeInput = (event: any) => {
@@ -58,18 +59,24 @@ function ExcelImport({ onClose, onImport }: Props) {
     }
 
     const onClickImport = () => {
-        console.log("1")
         if (!dataInput) {
             return
         }
-        console.log("2")
         // const inputAsJson = tsvToJson(dataInput)
         onImport(dataInput, startYear)
     }
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === "Tab") {
+            e.preventDefault()
+            const input = `${dataInput}\t`
+            setDataInput(input)
+        }
+    }
+
     return (
         <StyledDialog>
-            <Dialog.Title>Import tab separated date from Excel</Dialog.Title>
+            <Dialog.Title>Import tab separated data from Excel</Dialog.Title>
             <Main>
                 <Typography>Start year relative to DG4</Typography>
                 <Input type="number" onChange={onChangeStartYear} />
@@ -80,6 +87,7 @@ function ExcelImport({ onClose, onImport }: Props) {
                     placeholder={example}
                     value={dataInput}
                     onChange={onChangeInput}
+                    onKeyDown={handleKeyDown}
                 />
             </Main>
             <Dialog.Actions>

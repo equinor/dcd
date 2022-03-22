@@ -20,7 +20,7 @@ var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
 var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
-Console.WriteLine("Loding config for: " + environment);
+Console.WriteLine("Loading config for: " + environment);
 
 configBuilder.AddAzureAppConfiguration(options =>
     options
