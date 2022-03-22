@@ -37,3 +37,29 @@ module sql 'sql/sql.bicep' = {
     sqlAdminPw: sqlAdminPw
   }
 }
+
+module appcs 'appcs/appcs.bicep' = {
+  name: 'appcs'
+  params: {
+    baseAppName: baseAppName
+    location: location
+  }
+}
+
+
+module acr 'acr/acr.bicep' = {
+  name: 'cr'
+  params: {
+    baseAppName: baseAppName
+    location: location
+  }
+}
+
+// module kv 'kv/kv.bicep' = {
+//   name: 'kv'
+//   params: {
+//     baseAppName: baseAppName
+//     location: location
+
+//   }
+// }
