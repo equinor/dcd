@@ -7,6 +7,7 @@ namespace api.Dtos
 
     public class TimeSeriesDto<T>
     {
+        public Guid Id { get; set; }
         public int StartYear { get; set; }
         public T[] Values { get; set; } = null!;
 
