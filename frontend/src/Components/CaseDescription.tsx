@@ -24,6 +24,7 @@ const Wrapper = styled.div`
     display: flex;
     width: 70%;
     flex-direction: row;
+    margin-bottom: 2rem;
 `
 
 const ActionsContainer = styled.div`
