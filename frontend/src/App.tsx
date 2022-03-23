@@ -20,6 +20,7 @@ import ProjectView from "./Views/ProjectView"
 import { RetrieveConfigFromAzure } from "./config"
 
 import "./styles.css"
+import SurfView from "./Views/SurfView"
 
 const browserHistory = createBrowserHistory()
 
@@ -80,6 +81,7 @@ const App: VoidFunctionComponent = () => {
                             <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                            <Route path="project/:projectId/case/:caseId/surf/:surfId" element={<SurfView />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>

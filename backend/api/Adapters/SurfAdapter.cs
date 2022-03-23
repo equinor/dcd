@@ -25,6 +25,7 @@ namespace api.Adapters
         private static SurfCostProfile Convert(SurfCostProfileDto costprofile, Surf surf)
         {
             var surfCostProfile = new SurfCostProfile();
+            surfCostProfile.Id = costprofile.Id;
             surfCostProfile.Currency = costprofile.Currency;
             surfCostProfile.EPAVersion = costprofile.EPAVersion;
             surfCostProfile.StartYear = costprofile.StartYear;

@@ -28,6 +28,7 @@ namespace api.Adapters
             var surfCostProfile = new SurfCostProfileDto();
             if (costprofile != null)
             {
+                surfCostProfile.Id = costprofile.Id;
                 surfCostProfile.Currency = costprofile.Currency;
                 surfCostProfile.EPAVersion = costprofile.EPAVersion;
                 surfCostProfile.Values = costprofile.Values;

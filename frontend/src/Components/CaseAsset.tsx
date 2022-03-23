@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
@@ -6,6 +7,7 @@ import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import LinkAsset from "./LinkAsset"
 import { GetCaseService } from "../Services/CaseService"
+import { CreateAsset } from "./CreateAsset"
 
 const Wrapper = styled.div`
     display: flex;
@@ -73,7 +75,24 @@ const CaseAsset = ({
         event.preventDefault()
 
         try {
-            navigate(`${type}/${id}`)
+            navigate(`${type?.toLowerCase()}/${id}`)
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
+    const submitCreateAsset = async (
+        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+        type: string,
+    ) => {
+        event.preventDefault()
+        try {
+            navigate(`${type?.toLocaleLowerCase()}/00000000-0000-0000-0000-000000000000`)
+            // const result = await CreateAsset(type, caseId!, project.id)
+            // setProject(result[0])
+            // const caseResult = result[0]?.cases.find((o) => o.id === caseId)
+            // setCase(caseResult)
+            // navigate(`${type.toLowerCase()}/${result[1]}`)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -87,7 +106,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.drainageStrategies.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.drainageStrategyLink}
-                    link={AssetLink.drainageStrategyLink}
+                    link="drainageStrategyLink"
                 />
                 <AssetButton
                     type="submit"
@@ -98,6 +117,14 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "DrainageStrategy")}
+                >
+                    Create new
+                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -105,7 +132,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.explorations.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.explorationLink}
-                    link={AssetLink.explorationLink}
+                    link="explorationLink"
                 />
                 <AssetButton
                     type="submit"
@@ -116,6 +143,14 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Exploration")}
+                >
+                    Create new
+                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -123,7 +158,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.wellProjects.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.wellProjectLink}
-                    link={AssetLink.wellProjectLink}
+                    link="wellProjectLink"
                 />
                 <AssetButton
                     type="submit"
@@ -134,6 +169,14 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "WellProject")}
+                >
+                    Create new
+                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -141,7 +184,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.surfs.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.surfLink}
-                    link={AssetLink.surfLink}
+                    link="surfLink"
                 />
                 <AssetButton
                     type="submit"
@@ -152,6 +195,14 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "SURF")}
+                >
+                    Create new
+                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -159,7 +210,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.topsides.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.topsideLink}
-                    link={AssetLink.topsideLink}
+                    link="topsideLink"
                 />
                 <AssetButton
                     type="submit"
@@ -170,6 +221,14 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Topside")}
+                >
+                    Create new
+                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -177,7 +236,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.substructures.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.substructureLink}
-                    link={AssetLink.substructureLink}
+                    link="substructureLink"
                 />
                 <AssetButton
                     type="submit"
@@ -188,6 +247,14 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Substructure")}
+                >
+                    Create new
+                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -195,7 +262,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.transports.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.transportLink}
-                    link={AssetLink.transportLink}
+                    link="transportLink"
                 />
                 <AssetButton
                     type="submit"
@@ -205,6 +272,14 @@ const CaseAsset = ({
                     disabled={caseItem?.transportLink === emptyGuid}
                 >
                     Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Transport")}
+                >
+                    Create new
                 </AssetButton>
             </Wrapper>
         </>
