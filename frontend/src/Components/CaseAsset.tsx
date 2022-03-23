@@ -79,6 +79,11 @@ const CaseAsset = ({
         }
     }
 
+    const submitCreateAsset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
+        event?.preventDefault()
+        navigate(`${type.toLowerCase()}/${emptyGuid}`)
+    }
+
     return (
         <>
             <Wrapper>
@@ -187,6 +192,14 @@ const CaseAsset = ({
                     disabled={caseItem?.substructureLink === emptyGuid}
                 >
                     Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={
+                        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => submitCreateAsset(e, "substructure")
+                    }
+                >
+                    Create new
                 </AssetButton>
             </Wrapper>
             <Wrapper>

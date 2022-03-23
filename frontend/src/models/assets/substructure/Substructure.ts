@@ -8,13 +8,19 @@ export class Substructure implements Components.Schemas.SubstructureDto {
     dryweight?: number
     maturity?: Components.Schemas.Maturity
 
-    constructor(data: Components.Schemas.SubstructureDto) {
-        this.id = data.id
-        this.name = data.name ?? ""
-        this.projectId = data.projectId
-        this.substructureCostProfile = SubstructureCostProfile.fromJSON(data.costProfile)
-        this.dryweight = data.dryWeight
-        this.maturity = data.maturity
+    constructor(data?: Components.Schemas.SubstructureDto) {
+        if (data !== undefined) {
+            this.id = data.id
+            this.name = data.name ?? ""
+            this.projectId = data.projectId
+            this.substructureCostProfile = SubstructureCostProfile.fromJSON(data.costProfile)
+            this.dryweight = data.dryWeight
+            this.maturity = data.maturity
+        } else {
+            this.id = "00000000-0000-0000-0000-000000000000"
+            this.name = ""
+            this.substructureCostProfile = new SubstructureCostProfile()
+        }
     }
 
     static Copy(data: Substructure) {

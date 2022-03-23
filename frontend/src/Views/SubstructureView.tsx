@@ -1,6 +1,8 @@
 import { Button, Input, Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
+import {
+    useLocation, useNavigate, useParams,
+} from "react-router"
 import styled from "styled-components"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import {
@@ -70,6 +72,10 @@ const SubstructureView = () => {
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const emptyGuid = "00000000-0000-0000-0000-000000000000"
 
     useEffect(() => {
         (async () => {
@@ -78,8 +84,13 @@ const SubstructureView = () => {
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                const newSubstructure = projectResult.substructures.find((s) => s.id === params.substructureId)
-                setSubstructure(newSubstructure)
+                let newSubstructure = projectResult.substructures.find((s) => s.id === params.substructureId)
+                if (newSubstructure !== undefined) {
+                    setSubstructure(newSubstructure)
+                } else {
+                    newSubstructure = new Substructure()
+                    setSubstructure(newSubstructure)
+                }
                 const newColumnTitles = getColumnTitles(caseResult, newSubstructure?.substructureCostProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
@@ -94,6 +105,7 @@ const SubstructureView = () => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
         setColumns(getColumnTitles(caseItem, substructure?.substructureCostProfile))
+        setHasChanges(true)
     }
 
     const onImport = (input: string, year: number) => {
@@ -112,12 +124,20 @@ const SubstructureView = () => {
 
     const handleSave = async () => {
         const substructureDto = Substructure.ToDto(substructure!)
-        const newProject = await GetSubstructureService().updateSubstructure(substructureDto!)
-        setProject(newProject)
-        const newCase = newProject.cases.find((o) => o.id === params.caseId)
-        setCase(newCase)
-        const newSubstructure = newProject.substructures.find((s) => s.id === params.substructureId)
-        setSubstructure(newSubstructure)
+        if (substructure?.id === emptyGuid) {
+            substructureDto.projectId = params.projectId
+            const newProject = await GetSubstructureService().createSubstructure(params.caseId!, substructureDto!)
+            const newSubstructure = newProject.substructures.at(-1)
+            const newUrl = location.pathname.replace(emptyGuid, newSubstructure!.id!)
+            navigate(`${newUrl}`, { replace: true })
+        } else {
+            const newProject = await GetSubstructureService().updateSubstructure(substructureDto!)
+            setProject(newProject)
+            const newCase = newProject.cases.find((o) => o.id === params.caseId)
+            setCase(newCase)
+            const newSubstructure = newProject.substructures.find((s) => s.id === params.substructureId)
+            setSubstructure(newSubstructure)
+        }
         setHasChanges(false)
     }
 
