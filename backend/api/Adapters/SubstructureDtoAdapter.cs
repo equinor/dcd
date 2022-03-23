@@ -22,6 +22,7 @@ namespace api.Adapters
         {
             return new SubstructureCostProfileDto
             {
+                Id = substructureCostProfile.Id,
                 EPAVersion = substructureCostProfile.EPAVersion,
                 Currency = substructureCostProfile.Currency,
                 StartYear = substructureCostProfile.StartYear,

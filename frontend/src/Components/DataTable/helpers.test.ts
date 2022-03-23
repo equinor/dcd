@@ -101,20 +101,20 @@ describe("generateNewGrid", () => {
     })
 
     test("it handles decimals", () => {
-        expect(generateNewGrid(newGridValues, rowTitles).newGridData[0][2].value).toEqual(131.415)
+        expect(generateNewGrid(newGridValues, rowTitles).newGridData[0][1].value).toEqual(131.415)
     })
 
     test("it handles formatted strings", () => {
-        expect(generateNewGrid(newGridValues, rowTitles).newGridData[1][2].value).toEqual(161718)
+        expect(generateNewGrid(newGridValues, rowTitles).newGridData[1][1].value).toEqual(161718)
     })
 
     test("it doesnt change the row titles", () => {
-        expect(generateNewGrid(newGridValues, rowTitles).newGridData[0][0].value).toEqual("title1")
+        expect(generateNewGrid(newGridValues, rowTitles).newGridData[0][0].value).toEqual(123)
     })
 
     test("the existing data is replaced with the new data", () => {
-        expect(generateNewGrid(newGridValues, rowTitles).newGridData[0][1].value).toEqual(123)
-        expect(generateNewGrid(newGridValues, rowTitles).newGridData[2][2].value).toEqual(192021)
+        expect(generateNewGrid(newGridValues, rowTitles).newGridData[0][1].value).toEqual(131.415)
+        expect(generateNewGrid(newGridValues, rowTitles).newGridData[2][1].value).toEqual(192021)
     })
 
     test("Overflowed data is ignored (i.e. there cant be more rows than row titles)", () => {

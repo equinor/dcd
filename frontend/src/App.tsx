@@ -20,6 +20,7 @@ import ProjectView from "./Views/ProjectView"
 import { RetrieveConfigFromAzure } from "./config"
 
 import "./styles.css"
+import SubstructureView from "./Views/SubstructureView"
 
 const browserHistory = createBrowserHistory()
 
@@ -80,6 +81,10 @@ const App: VoidFunctionComponent = () => {
                             <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                            <Route
+                                path="project/:projectId/case/:caseId/substructure/:substructureId"
+                                element={<SubstructureView />}
+                            />
                         </Route>
                     </Routes>
                 </BrowserRouter>
