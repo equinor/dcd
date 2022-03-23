@@ -64,6 +64,7 @@ const SurfView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [surf, setSurf] = useState<Surf>()
+    const [tempSurf, setTempSurf] = useState<Surf>()
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
@@ -80,6 +81,8 @@ const SurfView = () => {
                 setCase(caseResult)
                 const newSurf = projectResult.surfs.find((s) => s.id === params.surfId || s.id === emptyGUID)
                 setSurf(newSurf)
+                //Cached version, used before pressing "Save"
+                setTempSurf(newSurf)
                 const newColumnTitles = getColumnTitles(caseResult, newSurf?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSurf?.costProfile)
@@ -103,12 +106,15 @@ const SurfView = () => {
         emptySurf.costProfile = newCostProfile
         emptySurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
         emptySurf.costProfile.startYear = year
-        setSurf(emptySurf)
+        
+        setTempSurf(emptySurf)
+        
         const newColumnTitles = getColumnTitles(caseItem, emptySurf?.costProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(emptySurf?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
+    
     }
 
     const handleSave = async () => {
@@ -129,7 +135,7 @@ const SurfView = () => {
     return (
         <AssetViewDiv>
             <AssetHeader>
-                <Typography variant="h2">{surf?.name}</Typography>
+                <Typography variant="h2">{surf ? surf.name : "untitled" }</Typography>
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
