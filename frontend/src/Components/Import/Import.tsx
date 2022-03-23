@@ -44,7 +44,7 @@ interface Props {
     onImport: (input: string, year: number) => void
 }
 
-function ExcelImport({ onClose, onImport }: Props) {
+function Import({ onClose, onImport }: Props) {
     const [dataInput, setDataInput] = useState<string>("")
     const [startYear, setStartYear] = useState(0)
 
@@ -62,7 +62,6 @@ function ExcelImport({ onClose, onImport }: Props) {
         if (!dataInput) {
             return
         }
-        // const inputAsJson = tsvToJson(dataInput)
         onImport(dataInput, startYear)
     }
 
@@ -100,4 +99,4 @@ function ExcelImport({ onClose, onImport }: Props) {
     )
 }
 
-export default ExcelImport
+export default Import

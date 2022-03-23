@@ -6,7 +6,7 @@ import {
 import styled from "styled-components"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import {
-    buildGridData, getColumnTitles, replaceOldData,
+    buildGridData, getColumnAbsoluteYears, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
 import { Substructure } from "../models/assets/substructure/Substructure"
@@ -91,7 +91,7 @@ const SubstructureView = () => {
                     newSubstructure = new Substructure()
                     setSubstructure(newSubstructure)
                 }
-                const newColumnTitles = getColumnTitles(caseResult, newSubstructure?.substructureCostProfile)
+                const newColumnTitles = getColumnAbsoluteYears(caseResult, newSubstructure?.substructureCostProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
                 setGridData(newGridData)
@@ -104,7 +104,7 @@ const SubstructureView = () => {
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnTitles(caseItem, substructure?.substructureCostProfile))
+        setColumns(getColumnAbsoluteYears(caseItem, substructure?.substructureCostProfile))
         setHasChanges(true)
     }
 
@@ -114,7 +114,7 @@ const SubstructureView = () => {
         // eslint-disable-next-line max-len
         newSubstructure.substructureCostProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setSubstructure(newSubstructure)
-        const newColumnTitles = getColumnTitles(caseItem, newSubstructure?.substructureCostProfile)
+        const newColumnTitles = getColumnAbsoluteYears(caseItem, newSubstructure?.substructureCostProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
         setGridData(newGridData)
