@@ -99,13 +99,10 @@ const SurfView = () => {
     const onImport = (input: string, year: number) => {
         // const newSurf = Surf.Copy(surf!)^
         const emptySurf: Surf = {} as Surf
-        emptySurf.costProfile = {
-
-            ...surf!.costProfile,
-            startYear: year,
-            values: input.split("\t").map((i) => parseFloat(i)),
-        }
-
+        const newCostProfile: SurfCostProfile = new SurfCostProfile()
+        emptySurf.costProfile = newCostProfile
+        emptySurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
+        emptySurf.costProfile.startYear = year
         setSurf(emptySurf)
         const newColumnTitles = getColumnTitles(caseItem, emptySurf?.costProfile)
         setColumns(newColumnTitles)
