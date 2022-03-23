@@ -33,5 +33,4 @@ namespace api.Services
             return _projectService.GetProjectDto(updatedCase.ProjectId);
         }
     }
-
 }
