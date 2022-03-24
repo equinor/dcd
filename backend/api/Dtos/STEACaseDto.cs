@@ -23,7 +23,6 @@ namespace api.Dtos
     public class ProductionAndSalesVolumesDto
     {
         public int StartYear { get; set; }
-        public int EndYear { get; set; }
         public ProductionProfileOilDto TotalAndAnnualOil { get; set; } = null!;
         public NetSalesGasDto TotalAndAnnualSalesGas { get; set; } = null!;
         public Co2EmissionsDto Co2Emissions { get; set; } = null!;
@@ -32,14 +31,6 @@ namespace api.Dtos
     public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto
     {
 
-        public class TotalAndAnnualOil : ProductionProfileOilDto
-        {
-
-        }
-        public class TotalAndAnnualSalesGas : NetSalesGasDto
-        {
-
-        }
     }
 }
 
