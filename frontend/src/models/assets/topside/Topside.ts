@@ -13,7 +13,7 @@ export class Topside implements Components.Schemas.TopsideDto {
     maturity?: Components.Schemas.Maturity | undefined
 
     constructor(data?: Components.Schemas.TopsideDto) {
-        if (data != undefined) {
+        if (data !== undefined) {
             this.id = data.id
             this.name = data.name ?? ""
             this.projectId = data.projectId
@@ -26,7 +26,6 @@ export class Topside implements Components.Schemas.TopsideDto {
             this.topsideCostProfile = new TopsideCostProfile()
             this.topsideCostProfile.epaVersion = ""
         }
-
     }
 
     static Copy(data: Topside) {

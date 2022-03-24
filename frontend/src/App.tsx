@@ -82,10 +82,10 @@ const App: VoidFunctionComponent = () => {
                             <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
-                            <Route 
+                            <Route
                                 path="project/:projectId/case/:caseId/topside/:topsideId"
-                                element={<TopsideView/>}>
-                            </Route>
+                                element={<TopsideView />}
+                            />
                             <Route
                                 path="project/:projectId/case/:caseId/substructure/:substructureId"
                                 element={<SubstructureView />}

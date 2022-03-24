@@ -1,5 +1,5 @@
 export class TopsideCostProfile implements Components.Schemas.TopsideCostProfileDto {
-    id?: string 
+    id?: string
     startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
@@ -7,8 +7,7 @@ export class TopsideCostProfile implements Components.Schemas.TopsideCostProfile
     sum?: number | undefined
 
     constructor(data?: Components.Schemas.TopsideCostProfileDto) {
-        
-        if (data != undefined) {
+        if (data !== undefined) {
             this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []

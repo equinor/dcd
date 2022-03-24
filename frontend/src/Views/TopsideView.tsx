@@ -64,7 +64,6 @@ const Dg4Field = styled.div`
 `
 
 const TopsideView = () => {
-
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [topside, setTopside] = useState<Topside>()
@@ -79,7 +78,6 @@ const TopsideView = () => {
     const emptyGuid = "00000000-0000-0000-0000-000000000000"
 
     useEffect(() => {
-        
         (async () => {
             try {
                 console.log("UseEffect")
@@ -134,7 +132,6 @@ const TopsideView = () => {
         console.log(newTopside.topsideCostProfile)
     }
 
-
     const handleSave = async () => {
         const topsideDto = Topside.ToDto(topside!)
         if (topside?.id === emptyGuid) {
@@ -177,9 +174,6 @@ const TopsideView = () => {
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )
-
-
 }
-
 
 export default TopsideView
