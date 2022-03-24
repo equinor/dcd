@@ -26,6 +26,10 @@ export class Surf implements Components.Schemas.SurfDto {
             this.riserCount = data.riserCount
             this.templateCount = data.templateCount
             this.productionFlowline = data.productionFlowline
+        } else {
+            this.id = "00000000-0000-0000-0000-000000000000"
+            this.name = ""
+            this.costProfile = new SurfCostProfile()
         }
     }
 

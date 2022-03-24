@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Button, Input, Typography } from "@equinor/eds-core-react"
 
-import { useParams } from "react-router"
+import { useNavigate, useLocation, useParams } from "react-router"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import { buildGridData, getColumnTitles, replaceOldData } from "../Components/DataTable/helpers"
 import { Surf } from "../models/assets/surf/Surf"
@@ -64,12 +64,13 @@ const SurfView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [surf, setSurf] = useState<Surf>()
-    const [tempSurf, setTempSurf] = useState<Surf>()
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
+    const navigate = useNavigate()
+    const location = useLocation()
     const emptyGUID = "00000000-0000-0000-0000-000000000000"
 
     useEffect(() => {
@@ -79,10 +80,13 @@ const SurfView = () => {
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                const newSurf = projectResult.surfs.find((s) => s.id === params.surfId || s.id === emptyGUID)
-                setSurf(newSurf)
-                //Cached version, used before pressing "Save"
-                setTempSurf(newSurf)
+                let newSurf = projectResult.surfs.find((s) => s.id === params.surfId)
+                if (newSurf !== undefined) {
+                    setSurf(newSurf)
+                } else {
+                    newSurf = new Surf()
+                    setSurf(newSurf)
+                }
                 const newColumnTitles = getColumnTitles(caseResult, newSurf?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSurf?.costProfile)
@@ -99,43 +103,51 @@ const SurfView = () => {
         setColumns(getColumnTitles(caseItem, surf?.costProfile))
     }
 
-    const onImport = (input: string, year: number) => {
-        // const newSurf = Surf.Copy(surf!)^
+    function createNewSurf(input: string, year: number) {
         const emptySurf: Surf = {} as Surf
         const newCostProfile: SurfCostProfile = new SurfCostProfile()
+        emptySurf.id = emptyGUID
         emptySurf.costProfile = newCostProfile
         emptySurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
         emptySurf.costProfile.startYear = year
-        
-        setTempSurf(emptySurf)
-        
+        emptySurf.costProfile.epaVersion = "test"
+        return emptySurf
+    }
+
+    const onImport = (input: string, year: number) => {
+        const emptySurf: Surf = createNewSurf(input, year)
+        setSurf(emptySurf)
         const newColumnTitles = getColumnTitles(caseItem, emptySurf?.costProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(emptySurf?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-    
+        setHasChanges(true)
     }
 
     const handleSave = async () => {
-        const emptySurf = {} as Surf
-        // if (params.surfId){
-
-        // }
-        const surfDto = Surf.ToDto(emptySurf)
-        const newProject = await GetSurfService().updateSurf(surfDto!)
-        setProject(newProject)
-        const newCase = newProject.cases.find((o) => o.id === params.caseId)
-        setCase(newCase)
-        const newSurf = newProject.surfs.find((s) => s.id === params.surfId)
-        setSurf(newSurf)
+        const surfDto = Surf.ToDto(surf!)
+        if (surf?.id === emptyGUID) {
+            surfDto.projectId = params.projectId
+            const newProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
+            const newSurf = newProject.surfs.at(-1)
+            const newUrl = location.pathname.replace(emptyGUID, newSurf!.id!)
+            navigate(`${newUrl}`, { replace: true })
+        } else {
+            const newProject = await GetSurfService().updateSurf(surfDto)
+            setProject(newProject)
+            const newCase = newProject.cases.find((o) => o.id === params.caseId)
+            setCase(newCase)
+            const newSurf = newProject.surfs.find((a) => a.id === params.surfId)
+            setSurf(newSurf)
+        }
         setHasChanges(false)
     }
 
     return (
         <AssetViewDiv>
             <AssetHeader>
-                <Typography variant="h2">{surf ? surf.name : "untitled" }</Typography>
+                <Typography variant="h2">{surf?.name}</Typography>
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
