@@ -181,11 +181,11 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     <ProjectDropdown
                         id="select-project"
                         label="CommonLib project"
-                        placeholder="Select a CommonLib project"
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
+                        defaultValue=""
                     >
                         {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                        <option disabled selected />
+                        <option disabled />
                         {projects.map((project) => (
                             <option value={project.id!} key={project.id}>{project.name!}</option>
                         ))}
