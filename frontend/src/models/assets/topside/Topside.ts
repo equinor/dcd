@@ -4,7 +4,7 @@ export class Topside implements Components.Schemas.TopsideDto {
     id?: string | undefined
     name?: string | null
     projectId?: string | undefined
-    costProfile?: TopsideCostProfile | undefined
+    topsideCostProfile?: TopsideCostProfile | undefined
     dryWeight?: number | undefined
     oilCapacity?: number | undefined
     gasCapacity?: number | undefined
@@ -12,17 +12,37 @@ export class Topside implements Components.Schemas.TopsideDto {
     artificialLift?: Components.Schemas.ArtificialLift | undefined
     maturity?: Components.Schemas.Maturity | undefined
 
-    constructor(data: Components.Schemas.TopsideDto) {
-        this.id = data.id
-        this.name = data.name ?? ""
-        this.projectId = data.projectId
-        this.costProfile = TopsideCostProfile.fromJSON(data.costProfile)
-        this.dryWeight = data.dryWeight
-        this.oilCapacity = data.oilCapacity
-        this.gasCapacity = data.gasCapacity
-        this.facilitiesAvailability = data.facilitiesAvailability
-        this.artificialLift = data.artificialLift
-        this.maturity = data.maturity
+    constructor(data?: Components.Schemas.TopsideDto) {
+        if (data != undefined) {
+            this.id = data.id
+            this.name = data.name ?? ""
+            this.projectId = data.projectId
+            this.topsideCostProfile = TopsideCostProfile.fromJSON(data.costProfile)
+            this.dryWeight = data.dryWeight
+            this.maturity = data.maturity
+        } else {
+            this.id = "00000000-0000-0000-0000-000000000000"
+            this.name = "hehe"
+            this.topsideCostProfile = new TopsideCostProfile()
+            this.topsideCostProfile.epaVersion = ""
+        }
+
+    }
+
+    static Copy(data: Topside) {
+        const topsideCopy = new Topside(data)
+        return {
+            ...topsideCopy,
+            topsideCostProfile: data.topsideCostProfile,
+        }
+    }
+
+    static ToDto(data: Topside): Components.Schemas.TopsideDto {
+        const topsideCopy = new Topside(data)
+        return {
+            ...topsideCopy,
+            costProfile: data.topsideCostProfile,
+        }
     }
 
     static fromJSON(data: Components.Schemas.TopsideDto): Topside {
