@@ -136,11 +136,15 @@ const TopsideView = () => {
         const topsideDto = Topside.ToDto(topside!)
         if (topside?.id === emptyGuid) {
             topsideDto.projectId = params.projectId
-            const newProject = await GetTopsideService().createTopside(params.caseId!, topsideDto!)
+            const newProject: Project = await GetTopsideService().createTopside(params.caseId!, topsideDto!)
             const newTopside = newProject.topsides.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newTopside!.id!)
+            const newCase = newProject.cases.find((o) => o.id === params.caseId)
+            setTopside(newTopside)
+            setCase(newCase)
             navigate(`${newUrl}`, { replace: true })
         } else {
+            topsideDto.projectId = params.projectId
             const newProject = await GetTopsideService().updateTopside(topsideDto!)
             setProject(newProject)
             const newCase = newProject.cases.find((o) => o.id === params.caseId)
