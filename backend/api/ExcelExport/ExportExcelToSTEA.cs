@@ -60,9 +60,9 @@ public static class ExportToSTEA
                 allRows.Add(c.ProductionAndSalesVolumes.Co2Emissions.Values.Count() + c.ProductionAndSalesVolumes.Co2Emissions.StartYear);
             }
 
-            int maxYear = allRows.Count() > 0 ? allRows.Max() - project.StartYear : 2;
+            int maxYear = allRows.Count() > 0 ? allRows.Max() - project.StartYear : 0;
 
-            businessCase.Header = CreateTableHeader(project.StartYear, project.StartYear + maxYear, c.Name, headerRowCount);
+            businessCase.Header = CreateTableHeader(project.StartYear, project.StartYear + maxYear - 1, c.Name, headerRowCount);
             businessCases.Add(businessCase);
         }
         return businessCases;

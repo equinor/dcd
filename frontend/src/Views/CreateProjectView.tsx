@@ -20,13 +20,52 @@ import { GetCommonLibraryService } from "../Services/CommonLibraryService"
 import { GetProjectService } from "../Services/ProjectService"
 
 const ProjectSelect = styled.div`
+    margin-top: 1.5rem;
     display: flex;
     align-items: center;
+`
+
+const StyledTextField = styled(TextField)`
+    margin-top: 1rem;
+`
+
+const Margin = styled.div`
+    margin-top: 1rem;
+`
+
+const Description = styled.div`
+    display: flex;
+    align-items: center;
+    padding-top: 6px;
+    margin-bot: 1rem;
+    max-width: 90%;
+`
+
+const Label = styled.div`
+    margin-top: 1rem;
+    font-family: Equinor;
+    font-size: 0.750rem;
+    font-weight: 500;
+    line-height: 1.333em;
+    text-align: left;
+    margin-left: 8px;
+    margin-right: 8px;
+    color: var(--eds_text__static_icons__tertiary,rgba(111,111,111,1));
 `
 
 const ProjectDropdown = styled(NativeSelect)`
     width: 25rem;
     margin-left: 0.5rem;
+`
+
+const TextArea = styled.textarea`
+    width: 70%;
+    height: 7rem;
+    font-size: 17px;
+    max-width:50rem;
+    min-width:90%;
+    max-height: 30rem;
+    min-height: 7rem;
 `
 
 const grey = tokens.colors.ui.background__scrim.rgba
@@ -142,66 +181,69 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     <ProjectDropdown
                         id="select-project"
                         label="CommonLib project"
-                        placeholder="Select a CommonLib project"
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
+                        defaultValue=""
                     >
                         {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                        <option disabled selected />
+                        <option disabled />
                         {projects.map((project) => (
                             <option value={project.id!} key={project.id}>{project.name!}</option>
                         ))}
                     </ProjectDropdown>
                 </ProjectSelect>
                 <div>
-                    <TextField
+                    <StyledTextField
                         label="Name"
                         id="textfield-name"
-                        placeholder={selectedProject?.name!}
+                        value={selectedProject?.name ?? ""}
                         autoComplete="off"
                         onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
                             updateNameHandler(event)
                         )}
+                        readOnly
                     />
                 </div>
-                <div>
-                    <TextField
-                        label="Description"
+                <Label>
+                    <label htmlFor="textfield-description">Description</label>
+                </Label>
+                <Description>
+                    <TextArea
                         id="textfield-description"
-                        placeholder={selectedProject?.description!}
+                        defaultValue={selectedProject?.description ?? ""}
                         autoComplete="off"
                         onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
                             updateDescriptionHandler(event)
                         )}
                     />
-                </div>
+                </Description>
                 <div>
-                    <TextField
+                    <StyledTextField
                         label="Category"
-                        id="textfield-description"
+                        id="category"
                         placeholder={new ProjectCategory(selectedProject?.projectCategory!).toString()}
                         autoComplete="off"
                         readOnly
                     />
                 </div>
                 <div>
-                    <TextField
+                    <StyledTextField
                         label="Phase"
-                        id="textfield-description"
+                        id="phase"
                         placeholder={new ProjectPhase(selectedProject?.projectPhase!).toString()}
                         autoComplete="off"
                         readOnly
                     />
                 </div>
                 <div>
-                    <TextField
+                    <StyledTextField
                         label="Country"
-                        id="textfield-description"
-                        placeholder={selectedProject?.country!}
+                        id="country"
+                        value={selectedProject?.country ?? ""}
                         autoComplete="off"
                         readOnly
                     />
                 </div>
-                <div>
+                <Margin>
                     <Button
                         onClick={handleOkClick}
                         disabled={!selectedProject}
@@ -209,7 +251,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         Create Project
                     </Button>
                     <Button onClick={handleCancelClick} variant="outlined">Cancel</Button>
-                </div>
+                </Margin>
             </div>
         </Modal>
     )

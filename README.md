@@ -37,8 +37,7 @@ local development at time of writing).
 
 Finally, to be able to use secrets referenced in the app config, you need to
 authenticate yourself on the command line. [Get a hold of the azure CLI
-`az`](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and run `az
-login` in the command line. NB: You will need to use a browser for the
+`az`](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and run `az login` in the command line. NB: You will need to use a browser for the
 authentication, as far as I know.
 
 Then, to start the backend, you can run
