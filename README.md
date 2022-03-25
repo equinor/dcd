@@ -119,33 +119,6 @@ DCD is developed by the Shellvis team in TDI EDT DSD EDB.
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
 
-## Model overview
-@startuml
-database "CommonLib"
-node "Assets" {
-  [Drainage strategy]
-  [Exploration]
-  [Well projects]
-  [SURF]
-  [Topside Facilities]
-  [Substructure]
-  [Transport]
-}
-database "CommonLib"
-node "Digital Concept Development" {
-  folder "Project" {
-    [Business Case]
-  }
-}
-component STEA
-[Business Case] -> STEA
-STEA -> [Business Case]
-[CommonLib] -up-> [Business Case]
-[Drainage strategy] ..> [Business Case]
-[Exploration] ..> [Business Case]
-[Well projects] ..> [Business Case]
-[SURF] ..> [Business Case]
-[Topside Facilities] ..> [Business Case]
-[Substructure] ..> [Business Case]
-[Transport] ..> [Business Case]
-@enduml
+## C4 System Context Diagram
+The following diagram has been created using PlantUML. The diagram is saved as PlantUMLC4L1 and should be edited as the system is developed.
+![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/InGit5/dcd///main/PlantUMLC4L1)
