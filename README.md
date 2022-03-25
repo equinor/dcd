@@ -117,3 +117,7 @@ DCD is developed by the Shellvis team in TDI EDT DSD EDB.
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
+
+## C4 System Context Diagram
+The following diagram has been created using PlantUML. The diagram is saved as PlantUMLC4L1 and should be edited as the system is developed.
+![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/InGit5/dcd///main/PlantUMLC4L1)
