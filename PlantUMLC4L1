@@ -9,7 +9,7 @@ LAYOUT_WITH_LEGEND()
 Person(concarchAlias, "Concept Architect", "Want to compare the business cases of different concepts for developing a field")
 Person(engAlias, "Engineers", "People in the project teams performing an estimate of discipline output", $sprite="users")
 System(dcdAlias, "Digital Concept App", "Provides an overview of business cases for projects")
-Container_Ext(steaAlias, "STEA", "Excel sheet")
+System_Ext(steaAlias, "STEA")
 ContainerDb_Ext(commonlibAlias, "CommonLib", "Holds the project portfolio")
 
 
@@ -19,7 +19,7 @@ Rel_U(dcdAlias, concarchAlias, "Compare and refine concept business cases")
 Rel(concarchAlias, engAlias, "Requests detailed cost-profiles for concepts")
 Rel(engAlias, dcdAlias, "Manually enters detailed cost-profiles for the concepts")
 
-Rel_R(dcdAlias, steaAlias, "Transfers data to STEA")
+Rel_R(dcdAlias, steaAlias, "Transfers data to STEA via Excel sheet")
 Rel_R(commonlibAlias, dcdAlias, "Reads")
 
 @enduml
