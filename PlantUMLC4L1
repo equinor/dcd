@@ -1,0 +1,19 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+
+Person(concarchAlias, "Concept Architect", "Want to compare the business cases of different concepts for developing a field")
+Person(engAlias, "Engineers", "People in the project teams performing an estimate of discipline input")
+System(dcdAlias, "Digital Concept App", "Provides an overview of business cases for projects")
+Container(steaAlias, "STEA", "Excel sheet")
+ContainerDb(commonlibAlias, "CommonLib", "Holds the project portfolio")
+
+
+Rel(concarchAlias, dcdAlias, "Adds projects and concepts")
+Rel(dcdAlias, concarchAlias, "Compare and refine concept business cases")
+Rel(concarchAlias, engAlias, "Requests detailed cost-profiles for an concept")
+Rel(engAlias, dcdAlias, "Manually enters detailed cost-profiles for the concept")
+Rel(dcdAlias, steaAlias, "Transfers data to STEA")
+Rel(commonlibAlias, dcdAlias, "Provides the project portfolio")
+
+@enduml
