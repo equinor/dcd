@@ -1,19 +1,25 @@
 @startuml C4_Elements
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/users.puml
+
+LAYOUT_WITH_LEGEND()
 
 
 Person(concarchAlias, "Concept Architect", "Want to compare the business cases of different concepts for developing a field")
-Person(engAlias, "Engineers", "People in the project teams performing an estimate of discipline input")
+Person(engAlias, "Engineers", "People in the project teams performing an estimate of discipline output", $sprite="users")
 System(dcdAlias, "Digital Concept App", "Provides an overview of business cases for projects")
-Container(steaAlias, "STEA", "Excel sheet")
-ContainerDb(commonlibAlias, "CommonLib", "Holds the project portfolio")
+Container_Ext(steaAlias, "STEA", "Excel sheet")
+ContainerDb_Ext(commonlibAlias, "CommonLib", "Holds the project portfolio")
 
 
-Rel(concarchAlias, dcdAlias, "Adds projects and concepts")
-Rel(dcdAlias, concarchAlias, "Compare and refine concept business cases")
-Rel(concarchAlias, engAlias, "Requests detailed cost-profiles for an concept")
-Rel(engAlias, dcdAlias, "Manually enters detailed cost-profiles for the concept")
-Rel(dcdAlias, steaAlias, "Transfers data to STEA")
-Rel(commonlibAlias, dcdAlias, "Provides the project portfolio")
+Rel_D(concarchAlias, dcdAlias, "Adds projects and concepts")
+Rel_U(dcdAlias, concarchAlias, "Compare and refine concept business cases")
+
+Rel(concarchAlias, engAlias, "Requests detailed cost-profiles for concepts")
+Rel(engAlias, dcdAlias, "Manually enters detailed cost-profiles for the concepts")
+
+Rel_R(dcdAlias, steaAlias, "Transfers data to STEA")
+Rel_R(commonlibAlias, dcdAlias, "Reads")
 
 @enduml
