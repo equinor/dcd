@@ -32,6 +32,13 @@ const Wrapper = styled.div`
     flex-direction: column;
 `
 
+const ProjectDescription = styled.div`
+    white-space: pre-wrap;
+    margin-top: 2rem;
+    margin-bot: 2rem;
+    font-size: 20px;
+`
+
 const Header = styled.header`
     display: flex;
     align-items: center;
@@ -57,6 +64,14 @@ const CreateCaseForm = styled.form`
     > * {
         margin-bottom: 1.5rem;
     }
+`
+
+const TextArea = styled.textarea`
+    width: 100%;
+    height: 7rem;
+    font-size: 17px;
+    max-width:100%;
+    min-width:100%;
 `
 
 const ProjectView = () => {
@@ -86,12 +101,12 @@ const ProjectView = () => {
 
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const handleCaseNameChange : ChangeEventHandler<HTMLInputElement> = (e) => {
+    const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const { value } = e.target
         setCaseName(value)
     }
 
-    const handleDescriptionChange : ChangeEventHandler<HTMLInputElement> = (e) => {
+    const handleDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
         const { value } = e.target
         setCaseDescription(value)
     }
@@ -120,7 +135,6 @@ const ProjectView = () => {
         <Wrapper>
             <Header>
                 <Typography variant="h2">{project.name}</Typography>
-
                 <EdsProvider density="compact">
                     <ActionsContainer>
                         <Tooltip title={`Edit ${project.name}`}>
@@ -142,7 +156,11 @@ const ProjectView = () => {
                     </ActionsContainer>
                 </EdsProvider>
             </Header>
-
+            <ProjectDescription>
+                <Typography variant="h4">
+                    {project.description != null ? project.description : ""}
+                </Typography>
+            </ProjectDescription>
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>
@@ -157,8 +175,7 @@ const ProjectView = () => {
                         onChange={handleCaseNameChange}
                     />
 
-                    <TextField
-                        label="Description"
+                    <TextArea
                         id="description"
                         name="description"
                         placeholder="Enter a description"
