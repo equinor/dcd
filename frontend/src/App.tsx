@@ -21,6 +21,7 @@ import { RetrieveConfigFromAzure } from "./config"
 
 import "./styles.css"
 import SubstructureView from "./Views/SubstructureView"
+import TransportView from "./Views/TransportView"
 
 const browserHistory = createBrowserHistory()
 
@@ -84,6 +85,10 @@ const App: VoidFunctionComponent = () => {
                             <Route
                                 path="project/:projectId/case/:caseId/substructure/:substructureId"
                                 element={<SubstructureView />}
+                            />
+                            <Route
+                                path="project/:projectId/case/:caseId/transport/:transportId"
+                                element={<TransportView />}
                             />
                         </Route>
                     </Routes>
