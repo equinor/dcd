@@ -25,6 +25,7 @@ namespace api.Adapters
         {
             return new TopsideCostProfile
             {
+                Id = topsideCostProfileDto.Id,
                 Currency = topsideCostProfileDto.Currency,
                 EPAVersion = topsideCostProfileDto.EPAVersion,
                 Topside = topside,
