@@ -80,7 +80,6 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             try {
-                console.log("UseEffect")
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
@@ -110,25 +109,18 @@ const TopsideView = () => {
     }
 
     const onImport = (input: string, year: number) => {
-        console.log("Before copying")
-        console.log(topside)
         const newTopside = Topside.Copy(topside!)
-        console.log("After copied")
-        console.log(newTopside)
         newTopside.topsideCostProfile!.startYear = year
         newTopside.topsideCostProfile!.epaVersion = ""
         // eslint-disable-next-line max-len
         newTopside.topsideCostProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setTopside(newTopside)
-        console.log("After setTopside")
-        console.log(newTopside)
         const newColumnTitles = getColumnAbsoluteYears(caseItem, newTopside?.topsideCostProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(newTopside?.topsideCostProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
         setHasChanges(true)
-        console.log("onImport ending")
         console.log(newTopside.topsideCostProfile)
     }
 
