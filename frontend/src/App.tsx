@@ -15,6 +15,7 @@ import React, { useEffect, useState, VoidFunctionComponent } from "react"
 import { ViewsContainer } from "./Views/ViewsContainer"
 import CaseView from "./Views/CaseView"
 import DashboardView from "./Views/DashboardView"
+import TopsideView from "./Views/TopsideView"
 import ProjectView from "./Views/ProjectView"
 
 import { RetrieveConfigFromAzure } from "./config"
@@ -81,6 +82,10 @@ const App: VoidFunctionComponent = () => {
                             <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                            <Route
+                                path="project/:projectId/case/:caseId/topside/:topsideId"
+                                element={<TopsideView />}
+                            />
                             <Route
                                 path="project/:projectId/case/:caseId/substructure/:substructureId"
                                 element={<SubstructureView />}
