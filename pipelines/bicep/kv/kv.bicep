@@ -3,6 +3,8 @@
 //
 param location string = resourceGroup().location
 param baseAppName string = 'dcd'
+param tenantId string = subscription().tenantId
+param accessPolicies array
 
 var keyvaultName = 'kv-${baseAppName}'
 
@@ -10,33 +12,23 @@ resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
   name: keyvaultName
   location: location
   properties: {
-    enablePurgeProtection: true
     enableRbacAuthorization: false
-    enableSoftDelete: true
+    //enableSoftDelete: true
+    //enablePurgeProtection: true
     enabledForDeployment: false
     enabledForDiskEncryption: false
     enabledForTemplateDeployment: false
-    provisioningState: 'Succeeded'
-    tenantId: '3aa4a235-b6e2-48d5-9195-7fcf05b459b0'
+    // what-if in my opinion incorrectly claims that uncommenting the
+    // publicNetworkAccess line will change that property on the keyVault
+    publicNetworkAccess: 'Enabled'
+    tenantId: tenantId
     softDeleteRetentionInDays: 90
-    accessPolicies: [
-      {
-        tenantId: 'tenantId'
-        objectId: 'objectId'
-        permissions: {
-          keys: [
-            'get'
-          ]
-          secrets: [
-            'list'
-            'get'
-          ]
-        }
-      }
-    ]
+    accessPolicies: accessPolicies
     sku: {
       family: 'A'
       name: 'standard'
     }
   }
 }
+
+output kv object = keyVault

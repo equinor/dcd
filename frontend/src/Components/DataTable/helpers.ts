@@ -40,7 +40,6 @@ export const generateNewGrid = (data: { [key: string]: string }[], rowTitles: st
                     columnIndex = newColumns.length
                     newColumns.push(key)
                 }
-                // Remove white spaces in string due to number formatting, and convert to number
                 const newValue = parseFloat(value.replace(/\s+/g, ""))
                 newGridData[index][columnIndex] = { value: newValue }
             })
@@ -49,7 +48,7 @@ export const generateNewGrid = (data: { [key: string]: string }[], rowTitles: st
     return { newGridData, newColumns }
 }
 
-export const getColumnTitles = (newCaseItem?: Case, costProfile?: any) => {
+export const getColumnAbsoluteYears = (newCaseItem?: Case, costProfile?: any) => {
     const startYears: string[] = []
     const relativeYear: number = parseInt(costProfile?.startYear, 10)
     const startYear: number = (newCaseItem?.DG4Date?.getFullYear() ?? 0) + (relativeYear ?? 0)

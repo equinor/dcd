@@ -81,21 +81,9 @@ const CaseAsset = ({
         }
     }
 
-    const submitCreateAsset = async (
-        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-        type: string,
-    ) => {
-        event.preventDefault()
-        try {
-            navigate(`${type?.toLocaleLowerCase()}/00000000-0000-0000-0000-000000000000`)
-            // const result = await CreateAsset(type, caseId!, project.id)
-            // setProject(result[0])
-            // const caseResult = result[0]?.cases.find((o) => o.id === caseId)
-            // setCase(caseResult)
-            // navigate(`${type.toLowerCase()}/${result[1]}`)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
+    const submitCreateAsset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
+        event?.preventDefault()
+        navigate(`${type.toLowerCase()}/${emptyGuid}`)
     }
 
     return (
@@ -249,9 +237,9 @@ const CaseAsset = ({
                 </AssetButton>
                 <AssetButton
                     type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "Substructure")}
+                    onClick={
+                        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => submitCreateAsset(e, "substructure")
+                    }
                 >
                     Create new
                 </AssetButton>

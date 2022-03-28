@@ -37,8 +37,7 @@ local development at time of writing).
 
 Finally, to be able to use secrets referenced in the app config, you need to
 authenticate yourself on the command line. [Get a hold of the azure CLI
-`az`](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and run `az
-login` in the command line. NB: You will need to use a browser for the
+`az`](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and run `az login` in the command line. NB: You will need to use a browser for the
 authentication, as far as I know.
 
 Then, to start the backend, you can run
@@ -118,3 +117,7 @@ DCD is developed by the Shellvis team in TDI EDT DSD EDB.
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
+
+## C4 System Context Diagram
+The following diagram has been created using PlantUML. The diagram is saved as PlantUMLC4L1 and should be edited as the system is developed.
+![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/InGit5/dcd///main/PlantUMLC4L1)

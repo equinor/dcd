@@ -5,7 +5,9 @@ import { Button, Input, Typography } from "@equinor/eds-core-react"
 
 import { useNavigate, useLocation, useParams } from "react-router"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
-import { buildGridData, getColumnTitles, replaceOldData } from "../Components/DataTable/helpers"
+import {
+    buildGridData, getColumnAbsoluteYears, replaceOldData,
+} from "../Components/DataTable/helpers"
 import { Surf } from "../models/assets/surf/Surf"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
@@ -99,7 +101,7 @@ const SurfView = () => {
                     newSurf = new Surf()
                     setSurf(newSurf)
                 }
-                const newColumnTitles = getColumnTitles(caseResult, newSurf?.costProfile)
+                const newColumnTitles = getColumnAbsoluteYears(caseResult, newSurf?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSurf?.costProfile)
                 setGridData(newGridData)
@@ -112,7 +114,7 @@ const SurfView = () => {
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnTitles(caseItem, surf?.costProfile))
+        setColumns(getColumnAbsoluteYears(caseItem, surf?.costProfile))
     }
 
     const createNewSurf = (input: string, year: number) => {
@@ -129,7 +131,7 @@ const SurfView = () => {
     const onImport = (input: string, year: number) => {
         const emptySurf: Surf = createNewSurf(input, year)
         setSurf(emptySurf)
-        const newColumnTitles = getColumnTitles(caseItem, emptySurf?.costProfile)
+        const newColumnTitles = getColumnAbsoluteYears(caseItem, emptySurf?.costProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(emptySurf?.costProfile)
         setGridData(newGridData)
