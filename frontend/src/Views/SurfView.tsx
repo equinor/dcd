@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from "react"
+import React, { ChangeEventHandler, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Button, Input, Typography } from "@equinor/eds-core-react"
 
@@ -61,18 +61,29 @@ const Dg4Field = styled.div`
 `
 
 const SurfView = () => {
-    const [, setProject] = useState<Project>()
+    const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [surf, setSurf] = useState<Surf>()
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
+    const [hasName, setHasHasName] = useState(false)
+    const [surfName, setSurfName] = useState<Record<string, any>>({})
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
     const emptyGUID = "00000000-0000-0000-0000-000000000000"
 
+    const assetName = async (name:string | undefined) => {
+        const surfProjectName = project?.surfs.find((s) => s.id === params.surfId)?.name
+        if (name !== "") {
+            setHasHasName(true)
+            if (surfProjectName !== name) {
+                setHasChanges(true)
+            }
+        }
+    }
     useEffect(() => {
         (async () => {
             try {
@@ -83,6 +94,7 @@ const SurfView = () => {
                 let newSurf = projectResult.surfs.find((s) => s.id === params.surfId)
                 if (newSurf !== undefined) {
                     setSurf(newSurf)
+                    assetName(surf?.name)
                 } else {
                     newSurf = new Surf()
                     setSurf(newSurf)
@@ -103,8 +115,8 @@ const SurfView = () => {
         setColumns(getColumnTitles(caseItem, surf?.costProfile))
     }
 
-    function createNewSurf(input: string, year: number) {
-        const emptySurf: Surf = {} as Surf
+    const createNewSurf = (input: string, year: number) => {
+        const emptySurf = Surf.Copy(surf!)
         const newCostProfile: SurfCostProfile = new SurfCostProfile()
         emptySurf.id = emptyGUID
         emptySurf.costProfile = newCostProfile
@@ -122,7 +134,6 @@ const SurfView = () => {
         const newGridData = buildGridData(emptySurf?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
     }
 
     const handleSave = async () => {
@@ -144,10 +155,25 @@ const SurfView = () => {
         setHasChanges(false)
     }
 
+    const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setSurfName({
+            SurfName: surfName,
+            [e.target.name]: e.target.value,
+        })
+    }
+
     return (
         <AssetViewDiv>
             <AssetHeader>
-                <Typography variant="h2">{surf?.name}</Typography>
+                {hasName
+                    ? (<Typography variant="h2">{surf?.name}</Typography>)
+                    : (
+                        <Input
+                            id="surfName"
+                            name="surfName"
+                            onChange={handleSurfNameFieldChange}
+                        />
+                    )}
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
