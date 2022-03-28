@@ -1,5 +1,5 @@
 // eslint-disable-next-line camelcase
-import { add, delete_to_trash, edit } from "@equinor/eds-icons"
+import { add, delete_to_trash, archive } from "@equinor/eds-icons"
 import {
     Button,
     EdsProvider,
@@ -26,17 +26,12 @@ import { GetProjectService } from "../Services/ProjectService"
 import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
 
+import { GetSTEAService } from "../Services/STEAService"
+
 const Wrapper = styled.div`
     margin: 2rem;
     display: flex;
     flex-direction: column;
-`
-
-const ProjectDescription = styled.div`
-    white-space: pre-wrap;
-    margin-top: 2rem;
-    margin-bot: 2rem;
-    font-size: 20px;
 `
 
 const Header = styled.header`
@@ -64,14 +59,6 @@ const CreateCaseForm = styled.form`
     > * {
         margin-bottom: 1.5rem;
     }
-`
-
-const TextArea = styled.textarea`
-    width: 100%;
-    height: 7rem;
-    font-size: 17px;
-    max-width:100%;
-    min-width:100%;
 `
 
 const ProjectView = () => {
@@ -106,9 +93,22 @@ const ProjectView = () => {
         setCaseName(value)
     }
 
-    const handleDescriptionChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const { value } = e.target
         setCaseDescription(value)
+    }
+
+    const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        e.preventDefault()
+
+        try {
+            // submit project.id to backend
+            const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+            const projectId = projectResult.id
+            GetSTEAService().excelToSTEA(projectId)
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
     }
 
     const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -135,11 +135,16 @@ const ProjectView = () => {
         <Wrapper>
             <Header>
                 <Typography variant="h2">{project.name}</Typography>
+
                 <EdsProvider density="compact">
                     <ActionsContainer>
-                        <Tooltip title={`Edit ${project.name}`}>
-                            <Button variant="ghost_icon" aria-label={`Edit ${project.name}`}>
-                                <Icon data={edit} />
+                        <Tooltip title="Export to STEA">
+                            <Button
+                                variant="ghost_icon"
+                                aria-label="Export to STEA"
+                                onClick={submitToSTEA}
+                            >
+                                <Icon data={archive} />
                             </Button>
                         </Tooltip>
                         <Tooltip title="Add a case">
@@ -156,11 +161,7 @@ const ProjectView = () => {
                     </ActionsContainer>
                 </EdsProvider>
             </Header>
-            <ProjectDescription>
-                <Typography variant="h4">
-                    {project.description != null ? project.description : ""}
-                </Typography>
-            </ProjectDescription>
+
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>
@@ -175,7 +176,8 @@ const ProjectView = () => {
                         onChange={handleCaseNameChange}
                     />
 
-                    <TextArea
+                    <TextField
+                        label="Description"
                         id="description"
                         name="description"
                         placeholder="Enter a description"

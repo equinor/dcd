@@ -38,4 +38,7 @@ export const config = Object.freeze({
     TransportService: {
         BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/transports`,
     },
+    STEAService: {
+        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/stea`,
+    },
 })
