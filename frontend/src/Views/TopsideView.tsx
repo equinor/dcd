@@ -121,7 +121,6 @@ const TopsideView = () => {
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
         setHasChanges(true)
-        console.log(newTopside.topsideCostProfile)
     }
 
     const handleSave = async () => {
