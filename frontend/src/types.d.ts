@@ -125,7 +125,6 @@ declare namespace Components {
         }
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
-            endYear?: number; // int32
             totalAndAnnualOil?: ProductionProfileOilDto;
             totalAndAnnualSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
@@ -459,6 +458,18 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace ExcelToSTEA {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface PathParameters {
+            ProjectId: Parameters.ProjectId /* uuid */;
+        }
+        namespace Responses {
+            export interface $200 {
+            }
         }
     }
     namespace GetInputToSTEA {
