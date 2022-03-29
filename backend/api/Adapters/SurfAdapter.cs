@@ -22,8 +22,11 @@ namespace api.Adapters
             return surf;
         }
 
-        private static SurfCostProfile Convert(SurfCostProfileDto costprofile, Surf surf)
+        private static SurfCostProfile? Convert(SurfCostProfileDto? costprofile, Surf surf)
         {
+            if (costprofile == null){
+                return null;
+            }
             var surfCostProfile = new SurfCostProfile();
             surfCostProfile.Id = costprofile.Id;
             surfCostProfile.Currency = costprofile.Currency;

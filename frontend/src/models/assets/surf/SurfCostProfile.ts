@@ -8,7 +8,7 @@ export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto {
     constructor(data?: Components.Schemas.SurfCostProfileDto) {
         this.startYear = data?.startYear
         this.values = data?.values ?? []
-        this.epaVersion = data?.epaVersion ?? null
+        this.epaVersion = data?.epaVersion ?? ""
         this.currency = data?.currency
         this.sum = data?.sum
     }

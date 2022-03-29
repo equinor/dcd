@@ -23,18 +23,21 @@ namespace api.Adapters
             return surfDto;
         }
 
-        private static SurfCostProfileDto Convert(SurfCostProfile? costprofile)
+        private static SurfCostProfileDto? Convert(SurfCostProfile? costprofile)
         {
-            var surfCostProfile = new SurfCostProfileDto();
+            
             if (costprofile != null)
             {
+                var surfCostProfile = new SurfCostProfileDto();
                 surfCostProfile.Id = costprofile.Id;
                 surfCostProfile.Currency = costprofile.Currency;
                 surfCostProfile.EPAVersion = costprofile.EPAVersion;
                 surfCostProfile.Values = costprofile.Values;
                 surfCostProfile.StartYear = costprofile.StartYear;
+                return surfCostProfile;
             }
-            return surfCostProfile;
+            return null;
+            
         }
     }
 }

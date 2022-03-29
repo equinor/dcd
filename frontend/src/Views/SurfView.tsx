@@ -69,7 +69,6 @@ const SurfView = () => {
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
-    const [hasName, setHasHasName] = useState(false)
     const [surfName, setSurfName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
@@ -80,12 +79,8 @@ const SurfView = () => {
         if (name !== undefined) {
             if (name !== surfName) {
                 setHasChanges(true)
-                if (name !== "") {
-                    setHasHasName(true)
-                }
             }
         }
-        setHasHasName(false)
     }
     useEffect(() => {
         (async () => {
@@ -125,7 +120,7 @@ const SurfView = () => {
         emptySurf.costProfile = newCostProfile
         emptySurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
         emptySurf.costProfile.startYear = year
-        emptySurf.costProfile.epaVersion = "test"
+        emptySurf.costProfile.epaVersion = ""
         return emptySurf
     }
 
@@ -141,9 +136,9 @@ const SurfView = () => {
 
     const handleSave = async () => {
         const surfDto = Surf.ToDto(surf!)
+        surfDto.name = surfName
         if (surf?.id === emptyGUID) {
             surfDto.projectId = params.projectId
-            surfDto.name = surfName
             const newProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
             const newSurf = newProject.surfs.at(-1)
             const newUrl = location.pathname.replace(emptyGUID, newSurf!.id!)
@@ -161,7 +156,7 @@ const SurfView = () => {
 
     const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSurfName(e.target.value)
-        if (surfName !== undefined && surfName !== "") {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         }
     }
@@ -173,7 +168,7 @@ const SurfView = () => {
                     id="surfName"
                     name="surfName"
                     placeholder="Enter surf name"
-                    defaultValue={hasName ? surf?.name : ""}
+                    defaultValue={surf?.name}
                     onChange={handleSurfNameFieldChange}
                 />
             </AssetHeader>

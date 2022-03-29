@@ -29,7 +29,6 @@ export class Surf implements Components.Schemas.SurfDto {
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
-            this.costProfile = new SurfCostProfile()
         }
     }
 
