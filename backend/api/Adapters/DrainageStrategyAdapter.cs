@@ -52,6 +52,7 @@ namespace api.Adapters
         {
             return new ProductionProfileOil
             {
+                Id = productionProfileOilDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileOilDto.StartYear,
                 Values = productionProfileOilDto.Values
@@ -62,6 +63,7 @@ namespace api.Adapters
         {
             return new ProductionProfileGas
             {
+                Id = productionProfileGasDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileGasDto.StartYear,
                 Values = productionProfileGasDto.Values
@@ -72,6 +74,7 @@ namespace api.Adapters
         {
             return new ProductionProfileWater
             {
+                Id = productionProfileWaterDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileWaterDto.StartYear,
                 Values = productionProfileWaterDto.Values
@@ -82,6 +85,7 @@ namespace api.Adapters
         {
             return new ProductionProfileWaterInjection
             {
+                Id = productionProfileWaterInjectionDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileWaterInjectionDto.StartYear,
                 Values = productionProfileWaterInjectionDto.Values
@@ -92,6 +96,7 @@ namespace api.Adapters
         {
             return new FuelFlaringAndLosses
             {
+                Id = fuelFlaringAndLossesDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = fuelFlaringAndLossesDto.StartYear,
                 Values = fuelFlaringAndLossesDto.Values
@@ -102,6 +107,7 @@ namespace api.Adapters
         {
             return new NetSalesGas
             {
+                Id = netSalesGasDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = netSalesGasDto.StartYear,
                 Values = netSalesGasDto.Values
