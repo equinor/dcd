@@ -1,5 +1,6 @@
 // eslint-disable-next-line camelcase
-import { add, delete_to_trash, archive } from "@equinor/eds-icons"
+import { add, archive } from "@equinor/eds-icons"
+// import FileSaver from "file-saver"
 import {
     Button,
     EdsProvider,
@@ -106,6 +107,8 @@ const ProjectView = () => {
             const projectResult = await GetProjectService().getProjectByID(params.projectId!)
             const projectId = projectResult.id
             GetSTEAService().excelToSTEA(projectId)
+            // const excelFile = await GetSTEAService().excelToSTEA(projectId)
+            // FileSaver.saveAs(excelFile, (`${projectResult.name}.xlsx`))
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -150,12 +153,6 @@ const ProjectView = () => {
                         <Tooltip title="Add a case">
                             <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
                                 <Icon data={add} />
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title={`Delete ${project.name}`}>
-                            <Button variant="ghost_icon" color="danger" aria-label={`Delete ${project.name}`}>
-                                {/* eslint-disable-next-line camelcase */}
-                                <Icon data={delete_to_trash} />
                             </Button>
                         </Tooltip>
                     </ActionsContainer>

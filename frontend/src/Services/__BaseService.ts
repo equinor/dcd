@@ -32,14 +32,25 @@ export class __BaseService {
         }
     }
 
-    private async request(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<any> {
+    private async request(path: string, options?: RequestOptions): Promise<any> {
         const { data } = await this.client.request({
             method: options?.method,
             headers: options?.headers,
             withCredentials: options?.credentials === "include",
             url: path,
             data: options?.body,
-            responseType: responseType ?? "text" 
+        })
+        return data
+    }
+
+    private async requestExcel(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<any> {
+        const { data } = await this.client.request({
+            method: options?.method,
+            headers: options?.headers,
+            withCredentials: options?.credentials === "include",
+            url: path,
+            data: options?.body,
+            responseType: responseType ?? "text",
         })
         return data
     }
@@ -55,18 +66,18 @@ export class __BaseService {
     }
 
     protected postExcel<T = any>(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<T> {
-        return this.request(path, responseType, { ...options, method: "POST" })
+        return this.requestExcel(path, responseType, { ...options, method: "POST" })
     }
 
     protected get<T = any>(path: string, options?: RequestOptions): Promise<T> {
-        return this.request(path, undefined, {...options, method: "POST"})
+        return this.request(path, { ...options, method: "GET" })
     }
 
     protected post<T = any>(path: string, options?: RequestOptions): Promise<T> {
-        return this.request(path, undefined, { ...options, method: "POST" })
+        return this.request(path, { ...options, method: "POST" })
     }
 
     protected put<T = any>(path: string, options?: RequestOptions): Promise<T> {
-        return this.request(path, undefined, { ...options, method: "PUT" })
+        return this.request(path, { ...options, method: "PUT" })
     }
 }
