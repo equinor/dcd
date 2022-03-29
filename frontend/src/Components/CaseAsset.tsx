@@ -175,6 +175,14 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={
+                        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => submitCreateAsset(e, "topside")
+                    }
+                >
+                    Create new
+                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
