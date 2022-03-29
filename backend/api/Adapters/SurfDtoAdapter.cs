@@ -25,7 +25,7 @@ namespace api.Adapters
 
         private static SurfCostProfileDto? Convert(SurfCostProfile? costprofile)
         {
-            
+
             if (costprofile != null)
             {
                 var surfCostProfile = new SurfCostProfileDto();
@@ -37,7 +37,7 @@ namespace api.Adapters
                 return surfCostProfile;
             }
             return null;
-            
+
         }
     }
 }

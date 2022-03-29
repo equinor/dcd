@@ -64,7 +64,7 @@ const Dg4Field = styled.div`
 `
 
 const SurfView = () => {
-    const [project, setProject] = useState<Project>()
+    const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [surf, setSurf] = useState<Surf>()
     const [columns, setColumns] = useState<string[]>([""])
