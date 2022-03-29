@@ -1,5 +1,7 @@
-import { Button, Input, Typography } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import {
+    Button, Input, Label, Typography,
+} from "@equinor/eds-core-react"
+import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -71,11 +73,20 @@ const SubstructureView = () => {
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
+    const [substructureName, setSubstructureName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
 
     const emptyGuid = "00000000-0000-0000-0000-000000000000"
+
+    const handleSubtructureName = async (name:string | undefined) => {
+        if (name !== undefined) {
+            if (name !== substructureName) {
+                setHasChanges(true)
+            }
+        }
+    }
 
     useEffect(() => {
         (async () => {
@@ -91,6 +102,7 @@ const SubstructureView = () => {
                     newSubstructure = new Substructure()
                     setSubstructure(newSubstructure)
                 }
+                handleSubtructureName(newSubstructure?.name)
                 const newColumnTitles = getColumnAbsoluteYears(caseResult, newSubstructure?.substructureCostProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
@@ -124,6 +136,7 @@ const SubstructureView = () => {
 
     const handleSave = async () => {
         const substructureDto = Substructure.ToDto(substructure!)
+        substructureDto.name = substructureName
         if (substructure?.id === emptyGuid) {
             substructureDto.projectId = params.projectId
             const newProject = await GetSubstructureService().createSubstructure(params.caseId!, substructureDto!)
@@ -141,9 +154,27 @@ const SubstructureView = () => {
         setHasChanges(false)
     }
 
+    const handleSubstructureNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setSubstructureName(e.target.value)
+        if (e.target.value !== undefined && e.target.value !== "") {
+            setHasChanges(true)
+        }
+    }
+
     return (
         <AssetViewDiv>
+            <Typography variant="h2">Substructure</Typography>
             <AssetHeader>
+                <WrapperColumn>
+                    <Label htmlFor="substructureName" label="Name" />
+                    <Input
+                        id="substructureName"
+                        name="substructureName"
+                        placeholder="Enter substructure name"
+                        defaultValue={substructure?.name}
+                        onChange={handleSubstructureNameFieldChange}
+                    />
+                </WrapperColumn>
                 <Typography variant="h2">{substructure?.name}</Typography>
             </AssetHeader>
             <Wrapper>
