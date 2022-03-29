@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosRequestConfig } from "axios"
+import axios, { Axios, AxiosRequestConfig, ResponseType } from "axios"
 
 import { ServiceConfig } from "./config"
 
@@ -32,13 +32,14 @@ export class __BaseService {
         }
     }
 
-    private async request(path: string, options?: RequestOptions): Promise<any> {
+    private async request(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<any> {
         const { data } = await this.client.request({
             method: options?.method,
             headers: options?.headers,
             withCredentials: options?.credentials === "include",
             url: path,
             data: options?.body,
+            responseType: responseType ?? "text" 
         })
         return data
     }
@@ -53,15 +54,19 @@ export class __BaseService {
         return data
     }
 
+    protected postExcel<T = any>(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<T> {
+        return this.request(path, responseType, { ...options, method: "POST" })
+    }
+
     protected get<T = any>(path: string, options?: RequestOptions): Promise<T> {
-        return this.request(path, { ...options, method: "GET" })
+        return this.request(path, undefined, {...options, method: "POST"})
     }
 
     protected post<T = any>(path: string, options?: RequestOptions): Promise<T> {
-        return this.request(path, { ...options, method: "POST" })
+        return this.request(path, undefined, { ...options, method: "POST" })
     }
 
     protected put<T = any>(path: string, options?: RequestOptions): Promise<T> {
-        return this.request(path, { ...options, method: "PUT" })
+        return this.request(path, undefined, { ...options, method: "PUT" })
     }
 }

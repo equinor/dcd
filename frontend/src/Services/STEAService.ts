@@ -7,13 +7,13 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 
 class __STEAService extends __BaseService {
     public async excelToSTEA(projectId: string) {
-        // this.client.defaults.headers.common = {
-        //     Accept: "application/json",
-        //     Authorization: `Bearer ${config.accessToken}`,
-        //     ...this.config.headers,
-        // }
-        const res = await this.postWithParams("", undefined, { params: { projectId } })
-        return this.post(res)
+         // const postResponse = await this.post(projectId, { headers: { 'accept' : "text/plain"} })
+        const postExcelResponse = await this.postExcel(projectId, "blob", { headers: { 'accept' : "text/plain"} } )
+        
+        const asd = this.post(postExcelResponse)
+        console.log("Manni")
+        console.log(asd)
+        return asd
     }
 }
 
