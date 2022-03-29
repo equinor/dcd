@@ -23,6 +23,7 @@ import { RetrieveConfigFromAzure } from "./config"
 import "./styles.css"
 import SubstructureView from "./Views/SubstructureView"
 import TransportView from "./Views/TransportView"
+import DrainageStrategyView from "./Views/DrainageStrategyView"
 
 const browserHistory = createBrowserHistory()
 
@@ -83,6 +84,10 @@ const App: VoidFunctionComponent = () => {
                             <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                            <Route
+                                path="project/:projectId/case/:caseId/topside:drainageStrategyId"
+                                element={<DrainageStrategyView />}
+                            />
                             <Route
                                 path="project/:projectId/case/:caseId/topside/:topsideId"
                                 element={<TopsideView />}
