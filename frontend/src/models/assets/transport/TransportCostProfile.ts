@@ -1,4 +1,5 @@
 export class TransportCostProfile implements Components.Schemas.TransportCostProfileDto {
+    id?: string | undefined
     startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
@@ -6,14 +7,22 @@ export class TransportCostProfile implements Components.Schemas.TransportCostPro
     sum?: number | undefined
 
     constructor(data?: Components.Schemas.TransportCostProfileDto) {
-        this.startYear = data?.startYear
-        this.values = data?.values ?? []
-        this.epaVersion = data?.epaVersion ?? null
-        this.currency = data?.currency
-        this.sum = data?.sum
+        if (data !== undefined) {
+            this.id = data.id
+            this.startYear = data.startYear
+            this.values = data.values ?? []
+            this.epaVersion = data.epaVersion ?? null
+            this.currency = data.currency
+            this.sum = data.sum
+        } else {
+            this.id = "00000000-0000-0000-0000-000000000000"
+        }
     }
 
-    static fromJSON(data?: Components.Schemas.TransportCostProfileDto): TransportCostProfile {
-        return new TransportCostProfile(data)
+    static fromJSON(data?: Components.Schemas.TransportCostProfileDto): TransportCostProfile | undefined {
+        if (data !== undefined) {
+            return new TransportCostProfile(data)
+        }
+        return undefined
     }
 }
