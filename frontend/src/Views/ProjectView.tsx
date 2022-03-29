@@ -1,6 +1,5 @@
 // eslint-disable-next-line camelcase
 import { add, archive } from "@equinor/eds-icons"
-// import FileSaver from "file-saver"
 import {
     Button,
     EdsProvider,
@@ -103,12 +102,9 @@ const ProjectView = () => {
         e.preventDefault()
 
         try {
-            // submit project.id to backend
             const projectResult = await GetProjectService().getProjectByID(params.projectId!)
             const projectId = projectResult.id
             GetSTEAService().excelToSTEA(projectId)
-            // const excelFile = await GetSTEAService().excelToSTEA(projectId)
-            // FileSaver.saveAs(excelFile, (`${projectResult.name}.xlsx`))
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
