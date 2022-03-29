@@ -9,6 +9,8 @@ pool:
 
 variables:
   - group: DCD
+  - name: modelChanged
+    value: ""
 
 jobs:
   - job: Lint_CSharp
@@ -59,14 +61,41 @@ jobs:
         inputs:
           versionSpec: "16.x"
       - task: Npm@1
+        displayName: "Npm Install"
         inputs:
           command: "install"
           workingDir: "frontend"
       - task: Npm@1
+        displayName: "Run Script Build"
         inputs:
           command: "custom"
           workingDir: "frontend"
           customCommand: "run-script build"
+      - task: Npm@1
+        displayName: "Autogenerate-Models-Build"
+        inputs:
+          command: "custom"
+          workingDir: "frontend"
+          customCommand: "run autogenerate-models-build"
+      - powershell: |
+          $fileA = "types.d.ts"
+          $fileB = "types-azuredevops.d.ts"
+          $filesstring = git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion)
+          $files = $filesstring -split " "
+          $modelPath = "backend/api/Dtos/*"
+          foreach ($file in $files) {
+              Write-Host $file
+              if($file -like $modelPath) {
+                if(Compare-Object -ReferenceObject $(Get-Content $fileA) -DifferenceObject $(Get-Content $fileB)) {
+                    Write-Host "The Types file are different"
+                } else {
+                    Write-Host "The Types file are identical"
+                    exit 1
+                }
+              }
+          }
+        workingDirectory: $(Build.SourcesDirectory)/frontend/src/
+        displayName: "Check if Models has been updated"
 
   - job: Test_Backend
     steps:
@@ -75,14 +104,15 @@ jobs:
           packageType: "sdk"
           version: "6.0.x"
           includePreviewVersions: true # Required for preview versions
-      - task: DotNetCoreCLI@2
-        name: Run_Backend_Tests
+
+      - task: AzureCli@1
         inputs:
-          command: "test"
-          projects: "backend/tests/tests.csproj"
+          azureSubscription: "dcd-pipeline-sp"
+          scriptLocation: "inlineScript"
+          inlineScript: "dotnet test tests.csproj --logger trx"
+          workingDirectory: "$(Build.SourcesDirectory)/backend/tests/"
         env:
           AppConfiguration__ConnectionString: $(azureAppConfigConnString)
-
       - script: |
           dotnet tool install JetBrains.dotCover.GlobalTool -g
           cd $(Build.SourcesDirectory)/backend/tests/

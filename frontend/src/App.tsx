@@ -15,11 +15,14 @@ import React, { useEffect, useState, VoidFunctionComponent } from "react"
 import { ViewsContainer } from "./Views/ViewsContainer"
 import CaseView from "./Views/CaseView"
 import DashboardView from "./Views/DashboardView"
+import TopsideView from "./Views/TopsideView"
 import ProjectView from "./Views/ProjectView"
 
 import { RetrieveConfigFromAzure } from "./config"
 
 import "./styles.css"
+import SubstructureView from "./Views/SubstructureView"
+import TransportView from "./Views/TransportView"
 
 const browserHistory = createBrowserHistory()
 
@@ -80,6 +83,18 @@ const App: VoidFunctionComponent = () => {
                             <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                            <Route
+                                path="project/:projectId/case/:caseId/topside/:topsideId"
+                                element={<TopsideView />}
+                            />
+                            <Route
+                                path="project/:projectId/case/:caseId/substructure/:substructureId"
+                                element={<SubstructureView />}
+                            />
+                            <Route
+                                path="project/:projectId/case/:caseId/transport/:transportId"
+                                element={<TransportView />}
+                            />
                         </Route>
                     </Routes>
                 </BrowserRouter>

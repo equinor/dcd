@@ -1,6 +1,7 @@
 using api.Adapters;
 using api.Context;
 using api.Dtos;
+using api.Models;
 
 namespace api.Services
 {
@@ -17,8 +18,18 @@ namespace api.Services
 
         public STEAProjectDto GetInputToSTEA(Guid ProjectId)
         {
-            var project = ProjectDtoAdapter.Convert(_projectService.GetProject(ProjectId));
-            return STEAProjectDtoBuilder.Build(project);
+
+            var project = _projectService.GetProject(ProjectId);
+            List<STEACaseDto> sTEACaseDtos = new List<STEACaseDto>();
+            foreach (Case c in project.Cases!)
+            {
+                ProjectDto projectDto = ProjectDtoAdapter.Convert(project);
+                CaseDto caseDto = CaseDtoAdapter.Convert(c);
+                STEACaseDto sTEACaseDto = STEACaseDtoBuilder.Build(caseDto, projectDto);
+                sTEACaseDtos.Add(sTEACaseDto);
+            }
+            return STEAProjectDtoBuilder.Build(ProjectDtoAdapter.Convert(project), sTEACaseDtos);
         }
+
     }
 }

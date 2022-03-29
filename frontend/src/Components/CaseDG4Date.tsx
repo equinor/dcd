@@ -1,0 +1,103 @@
+import {
+    Typography,
+    Input,
+    Button,
+    EdsProvider,
+    Tooltip,
+    Icon,
+} from "@equinor/eds-core-react"
+import { save } from "@equinor/eds-icons"
+import {
+    useState,
+    ChangeEventHandler,
+    MouseEventHandler,
+} from "react"
+import { useParams } from "react-router-dom"
+import styled from "styled-components"
+import { Project } from "../models/Project"
+import { Case } from "../models/Case"
+import { GetCaseService } from "../Services/CaseService"
+
+const Dg4Field = styled.div`
+    margin-bottom: 3.5rem;
+    width: 12rem;
+    display: flex;
+`
+
+const ActionsContainer = styled.div`
+    > *:not(:last-child) {
+        margin-right: 0.5rem;
+    }
+`
+
+interface Props {
+    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>
+    caseItem: Case | undefined,
+    setCase: React.Dispatch<React.SetStateAction<Case | undefined>>
+}
+
+const CaseDG4Date = ({
+    setProject,
+    caseItem,
+    setCase,
+}: Props) => {
+    const params = useParams()
+    const [caseDg4Date, setCaseDg4Date] = useState<Date>()
+
+    const handleDg4FieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setCaseDg4Date(new Date(e.target.value))
+    }
+
+    const saveDg4Date: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        e.preventDefault()
+        try {
+            const caseDto = Case.Copy(caseItem!)
+            caseDto.DG4Date = caseDg4Date
+            const newProject = await GetCaseService().updateCase(caseDto)
+            setProject(newProject)
+            const caseResult = newProject.cases.find((o) => o.id === params.caseId)
+            setCase(caseResult)
+        } catch (error) {
+            console.error("[CaseView] error while submitting form data", error)
+        }
+    }
+
+    const dg4ReturnDate = () => {
+        const dg4DateGet = caseItem?.DG4Date?.toLocaleDateString("en-CA")
+        if (dg4DateGet !== "0001-01-01") {
+            return dg4DateGet
+        }
+        return ""
+    }
+
+    return (
+        <>
+            <Typography variant="h6">DG4</Typography>
+            <Dg4Field>
+                <Input
+                    defaultValue={dg4ReturnDate()}
+                    key={dg4ReturnDate()}
+                    id="dg4Date"
+                    type="date"
+                    name="dg4Date"
+                    onChange={handleDg4FieldChange}
+                />
+                <EdsProvider density="compact">
+                    <ActionsContainer>
+                        <Tooltip title="Save DG4 date">
+                            <Button
+                                variant="ghost_icon"
+                                aria-label="Save DG4 date"
+                                onClick={saveDg4Date}
+                            >
+                                <Icon data={save} />
+                            </Button>
+                        </Tooltip>
+                    </ActionsContainer>
+                </EdsProvider>
+            </Dg4Field>
+        </>
+    )
+}
+
+export default CaseDG4Date
