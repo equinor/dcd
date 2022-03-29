@@ -9,16 +9,18 @@ namespace api.Adapters
 
         public static SurfDto Convert(Surf surf_)
         {
-            var surfDto = new SurfDto();
-            surfDto.Id = surf_.Id;
-            surfDto.ProjectId = surf_.ProjectId;
-            surfDto.Name = surf_.Name;
-            surfDto.ArtificialLift = surf_.ArtificialLift;
-            surfDto.Maturity = surf_.Maturity;
-            surfDto.InfieldPipelineSystemLength = surf_.InfieldPipelineSystemLength;
-            surfDto.ProductionFlowline = surf_.ProductionFlowline;
-            surfDto.RiserCount = surf_.RiserCount;
-            surfDto.CostProfile = Convert(surf_.CostProfile);
+            var surfDto = new SurfDto
+            {
+                Id = surf_.Id,
+                ProjectId = surf_.ProjectId,
+                Name = surf_.Name,
+                ArtificialLift = surf_.ArtificialLift,
+                Maturity = surf_.Maturity,
+                InfieldPipelineSystemLength = surf_.InfieldPipelineSystemLength,
+                ProductionFlowline = surf_.ProductionFlowline,
+                RiserCount = surf_.RiserCount,
+                CostProfile = Convert(surf_.CostProfile)
+            };
             surfDto.Id = surf_.Id;
             return surfDto;
         }
@@ -28,12 +30,14 @@ namespace api.Adapters
 
             if (costprofile != null)
             {
-                var surfCostProfile = new SurfCostProfileDto();
-                surfCostProfile.Id = costprofile.Id;
-                surfCostProfile.Currency = costprofile.Currency;
-                surfCostProfile.EPAVersion = costprofile.EPAVersion;
-                surfCostProfile.Values = costprofile.Values;
-                surfCostProfile.StartYear = costprofile.StartYear;
+                var surfCostProfile = new SurfCostProfileDto
+                {
+                    Id = costprofile.Id,
+                    Currency = costprofile.Currency,
+                    EPAVersion = costprofile.EPAVersion,
+                    Values = costprofile.Values,
+                    StartYear = costprofile.StartYear
+                };
                 return surfCostProfile;
             }
             return null;

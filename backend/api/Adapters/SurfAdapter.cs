@@ -9,15 +9,17 @@ namespace api.Adapters
 
         public static Surf Convert(SurfDto surfDto)
         {
-            var surf = new Surf();
-            surf.Id = surfDto.Id;
-            surf.ProjectId = surfDto.ProjectId;
-            surf.Name = surfDto.Name;
-            surf.ArtificialLift = surfDto.ArtificialLift;
-            surf.Maturity = surfDto.Maturity;
-            surf.InfieldPipelineSystemLength = surfDto.InfieldPipelineSystemLength;
-            surf.ProductionFlowline = surfDto.ProductionFlowline;
-            surf.RiserCount = surfDto.RiserCount;
+            var surf = new Surf
+            {
+                Id = surfDto.Id,
+                ProjectId = surfDto.ProjectId,
+                Name = surfDto.Name,
+                ArtificialLift = surfDto.ArtificialLift,
+                Maturity = surfDto.Maturity,
+                InfieldPipelineSystemLength = surfDto.InfieldPipelineSystemLength,
+                ProductionFlowline = surfDto.ProductionFlowline,
+                RiserCount = surfDto.RiserCount
+            };
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
             return surf;
         }
@@ -28,13 +30,15 @@ namespace api.Adapters
             {
                 return null;
             }
-            var surfCostProfile = new SurfCostProfile();
-            surfCostProfile.Id = costprofile.Id;
-            surfCostProfile.Currency = costprofile.Currency;
-            surfCostProfile.EPAVersion = costprofile.EPAVersion;
-            surfCostProfile.StartYear = costprofile.StartYear;
-            surfCostProfile.Values = costprofile.Values;
-            surfCostProfile.Surf = surf;
+            var surfCostProfile = new SurfCostProfile
+            {
+                Id = costprofile.Id,
+                Currency = costprofile.Currency,
+                EPAVersion = costprofile.EPAVersion,
+                StartYear = costprofile.StartYear,
+                Values = costprofile.Values,
+                Surf = surf
+            };
             return surfCostProfile;
         }
     }
