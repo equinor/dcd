@@ -1,6 +1,8 @@
 import React, { ChangeEventHandler, useEffect, useState } from "react"
 import styled from "styled-components"
-import { Button, Input, Typography } from "@equinor/eds-core-react"
+import {
+    Button, Input, Label, Typography,
+} from "@equinor/eds-core-react"
 
 import { useNavigate, useLocation, useParams } from "react-router"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
@@ -163,14 +165,18 @@ const SurfView = () => {
 
     return (
         <AssetViewDiv>
+            <Typography variant="h2">Surf</Typography>
             <AssetHeader>
-                <Input
-                    id="surfName"
-                    name="surfName"
-                    placeholder="Enter surf name"
-                    defaultValue={surf?.name}
-                    onChange={handleSurfNameFieldChange}
-                />
+                <WrapperColumn>
+                    <Label htmlFor="surfName" label="Name" />
+                    <Input
+                        id="surfName"
+                        name="surfName"
+                        placeholder="Enter surf name"
+                        defaultValue={surf?.name}
+                        onChange={handleSurfNameFieldChange}
+                    />
+                </WrapperColumn>
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
