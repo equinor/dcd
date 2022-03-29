@@ -22,12 +22,14 @@ namespace api.Adapters
 
         private static TransportCostProfileDto Convert(TransportCostProfile costprofile)
         {
-            var transportCostProfile = new TransportCostProfileDto();
-            transportCostProfile.Currency = costprofile.Currency;
-            transportCostProfile.EPAVersion = costprofile.EPAVersion;
-            transportCostProfile.StartYear = costprofile.StartYear;
-            transportCostProfile.Values = costprofile.Values;
-            return transportCostProfile;
+            return new TransportCostProfileDto()
+            {
+                Id = costprofile.Id,
+                Currency = costprofile.Currency,
+                EPAVersion = costprofile.EPAVersion,
+                StartYear = costprofile.StartYear,
+                Values = costprofile.Values,
+            };
         }
     }
 }
