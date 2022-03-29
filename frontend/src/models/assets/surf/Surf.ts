@@ -16,7 +16,7 @@ export class Surf implements Components.Schemas.SurfDto {
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {
             this.id = data.id ?? ""
-            this.name = data.name ?? "Untitled"
+            this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = SurfCostProfile.fromJSON(data.costProfile)
             this.maturity = data.maturity

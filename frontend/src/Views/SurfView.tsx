@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { ChangeEventHandler, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Button, Input, Typography } from "@equinor/eds-core-react"
@@ -71,20 +70,22 @@ const SurfView = () => {
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
     const [hasName, setHasHasName] = useState(false)
-    const [surfName, setSurfName] = useState<Record<string, any>>({})
+    const [surfName, setSurfName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
     const emptyGUID = "00000000-0000-0000-0000-000000000000"
 
-    const assetName = async (name:string | undefined) => {
-        const surfProjectName = project?.surfs.find((s) => s.id === params.surfId)?.name
-        if (name !== "") {
-            setHasHasName(true)
-            if (surfProjectName !== name) {
+    const handleSurfName = async (name:string | undefined) => {
+        if (name !== undefined) {
+            if (name !== surfName) {
                 setHasChanges(true)
+                if (name !== "") {
+                    setHasHasName(true)
+                }
             }
         }
+        setHasHasName(false)
     }
     useEffect(() => {
         (async () => {
@@ -96,11 +97,11 @@ const SurfView = () => {
                 let newSurf = projectResult.surfs.find((s) => s.id === params.surfId)
                 if (newSurf !== undefined) {
                     setSurf(newSurf)
-                    assetName(surf?.name)
                 } else {
                     newSurf = new Surf()
                     setSurf(newSurf)
                 }
+                handleSurfName(newSurf?.name)
                 const newColumnTitles = getColumnAbsoluteYears(caseResult, newSurf?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSurf?.costProfile)
@@ -142,6 +143,7 @@ const SurfView = () => {
         const surfDto = Surf.ToDto(surf!)
         if (surf?.id === emptyGUID) {
             surfDto.projectId = params.projectId
+            surfDto.name = surfName
             const newProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
             const newSurf = newProject.surfs.at(-1)
             const newUrl = location.pathname.replace(emptyGUID, newSurf!.id!)
@@ -158,24 +160,22 @@ const SurfView = () => {
     }
 
     const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setSurfName({
-            SurfName: surfName,
-            [e.target.name]: e.target.value,
-        })
+        setSurfName(e.target.value)
+        if (surfName !== undefined && surfName !== "") {
+            setHasChanges(true)
+        }
     }
 
     return (
         <AssetViewDiv>
             <AssetHeader>
-                {hasName
-                    ? (<Typography variant="h2">{surf?.name}</Typography>)
-                    : (
-                        <Input
-                            id="surfName"
-                            name="surfName"
-                            onChange={handleSurfNameFieldChange}
-                        />
-                    )}
+                <Input
+                    id="surfName"
+                    name="surfName"
+                    placeholder="Enter surf name"
+                    defaultValue={hasName ? surf?.name : ""}
+                    onChange={handleSurfNameFieldChange}
+                />
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
