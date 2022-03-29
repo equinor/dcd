@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
@@ -7,7 +6,6 @@ import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import LinkAsset from "./LinkAsset"
 import { GetCaseService } from "../Services/CaseService"
-import { CreateAsset } from "./CreateAsset"
 
 const Wrapper = styled.div`
     display: flex;
