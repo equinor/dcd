@@ -6,14 +6,19 @@ export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto {
     sum?: number | undefined
 
     constructor(data?: Components.Schemas.SurfCostProfileDto) {
-        this.startYear = data?.startYear
-        this.values = data?.values ?? []
-        this.epaVersion = data?.epaVersion ?? ""
-        this.currency = data?.currency
-        this.sum = data?.sum
+        if (data !== undefined && data !== null) {
+            this.startYear = data?.startYear
+            this.values = data?.values ?? []
+            this.epaVersion = data?.epaVersion ?? ""
+            this.currency = data?.currency
+            this.sum = data?.sum
+        }
     }
 
-    static fromJSON(data?: Components.Schemas.SurfCostProfileDto): SurfCostProfile {
+    static fromJSON(data?: Components.Schemas.SurfCostProfileDto): SurfCostProfile | undefined {
+        if (data === undefined || data === null) {
+            return undefined
+        }
         return new SurfCostProfile(data)
     }
 }

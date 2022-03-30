@@ -142,8 +142,12 @@ const SurfView = () => {
         if (surf?.id === emptyGUID) {
             surfDto.projectId = params.projectId
             const newProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
+            const newCase = newProject.cases.find((o) => o.id === params.caseId)
             const newSurf = newProject.surfs.at(-1)
             const newUrl = location.pathname.replace(emptyGUID, newSurf!.id!)
+            setProject(newProject)
+            setCase(newCase)
+            setSurf(newSurf)
             navigate(`${newUrl}`, { replace: true })
         } else {
             const newProject = await GetSurfService().updateSurf(surfDto)
