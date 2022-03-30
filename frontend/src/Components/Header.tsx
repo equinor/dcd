@@ -31,7 +31,7 @@ function Header({ name }: Props) {
         <>
             <Wrapper>
                 <PageTitle>DCD - Digital Concept Development</PageTitle>
-                <Button ref={buttonRef} onClick={openModal}>Create Project</Button>
+                <Button ref={buttonRef} onClick={openModal}>Add Project</Button>
                 <Typography>
                     Welcome to DCD
                     {" "}

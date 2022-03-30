@@ -5,7 +5,7 @@ import {
     TextField,
     Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEvent, useEffect, useState } from "react"
+import React, { ChangeEvent, useState } from "react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
@@ -139,18 +139,16 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         setDescription(event.target.value)
     }
 
-    useEffect(() => {
-        (async () => {
-            try {
-                setCommonLibFetchError(false)
-                const res = await CommonLibraryService.getProjects()
-                setProjects(res)
-            } catch (error) {
-                setCommonLibFetchError(true)
-                console.error("[CreateProjectView] Error while fetching common library projects.", error)
-            }
-        })()
-    }, [])
+    const fetchProjects = async () => {
+        try {
+            setCommonLibFetchError(false)
+            const res = await CommonLibraryService.getProjects()
+            setProjects(res)
+        } catch (error) {
+            setCommonLibFetchError(true)
+            console.error("[CreateProjectView] Error while fetching common library projects.", error)
+        }
+    }
 
     if (commonLibFetchError) {
         return (
@@ -165,28 +163,21 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         )
     }
 
-    if (!projects) {
-        return (
-            <Modal isOpen={isOpen} title="Getting data" shards={shards}>
-                <Typography>Retrieving projects from Common Library.</Typography>
-            </Modal>
-        )
-    }
-
     return (
-        <Modal isOpen={isOpen} title="Create Project" shards={shards}>
+        <Modal isOpen={isOpen} title="Add Project" shards={shards}>
             <div>
                 <ProjectSelect>
                     <Icon data={search} color={grey} />
                     <ProjectDropdown
                         id="select-project"
-                        label="CommonLib project"
+                        label="Click to load CommonLib projects"
+                        onClick={fetchProjects}
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                         defaultValue=""
                     >
                         {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                         <option disabled />
-                        {projects.map((project) => (
+                        {projects?.map((project) => (
                             <option value={project.id!} key={project.id}>{project.name!}</option>
                         ))}
                     </ProjectDropdown>
