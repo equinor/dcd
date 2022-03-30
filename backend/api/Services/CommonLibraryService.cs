@@ -1,6 +1,6 @@
 using api.Adapters;
-using api.Dtos;
 using api.Context;
+using api.Dtos;
 
 using Equinor.TI.CommonLibrary.Client;
 
@@ -78,7 +78,7 @@ namespace api.Services
             var filteredList = projects.Where(p => p.ProjectState != "COMPLETED" && whiteList.Contains(p.ProjectCategory.ToString()));
             var existingProjects = _projectService.GetAll()?.Select(p => p.CommonLibraryId).ToList();
 
-            if (existingProjects != null) 
+            if (existingProjects != null)
             {
                 return filteredList.Where(p => !existingProjects.Contains(p.Id)).OrderBy(p => p.Name).ToList();
             }
