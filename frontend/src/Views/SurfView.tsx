@@ -160,6 +160,8 @@ const SurfView = () => {
         setSurfName(e.target.value)
         if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
+        } else {
+            setHasChanges(false)
         }
     }
 
