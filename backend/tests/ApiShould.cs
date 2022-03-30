@@ -183,7 +183,7 @@ public class ApiShould : IClassFixture<WebApplicationFactory<Program>>
         var fetchedProjectDto = await getJson<ProjectDto>(client,
                 _projectsApiPath + "/" + projectId);
 
-        // establish correctness of received fetchedProjectDto
+        // establish correctness of received fetchedProjectDto  
         // basic comparisons of project data
         // set expected date on test project instance, for comparison
         projectDto.CreateDate = DateTimeOffset.UtcNow.Date;

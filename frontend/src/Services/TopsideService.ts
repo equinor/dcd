@@ -9,6 +9,11 @@ export class __TopsideService extends __BaseService {
         const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)
     }
+
+    public async updateTopside(body: Components.Schemas.TopsideDto): Promise<Project> {
+        const res = await this.put("", { body })
+        return Project.fromJSON(res)
+    }
 }
 
 export function GetTopsideService() {
