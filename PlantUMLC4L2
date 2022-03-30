@@ -1,25 +1,25 @@
 @startuml C4_Elements
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
 !include FONTAWESOME/users.puml
 
 LAYOUT_WITH_LEGEND()
 
-
 Person(concarchAlias, "Concept Architect", "Want to compare the business cases of different concepts for developing a field")
 Person(engAlias, "Engineers", "People in the project teams performing an estimate of discipline output", $sprite="users")
-System(dcdAlias, "Digital Concept App", "Provides an overview of business cases for projects")
-System_Ext(steaAlias, "STEA")
+System_Boundary(c1, "Digital Concept Appp") {
+  Container(web_app, "Web Application", ".Net, React")
+}
+Container_Ext(steaAlias, "STEA", "Excel sheet")
 ContainerDb_Ext(commonlibAlias, "CommonLib", "Holds the project portfolio")
 
 
-Rel_D(concarchAlias, dcdAlias, "Adds projects and concepts")
-Rel_U(dcdAlias, concarchAlias, "Compare and refine concept business cases")
-
+Rel_D(concarchAlias, web_app, "Adds projects and concepts")
+Rel_U(web_app, concarchAlias, "Compare and refine concept business cases")
 Rel(concarchAlias, engAlias, "Requests detailed cost-profiles for concepts")
-Rel(engAlias, dcdAlias, "Manually enters detailed cost-profiles for the concepts")
-
-Rel_R(dcdAlias, steaAlias, "Transfers data to STEA via Excel sheet")
-Rel_R(commonlibAlias, dcdAlias, "Reads")
+Rel(engAlias, web_app, "Manually enters detailed cost-profiles for the concepts")
+Rel_R(web_app, steaAlias, "Transfers data to STEA")
+Rel_R(commonlibAlias, web_app, "Reads")
 
 @enduml
