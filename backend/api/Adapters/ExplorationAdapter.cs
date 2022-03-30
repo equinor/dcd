@@ -28,6 +28,7 @@ namespace api.Adapters
             }
             return new ExplorationCostProfile
             {
+                Id = costProfileDto.Id,
                 Currency = costProfileDto.Currency,
                 EPAVersion = costProfileDto.EPAVersion,
                 Exploration = exploration,
@@ -44,6 +45,7 @@ namespace api.Adapters
             return new ExplorationDrillingSchedule
             {
                 Exploration = exploration,
+                Id = drillingScheduleDto.Id,
                 StartYear = drillingScheduleDto.StartYear,
                 Values = drillingScheduleDto.Values
             };
@@ -56,6 +58,7 @@ namespace api.Adapters
             }
             return new GAndGAdminCost
             {
+                Id = gAndGAdminCostDto.Id,
                 Currency = gAndGAdminCostDto.Currency,
                 EPAVersion = gAndGAdminCostDto.EPAVersion,
                 Exploration = exploration,
