@@ -128,8 +128,8 @@ const DrainageStrategyView = () => {
         if (drainageStrategyDto?.id === emptyGuid) {
             drainageStrategyDto.projectId = params.projectId
             const newProject: Project = await GetDrainageStrategyService().createDrainageStrategy(params.caseId!, drainageStrategyDto!)
-            const newTopside = newProject.topsides.at(-1)
-            const newUrl = location.pathname.replace(emptyGuid, newTopside!.id!)
+            const newDrainageStrategy = newProject.topsides.at(-1)
+            const newUrl = location.pathname.replace(emptyGuid, newDrainageStrategy!.id!)
             const newCase = newProject.cases.find((o) => o.id === params.caseId)
             setdrainageStrategy(drainageStrategyDto)
             setCase(newCase)
@@ -158,7 +158,7 @@ const DrainageStrategyView = () => {
                 </Dg4Field>
             </Wrapper>
             <Wrapper>
-                <Typography variant="h4">Cost profile</Typography>
+                <Typography variant="h4">Artificial Lift Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
             </Wrapper>
             <WrapperColumn>
