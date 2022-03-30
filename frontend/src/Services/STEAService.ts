@@ -1,8 +1,6 @@
 import FileSaver from "file-saver"
 import { __BaseService } from "./__BaseService"
 
-import { GetProjectService } from "../Services/ProjectService"
-
 import { config } from "./config"
 
 import { Project } from "../models/Project"
