@@ -102,9 +102,8 @@ const ProjectView = () => {
         e.preventDefault()
 
         try {
-            const projectResult = await GetProjectService().getProjectByID(params.projectId!)
-            const projectId = projectResult.id
-            GetSTEAService().excelToSTEA(projectId)
+            const projectResult: Project = await GetProjectService().getProjectByID(params.projectId!)
+            GetSTEAService().excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
