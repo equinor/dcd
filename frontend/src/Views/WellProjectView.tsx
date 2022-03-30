@@ -66,7 +66,7 @@ const Dg4Field = styled.div`
 `
 
 function WellProjectView() {
-    const [project, setProject] = useState<Project>()
+    const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [wellProject, setWellProject] = useState<WellProject>()
     const [columns, setColumns] = useState<string[]>([""])
