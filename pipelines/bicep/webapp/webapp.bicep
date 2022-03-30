@@ -132,7 +132,7 @@ resource config 'Microsoft.Web/sites/config@2021-03-01' = {
     publishingUsername: webAppName
     scmType: 'VSTSRM'
     use32BitWorkerProcess: true
-    webSocketsEnabled: true
+    webSocketsEnabled: false
     alwaysOn: true
     managedPipelineMode: 'Integrated'
     virtualApplications: [
