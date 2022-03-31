@@ -1,11 +1,12 @@
-export class ProductionProfileWaterInjectionCostProfile implements Components.Schemas.ProductionProfileWaterInjectionDto {
+export class ProductionProfileWaterInjectionCostProfile implements
+Components.Schemas.ProductionProfileWaterInjectionDto {
     id?: string
     startYear?: number | undefined
     values?: number [] | null
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileWaterInjectionDto) {
-        if (data !== null || undefined) {
+        if (data !== null && data !== undefined) {
             this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []
@@ -15,11 +16,11 @@ export class ProductionProfileWaterInjectionCostProfile implements Components.Sc
         }
     }
 
-    static fromJson(data?: Components.Schemas.ProductionProfileWaterInjectionDto): ProductionProfileWaterInjectionCostProfile | undefined {
-        if (data !== undefined) {
-            return new ProductionProfileWaterInjectionCostProfile(data)
+    static fromJson(data?: Components.Schemas.ProductionProfileWaterInjectionDto):
+    ProductionProfileWaterInjectionCostProfile | undefined {
+        if (data === undefined || data === null) {
+            return undefined
         }
-        return undefined
+        return new ProductionProfileWaterInjectionCostProfile(data)
     }
-
 }

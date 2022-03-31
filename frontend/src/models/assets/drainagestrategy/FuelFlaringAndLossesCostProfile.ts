@@ -5,7 +5,7 @@ export class FuelFlaringAndLossesCostProfile implements Components.Schemas.FuelF
     sum?: number
 
     constructor(data?: Components.Schemas.FuelFlaringAndLossesDto) {
-        if (data !== null || undefined) {
+        if (data !== null && data !== undefined) {
             this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []
@@ -16,10 +16,9 @@ export class FuelFlaringAndLossesCostProfile implements Components.Schemas.FuelF
     }
 
     static fromJson(data?: Components.Schemas.NetSalesGasDto): FuelFlaringAndLossesCostProfile | undefined {
-        if (data !== undefined) {
-            return new FuelFlaringAndLossesCostProfile(data)
+        if (data === undefined || data === null) {
+            return undefined
         }
-        return undefined
+        return new FuelFlaringAndLossesCostProfile(data)
     }
-
 }

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Button, Input, Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -69,46 +70,45 @@ const DrainageStrategyView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
-    //Artificial Lift. Tror ikke dette er Grid Excel import...
+    // Artificial Lift. Tror ikke dette er Grid Excel import...
     const [artificialLiftColumns, setArtificialLiftColumns] = useState<string[]>([""])
     const [artificialLiftGridData, setArtificialLiftGridData] = useState<CellValue[][]>([[]])
     const [artificialLiftCostProfileDialogOpen, setArtificialLiftCostProfileDialogOpen] = useState(false)
-    
-    //co2Emissions
+
+    // co2Emissions
     const [co2EmissionsColumns, setCo2EmissionsColumns] = useState<string[]>([""])
     const [co2EmissionsGridData, setCo2EmissionsGridData] = useState<CellValue[][]>([[]])
     const [co2EmissionsCostProfileDialogOpen, setCo2EmissionsCostProfileDialogOpen] = useState(false)
-    
-    //fuel flaring and losses
+
+    // fuel flaring and losses
     const [fuelFlaringAndLossesColumns, setFuelFlaringAndLossesColumns] = useState<string[]>([""])
     const [fuelFlaringAndLossesGridData, setFuelFlaringAndLossesGridData] = useState<CellValue[][]>([[]])
     const [fuelFlaringAndLossesCostProfileDialogOpen, setFuelFlaringAndLossesCostProfileDialogOpen] = useState(false)
 
-    //Netsalesgas
+    // Netsalesgas
     const [netSalesGasColumns, setNetSalesGasColumns] = useState<string[]>([""])
     const [netSalesGasGridData, setNetSalesGasGridData] = useState<CellValue[][]>([[]])
     const [netSalesGasCostProfileDialogOpen, setNetSalesGasCostProfileDialogOpen] = useState(false)
 
-    //ProductionProfileGas
+    // ProductionProfileGas
     const [productionProfileGasColumns, setProductionProfileGasColumns] = useState<string[]>([""])
     const [productionProfileGasGridData, setProductionProfileGasGridData] = useState<CellValue[][]>([[]])
     const [productionProfileGasCostProfileDialogOpen, setProductionProfileGasCostProfileDialogOpen] = useState(false)
 
-    //ProductionProfileOil
+    // ProductionProfileOil
     const [productionProfileOilColumns, setProductionProfileOilColumns] = useState<string[]>([""])
     const [productionProfileOilGridData, setProductionProfileOilGridData] = useState<CellValue[][]>([[]])
     const [productionProfileOilCostProfileDialogOpen, setProductionProfileOilCostProfileDialogOpen] = useState(false)
 
-    //ProductionProfileOil
+    // ProductionProfileOil
     const [productionProfileWaterColumns, setProductionProfileWaterColumns] = useState<string[]>([""])
     const [productionProfileWaterGridData, setProductionProfileWaterGridData] = useState<CellValue[][]>([[]])
     const [productionProfileWaterCostProfileDialogOpen, setProductionProfileWaterCostProfileDialogOpen] = useState(false)
 
-    //ProductionProfileOil
+    // ProductionProfileOil
     const [productionProfileWaterInjectionColumns, setProductionProfileWaterInjectionColumns] = useState<string[]>([""])
     const [productionProfileWaterInjectionGridData, setProductionProfileWaterInjectionGridData] = useState<CellValue[][]>([[]])
     const [productionProfileWaterInjectionCostProfileDialogOpen, setProductionProfileWaterInjectionCostProfileDialogOpen] = useState(false)
-    
 
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
@@ -162,7 +162,6 @@ const DrainageStrategyView = () => {
                 setProductionProfileOilGridData(newProductionProfileOilGridData)
                 setProductionProfileWaterGridData(newProductionProfileWaterGridData)
                 setProductionProfileWaterInjectionGridData(newProductionProileWaterInjectionGridData)
-
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
@@ -203,7 +202,7 @@ const DrainageStrategyView = () => {
         setProductionProfileOilColumns(getColumnAbsoluteYears(caseItem, drainageStrategy?.productionProfileOil))
         setHasChanges(true)
     }
-    
+
     const onProductionProfileWaterCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(productionProfileWaterGridData, changes)
         setProductionProfileWaterGridData(newGridData)
@@ -220,7 +219,7 @@ const DrainageStrategyView = () => {
 
     const onImportCo2Emissions = (input: string, year: number) => {
         const newDrainageStrategy = DrainageStrategy.Copy(drainageStrategy!)
-        if (newDrainageStrategy.co2Emissions == undefined) {
+        if (newDrainageStrategy.co2Emissions === undefined) {
             newDrainageStrategy.co2Emissions = new Co2EmissionsCostProfile()
         }
         newDrainageStrategy.co2Emissions!.startYear = year
@@ -311,7 +310,7 @@ const DrainageStrategyView = () => {
         setProductionProfileWaterInjectionCostProfileDialogOpen(!productionProfileWaterInjectionCostProfileDialogOpen)
         setHasChanges(true)
     }
-    
+
     const handleSave = async () => {
         const drainageStrategyDto = DrainageStrategy.toDto(drainageStrategy!)
         if (drainageStrategyDto?.id === emptyGuid) {

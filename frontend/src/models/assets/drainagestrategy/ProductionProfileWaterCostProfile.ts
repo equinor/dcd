@@ -5,7 +5,7 @@ export class ProductionProfileWaterCostProfile implements Components.Schemas.Pro
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileWaterDto) {
-        if (data !== null || undefined) {
+        if (data !== null && data !== undefined) {
             this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []
@@ -15,11 +15,11 @@ export class ProductionProfileWaterCostProfile implements Components.Schemas.Pro
         }
     }
 
-    static fromJson(data?: Components.Schemas.ProductionProfileWaterDto): ProductionProfileWaterCostProfile | undefined {
-        if (data !== undefined) {
-            return new ProductionProfileWaterCostProfile(data)
+    static fromJson(data?: Components.Schemas.ProductionProfileWaterDto):
+    ProductionProfileWaterCostProfile | undefined {
+        if (data === undefined || data === null) {
+            return undefined
         }
-        return undefined
+        return new ProductionProfileWaterCostProfile(data)
     }
-
 }

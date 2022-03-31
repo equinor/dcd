@@ -5,7 +5,7 @@ export class Co2EmissionsCostProfile implements Components.Schemas.Co2EmissionsD
     sum?: number
 
     constructor(data?: Components.Schemas.Co2EmissionsDto) {
-        if (data !== undefined || null) {
+        if (data !== undefined && data !== undefined) {
             this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []
@@ -16,10 +16,9 @@ export class Co2EmissionsCostProfile implements Components.Schemas.Co2EmissionsD
     }
 
     static fromJson(data?: Components.Schemas.NetSalesGasDto): Co2EmissionsCostProfile | undefined {
-        if (data !== undefined) {
-            return new Co2EmissionsCostProfile(data)
+        if (data === undefined || data === null) {
+            return undefined
         }
-        return undefined
+        return new Co2EmissionsCostProfile(data)
     }
-
 }

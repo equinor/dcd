@@ -118,6 +118,7 @@ namespace api.Adapters
         {
             return co2EmissionsDto == null ? null : new Co2Emissions
             {
+                Id = co2EmissionsDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = co2EmissionsDto.StartYear,
                 Values = co2EmissionsDto.Values

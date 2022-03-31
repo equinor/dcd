@@ -5,7 +5,7 @@ export class NetSalesGasCostProfile implements Components.Schemas.NetSalesGasDto
     sum?: number
 
     constructor(data?: Components.Schemas.NetSalesGasDto) {
-        if (data !== null || undefined) {
+        if (data !== null && data !== undefined) {
             this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []
@@ -16,10 +16,9 @@ export class NetSalesGasCostProfile implements Components.Schemas.NetSalesGasDto
     }
 
     static fromJson(data?: Components.Schemas.NetSalesGasDto): NetSalesGasCostProfile | undefined {
-        if (data !== undefined) {
-            return new NetSalesGasCostProfile(data)
+        if (data === undefined || data === null) {
+            return undefined
         }
-        return undefined
+        return new NetSalesGasCostProfile(data)
     }
-
 }

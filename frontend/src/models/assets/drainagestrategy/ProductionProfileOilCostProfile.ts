@@ -5,7 +5,7 @@ export class ProductionProfileOilCostProfile implements Components.Schemas.Produ
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileOilDto) {
-        if (data !== null || undefined) {
+        if (data !== null && data !== undefined) {
             this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []
@@ -16,10 +16,9 @@ export class ProductionProfileOilCostProfile implements Components.Schemas.Produ
     }
 
     static fromJson(data?: Components.Schemas.ProductionProfileOilDto): ProductionProfileOilCostProfile | undefined {
-        if (data !== undefined) {
-            return new ProductionProfileOilCostProfile(data)
+        if (data === undefined || data === null) {
+            return undefined
         }
-        return undefined
+        return new ProductionProfileOilCostProfile(data)
     }
-
 }
