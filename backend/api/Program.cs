@@ -72,6 +72,7 @@ builder.Services.AddCors(options =>
             builder.AllowAnyHeader();
             builder.AllowAnyMethod();
             builder.WithOrigins(
+                "http://localhost:3000/",
                 "http://localhost:3000",
                 "https://*.equinor.com",
                 "https://ase-dcd-frontend-dev.azurewebsites.net/",

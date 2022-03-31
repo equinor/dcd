@@ -15,6 +15,7 @@ import { Case } from "../models/Case"
 
 import { GetProjectService } from "../Services/ProjectService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
+import { Co2EmissionsCostProfile } from "../models/assets/drainagestrategy/Co2EmissionsCostProfile"
 
 const AssetHeader = styled.div`
     margin-bottom: 2rem;
@@ -219,6 +220,9 @@ const DrainageStrategyView = () => {
 
     const onImportCo2Emissions = (input: string, year: number) => {
         const newDrainageStrategy = DrainageStrategy.Copy(drainageStrategy!)
+        if (newDrainageStrategy.co2Emissions == undefined) {
+            newDrainageStrategy.co2Emissions = new Co2EmissionsCostProfile()
+        }
         newDrainageStrategy.co2Emissions!.startYear = year
         newDrainageStrategy.co2Emissions!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setDrainageStrategy(newDrainageStrategy)

@@ -35,7 +35,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto{
             this.nglYield = data.nglYield
             this.gasInjectorCount = data.gasInjectorCount
             this.producerCount = data.producerCount
-            this.artificialLift = data.artificialLift ?? new ArtificialLift(0)
+            this.artificialLift = data.artificialLift 
             this.netSalesGas = NetSalesGasCostProfile.fromJson(data.netSalesGas)
             this.co2Emissions = Co2EmissionsCostProfile.fromJson(data.co2Emissions)
             this.fuelFlaringAndLosses = FuelFlaringAndLossesCostProfile.fromJson(data.fuelFlaringAndLosses)
@@ -46,14 +46,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto{
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
-            this.artificialLift = new ArtificialLift()
-            this.co2Emissions = new Co2EmissionsCostProfile()
-            this.fuelFlaringAndLosses = new FuelFlaringAndLossesCostProfile()
-            this.netSalesGas = new NetSalesGasCostProfile()
-            this.productionProfileGas = new ProductionProfileGasCostProfile()
-            this.productionProfileOil = new ProductionProfileOilCostProfile()
-            this.productionProfileWater = new ProductionProfileWaterCostProfile()
-            this.productionProfileWaterInjection = new ProductionProfileWaterInjectionCostProfile()
+            this.description = ""
         }
     }
 

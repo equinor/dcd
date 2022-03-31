@@ -5,11 +5,11 @@ export class Co2EmissionsCostProfile implements Components.Schemas.Co2EmissionsD
     sum?: number
 
     constructor(data?: Components.Schemas.Co2EmissionsDto) {
-        if (data !== undefined) {
-            this.id = data.id
-            this.startYear = data.startYear
-            this.values = data.values ?? []
-            this.sum = data.sum
+        if (data !== undefined || null) {
+            this.id = data?.id
+            this.startYear = data?.startYear
+            this.values = data?.values ?? []
+            this.sum = data?.sum
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
         }

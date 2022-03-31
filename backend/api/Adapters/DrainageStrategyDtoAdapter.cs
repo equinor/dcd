@@ -33,6 +33,7 @@ namespace api.Adapters
             {
                 return new ProductionProfileOilDto
                 {
+                    Id = productionProfileOil.Id,
                     StartYear = productionProfileOil.StartYear,
                     Values = productionProfileOil.Values
                 };
@@ -46,6 +47,7 @@ namespace api.Adapters
             {
                 return new ProductionProfileGasDto
                 {
+                    Id = productionProfileGas.Id,
                     StartYear = productionProfileGas.StartYear,
                     Values = productionProfileGas.Values
                 };
@@ -59,6 +61,7 @@ namespace api.Adapters
             {
                 return new ProductionProfileWaterDto
                 {
+                    Id = productionProfileWater.Id,
                     StartYear = productionProfileWater.StartYear,
                     Values = productionProfileWater.Values
                 };
@@ -72,6 +75,7 @@ namespace api.Adapters
             {
                 return new ProductionProfileWaterInjectionDto
                 {
+                    Id = productionProfileWaterInjection.Id,
                     StartYear = productionProfileWaterInjection.StartYear,
                     Values = productionProfileWaterInjection.Values
                 };
@@ -85,6 +89,7 @@ namespace api.Adapters
             {
                 return new FuelFlaringAndLossesDto
                 {
+                    Id = fuelFlaringAndLosses.Id,
                     StartYear = fuelFlaringAndLosses.StartYear,
                     Values = fuelFlaringAndLosses.Values
                 };
@@ -98,6 +103,7 @@ namespace api.Adapters
             {
                 return new NetSalesGasDto
                 {
+                    Id = netSalesGas.Id,
                     StartYear = netSalesGas.StartYear,
                     Values = netSalesGas.Values
                 };
@@ -111,6 +117,7 @@ namespace api.Adapters
             {
                 return new Co2EmissionsDto
                 {
+                    Id = co2Emissions.Id,
                     StartYear = co2Emissions.StartYear,
                     Values = co2Emissions.Values
                 };
