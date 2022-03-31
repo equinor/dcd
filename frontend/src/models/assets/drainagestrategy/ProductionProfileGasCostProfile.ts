@@ -15,7 +15,7 @@ export class ProductionProfileGasCostProfile implements Components.Schemas.Produ
         }
     }
 
-    static fromJson(data?: Components.Schemas.NetSalesGasDto): ProductionProfileGasCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.ProductionProfileGasDto): ProductionProfileGasCostProfile | undefined {
         if (data !== undefined) {
             return new ProductionProfileGasCostProfile(data)
         }

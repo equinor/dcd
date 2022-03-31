@@ -85,7 +85,7 @@ const App: VoidFunctionComponent = () => {
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
                             <Route
-                                path="project/:projectId/case/:caseId/topside:drainageStrategyId"
+                                path="project/:projectId/case/:caseId/drinageStrategy/:drainageStrategyId"
                                 element={<DrainageStrategyView />}
                             />
                             <Route

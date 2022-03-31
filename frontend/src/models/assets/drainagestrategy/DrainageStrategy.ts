@@ -1,4 +1,3 @@
-import { AnnualProfile } from "../../AnnualProfile"
 import { ArtificialLift } from "../../ArtificialLift"
 import { NetSalesGasCostProfile } from "./NetSalesGasCostProfile"
 import { Co2EmissionsCostProfile } from "./Co2EmissionsCostProfile"
@@ -18,13 +17,13 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto{
     producerCount?: number
     gasInjectorCount?: number
     artificialLift?: Components.Schemas.ArtificialLift
-    netSalesGas?: NetSalesGasCostProfile
-    co2Emissions?: Co2EmissionsCostProfile
-    fuelFlaringAndLosses?: FuelFlaringAndLossesCostProfile
-    productionProfileGas?: ProductionProfileGasCostProfile
-    productionProfileOil?: ProductionProfileOilCostProfile
-    productionProfileWater?: ProductionProfileWaterCostProfile
-    productionProfileWaterInjection?: ProductionProfileWaterInjectionCostProfile
+    netSalesGas?: NetSalesGasCostProfile | undefined
+    co2Emissions?: Co2EmissionsCostProfile 
+    fuelFlaringAndLosses?: FuelFlaringAndLossesCostProfile | undefined
+    productionProfileGas?: ProductionProfileGasCostProfile | undefined
+    productionProfileOil?: ProductionProfileOilCostProfile | undefined
+    productionProfileWater?: ProductionProfileWaterCostProfile | undefined
+    productionProfileWaterInjection?: ProductionProfileWaterInjectionCostProfile | undefined
     
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
         if (data !== undefined) {
@@ -62,7 +61,6 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto{
         const drainageStrategyCopy: DrainageStrategy = new DrainageStrategy(data)
         return {
             ...drainageStrategyCopy,
-            artificialLift: data.artificialLift,
             co2Emissions: data.co2Emissions,
             fuelFlaringAndLosses: data.fuelFlaringAndLosses,
             netSalesGas: data.netSalesGas,
@@ -77,7 +75,6 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto{
         const drainageStrategyCopy = new DrainageStrategy(data)
         return {
             ...drainageStrategyCopy,
-            artificialLift: data.artificialLift,
             co2Emissions: data.co2Emissions,
             fuelFlaringAndLosses: data.fuelFlaringAndLosses,
             netSalesGas: data.netSalesGas,
