@@ -115,25 +115,28 @@ const SurfView = () => {
         setColumns(getColumnAbsoluteYears(caseItem, surf?.costProfile))
     }
 
-    const createNewSurf = (input: string, year: number) => {
-        const emptySurf = Surf.Copy(surf!)
+    const upsertSurfCostProfile = (input: string, year: number) => {
+        const upsertSurf = Surf.Copy(surf!)
         const newCostProfile: SurfCostProfile = new SurfCostProfile()
-        emptySurf.id = emptyGUID
-        emptySurf.costProfile = newCostProfile
-        emptySurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
-        emptySurf.costProfile.startYear = year
-        emptySurf.costProfile.epaVersion = ""
-        return emptySurf
+        upsertSurf.id = upsertSurf.id ?? emptyGUID
+        upsertSurf.costProfile = upsertSurf.costProfile ?? newCostProfile
+        upsertSurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
+        upsertSurf.costProfile.startYear = year
+        upsertSurf.costProfile.epaVersion = upsertSurf.costProfile.epaVersion ?? ""
+        return upsertSurf
     }
 
     const onImport = (input: string, year: number) => {
-        const emptySurf: Surf = createNewSurf(input, year)
+        const emptySurf: Surf = upsertSurfCostProfile(input, year)
         setSurf(emptySurf)
         const newColumnTitles = getColumnAbsoluteYears(caseItem, emptySurf?.costProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(emptySurf?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
+        if (emptySurf.name !== "") {
+            setHasChanges(true)
+        }
     }
 
     const handleSave = async () => {
