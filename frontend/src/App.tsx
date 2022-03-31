@@ -24,6 +24,7 @@ import "./styles.css"
 import SubstructureView from "./Views/SubstructureView"
 import TransportView from "./Views/TransportView"
 import WellProjectView from "./Views/WellProjectView"
+import ExplorationView from "./Views/ExplorationView"
 
 const browserHistory = createBrowserHistory()
 
@@ -99,6 +100,10 @@ const App: VoidFunctionComponent = () => {
                             <Route
                                 path="project/:projectId/case/:caseId/wellproject/:wellProjectId"
                                 element={<WellProjectView />}
+                            />
+                            <Route
+                                path="project/:projectId/case/:caseId/exploration/:explorationId"
+                                element={<ExplorationView />}
                             />
                         </Route>
                     </Routes>
