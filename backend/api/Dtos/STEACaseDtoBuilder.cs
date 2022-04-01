@@ -44,9 +44,13 @@ namespace api.Adapters
             }
             if (c.SurfLink != Guid.Empty)
             {
-                SurfCostProfileDto surfCostProfileDto = p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile;
-                surfCostProfileDto.StartYear += dg4Year;
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(surfCostProfileDto);
+                SurfCostProfileDto? surfCostProfileDto = p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile;
+                if (surfCostProfileDto != null)
+                {
+                    surfCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(surfCostProfileDto);
+                }
+
             }
             if (c.TopsideLink != Guid.Empty)
             {
