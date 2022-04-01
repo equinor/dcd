@@ -1,5 +1,4 @@
 using api.Adapters;
-using api.Context;
 using api.Dtos;
 
 using Equinor.TI.CommonLibrary.Client;
@@ -12,11 +11,9 @@ namespace api.Services
     {
         private readonly CommonLibraryClient _commonLibraryClient;
         private readonly ILogger<CommonLibraryService> _logger;
-        private readonly ProjectService _projectService;
 
-        public CommonLibraryService(ILogger<CommonLibraryService> logger, CommonLibraryClientOptions clientOptions, DcdDbContext context)
+        public CommonLibraryService(ILogger<CommonLibraryService> logger, CommonLibraryClientOptions clientOptions)
         {
-            _projectService = new ProjectService(context);
             _logger = logger;
             _logger.LogInformation("Attempting to create a Commmon Library client.");
             try
@@ -72,20 +69,15 @@ namespace api.Services
             return ConvertDynamicProjectsToProjectDtos(dynamicProjects);
         }
 
-        private List<CommonLibraryProjectDto> FilterProjects(List<CommonLibraryProjectDto> projects)
+        private static List<CommonLibraryProjectDto> FilterProjects(List<CommonLibraryProjectDto> projects)
         {
             string[] whiteList = { "PlatformFPSO", "Subsea", "FPSO", "Platform", "TieIn", "Null" };
             var filteredList = projects.Where(p => p.ProjectState != "COMPLETED" && whiteList.Contains(p.ProjectCategory.ToString()));
-            var existingProjects = _projectService.GetAll()?.Select(p => p.CommonLibraryId).ToList();
 
-            if (existingProjects != null)
-            {
-                return filteredList.Where(p => !existingProjects.Contains(p.Id)).OrderBy(p => p.Name).ToList();
-            }
             return filteredList.OrderBy(p => p.Name).ToList();
         }
 
-        private List<CommonLibraryProjectDto> ConvertDynamicProjectsToProjectDtos(List<dynamic> dynamicProjects)
+        private static List<CommonLibraryProjectDto> ConvertDynamicProjectsToProjectDtos(List<dynamic> dynamicProjects)
         {
             var projects = new List<CommonLibraryProjectDto>();
             foreach (dynamic project in dynamicProjects)

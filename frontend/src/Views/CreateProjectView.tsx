@@ -5,7 +5,7 @@ import {
     TextField,
     Typography,
 } from "@equinor/eds-core-react"
-import React, { ChangeEvent, useState } from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
@@ -18,6 +18,7 @@ import { ProjectPhase } from "../models/ProjectPhase"
 
 import { GetCommonLibraryService } from "../Services/CommonLibraryService"
 import { GetProjectService } from "../Services/ProjectService"
+import { Project } from "../models/Project"
 
 const ProjectSelect = styled.div`
     margin-top: 1.5rem;
@@ -74,9 +75,10 @@ type Props = {
     isOpen: boolean;
     closeModal: Function;
     shards: any[];
+    project: Components.Schemas.CommonLibraryProjectDto | undefined;
 }
 
-const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
+const CreateProjectView = ({ project, isOpen, closeModal, shards }: Props) => {
     const navigate = useNavigate()
     const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>()
     const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>()
@@ -112,6 +114,15 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         return project
     }
 
+    // const onSelected = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    //     const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
+    //     setSelectedProject(project)
+    //     const convertedProject = convertCommonLibProjectToProject(project!)
+    //     const createdProject = await GetProjectService().createProject(convertedProject)
+    //     navigate(`/project/${createdProject.projectId}`)
+    // }
+    // const CommonLibraryService = GetCommonLibraryService()
+
     const closeCreateProjectView = async (pressedOkButton: boolean) => {
         let project
         if (pressedOkButton === true) {
@@ -139,16 +150,23 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         setDescription(event.target.value)
     }
 
-    const fetchProjects = async () => {
-        try {
-            setCommonLibFetchError(false)
-            const res = await CommonLibraryService.getProjects()
-            setProjects(res)
-        } catch (error) {
-            setCommonLibFetchError(true)
-            console.error("[CreateProjectView] Error while fetching common library projects.", error)
-        }
-    }
+    // const setDefaultValue = (projectKey: string) => {
+    //     const proj = projects?.find((p) => p.id === projectKey)
+    //     setSelectedProject(proj ?? undefined)
+    // }
+
+    useEffect(() => {
+        (async () => {
+            try {
+                setCommonLibFetchError(false)
+                const res = await CommonLibraryService.getProjects()
+                setProjects(res)
+            } catch (error) {
+                setCommonLibFetchError(true)
+                console.error("[CreateProjectView] Error while fetching common library projects.", error)
+            }
+        })()
+    }, [])
 
     if (commonLibFetchError) {
         return (
@@ -171,7 +189,6 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     <ProjectDropdown
                         id="select-project"
                         label="Click to load CommonLib projects"
-                        onClick={fetchProjects}
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                         defaultValue=""
                     >
@@ -241,7 +258,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     >
                         Create Project
                     </Button>
-                    <Button onClick={handleCancelClick} variant="outlined">Cancel</Button>
+                    <Button onClick={handleCancelClick} variant="outlined">{project?.name}</Button>
                 </Margin>
             </div>
         </Modal>

@@ -19,19 +19,18 @@ interface Props {
 }
 
 function Header({ name }: Props) {
-    const [isOpen, setIsOpen] = useState(false)
-    const openModal = () => {
-        setIsOpen(true)
-    }
-    const closeModal = () => {
-        setIsOpen(false)
-    }
+    // const [isOpen, setIsOpen] = useState(false)
+    // const openModal = () => {
+    //     setIsOpen(true)
+    // }
+    // const closeModal = () => {
+    //     setIsOpen(false)
+    // }
     const buttonRef = useRef<HTMLButtonElement>(null)
     return (
         <>
             <Wrapper>
                 <PageTitle>DCD - Digital Concept Development</PageTitle>
-                <Button ref={buttonRef} onClick={openModal}>Add Project</Button>
                 <Typography>
                     Welcome to DCD
                     {" "}
@@ -39,7 +38,6 @@ function Header({ name }: Props) {
                     !
                 </Typography>
             </Wrapper>
-            <CreateProjectView isOpen={isOpen} shards={[buttonRef]} closeModal={closeModal} />
         </>
     )
 }
