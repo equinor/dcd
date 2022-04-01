@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+/* Ignored as we will be refactoring this code */
 import { Button, Input, Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -77,10 +78,6 @@ const DrainageStrategyView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
-    // Artificial Lift. Tror ikke dette er Grid Excel import...
-    const [artificialLiftColumns, setArtificialLiftColumns] = useState<string[]>([""])
-    const [artificialLiftGridData, setArtificialLiftGridData] = useState<CellValue[][]>([[]])
-    const [artificialLiftCostProfileDialogOpen, setArtificialLiftCostProfileDialogOpen] = useState(false)
 
     // co2Emissions
     const [co2EmissionsColumns, setCo2EmissionsColumns] = useState<string[]>([""])
@@ -400,7 +397,6 @@ const DrainageStrategyView = () => {
             {!netSalesGasCostProfileDialogOpen ? null
                 : <Import onClose={() => { setNetSalesGasCostProfileDialogOpen(!netSalesGasCostProfileDialogOpen) }} onImport={onImportNetSalesGas} />}
 
-
             <Wrapper>
                 <Typography variant="h4"> Production Profile Gas </Typography>
                 <ImportButton onClick={() => { setProductionProfileGasCostProfileDialogOpen(true) }}>Import</ImportButton>
@@ -431,7 +427,6 @@ const DrainageStrategyView = () => {
             {!productionProfileWaterCostProfileDialogOpen ? null
                 : <Import onClose={() => { setProductionProfileWaterCostProfileDialogOpen(!productionProfileWaterCostProfileDialogOpen) }} onImport={onImportProductionProfileWater} />}
 
-
             <Wrapper>
                 <Typography variant="h4"> Production Profile Water Injection </Typography>
                 <ImportButton onClick={() => { setProductionProfileWaterInjectionCostProfileDialogOpen(true) }}>Import</ImportButton>
@@ -442,7 +437,7 @@ const DrainageStrategyView = () => {
             {!productionProfileWaterInjectionCostProfileDialogOpen ? null
                 : <Import onClose={() => { setProductionProfileWaterInjectionCostProfileDialogOpen(!productionProfileWaterInjectionCostProfileDialogOpen) }} onImport={onImportProductionProfileWaterInjection} />}
 
-             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
+            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )
 }
