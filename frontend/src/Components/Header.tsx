@@ -1,7 +1,5 @@
-import React, { useRef, useState } from "react"
 import styled from "styled-components"
-import { Typography, Button } from "@equinor/eds-core-react"
-import CreateProjectView from "../Views/CreateProjectView"
+import { Typography } from "@equinor/eds-core-react"
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,26 +17,16 @@ interface Props {
 }
 
 function Header({ name }: Props) {
-    // const [isOpen, setIsOpen] = useState(false)
-    // const openModal = () => {
-    //     setIsOpen(true)
-    // }
-    // const closeModal = () => {
-    //     setIsOpen(false)
-    // }
-    const buttonRef = useRef<HTMLButtonElement>(null)
     return (
-        <>
-            <Wrapper>
-                <PageTitle>DCD - Digital Concept Development</PageTitle>
-                <Typography>
-                    Welcome to DCD
-                    {" "}
-                    <b>{name}</b>
-                    !
-                </Typography>
-            </Wrapper>
-        </>
+        <Wrapper>
+            <PageTitle>DCD - Digital Concept Development</PageTitle>
+            <Typography>
+                Welcome to DCD
+                {" "}
+                <b>{name}</b>
+                !
+            </Typography>
+        </Wrapper>
     )
 }
 

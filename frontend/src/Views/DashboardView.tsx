@@ -111,11 +111,11 @@ const DashboardView = ({ shards }: Props) => {
                     <ProjectDropdown
                         id="select-project"
                         label=""
-                        defaultValue='empty'
+                        defaultValue="empty"
                         placeholder="Search projects"
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                     >
-                        <option value="empty" disabled />
+                        <option value="empty" disabled> </option>
                         {clp?.map((project) => (
                             <option
                                 value={project.id!}
@@ -128,7 +128,12 @@ const DashboardView = ({ shards }: Props) => {
                     </ProjectDropdown>
                 </ProjectSelect>
             </Wrapper>
-            <CreateProjectView passedInProject={selectedProject!} isOpen={isOpen} shards={shards} closeModal={closeModal} />
+            <CreateProjectView
+                passedInProject={selectedProject!}
+                isOpen={isOpen}
+                shards={shards}
+                closeModal={closeModal}
+            />
         </>
     )
 }
