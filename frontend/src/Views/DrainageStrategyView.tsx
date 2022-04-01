@@ -40,6 +40,7 @@ const AssetViewDiv = styled.div`
 `
 
 const Wrapper = styled.div`
+    margin-top: 1rem;
     display: flex;
     flex-direction: row;
 `
@@ -440,7 +441,6 @@ const DrainageStrategyView = () => {
             </WrapperColumn>
             {!productionProfileWaterInjectionCostProfileDialogOpen ? null
                 : <Import onClose={() => { setProductionProfileWaterInjectionCostProfileDialogOpen(!productionProfileWaterInjectionCostProfileDialogOpen) }} onImport={onImportProductionProfileWaterInjection} />}
-
 
              <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
