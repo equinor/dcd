@@ -77,13 +77,6 @@ const SurfView = () => {
     const location = useLocation()
     const emptyGUID = "00000000-0000-0000-0000-000000000000"
 
-    const handleSurfName = async (name:string | undefined) => {
-        if (name !== undefined) {
-            if (name !== surfName) {
-                setHasChanges(true)
-            }
-        }
-    }
     useEffect(() => {
         (async () => {
             try {
@@ -98,7 +91,6 @@ const SurfView = () => {
                     newSurf = new Surf()
                     setSurf(newSurf)
                 }
-                handleSurfName(newSurf?.name)
                 const newColumnTitles = getColumnAbsoluteYears(caseResult, newSurf?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSurf?.costProfile)
@@ -165,7 +157,7 @@ const SurfView = () => {
 
     const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSurfName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
+        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== surf?.name) {
             setHasChanges(true)
         } else {
             setHasChanges(false)

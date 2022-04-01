@@ -1,4 +1,5 @@
 export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto {
+    id?: string
     startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
@@ -7,6 +8,7 @@ export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto {
 
     constructor(data?: Components.Schemas.SurfCostProfileDto) {
         if (data !== undefined && data !== null) {
+            this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []
             this.epaVersion = data?.epaVersion ?? ""
