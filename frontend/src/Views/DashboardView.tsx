@@ -111,7 +111,7 @@ const DashboardView = ({ shards }: Props) => {
                     <ProjectDropdown
                         id="select-project"
                         label=""
-                        defaultValue="empty"
+                        defaultValue='empty'
                         placeholder="Search projects"
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                     >
@@ -128,7 +128,7 @@ const DashboardView = ({ shards }: Props) => {
                     </ProjectDropdown>
                 </ProjectSelect>
             </Wrapper>
-            <CreateProjectView project={selectedProject} isOpen={isOpen} shards={shards} closeModal={closeModal} />
+            <CreateProjectView passedInProject={selectedProject!} isOpen={isOpen} shards={shards} closeModal={closeModal} />
         </>
     )
 }

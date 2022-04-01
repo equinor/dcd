@@ -75,21 +75,23 @@ type Props = {
     isOpen: boolean;
     closeModal: Function;
     shards: any[];
-    project: Components.Schemas.CommonLibraryProjectDto | undefined;
+    passedInProject: Components.Schemas.CommonLibraryProjectDto;
 }
 
-const CreateProjectView = ({ project, isOpen, closeModal, shards }: Props) => {
+const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Props) => {
     const navigate = useNavigate()
     const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>()
-    const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>()
+    const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>(passedInProject)
     const [inputName, setName] = useState<string>()
     const [inputDescription, setDescription] = useState<string>()
     const [commonLibFetchError, setCommonLibFetchError] = useState<boolean>()
+    const CommonLibraryService = GetCommonLibraryService()
+
+    //When user is inside the view, and chooses a new project.
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
-        setSelectedProject(project)
+        setSelectedProject(project!)
     }
-    const CommonLibraryService = GetCommonLibraryService()
 
     const convertCommonLibProjectToProject = (
         commonLibraryProject: Components.Schemas.CommonLibraryProjectDto,
@@ -130,7 +132,7 @@ const CreateProjectView = ({ project, isOpen, closeModal, shards }: Props) => {
             const createdProject = await GetProjectService().createProject(project)
             navigate(`/project/${createdProject.projectId}`)
         }
-        setSelectedProject(undefined)
+        setSelectedProject(undefined!)
         closeModal()
     }
 
@@ -139,6 +141,7 @@ const CreateProjectView = ({ project, isOpen, closeModal, shards }: Props) => {
     }
 
     const handleCancelClick = () => {
+        setSelectedProject(undefined!)
         closeCreateProjectView(false)
     }
 
@@ -156,6 +159,8 @@ const CreateProjectView = ({ project, isOpen, closeModal, shards }: Props) => {
     // }
 
     useEffect(() => {
+
+        
         (async () => {
             try {
                 setCommonLibFetchError(false)
@@ -193,7 +198,7 @@ const CreateProjectView = ({ project, isOpen, closeModal, shards }: Props) => {
                         defaultValue=""
                     >
                         {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                        <option disabled />
+                        <option value={passedInProject?.name ?? ""}>{passedInProject?.name ?? ""}</option>
                         {projects?.map((project) => (
                             <option value={project.id!} key={project.id}>{project.name!}</option>
                         ))}
@@ -204,6 +209,7 @@ const CreateProjectView = ({ project, isOpen, closeModal, shards }: Props) => {
                         label="Name"
                         id="textfield-name"
                         value={selectedProject?.name ?? ""}
+                        defaultValue={selectedProject?.name ?? ""}
                         autoComplete="off"
                         onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
                             updateNameHandler(event)
@@ -258,7 +264,7 @@ const CreateProjectView = ({ project, isOpen, closeModal, shards }: Props) => {
                     >
                         Create Project
                     </Button>
-                    <Button onClick={handleCancelClick} variant="outlined">{project?.name}</Button>
+                    <Button onClick={handleCancelClick} variant="outlined">Cancel</Button>
                 </Margin>
             </div>
         </Modal>
