@@ -32,22 +32,6 @@ export class Surf implements Components.Schemas.SurfDto {
         }
     }
 
-    static Copy(data: Surf) {
-        const surfCopy = new Surf(data)
-        return {
-            ...surfCopy,
-            SurfCostProfileConstructor: data.costProfile,
-        }
-    }
-
-    static ToDto(data: Surf): Components.Schemas.SurfDto {
-        const surfCopy = new Surf(data)
-        return {
-            ...surfCopy,
-            costProfile: data.costProfile,
-        }
-    }
-
     static fromJSON(data: Components.Schemas.SurfDto): Surf {
         return new Surf(data)
     }

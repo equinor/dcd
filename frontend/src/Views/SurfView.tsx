@@ -108,8 +108,8 @@ const SurfView = () => {
         setColumns(getColumnAbsoluteYears(caseItem, surf?.costProfile))
     }
 
-    const upsertSurfCostProfile = (input: string, year: number) => {
-        const upsertSurf = Surf.Copy(surf!)
+    const updateInsertSurfCostProfile = (input: string, year: number) => {
+        const upsertSurf = new Surf(surf!)
         const newCostProfile: SurfCostProfile = new SurfCostProfile()
         upsertSurf.id = upsertSurf.id ?? emptyGUID
         upsertSurf.costProfile = upsertSurf.costProfile ?? newCostProfile
@@ -120,7 +120,7 @@ const SurfView = () => {
     }
 
     const onImport = (input: string, year: number) => {
-        const emptySurf: Surf = upsertSurfCostProfile(input, year)
+        const emptySurf: Surf = updateInsertSurfCostProfile(input, year)
         setSurf(emptySurf)
         const newColumnTitles = getColumnAbsoluteYears(caseItem, emptySurf?.costProfile)
         setColumns(newColumnTitles)
@@ -133,16 +133,16 @@ const SurfView = () => {
     }
 
     const handleSave = async () => {
-        const surfDto = Surf.ToDto(surf!)
+        const surfDto = new Surf(surf!)
         surfDto.name = surfName
         if (surf?.id === emptyGUID) {
             surfDto.projectId = params.projectId
-            const newProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
-            const newCase = newProject.cases.find((o) => o.id === params.caseId)
-            const newSurf = newProject.surfs.at(-1)
+            const updatedProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
+            const updatedCase = updatedProject.cases.find((o) => o.id === params.caseId)
+            const newSurf = updatedProject.surfs.at(-1)
             const newUrl = location.pathname.replace(emptyGUID, newSurf!.id!)
-            setProject(newProject)
-            setCase(newCase)
+            setProject(updatedProject)
+            setCase(updatedCase)
             setSurf(newSurf)
             navigate(`${newUrl}`, { replace: true })
         } else {
