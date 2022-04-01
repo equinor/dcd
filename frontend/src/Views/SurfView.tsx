@@ -91,6 +91,7 @@ const SurfView = () => {
                     newSurf = new Surf()
                     setSurf(newSurf)
                 }
+                setSurfName(newSurf.name!)
                 const newColumnTitles = getColumnAbsoluteYears(caseResult, newSurf?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newSurf?.costProfile)

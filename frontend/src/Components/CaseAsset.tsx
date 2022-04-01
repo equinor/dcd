@@ -92,7 +92,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.drainageStrategies.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.drainageStrategyLink}
-                    link="drainageStrategyLink"
+                    link={AssetLink.drainageStrategyLink}
                 />
                 <AssetButton
                     type="submit"
@@ -103,14 +103,6 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "DrainageStrategy")}
-                >
-                    Create new
-                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -118,7 +110,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.explorations.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.explorationLink}
-                    link="explorationLink"
+                    link={AssetLink.drainageStrategyLink}
                 />
                 <AssetButton
                     type="submit"
@@ -129,14 +121,6 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
-                <AssetButton
-                    type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "Exploration")}
-                >
-                    Create new
-                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -144,7 +128,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.wellProjects.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.wellProjectLink}
-                    link="wellProjectLink"
+                    link={AssetLink.wellProjectLink}
                 />
                 <AssetButton
                     type="submit"
@@ -170,7 +154,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.surfs.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.surfLink}
-                    link="surfLink"
+                    link={AssetLink.surfLink}
                 />
                 <AssetButton
                     type="submit"
@@ -196,7 +180,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.topsides.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.topsideLink}
-                    link="topsideLink"
+                    link={AssetLink.topsideLink}
                 />
                 <AssetButton
                     type="submit"
@@ -222,7 +206,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.substructures.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.substructureLink}
-                    link="substructureLink"
+                    link={AssetLink.substructureLink}
                 />
                 <AssetButton
                     type="submit"
@@ -248,7 +232,7 @@ const CaseAsset = ({
                     linkAsset={onSelectAsset}
                     values={project.transports.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.transportLink}
-                    link="transportLink"
+                    link={AssetLink.transportLink}
                 />
                 <AssetButton
                     type="submit"
