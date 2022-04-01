@@ -159,10 +159,9 @@ const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Prop
     // }
 
     useEffect(() => {
-
-        
         (async () => {
             try {
+                setSelectedProject(passedInProject)
                 setCommonLibFetchError(false)
                 const res = await CommonLibraryService.getProjects()
                 setProjects(res)
@@ -170,8 +169,9 @@ const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Prop
                 setCommonLibFetchError(true)
                 console.error("[CreateProjectView] Error while fetching common library projects.", error)
             }
+            
         })()
-    }, [])
+    }, [passedInProject])
 
     if (commonLibFetchError) {
         return (
@@ -198,7 +198,7 @@ const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Prop
                         defaultValue=""
                     >
                         {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                        <option value={passedInProject?.name ?? ""}>{passedInProject?.name ?? ""}</option>
+                        <option value={selectedProject?.name ?? ""}>{selectedProject?.name ?? ""}</option>
                         {projects?.map((project) => (
                             <option value={project.id!} key={project.id}>{project.name!}</option>
                         ))}
@@ -208,8 +208,8 @@ const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Prop
                     <StyledTextField
                         label="Name"
                         id="textfield-name"
-                        value={selectedProject?.name ?? ""}
-                        defaultValue={selectedProject?.name ?? ""}
+                        value={selectedProject?.name ?? "hei"}
+                        defaultValue={selectedProject?.name ?? "halla"}
                         autoComplete="off"
                         onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
                             updateNameHandler(event)
