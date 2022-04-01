@@ -157,9 +157,9 @@ const CaseAsset = ({
                 </AssetButton>
                 <AssetButton
                     type="submit"
-                    onClick={(
-                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitCreateAsset(event, "WellProject")}
+                    onClick={
+                        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => submitCreateAsset(e, "wellproject")
+                    }
                 >
                     Create new
                 </AssetButton>
