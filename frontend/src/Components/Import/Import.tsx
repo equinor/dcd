@@ -1,8 +1,15 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import {
     Button, Dialog, Input, Typography,
 } from "@equinor/eds-core-react"
+
+import { useParams } from "react-router"
+
+import { Case } from "../../models/Case"
+
+import { Project } from "../../models/Project"
+import { GetProjectService } from "../../Services/ProjectService"
 
 const StyledDialog = styled(Dialog)`
     width: 50rem;
@@ -47,8 +54,27 @@ interface Props {
 function Import({ onClose, onImport }: Props) {
     const [dataInput, setDataInput] = useState<string>("")
     const [startYear, setStartYear] = useState(0)
+    const [, setProject] = useState<Project>()
+    const params = useParams()
+    const [caseItem, setCase] = useState<Case>()
 
     const example = "value1\tvalue2\tvalue3\tvalue4"
+
+    const dG4Date = caseItem?.DG4Date?.getFullYear()!
+    const startYearImport = Number(dG4Date) + Number(startYear)
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                setProject(projectResult)
+                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+                setCase(caseResult)
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [params.projectId, params.caseId])
 
     const onChangeStartYear = (event: any) => {
         setStartYear(event.currentTarget.value)
@@ -79,6 +105,13 @@ function Import({ onClose, onImport }: Props) {
             <Main>
                 <Typography>Start year relative to DG4</Typography>
                 <Input type="number" onChange={onChangeStartYear} />
+                <Typography
+                    variant="h6"
+                >
+                    Start year is:
+                    {" "}
+                    {startYearImport}
+                </Typography>
                 <Label>Paste your values here:</Label>
                 <TextArea
                     cols={30}
