@@ -9,6 +9,7 @@ import {
 import { save } from "@equinor/eds-icons"
 import {
     useState,
+    useEffect,
     ChangeEventHandler,
     MouseEventHandler,
 } from "react"
@@ -44,6 +45,12 @@ const CaseDG4Date = ({
     const params = useParams()
     const [caseDg4Date, setCaseDg4Date] = useState<Date>()
 
+    useEffect(() => {
+        (async () => {
+            setCaseDg4Date(undefined)
+        })()
+    }, [params.projectId, params.caseId])
+
     const handleDg4FieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setCaseDg4Date(new Date(e.target.value))
     }
@@ -57,6 +64,7 @@ const CaseDG4Date = ({
             setProject(newProject)
             const caseResult = newProject.cases.find((o) => o.id === params.caseId)
             setCase(caseResult)
+            setCaseDg4Date(undefined)
         } catch (error) {
             console.error("[CaseView] error while submitting form data", error)
         }
@@ -89,6 +97,7 @@ const CaseDG4Date = ({
                                 variant="ghost_icon"
                                 aria-label="Save DG4 date"
                                 onClick={saveDg4Date}
+                                disabled={caseDg4Date === undefined}
                             >
                                 <Icon data={save} />
                             </Button>

@@ -41,26 +41,41 @@ string commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionStrin
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-// Add services to the container.
+var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 // Setup in memory DB SQL lite for test purposes
 string _sqlConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
-if (string.IsNullOrEmpty(_sqlConnectionString))
+
+
+if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnectionString))
 {
-    DbContextOptionsBuilder<DcdDbContext> dBbuilder = new DbContextOptionsBuilder<DcdDbContext>();
-    _sqlConnectionString = new SqliteConnectionStringBuilder { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }.ToString();
-
-    // In-memory sqlite requires an open connection throughout the whole lifetime of the database
-    SqliteConnection _connectionToInMemorySqlite = new SqliteConnection(_sqlConnectionString);
-    _connectionToInMemorySqlite.Open();
-    dBbuilder.UseSqlite(_connectionToInMemorySqlite);
-
-    using (DcdDbContext context = new DcdDbContext(dBbuilder.Options))
+    if (environment == "localdev")
     {
-        context.Database.EnsureCreated();
-        SaveSampleDataToDB.PopulateDb(context);
+        DbContextOptionsBuilder<DcdDbContext> dBbuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        _sqlConnectionString = new SqliteConnectionStringBuilder { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }.ToString();
+
+        SqliteConnection _connectionToInMemorySqlite = new SqliteConnection(_sqlConnectionString);
+        _connectionToInMemorySqlite.Open();
+        dBbuilder.UseSqlite(_connectionToInMemorySqlite);
+
+        using (DcdDbContext context = new DcdDbContext(dBbuilder.Options))
+        {
+            context.Database.EnsureCreated();
+            SaveSampleDataToDB.PopulateDb(context);
+        }
+
     }
+    else
+    {
+        DbContextOptionsBuilder<DcdDbContext> dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        dbBuilder.UseSqlServer(sqlConnectionString);
+        using (DcdDbContext context = new DcdDbContext(dbBuilder.Options))
+        {
+            context.Database.EnsureCreated();
+        }
+    }
+
 }
 // Set up CORS
 var _accessControlPolicyName = "AllowSpecificOrigins";
@@ -81,10 +96,15 @@ builder.Services.AddCors(options =>
         });
     });
 
-// Setting splitting behavior explicitly to avoid warning
-builder.Services.AddDbContext<DcdDbContext>(
-    options => options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery))
-);
+
+if (environment == "localdev")
+{
+    builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+}
+else
+{
+    builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
+}
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();
