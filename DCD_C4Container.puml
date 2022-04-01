@@ -1,0 +1,31 @@
+@startuml C4_Elements
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/users.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(concarchAlias, "Concept Architect", "Want to compare the business cases of different concepts for developing a field")
+Person(engAlias, "Engineers", "People in the project teams performing an estimate of discipline output", $sprite="users")
+
+System_Boundary(c1, "Digital Concept Appp") {
+  Container(FE_app, "Front End Application", "Container: React, Typescript", "Provides functionality to add new projects, create cases, link assets with time series and initiate export to STEA")
+  ContainerDb(DbAlias, "Database","Container: My SQL", "Stores projects, cases and assets with cost-profile information")
+  Container(backend, "Backend", "Container: ASP.NET webapp MVC", "Provides functionality to create datastructures to export to STEA")
+}
+
+System_Ext(steaAlias, "STEA", "System", "")
+ContainerDb_Ext(commonlibAlias, "CommonLib", "Container", "Holds the project portfolio")
+
+
+Rel(concarchAlias, FE_app, "Adds projects and concepts")
+Rel(FE_app, concarchAlias, "Compare and refine concept business cases")
+Rel(concarchAlias, engAlias, "Requests detailed cost-profiles for concepts")
+BiRel(FE_app, backend, "API calls", "JSON HTTPS API calls")
+Rel(engAlias, FE_app, "Manually enters detailed cost-profiles for the concepts")
+Rel(backend, steaAlias, "Transfers data to STEA via Excel sheet")
+BiRel(backend, DbAlias, "Writes to and reads from", "MVC Framework")
+Rel(commonlibAlias, backend, "Reads", "JSON HTTPS API calls")
+
+@enduml
