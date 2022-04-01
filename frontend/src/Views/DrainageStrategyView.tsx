@@ -17,6 +17,12 @@ import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import { Co2EmissionsCostProfile } from "../models/assets/drainagestrategy/Co2EmissionsCostProfile"
+import { FuelFlaringAndLossesCostProfile } from "../models/assets/drainagestrategy/FuelFlaringAndLossesCostProfile"
+import { NetSalesGasCostProfile } from "../models/assets/drainagestrategy/NetSalesGasCostProfile"
+import { ProductionProfileGasCostProfile } from "../models/assets/drainagestrategy/ProductionProfileGasCostProfile"
+import { ProductionProfileOilCostProfile } from "../models/assets/drainagestrategy/ProductionProfileOilCostProfile"
+import { ProductionProfileWaterCostProfile } from "../models/assets/drainagestrategy/ProductionProfileWaterCostProfile"
+import { ProductionProfileWaterInjectionCostProfile } from "../models/assets/drainagestrategy/ProductionProfileWaterInjectionCostProfile"
 
 const AssetHeader = styled.div`
     margin-bottom: 2rem;
@@ -235,6 +241,9 @@ const DrainageStrategyView = () => {
 
     const onImportFuelFlaringAndLosses = (input: string, year: number) => {
         const newDrainageStrategy = DrainageStrategy.Copy(drainageStrategy!)
+        if (newDrainageStrategy.fuelFlaringAndLosses === undefined) {
+            newDrainageStrategy.fuelFlaringAndLosses = new FuelFlaringAndLossesCostProfile()
+        }
         newDrainageStrategy.fuelFlaringAndLosses!.startYear = year
         newDrainageStrategy.fuelFlaringAndLosses!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setDrainageStrategy(newDrainageStrategy)
@@ -248,6 +257,9 @@ const DrainageStrategyView = () => {
 
     const onImportNetSalesGas = (input: string, year: number) => {
         const newDrainageStrategy = DrainageStrategy.Copy(drainageStrategy!)
+        if (newDrainageStrategy.netSalesGas === undefined) {
+            newDrainageStrategy.netSalesGas = new NetSalesGasCostProfile()
+        }
         newDrainageStrategy.netSalesGas!.startYear = year
         newDrainageStrategy.netSalesGas!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setDrainageStrategy(newDrainageStrategy)
@@ -261,6 +273,9 @@ const DrainageStrategyView = () => {
 
     const onImportProductionProfileGas = (input: string, year: number) => {
         const newDrainageStrategy = DrainageStrategy.Copy(drainageStrategy!)
+        if (newDrainageStrategy.productionProfileGas === undefined) {
+            newDrainageStrategy.productionProfileGas = new ProductionProfileGasCostProfile()
+        }
         newDrainageStrategy.productionProfileGas!.startYear = year
         newDrainageStrategy.productionProfileGas!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setDrainageStrategy(newDrainageStrategy)
@@ -274,6 +289,9 @@ const DrainageStrategyView = () => {
 
     const onImportProductionProfileOil = (input: string, year: number) => {
         const newDrainageStrategy = DrainageStrategy.Copy(drainageStrategy!)
+        if (newDrainageStrategy.productionProfileOil === undefined) {
+            newDrainageStrategy.productionProfileOil = new ProductionProfileOilCostProfile()
+        }
         newDrainageStrategy.productionProfileOil!.startYear = year
         newDrainageStrategy.productionProfileOil!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setDrainageStrategy(newDrainageStrategy)
@@ -287,6 +305,9 @@ const DrainageStrategyView = () => {
 
     const onImportProductionProfileWater = (input: string, year: number) => {
         const newDrainageStrategy = DrainageStrategy.Copy(drainageStrategy!)
+        if (newDrainageStrategy.productionProfileWater === undefined) {
+            newDrainageStrategy.productionProfileWater = new ProductionProfileWaterCostProfile()
+        }
         newDrainageStrategy.productionProfileWater!.startYear = year
         newDrainageStrategy.productionProfileWater!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setDrainageStrategy(newDrainageStrategy)
@@ -300,6 +321,9 @@ const DrainageStrategyView = () => {
 
     const onImportProductionProfileWaterInjection = (input: string, year: number) => {
         const newDrainageStrategy = DrainageStrategy.Copy(drainageStrategy!)
+        if (newDrainageStrategy.productionProfileWaterInjection === undefined) {
+            newDrainageStrategy.productionProfileWaterInjection = new ProductionProfileWaterInjectionCostProfile()
+        }
         newDrainageStrategy.productionProfileWaterInjection!.startYear = year
         newDrainageStrategy.productionProfileWaterInjection!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setDrainageStrategy(newDrainageStrategy)
@@ -354,7 +378,71 @@ const DrainageStrategyView = () => {
             </WrapperColumn>
             {!co2EmissionsCostProfileDialogOpen ? null
                 : <Import onClose={() => { setCo2EmissionsCostProfileDialogOpen(!co2EmissionsCostProfileDialogOpen) }} onImport={onImportCo2Emissions} />}
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
+
+            <Wrapper>
+                <Typography variant="h4"> Fuel Flaring And Losses </Typography>
+                <ImportButton onClick={() => { setFuelFlaringAndLossesCostProfileDialogOpen(true) }}>Import</ImportButton>
+            </Wrapper>
+            <WrapperColumn>
+                <DataTable columns={fuelFlaringAndLossesColumns} gridData={fuelFlaringAndLossesGridData} onCellsChanged={onFuelFlaringAndLossesCellsChanged} />
+            </WrapperColumn>
+            {!fuelFlaringAndLossesCostProfileDialogOpen ? null
+                : <Import onClose={() => { setFuelFlaringAndLossesCostProfileDialogOpen(!fuelFlaringAndLossesCostProfileDialogOpen) }} onImport={onImportFuelFlaringAndLosses} />}
+
+            <Wrapper>
+                <Typography variant="h4"> Net Sales Gas </Typography>
+                <ImportButton onClick={() => { setNetSalesGasCostProfileDialogOpen(true) }}>Import</ImportButton>
+            </Wrapper>
+            <WrapperColumn>
+                <DataTable columns={netSalesGasColumns} gridData={netSalesGasGridData} onCellsChanged={onNetSalesGasCellsChanged} />
+            </WrapperColumn>
+            {!netSalesGasCostProfileDialogOpen ? null
+                : <Import onClose={() => { setNetSalesGasCostProfileDialogOpen(!netSalesGasCostProfileDialogOpen) }} onImport={onImportNetSalesGas} />}
+
+
+            <Wrapper>
+                <Typography variant="h4"> Production Profile Gas </Typography>
+                <ImportButton onClick={() => { setProductionProfileGasCostProfileDialogOpen(true) }}>Import</ImportButton>
+            </Wrapper>
+            <WrapperColumn>
+                <DataTable columns={productionProfileGasColumns} gridData={productionProfileGasGridData} onCellsChanged={onProductionProfileGasCellsChanged} />
+            </WrapperColumn>
+            {!productionProfileGasCostProfileDialogOpen ? null
+                : <Import onClose={() => { setProductionProfileGasCostProfileDialogOpen(!productionProfileGasCostProfileDialogOpen) }} onImport={onImportProductionProfileGas} />}
+
+            <Wrapper>
+                <Typography variant="h4"> Production Profile Oil </Typography>
+                <ImportButton onClick={() => { setProductionProfileOilCostProfileDialogOpen(true) }}>Import</ImportButton>
+            </Wrapper>
+            <WrapperColumn>
+                <DataTable columns={productionProfileOilColumns} gridData={productionProfileOilGridData} onCellsChanged={onProductionProfileOilCellsChanged} />
+            </WrapperColumn>
+            {!productionProfileOilCostProfileDialogOpen ? null
+                : <Import onClose={() => { setProductionProfileOilCostProfileDialogOpen(!productionProfileOilCostProfileDialogOpen) }} onImport={onImportProductionProfileOil} />}
+
+            <Wrapper>
+                <Typography variant="h4"> Production Profile Water </Typography>
+                <ImportButton onClick={() => { setProductionProfileWaterCostProfileDialogOpen(true) }}>Import</ImportButton>
+            </Wrapper>
+            <WrapperColumn>
+                <DataTable columns={productionProfileWaterColumns} gridData={productionProfileWaterGridData} onCellsChanged={onProductionProfileWaterCellsChanged} />
+            </WrapperColumn>
+            {!productionProfileWaterCostProfileDialogOpen ? null
+                : <Import onClose={() => { setProductionProfileWaterCostProfileDialogOpen(!productionProfileWaterCostProfileDialogOpen) }} onImport={onImportProductionProfileWater} />}
+
+
+            <Wrapper>
+                <Typography variant="h4"> Production Profile Water Injection </Typography>
+                <ImportButton onClick={() => { setProductionProfileWaterInjectionCostProfileDialogOpen(true) }}>Import</ImportButton>
+            </Wrapper>
+            <WrapperColumn>
+                <DataTable columns={productionProfileWaterInjectionColumns} gridData={productionProfileWaterInjectionGridData} onCellsChanged={onProductionProfileWaterInjectionCellsChanged} />
+            </WrapperColumn>
+            {!productionProfileWaterInjectionCostProfileDialogOpen ? null
+                : <Import onClose={() => { setProductionProfileWaterInjectionCostProfileDialogOpen(!productionProfileWaterInjectionCostProfileDialogOpen) }} onImport={onImportProductionProfileWaterInjection} />}
+
+
+             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )
 }
