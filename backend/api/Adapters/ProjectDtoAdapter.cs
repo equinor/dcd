@@ -108,7 +108,7 @@ namespace api.Adapters
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
-                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile.Sum;
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CostProfile?.Sum ?? 0;
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {

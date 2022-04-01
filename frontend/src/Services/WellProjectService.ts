@@ -9,6 +9,11 @@ export class __WellProjectService extends __BaseService {
         const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)
     }
+
+    public async updateWellProject(body: Components.Schemas.WellProjectDto): Promise<Project> {
+        const res = await this.put("", { body })
+        return Project.fromJSON(res)
+    }
 }
 
 export function GetWellProjectService() {

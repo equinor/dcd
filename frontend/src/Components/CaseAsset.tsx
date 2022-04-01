@@ -73,7 +73,7 @@ const CaseAsset = ({
         event.preventDefault()
 
         try {
-            navigate(`${type}/${id}`)
+            navigate(`${type?.toLowerCase()}/${id}`)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -139,6 +139,14 @@ const CaseAsset = ({
                 >
                     Open
                 </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={
+                        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => submitCreateAsset(e, "wellproject")
+                    }
+                >
+                    Create new
+                </AssetButton>
             </Wrapper>
             <Wrapper>
                 <LinkAsset
@@ -156,6 +164,14 @@ const CaseAsset = ({
                     disabled={caseItem?.surfLink === emptyGuid}
                 >
                     Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "SURF")}
+                >
+                    Create new
                 </AssetButton>
             </Wrapper>
             <Wrapper>
@@ -226,6 +242,14 @@ const CaseAsset = ({
                     disabled={caseItem?.transportLink === emptyGuid}
                 >
                     Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={(
+                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+                    ) => submitCreateAsset(event, "Transport")}
+                >
+                    Create new
                 </AssetButton>
             </Wrapper>
         </>

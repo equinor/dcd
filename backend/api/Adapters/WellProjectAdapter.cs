@@ -29,10 +29,11 @@ namespace api.Adapters
             return wellProject;
         }
 
-        private WellProjectCostProfile Convert(WellProjectCostProfileDto wellProjectCostProfileDto, WellProject wellProject)
+        private WellProjectCostProfile? Convert(WellProjectCostProfileDto? wellProjectCostProfileDto, WellProject wellProject)
         {
-            return new WellProjectCostProfile
+            return wellProjectCostProfileDto == null ? null : new WellProjectCostProfile
             {
+                Id = wellProjectCostProfileDto.Id,
                 WellProject = wellProject,
                 EPAVersion = wellProjectCostProfileDto.EPAVersion,
                 Currency = wellProjectCostProfileDto.Currency,
@@ -41,10 +42,11 @@ namespace api.Adapters
             };
         }
 
-        private DrillingSchedule Convert(DrillingScheduleDto wellProjectDrillingScheduleDto, WellProject wellProject)
+        private DrillingSchedule? Convert(DrillingScheduleDto? wellProjectDrillingScheduleDto, WellProject wellProject)
         {
-            return new DrillingSchedule
+            return wellProjectDrillingScheduleDto == null ? null : new DrillingSchedule
             {
+                Id = wellProjectDrillingScheduleDto.Id,
                 WellProject = wellProject,
                 StartYear = wellProjectDrillingScheduleDto.StartYear,
                 Values = wellProjectDrillingScheduleDto.Values
