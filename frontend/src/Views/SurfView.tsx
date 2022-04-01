@@ -109,14 +109,14 @@ const SurfView = () => {
     }
 
     const updateInsertSurfCostProfile = (input: string, year: number) => {
-        const upsertSurf = new Surf(surf!)
+        const newSurf = new Surf(surf!)
         const newCostProfile: SurfCostProfile = new SurfCostProfile()
-        upsertSurf.id = upsertSurf.id ?? emptyGUID
-        upsertSurf.costProfile = upsertSurf.costProfile ?? newCostProfile
-        upsertSurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
-        upsertSurf.costProfile.startYear = year
-        upsertSurf.costProfile.epaVersion = upsertSurf.costProfile.epaVersion ?? ""
-        return upsertSurf
+        newSurf.id = newSurf.id ?? emptyGUID
+        newSurf.costProfile = newSurf.costProfile ?? newCostProfile
+        newSurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
+        newSurf.costProfile.startYear = year
+        newSurf.costProfile.epaVersion = newSurf.costProfile.epaVersion ?? ""
+        return newSurf
     }
 
     const onImport = (input: string, year: number) => {
