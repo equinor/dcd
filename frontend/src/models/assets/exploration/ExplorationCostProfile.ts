@@ -1,4 +1,5 @@
-export class ExplorationCostProfileDto implements Components.Schemas.ExplorationCostProfileDto {
+export class ExplorationCostProfile implements Components.Schemas.ExplorationCostProfileDto {
+    id?: string | undefined
     startYear?: number | undefined
     values?: number [] | null
     epaVersion?: string | null
@@ -6,6 +7,7 @@ export class ExplorationCostProfileDto implements Components.Schemas.Exploration
     sum?: number | undefined
 
     constructor(data?: Components.Schemas.ExplorationCostProfileDto) {
+        this.id = data?.id
         this.startYear = data?.startYear
         this.values = data?.values ?? []
         this.epaVersion = data?.epaVersion ?? null
@@ -13,7 +15,7 @@ export class ExplorationCostProfileDto implements Components.Schemas.Exploration
         this.sum = data?.sum
     }
 
-    static fromJSON(data?: Components.Schemas.ExplorationCostProfileDto): ExplorationCostProfileDto {
-        return new ExplorationCostProfileDto(data)
+    static fromJSON(data?: Components.Schemas.ExplorationCostProfileDto): ExplorationCostProfile {
+        return new ExplorationCostProfile(data)
     }
 }

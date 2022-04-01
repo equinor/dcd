@@ -37,6 +37,7 @@ namespace api.Adapters
             }
             return new WellProjectCostProfileDto
             {
+                Id = wellProjectCostProfile.Id,
                 EPAVersion = wellProjectCostProfile.EPAVersion,
                 Currency = wellProjectCostProfile.Currency,
                 StartYear = wellProjectCostProfile.StartYear,
@@ -52,6 +53,7 @@ namespace api.Adapters
             }
             return new DrillingScheduleDto
             {
+                Id = wellProjectDrillingSchedule.Id,
                 StartYear = wellProjectDrillingSchedule.StartYear,
                 Values = wellProjectDrillingSchedule.Values
             };
