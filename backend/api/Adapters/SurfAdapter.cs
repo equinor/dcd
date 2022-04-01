@@ -18,10 +18,9 @@ namespace api.Adapters
                 Maturity = surfDto.Maturity,
                 InfieldPipelineSystemLength = surfDto.InfieldPipelineSystemLength,
                 ProductionFlowline = surfDto.ProductionFlowline,
-                RiserCount = surfDto.RiserCount;
-                surf.CostProfile = Convert(surfDto.CostProfile, surf);
-            }
-            
+                RiserCount = surfDto.RiserCount
+            };
+            surf.CostProfile = Convert(surfDto.CostProfile, surf);
             return surf;
         }
 
