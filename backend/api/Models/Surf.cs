@@ -9,7 +9,7 @@ namespace api.Models
 
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
-        public SurfCostProfile CostProfile { get; set; } = null!;
+        public SurfCostProfile? CostProfile { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }
