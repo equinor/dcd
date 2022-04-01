@@ -9,6 +9,11 @@ export class __SurfService extends __BaseService {
         const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)
     }
+
+    public async updateSurf(body: Components.Schemas.SurfDto): Promise<Project> {
+        const res = await this.put("", { body })
+        return Project.fromJSON(res)
+    }
 }
 
 export function GetSurfService() {
