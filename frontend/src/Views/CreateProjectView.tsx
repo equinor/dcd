@@ -18,7 +18,6 @@ import { ProjectPhase } from "../models/ProjectPhase"
 
 import { GetCommonLibraryService } from "../Services/CommonLibraryService"
 import { GetProjectService } from "../Services/ProjectService"
-import { Project } from "../models/Project"
 
 const ProjectSelect = styled.div`
     margin-top: 1.5rem;
@@ -78,7 +77,9 @@ type Props = {
     passedInProject: Components.Schemas.CommonLibraryProjectDto;
 }
 
-const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Props) => {
+const CreateProjectView = ({
+    passedInProject, isOpen, closeModal, shards,
+}: Props) => {
     const navigate = useNavigate()
     const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>()
     const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>(passedInProject)
@@ -87,7 +88,7 @@ const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Prop
     const [commonLibFetchError, setCommonLibFetchError] = useState<boolean>()
     const CommonLibraryService = GetCommonLibraryService()
 
-    //When user is inside the view, and chooses a new project.
+    // When user is inside the view, and chooses a new project.
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         setSelectedProject(project!)
@@ -115,15 +116,6 @@ const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Prop
         }
         return project
     }
-
-    // const onSelected = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    //     const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
-    //     setSelectedProject(project)
-    //     const convertedProject = convertCommonLibProjectToProject(project!)
-    //     const createdProject = await GetProjectService().createProject(convertedProject)
-    //     navigate(`/project/${createdProject.projectId}`)
-    // }
-    // const CommonLibraryService = GetCommonLibraryService()
 
     const closeCreateProjectView = async (pressedOkButton: boolean) => {
         let project
@@ -153,11 +145,6 @@ const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Prop
         setDescription(event.target.value)
     }
 
-    // const setDefaultValue = (projectKey: string) => {
-    //     const proj = projects?.find((p) => p.id === projectKey)
-    //     setSelectedProject(proj ?? undefined)
-    // }
-
     useEffect(() => {
         (async () => {
             try {
@@ -169,7 +156,6 @@ const CreateProjectView = ({ passedInProject, isOpen, closeModal, shards }: Prop
                 setCommonLibFetchError(true)
                 console.error("[CreateProjectView] Error while fetching common library projects.", error)
             }
-            
         })()
     }, [passedInProject])
 
