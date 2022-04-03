@@ -2,7 +2,7 @@ import { TopsideCostProfile } from "./TopsideCostProfile"
 
 export class Topside implements Components.Schemas.TopsideDto {
     id?: string | undefined
-    name?: string | null
+    name?: string | undefined
     projectId?: string | undefined
     topsideCostProfile?: TopsideCostProfile | undefined
     dryWeight?: number | undefined
@@ -23,24 +23,6 @@ export class Topside implements Components.Schemas.TopsideDto {
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
-            this.topsideCostProfile = new TopsideCostProfile()
-            this.topsideCostProfile.epaVersion = ""
-        }
-    }
-
-    static Copy(data: Topside) {
-        const topsideCopy = new Topside(data)
-        return {
-            ...topsideCopy,
-            topsideCostProfile: data.topsideCostProfile,
-        }
-    }
-
-    static ToDto(data: Topside): Components.Schemas.TopsideDto {
-        const topsideCopy = new Topside(data)
-        return {
-            ...topsideCopy,
-            costProfile: data.topsideCostProfile,
         }
     }
 

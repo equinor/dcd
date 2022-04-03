@@ -113,7 +113,7 @@ const SurfView = () => {
         const newCostProfile: SurfCostProfile = new SurfCostProfile()
         newSurf.id = newSurf.id ?? emptyGUID
         newSurf.costProfile = newSurf.costProfile ?? newCostProfile
-        newSurf.costProfile.values = input.split("\t").map((i) => parseFloat(i))
+        newSurf.costProfile.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         newSurf.costProfile.startYear = year
         newSurf.costProfile.epaVersion = newSurf.costProfile.epaVersion ?? ""
         return newSurf

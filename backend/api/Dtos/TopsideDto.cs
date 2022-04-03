@@ -8,7 +8,7 @@ namespace api.Dtos
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
-        public TopsideCostProfileDto CostProfile { get; set; } = null!;
+        public TopsideCostProfileDto? CostProfile { get; set; }
         public double DryWeight { get; set; }
         public double OilCapacity { get; set; }
         public double GasCapacity { get; set; }
