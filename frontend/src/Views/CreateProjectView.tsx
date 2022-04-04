@@ -173,13 +173,13 @@ const CreateProjectView = ({
     }
 
     return (
-        <Modal isOpen={isOpen} title="Add Project" shards={shards}>
+        <Modal isOpen={isOpen} title="Add Project from CommonLib" shards={shards}>
             <div>
                 <ProjectSelect>
                     <Icon data={search} color={grey} />
                     <ProjectDropdown
                         id="select-project"
-                        label="Click to load CommonLib projects"
+                        label="CommonLib projects"
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                         defaultValue=""
                     >
@@ -248,7 +248,7 @@ const CreateProjectView = ({
                         onClick={handleOkClick}
                         disabled={!selectedProject}
                     >
-                        Create Project
+                        Add Project
                     </Button>
                     <Button onClick={handleCancelClick} variant="outlined">Cancel</Button>
                 </Margin>
