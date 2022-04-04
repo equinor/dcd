@@ -19,21 +19,21 @@ namespace api.Adapters
             return substructureDto;
         }
 
-    private static SubstructureCostProfileDto? Convert(SubstructureCostProfile? costProfile)
-    {
-        if (costProfile == null)
+        private static SubstructureCostProfileDto? Convert(SubstructureCostProfile? costProfile)
         {
-            return null;
+            if (costProfile == null)
+            {
+                return null;
+            }
+            var substructureCostProfile = new SubstructureCostProfileDto
+            {
+                Id = costProfile.Id,
+                EPAVersion = costProfile.EPAVersion,
+                Currency = costProfile.Currency,
+                StartYear = costProfile.StartYear,
+                Values = costProfile.Values
+            };
+            return substructureCostProfile;
         }
-        var substructureCostProfile = new SubstructureCostProfileDto
-        {
-            Id = costProfile.Id,
-            EPAVersion = costProfile.EPAVersion,
-            Currency = costProfile.Currency,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values
-        };
-        return substructureCostProfile;
     }
-}
 }

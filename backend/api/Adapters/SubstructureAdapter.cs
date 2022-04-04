@@ -19,22 +19,22 @@ namespace api.Adapters
             return substructure;
         }
 
-    private static SubstructureCostProfile? Convert(SubstructureCostProfileDto? costprofile, Substructure substructure)
-    {
-        if (costprofile == null)
+        private static SubstructureCostProfile? Convert(SubstructureCostProfileDto? costprofile, Substructure substructure)
         {
-            return null;
+            if (costprofile == null)
+            {
+                return null;
+            }
+            var substructureCostProfile = new SubstructureCostProfile
+            {
+                Substructure = substructure,
+                Id = costprofile.Id,
+                EPAVersion = costprofile.EPAVersion,
+                Currency = costprofile.Currency,
+                StartYear = costprofile.StartYear,
+                Values = costprofile.Values
+            };
+            return substructureCostProfile;
         }
-        var substructureCostProfile = new SubstructureCostProfile
-        {
-            Substructure = substructure,
-            Id = costprofile.Id,
-            EPAVersion = costprofile.EPAVersion,
-            Currency = costprofile.Currency,
-            StartYear = costprofile.StartYear,
-            Values = costprofile.Values
-        };
-        return substructureCostProfile;
     }
-}
 }
