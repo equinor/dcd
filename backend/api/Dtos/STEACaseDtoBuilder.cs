@@ -54,9 +54,13 @@ namespace api.Adapters
             }
             if (c.TopsideLink != Guid.Empty)
             {
-                TopsideCostProfileDto topsideCostProfileDto = p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile;
-                topsideCostProfileDto.StartYear += dg4Year;
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCostProfileDto);
+                TopsideCostProfileDto? topsideCostProfileDto = p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile;
+                if (topsideCostProfileDto != null)
+                {
+                    topsideCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCostProfileDto);
+                }
+
             }
             if (c.TransportLink != Guid.Empty)
             {

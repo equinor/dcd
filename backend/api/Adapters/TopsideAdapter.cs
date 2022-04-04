@@ -7,31 +7,39 @@ namespace api.Adapters
     {
         public static Topside Convert(TopsideDto topsideDto)
         {
-            var topside = new Topside();
-            topside.Id = topsideDto.Id;
-            topside.Name = topsideDto.Name;
-            topside.ProjectId = topsideDto.ProjectId;
+            var topside = new Topside
+            {
+                Id = topsideDto.Id,
+                Name = topsideDto.Name,
+                ProjectId = topsideDto.ProjectId,
+                DryWeight = topsideDto.DryWeight,
+                OilCapacity = topsideDto.OilCapacity,
+                GasCapacity = topsideDto.GasCapacity,
+                FacilitiesAvailability = topsideDto.FacilitiesAvailability,
+                ArtificialLift = topsideDto.ArtificialLift,
+                Maturity = topsideDto.Maturity
+            };
             topside.CostProfile = Convert(topsideDto.CostProfile, topside);
-            topside.DryWeight = topsideDto.DryWeight;
-            topside.OilCapacity = topsideDto.OilCapacity;
-            topside.GasCapacity = topsideDto.GasCapacity;
-            topside.FacilitiesAvailability = topsideDto.FacilitiesAvailability;
-            topside.ArtificialLift = topsideDto.ArtificialLift;
-            topside.Maturity = topsideDto.Maturity;
             return topside;
         }
 
-        private static TopsideCostProfile Convert(TopsideCostProfileDto topsideCostProfileDto, Topside topside)
+        private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {
-            return new TopsideCostProfile
+            if (costprofile == null)
             {
-                Id = topsideCostProfileDto.Id,
-                Currency = topsideCostProfileDto.Currency,
-                EPAVersion = topsideCostProfileDto.EPAVersion,
+                return null;
+            }
+            var topsideCostProfile = new TopsideCostProfile
+            {
+                Id = costprofile.Id,
+                Currency = costprofile.Currency,
+                EPAVersion = costprofile.EPAVersion,
                 Topside = topside,
-                StartYear = topsideCostProfileDto.StartYear,
-                Values = topsideCostProfileDto.Values
+                StartYear = costprofile.StartYear,
+                Values = costprofile.Values
             };
+
+            return topsideCostProfile;
         }
     }
 }
