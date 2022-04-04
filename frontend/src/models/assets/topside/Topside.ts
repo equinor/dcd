@@ -4,7 +4,7 @@ export class Topside implements Components.Schemas.TopsideDto {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
-    topsideCostProfile?: TopsideCostProfile | undefined
+    costProfile?: TopsideCostProfile | undefined
     dryWeight?: number | undefined
     oilCapacity?: number | undefined
     gasCapacity?: number | undefined
@@ -17,7 +17,7 @@ export class Topside implements Components.Schemas.TopsideDto {
             this.id = data.id
             this.name = data.name ?? ""
             this.projectId = data.projectId
-            this.topsideCostProfile = TopsideCostProfile.fromJSON(data.costProfile)
+            this.costProfile = TopsideCostProfile.fromJSON(data.costProfile)
             this.dryWeight = data.dryWeight
             this.maturity = data.maturity
         } else {
