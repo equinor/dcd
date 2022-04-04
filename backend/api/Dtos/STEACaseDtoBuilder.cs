@@ -38,9 +38,12 @@ namespace api.Adapters
             sTEACaseDto.Capex.OffshoreFacilities = new OffshoreFacilitiesCostProfileDto();
             if (c.SubstructureLink != Guid.Empty)
             {
-                SubstructureCostProfileDto substructureCostProfileDto = p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)!.CostProfile;
-                substructureCostProfileDto.StartYear += dg4Year;
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfileDto);
+                SubstructureCostProfileDto? substructureCostProfileDto = p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile;
+                if (substructureCostProfileDto != null)
+                {
+                    substructureCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfileDto);
+                }
             }
             if (c.SurfLink != Guid.Empty)
             {

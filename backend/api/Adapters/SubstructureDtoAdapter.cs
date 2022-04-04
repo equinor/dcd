@@ -7,27 +7,33 @@ namespace api.Adapters
     {
         public static SubstructureDto Convert(Substructure substructure)
         {
-            var substructureDto = new SubstructureDto();
-            substructureDto.Id = substructure.Id;
-            substructureDto.ProjectId = substructure.ProjectId;
-            substructureDto.Name = substructure.Name;
-            substructureDto.DryWeight = substructure.DryWeight;
-            substructureDto.Maturity = substructure.Maturity;
-            substructureDto.CostProfile = Convert(substructure.CostProfile);
-
+            var substructureDto = new SubstructureDto
+            {
+                Id = substructure.Id,
+                ProjectId = substructure.ProjectId,
+                Name = substructure.Name,
+                DryWeight = substructure.DryWeight,
+                Maturity = substructure.Maturity,
+                CostProfile = Convert(substructure.CostProfile)
+            };
             return substructureDto;
         }
 
-        private static SubstructureCostProfileDto Convert(SubstructureCostProfile substructureCostProfile)
+    private static SubstructureCostProfileDto? Convert(SubstructureCostProfile? costProfile)
+    {
+        if (costProfile == null)
         {
-            return new SubstructureCostProfileDto
-            {
-                Id = substructureCostProfile.Id,
-                EPAVersion = substructureCostProfile.EPAVersion,
-                Currency = substructureCostProfile.Currency,
-                StartYear = substructureCostProfile.StartYear,
-                Values = substructureCostProfile.Values
-            };
+            return null;
         }
+        var substructureCostProfile = new SubstructureCostProfileDto
+        {
+            Id = costProfile.Id,
+            EPAVersion = costProfile.EPAVersion,
+            Currency = costProfile.Currency,
+            StartYear = costProfile.StartYear,
+            Values = costProfile.Values
+        };
+        return substructureCostProfile;
     }
+}
 }
