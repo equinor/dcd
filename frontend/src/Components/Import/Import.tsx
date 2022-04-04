@@ -3,11 +3,8 @@ import styled from "styled-components"
 import {
     Button, Dialog, Input, Typography,
 } from "@equinor/eds-core-react"
-
 import { useParams } from "react-router"
-
 import { Case } from "../../models/Case"
-
 import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
 
@@ -105,9 +102,7 @@ function Import({ onClose, onImport }: Props) {
             <Main>
                 <Typography>Start year relative to DG4</Typography>
                 <Input type="number" onChange={onChangeStartYear} />
-                <Typography
-                    variant="h6"
-                >
+                <Typography variant="h6">
                     Start year is:
                     {" "}
                     {startYearImport}
