@@ -15,8 +15,7 @@ namespace api.Adapters
             int[] startYearsCase = new int[] { sTEACaseDto.Exploration.StartYear, sTEACaseDto.ProductionAndSalesVolumes.StartYear,
                         sTEACaseDto.Capex.StartYear };
             Array.Sort(startYearsCase);
-            sTEACaseDto.StartYear = Array.Find(startYearsCase, e => e > 0);
-
+            sTEACaseDto.StartYear = startYearsCase.Min();
             return sTEACaseDto;
         }
 

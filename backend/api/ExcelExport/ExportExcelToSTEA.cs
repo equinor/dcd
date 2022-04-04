@@ -147,7 +147,7 @@ public static class ExportToSTEA
     private static string columnNumber(int cellNumber)
     {
         string rv = "";
-        int newCellNo = cellNumber;
+
         int first = 64 + cellNumber / 26;
         int second = 65 + cellNumber % 26;
         if (first == 64)

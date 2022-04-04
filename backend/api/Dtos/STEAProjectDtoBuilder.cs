@@ -23,7 +23,7 @@ namespace api.Adapters
             if (!startYears.IsNullOrEmpty())
             {
                 Array.Sort(startYears);
-                sTEAprojectDto.StartYear = Array.Find(startYears, e => e > 0);
+                sTEAprojectDto.StartYear = startYears.Min();
             }
             return sTEAprojectDto;
         }
