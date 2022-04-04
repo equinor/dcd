@@ -24,6 +24,7 @@ import "./styles.css"
 import SurfView from "./Views/SurfView"
 import SubstructureView from "./Views/SubstructureView"
 import TransportView from "./Views/TransportView"
+import DrainageStrategyView from "./Views/DrainageStrategyView"
 import WellProjectView from "./Views/WellProjectView"
 import ExplorationView from "./Views/ExplorationView"
 
@@ -87,6 +88,10 @@ const App: VoidFunctionComponent = () => {
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
                             <Route path="project/:projectId/case/:caseId/surf/:surfId" element={<SurfView />} />
+                            <Route
+                                path="project/:projectId/case/:caseId/drainageStrategy/:drainageStrategyId"
+                                element={<DrainageStrategyView />}
+                            />
                             <Route
                                 path="project/:projectId/case/:caseId/topside/:topsideId"
                                 element={<TopsideView />}
