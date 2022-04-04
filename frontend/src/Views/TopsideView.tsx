@@ -96,9 +96,9 @@ const TopsideView = () => {
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside.name!)
-                const newColumnTitles = getColumnAbsoluteYears(caseResult, newTopside?.topsideCostProfile)
+                const newColumnTitles = getColumnAbsoluteYears(caseResult, newTopside?.costProfile)
                 setColumns(newColumnTitles)
-                const newGridData = buildGridData(newTopside?.topsideCostProfile)
+                const newGridData = buildGridData(newTopside?.costProfile)
                 setGridData(newGridData)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -109,27 +109,27 @@ const TopsideView = () => {
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, topside?.topsideCostProfile))
+        setColumns(getColumnAbsoluteYears(caseItem, topside?.costProfile))
     }
 
     const updateInsertTopsideCostProfile = (input: string, year: number) => {
         const newTopside = new Topside(topside!)
         const newCostProfile = new TopsideCostProfile()
         newTopside.id = newTopside.id ?? emptyGuid
-        newTopside.topsideCostProfile = newTopside.topsideCostProfile ?? newCostProfile
-        newTopside.topsideCostProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "")
+        newTopside.costProfile = newTopside.costProfile ?? newCostProfile
+        newTopside.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "")
             .split("\t").map((i) => parseFloat(i))
-        newTopside.topsideCostProfile!.startYear = year
-        newTopside.topsideCostProfile!.epaVersion = ""
+        newTopside.costProfile!.startYear = year
+        newTopside.costProfile!.epaVersion = newTopside.costProfile.epaVersion ?? ""
         return newTopside
     }
 
     const onImport = (input: string, year: number) => {
         const newTopside = updateInsertTopsideCostProfile(input, year)
         setTopside(newTopside)
-        const newColumnTitles = getColumnAbsoluteYears(caseItem, newTopside?.topsideCostProfile)
+        const newColumnTitles = getColumnAbsoluteYears(caseItem, newTopside?.costProfile)
         setColumns(newColumnTitles)
-        const newGridData = buildGridData(newTopside?.topsideCostProfile)
+        const newGridData = buildGridData(newTopside?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
         if (newTopside.name !== "") {
@@ -161,7 +161,7 @@ const TopsideView = () => {
         setHasChanges(false)
     }
 
-    const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleTopsideNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setTopsideName(e.target.value)
         if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== topside?.name) {
             setHasChanges(true)
@@ -181,7 +181,7 @@ const TopsideView = () => {
                         name="topsideName"
                         placeholder="Enter topside name"
                         defaultValue={topside?.name}
-                        onChange={handleSurfNameFieldChange}
+                        onChange={handleTopsideNameFieldChange}
                     />
                 </WrapperColumn>
             </AssetHeader>
