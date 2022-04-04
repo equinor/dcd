@@ -7,30 +7,38 @@ namespace api.Adapters
     {
         public static TopsideDto Convert(Topside topside)
         {
-            var topsideDto = new TopsideDto();
-            topsideDto.Id = topside.Id;
-            topsideDto.Name = topside.Name;
-            topsideDto.ProjectId = topside.ProjectId;
-            topsideDto.CostProfile = Convert(topside.CostProfile);
-            topsideDto.DryWeight = topside.DryWeight;
-            topsideDto.OilCapacity = topside.OilCapacity;
-            topsideDto.GasCapacity = topside.GasCapacity;
-            topsideDto.FacilitiesAvailability = topside.FacilitiesAvailability;
-            topsideDto.ArtificialLift = topside.ArtificialLift;
-            topsideDto.Maturity = topside.Maturity;
+            var topsideDto = new TopsideDto
+            {
+                Id = topside.Id,
+                Name = topside.Name,
+                ProjectId = topside.ProjectId,
+                DryWeight = topside.DryWeight,
+                OilCapacity = topside.OilCapacity,
+                GasCapacity = topside.GasCapacity,
+                FacilitiesAvailability = topside.FacilitiesAvailability,
+                ArtificialLift = topside.ArtificialLift,
+                Maturity = topside.Maturity,
+                CostProfile = Convert(topside.CostProfile)
+            };
             return topsideDto;
         }
 
-        private static TopsideCostProfileDto Convert(TopsideCostProfile topsideCostProfile)
+        private static TopsideCostProfileDto? Convert(TopsideCostProfile? costProfile)
         {
-            return new TopsideCostProfileDto
+            if (costProfile == null)
             {
-                Id = topsideCostProfile.Id,
-                Currency = topsideCostProfile.Currency,
-                EPAVersion = topsideCostProfile.EPAVersion,
-                Values = topsideCostProfile.Values,
-                StartYear = topsideCostProfile.StartYear
+                return null;
+            }
+
+            var topsideCostProfile = new TopsideCostProfileDto
+            {
+                Id = costProfile.Id,
+                Currency = costProfile.Currency,
+                EPAVersion = costProfile.EPAVersion,
+                Values = costProfile.Values,
+                StartYear = costProfile.StartYear
             };
+            return topsideCostProfile;
         }
     }
 }
