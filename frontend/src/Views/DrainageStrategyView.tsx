@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* Ignored as we will be refactoring this code */
-import { Button, Input, Typography } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import { Button, Input, Typography, Label } from "@equinor/eds-core-react"
+import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -78,6 +78,7 @@ const DrainageStrategyView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
+    const [drainageStrategyName, setDrainageStrategyName] = useState<string>("")
 
     // co2Emissions
     const [co2EmissionsColumns, setCo2EmissionsColumns] = useState<string[]>([""])
@@ -135,6 +136,8 @@ const DrainageStrategyView = () => {
                     newDrainageStrategy = new DrainageStrategy()
                     setDrainageStrategy(newDrainageStrategy)
                 }
+                setDrainageStrategyName(newDrainageStrategy.name!)
+
                 const newCo2EmissionsColumnTitles = getColumnAbsoluteYears(caseResult, newDrainageStrategy?.co2Emissions)
                 const newFuelFlaringAndLossesColumnTitles = getColumnAbsoluteYears(caseResult, newDrainageStrategy?.fuelFlaringAndLosses)
                 const newNetSalesGasColumnTitles = getColumnAbsoluteYears(caseResult, newDrainageStrategy?.netSalesGas)
@@ -335,6 +338,7 @@ const DrainageStrategyView = () => {
 
     const handleSave = async () => {
         const drainageStrategyDto = DrainageStrategy.toDto(drainageStrategy!)
+        drainageStrategyDto.name = drainageStrategyName
         if (drainageStrategyDto?.id === emptyGuid) {
             drainageStrategyDto.projectId = params.projectId
             const newProject: Project = await GetDrainageStrategyService().createDrainageStrategy(params.caseId!, drainageStrategyDto!)
@@ -356,10 +360,28 @@ const DrainageStrategyView = () => {
         setHasChanges(false)
     }
 
+    const handleDrainageStrategyNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setDrainageStrategyName(e.target.value)
+        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== drainageStrategy?.name) {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+    }
+
     return (
         <AssetViewDiv>
             <AssetHeader>
-                <Typography variant="h2">{drainageStrategy?.name}</Typography>
+            <WrapperColumn>
+                    <Label htmlFor="topsideName" label="Name" />
+                    <Input
+                        id="topsideName"
+                        name="topsideName"
+                        placeholder="Enter topside name"
+                        defaultValue={drainageStrategy?.name}
+                        onChange={handleDrainageStrategyNameFieldChange}
+                    />
+                </WrapperColumn>
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
