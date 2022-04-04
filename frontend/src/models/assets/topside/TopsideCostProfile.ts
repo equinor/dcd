@@ -7,7 +7,7 @@ export class TopsideCostProfile implements Components.Schemas.TopsideCostProfile
     sum?: number | undefined
 
     constructor(data?: Components.Schemas.TopsideCostProfileDto) {
-        if (data !== undefined) {
+        if (data !== undefined && data !== null) {
             this.id = data?.id
             this.startYear = data?.startYear
             this.values = data?.values ?? []
@@ -20,7 +20,10 @@ export class TopsideCostProfile implements Components.Schemas.TopsideCostProfile
         }
     }
 
-    static fromJSON(data?: Components.Schemas.TopsideCostProfileDto): TopsideCostProfile {
+    static fromJSON(data?: Components.Schemas.TopsideCostProfileDto): TopsideCostProfile | undefined {
+        if (data === undefined || data === null) {
+            return undefined
+        }
         return new TopsideCostProfile(data)
     }
 }
