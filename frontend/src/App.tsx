@@ -21,6 +21,7 @@ import ProjectView from "./Views/ProjectView"
 import { RetrieveConfigFromAzure } from "./config"
 
 import "./styles.css"
+import SurfView from "./Views/SurfView"
 import SubstructureView from "./Views/SubstructureView"
 import TransportView from "./Views/TransportView"
 import DrainageStrategyView from "./Views/DrainageStrategyView"
@@ -86,6 +87,7 @@ const App: VoidFunctionComponent = () => {
                             <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
+                            <Route path="project/:projectId/case/:caseId/surf/:surfId" element={<SurfView />} />
                             <Route
                                 path="project/:projectId/case/:caseId/drainageStrategy/:drainageStrategyId"
                                 element={<DrainageStrategyView />}
