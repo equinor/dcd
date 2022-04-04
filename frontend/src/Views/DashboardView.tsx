@@ -80,7 +80,7 @@ const DashboardView = ({ shards }: Props) => {
     }, [])
 
     const onSelected = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const project = projects?.find((p) => p.commonLibId === event.currentTarget.selectedOptions[0].value)
+        const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         if (project) {
             navigate(ProjectPath(project.id))
         } else {
@@ -102,6 +102,8 @@ const DashboardView = ({ shards }: Props) => {
 
     if (!projects) return null
 
+    /* Below code maps two lists, commonlib projects (clp) and projects (stored projects) into the same list of options
+    Clp is filtering out stored projects */
     return (
         <>
             <Wrapper>
@@ -116,11 +118,23 @@ const DashboardView = ({ shards }: Props) => {
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                     >
                         <option value="empty" disabled> </option>
-                        {clp?.map((project) => (
+                        {projects?.map((project) => (
                             <option
                                 value={project.id!}
                                 key={project.id}
-                                style={{ fontWeight: projects.find((p) => p.commonLibId === project.id) ? 700 : 400 }}
+                                style={{
+                                    fontWeight: 700,
+                                    background: clp?.find((p) => p.id === project.commonLibId) === undefined
+                                        ? "rgba(255,0,0,.5)" : "rgba(51,170,51,.4)",
+                                }}
+                            >
+                                {project.name!}
+                            </option>
+                        ))}
+                        {clp?.filter((p) => !projects.find((proj) => p.id === proj.commonLibId)).map((project) => (
+                            <option
+                                value={project.id!}
+                                key={project.id!}
                             >
                                 {project.name!}
                             </option>
