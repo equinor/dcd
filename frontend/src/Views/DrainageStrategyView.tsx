@@ -377,7 +377,7 @@ const DrainageStrategyView = () => {
                     <Input
                         id="topsideName"
                         name="topsideName"
-                        placeholder="Enter topside name"
+                        placeholder="Enter Drainage Strategy name"
                         defaultValue={drainageStrategy?.name}
                         onChange={handleDrainageStrategyNameFieldChange}
                     />
