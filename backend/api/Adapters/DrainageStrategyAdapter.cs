@@ -100,7 +100,7 @@ namespace api.Adapters
                 DrainageStrategy = drainageStrategy,
                 StartYear = fuelFlaringAndLossesDto.StartYear,
                 Values = fuelFlaringAndLossesDto.Values
-            }; 
+            };
         }
 
         private static NetSalesGas? Convert(NetSalesGasDto? netSalesGasDto, DrainageStrategy drainageStrategy)
