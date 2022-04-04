@@ -8,7 +8,7 @@ namespace api.Models
         public string Name { get; set; } = string.Empty!;
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
-        public SubstructureCostProfile CostProfile { get; set; } = null!;
+        public SubstructureCostProfile? CostProfile { get; set; }
         public double DryWeight { get; set; }
         public Maturity Maturity { get; set; }
     }
