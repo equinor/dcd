@@ -1,5 +1,7 @@
-import { Button, Input, Typography } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import {
+    Button, Input, Label, Typography,
+} from "@equinor/eds-core-react"
+import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -15,6 +17,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
+import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
 
 const AssetHeader = styled.div`
     margin-bottom: 2rem;
@@ -72,6 +75,7 @@ const ExplorationView = () => {
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
+    const [name, setName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
@@ -92,6 +96,7 @@ const ExplorationView = () => {
                     newExploration = new Exploration()
                     setExploration(newExploration)
                 }
+                setName(newExploration?.name!)
                 const newColumnTitles = getColumnAbsoluteYears(caseResult, newExploration?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newExploration?.costProfile)
@@ -110,7 +115,10 @@ const ExplorationView = () => {
     }
 
     const onImport = (input: string, year: number) => {
-        const newExploration = Exploration.Copy(exploration!)
+        const newExploration = new Exploration(exploration!)
+        if (newExploration.costProfile === undefined) {
+            newExploration.costProfile = new ExplorationCostProfile()
+        }
         newExploration.costProfile!.startYear = year
         // eslint-disable-next-line max-len
         newExploration.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
@@ -120,11 +128,14 @@ const ExplorationView = () => {
         const newGridData = buildGridData(newExploration?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
+        if (newExploration.name !== "") {
+            setHasChanges(true)
+        }
     }
 
     const handleSave = async () => {
-        const explorationDto = Exploration.ToDto(exploration!)
+        const explorationDto = new Exploration(exploration!)
+        explorationDto.name = name
         if (exploration?.id === emptyGuid) {
             explorationDto.projectId = params.projectId
             const newProject = await GetExplorationService().createExploration(params.caseId!, explorationDto!)
@@ -142,10 +153,29 @@ const ExplorationView = () => {
         setHasChanges(false)
     }
 
+    const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setName(e.target.value)
+        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== exploration?.name) {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+    }
+
     return (
         <AssetViewDiv>
+            <Typography variant="h2">Exploration</Typography>
             <AssetHeader>
-                <Typography variant="h2">{exploration?.name}</Typography>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Name" />
+                    <Input
+                        id="name"
+                        name="name"
+                        placeholder="Enter name"
+                        defaultValue={exploration?.name}
+                        onChange={handleNameChange}
+                    />
+                </WrapperColumn>
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
