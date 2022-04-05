@@ -7,17 +7,18 @@ namespace api.Adapters
     {
         public static WellProjectDto Convert(WellProject wellProject)
         {
-            var wellProjectDto = new WellProjectDto{
-            Id = wellProject.Id,
-            ProjectId = wellProject.ProjectId,
-            Name = wellProject.Name,
-            ProducerCount = wellProject.ProducerCount,
-            GasInjectorCount = wellProject.GasInjectorCount,
-            WaterInjectorCount = wellProject.WaterInjectorCount,
-            ArtificialLift = wellProject.ArtificialLift,
-            RigMobDemob = wellProject.RigMobDemob,
-            AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
-            PluggingAndAbandonment = wellProject.PluggingAndAbandonment
+            var wellProjectDto = new WellProjectDto
+            {
+                Id = wellProject.Id,
+                ProjectId = wellProject.ProjectId,
+                Name = wellProject.Name,
+                ProducerCount = wellProject.ProducerCount,
+                GasInjectorCount = wellProject.GasInjectorCount,
+                WaterInjectorCount = wellProject.WaterInjectorCount,
+                ArtificialLift = wellProject.ArtificialLift,
+                RigMobDemob = wellProject.RigMobDemob,
+                AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
+                PluggingAndAbandonment = wellProject.PluggingAndAbandonment
             };
             if (wellProject.CostProfile != null)
             {
