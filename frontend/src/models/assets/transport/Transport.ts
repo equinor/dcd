@@ -2,7 +2,7 @@ import { TransportCostProfile } from "./TransportCostProfile"
 
 export class Transport implements Components.Schemas.TransportDto {
     id?: string | undefined
-    name?: string | null
+    name?: string | undefined
     projectId?: string | undefined
     costProfile?: TransportCostProfile | undefined
     maturity?: Components.Schemas.Maturity | undefined

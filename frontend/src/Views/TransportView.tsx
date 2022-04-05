@@ -1,5 +1,7 @@
-import { Button, Input, Typography } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import {
+    Button, Input, Label, Typography,
+} from "@equinor/eds-core-react"
+import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -71,6 +73,7 @@ const TransportView = () => {
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
+    const [transportName, setTransportName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
@@ -91,6 +94,7 @@ const TransportView = () => {
                     newTransport = new Transport()
                     setTransport(newTransport)
                 }
+                setTransportName(newTransport.name!)
                 const newColumnTitles = getColumnAbsoluteYears(caseResult, newTransport?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newTransport?.costProfile)
@@ -124,6 +128,7 @@ const TransportView = () => {
 
     const handleSave = async () => {
         const transportDto = Transport.ToDto(transport!)
+        transportDto.name = transportName
         if (transport?.id === emptyGuid) {
             transportDto.projectId = params.projectId
             const newProject = await GetTransportService().createTransport(params.caseId!, transportDto!)
@@ -141,10 +146,28 @@ const TransportView = () => {
         setHasChanges(false)
     }
 
+    const handleTransportNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setTransportName(e.target.value)
+        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== transport?.name) {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+    }
+
     return (
         <AssetViewDiv>
             <AssetHeader>
-                <Typography variant="h2">{transport?.name}</Typography>
+                <WrapperColumn>
+                    <Label htmlFor="topsideName" label="Name" />
+                    <Input
+                        id="topsideName"
+                        name="topsideName"
+                        placeholder="Enter Drainage Strategy name"
+                        defaultValue={transport?.name}
+                        onChange={handleTransportNameFieldChange}
+                    />
+                </WrapperColumn>
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
