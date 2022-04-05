@@ -9,7 +9,7 @@ import { ProductionProfileWaterInjectionCostProfile } from "./ProductionProfileW
 export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto {
     id?: string
     projectId?: string
-    name?: string
+    name?: string | undefined
     description?: string | null
     waterInjectorCount?: number
     nglYield?: number
