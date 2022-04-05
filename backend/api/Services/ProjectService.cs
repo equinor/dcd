@@ -45,6 +45,16 @@ namespace api.Services
             project.WellProjects = new List<WellProject>();
             project.Explorations = new List<Exploration>();
 
+            if (_context.Projects != null)
+            {
+                var existingProjectLibIds = _context.Projects.Select(p => p.CommonLibraryId).ToList();
+                if (existingProjectLibIds.Contains(project.CommonLibraryId))
+                {
+                    // Project already exists, navigate to project
+                    return GetProjectDto(_context.Projects.Where(p => p.CommonLibraryId == project.CommonLibraryId).First().Id);
+                }
+            }
+
             if (_context.Projects == null)
             {
                 var projects = new List<Project>();
