@@ -141,6 +141,10 @@ const ExplorationView = () => {
             const newProject = await GetExplorationService().createExploration(params.caseId!, explorationDto!)
             const newExploration = newProject.explorations.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newExploration!.id!)
+            setProject(newProject)
+            const newCase = newProject.cases.find((o) => o.id === params.caseId)
+            setCase(newCase)
+            setExploration(newExploration)
             navigate(`${newUrl}`, { replace: true })
         } else {
             const newProject = await GetExplorationService().updateExploration(explorationDto!)
