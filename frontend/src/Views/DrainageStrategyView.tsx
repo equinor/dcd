@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 /* Ignored as we will be refactoring this code */
-import { Button, Input, Typography, Label } from "@equinor/eds-core-react"
+import {
+    Button, Input, Typography, Label,
+} from "@equinor/eds-core-react"
 import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
@@ -372,11 +374,11 @@ const DrainageStrategyView = () => {
     return (
         <AssetViewDiv>
             <AssetHeader>
-            <WrapperColumn>
-                    <Label htmlFor="topsideName" label="Name" />
+                <WrapperColumn>
+                    <Label htmlFor="drainagStrategyName" label="Name" />
                     <Input
-                        id="topsideName"
-                        name="topsideName"
+                        id="drainagStrategyName"
+                        name="drainagStrategyName"
                         placeholder="Enter Drainage Strategy name"
                         defaultValue={drainageStrategy?.name}
                         onChange={handleDrainageStrategyNameFieldChange}
