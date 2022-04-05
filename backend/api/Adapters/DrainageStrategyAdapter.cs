@@ -48,6 +48,48 @@ namespace api.Adapters
             return drainageStrategy;
         }
 
+        public static DrainageStrategy ConvertExisting(DrainageStrategy existing, DrainageStrategyDto drainageStrategyDto)
+        {
+            existing.Id = drainageStrategyDto.Id;
+            existing.Name = drainageStrategyDto.Name;
+            existing.Description = drainageStrategyDto.Description;
+            existing.ProjectId = drainageStrategyDto.ProjectId;
+            existing.NGLYield = drainageStrategyDto.NGLYield;
+            existing.ArtificialLift = drainageStrategyDto.ArtificialLift;
+            existing.ProducerCount = drainageStrategyDto.ProducerCount;
+            existing.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
+            existing.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;
+            if (drainageStrategyDto.ProductionProfileOil != null)
+            {
+                existing.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, existing);
+            }
+            if (drainageStrategyDto.ProductionProfileGas != null)
+            {
+                existing.ProductionProfileGas = Convert(drainageStrategyDto.ProductionProfileGas, existing);
+            }
+            if (drainageStrategyDto.ProductionProfileWater != null)
+            {
+                existing.ProductionProfileWater = Convert(drainageStrategyDto.ProductionProfileWater, existing);
+            }
+            if (drainageStrategyDto.ProductionProfileWaterInjection != null)
+            {
+                existing.ProductionProfileWaterInjection = Convert(drainageStrategyDto.ProductionProfileWaterInjection, existing);
+            }
+            if (drainageStrategyDto.FuelFlaringAndLosses != null)
+            {
+                existing.FuelFlaringAndLosses = Convert(drainageStrategyDto.FuelFlaringAndLosses, existing);
+            }
+            if (drainageStrategyDto.NetSalesGas != null)
+            {
+                existing.NetSalesGas = Convert(drainageStrategyDto.NetSalesGas, existing);
+            }
+            if (drainageStrategyDto.Co2Emissions != null)
+            {
+                existing.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, existing);
+            }
+            return existing;
+        }
+
         private static ProductionProfileOil? Convert(ProductionProfileOilDto? productionProfileOilDto, DrainageStrategy drainageStrategy)
         {
             return productionProfileOilDto == null ? null : new ProductionProfileOil
