@@ -94,25 +94,32 @@ namespace api.Services
             var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
             DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto);
 
-            if (updatedDrainageStrategyDto.ProductionProfileOil == null && existing.ProductionProfileOil != null) {
+            if (updatedDrainageStrategyDto.ProductionProfileOil == null && existing.ProductionProfileOil != null)
+            {
                 _context.ProductionProfileOil!.Remove(existing.ProductionProfileOil);
             }
-            if (updatedDrainageStrategyDto.ProductionProfileGas == null && existing.ProductionProfileGas != null) {
+            if (updatedDrainageStrategyDto.ProductionProfileGas == null && existing.ProductionProfileGas != null)
+            {
                 _context.ProductionProfileGas!.Remove(existing.ProductionProfileGas);
             }
-            if (updatedDrainageStrategyDto.ProductionProfileWater == null && existing.ProductionProfileWater != null) {
+            if (updatedDrainageStrategyDto.ProductionProfileWater == null && existing.ProductionProfileWater != null)
+            {
                 _context.ProductionProfileWater!.Remove(existing.ProductionProfileWater);
             }
-            if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null && existing.ProductionProfileWaterInjection != null) {
+            if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null && existing.ProductionProfileWaterInjection != null)
+            {
                 _context.ProductionProfileWaterInjection!.Remove(existing.ProductionProfileWaterInjection);
             }
-            if (updatedDrainageStrategyDto.FuelFlaringAndLosses == null && existing.FuelFlaringAndLosses != null) {
+            if (updatedDrainageStrategyDto.FuelFlaringAndLosses == null && existing.FuelFlaringAndLosses != null)
+            {
                 _context.FuelFlaringAndLosses!.Remove(existing.FuelFlaringAndLosses);
             }
-            if (updatedDrainageStrategyDto.NetSalesGas == null && existing.NetSalesGas != null) {
+            if (updatedDrainageStrategyDto.NetSalesGas == null && existing.NetSalesGas != null)
+            {
                 _context.NetSalesGas!.Remove(existing.NetSalesGas);
             }
-            if (updatedDrainageStrategyDto.Co2Emissions == null && existing.Co2Emissions != null) {
+            if (updatedDrainageStrategyDto.Co2Emissions == null && existing.Co2Emissions != null)
+            {
                 _context.Co2Emissions!.Remove(existing.Co2Emissions);
             }
 
