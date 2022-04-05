@@ -375,10 +375,10 @@ const DrainageStrategyView = () => {
         <AssetViewDiv>
             <AssetHeader>
                 <WrapperColumn>
-                    <Label htmlFor="topsideName" label="Name" />
+                    <Label htmlFor="drainagStrategyName" label="Name" />
                     <Input
-                        id="topsideName"
-                        name="topsideName"
+                        id="drainagStrategyName"
+                        name="drainagStrategyName"
                         placeholder="Enter Drainage Strategy name"
                         defaultValue={drainageStrategy?.name}
                         onChange={handleDrainageStrategyNameFieldChange}
