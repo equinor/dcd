@@ -43,6 +43,11 @@ const Header = styled.header`
     }
 `
 
+const ProjectDescription = styled(Typography)`
+    margin-top: 1rem;
+    white-space: pre-wrap;
+`
+
 const ActionsContainer = styled.div`
     > *:not(:last-child) {
         margin-right: 0.5rem;
@@ -153,6 +158,8 @@ const ProjectView = () => {
                     </ActionsContainer>
                 </EdsProvider>
             </Header>
+
+            <ProjectDescription variant="h4">{project.description}</ProjectDescription>
 
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
