@@ -27,10 +27,10 @@ namespace api.Adapters
             int dg4Year = c.DG4Date.Year;
             if (c.WellProjectLink != Guid.Empty)
             {
-                var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
-                if (wellProject.CostProfile != null)
+                WellProjectCostProfileDto? wellProjectCostProfileDto = p.WellProjects!.First(l => l.Id == c.WellProjectLink).CostProfile;
+                if (wellProjectCostProfileDto != null)
                 {
-                    sTEACaseDto.Capex.Drilling = wellProject.CostProfile;
+                    sTEACaseDto.Capex.Drilling = wellProjectCostProfileDto;
                     sTEACaseDto.Capex.Drilling.StartYear += dg4Year;
                     sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.Drilling);
                 }

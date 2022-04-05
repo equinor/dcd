@@ -1,7 +1,7 @@
 export class DrillingScheduleDto implements Components.Schemas.DrillingScheduleDto {
     id?: string
-    startYear?: number
-    values?: number []
+    startYear?: number | undefined
+    values?: number [] | null
 
     constructor(data?: Components.Schemas.DrillingScheduleDto) {
         if (data !== undefined && data !== null) {
