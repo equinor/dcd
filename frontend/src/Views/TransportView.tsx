@@ -159,10 +159,10 @@ const TransportView = () => {
         <AssetViewDiv>
             <AssetHeader>
                 <WrapperColumn>
-                    <Label htmlFor="topsideName" label="Name" />
+                    <Label htmlFor="transportName" label="Name" />
                     <Input
-                        id="topsideName"
-                        name="topsideName"
+                        id="transportName"
+                        name="transportName"
                         placeholder="Enter Transport name"
                         defaultValue={transport?.name}
                         onChange={handleTransportNameFieldChange}
