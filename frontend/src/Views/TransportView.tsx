@@ -163,7 +163,7 @@ const TransportView = () => {
                     <Input
                         id="topsideName"
                         name="topsideName"
-                        placeholder="Enter Drainage Strategy name"
+                        placeholder="Enter Transport name"
                         defaultValue={transport?.name}
                         onChange={handleTransportNameFieldChange}
                     />
