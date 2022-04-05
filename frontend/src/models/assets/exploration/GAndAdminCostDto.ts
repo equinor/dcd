@@ -1,15 +1,20 @@
 export class GAndGAdminCostDto implements Components.Schemas.GAndGAdminCostDto {
-    id?: string | undefined
+    id?: string
     startYear?: number | undefined
-    values?: number [] | null
+    values?: number []
 
     constructor(data?: Components.Schemas.GAndGAdminCostDto) {
-        this.id = data?.id
-        this.startYear = data?.startYear
-        this.values = data?.values ?? []
+        if (data !== undefined && data !== null) {
+            this.id = data?.id
+            this.startYear = data?.startYear
+            this.values = data?.values ?? []
+        }
     }
 
-    static fromJSON(data?: Components.Schemas.GAndGAdminCostDto): GAndGAdminCostDto {
+    static fromJSON(data?: Components.Schemas.GAndGAdminCostDto): GAndGAdminCostDto | undefined {
+        if (data === undefined || data === null) {
+            return undefined
+        }
         return new GAndGAdminCostDto(data)
     }
 }

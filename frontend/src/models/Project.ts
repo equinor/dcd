@@ -25,6 +25,7 @@ export class Project {
     topsides: Topside[]
     transports: Transport[]
     wellProjects: WellProject[]
+    commonLibId: string
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
@@ -35,6 +36,7 @@ export class Project {
         this.drainageStrategies = data.drainageStrategies?.map(DrainageStrategy.fromJSON) ?? []
         this.explorations = data.explorations?.map(Exploration.fromJSON) ?? []
         this.id = data.projectId ?? ""
+        this.commonLibId = data.commonLibraryId ?? ""
         this.name = data.name ?? ""
         this.phase = data.projectPhase ? new ProjectPhase(data.projectPhase) : null
         this.substructures = data.substructures?.map(Substructure.fromJSON) ?? []
