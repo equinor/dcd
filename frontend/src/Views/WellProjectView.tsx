@@ -100,6 +100,7 @@ function WellProjectView() {
                     newWellProject = new WellProject()
                     setWellProject(newWellProject)
                 }
+                setWellProjectName(newWellProject.name!)
                 const newColumnTitles = getColumnAbsoluteYears(caseResult, newWellProject?.costProfile)
                 setColumns(newColumnTitles)
                 const newGridData = buildGridData(newWellProject?.costProfile)
@@ -153,7 +154,6 @@ function WellProjectView() {
         // eslint-disable-next-line max-len
         newWellProject.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setWellProject(newWellProject)
-        setWellProjectName(newWellProject.name!)
         const newColumnTitles = getColumnAbsoluteYears(caseItem, newWellProject?.costProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(newWellProject?.costProfile)
@@ -173,7 +173,6 @@ function WellProjectView() {
         // eslint-disable-next-line max-len
         newWellProject.drillingSchedule!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseInt(i, 10))
         setWellProject(newWellProject)
-        setWellProjectName(newWellProject.name!)
         const newColumnTitles = getColumnAbsoluteYears(caseItem, newWellProject?.drillingSchedule)
         setDrillingColumns(newColumnTitles)
         const newGridData = buildGridData(newWellProject?.drillingSchedule)
