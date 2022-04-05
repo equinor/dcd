@@ -25,23 +25,6 @@ export class Exploration implements Components.Schemas.ExplorationDto {
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
-            this.costProfile = new ExplorationCostProfile()
-        }
-    }
-
-    static Copy(data: Exploration) {
-        const explorationCopy = new Exploration(data)
-        return {
-            ...explorationCopy,
-            costProfile: data.costProfile,
-        }
-    }
-
-    static ToDto(data: Exploration): Components.Schemas.ExplorationDto {
-        const explorationCopy = new Exploration(data)
-        return {
-            ...explorationCopy,
-            costProfile: data.costProfile,
         }
     }
 

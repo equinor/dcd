@@ -104,15 +104,15 @@ namespace api.Adapters
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
-                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile.Sum;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
-                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile.Sum;
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CostProfile?.Sum ?? 0;
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {
-                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile.Sum;
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CostProfile?.Sum ?? 0;
                 }
                 if (c.TransportLink != Guid.Empty)
                 {

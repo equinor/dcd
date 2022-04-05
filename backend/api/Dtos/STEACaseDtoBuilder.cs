@@ -38,21 +38,32 @@ namespace api.Adapters
             sTEACaseDto.Capex.OffshoreFacilities = new OffshoreFacilitiesCostProfileDto();
             if (c.SubstructureLink != Guid.Empty)
             {
-                SubstructureCostProfileDto substructureCostProfileDto = p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)!.CostProfile;
-                substructureCostProfileDto.StartYear += dg4Year;
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfileDto);
+                SubstructureCostProfileDto? substructureCostProfileDto = p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile;
+                if (substructureCostProfileDto != null)
+                {
+                    substructureCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfileDto);
+                }
             }
             if (c.SurfLink != Guid.Empty)
             {
-                SurfCostProfileDto surfCostProfileDto = p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile;
-                surfCostProfileDto.StartYear += dg4Year;
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(surfCostProfileDto);
+                SurfCostProfileDto? surfCostProfileDto = p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile;
+                if (surfCostProfileDto != null)
+                {
+                    surfCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(surfCostProfileDto);
+                }
+
             }
             if (c.TopsideLink != Guid.Empty)
             {
-                TopsideCostProfileDto topsideCostProfileDto = p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile;
-                topsideCostProfileDto.StartYear += dg4Year;
-                sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCostProfileDto);
+                TopsideCostProfileDto? topsideCostProfileDto = p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile;
+                if (topsideCostProfileDto != null)
+                {
+                    topsideCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCostProfileDto);
+                }
+
             }
             if (c.TransportLink != Guid.Empty)
             {
