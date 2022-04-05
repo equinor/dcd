@@ -104,7 +104,7 @@ namespace api.Adapters
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
-                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile.Sum;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
