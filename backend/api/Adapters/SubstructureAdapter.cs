@@ -7,28 +7,34 @@ namespace api.Adapters
     {
         public static Substructure Convert(SubstructureDto substructureDto)
         {
-            var substructure = new Substructure();
-            substructure.Id = substructureDto.Id;
-            substructure.ProjectId = substructureDto.ProjectId;
-            substructure.Name = substructureDto.Name;
-            substructure.DryWeight = substructureDto.DryWeight;
-            substructure.Maturity = substructureDto.Maturity;
+            var substructure = new Substructure
+            {
+                Id = substructureDto.Id,
+                ProjectId = substructureDto.ProjectId,
+                Name = substructureDto.Name,
+                DryWeight = substructureDto.DryWeight,
+                Maturity = substructureDto.Maturity
+            };
             substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
-
             return substructure;
         }
 
-        private static SubstructureCostProfile Convert(SubstructureCostProfileDto substructureCostProfileDto, Substructure substructure)
+        private static SubstructureCostProfile? Convert(SubstructureCostProfileDto? costprofile, Substructure substructure)
         {
-            return new SubstructureCostProfile
+            if (costprofile == null)
+            {
+                return null;
+            }
+            var substructureCostProfile = new SubstructureCostProfile
             {
                 Substructure = substructure,
-                Id = substructureCostProfileDto.Id,
-                EPAVersion = substructureCostProfileDto.EPAVersion,
-                Currency = substructureCostProfileDto.Currency,
-                StartYear = substructureCostProfileDto.StartYear,
-                Values = substructureCostProfileDto.Values
+                Id = costprofile.Id,
+                EPAVersion = costprofile.EPAVersion,
+                Currency = costprofile.Currency,
+                StartYear = costprofile.StartYear,
+                Values = costprofile.Values
             };
+            return substructureCostProfile;
         }
     }
 }

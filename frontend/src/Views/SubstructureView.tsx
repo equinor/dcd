@@ -1,5 +1,7 @@
-import { Button, Input, Typography } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import {
+    Button, Input, Typography, Label,
+} from "@equinor/eds-core-react"
+import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -10,6 +12,7 @@ import {
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
 import { Substructure } from "../models/assets/substructure/Substructure"
+import { SubstructureCostProfile } from "../models/assets/substructure/SubstructureCostProfile"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
@@ -71,6 +74,7 @@ const SubstructureView = () => {
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
+    const [substructureName, setSubstructureName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
@@ -91,9 +95,10 @@ const SubstructureView = () => {
                     newSubstructure = new Substructure()
                     setSubstructure(newSubstructure)
                 }
-                const newColumnTitles = getColumnAbsoluteYears(caseResult, newSubstructure?.substructureCostProfile)
+                setSubstructureName(newSubstructure.name!)
+                const newColumnTitles = getColumnAbsoluteYears(caseResult, newSubstructure?.costProfile)
                 setColumns(newColumnTitles)
-                const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
+                const newGridData = buildGridData(newSubstructure?.costProfile)
                 setGridData(newGridData)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -104,33 +109,49 @@ const SubstructureView = () => {
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, substructure?.substructureCostProfile))
-        setHasChanges(true)
+        setColumns(getColumnAbsoluteYears(caseItem, substructure?.costProfile))
+    }
+
+    const updateInsertSubstructureCostProfile = (input: string, year: number) => {
+        const newSubstructure = new Substructure(substructure!)
+        const newCostProfile = new SubstructureCostProfile()
+        newSubstructure.id = newSubstructure.id ?? emptyGuid
+        newSubstructure.costProfile = newSubstructure.costProfile ?? newCostProfile
+        newSubstructure.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "")
+            .split("\t").map((i) => parseFloat(i))
+        newSubstructure.costProfile!.startYear = year
+        newSubstructure.costProfile!.epaVersion = newSubstructure.costProfile.epaVersion ?? ""
+        return newSubstructure
     }
 
     const onImport = (input: string, year: number) => {
-        const newSubstructure = Substructure.Copy(substructure!)
-        newSubstructure.substructureCostProfile!.startYear = year
-        // eslint-disable-next-line max-len
-        newSubstructure.substructureCostProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
+        const newSubstructure = updateInsertSubstructureCostProfile(input, year)
         setSubstructure(newSubstructure)
-        const newColumnTitles = getColumnAbsoluteYears(caseItem, newSubstructure?.substructureCostProfile)
+        const newColumnTitles = getColumnAbsoluteYears(caseItem, newSubstructure?.costProfile)
         setColumns(newColumnTitles)
-        const newGridData = buildGridData(newSubstructure?.substructureCostProfile)
+        const newGridData = buildGridData(newSubstructure?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
+        if (newSubstructure.name !== "") {
+            setHasChanges(true)
+        }
     }
 
     const handleSave = async () => {
-        const substructureDto = Substructure.ToDto(substructure!)
+        const substructureDto = new Substructure(substructure!)
+        substructureDto.name = substructureName
         if (substructure?.id === emptyGuid) {
             substructureDto.projectId = params.projectId
-            const newProject = await GetSubstructureService().createSubstructure(params.caseId!, substructureDto!)
-            const newSubstructure = newProject.substructures.at(-1)
+            const updatedProject: Project = await
+            GetSubstructureService().createSubstructure(params.caseId!, substructureDto!)
+            const updatedCase = updatedProject.cases.find((o) => o.id === params.caseId)
+            const newSubstructure = updatedProject.substructures.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newSubstructure!.id!)
+            setSubstructure(newSubstructure)
+            setCase(updatedCase)
             navigate(`${newUrl}`, { replace: true })
         } else {
+            substructureDto.projectId = params.projectId
             const newProject = await GetSubstructureService().updateSubstructure(substructureDto!)
             setProject(newProject)
             const newCase = newProject.cases.find((o) => o.id === params.caseId)
@@ -141,10 +162,29 @@ const SubstructureView = () => {
         setHasChanges(false)
     }
 
+    const handleSubstructureNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setSubstructureName(e.target.value)
+        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== substructure?.name) {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+    }
+
     return (
         <AssetViewDiv>
+            <Typography variant="h2">Substructure</Typography>
             <AssetHeader>
-                <Typography variant="h2">{substructure?.name}</Typography>
+                <WrapperColumn>
+                    <Label htmlFor="substructureName" label="Name" />
+                    <Input
+                        id="substructureName"
+                        name="substructureName"
+                        placeholder="Enter substructure name"
+                        defaultValue={substructure?.name}
+                        onChange={handleSubstructureNameFieldChange}
+                    />
+                </WrapperColumn>
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
