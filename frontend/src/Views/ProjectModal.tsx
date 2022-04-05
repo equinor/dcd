@@ -5,7 +5,7 @@ import {
     TextField,
     Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEvent, useEffect, useState } from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
@@ -74,20 +74,25 @@ type Props = {
     isOpen: boolean;
     closeModal: Function;
     shards: any[];
+    passedInProject: Components.Schemas.CommonLibraryProjectDto;
 }
 
-const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
+const ProjectModal = ({
+    passedInProject, isOpen, closeModal, shards,
+}: Props) => {
     const navigate = useNavigate()
     const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>()
-    const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>()
+    const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>(passedInProject)
     const [inputName, setName] = useState<string>()
     const [inputDescription, setDescription] = useState<string>()
     const [commonLibFetchError, setCommonLibFetchError] = useState<boolean>()
+    const CommonLibraryService = GetCommonLibraryService()
+
+    // When user is inside the view, and chooses a new project.
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
-        setSelectedProject(project)
+        setSelectedProject(project!)
     }
-    const CommonLibraryService = GetCommonLibraryService()
 
     const convertCommonLibProjectToProject = (
         commonLibraryProject: Components.Schemas.CommonLibraryProjectDto,
@@ -112,23 +117,24 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         return project
     }
 
-    const closeCreateProjectView = async (pressedOkButton: boolean) => {
+    const closeProjectModal = async (pressedOkButton: boolean) => {
         let project
         if (pressedOkButton === true) {
             project = convertCommonLibProjectToProject(selectedProject!)
             const createdProject = await GetProjectService().createProject(project)
             navigate(`/project/${createdProject.projectId}`)
         }
-        setSelectedProject(undefined)
+        setSelectedProject(undefined!)
         closeModal()
     }
 
     const handleOkClick = () => {
-        closeCreateProjectView(true)
+        closeProjectModal(true)
     }
 
     const handleCancelClick = () => {
-        closeCreateProjectView(false)
+        setSelectedProject(undefined!)
+        closeProjectModal(false)
     }
 
     const updateNameHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -142,15 +148,16 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     useEffect(() => {
         (async () => {
             try {
+                setSelectedProject(passedInProject)
                 setCommonLibFetchError(false)
                 const res = await CommonLibraryService.getProjects()
                 setProjects(res)
             } catch (error) {
                 setCommonLibFetchError(true)
-                console.error("[CreateProjectView] Error while fetching common library projects.", error)
+                console.error("[ProjectModal] Error while fetching common library projects.", error)
             }
         })()
-    }, [])
+    }, [passedInProject])
 
     if (commonLibFetchError) {
         return (
@@ -165,28 +172,20 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
         )
     }
 
-    if (!projects) {
-        return (
-            <Modal isOpen={isOpen} title="Getting data" shards={shards}>
-                <Typography>Retrieving projects from Common Library.</Typography>
-            </Modal>
-        )
-    }
-
     return (
-        <Modal isOpen={isOpen} title="Create Project" shards={shards}>
+        <Modal isOpen={isOpen} title="Add Project from CommonLib" shards={shards}>
             <div>
                 <ProjectSelect>
                     <Icon data={search} color={grey} />
                     <ProjectDropdown
                         id="select-project"
-                        label="CommonLib project"
+                        label="CommonLib projects"
                         onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelected(event)}
                         defaultValue=""
                     >
                         {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                        <option disabled />
-                        {projects.map((project) => (
+                        <option value={selectedProject?.name ?? ""}>{selectedProject?.name ?? ""}</option>
+                        {projects?.map((project) => (
                             <option value={project.id!} key={project.id}>{project.name!}</option>
                         ))}
                     </ProjectDropdown>
@@ -195,7 +194,8 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                     <StyledTextField
                         label="Name"
                         id="textfield-name"
-                        value={selectedProject?.name ?? ""}
+                        value={selectedProject?.name ?? "hei"}
+                        defaultValue={selectedProject?.name ?? "halla"}
                         autoComplete="off"
                         onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
                             updateNameHandler(event)
@@ -248,7 +248,7 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
                         onClick={handleOkClick}
                         disabled={!selectedProject}
                     >
-                        Create Project
+                        Add Project
                     </Button>
                     <Button onClick={handleCancelClick} variant="outlined">Cancel</Button>
                 </Margin>
@@ -257,4 +257,4 @@ const CreateProjectView = ({ isOpen, closeModal, shards }: Props) => {
     )
 }
 
-export default CreateProjectView
+export default ProjectModal
