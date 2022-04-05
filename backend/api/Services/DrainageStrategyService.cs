@@ -81,14 +81,6 @@ namespace api.Services
             }
         }
 
-        // public ProjectDto UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
-        // {
-        //     var updatedDrainageStrategy = DrainageStrategyAdapter.Convert(updatedDrainageStrategyDto);
-        //     _context.DrainageStrategies!.Update(updatedDrainageStrategy);
-        //     _context.SaveChanges();
-        //     return _projectService.GetProjectDto(updatedDrainageStrategy.ProjectId);
-        // }
-
         public ProjectDto UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
         {
             var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
