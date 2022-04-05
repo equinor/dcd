@@ -1,5 +1,7 @@
-import { Button, Input, Typography } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import {
+    Button, Input, Typography, Label,
+} from "@equinor/eds-core-react"
+import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -35,6 +37,7 @@ const AssetViewDiv = styled.div`
 const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
+    margin-top: 1rem;
 `
 
 const WrapperColumn = styled.div`
@@ -60,7 +63,7 @@ const SaveButton = styled(Button)`
 
 const Dg4Field = styled.div`
     margin-left: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     width: 10rem;
     display: flex;
 `
@@ -76,6 +79,7 @@ function WellProjectView() {
     const [gridDrillingData, setGridDrillingData] = useState<CellValue[][]>([[]])
     const [drillingDialogOpen, setDrillingDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
+    const [wellProjectName, setWellProjectName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
@@ -114,28 +118,54 @@ function WellProjectView() {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
         setColumns(getColumnAbsoluteYears(caseItem, wellProject?.costProfile))
-        setHasChanges(true)
+    }
+
+    const updateInsertWellProjectCostProfile = (input: string, year: number) => {
+        const newWellProject = new WellProject(wellProject!)
+        const newCostProfile = new WellProjectCostProfileDto()
+        newWellProject.id = newWellProject.id ?? emptyGuid
+        newWellProject.costProfile = newWellProject.costProfile ?? newCostProfile
+        newWellProject.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "")
+            .split("\t").map((i) => parseFloat(i))
+        newWellProject.costProfile!.startYear = year
+        newWellProject.costProfile!.epaVersion = newWellProject.costProfile.epaVersion ?? ""
+        return newWellProject
+    }
+
+    const updateInsertWellProjectDrilling = (input: string, year: number) => {
+        const newWellProject = new WellProject(wellProject!)
+        const newDrillingSchedule = new DrillingScheduleDto()
+        newWellProject.id = newWellProject.id ?? emptyGuid
+        newWellProject.drillingSchedule = newWellProject.drillingSchedule ?? newDrillingSchedule
+        newWellProject.drillingSchedule!.values = input.replace(/(\r\n|\n|\r)/gm, "")
+            .split("\t").map((i) => parseFloat(i))
+        newWellProject.drillingSchedule!.startYear = year
+        return newWellProject
     }
 
     const onImport = (input: string, year: number) => {
-        const newWellProject = WellProject.Copy(wellProject!)
+        const newWellProject = updateInsertWellProjectCostProfile(input, year)
         if (newWellProject.costProfile === undefined) {
             newWellProject.costProfile = new WellProjectCostProfileDto()
         }
+        newWellProject.id = newWellProject.id ?? emptyGuid
         newWellProject.costProfile!.startYear = year
         // eslint-disable-next-line max-len
         newWellProject.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setWellProject(newWellProject)
+        setWellProjectName(newWellProject.name!)
         const newColumnTitles = getColumnAbsoluteYears(caseItem, newWellProject?.costProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(newWellProject?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
+        if (newWellProject.name !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onDrillingImport = (input: string, year: number) => {
-        const newWellProject = WellProject.Copy(wellProject!)
+        const newWellProject = updateInsertWellProjectDrilling(input, year)
         if (newWellProject.drillingSchedule === undefined) {
             newWellProject.drillingSchedule = new DrillingScheduleDto()
         }
@@ -143,27 +173,32 @@ function WellProjectView() {
         // eslint-disable-next-line max-len
         newWellProject.drillingSchedule!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseInt(i, 10))
         setWellProject(newWellProject)
+        setWellProjectName(newWellProject.name!)
         const newColumnTitles = getColumnAbsoluteYears(caseItem, newWellProject?.drillingSchedule)
         setDrillingColumns(newColumnTitles)
         const newGridData = buildGridData(newWellProject?.drillingSchedule)
         setGridDrillingData(newGridData)
         setDrillingDialogOpen(!drillingDialogOpen)
-        setHasChanges(true)
+        if (newWellProject.name !== "") {
+            setHasChanges(true)
+        }
     }
 
     const handleSave = async () => {
-        const wellProjectDto = WellProject.ToDto(wellProject!)
+        const wellProjectDto = new WellProject(wellProject!)
+        wellProjectDto.name = wellProjectName
         if (wellProject?.id === emptyGuid) {
             wellProjectDto.projectId = params.projectId
-            const newProject = await GetWellProjectService().createWellProject(params.caseId!, wellProjectDto!)
-            const newWellProject = newProject.wellProjects.at(-1)
+            const updatedProject: Project = await
+            GetWellProjectService().createWellProject(params.caseId!, wellProjectDto!)
+            const updatedCase = updatedProject.cases.find((o) => o.id === params.caseId)
+            const newWellProject = updatedProject.wellProjects.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newWellProject!.id!)
-            setProject(newProject)
-            const caseResult = newProject.cases.find((o) => o.id === params.caseId)
-            setCase(caseResult)
+            setCase(updatedCase)
             setWellProject(newWellProject)
             navigate(`${newUrl}`, { replace: true })
         } else {
+            wellProjectDto.projectId = params.projectId
             const newProject = await GetWellProjectService().updateWellProject(wellProjectDto!)
             setProject(newProject)
             const newCase = newProject.cases.find((o) => o.id === params.caseId)
@@ -174,10 +209,29 @@ function WellProjectView() {
         setHasChanges(false)
     }
 
+    const handleWellProjectNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setWellProjectName(e.target.value)
+        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== wellProject?.name) {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+    }
+
     return (
         <AssetViewDiv>
+            <Typography variant="h2">WellProject</Typography>
             <AssetHeader>
-                <Typography variant="h2">{wellProject?.name}</Typography>
+                <WrapperColumn>
+                    <Label htmlFor="wellProjectName" label="Name" />
+                    <Input
+                        id="wellProjectName"
+                        name="wellProjectName"
+                        placeholder="Enter wellproject name"
+                        defaultValue={wellProject?.name}
+                        onChange={handleWellProjectNameFieldChange}
+                    />
+                </WrapperColumn>
             </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
