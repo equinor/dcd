@@ -13,7 +13,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { ProjectPath } from "../Utils/common"
 import { GetCommonLibraryService } from "../Services/CommonLibraryService"
 import { Modal } from "../Components/Modal"
-import CreateProjectView from "./CreateProjectView"
+import ProjectModal from "./ProjectModal"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -142,7 +142,7 @@ const DashboardView = ({ shards }: Props) => {
                     </ProjectDropdown>
                 </ProjectSelect>
             </Wrapper>
-            <CreateProjectView
+            <ProjectModal
                 passedInProject={selectedProject!}
                 isOpen={isOpen}
                 shards={shards}

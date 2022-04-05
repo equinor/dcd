@@ -77,7 +77,7 @@ type Props = {
     passedInProject: Components.Schemas.CommonLibraryProjectDto;
 }
 
-const CreateProjectView = ({
+const ProjectModal = ({
     passedInProject, isOpen, closeModal, shards,
 }: Props) => {
     const navigate = useNavigate()
@@ -117,7 +117,7 @@ const CreateProjectView = ({
         return project
     }
 
-    const closeCreateProjectView = async (pressedOkButton: boolean) => {
+    const closeProjectModal = async (pressedOkButton: boolean) => {
         let project
         if (pressedOkButton === true) {
             project = convertCommonLibProjectToProject(selectedProject!)
@@ -129,12 +129,12 @@ const CreateProjectView = ({
     }
 
     const handleOkClick = () => {
-        closeCreateProjectView(true)
+        closeProjectModal(true)
     }
 
     const handleCancelClick = () => {
         setSelectedProject(undefined!)
-        closeCreateProjectView(false)
+        closeProjectModal(false)
     }
 
     const updateNameHandler = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -154,7 +154,7 @@ const CreateProjectView = ({
                 setProjects(res)
             } catch (error) {
                 setCommonLibFetchError(true)
-                console.error("[CreateProjectView] Error while fetching common library projects.", error)
+                console.error("[ProjectModal] Error while fetching common library projects.", error)
             }
         })()
     }, [passedInProject])
@@ -257,4 +257,4 @@ const CreateProjectView = ({
     )
 }
 
-export default CreateProjectView
+export default ProjectModal
