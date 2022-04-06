@@ -150,6 +150,7 @@ namespace tests
             fixture.context.DrainageStrategies.Add(oldStrategy);
             fixture.context.SaveChanges();
             var updatedStrategy = CreateUpdatedDrainageStrategy(project);
+            updatedStrategy.Id = oldStrategy.Id;
 
             // Act
             var projectResult = drainageStrategyService.UpdateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(updatedStrategy));
