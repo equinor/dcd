@@ -371,6 +371,69 @@ const DrainageStrategyView = () => {
         }
     }
 
+    const deleteCo2EmissionsCostProfile = () => {
+        const drainageCopy = new DrainageStrategy(drainageStrategy)
+        drainageCopy.co2Emissions = undefined
+        setHasChanges(true)
+        setCo2EmissionsColumns([])
+        setCo2EmissionsGridData([[]])
+        setDrainageStrategy(drainageCopy)
+    }
+
+    const deleteFuelFlaringAndLossesCostProfile = () => {
+        const drainageCopy = new DrainageStrategy(drainageStrategy)
+        drainageCopy.fuelFlaringAndLosses = undefined
+        setHasChanges(true)
+        setFuelFlaringAndLossesColumns([])
+        setFuelFlaringAndLossesGridData([[]])
+        setDrainageStrategy(drainageCopy)
+    }
+
+    const deleteNetSalesGasCostProfile = () => {
+        const drainageCopy = new DrainageStrategy(drainageStrategy)
+        drainageCopy.netSalesGas = undefined
+        setHasChanges(true)
+        setNetSalesGasColumns([])
+        setNetSalesGasGridData([[]])
+        setDrainageStrategy(drainageCopy)
+    }
+
+    const deleteProductionProfileGasCostProfile = () => {
+        const drainageCopy = new DrainageStrategy(drainageStrategy)
+        drainageCopy.productionProfileGas = undefined
+        setHasChanges(true)
+        setProductionProfileGasColumns([])
+        setProductionProfileGasGridData([[]])
+        setDrainageStrategy(drainageCopy)
+    }
+
+    const deleteProductionProfileOilCostProfile = () => {
+        const drainageCopy = new DrainageStrategy(drainageStrategy)
+        drainageCopy.productionProfileOil = undefined
+        setHasChanges(true)
+        setProductionProfileOilColumns([])
+        setProductionProfileOilGridData([[]])
+        setDrainageStrategy(drainageCopy)
+    }
+
+    const deleteProductionProfileWaterCostProfile = () => {
+        const drainageCopy = new DrainageStrategy(drainageStrategy)
+        drainageCopy.productionProfileWater = undefined
+        setHasChanges(true)
+        setProductionProfileWaterColumns([])
+        setProductionProfileWaterGridData([[]])
+        setDrainageStrategy(drainageCopy)
+    }
+
+    const deleteProductionProfileWaterInjectionCostProfile = () => {
+        const drainageCopy = new DrainageStrategy(drainageStrategy)
+        drainageCopy.productionProfileWaterInjection = undefined
+        setHasChanges(true)
+        setProductionProfileWaterInjectionColumns([])
+        setProductionProfileWaterInjectionGridData([[]])
+        setDrainageStrategy(drainageCopy)
+    }
+
     return (
         <AssetViewDiv>
             <AssetHeader>
@@ -394,6 +457,7 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <Typography variant="h4"> Co2 Emissions </Typography>
                 <ImportButton onClick={() => { setCo2EmissionsCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton disabled={drainageStrategy?.co2Emissions === undefined} color="danger" onClick={deleteCo2EmissionsCostProfile}>Delete</ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={co2EmissionsColumns} gridData={co2EmissionsGridData} onCellsChanged={onCo2EmissionsCellsChanged} />
@@ -404,6 +468,8 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <Typography variant="h4"> Fuel Flaring And Losses </Typography>
                 <ImportButton onClick={() => { setFuelFlaringAndLossesCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton disabled={drainageStrategy?.fuelFlaringAndLosses === undefined} color="danger" onClick={deleteFuelFlaringAndLossesCostProfile}>Delete</ImportButton>
+
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={fuelFlaringAndLossesColumns} gridData={fuelFlaringAndLossesGridData} onCellsChanged={onFuelFlaringAndLossesCellsChanged} />
@@ -414,6 +480,8 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <Typography variant="h4"> Net Sales Gas </Typography>
                 <ImportButton onClick={() => { setNetSalesGasCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton disabled={drainageStrategy?.netSalesGas === undefined} color="danger" onClick={deleteNetSalesGasCostProfile}>Delete</ImportButton>
+
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={netSalesGasColumns} gridData={netSalesGasGridData} onCellsChanged={onNetSalesGasCellsChanged} />
@@ -424,6 +492,8 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <Typography variant="h4"> Production Profile Gas </Typography>
                 <ImportButton onClick={() => { setProductionProfileGasCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton disabled={drainageStrategy?.productionProfileGas === undefined} color="danger" onClick={deleteProductionProfileGasCostProfile}>Delete</ImportButton>
+
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={productionProfileGasColumns} gridData={productionProfileGasGridData} onCellsChanged={onProductionProfileGasCellsChanged} />
@@ -434,6 +504,8 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <Typography variant="h4"> Production Profile Oil </Typography>
                 <ImportButton onClick={() => { setProductionProfileOilCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton disabled={drainageStrategy?.productionProfileOil === undefined} color="danger" onClick={deleteProductionProfileOilCostProfile}>Delete</ImportButton>
+
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={productionProfileOilColumns} gridData={productionProfileOilGridData} onCellsChanged={onProductionProfileOilCellsChanged} />
@@ -444,6 +516,8 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <Typography variant="h4"> Production Profile Water </Typography>
                 <ImportButton onClick={() => { setProductionProfileWaterCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton disabled={drainageStrategy?.productionProfileWater === undefined} color="danger" onClick={deleteProductionProfileWaterCostProfile}>Delete</ImportButton>
+
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={productionProfileWaterColumns} gridData={productionProfileWaterGridData} onCellsChanged={onProductionProfileWaterCellsChanged} />
@@ -454,6 +528,8 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <Typography variant="h4"> Production Profile Water Injection </Typography>
                 <ImportButton onClick={() => { setProductionProfileWaterInjectionCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton disabled={drainageStrategy?.productionProfileWaterInjection === undefined} color="danger" onClick={deleteProductionProfileWaterInjectionCostProfile}>Delete</ImportButton>
+
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={productionProfileWaterInjectionColumns} gridData={productionProfileWaterInjectionGridData} onCellsChanged={onProductionProfileWaterInjectionCellsChanged} />
