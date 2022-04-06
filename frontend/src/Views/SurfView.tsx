@@ -165,6 +165,15 @@ const SurfView = () => {
         }
     }
 
+    const deleteCostProfile = () => {
+        const surfCopy = new Surf(surf)
+        surfCopy.costProfile = undefined
+        setHasChanges(true)
+        setColumns([])
+        setGridData([[]])
+        setSurf(surfCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">Surf</Typography>
@@ -189,6 +198,13 @@ const SurfView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={surf?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
