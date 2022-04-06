@@ -25,8 +25,8 @@ namespace api.Adapters
                 surf.CostProfile = Convert(surfDto.CostProfile, surf);
             }
 
-            if (surfDto.cessationCostProfile != null) {
-                surf.cessationCostProfile = Convert(surfDto.cessationCostProfile, surf);
+            if (surfDto.SurfCessationCostProfileDto != null) {
+                surf.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, surf);
             }
 
             return surf;
@@ -56,15 +56,15 @@ namespace api.Adapters
                  return null;
              }   
 
-             var surfCessationCostProfile = new SurfCessationCostProfile 
+             SurfCessationCostProfile surfCessationCostProfile = new SurfCessationCostProfile 
              {
                  Id = cessationCostProfileDto.Id,
                  Currency = cessationCostProfileDto.Currency,
-                 EPAVersion = cessationCostProfileDto.EPAversion,
+                 EPAVersion = cessationCostProfileDto.EPAVersion,
                  StartYear = cessationCostProfileDto.StartYear,
-                 Values = cessationCostProfileDto.values,
+                 Values = cessationCostProfileDto.Values,
                  Surf = surf
-             }
+             };
 
              return surfCessationCostProfile;
         }
