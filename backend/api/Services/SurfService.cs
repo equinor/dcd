@@ -38,7 +38,8 @@ namespace api.Services
             var existing = GetSurf(updatedSurfDto.Id);
             SurfAdapter.ConvertExisting(existing, updatedSurfDto);
 
-            if (updatedSurfDto.CostProfile == null && existing.CostProfile != null) {
+            if (updatedSurfDto.CostProfile == null && existing.CostProfile != null)
+            {
                 _context.SurfCostProfile!.Remove(existing.CostProfile);
             }
 
