@@ -166,6 +166,15 @@ const ExplorationView = () => {
         }
     }
 
+    const deleteCostProfile = () => {
+        const explorationCopy = new Exploration(exploration)
+        explorationCopy.costProfile = undefined
+        setHasChanges(true)
+        setColumns([])
+        setGridData([[]])
+        setExploration(explorationCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">Exploration</Typography>
@@ -190,6 +199,13 @@ const ExplorationView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={exploration?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />

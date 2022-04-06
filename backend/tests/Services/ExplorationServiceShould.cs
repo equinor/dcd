@@ -103,7 +103,7 @@ public class ExplorationServiceShould : IDisposable
         var oldExploration = CreateTestExploration(project);
         explorationService.CreateExploration(ExplorationDtoAdapter.Convert(oldExploration), sourceCaseId);
 
-        var updatedExploration = CreateUpdatedTestExploration(project);
+        var updatedExploration = CreateUpdatedTestExploration(project, oldExploration);
 
         // Act
         var projectResult = explorationService.UpdateExploration(ExplorationDtoAdapter.Convert(updatedExploration));
@@ -148,10 +148,11 @@ public class ExplorationServiceShould : IDisposable
                 );
     }
 
-    private static Exploration CreateUpdatedTestExploration(Project project)
+    private static Exploration CreateUpdatedTestExploration(Project project, Exploration oldExploration)
     {
         return new ExplorationBuilder
         {
+            Id = oldExploration.Id,
             Name = "Test-exploration-23",
             Project = project,
             ProjectId = project.Id,
