@@ -12,6 +12,7 @@ import {
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
 import { Transport } from "../models/assets/transport/Transport"
+import { TransportCostProfile } from "../models/assets/transport/TransportCostProfile"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
@@ -112,35 +113,51 @@ const TransportView = () => {
         setHasChanges(true)
     }
 
-    const onImport = (input: string, year: number) => {
-        const newTransport = Transport.Copy(transport!)
+    const updateInsertTransportCostProfile = (input: string, year: number) => {
+        const newTransport = new Transport(transport!)
+        const newCostProfile = new TransportCostProfile()
+        newTransport.id = newTransport.id ?? emptyGuid
+        newTransport.costProfile = newTransport.costProfile ?? newCostProfile
+        newTransport.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "")
+            .split("\t").map((i) => parseFloat(i))
         newTransport.costProfile!.startYear = year
-        // eslint-disable-next-line max-len
-        newTransport.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
+        newTransport.costProfile!.epaVersion = newTransport.costProfile.epaVersion ?? ""
+        return newTransport
+    }
+
+    const onImport = (input: string, year: number) => {
+        const newTransport = updateInsertTransportCostProfile(input, year)
         setTransport(newTransport)
         const newColumnTitles = getColumnAbsoluteYears(caseItem, newTransport?.costProfile)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(newTransport?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
+        if (newTransport.name !== "") {
+            setHasChanges(true)
+        }
     }
 
     const handleSave = async () => {
-        const transportDto = Transport.ToDto(transport!)
+        const transportDto = new Transport(transport!)
         transportDto.name = transportName
         if (transport?.id === emptyGuid) {
             transportDto.projectId = params.projectId
-            const newProject = await GetTransportService().createTransport(params.caseId!, transportDto!)
-            const newTransport = newProject.transports.at(-1)
+            const updatedProject = await GetTransportService().createTransport(params.caseId!, transportDto!)
+            const updatedCase = updatedProject.cases.find((c) => c.id === params.caseId)
+            const newTransport = updatedProject.transports.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newTransport!.id!)
+            setProject(updatedProject)
+            setCase(updatedCase)
+            setTransport(newTransport)
             navigate(`${newUrl}`, { replace: true })
         } else {
+            transportDto.projectId = params.projectId
             const newProject = await GetTransportService().updateTransport(transportDto!)
             setProject(newProject)
-            const newCase = newProject.cases.find((o) => o.id === params.caseId)
+            const newCase = newProject.cases.find((c) => c.id === params.caseId)
             setCase(newCase)
-            const newTransport = newProject.transports.find((s) => s.id === params.transportId)
+            const newTransport = newProject.transports.find((t) => t.id === params.transportId)
             setTransport(newTransport)
         }
         setHasChanges(false)
@@ -157,6 +174,7 @@ const TransportView = () => {
 
     return (
         <AssetViewDiv>
+            <Typography variant="h2">Transport</Typography>
             <AssetHeader>
                 <WrapperColumn>
                     <Label htmlFor="transportName" label="Name" />
