@@ -99,12 +99,12 @@ namespace api.Adapters
                     var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
                     if (wellProject.CostProfile != null)
                     {
-                        c.Capex += wellProject.CostProfile.Sum;
+                        c.Capex += wellProject.CostProfile?.Sum ?? 0;
                     }
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
-                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile.Sum;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
