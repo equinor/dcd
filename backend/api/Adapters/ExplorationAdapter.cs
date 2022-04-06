@@ -20,6 +20,18 @@ namespace api.Adapters
             return exploration;
         }
 
+        public static void ConvertExisting(Exploration existing, ExplorationDto explorationDto)
+        {
+            existing.Id = explorationDto.Id;
+            existing.ProjectId = explorationDto.ProjectId;
+            existing.Name = explorationDto.Name;
+            existing.RigMobDemob = explorationDto.RigMobDemob;
+            existing.WellType = explorationDto.WellType;
+            existing.CostProfile = Convert(explorationDto.CostProfile, existing);
+            existing.DrillingSchedule = Convert(explorationDto.DrillingSchedule, existing);
+            existing.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, existing);
+        }
+
         private static ExplorationCostProfile Convert(ExplorationCostProfileDto? costProfileDto, Exploration exploration)
         {
             if (costProfileDto == null)
