@@ -217,6 +217,24 @@ function WellProjectView() {
         }
     }
 
+    const deleteCostProfile = () => {
+        const wellProjectCopy = new WellProject(wellProject)
+        wellProjectCopy.costProfile = undefined
+        setHasChanges(true)
+        setColumns([])
+        setGridData([[]])
+        setWellProject(wellProjectCopy)
+    }
+
+    const deleteDrillingSchedule = () => {
+        const wellProjectCopy = new WellProject(wellProject)
+        wellProjectCopy.drillingSchedule = undefined
+        setHasChanges(true)
+        setDrillingColumns([])
+        setGridDrillingData([[]])
+        setWellProject(wellProjectCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">WellProject</Typography>
@@ -241,6 +259,13 @@ function WellProjectView() {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={wellProject?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
@@ -250,6 +275,13 @@ function WellProjectView() {
             <Wrapper>
                 <Typography variant="h4">Drilling schedule</Typography>
                 <ImportButton onClick={() => { setDrillingDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={wellProject?.drillingSchedule === undefined}
+                    color="danger"
+                    onClick={deleteDrillingSchedule}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={drillingColumns} gridData={gridDrillingData} onCellsChanged={onCellsChanged} />
