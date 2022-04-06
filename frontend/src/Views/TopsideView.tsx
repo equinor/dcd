@@ -170,6 +170,15 @@ const TopsideView = () => {
         }
     }
 
+    const deleteCostProfile = () => {
+        const topsideProjectCopy = new Topside(topside)
+        topsideProjectCopy.costProfile = undefined
+        setHasChanges(true)
+        setColumns([])
+        setGridData([[]])
+        setTopside(topsideProjectCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">Topside</Typography>
@@ -194,6 +203,13 @@ const TopsideView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={topside?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
