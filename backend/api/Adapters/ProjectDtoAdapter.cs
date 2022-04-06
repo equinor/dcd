@@ -116,7 +116,7 @@ namespace api.Adapters
                 }
                 if (c.TransportLink != Guid.Empty)
                 {
-                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink).CostProfile.Sum;
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CostProfile?.Sum ?? 0;
                 }
             }
         }
