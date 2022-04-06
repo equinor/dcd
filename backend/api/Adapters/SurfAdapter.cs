@@ -20,7 +20,15 @@ namespace api.Adapters
                 ProductionFlowline = surfDto.ProductionFlowline,
                 RiserCount = surfDto.RiserCount
             };
-            surf.CostProfile = Convert(surfDto.CostProfile, surf);
+
+            if (surfDto.CostProfile != null) {
+                surf.CostProfile = Convert(surfDto.CostProfile, surf);
+            }
+
+            if (surfDto.cessationCostProfile != null) {
+                surf.cessationCostProfile = Convert(surfDto.cessationCostProfile, surf);
+            }
+
             return surf;
         }
 
@@ -41,5 +49,26 @@ namespace api.Adapters
             };
             return surfCostProfile;
         }
+
+         private static SurfCessationCostProfile? Convert(SurfCessationCostProfileDto? cessationCostProfileDto, Surf surf) {
+
+             if (cessationCostProfileDto == null) {
+                 return null;
+             }   
+
+             var surfCessationCostProfile = new SurfCessationCostProfile 
+             {
+                 Id = cessationCostProfileDto.Id,
+                 Currency = cessationCostProfileDto.Currency,
+                 EPAVersion = cessationCostProfileDto.EPAversion,
+                 StartYear = cessationCostProfileDto.StartYear,
+                 Values = cessationCostProfileDto.values,
+                 Surf = surf
+             }
+
+             return surfCessationCostProfile;
+        }
+
+       
     }
 }
