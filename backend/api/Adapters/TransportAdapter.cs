@@ -9,7 +9,7 @@ namespace api.Adapters
 
         public static Transport Convert(TransportDto transportDto)
         {
-            var transport = new Transport 
+            var transport = new Transport
             {
                 Id = transportDto.Id,
                 ProjectId = transportDto.ProjectId,
