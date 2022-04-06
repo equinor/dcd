@@ -171,14 +171,6 @@ const SubstructureView = () => {
         }
     }
 
-    // const onCellValueEqualDG4Year(params) => {
-    //     if (caseItem?.DG4Date?.getFullYear() !== null) {
-    //         // find element in grid where value == dg4 year.
-    //         // set background color on that element in grid.
-    //         // needs to be done on import. adding highlightDG4Year on helpers.ts
-    //     }
-    // }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Substructure</Typography>
