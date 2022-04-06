@@ -140,7 +140,7 @@ namespace tests
             fixture.context.SaveChanges();
 
             var updatedSubstructure = CreateUpdatedSubstructure(project);
-
+            updatedSubstructure.Id = oldSubstructure.Id;
 
             // Act
             var projectResult = substructureService.UpdateSubstructure(SubstructureDtoAdapter.Convert(updatedSubstructure));
