@@ -25,6 +25,12 @@ namespace api.Models
         public Surf Surf { get; set; } = null!;
     }
 
+    public class SurfCessationCostProfile : TimeSeriesCost
+    {
+        [ForeignKey("Surf.Id")]
+        public Surf Surf { get; set; } = null!;
+    }
+
     public enum ProductionFlowline
     {
         Default = 999
