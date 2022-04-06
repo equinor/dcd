@@ -22,6 +22,7 @@ namespace api.Context
         public DbSet<Topside>? Topsides { get; set; }
 
         public DbSet<Transport>? Transports { get; set; }
+        public DbSet<TransportCostProfile>? TransportCostProfile { get; set; }
 
         public DbSet<DrainageStrategy>? DrainageStrategies { get; set; }
         public DbSet<ProductionProfileGas>? ProductionProfileGas { get; set; }

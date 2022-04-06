@@ -172,6 +172,15 @@ const TransportView = () => {
         }
     }
 
+    const deleteCostProfile = () => {
+        const transportCopy = new Transport(transport)
+        transportCopy.costProfile = undefined
+        setHasChanges(true)
+        setColumns([])
+        setGridData([[]])
+        setTransport(transportCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">Transport</Typography>
@@ -196,6 +205,13 @@ const TransportView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={transport?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
