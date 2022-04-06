@@ -83,10 +83,41 @@ namespace api.Services
 
         public ProjectDto UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
         {
-            var updatedDrainageStrategy = DrainageStrategyAdapter.Convert(updatedDrainageStrategyDto);
-            _context.DrainageStrategies!.Update(updatedDrainageStrategy);
+            var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
+            DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto);
+
+            if (updatedDrainageStrategyDto.ProductionProfileOil == null && existing.ProductionProfileOil != null)
+            {
+                _context.ProductionProfileOil!.Remove(existing.ProductionProfileOil);
+            }
+            if (updatedDrainageStrategyDto.ProductionProfileGas == null && existing.ProductionProfileGas != null)
+            {
+                _context.ProductionProfileGas!.Remove(existing.ProductionProfileGas);
+            }
+            if (updatedDrainageStrategyDto.ProductionProfileWater == null && existing.ProductionProfileWater != null)
+            {
+                _context.ProductionProfileWater!.Remove(existing.ProductionProfileWater);
+            }
+            if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null && existing.ProductionProfileWaterInjection != null)
+            {
+                _context.ProductionProfileWaterInjection!.Remove(existing.ProductionProfileWaterInjection);
+            }
+            if (updatedDrainageStrategyDto.FuelFlaringAndLosses == null && existing.FuelFlaringAndLosses != null)
+            {
+                _context.FuelFlaringAndLosses!.Remove(existing.FuelFlaringAndLosses);
+            }
+            if (updatedDrainageStrategyDto.NetSalesGas == null && existing.NetSalesGas != null)
+            {
+                _context.NetSalesGas!.Remove(existing.NetSalesGas);
+            }
+            if (updatedDrainageStrategyDto.Co2Emissions == null && existing.Co2Emissions != null)
+            {
+                _context.Co2Emissions!.Remove(existing.Co2Emissions);
+            }
+
+            _context.DrainageStrategies!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(updatedDrainageStrategy.ProjectId);
+            return _projectService.GetProjectDto(existing.ProjectId);
         }
 
         public DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
