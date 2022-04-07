@@ -25,6 +25,7 @@ namespace api.Services
             {
                 return _context.Substructures
                         .Include(c => c.CostProfile)
+                        .Include(c => c.SubstructureCessasionCostProfile)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else

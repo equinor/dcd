@@ -15,7 +15,14 @@ namespace api.Adapters
                 DryWeight = substructureDto.DryWeight,
                 Maturity = substructureDto.Maturity
             };
-            substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
+            if (substructureDto.CostProfile != null) {
+                substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
+            }
+
+            if (substructureDto.SubstructureCessasionCostProfileDto != null) {
+                substructure.SubstructureCessasionCostProfile = Convert(substructureDto.SubstructureCessasionCostProfileDto, substructure);
+            }
+            
             return substructure;
         }
 
@@ -35,6 +42,24 @@ namespace api.Adapters
                 Values = costprofile.Values
             };
             return substructureCostProfile;
+        }
+
+           private static SubstructureCessasionCostProfile? Convert(SubstructureCessasionCostProfileDto? substructureCessasionCostProfileDto, Substructure substructure)
+        {
+            if (substructureCessasionCostProfileDto == null)
+            {
+                return null;
+            }
+            SubstructureCessasionCostProfile substructureCessasionCostProfile = new SubstructureCessasionCostProfile
+            {
+                Substructure = substructure,
+                Id = substructureCessasionCostProfileDto.Id,
+                EPAVersion = substructureCessasionCostProfileDto.EPAVersion,
+                Currency = substructureCessasionCostProfileDto.Currency,
+                StartYear = substructureCessasionCostProfileDto.StartYear,
+                Values = substructureCessasionCostProfileDto.Values
+            };
+            return substructureCessasionCostProfile;
         }
     }
 }

@@ -187,6 +187,14 @@ declare namespace Components {
             startYear?: number; // int32
             steaCases?: STEACaseDto[] | null;
         }
+        export interface SubstructureCessasionCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface SubstructureCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -200,6 +208,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SubstructureCostProfileDto;
+            substructureCessasionCostProfileDto?: SubstructureCessasionCostProfileDto;
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
         }
