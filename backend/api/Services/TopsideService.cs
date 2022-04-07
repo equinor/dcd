@@ -81,7 +81,7 @@ namespace api.Services
 
             if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
             {
-                _context.TopsideCostProfiles!.Remove(existing.CostProfile);
+                _context.TopsideCostProfile!.Remove(existing.CostProfile);
             }
 
             _context.Topsides!.Update(existing);
