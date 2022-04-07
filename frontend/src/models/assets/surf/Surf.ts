@@ -1,10 +1,12 @@
 import { SurfCostProfile } from "./SurfCostProfile"
+import { SurfCessasionCostProfile } from "./SurfCessasionCostProfile"
 
 export class Surf implements Components.Schemas.SurfDto {
     id?: string | undefined
     name: string | undefined
     projectId?: string | undefined
     costProfile?: SurfCostProfile | undefined
+    surfCessationCostProfileDto: SurfCessasionCostProfile | undefined
     maturity?: Components.Schemas.Maturity | undefined
     infieldPipelineSystemLength?: number | undefined
     umbilicalSystemLength?: number | undefined
@@ -18,6 +20,7 @@ export class Surf implements Components.Schemas.SurfDto {
             this.id = data.id ?? ""
             this.name = data.name ?? ""
             this.projectId = data.projectId
+            this.surfCessationCostProfileDto = SurfCessasionCostProfile.fromJSON(data.surfCessationCostProfileDto)
             this.costProfile = SurfCostProfile.fromJSON(data.costProfile)
             this.maturity = data.maturity
             this.infieldPipelineSystemLength = data.infieldPipelineSystemLength
@@ -31,6 +34,8 @@ export class Surf implements Components.Schemas.SurfDto {
             this.name = ""
         }
     }
+
+
 
     static fromJSON(data: Components.Schemas.SurfDto): Surf {
         return new Surf(data)
