@@ -127,7 +127,7 @@ const SurfView = () => {
         const newGridData = buildGridData(emptySurf?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (emptySurf.name !== "") {
+        if (surfName !== "") {
             setHasChanges(true)
         }
     }
@@ -165,6 +165,19 @@ const SurfView = () => {
         }
     }
 
+    const deleteCostProfile = () => {
+        const surfCopy = new Surf(surf)
+        surfCopy.costProfile = undefined
+        if (surfName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setColumns([])
+        setGridData([[]])
+        setSurf(surfCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">Surf</Typography>
@@ -175,7 +188,7 @@ const SurfView = () => {
                         id="surfName"
                         name="surfName"
                         placeholder="Enter surf name"
-                        defaultValue={surf?.name}
+                        value={surfName}
                         onChange={handleSurfNameFieldChange}
                     />
                 </WrapperColumn>
@@ -189,6 +202,13 @@ const SurfView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={surf?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable

@@ -147,7 +147,7 @@ public class TopsideServiceShould : IDisposable
         var oldTopside = CreateTestTopside(project);
         fixture.context.Topsides.Add(oldTopside);
         fixture.context.SaveChanges();
-        var updatedTopside = CreateUpdatedTopside(project);
+        var updatedTopside = CreateUpdatedTopside(project, oldTopside);
 
         // Act
         var projectResult = topsideService.UpdateTopside(TopsideDtoAdapter.Convert(updatedTopside));
@@ -168,7 +168,7 @@ public class TopsideServiceShould : IDisposable
         var oldTopside = CreateTestTopside(project);
         fixture.context.Topsides.Add(oldTopside);
         fixture.context.SaveChanges();
-        var updatedTopside = CreateUpdatedTopside(project);
+        var updatedTopside = CreateUpdatedTopside(project, oldTopside);
 
         //     // Act, assert
         //     Assert.Throws<ArgumentException>(() => topsideService.UpdateTopside(updatedTopside));
@@ -196,10 +196,11 @@ public class TopsideServiceShould : IDisposable
                 );
     }
 
-    private static Topside CreateUpdatedTopside(Project project)
+    private static Topside CreateUpdatedTopside(Project project, Topside oldTopside)
     {
         return new TopsideBuilder
         {
+            Id = oldTopside.Id,
             Name = "Test-topside-34",
             Project = project,
             ProjectId = project.Id,
