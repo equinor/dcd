@@ -132,7 +132,7 @@ const TopsideView = () => {
         const newGridData = buildGridData(newTopside?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newTopside.name !== "") {
+        if (topsideName !== "") {
             setHasChanges(true)
         }
     }
@@ -173,7 +173,11 @@ const TopsideView = () => {
     const deleteCostProfile = () => {
         const topsideProjectCopy = new Topside(topside)
         topsideProjectCopy.costProfile = undefined
-        setHasChanges(true)
+        if (topsideName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setColumns([])
         setGridData([[]])
         setTopside(topsideProjectCopy)
@@ -189,7 +193,7 @@ const TopsideView = () => {
                         id="topsideName"
                         name="topsideName"
                         placeholder="Enter topside name"
-                        defaultValue={topside?.name}
+                        value={topside?.name}
                         onChange={handleTopsideNameFieldChange}
                     />
                 </WrapperColumn>
