@@ -128,7 +128,7 @@ const ExplorationView = () => {
         const newGridData = buildGridData(newExploration?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newExploration.name !== "") {
+        if (name !== "") {
             setHasChanges(true)
         }
     }
@@ -169,7 +169,11 @@ const ExplorationView = () => {
     const deleteCostProfile = () => {
         const explorationCopy = new Exploration(exploration)
         explorationCopy.costProfile = undefined
-        setHasChanges(true)
+        if (name !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setColumns([])
         setGridData([[]])
         setExploration(explorationCopy)
@@ -208,7 +212,12 @@ const ExplorationView = () => {
                 </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
+                <DataTable
+                    columns={columns}
+                    gridData={gridData}
+                    onCellsChanged={onCellsChanged}
+                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                />
             </WrapperColumn>
             {!costProfileDialogOpen ? null
                 : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
