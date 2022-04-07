@@ -18,7 +18,8 @@ namespace api.Adapters
                 FacilitiesAvailability = topside.FacilitiesAvailability,
                 ArtificialLift = topside.ArtificialLift,
                 Maturity = topside.Maturity,
-                CostProfile = Convert(topside.CostProfile)
+                CostProfile = Convert(topside.CostProfile),
+                TopsideCessasionCostProfileDto = Convert(topside.TopsideCessasionCostProfile)
             };
             return topsideDto;
         }
@@ -37,6 +38,24 @@ namespace api.Adapters
                 EPAVersion = costProfile.EPAVersion,
                 Values = costProfile.Values,
                 StartYear = costProfile.StartYear
+            };
+            return topsideCostProfile;
+        }
+
+         private static TopsideCessasionCostProfileDto? Convert(TopsideCessasionCostProfile? topsideCessasionCostProfile)
+        {
+            if (topsideCessasionCostProfile == null)
+            {
+                return null;
+            }
+
+            TopsideCessasionCostProfileDto topsideCostProfile = new TopsideCessasionCostProfileDto
+            {
+                Id = topsideCessasionCostProfile.Id,
+                Currency = topsideCessasionCostProfile.Currency,
+                EPAVersion = topsideCessasionCostProfile.EPAVersion,
+                Values = topsideCessasionCostProfile.Values,
+                StartYear = topsideCessasionCostProfile.StartYear
             };
             return topsideCostProfile;
         }

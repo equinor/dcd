@@ -24,6 +24,7 @@ namespace api.Services
             {
                 return _context.Topsides
                         .Include(c => c.CostProfile)
+                        .Include(c => c.TopsideCessasionCostProfile)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else

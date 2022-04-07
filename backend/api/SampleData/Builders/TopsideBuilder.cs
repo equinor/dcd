@@ -10,4 +10,11 @@ public class TopsideBuilder : Topside
         this.CostProfile = topside;
         return this;
     }
+
+    public TopsideBuilder WithTopsideCessasionCostProfile(TopsideCessasionCostProfile topsideCessasionCostProfile)
+    {
+        topsideCessasionCostProfile.Topside = this;
+        this.TopsideCessasionCostProfile = topsideCessasionCostProfile;
+        return this;
+    }
 }

@@ -19,7 +19,15 @@ namespace api.Adapters
                 ArtificialLift = topsideDto.ArtificialLift,
                 Maturity = topsideDto.Maturity
             };
-            topside.CostProfile = Convert(topsideDto.CostProfile, topside);
+            
+            if (topsideDto.CostProfile != null) {
+                topside.CostProfile = Convert(topsideDto.CostProfile, topside);
+            }
+
+            if (topsideDto.TopsideCessasionCostProfileDto != null) {
+                topside.TopsideCessasionCostProfile = Convert(topsideDto.TopsideCessasionCostProfileDto, topside);
+            }
+
             return topside;
         }
 
@@ -40,6 +48,25 @@ namespace api.Adapters
             };
 
             return topsideCostProfile;
+        }
+
+        private static TopsideCessasionCostProfile? Convert(TopsideCessasionCostProfileDto? topsideCessasionCostProfileDto, Topside topside)
+        {
+            if (topsideCessasionCostProfileDto == null)
+            {
+                return null;
+            }
+            TopsideCessasionCostProfile topsideCessasionCostProfile = new TopsideCessasionCostProfile
+            {
+                Id = topsideCessasionCostProfileDto.Id,
+                Currency = topsideCessasionCostProfileDto.Currency,
+                EPAVersion = topsideCessasionCostProfileDto.EPAVersion,
+                Topside = topside,
+                StartYear = topsideCessasionCostProfileDto.StartYear,
+                Values = topsideCessasionCostProfileDto.Values
+            };
+
+            return topsideCessasionCostProfile;
         }
     }
 }

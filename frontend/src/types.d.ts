@@ -233,6 +233,14 @@ declare namespace Components {
             templateCount?: number; // int32
             productionFlowline?: ProductionFlowline /* int32 */;
         }
+        export interface TopsideCessasionCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface TopsideCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -246,6 +254,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TopsideCostProfileDto;
+            topsideCessasionCostProfileDto?: TopsideCessasionCostProfileDto;
             dryWeight?: number; // double
             oilCapacity?: number; // double
             gasCapacity?: number; // double
