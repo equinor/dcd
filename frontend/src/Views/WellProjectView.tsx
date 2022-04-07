@@ -159,7 +159,7 @@ function WellProjectView() {
         const newGridData = buildGridData(newWellProject?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newWellProject.name !== "") {
+        if (wellProjectName !== "") {
             setHasChanges(true)
         }
     }
@@ -178,7 +178,7 @@ function WellProjectView() {
         const newGridData = buildGridData(newWellProject?.drillingSchedule)
         setGridDrillingData(newGridData)
         setDrillingDialogOpen(!drillingDialogOpen)
-        if (newWellProject.name !== "") {
+        if (wellProjectName !== "") {
             setHasChanges(true)
         }
     }
@@ -220,7 +220,11 @@ function WellProjectView() {
     const deleteCostProfile = () => {
         const wellProjectCopy = new WellProject(wellProject)
         wellProjectCopy.costProfile = undefined
-        setHasChanges(true)
+        if (wellProjectName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setColumns([])
         setGridData([[]])
         setWellProject(wellProjectCopy)
@@ -229,7 +233,11 @@ function WellProjectView() {
     const deleteDrillingSchedule = () => {
         const wellProjectCopy = new WellProject(wellProject)
         wellProjectCopy.drillingSchedule = undefined
-        setHasChanges(true)
+        if (wellProjectName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setDrillingColumns([])
         setGridDrillingData([[]])
         setWellProject(wellProjectCopy)
