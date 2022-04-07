@@ -253,7 +253,7 @@ function WellProjectView() {
                         id="wellProjectName"
                         name="wellProjectName"
                         placeholder="Enter wellproject name"
-                        defaultValue={wellProject?.name}
+                        value={wellProjectName}
                         onChange={handleWellProjectNameFieldChange}
                     />
                 </WrapperColumn>
