@@ -132,7 +132,7 @@ const TopsideView = () => {
         const newGridData = buildGridData(newTopside?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newTopside.name !== "") {
+        if (topsideName !== "") {
             setHasChanges(true)
         }
     }
@@ -170,6 +170,19 @@ const TopsideView = () => {
         }
     }
 
+    const deleteCostProfile = () => {
+        const topsideCopy = new Topside(topside)
+        topsideCopy.costProfile = undefined
+        if (topsideName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setColumns([])
+        setGridData([[]])
+        setTopside(topsideCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">Topside</Typography>
@@ -180,7 +193,7 @@ const TopsideView = () => {
                         id="topsideName"
                         name="topsideName"
                         placeholder="Enter topside name"
-                        defaultValue={topside?.name}
+                        value={topsideName}
                         onChange={handleTopsideNameFieldChange}
                     />
                 </WrapperColumn>
@@ -194,6 +207,13 @@ const TopsideView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={topside?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable
