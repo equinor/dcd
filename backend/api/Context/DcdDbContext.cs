@@ -21,7 +21,7 @@ namespace api.Context
 
         public DbSet<Topside>? Topsides { get; set; }
 
-        public DbSet<TopsideCostProfile> TopsideCostProfiles { get; set; }
+        public DbSet<TopsideCostProfile>? TopsideCostProfiles { get; set; }
 
         public DbSet<Transport>? Transports { get; set; }
 
