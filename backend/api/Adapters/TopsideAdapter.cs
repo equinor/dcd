@@ -36,11 +36,7 @@ namespace api.Adapters
             existing.FacilitiesAvailability = topsideDto.FacilitiesAvailability;
             existing.ArtificialLift = topsideDto.ArtificialLift;
             existing.Maturity = topsideDto.Maturity;
-
-            if (topsideDto.CostProfile != null)
-            {
-                existing.CostProfile = Convert(topsideDto.CostProfile, existing);
-            }
+            existing.CostProfile = Convert(topsideDto.CostProfile, existing);
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {
