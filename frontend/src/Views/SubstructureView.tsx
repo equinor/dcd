@@ -132,7 +132,7 @@ const SubstructureView = () => {
         const newGridData = buildGridData(newSubstructure?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newSubstructure.name !== "") {
+        if (substructureName !== "") {
             setHasChanges(true)
         }
     }
@@ -165,7 +165,11 @@ const SubstructureView = () => {
     const deleteCostProfile = () => {
         const substructureCopy = new Substructure(substructure)
         substructureCopy.costProfile = undefined
-        setHasChanges(true)
+        if (substructureName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setColumns([])
         setGridData([[]])
         setSubstructure(substructureCopy)
@@ -190,7 +194,7 @@ const SubstructureView = () => {
                         id="substructureName"
                         name="substructureName"
                         placeholder="Enter substructure name"
-                        defaultValue={substructure?.name}
+                        value={substructureName}
                         onChange={handleSubstructureNameFieldChange}
                     />
                 </WrapperColumn>
