@@ -22,6 +22,8 @@ namespace api.Context
 
         public DbSet<Topside>? Topsides { get; set; }
 
+        public DbSet<TopsideCostProfile>? TopsideCostProfiles { get; set; }
+
         public DbSet<Transport>? Transports { get; set; }
 
         public DbSet<DrainageStrategy>? DrainageStrategies { get; set; }
@@ -34,6 +36,10 @@ namespace api.Context
         public DbSet<Co2Emissions>? Co2Emissions { get; set; }
 
         public DbSet<WellProject>? WellProjects { get; set; }
+        public DbSet<WellProjectCostProfile>? WellProjectCostProfile { get; set; }
+
+        public DbSet<DrillingSchedule>? DrillingSchedule { get; set; }
+
 
         public DbSet<Exploration>? Explorations { get; set; }
         public DbSet<ExplorationCostProfile>? ExplorationCostProfile { get; set; }

@@ -14,10 +14,13 @@ interface Props {
     columns: string[]
     gridData: any
     onCellsChanged: any
+    dG4Year: string
 }
 
 /* eslint-disable react/no-unstable-nested-components */
-function DataTable({ columns, gridData, onCellsChanged }: Props) {
+function DataTable({
+    columns, gridData, onCellsChanged, dG4Year,
+}: Props) {
     return (
         <Table
             onCellsChanged={onCellsChanged}
@@ -43,7 +46,8 @@ function DataTable({ columns, gridData, onCellsChanged }: Props) {
                         <tr>
                             {/* eslint-disable-next-line */}
                             {columns.map((column, index) => (
-                                <th className="table-header" key={`table-header-${index + 0}`}>
+                                // eslint-disable-next-line max-len
+                                <th className="table-header" style={{ backgroundColor: column !== dG4Year ? "white" : "#90ee90" }} key={`table-header-${index + 0}`}>
                                     <span>{column}</span>
                                 </th>
                             ))}
