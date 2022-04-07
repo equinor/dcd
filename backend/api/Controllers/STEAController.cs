@@ -5,6 +5,7 @@ using api.Services;
 using ClosedXML.Excel;
 
 using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.Identity.Web.Resource;
@@ -49,6 +50,7 @@ namespace api.Controllers
             ws.Cell("B2").Value = projectName;
             foreach (BusinessCase businessCase in businessCases)
             {
+
                 foreach (ExcelTableCell etc in businessCase.Header)
                 {
                     ws.Cell(etc.CellNo).Value = etc.Value;

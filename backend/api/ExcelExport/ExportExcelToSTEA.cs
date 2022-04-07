@@ -1,4 +1,5 @@
 
+
 using api.Dtos;
 
 using ClosedXML.Excel;
@@ -16,52 +17,80 @@ public static class ExportToSTEA
         List<BusinessCase> businessCases = new List<BusinessCase>();
         foreach (STEACaseDto c in project.STEACases)
         {
+            if (c.IsDG4YearSet == false)
+            {
+                continue;
+            }
             BusinessCase businessCase = new BusinessCase();
+
             int headerRowCount = rowCount;
             rowCount++;
             businessCase.Exploration = CreateExcelCostRow("Exploration Cost [Expected Real MNOK'21]", project.StartYear, c.Exploration, rowCount, 1e-6);
             rowCount++;
             businessCase.Capex = CreateExcelCostRow("Capex [Expected Real MNOK'21]", project.StartYear, c.Capex, rowCount, 1e-6);
             rowCount++;
-            businessCase.Drilling = CreateExcelCostRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1e-6);
-            rowCount++;
-            businessCase.OffshoreFacilites = CreateExcelCostRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1e-6);
-            rowCount++;
+            if (c.Capex != null)
+            {
+                businessCase.Drilling = CreateExcelCostRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1e-6);
+                rowCount++;
+                businessCase.OffshoreFacilites = CreateExcelCostRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1e-6);
+                rowCount++;
+            }
+            else
+            {
+                businessCase.Drilling = CreateExcelCostRow("Drilling", project.StartYear, null, rowCount, 1e-6);
+                rowCount++;
+                businessCase.OffshoreFacilites = CreateExcelCostRow("Offshore Facilities", project.StartYear, null, rowCount, 1e-6);
+                rowCount++;
+            }
             businessCase.ProductionAndSalesVolumes = new ExcelTableCell(columnNumber(1) + rowCount.ToString(), "Production And Sales Volumes");
             rowCount++;
-            businessCase.TotalAndAnnualOil = CreateExcelVolumeRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear,
-                c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1e-6);
-            rowCount++;
-            businessCase.NetSalesGas = CreateExcelVolumeRow("Net Sales Gas [GSm3]", project.StartYear,
-                c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1e-9);
-            rowCount++;
-            businessCase.Co2Emissions = CreateExcelMassRow("Co2 Emissions [mill tonnes]", project.StartYear,
-                c.ProductionAndSalesVolumes.Co2Emissions, rowCount, 1e-6);
+            if (c.ProductionAndSalesVolumes != null)
+            {
+                businessCase.TotalAndAnnualOil = CreateExcelVolumeRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear,
+                    c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1e-6);
+                rowCount++;
+                businessCase.NetSalesGas = CreateExcelVolumeRow("Net Sales Gas [GSm3]", project.StartYear,
+                    c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1e-9);
+                rowCount++;
+                businessCase.Co2Emissions = CreateExcelMassRow("Co2 Emissions [mill tonnes]", project.StartYear,
+                    c.ProductionAndSalesVolumes.Co2Emissions, rowCount, 1e-6);
+            }
+            else
+            {
+                businessCase.TotalAndAnnualOil = CreateExcelVolumeRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear,
+                   null, rowCount, 1e-6);
+                rowCount++;
+                businessCase.NetSalesGas = CreateExcelVolumeRow("Net Sales Gas [GSm3]", project.StartYear,
+                    null, rowCount, 1e-9);
+                rowCount++;
+                businessCase.Co2Emissions = CreateExcelMassRow("Co2 Emissions [mill tonnes]", project.StartYear,
+                    null, rowCount, 1e-6);
+            }
             rowCount += 2;
             List<int> allRows = new List<int>();
-            if (c.Exploration.Values != null)
+            if (c.Exploration != null && c.Exploration.Values != null)
             {
                 allRows.Add(c.Exploration.Values.Count() + c.Exploration.StartYear);
             }
-            if (c.Capex.Values != null)
+            if (c.Capex != null && c.Capex.Values != null)
             {
                 allRows.Add(c.Capex.Values.Count() + c.Capex.StartYear);
             }
-            if (c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values != null)
+            if (c.ProductionAndSalesVolumes != null && c.ProductionAndSalesVolumes.TotalAndAnnualOil != null && c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values != null)
             {
                 allRows.Add(c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values.Count() + c.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear);
             }
-            if (c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values != null)
+            if (c.ProductionAndSalesVolumes != null && c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas != null && c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values != null)
             {
                 allRows.Add(c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values.Count() + c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.StartYear);
             }
-            if (c.ProductionAndSalesVolumes.Co2Emissions.Values != null)
+            if (c.ProductionAndSalesVolumes != null && c.ProductionAndSalesVolumes.Co2Emissions != null && c.ProductionAndSalesVolumes.Co2Emissions.Values != null)
             {
                 allRows.Add(c.ProductionAndSalesVolumes.Co2Emissions.Values.Count() + c.ProductionAndSalesVolumes.Co2Emissions.StartYear);
             }
 
             int maxYear = allRows.Count() > 0 ? allRows.Max() - project.StartYear : 0;
-
             businessCase.Header = CreateTableHeader(project.StartYear, project.StartYear + maxYear - 1, c.Name, headerRowCount);
             businessCases.Add(businessCase);
         }
@@ -69,17 +98,22 @@ public static class ExportToSTEA
 
     }
 
-    private static List<ExcelTableCell> CreateExcelCostRow(string title, int ProjectStartYear, TimeSeriesCostDto e, int rowCount, double factor)
+    private static List<ExcelTableCell> CreateExcelCostRow(string title, int ProjectStartYear, TimeSeriesCostDto? e, int rowCount, double factor)
     {
         List<ExcelTableCell> tableCells = new List<ExcelTableCell>();
         int columnCount = 1;
         string cellNo = columnNumber(columnCount++) + rowCount.ToString();
         tableCells.Add(new ExcelTableCell(cellNo, title));
-
         cellNo = columnNumber(columnCount) + rowCount.ToString();
-        tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
-        ValueToCells(tableCells, columnCount, rowCount, e, ProjectStartYear, factor);
-
+        if (e != null)
+        {
+            tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
+            ValueToCells(tableCells, columnCount, rowCount, e, ProjectStartYear, factor);
+        }
+        else
+        {
+            tableCells.Add(new ExcelTableCell(cellNo, "0"));
+        }
         return tableCells;
     }
 
@@ -99,21 +133,26 @@ public static class ExportToSTEA
     }
 
 
-    private static List<ExcelTableCell> CreateExcelVolumeRow(string title, int ProjectStartYear, TimeSeriesVolumeDto e, int rowCount, double factor)
+    private static List<ExcelTableCell> CreateExcelVolumeRow(string title, int ProjectStartYear, TimeSeriesVolumeDto? e, int rowCount, double factor)
     {
         List<ExcelTableCell> tableCells = new List<ExcelTableCell>();
         int columnCount = 1;
         string cellNo = columnNumber(columnCount++) + rowCount.ToString();
         tableCells.Add(new ExcelTableCell(cellNo, title));
-
         cellNo = columnNumber(columnCount) + rowCount.ToString();
-        tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
-        ValueToCells(tableCells, columnCount, rowCount, e, ProjectStartYear, factor);
-
+        if (e != null)
+        {
+            tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
+            ValueToCells(tableCells, columnCount, rowCount, e, ProjectStartYear, factor);
+        }
+        else
+        {
+            tableCells.Add(new ExcelTableCell(cellNo, "0"));
+        }
         return tableCells;
     }
 
-    private static List<ExcelTableCell> CreateExcelMassRow(string title, int ProjectStartYear, TimeSeriesMassDto e, int rowCount, double factor)
+    private static List<ExcelTableCell> CreateExcelMassRow(string title, int ProjectStartYear, TimeSeriesMassDto? e, int rowCount, double factor)
     {
         List<ExcelTableCell> tableCells = new List<ExcelTableCell>();
         int columnCount = 1;
@@ -121,9 +160,16 @@ public static class ExportToSTEA
         tableCells.Add(new ExcelTableCell(cellNo, title));
 
         cellNo = columnNumber(columnCount) + rowCount.ToString();
-        tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
-        Console.WriteLine("Add values to cells " + title);
-        ValueToCells(tableCells, columnCount, rowCount, e, ProjectStartYear, factor);
+        cellNo = columnNumber(columnCount) + rowCount.ToString();
+        if (e != null)
+        {
+            tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
+            ValueToCells(tableCells, columnCount, rowCount, e, ProjectStartYear, factor);
+        }
+        else
+        {
+            tableCells.Add(new ExcelTableCell(cellNo, "0"));
+        }
 
         return tableCells;
     }
@@ -147,17 +193,17 @@ public static class ExportToSTEA
     private static string columnNumber(int cellNumber)
     {
         string rv = "";
-        int newCellNo = cellNumber;
-        int first = 64 + cellNumber / 26;
-        int second = 65 + cellNumber % 26;
-        if (first == 64)
+        int newCellNumber = cellNumber;
+        int rest = cellNumber % 26;
+        rv = ((Char)(rest + 65)).ToString();
+        newCellNumber = (cellNumber - rest) / 26;
+        while (newCellNumber > 0)
         {
-            rv = ((Char)second).ToString();
+            rest = newCellNumber % 26;
+            rv = ((Char)(rest + 64)).ToString() + rv;
+            newCellNumber = (newCellNumber - rest) / 26;
         }
-        else
-        {
-            rv = ((Char)first).ToString() + ((Char)second).ToString();
-        }
+
         return rv;
     }
 }
