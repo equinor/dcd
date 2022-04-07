@@ -20,9 +20,9 @@ export class TransportCostProfile implements Components.Schemas.TransportCostPro
     }
 
     static fromJSON(data?: Components.Schemas.TransportCostProfileDto): TransportCostProfile | undefined {
-        if (data !== undefined) {
-            return new TransportCostProfile(data)
+        if (data === undefined || data === null) {
+            return undefined
         }
-        return undefined
+        return new TransportCostProfile(data)
     }
 }

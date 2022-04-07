@@ -101,9 +101,9 @@ public class ExplorationServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var oldExploration = CreateTestExploration(project);
-        explorationService.CreateExploration(ExplorationDtoAdapter.Convert(oldExploration), sourceCaseId);
+        var oldId = explorationService.CreateExploration(ExplorationDtoAdapter.Convert(oldExploration), sourceCaseId).Explorations.Last().Id;
 
-        var updatedExploration = CreateUpdatedTestExploration(project);
+        var updatedExploration = CreateUpdatedTestExploration(project, oldId);
 
         // Act
         var projectResult = explorationService.UpdateExploration(ExplorationDtoAdapter.Convert(updatedExploration));
@@ -148,10 +148,11 @@ public class ExplorationServiceShould : IDisposable
                 );
     }
 
-    private static Exploration CreateUpdatedTestExploration(Project project)
+    private static Exploration CreateUpdatedTestExploration(Project project, Guid oldExplorationId)
     {
         return new ExplorationBuilder
         {
+            Id = oldExplorationId,
             Name = "Test-exploration-23",
             Project = project,
             ProjectId = project.Id,
