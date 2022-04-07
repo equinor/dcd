@@ -171,8 +171,8 @@ const TopsideView = () => {
     }
 
     const deleteCostProfile = () => {
-        const topsideProjectCopy = new Topside(topside)
-        topsideProjectCopy.costProfile = undefined
+        const topsideCopy = new Topside(topside)
+        topsideCopy.costProfile = undefined
         if (topsideName !== "") {
             setHasChanges(true)
         } else {
@@ -180,7 +180,7 @@ const TopsideView = () => {
         }
         setColumns([])
         setGridData([[]])
-        setTopside(topsideProjectCopy)
+        setTopside(topsideCopy)
     }
 
     return (
