@@ -133,7 +133,7 @@ const TransportView = () => {
         const newGridData = buildGridData(newTransport?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newTransport.name !== "") {
+        if (transportName !== "") {
             setHasChanges(true)
         }
     }
@@ -175,7 +175,11 @@ const TransportView = () => {
     const deleteCostProfile = () => {
         const transportCopy = new Transport(transport)
         transportCopy.costProfile = undefined
-        setHasChanges(true)
+        if (transportName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setColumns([])
         setGridData([[]])
         setTransport(transportCopy)
@@ -191,7 +195,7 @@ const TransportView = () => {
                         id="transportName"
                         name="transportName"
                         placeholder="Enter Transport name"
-                        defaultValue={transport?.name}
+                        value={transportName}
                         onChange={handleTransportNameFieldChange}
                     />
                 </WrapperColumn>
