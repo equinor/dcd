@@ -159,7 +159,7 @@ function WellProjectView() {
         const newGridData = buildGridData(newWellProject?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newWellProject.name !== "") {
+        if (wellProjectName !== "") {
             setHasChanges(true)
         }
     }
@@ -178,7 +178,7 @@ function WellProjectView() {
         const newGridData = buildGridData(newWellProject?.drillingSchedule)
         setGridDrillingData(newGridData)
         setDrillingDialogOpen(!drillingDialogOpen)
-        if (newWellProject.name !== "") {
+        if (wellProjectName !== "") {
             setHasChanges(true)
         }
     }
@@ -217,6 +217,32 @@ function WellProjectView() {
         }
     }
 
+    const deleteCostProfile = () => {
+        const wellProjectCopy = new WellProject(wellProject)
+        wellProjectCopy.costProfile = undefined
+        if (wellProjectName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setColumns([])
+        setGridData([[]])
+        setWellProject(wellProjectCopy)
+    }
+
+    const deleteDrillingSchedule = () => {
+        const wellProjectCopy = new WellProject(wellProject)
+        wellProjectCopy.drillingSchedule = undefined
+        if (wellProjectName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setDrillingColumns([])
+        setGridDrillingData([[]])
+        setWellProject(wellProjectCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">WellProject</Typography>
@@ -227,7 +253,7 @@ function WellProjectView() {
                         id="wellProjectName"
                         name="wellProjectName"
                         placeholder="Enter wellproject name"
-                        defaultValue={wellProject?.name}
+                        value={wellProjectName}
                         onChange={handleWellProjectNameFieldChange}
                     />
                 </WrapperColumn>
@@ -241,6 +267,13 @@ function WellProjectView() {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={wellProject?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable
@@ -255,6 +288,13 @@ function WellProjectView() {
             <Wrapper>
                 <Typography variant="h4">Drilling schedule</Typography>
                 <ImportButton onClick={() => { setDrillingDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={wellProject?.drillingSchedule === undefined}
+                    color="danger"
+                    onClick={deleteDrillingSchedule}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable
