@@ -133,7 +133,7 @@ const TransportView = () => {
         const newGridData = buildGridData(newTransport?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newTransport.name !== "") {
+        if (transportName !== "") {
             setHasChanges(true)
         }
     }
@@ -172,6 +172,19 @@ const TransportView = () => {
         }
     }
 
+    const deleteCostProfile = () => {
+        const transportCopy = new Transport(transport)
+        transportCopy.costProfile = undefined
+        if (transportName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setColumns([])
+        setGridData([[]])
+        setTransport(transportCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">Transport</Typography>
@@ -182,7 +195,7 @@ const TransportView = () => {
                         id="transportName"
                         name="transportName"
                         placeholder="Enter Transport name"
-                        defaultValue={transport?.name}
+                        value={transportName}
                         onChange={handleTransportNameFieldChange}
                     />
                 </WrapperColumn>
@@ -196,6 +209,13 @@ const TransportView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={transport?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable
