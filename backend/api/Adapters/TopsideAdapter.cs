@@ -26,7 +26,8 @@ namespace api.Adapters
             return topside;
         }
 
-        public static void ConvertExisting(Topside existing, TopsideDto topsideDto){
+        public static void ConvertExisting(Topside existing, TopsideDto topsideDto)
+        {
             existing.Id = topsideDto.Id;
             existing.Name = topsideDto.Name;
             existing.ProjectId = topsideDto.ProjectId;

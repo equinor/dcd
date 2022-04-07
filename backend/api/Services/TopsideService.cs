@@ -79,7 +79,7 @@ namespace api.Services
             var existing = GetTopside(updatedTopsideDto.Id);
             TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
 
-             if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
+            if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
             {
                 _context.TopsideCostProfiles!.Remove(existing.CostProfile);
             }
