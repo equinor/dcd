@@ -19,10 +19,25 @@ namespace api.Adapters
                 ArtificialLift = topsideDto.ArtificialLift,
                 Maturity = topsideDto.Maturity
             };
+
             topside.CostProfile = Convert(topsideDto.CostProfile, topside);
+
             return topside;
         }
 
+        public static void ConvertExisting(Topside existing, TopsideDto topsideDto)
+        {
+            existing.Id = topsideDto.Id;
+            existing.Name = topsideDto.Name;
+            existing.ProjectId = topsideDto.ProjectId;
+            existing.DryWeight = topsideDto.DryWeight;
+            existing.OilCapacity = topsideDto.OilCapacity;
+            existing.GasCapacity = topsideDto.GasCapacity;
+            existing.FacilitiesAvailability = topsideDto.FacilitiesAvailability;
+            existing.ArtificialLift = topsideDto.ArtificialLift;
+            existing.Maturity = topsideDto.Maturity;
+            existing.CostProfile = Convert(topsideDto.CostProfile, existing);
+        }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {
             if (costprofile == null)
