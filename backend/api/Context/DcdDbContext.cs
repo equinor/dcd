@@ -39,5 +39,8 @@ namespace api.Context
 
 
         public DbSet<Exploration>? Explorations { get; set; }
+        public DbSet<ExplorationCostProfile>? ExplorationCostProfile { get; set; }
+        public DbSet<ExplorationDrillingSchedule>? ExplorationDrillingSchedule { get; set; }
+        public DbSet<GAndGAdminCost>? GAndGAdminCost { get; set; }
     }
 }

@@ -81,10 +81,27 @@ namespace api.Services
 
         public ProjectDto UpdateExploration(ExplorationDto updatedExplorationDto)
         {
-            var updatedExploration = ExplorationAdapter.Convert(updatedExplorationDto);
-            _context.Explorations!.Update(updatedExploration);
+            var existing = GetExploration(updatedExplorationDto.Id);
+            ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
+
+            if (updatedExplorationDto.CostProfile == null && existing.CostProfile != null)
+            {
+                _context.ExplorationCostProfile!.Remove(existing.CostProfile);
+            }
+
+            if (updatedExplorationDto.DrillingSchedule == null && existing.DrillingSchedule != null)
+            {
+                _context.ExplorationDrillingSchedule!.Remove(existing.DrillingSchedule);
+            }
+
+            if (updatedExplorationDto.GAndGAdminCost == null && existing.GAndGAdminCost != null)
+            {
+                _context.GAndGAdminCost!.Remove(existing.GAndGAdminCost);
+            }
+
+            _context.Explorations!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(updatedExploration.ProjectId);
+            return _projectService.GetProjectDto(existing.ProjectId);
         }
 
         public Exploration GetExploration(Guid explorationId)
