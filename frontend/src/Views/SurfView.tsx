@@ -127,7 +127,7 @@ const SurfView = () => {
         const newGridData = buildGridData(emptySurf?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (emptySurf.name !== "") {
+        if (surfName !== "") {
             setHasChanges(true)
         }
     }
@@ -168,7 +168,11 @@ const SurfView = () => {
     const deleteCostProfile = () => {
         const surfCopy = new Surf(surf)
         surfCopy.costProfile = undefined
-        setHasChanges(true)
+        if (surfName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setColumns([])
         setGridData([[]])
         setSurf(surfCopy)
@@ -184,7 +188,7 @@ const SurfView = () => {
                         id="surfName"
                         name="surfName"
                         placeholder="Enter surf name"
-                        defaultValue={surf?.name}
+                        value={surfName}
                         onChange={handleSurfNameFieldChange}
                     />
                 </WrapperColumn>
