@@ -24,6 +24,19 @@ namespace api.Adapters
             return surf;
         }
 
+        public static void ConvertExisting(Surf existing, SurfDto surfDto)
+        {
+            existing.Id = surfDto.Id;
+            existing.ProjectId = surfDto.ProjectId;
+            existing.Name = surfDto.Name;
+            existing.ArtificialLift = surfDto.ArtificialLift;
+            existing.Maturity = surfDto.Maturity;
+            existing.InfieldPipelineSystemLength = surfDto.InfieldPipelineSystemLength;
+            existing.ProductionFlowline = surfDto.ProductionFlowline;
+            existing.RiserCount = surfDto.RiserCount;
+            existing.CostProfile = Convert(surfDto.CostProfile, existing);
+        }
+
         private static SurfCostProfile? Convert(SurfCostProfileDto? costprofile, Surf surf)
         {
             if (costprofile == null)
