@@ -193,7 +193,7 @@ const TopsideView = () => {
                         id="topsideName"
                         name="topsideName"
                         placeholder="Enter topside name"
-                        value={topside?.name}
+                        value={topsideName}
                         onChange={handleTopsideNameFieldChange}
                     />
                 </WrapperColumn>
