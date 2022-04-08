@@ -13,6 +13,7 @@ import {
 import Import from "../Components/Import/Import"
 import { Transport } from "../models/assets/transport/Transport"
 import { TransportCostProfile } from "../models/assets/transport/TransportCostProfile"
+import { TransportCessationCostProfile } from "../models/assets/transport/TransportCessationCostProfile"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
@@ -70,9 +71,17 @@ const TransportView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [transport, setTransport] = useState<Transport>()
-    const [columns, setColumns] = useState<string[]>([""])
-    const [gridData, setGridData] = useState<CellValue[][]>([[]])
+
+    //Cost Profiel
+    const [costProfileColumns, setCostProfileColumns] = useState<string[]>([""])
+    const [costProfileGridData, setCostProfileGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
+    
+    //CessasionCostProfile
+    const [cessationCostProfileColumns, setCessationCostProfileColumns] = useState<string[]>([""])
+    const [cessationCostProfileGridData, setCessationCostProfileGridData] = useState<CellValue[][]>([[]])
+    const [cessationCostProfileDialogOpen, setCessationCostProfileDialogOpen] = useState(false)
+
     const [hasChanges, setHasChanges] = useState(false)
     const [transportName, setTransportName] = useState<string>("")
     const params = useParams()
@@ -96,20 +105,34 @@ const TransportView = () => {
                     setTransport(newTransport)
                 }
                 setTransportName(newTransport.name!)
-                const newColumnTitles = getColumnAbsoluteYears(caseResult, newTransport?.costProfile)
-                setColumns(newColumnTitles)
-                const newGridData = buildGridData(newTransport?.costProfile)
-                setGridData(newGridData)
+                const newCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newTransport?.costProfile)
+                const newCessastionCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newTransport?.transportCessationCostProfileDto)
+
+                setCostProfileColumns(newCostProfileColumnTitles)
+                setCessationCostProfileColumns(newCessastionCostProfileColumnTitles)
+
+                const newCostProfileGridData = buildGridData(newTransport?.costProfile)
+                const newCessationCostProfileGridData = buildGridData(newTransport?.transportCessationCostProfileDto)
+                
+                setCostProfileGridData(newCostProfileGridData)
+                setCessationCostProfileGridData(newCessationCostProfileGridData)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
         })()
     }, [params.projectId, params.caseId])
 
-    const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newGridData = replaceOldData(gridData, changes)
-        setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, transport?.costProfile))
+    const onCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
+        const newCostProfileGridData = replaceOldData(costProfileGridData, changes)
+        setCostProfileGridData(newCostProfileGridData)
+        setCostProfileColumns(getColumnAbsoluteYears(caseItem, transport?.costProfile))
+        setHasChanges(true)
+    }
+
+    const onCessationCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
+        const newCessationCostProfileGridData = replaceOldData(cessationCostProfileGridData, changes)
+        setCessationCostProfileGridData(newCessationCostProfileGridData)
+        setCessationCostProfileColumns(getColumnAbsoluteYears(caseItem, transport?.transportCessationCostProfileDto))
         setHasChanges(true)
     }
 
@@ -125,19 +148,40 @@ const TransportView = () => {
         return newTransport
     }
 
-    const onImport = (input: string, year: number) => {
-        const newTransport = updateInsertTransportCostProfile(input, year)
-        setTransport(newTransport)
-        const newColumnTitles = getColumnAbsoluteYears(caseItem, newTransport?.costProfile)
-        setColumns(newColumnTitles)
-        const newGridData = buildGridData(newTransport?.costProfile)
-        setGridData(newGridData)
-        setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newTransport.name !== "") {
-            setHasChanges(true)
-        }
+    const updateInsertTransportCessationCostProfile = (input: string, year: number) => {
+        const newTransport = new Transport(transport!)
+        const newCessationCostProfile = new TransportCessationCostProfile()
+        newTransport.id = newTransport.id ?? emptyGuid
+        newTransport.transportCessationCostProfileDto = newTransport.transportCessationCostProfileDto ?? newCessationCostProfile
+        newTransport.transportCessationCostProfileDto!.values = input.replace(/(\r\n|\n|\r)/gm, "")
+            .split("\t").map((i) => parseFloat(i))
+        newTransport.transportCessationCostProfileDto!.startYear = year
+        newTransport.transportCessationCostProfileDto!.epaVersion = newTransport.transportCessationCostProfileDto.epaVersion ?? ""
+        return newTransport
     }
 
+    const onCostProfileImport = (input: string, year: number) => {
+        const newTransport = updateInsertTransportCostProfile(input, year)
+        setTransport(newTransport)
+        const newCostProfileColumnTitles = getColumnAbsoluteYears(caseItem, newTransport?.costProfile)
+        setCostProfileColumns(newCostProfileColumnTitles)
+        const newCostProfileGridData = buildGridData(newTransport?.costProfile)
+        setCostProfileGridData(newCostProfileGridData)
+        setCostProfileDialogOpen(!costProfileDialogOpen)
+        setHasChanges(true)
+    }
+
+    const onCessationCostProfileImport = (input: string, year: number) => {
+        const newTransport = updateInsertTransportCessationCostProfile(input, year)
+        setTransport(newTransport)
+        const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(caseItem, newTransport?.transportCessationCostProfileDto)
+        setCessationCostProfileColumns(newCessationCostProfileColumnTitles)
+        const newCessationCostProfileGridData = buildGridData(newTransport?.transportCessationCostProfileDto)
+        setCessationCostProfileGridData(newCessationCostProfileGridData)
+        setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen)
+        setHasChanges(true)
+    }
+    
     const handleSave = async () => {
         const transportDto = new Transport(transport!)
         transportDto.name = transportName
@@ -198,10 +242,22 @@ const TransportView = () => {
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
+                <DataTable columns={costProfileColumns} gridData={costProfileGridData} onCellsChanged={onCostProfileCellsChanged} />
             </WrapperColumn>
             {!costProfileDialogOpen ? null
-                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
+                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onCostProfileImport} />}
+
+            <Wrapper>
+                <Typography variant="h4">Cessation Cost profile</Typography>
+                <ImportButton onClick={() => { setCessationCostProfileDialogOpen(true) }}>Import</ImportButton>
+            </Wrapper>
+            <WrapperColumn>
+                <DataTable columns={cessationCostProfileColumns} gridData={cessationCostProfileGridData} onCellsChanged={onCessationCostProfileCellsChanged} />
+            </WrapperColumn>
+            {!cessationCostProfileDialogOpen ? null
+                : <Import onClose={() => { setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen) }} onImport={onCessationCostProfileImport} />}
+
+
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )

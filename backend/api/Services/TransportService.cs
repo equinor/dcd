@@ -52,6 +52,7 @@ namespace api.Services
         {
             var transport = _context.Transports!
                     .Include(c => c.CostProfile)
+                    .Include(c => c.TransportCessationCostProfile)
                 .Where(c => c.Id == transportId).First();
             if (transport == null)
             {

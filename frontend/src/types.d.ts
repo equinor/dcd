@@ -271,6 +271,14 @@ declare namespace Components {
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;
         }
+        export interface TransportCessationCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface TransportCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -284,6 +292,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TransportCostProfileDto;
+            transportCessationCostProfileDto?: TransportCessationCostProfileDto;
             maturity?: Maturity /* int32 */;
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
