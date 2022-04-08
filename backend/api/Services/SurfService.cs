@@ -56,6 +56,7 @@ namespace api.Services
         {
             var surf = _context.Surfs!
                 .Include(c => c.CostProfile)
+                .Include(c => c.SurfCessationCostProfile)
                 .FirstOrDefault(o => o.Id == surfId);
             if (surf == null)
             {

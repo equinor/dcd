@@ -101,6 +101,7 @@ namespace api.Services
             var substructure = _context.Substructures!
                 .Include(c => c.Project)
                 .Include(c => c.CostProfile)
+                .Include(c => c.SubstructureCessasionCostProfile)
                 .FirstOrDefault(o => o.Id == substructureId);
             if (substructure == null)
             {

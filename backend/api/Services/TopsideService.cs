@@ -100,6 +100,7 @@ namespace api.Services
             var topside = _context.Topsides!
                 .Include(c => c.Project)
                 .Include(c => c.CostProfile)
+                .Include(c => c.TopsideCessasionCostProfile)
                 .FirstOrDefault(o => o.Id == topsideId);
             if (topside == null)
             {
