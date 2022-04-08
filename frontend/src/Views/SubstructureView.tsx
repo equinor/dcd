@@ -167,7 +167,9 @@ const SubstructureView = () => {
         const newCostProfileGridData = buildGridData(newSubstructure?.costProfile)
         setCostProfileGridData(newCostProfileGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
+        if (substructureName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onCessasionCostProfileImport = (input: string, year: number) => {

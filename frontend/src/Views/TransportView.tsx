@@ -181,7 +181,9 @@ const TransportView = () => {
         const newCessationCostProfileGridData = buildGridData(newTransport?.transportCessationCostProfileDto)
         setCessationCostProfileGridData(newCessationCostProfileGridData)
         setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen)
-        setHasChanges(true)
+        if (transportName !== "") {
+            setHasChanges(true)
+        }
     }
     
     const handleSave = async () => {
