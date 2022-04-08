@@ -7,17 +7,19 @@ namespace api.Adapters
     {
         public static WellProjectDto Convert(WellProject wellProject)
         {
-            var wellProjectDto = new WellProjectDto();
-            wellProjectDto.Id = wellProject.Id;
-            wellProjectDto.ProjectId = wellProject.ProjectId;
-            wellProjectDto.Name = wellProject.Name;
-            wellProjectDto.ProducerCount = wellProject.ProducerCount;
-            wellProjectDto.GasInjectorCount = wellProject.GasInjectorCount;
-            wellProjectDto.WaterInjectorCount = wellProject.WaterInjectorCount;
-            wellProjectDto.ArtificialLift = wellProject.ArtificialLift;
-            wellProjectDto.RigMobDemob = wellProject.RigMobDemob;
-            wellProjectDto.AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost;
-            wellProjectDto.PluggingAndAbandonment = wellProject.PluggingAndAbandonment;
+            var wellProjectDto = new WellProjectDto
+            {
+                Id = wellProject.Id,
+                ProjectId = wellProject.ProjectId,
+                Name = wellProject.Name,
+                ProducerCount = wellProject.ProducerCount,
+                GasInjectorCount = wellProject.GasInjectorCount,
+                WaterInjectorCount = wellProject.WaterInjectorCount,
+                ArtificialLift = wellProject.ArtificialLift,
+                RigMobDemob = wellProject.RigMobDemob,
+                AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
+                PluggingAndAbandonment = wellProject.PluggingAndAbandonment
+            };
             if (wellProject.CostProfile != null)
             {
                 wellProjectDto.CostProfile = Convert(wellProject.CostProfile);
@@ -29,32 +31,36 @@ namespace api.Adapters
             return wellProjectDto;
         }
 
-        private static WellProjectCostProfileDto Convert(WellProjectCostProfile wellProjectCostProfile)
+        private static WellProjectCostProfileDto? Convert(WellProjectCostProfile? costProfile)
         {
-            if (wellProjectCostProfile == null)
+            if (costProfile == null)
             {
                 return null!;
             }
-            return new WellProjectCostProfileDto
+            var wellProjectCostProfileDto = new WellProjectCostProfileDto
             {
-                EPAVersion = wellProjectCostProfile.EPAVersion,
-                Currency = wellProjectCostProfile.Currency,
-                StartYear = wellProjectCostProfile.StartYear,
-                Values = wellProjectCostProfile.Values
+                Id = costProfile.Id,
+                EPAVersion = costProfile.EPAVersion,
+                Currency = costProfile.Currency,
+                StartYear = costProfile.StartYear,
+                Values = costProfile.Values
             };
+            return wellProjectCostProfileDto;
         }
 
-        private static DrillingScheduleDto Convert(DrillingSchedule wellProjectDrillingSchedule)
+        private static DrillingScheduleDto? Convert(DrillingSchedule? drillingSchedule)
         {
-            if (wellProjectDrillingSchedule == null)
+            if (drillingSchedule == null)
             {
                 return null!;
             }
-            return new DrillingScheduleDto
+            var drillingScheduleDto = new DrillingScheduleDto
             {
-                StartYear = wellProjectDrillingSchedule.StartYear,
-                Values = wellProjectDrillingSchedule.Values
+                Id = drillingSchedule.Id,
+                StartYear = drillingSchedule.StartYear,
+                Values = drillingSchedule.Values
             };
+            return drillingScheduleDto;
         }
     }
 }

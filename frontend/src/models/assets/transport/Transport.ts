@@ -2,7 +2,7 @@ import { TransportCostProfile } from "./TransportCostProfile"
 
 export class Transport implements Components.Schemas.TransportDto {
     id?: string | undefined
-    name?: string | null
+    name?: string | undefined
     projectId?: string | undefined
     costProfile?: TransportCostProfile | undefined
     maturity?: Components.Schemas.Maturity | undefined
@@ -21,23 +21,6 @@ export class Transport implements Components.Schemas.TransportDto {
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
-            this.costProfile = new TransportCostProfile()
-        }
-    }
-
-    static Copy(data: Transport) {
-        const transportCopy = new Transport(data)
-        return {
-            ...transportCopy,
-            costProfile: data.costProfile,
-        }
-    }
-
-    static ToDto(data: Transport): Components.Schemas.SubstructureDto {
-        const transportCopy = new Transport(data)
-        return {
-            ...transportCopy,
-            costProfile: data.costProfile,
         }
     }
 

@@ -94,7 +94,7 @@ namespace tests
             var oldTransport = CreateTestTransport(project);
             fixture.context.Transports.Add(oldTransport);
             fixture.context.SaveChanges();
-            var updatedTransport = CreateUpdatedTransport(project);
+            var updatedTransport = CreateUpdatedTransport(project, oldTransport);
 
             // Act
             var projectResult = transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport));
@@ -105,10 +105,11 @@ namespace tests
             TestHelper.CompareTransports(updatedTransport, actualTransport);
         }
 
-        private static Transport CreateUpdatedTransport(Project project)
+        private static Transport CreateUpdatedTransport(Project project, Transport oldTransport)
         {
             return new TransportBuilder
             {
+                Id = oldTransport.Id,
                 Name = "Updated Transport",
                 Project = project,
                 ProjectId = project.Id,

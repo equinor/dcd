@@ -76,10 +76,18 @@ namespace api.Services
 
         public ProjectDto UpdateSubstructure(SubstructureDto updatedSubstructureDto)
         {
-            var updatedSubstructure = SubstructureAdapter.Convert(updatedSubstructureDto);
-            _context.Substructures!.Update(updatedSubstructure);
+            var existing = GetSubstructure(updatedSubstructureDto.Id);
+
+            SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
+
+            if (updatedSubstructureDto.CostProfile == null && existing.CostProfile != null)
+            {
+                _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
+            }
+
+            _context.Substructures!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(updatedSubstructure.ProjectId);
+            return _projectService.GetProjectDto(existing.ProjectId);
         }
 
         public Substructure GetSubstructure(Guid substructureId)

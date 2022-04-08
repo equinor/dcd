@@ -40,8 +40,7 @@ namespace api.Controllers
         [HttpPut(Name = "UpdateWellProject")]
         public ProjectDto UpdateWellProject([FromBody] WellProjectDto wellProjectDto)
         {
-            var wellProject = _wellProjectAdapter.Convert(wellProjectDto);
-            return _wellProjectService.UpdateWellProject(wellProject);
+            return _wellProjectService.UpdateWellProject(wellProjectDto);
         }
     }
 }
