@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 
+using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -147,9 +148,10 @@ namespace tests
             fixture.context.WellProjects.Add(oldWellProject);
             fixture.context.SaveChanges();
             var updatedWellProject = CreateUpdatedWellProject(project);
+            updatedWellProject.Id = oldWellProject.Id;
 
             // Act
-            var projectResult = wellProjectService.UpdateWellProject(updatedWellProject);
+            var projectResult = wellProjectService.UpdateWellProject(WellProjectDtoAdapter.Convert(updatedWellProject));
 
             // Assert
             var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == updatedWellProject.Name);
