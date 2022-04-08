@@ -26,6 +26,18 @@ namespace api.Adapters
             return substructure;
         }
 
+        public static void ConvertExisting(Substructure existing, SubstructureDto substructureDto)
+        {
+            existing.Id = substructureDto.Id;
+            existing.ProjectId = substructureDto.ProjectId;
+            existing.Name = substructureDto.Name;
+            existing.DryWeight = substructureDto.DryWeight;
+            existing.Maturity = substructureDto.Maturity;
+
+            existing.CostProfile = Convert(substructureDto.CostProfile, existing);
+            existing.SubstructureCessasionCostProfile = Convert(substructureDto.SubstructureCessasionCostProfileDto, existing);
+        }
+
         private static SubstructureCostProfile? Convert(SubstructureCostProfileDto? costprofile, Substructure substructure)
         {
             if (costprofile == null)

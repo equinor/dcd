@@ -29,6 +29,18 @@ namespace api.Adapters
             return transport;
         }
 
+        public static void ConvertExisting(Transport existing, TransportDto transportDto)
+        {
+            existing.Id = transportDto.Id;
+            existing.ProjectId = transportDto.ProjectId;
+            existing.Name = transportDto.Name;
+            existing.Maturity = transportDto.Maturity;
+            existing.GasExportPipelineLength = transportDto.GasExportPipelineLength;
+            existing.OilExportPipelineLength = transportDto.OilExportPipelineLength;
+            existing.CostProfile = Convert(transportDto.CostProfile, existing);
+            existing.TransportCessationCostProfile = Convert(transportDto.TransportCessationCostProfileDto, existing);
+        }
+
         private static TransportCostProfile? Convert(TransportCostProfileDto? costprofile, Transport transport)
         {
             if (costprofile == null)

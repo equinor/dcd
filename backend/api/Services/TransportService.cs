@@ -88,10 +88,22 @@ namespace api.Services
 
         public ProjectDto UpdateTransport(TransportDto updatedTransportDto)
         {
-            var updatedTransport = TransportAdapter.Convert(updatedTransportDto);
-            _context.Transports!.Update(updatedTransport);
+            var existing = GetTransport(updatedTransportDto.Id);
+            TransportAdapter.ConvertExisting(existing, updatedTransportDto);
+
+            if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)
+            {
+                _context.TransportCostProfile!.Remove(existing.CostProfile);
+            }
+
+            if (updatedTransportDto.TransportCessationCostProfileDto == null && existing.TransportCessationCostProfile != null)
+            {
+                _context.TransportCessationCostProfiles!.Remove(existing.TransportCessationCostProfile);
+            }
+            
+            _context.Transports!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(updatedTransport.ProjectId);
+            return _projectService.GetProjectDto(existing.ProjectId);
         }
     }
 }

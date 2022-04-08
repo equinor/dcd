@@ -77,10 +77,22 @@ namespace api.Services
 
         public ProjectDto UpdateTopside(TopsideDto updatedTopsideDto)
         {
-            var updatedTopside = TopsideAdapter.Convert(updatedTopsideDto);
-            _context.Topsides!.Update(updatedTopside);
+            var existing = GetTopside(updatedTopsideDto.Id);
+            TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
+
+            if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
+            {
+                _context.TopsideCostProfiles!.Remove(existing.CostProfile);
+            }
+
+            if (updatedTopsideDto.TopsideCessasionCostProfileDto == null && existing.TopsideCessasionCostProfile != null)
+            {
+                _context.TopsideCessasionCostProfiles!.Remove(existing.TopsideCessasionCostProfile);
+            }
+
+            _context.Topsides!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(updatedTopside.ProjectId);
+            return _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
         }
 
         public Topside GetTopside(Guid topsideId)

@@ -168,7 +168,9 @@ const TransportView = () => {
         const newCostProfileGridData = buildGridData(newTransport?.costProfile)
         setCostProfileGridData(newCostProfileGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
+        if (transportName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onCessationCostProfileImport = (input: string, year: number) => {
@@ -209,11 +211,37 @@ const TransportView = () => {
 
     const handleTransportNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setTransportName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== transport?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
         }
+    }
+
+    const deleteCostProfile = () => {
+        const transportCopy = new Transport(transport)
+        transportCopy.costProfile = undefined
+        if (transportName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setCostProfileColumns([])
+        setCostProfileGridData([[]])
+        setTransport(transportCopy)
+    }
+
+    const deleteCessationCostProfile = () => {
+        const transportCopy = new Transport(transport)
+        transportCopy.transportCessationCostProfileDto = undefined
+        if (transportName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setCessationCostProfileColumns([])
+        setCessationCostProfileGridData([[]])
+        setTransport(transportCopy)
     }
 
     return (
@@ -226,7 +254,7 @@ const TransportView = () => {
                         id="transportName"
                         name="transportName"
                         placeholder="Enter Transport name"
-                        defaultValue={transport?.name}
+                        value={transportName}
                         onChange={handleTransportNameFieldChange}
                     />
                 </WrapperColumn>
@@ -240,9 +268,21 @@ const TransportView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={transport?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={costProfileColumns} gridData={costProfileGridData} onCellsChanged={onCostProfileCellsChanged} />
+                <DataTable
+                    columns={costProfileColumns}
+                    gridData={costProfileGridData}
+                    onCellsChanged={onCostProfileCellsChanged}
+                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                />
             </WrapperColumn>
             {!costProfileDialogOpen ? null
                 : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onCostProfileImport} />}
@@ -250,9 +290,16 @@ const TransportView = () => {
             <Wrapper>
                 <Typography variant="h4">Cessation Cost profile</Typography>
                 <ImportButton onClick={() => { setCessationCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={transport?.transportCessationCostProfileDto === undefined}
+                    color="danger"
+                    onClick={deleteCessationCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={cessationCostProfileColumns} gridData={cessationCostProfileGridData} onCellsChanged={onCessationCostProfileCellsChanged} />
+                <DataTable columns={cessationCostProfileColumns} gridData={cessationCostProfileGridData} onCellsChanged={onCessationCostProfileCellsChanged} dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}/>
             </WrapperColumn>
             {!cessationCostProfileDialogOpen ? null
                 : <Import onClose={() => { setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen) }} onImport={onCessationCostProfileImport} />}

@@ -36,10 +36,21 @@ namespace api.Services
 
         public ProjectDto UpdateSurf(SurfDto updatedSurfDto)
         {
-            var updatedSurf = SurfAdapter.Convert(updatedSurfDto);
-            _context.Surfs!.Update(updatedSurf);
+            var existing = GetSurf(updatedSurfDto.Id);
+            SurfAdapter.ConvertExisting(existing, updatedSurfDto);
+
+            if (updatedSurfDto.CostProfile == null && existing.CostProfile != null)
+            {
+                _context.SurfCostProfile!.Remove(existing.CostProfile);
+            }
+
+            if (updatedSurfDto.SurfCessationCostProfileDto == null && existing.SurfCessationCostProfile != null)
+            {
+                _context.SurfCessationCostProfiles!.Remove(existing.SurfCessationCostProfile);
+            }
+            _context.Surfs!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(updatedSurf.ProjectId);
+            return _projectService.GetProjectDto(existing.ProjectId);
         }
         public Surf GetSurf(Guid surfId)
         {

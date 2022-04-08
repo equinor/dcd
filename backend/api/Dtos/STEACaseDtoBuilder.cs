@@ -8,7 +8,10 @@ namespace api.Adapters
         {
             var sTEACaseDto = new STEACaseDto();
             sTEACaseDto.Name = c.Name;
-
+            if (c.DG4Date == DateTimeOffset.MinValue)
+            {
+                c.DG4Date = new DateTime(2030, 1, 1);
+            }
             AddCapex(p, sTEACaseDto, c);
             AddExploration(p, sTEACaseDto, c);
             AddProductionSalesAndVolumes(p, sTEACaseDto, c);

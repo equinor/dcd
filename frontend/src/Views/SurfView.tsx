@@ -70,14 +70,14 @@ const SurfView = () => {
     const [surf, setSurf] = useState<Surf>()
 
     //Cost Profile
-    const [costProfileColumns, setCostProfileColumnes] = useState<string[]>([""])
+    const [costProfileColumns, setCostProfileColumns] = useState<string[]>([""])
     const [costProfileGridData, setCostProfileGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
 
     //Cessasion Cost Profile
-    const [cessasionCostProfileColumns, setCessasionCostProfileColumnes] = useState<string[]>([""])
-    const [cessasionCostProfileGridData, setCessasionCostProfileGridData] = useState<CellValue[][]>([[]])
-    const [cessasionCostProfileDialogOpen, setCessasionCostProfileDialogOpen] = useState(false)
+    const [cessationCostProfileColumns, setCessationCostProfileColumns] = useState<string[]>([""])
+    const [cessationCostProfileGridData, setCessationCostProfileGridData] = useState<CellValue[][]>([[]])
+    const [cessationCostProfileDialogOpen, setCessationCostProfileDialogOpen] = useState(false)
 
     const [hasChanges, setHasChanges] = useState(false)
     const [surfName, setSurfName] = useState<string>("")
@@ -103,16 +103,16 @@ const SurfView = () => {
                 setSurfName(newSurf.name!)
                 //Cost Profile
                 const newCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newSurf?.costProfile)
-                const newCessasionCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newSurf?.surfCessationCostProfileDto)
+                const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newSurf?.surfCessationCostProfileDto)
 
-                setCostProfileColumnes(newCostProfileColumnTitles)
-                setCessasionCostProfileColumnes(newCessasionCostProfileColumnTitles)
+                setCostProfileColumns(newCostProfileColumnTitles)
+                setCessationCostProfileColumns(newCessationCostProfileColumnTitles)
                 
                 const newCostProfileGridData = buildGridData(newSurf?.costProfile)
-                const newCessasionCostProfileGridData = buildGridData(newSurf?.surfCessationCostProfileDto)
+                const newCessationCostProfileGridData = buildGridData(newSurf?.surfCessationCostProfileDto)
 
                 setCostProfileGridData(newCostProfileGridData)
-                setCessasionCostProfileGridData(newCessasionCostProfileGridData)
+                setCessationCostProfileGridData(newCessationCostProfileGridData)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
@@ -122,14 +122,14 @@ const SurfView = () => {
     const onCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newCostProfileGridData = replaceOldData(costProfileGridData, changes)
         setCostProfileGridData(newCostProfileGridData)
-        setCostProfileColumnes(getColumnAbsoluteYears(caseItem, surf?.costProfile))
+        setCostProfileColumns(getColumnAbsoluteYears(caseItem, surf?.costProfile))
         setHasChanges(true)
     }
 
-    const onCessasionCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newCessasionCostProfileGridData = replaceOldData(cessasionCostProfileGridData, changes)
-        setCessasionCostProfileGridData(newCessasionCostProfileGridData)
-        setCessasionCostProfileColumnes(getColumnAbsoluteYears(caseItem, surf?.surfCessationCostProfileDto))
+    const onCessationCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
+        const newCessationCostProfileGridData = replaceOldData(cessationCostProfileGridData, changes)
+        setCessationCostProfileGridData(newCessationCostProfileGridData)
+        setCessationCostProfileColumns(getColumnAbsoluteYears(caseItem, surf?.surfCessationCostProfileDto))
         setHasChanges(true)
     }
 
@@ -144,11 +144,11 @@ const SurfView = () => {
         return newSurf
     }
 
-    const updateInsertSurfCessasionCostProfile = (input: string, year: number) => {
+    const updateInsertSurfCessationCostProfile = (input: string, year: number) => {
         const newSurf = new Surf(surf!)
-        const newCessasionCostProfile: SurfCessasionCostProfile = new SurfCessasionCostProfile()
+        const newCessationCostProfile: SurfCessasionCostProfile = new SurfCessasionCostProfile()
         newSurf.id = newSurf.id ?? emptyGUID
-        newSurf.surfCessationCostProfileDto = newSurf.surfCessationCostProfileDto ?? newCessasionCostProfile
+        newSurf.surfCessationCostProfileDto = newSurf.surfCessationCostProfileDto ?? newCessationCostProfile
         newSurf.surfCessationCostProfileDto.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         newSurf.surfCessationCostProfileDto.startYear = year
         newSurf.surfCessationCostProfileDto.epaVersion = newSurf.surfCessationCostProfileDto.epaVersion ?? ""
@@ -159,22 +159,26 @@ const SurfView = () => {
         const emptySurf: Surf = updateInsertSurfCostProfile(input, year)
         setSurf(emptySurf)
         const newCostProfileColumnTitles = getColumnAbsoluteYears(caseItem, emptySurf?.costProfile)
-        setCostProfileColumnes(newCostProfileColumnTitles)
+        setCostProfileColumns(newCostProfileColumnTitles)
         const newCostProfileGridData = buildGridData(emptySurf?.costProfile)
         setCostProfileGridData(newCostProfileGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
+        if (surfName !== "") {
+            setHasChanges(true)
+        }
     }
 
-    const onCessasionCostProfileImport = (input: string, year: number) => {
-        const emptySurf: Surf = updateInsertSurfCessasionCostProfile(input, year)
+    const onCessationCostProfileImport = (input: string, year: number) => {
+        const emptySurf: Surf = updateInsertSurfCessationCostProfile(input, year)
         setSurf(emptySurf)
-        const newCesassionCostProfileColumnTitles = getColumnAbsoluteYears(caseItem, emptySurf?.surfCessationCostProfileDto)
-        setCessasionCostProfileColumnes(newCesassionCostProfileColumnTitles)
-        const newCessasionCostProfileGridData = buildGridData(emptySurf?.surfCessationCostProfileDto)
-        setCessasionCostProfileGridData(newCessasionCostProfileGridData)
-        setCessasionCostProfileDialogOpen(!cessasionCostProfileDialogOpen)
-        setHasChanges(true)
+        const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(caseItem, emptySurf?.surfCessationCostProfileDto)
+        setCessationCostProfileColumns(newCessationCostProfileColumnTitles)
+        const newCessationCostProfileGridData = buildGridData(emptySurf?.surfCessationCostProfileDto)
+        setCessationCostProfileGridData(newCessationCostProfileGridData)
+        setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen)
+        if (surfName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const handleSave = async () => {
@@ -203,11 +207,37 @@ const SurfView = () => {
 
     const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSurfName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== surf?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
         }
+    }
+
+    const deleteCostProfile = () => {
+        const surfCopy = new Surf(surf)
+        surfCopy.costProfile = undefined
+        if (surfName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setCostProfileColumns([])
+        setCostProfileGridData([[]])
+        setSurf(surfCopy)
+    }
+
+    const deleteCessationCostProfile = () => {
+        const surfCopy = new Surf(surf)
+        surfCopy.surfCessationCostProfileDto = undefined
+        if (surfName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setCessationCostProfileColumns([])
+        setCessationCostProfileGridData([[]])
+        setSurf(surfCopy)
     }
 
     return (
@@ -220,7 +250,7 @@ const SurfView = () => {
                         id="surfName"
                         name="surfName"
                         placeholder="Enter surf name"
-                        defaultValue={surf?.name}
+                        value={surfName}
                         onChange={handleSurfNameFieldChange}
                     />
                 </WrapperColumn>
@@ -234,22 +264,45 @@ const SurfView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={surf?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={costProfileColumns} gridData={costProfileGridData} onCellsChanged={onCostProfileCellsChanged} />
+                <DataTable
+                    columns={costProfileColumns}
+                    gridData={costProfileGridData}
+                    onCellsChanged={onCostProfileCellsChanged}
+                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                />
             </WrapperColumn>
             {!costProfileDialogOpen ? null
                 : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onCostProfileImport} />}
 
             <Wrapper>
                 <Typography variant="h4">Cessasion Cost profile</Typography>
-                <ImportButton onClick={() => { setCessasionCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton onClick={() => { setCessationCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={surf?.surfCessationCostProfileDto === undefined}
+                    color="danger"
+                    onClick={deleteCessationCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={cessasionCostProfileColumns} gridData={cessasionCostProfileGridData} onCellsChanged={onCessasionCostProfileCellsChanged} />
+                <DataTable 
+                columns={cessationCostProfileColumns} 
+                gridData={cessationCostProfileGridData} 
+                onCellsChanged={onCessationCostProfileCellsChanged} 
+                dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}/>
             </WrapperColumn>
-            {!cessasionCostProfileDialogOpen ? null
-                : <Import onClose={() => { setCessasionCostProfileDialogOpen(!cessasionCostProfileDialogOpen) }} onImport={onCessasionCostProfileImport} />}
+            {!cessationCostProfileDialogOpen ? null
+                : <Import onClose={() => { setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen) }} onImport={onCessationCostProfileImport} />}
 
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
