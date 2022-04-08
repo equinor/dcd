@@ -177,7 +177,7 @@ const SubstructureView = () => {
 
     const handleSubstructureNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSubstructureName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== substructure?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)

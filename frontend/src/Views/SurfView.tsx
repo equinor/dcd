@@ -158,7 +158,7 @@ const SurfView = () => {
 
     const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSurfName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== surf?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
