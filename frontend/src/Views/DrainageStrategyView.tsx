@@ -378,7 +378,7 @@ const DrainageStrategyView = () => {
 
     const handleDrainageStrategyNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setDrainageStrategyName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== drainageStrategy?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)

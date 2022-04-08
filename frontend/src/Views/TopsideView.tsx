@@ -163,7 +163,7 @@ const TopsideView = () => {
 
     const handleTopsideNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setTopsideName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== topside?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
