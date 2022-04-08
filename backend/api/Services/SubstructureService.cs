@@ -82,7 +82,7 @@ namespace api.Services
 
             if (updatedSubstructureDto.CostProfile == null && existing.CostProfile != null)
             {
-                _context.substructureCostProfiles!.Remove(existing.CostProfile);
+                _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
             }
 
             _context.Substructures!.Update(existing);

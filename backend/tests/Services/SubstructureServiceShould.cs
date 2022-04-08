@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 
 using api.Adapters;
 using api.Models;
@@ -139,7 +137,7 @@ namespace tests
             fixture.context.Substructures.Add(oldSubstructure);
             fixture.context.SaveChanges();
 
-            var updatedSubstructure = CreateUpdatedSubstructure(project);
+            var updatedSubstructure = CreateUpdatedSubstructure(project, oldSubstructure);
             updatedSubstructure.Id = oldSubstructure.Id;
 
             // Act
@@ -161,7 +159,7 @@ namespace tests
             var oldSubstructure = CreateTestSubstructure(project);
             fixture.context.Substructures.Add(oldSubstructure);
             fixture.context.SaveChanges();
-            var updatedSubstructure = CreateUpdatedSubstructure(project);
+            var updatedSubstructure = CreateUpdatedSubstructure(project, oldSubstructure);
 
             //     // Act, assert
             //     Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(updatedSubstructure));
@@ -187,10 +185,11 @@ namespace tests
 
         }
 
-        private static Substructure CreateUpdatedSubstructure(Project project)
+        private static Substructure CreateUpdatedSubstructure(Project project, Substructure oldSubstructure)
         {
             return new SubstructureBuilder
             {
+                Id = oldSubstructure.Id,
                 Project = project,
                 ProjectId = project.Id,
                 Name = "Substructure 1",
