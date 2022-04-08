@@ -189,7 +189,7 @@ const ExplorationView = () => {
                         id="name"
                         name="name"
                         placeholder="Enter name"
-                        defaultValue={exploration?.name}
+                        value={name}
                         onChange={handleNameChange}
                     />
                 </WrapperColumn>
