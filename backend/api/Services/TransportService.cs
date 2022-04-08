@@ -78,6 +78,7 @@ namespace api.Services
             {
                 return _context.Transports
                         .Include(c => c.CostProfile)
+                        .Include(c => c.TransportCessationCostProfile)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -100,7 +101,7 @@ namespace api.Services
             {
                 _context.TransportCessationCostProfiles!.Remove(existing.TransportCessationCostProfile);
             }
-            
+
             _context.Transports!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(existing.ProjectId);
