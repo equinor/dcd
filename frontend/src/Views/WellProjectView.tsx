@@ -210,7 +210,7 @@ function WellProjectView() {
 
     const handleWellProjectNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setWellProjectName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== wellProject?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
