@@ -194,8 +194,7 @@ const ProjectModal = ({
                     <StyledTextField
                         label="Name"
                         id="textfield-name"
-                        value={selectedProject?.name ?? "hei"}
-                        defaultValue={selectedProject?.name ?? "halla"}
+                        value={selectedProject?.name ?? ""}
                         autoComplete="off"
                         onChange={(event: ChangeEvent<HTMLTextAreaElement>) => (
                             updateNameHandler(event)
