@@ -132,7 +132,7 @@ const SubstructureView = () => {
         const newGridData = buildGridData(newSubstructure?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newSubstructure.name !== "") {
+        if (substructureName !== "") {
             setHasChanges(true)
         }
     }
@@ -162,6 +162,19 @@ const SubstructureView = () => {
         setHasChanges(false)
     }
 
+    const deleteCostProfile = () => {
+        const substructureCopy = new Substructure(substructure)
+        substructureCopy.costProfile = undefined
+        if (substructureName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setColumns([])
+        setGridData([[]])
+        setSubstructure(substructureCopy)
+    }
+
     const handleSubstructureNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSubstructureName(e.target.value)
         if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== substructure?.name) {
@@ -181,7 +194,7 @@ const SubstructureView = () => {
                         id="substructureName"
                         name="substructureName"
                         placeholder="Enter substructure name"
-                        defaultValue={substructure?.name}
+                        value={substructureName}
                         onChange={handleSubstructureNameFieldChange}
                     />
                 </WrapperColumn>
@@ -195,9 +208,21 @@ const SubstructureView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={substructure?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
+                <DataTable
+                    columns={columns}
+                    gridData={gridData}
+                    onCellsChanged={onCellsChanged}
+                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                />
             </WrapperColumn>
             {!costProfileDialogOpen ? null
                 : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}

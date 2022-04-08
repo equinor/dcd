@@ -1,3 +1,4 @@
+using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
@@ -73,9 +74,22 @@ namespace api.Services
             }
         }
 
-        public ProjectDto UpdateWellProject(WellProject updatedWellProject)
+        public ProjectDto UpdateWellProject(WellProjectDto updatedWellProject)
         {
-            _context.WellProjects!.Update(updatedWellProject);
+            var existing = GetWellProject(updatedWellProject.Id);
+            WellProjectAdapter.ConvertExisting(existing, updatedWellProject);
+
+            if (updatedWellProject.CostProfile == null && existing.CostProfile != null)
+            {
+                _context.WellProjectCostProfile!.Remove(existing.CostProfile);
+            }
+
+            if (updatedWellProject.DrillingSchedule == null && existing.DrillingSchedule != null)
+            {
+                _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
+            }
+
+            _context.WellProjects!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedWellProject.ProjectId);
         }

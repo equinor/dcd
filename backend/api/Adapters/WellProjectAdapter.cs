@@ -30,8 +30,31 @@ namespace api.Adapters
             }
             return wellProject;
         }
+        public static void ConvertExisting(WellProject existing, WellProjectDto wellProjectDto)
+        {
 
-        private WellProjectCostProfile? Convert(WellProjectCostProfileDto? costProfile, WellProject wellProject)
+            existing.Id = wellProjectDto.Id;
+            existing.ProjectId = wellProjectDto.ProjectId;
+            existing.Name = wellProjectDto.Name;
+            existing.ProducerCount = wellProjectDto.ProducerCount;
+            existing.GasInjectorCount = wellProjectDto.GasInjectorCount;
+            existing.WaterInjectorCount = wellProjectDto.WaterInjectorCount;
+            existing.ArtificialLift = wellProjectDto.ArtificialLift;
+            existing.RigMobDemob = wellProjectDto.RigMobDemob;
+            existing.AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost;
+            existing.PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment;
+
+            if (wellProjectDto.CostProfile != null)
+            {
+                existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
+            }
+            if (wellProjectDto.DrillingSchedule != null)
+            {
+                existing.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, existing);
+            }
+        }
+
+        private static WellProjectCostProfile? Convert(WellProjectCostProfileDto? costProfile, WellProject wellProject)
         {
             if (costProfile == null) return null;
             var wellProjectCostProfile = new WellProjectCostProfile
@@ -46,7 +69,7 @@ namespace api.Adapters
             return wellProjectCostProfile;
         }
 
-        private DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto, WellProject wellProject)
+        private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto, WellProject wellProject)
         {
             if (drillingScheduleDto == null) return null;
             var drillingSchedule = new DrillingSchedule

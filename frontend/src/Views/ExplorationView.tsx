@@ -128,7 +128,7 @@ const ExplorationView = () => {
         const newGridData = buildGridData(newExploration?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (newExploration.name !== "") {
+        if (name !== "") {
             setHasChanges(true)
         }
     }
@@ -166,6 +166,19 @@ const ExplorationView = () => {
         }
     }
 
+    const deleteCostProfile = () => {
+        const explorationCopy = new Exploration(exploration)
+        explorationCopy.costProfile = undefined
+        if (name !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setColumns([])
+        setGridData([[]])
+        setExploration(explorationCopy)
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">Exploration</Typography>
@@ -176,7 +189,7 @@ const ExplorationView = () => {
                         id="name"
                         name="name"
                         placeholder="Enter name"
-                        defaultValue={exploration?.name}
+                        value={name}
                         onChange={handleNameChange}
                     />
                 </WrapperColumn>
@@ -190,9 +203,21 @@ const ExplorationView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={exploration?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
+                <DataTable
+                    columns={columns}
+                    gridData={gridData}
+                    onCellsChanged={onCellsChanged}
+                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                />
             </WrapperColumn>
             {!costProfileDialogOpen ? null
                 : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
