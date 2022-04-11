@@ -11,6 +11,7 @@ namespace api.Dtos
         public CapexDto Capex { get; set; } = null!;
 
         public ProductionAndSalesVolumesDto ProductionAndSalesVolumes { get; set; } = null!;
+        public OffshoreFacilitiesCostProfileDto OffshoreFacilitiesCostProfileDto { get; set; } = null!;
     }
 
     public class CapexDto : TimeSeriesCostDto
@@ -18,6 +19,7 @@ namespace api.Dtos
         public WellProjectCostProfileDto Drilling { get; set; } = null!;
 
         public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = null!;
+
     }
 
     public class ProductionAndSalesVolumesDto
@@ -30,7 +32,10 @@ namespace api.Dtos
 
     public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto
     {
-
+        public SurfCessationCostProfileDto SurfCessationCostProfileDto { get; set; } = null!;
+        public TopsideCessasionCostProfileDto TopsideCessasionCostProfileDto { get; set;} = null!;
+        public SubstructureCessasionCostProfileDto SubstructureCessasionCostProfileDto { get; set; } = null!;
+        public TransportCessationCostProfileDto TransportCessationCostProfileDto { get; set; } = null!;
     }
 }
 
