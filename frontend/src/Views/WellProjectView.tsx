@@ -131,12 +131,17 @@ function WellProjectView() {
                     console.log(newGridData[0])
                     setGridData(newGridData)
 
-                    // eslint-disable-next-line max-len
-                    const drillingZeroesStart = buildGridZeroData([0])
+                    const drillingZeroesStart = Array.from({ length: Number(drillingStartYear) - Number(earliestStartYear) }, (() => 0))
+                    const drillingZeroesStartGrid = buildGridZeroData(drillingZeroesStart)
                     console.log(drillingZeroesStart)
 
+                    // const drzst = Array.from({ length: Number(drillingStartYear) - Number(earliestStartYear) }, (() => 0))
+                    // console.log(drzst)
+                    // console.log(Number(drillingStartYear) - Number(earliestStartYear))
+
                     // eslint-disable-next-line max-len
-                    const drillingZeroesEnd = buildGridZeroData([0])
+                    const drillingZeroesEnd = Array.from({ length: Number(latestEndYear) - Number(drillingEndYear) }, (() => 0))
+                    const drillingZeroesEndGrid = buildGridZeroData(drillingZeroesEnd)
                     // eslint-disable-next-line max-len
                     // const drillingZeroesEnd = [{ value: 0 }].map((x) => x * (Number(latestEndYear) - Number(drillingEndYear)))
                     console.log(drillingZeroesEnd)
@@ -150,7 +155,7 @@ function WellProjectView() {
                     console.log(newDrillingGridData)
 
                     // eslint-disable-next-line max-len
-                    const alignedDrillingGridData = new Array(drillingZeroesStart[0].concat(newDrillingGridData[0], drillingZeroesEnd[0]))
+                    const alignedDrillingGridData = new Array(drillingZeroesStartGrid[0].concat(newDrillingGridData[0], drillingZeroesEndGrid[0]))
                     console.log(alignedDrillingGridData)
 
                     setGridDrillingData(alignedDrillingGridData)
