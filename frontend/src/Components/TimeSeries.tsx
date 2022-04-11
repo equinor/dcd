@@ -41,6 +41,7 @@ interface asset {
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: ts | undefined
+    drillingSchedule?: ts | undefined
     dryweight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
 }
@@ -53,6 +54,7 @@ interface Props {
     asset: asset | undefined,
     costProfile: CostProfile,
     assetName: string
+    timeSeriesTitle: string
 }
 
 const TimeSeries = ({
@@ -63,6 +65,7 @@ const TimeSeries = ({
     asset,
     costProfile,
     assetName,
+    timeSeriesTitle,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -117,7 +120,7 @@ const TimeSeries = ({
     return (
         <>
             <Wrapper>
-                <Typography variant="h4">Cost profile</Typography>
+                <Typography variant="h4">{timeSeriesTitle}</Typography>
                 <ImportButton onClick={() => { setDialogOpen(true) }}>Import</ImportButton>
                 <ImportButton
                     disabled={asset !== undefined && asset[costProfile] === undefined}

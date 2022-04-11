@@ -150,6 +150,7 @@ const SubstructureView = () => {
                 asset={substructure}
                 costProfile={CostProfile.costProfile}
                 assetName={substructureName}
+                timeSeriesTitle="Cost profile"
             />
             <Wrapper>
                 <SaveButton disabled={!hasChanges} onClick={handleSave}>

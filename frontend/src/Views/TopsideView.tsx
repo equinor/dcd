@@ -149,6 +149,7 @@ const TopsideView = () => {
                 asset={topside}
                 costProfile={CostProfile.costProfile}
                 assetName={topsideName}
+                timeSeriesTitle="Cost profile"
             />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
