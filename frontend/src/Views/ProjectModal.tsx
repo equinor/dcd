@@ -10,13 +10,9 @@ import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
-
 import { Modal } from "../Components/Modal"
-
 import { ProjectCategory } from "../models/ProjectCategory"
 import { ProjectPhase } from "../models/ProjectPhase"
-
-import { GetCommonLibraryService } from "../Services/CommonLibraryService"
 import { GetProjectService } from "../Services/ProjectService"
 
 const ProjectSelect = styled.div`
@@ -73,25 +69,26 @@ const grey = tokens.colors.ui.background__scrim.rgba
 type Props = {
     isOpen: boolean;
     closeModal: Function;
-    shards: any[];
-    passedInProject: Components.Schemas.CommonLibraryProjectDto;
+    passedInProject: Components.Schemas.CommonLibraryProjectDto | undefined;
+    passedInProjects: Components.Schemas.CommonLibraryProjectDto[] | undefined;
 }
 
 const ProjectModal = ({
-    passedInProject, isOpen, closeModal, shards,
+    passedInProject, passedInProjects, isOpen, closeModal,
 }: Props) => {
     const navigate = useNavigate()
-    const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>()
-    const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto>(passedInProject)
+    const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]
+        | undefined>(passedInProjects ?? undefined)
+    const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto
+        | undefined>(passedInProject ?? undefined)
     const [inputName, setName] = useState<string>()
     const [inputDescription, setDescription] = useState<string>()
     const [commonLibFetchError, setCommonLibFetchError] = useState<boolean>()
-    const CommonLibraryService = GetCommonLibraryService()
 
     // When user is inside the view, and chooses a new project.
     const onSelected = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
-        setSelectedProject(project!)
+        setSelectedProject(project)
     }
 
     const convertCommonLibProjectToProject = (
@@ -118,14 +115,21 @@ const ProjectModal = ({
     }
 
     const closeProjectModal = async (pressedOkButton: boolean) => {
+        if (!pressedOkButton) {
+            closeModal()
+        }
         let project
         if (pressedOkButton === true) {
-            project = convertCommonLibProjectToProject(selectedProject!)
-            const createdProject = await GetProjectService().createProject(project)
-            navigate(`/project/${createdProject.projectId}`)
+            try {
+                project = convertCommonLibProjectToProject(selectedProject!)
+                await GetProjectService().createProject(project).then((createdProject) => {
+                    closeModal()
+                    navigate(`/project/${createdProject.projectId}`)
+                })
+            } catch (error) {
+                console.error("Could not create project. ", error)
+            }
         }
-        setSelectedProject(undefined!)
-        closeModal()
     }
 
     const handleOkClick = () => {
@@ -133,7 +137,6 @@ const ProjectModal = ({
     }
 
     const handleCancelClick = () => {
-        setSelectedProject(undefined!)
         closeProjectModal(false)
     }
 
@@ -146,22 +149,18 @@ const ProjectModal = ({
     }
 
     useEffect(() => {
-        (async () => {
-            try {
-                setSelectedProject(passedInProject)
-                setCommonLibFetchError(false)
-                const res = await CommonLibraryService.getProjects()
-                setProjects(res)
-            } catch (error) {
-                setCommonLibFetchError(true)
-                console.error("[ProjectModal] Error while fetching common library projects.", error)
-            }
-        })()
-    }, [passedInProject])
+        if (passedInProject !== undefined) {
+            setSelectedProject(passedInProject)
+        }
+        if (passedInProjects !== undefined) {
+            setProjects(passedInProjects!)
+        }
+        setCommonLibFetchError(false)
+    }, [passedInProject, passedInProjects])
 
     if (commonLibFetchError) {
         return (
-            <Modal isOpen={isOpen} title="Oops!" shards={shards}>
+            <Modal isOpen={isOpen} title="Oops!" shards={[]}>
                 <Typography>
                     Something went wrong while retrieving projects from Common Library.
                     {" "}
@@ -173,7 +172,7 @@ const ProjectModal = ({
     }
 
     return (
-        <Modal isOpen={isOpen} title="Add Project from CommonLib" shards={shards}>
+        <Modal isOpen={isOpen} title="Add Project from CommonLib" shards={[]}>
             <div>
                 <ProjectSelect>
                     <Icon data={search} color={grey} />
