@@ -7,7 +7,7 @@ import {
 } from "react-router"
 import styled from "styled-components"
 import TimeSeries from "../Components/TimeSeries"
-import CostProfile from "../models/assets/CostProfile"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Topside } from "../models/assets/topside/Topside"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
@@ -147,7 +147,7 @@ const TopsideView = () => {
                 setAsset={setTopside}
                 setHasChanges={setHasChanges}
                 asset={topside}
-                costProfile={CostProfile.costProfile}
+                timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={topsideName}
                 timeSeriesTitle="Cost profile"
             />

@@ -1,4 +1,4 @@
-enum CostProfile {
+enum TimeSeriesEnum {
     costProfile = "costProfile",
     drillingSchedule = "drillingSchedule",
     co2Emissions = "co2Emissions",
@@ -10,4 +10,4 @@ enum CostProfile {
     productionProfileWaterInjection = "productionProfileWaterInjection"
   }
 
-export default CostProfile
+export default TimeSeriesEnum

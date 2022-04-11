@@ -15,7 +15,8 @@ import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
-import CostProfile from "../models/assets/CostProfile"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
+import { emptyGuid } from "../Utils/constants"
 
 const AssetHeader = styled.div`
     margin-bottom: 2rem;
@@ -69,8 +70,6 @@ const DrainageStrategyView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
-
-    const emptyGuid = "00000000-0000-0000-0000-000000000000"
 
     useEffect(() => {
         (async () => {
@@ -152,7 +151,7 @@ const DrainageStrategyView = () => {
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
                 asset={drainageStrategy}
-                costProfile={CostProfile.co2Emissions}
+                timeSeriesType={TimeSeriesEnum.co2Emissions}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="CO2 emissions"
             />
@@ -162,7 +161,7 @@ const DrainageStrategyView = () => {
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
                 asset={drainageStrategy}
-                costProfile={CostProfile.fuelFlaringAndLosses}
+                timeSeriesType={TimeSeriesEnum.fuelFlaringAndLosses}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Fuel flaring and losses"
             />
@@ -172,7 +171,7 @@ const DrainageStrategyView = () => {
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
                 asset={drainageStrategy}
-                costProfile={CostProfile.netSalesGas}
+                timeSeriesType={TimeSeriesEnum.netSalesGas}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Net sales gas"
             />
@@ -182,7 +181,7 @@ const DrainageStrategyView = () => {
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
                 asset={drainageStrategy}
-                costProfile={CostProfile.productionProfileGas}
+                timeSeriesType={TimeSeriesEnum.productionProfileGas}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Production profile gas"
             />
@@ -192,7 +191,7 @@ const DrainageStrategyView = () => {
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
                 asset={drainageStrategy}
-                costProfile={CostProfile.productionProfileOil}
+                timeSeriesType={TimeSeriesEnum.productionProfileOil}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Production profile oil"
             />
@@ -202,7 +201,7 @@ const DrainageStrategyView = () => {
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
                 asset={drainageStrategy}
-                costProfile={CostProfile.productionProfileWater}
+                timeSeriesType={TimeSeriesEnum.productionProfileWater}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Production profile water"
             />
@@ -212,7 +211,7 @@ const DrainageStrategyView = () => {
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
                 asset={drainageStrategy}
-                costProfile={CostProfile.productionProfileWaterInjection}
+                timeSeriesType={TimeSeriesEnum.productionProfileWaterInjection}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Production profile water injection"
             />

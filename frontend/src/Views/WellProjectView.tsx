@@ -7,7 +7,7 @@ import {
 } from "react-router"
 import styled from "styled-components"
 import TimeSeries from "../Components/TimeSeries"
-import CostProfile from "../models/assets/CostProfile"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { WellProject } from "../models/assets/wellproject/WellProject"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
@@ -149,7 +149,7 @@ function WellProjectView() {
                 setAsset={setWellProject}
                 setHasChanges={setHasChanges}
                 asset={wellProject}
-                costProfile={CostProfile.costProfile}
+                timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={wellProjectName}
                 timeSeriesTitle="Cost profile"
             />
@@ -159,7 +159,7 @@ function WellProjectView() {
                 setAsset={setWellProject}
                 setHasChanges={setHasChanges}
                 asset={wellProject}
-                costProfile={CostProfile.drillingSchedule}
+                timeSeriesType={TimeSeriesEnum.drillingSchedule}
                 assetName={wellProjectName}
                 timeSeriesTitle="Drilling schedule"
             />

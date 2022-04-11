@@ -6,7 +6,7 @@ import {
     buildGridData, getColumnAbsoluteYears, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
-import CostProfile from "../models/assets/CostProfile"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 
@@ -59,7 +59,7 @@ interface Props {
     setAsset: React.Dispatch<React.SetStateAction<any | undefined>>
     setHasChanges: React.Dispatch<React.SetStateAction<boolean>>
     asset: asset | undefined,
-    costProfile: CostProfile,
+    timeSeriesType: TimeSeriesEnum,
     assetName: string
     timeSeriesTitle: string
 }
@@ -70,7 +70,7 @@ const TimeSeries = ({
     setAsset,
     setHasChanges,
     asset,
-    costProfile,
+    timeSeriesType,
     assetName,
     timeSeriesTitle,
 }: Props) => {
@@ -80,9 +80,9 @@ const TimeSeries = ({
 
     useEffect(() => {
         if (asset !== undefined) {
-            const newColumnTitles = getColumnAbsoluteYears(caseItem, asset[costProfile])
+            const newColumnTitles = getColumnAbsoluteYears(caseItem, asset[timeSeriesType])
             setColumns(newColumnTitles)
-            const newGridData = buildGridData(asset[costProfile])
+            const newGridData = buildGridData(asset[timeSeriesType])
             setGridData(newGridData)
         }
     }, [asset])
@@ -97,7 +97,7 @@ const TimeSeries = ({
     const onImport = (input: string, year: number) => {
         const newAsset = { ...asset }
         const newTimeSeries = { ...timeSeries }
-        newAsset[costProfile] = newTimeSeries
+        newAsset[timeSeriesType] = newTimeSeries
         newTimeSeries!.startYear = year
         // eslint-disable-next-line max-len
         newTimeSeries!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
@@ -130,7 +130,7 @@ const TimeSeries = ({
                 <Typography variant="h4">{timeSeriesTitle}</Typography>
                 <ImportButton onClick={() => { setDialogOpen(true) }}>Import</ImportButton>
                 <ImportButton
-                    disabled={asset !== undefined && asset[costProfile] === undefined}
+                    disabled={asset !== undefined && asset[timeSeriesType] === undefined}
                     color="danger"
                     onClick={deleteCostProfile}
                 >

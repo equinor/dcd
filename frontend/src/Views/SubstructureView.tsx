@@ -7,7 +7,7 @@ import {
 } from "react-router"
 import styled from "styled-components"
 import TimeSeries from "../Components/TimeSeries"
-import CostProfile from "../models/assets/CostProfile"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
@@ -148,7 +148,7 @@ const SubstructureView = () => {
                 setAsset={setSubstructure}
                 setHasChanges={setHasChanges}
                 asset={substructure}
-                costProfile={CostProfile.costProfile}
+                timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={substructureName}
                 timeSeriesTitle="Cost profile"
             />
