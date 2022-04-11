@@ -85,6 +85,8 @@ function WellProjectView() {
     const [latestEndYear, setLatestEndYear] = useState<string>("")
     const [drillingStartYear, setDrillingStartYear] = useState<string>("")
     const [drillingEndYear, setDrillingEndYear] = useState<string>("")
+    const [costProfileStartYear, setCostProfileStartYear] = useState<string>("")
+    const [costProfileEndYear, setCostProfileEndYear] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
@@ -115,61 +117,40 @@ function WellProjectView() {
                     const ts = Array.from(new Set(timeSeriesColumns))
                     setColumns(ts)
                     setDrillingColumns(ts)
-
                     setEarliestStartYear(ts[0])
+                    setLatestEndYear(ts.slice(-1)[0])
+
+                    setCostProfileStartYear(newColumnTitles[0])
+                    setCostProfileEndYear(newColumnTitles.slice(-1)[0])
                     setDrillingStartYear(newDrillingColumnTitles[0])
                     setDrillingEndYear(newDrillingColumnTitles.slice(-1)[0])
-                    console.log(earliestStartYear)
-                    console.log(drillingStartYear)
-                    console.log(drillingEndYear)
 
-                    setLatestEndYear(ts.slice(-1)[0])
-                    console.log(latestEndYear)
-
-                    console.log(ts)
-                    const newGridData = buildGridData(newWellProject?.costProfile)
-                    console.log(newGridData[0])
-                    setGridData(newGridData)
+                    const costProfileZeroesStart = Array.from({ length: Number(costProfileStartYear) - Number(earliestStartYear) }, (() => 0))
+                    const costProfileZeroesStartGrid = buildGridZeroData(costProfileZeroesStart)
+                    const costProfileZeroesEnd = Array.from({ length: Number(latestEndYear) - Number(costProfileEndYear) }, (() => 0))
+                    const costProfileZeroesEndGrid = buildGridZeroData(costProfileZeroesEnd)
 
                     const drillingZeroesStart = Array.from({ length: Number(drillingStartYear) - Number(earliestStartYear) }, (() => 0))
                     const drillingZeroesStartGrid = buildGridZeroData(drillingZeroesStart)
-                    console.log(drillingZeroesStart)
-
-                    // const drzst = Array.from({ length: Number(drillingStartYear) - Number(earliestStartYear) }, (() => 0))
-                    // console.log(drzst)
-                    // console.log(Number(drillingStartYear) - Number(earliestStartYear))
-
-                    // eslint-disable-next-line max-len
                     const drillingZeroesEnd = Array.from({ length: Number(latestEndYear) - Number(drillingEndYear) }, (() => 0))
                     const drillingZeroesEndGrid = buildGridZeroData(drillingZeroesEnd)
-                    // eslint-disable-next-line max-len
-                    // const drillingZeroesEnd = [{ value: 0 }].map((x) => x * (Number(latestEndYear) - Number(drillingEndYear)))
-                    console.log(drillingZeroesEnd)
 
-                    // const localNewDrillingData = newWellProject?.drillingSchedule?.values?.forEach(() => [].push())
-                    // console.log(localNewDrillingData)
+                    const newGridData = buildGridData(newWellProject?.costProfile)
+                    const newDrillingGridData = buildGridData(newWellProject?.drillingSchedule)
 
-                    // eslint-disable-next-line max-len
+                    const alignedCostProfileGridData = new Array(costProfileZeroesStartGrid[0].concat(newGridData[0], costProfileZeroesEndGrid[0]))
+                    const alignedDrillingGridData = new Array(drillingZeroesStartGrid[0].concat(newDrillingGridData[0], drillingZeroesEndGrid[0]))
+
+                    setGridData(alignedCostProfileGridData)
+                    setGridDrillingData(alignedDrillingGridData)
+                } else {
+                    setColumns(newColumnTitles)
+                    setDrillingColumns(newDrillingColumnTitles)
+                    const newGridData = buildGridData(newWellProject?.costProfile)
+                    setGridData(newGridData)
                     const newDrillingGridData = buildGridData(newWellProject?.drillingSchedule)
                     setGridDrillingData(newDrillingGridData)
-                    console.log(newDrillingGridData)
-
-                    // eslint-disable-next-line max-len
-                    const alignedDrillingGridData = new Array(drillingZeroesStartGrid[0].concat(newDrillingGridData[0], drillingZeroesEndGrid[0]))
-                    console.log(alignedDrillingGridData)
-
-                    setGridDrillingData(alignedDrillingGridData)
-
-                    console.log(newWellProject?.costProfile)
                 }
-
-                // const newGridData = buildGridData(newWellProject?.costProfile)
-                // console.log(newGridData[0])
-                // setGridData(newGridData)
-                // const newDrillingGridData = buildGridData(newWellProject?.drillingSchedule)
-                // setGridDrillingData(newDrillingGridData.concat(new Array(5 - ts.length)))
-                // console.log(newDrillingGridData[0])
-                // console.log(newDrillingGridData[0].unshift({ value: 2 }))
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
