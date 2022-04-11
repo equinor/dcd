@@ -84,7 +84,7 @@ const App: VoidFunctionComponent = () => {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<ViewsContainer />}>
-                            <Route index element={<DashboardView shards={[]} />} />
+                            <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
                             <Route path="project/:projectId/case/:caseId/surf/:surfId" element={<SurfView />} />

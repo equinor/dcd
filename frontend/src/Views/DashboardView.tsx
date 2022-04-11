@@ -41,11 +41,7 @@ const FindProjectText = styled(Typography)`
     font-weight: bold;
 `
 
-type Props = {
-    shards: any[];
-}
-
-const DashboardView = ({ shards }: Props) => {
+const DashboardView = () => {
     const navigate = useNavigate()
 
     const ProjectService = GetProjectService()
@@ -63,17 +59,18 @@ const DashboardView = ({ shards }: Props) => {
 
     useEffect(() => {
         (async () => {
-            if (!clp) {
+            if (!clp || !projects) {
                 try {
                     setFetching(true)
-                    const commonLib = await CommonLibraryService.getProjects()
-                    const res = await ProjectService.getProjects()
-                    console.log("[DashboardView]", res)
-                    setProjects(res)
-                    setCommonLibProjects(commonLib)
+                    await CommonLibraryService.getProjects().then((commonlibProjects) => {
+                        setCommonLibProjects(commonlibProjects)
+                    })
+                    await ProjectService.getProjects().then((dcdProjects) => {
+                        setProjects(dcdProjects)
+                    })
                     setFetching(false)
                 } catch (error) {
-                    console.error(error)
+                    console.error("Could not retrieve commonlibprojects or dcdprojects. ", error)
                 }
             }
         })()
@@ -94,7 +91,7 @@ const DashboardView = ({ shards }: Props) => {
 
     if (isFetching) {
         return (
-            <Modal isOpen={isFetching} title="Getting data" shards={shards}>
+            <Modal isOpen={isFetching} title="Getting data" shards={[]}>
                 <Typography>Retrieving projects from Common Library.</Typography>
             </Modal>
         )
@@ -143,9 +140,9 @@ const DashboardView = ({ shards }: Props) => {
                 </ProjectSelect>
             </Wrapper>
             <ProjectModal
-                passedInProject={selectedProject!}
+                passedInProject={selectedProject}
+                passedInProjects={clp}
                 isOpen={isOpen}
-                shards={shards}
                 closeModal={closeModal}
             />
         </>
