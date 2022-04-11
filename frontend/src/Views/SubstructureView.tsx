@@ -11,6 +11,7 @@ import {
     buildGridData, getColumnAbsoluteYears, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
+import TimeSeries from "../Components/TimeSeries"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { SubstructureCostProfile } from "../models/assets/substructure/SubstructureCostProfile"
 import { Case } from "../models/Case"
@@ -43,13 +44,6 @@ const WrapperColumn = styled.div`
     flex-direction: column;
 `
 
-const ImportButton = styled(Button)`
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-    }
-`
-
 const SaveButton = styled(Button)`
     margin-top: 5rem;
     margin-left: 2rem;
@@ -70,9 +64,6 @@ const SubstructureView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [substructure, setSubstructure] = useState<Substructure>()
-    const [columns, setColumns] = useState<string[]>([""])
-    const [gridData, setGridData] = useState<CellValue[][]>([[]])
-    const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
     const [substructureName, setSubstructureName] = useState<string>("")
     const params = useParams()
@@ -96,46 +87,11 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure.name!)
-                const newColumnTitles = getColumnAbsoluteYears(caseResult, newSubstructure?.costProfile)
-                setColumns(newColumnTitles)
-                const newGridData = buildGridData(newSubstructure?.costProfile)
-                setGridData(newGridData)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
         })()
     }, [params.projectId, params.caseId])
-
-    const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newGridData = replaceOldData(gridData, changes)
-        setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, substructure?.costProfile))
-    }
-
-    const updateInsertSubstructureCostProfile = (input: string, year: number) => {
-        const newSubstructure = new Substructure(substructure!)
-        const newCostProfile = new SubstructureCostProfile()
-        newSubstructure.id = newSubstructure.id ?? emptyGuid
-        newSubstructure.costProfile = newSubstructure.costProfile ?? newCostProfile
-        newSubstructure.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "")
-            .split("\t").map((i) => parseFloat(i))
-        newSubstructure.costProfile!.startYear = year
-        newSubstructure.costProfile!.epaVersion = newSubstructure.costProfile.epaVersion ?? ""
-        return newSubstructure
-    }
-
-    const onImport = (input: string, year: number) => {
-        const newSubstructure = updateInsertSubstructureCostProfile(input, year)
-        setSubstructure(newSubstructure)
-        const newColumnTitles = getColumnAbsoluteYears(caseItem, newSubstructure?.costProfile)
-        setColumns(newColumnTitles)
-        const newGridData = buildGridData(newSubstructure?.costProfile)
-        setGridData(newGridData)
-        setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (substructureName !== "") {
-            setHasChanges(true)
-        }
-    }
 
     const handleSave = async () => {
         const substructureDto = new Substructure(substructure!)
@@ -162,19 +118,6 @@ const SubstructureView = () => {
         setHasChanges(false)
     }
 
-    const deleteCostProfile = () => {
-        const substructureCopy = new Substructure(substructure)
-        substructureCopy.costProfile = undefined
-        if (substructureName !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-        setColumns([])
-        setGridData([[]])
-        setSubstructure(substructureCopy)
-    }
-
     const handleSubstructureNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSubstructureName(e.target.value)
         if (e.target.value !== undefined && e.target.value !== "") {
@@ -183,6 +126,10 @@ const SubstructureView = () => {
             setHasChanges(false)
         }
     }
+
+    enum CostProfile {
+        costProfile = "costProfile",
+      }
 
     return (
         <AssetViewDiv>
@@ -194,7 +141,7 @@ const SubstructureView = () => {
                         id="substructureName"
                         name="substructureName"
                         placeholder="Enter substructure name"
-                        value={substructureName}
+                        defaultValue={substructure?.name}
                         onChange={handleSubstructureNameFieldChange}
                     />
                 </WrapperColumn>
@@ -205,28 +152,20 @@ const SubstructureView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <TimeSeries
+                timeSeries={substructure?.costProfile}
+                caseItem={caseItem}
+                setAsset={setSubstructure}
+                setHasChanges={setHasChanges}
+                asset={substructure}
+                costProfile={CostProfile.costProfile}
+                assetName={substructureName}
+            />
             <Wrapper>
-                <Typography variant="h4">Cost profile</Typography>
-                <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
-                <ImportButton
-                    disabled={substructure?.costProfile === undefined}
-                    color="danger"
-                    onClick={deleteCostProfile}
-                >
-                    Delete
-                </ImportButton>
+                <SaveButton disabled={!hasChanges} onClick={handleSave}>
+                    Save
+                </SaveButton>
             </Wrapper>
-            <WrapperColumn>
-                <DataTable
-                    columns={columns}
-                    gridData={gridData}
-                    onCellsChanged={onCellsChanged}
-                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
-                />
-            </WrapperColumn>
-            {!costProfileDialogOpen ? null
-                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )
 }
