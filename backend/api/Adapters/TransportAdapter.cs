@@ -19,11 +19,13 @@ namespace api.Adapters
                 OilExportPipelineLength = transportDto.OilExportPipelineLength,
             };
 
-            if (transportDto.CostProfile != null) {
+            if (transportDto.CostProfile != null)
+            {
                 transport.CostProfile = Convert(transportDto.CostProfile, transport);
             }
-            
-            if (transportDto.TransportCessationCostProfileDto != null) {
+
+            if (transportDto.TransportCessationCostProfileDto != null)
+            {
                 transport.TransportCessationCostProfile = Convert(transportDto.TransportCessationCostProfileDto, transport);
             }
             return transport;

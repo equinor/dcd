@@ -25,7 +25,8 @@ namespace api.Dtos
 
     }
 
-    public class SurfCessationCostProfileDto : TimeSeriesCostDto {
+    public class SurfCessationCostProfileDto : TimeSeriesCostDto
+    {
 
     }
 

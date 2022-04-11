@@ -42,7 +42,7 @@ namespace api.Adapters
             return topsideCostProfile;
         }
 
-         private static TopsideCessasionCostProfileDto? Convert(TopsideCessasionCostProfile? topsideCessasionCostProfile)
+        private static TopsideCessasionCostProfileDto? Convert(TopsideCessasionCostProfile? topsideCessasionCostProfile)
         {
             if (topsideCessasionCostProfile == null)
             {

@@ -51,12 +51,12 @@ namespace api.Adapters
                 }
 
                 SubstructureCessasionCostProfileDto? substructureCessasionCostProfileDto = substructureCostProfileDto.SubstructureCessasionCostProfileDto;
-                if (substructureCessasionCostProfileDto != null) 
+                if (substructureCessasionCostProfileDto != null)
                 {
-                    substructureCessasionCostProfileDto.StartYear +=dg4Year;
+                    substructureCessasionCostProfileDto.StartYear += dg4Year;
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCessasionCostProfileDto);
                 }
-                
+
             }
             if (c.SurfLink != Guid.Empty)
             {

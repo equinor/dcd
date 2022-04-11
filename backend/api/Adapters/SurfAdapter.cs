@@ -21,11 +21,13 @@ namespace api.Adapters
                 RiserCount = surfDto.RiserCount
             };
 
-            if (surfDto.CostProfile != null) {
+            if (surfDto.CostProfile != null)
+            {
                 surf.CostProfile = Convert(surfDto.CostProfile, surf);
             }
 
-            if (surfDto.SurfCessationCostProfileDto != null) {
+            if (surfDto.SurfCessationCostProfileDto != null)
+            {
                 surf.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, surf);
             }
 
@@ -64,25 +66,27 @@ namespace api.Adapters
             return surfCostProfile;
         }
 
-         private static SurfCessationCostProfile? Convert(SurfCessationCostProfileDto? cessationCostProfileDto, Surf surf) {
+        private static SurfCessationCostProfile? Convert(SurfCessationCostProfileDto? cessationCostProfileDto, Surf surf)
+        {
 
-             if (cessationCostProfileDto == null) {
-                 return null;
-             }   
+            if (cessationCostProfileDto == null)
+            {
+                return null;
+            }
 
-             SurfCessationCostProfile surfCessationCostProfile = new SurfCessationCostProfile 
-             {
-                 Id = cessationCostProfileDto.Id,
-                 Currency = cessationCostProfileDto.Currency,
-                 EPAVersion = cessationCostProfileDto.EPAVersion,
-                 StartYear = cessationCostProfileDto.StartYear,
-                 Values = cessationCostProfileDto.Values,
-                 Surf = surf
-             };
+            SurfCessationCostProfile surfCessationCostProfile = new SurfCessationCostProfile
+            {
+                Id = cessationCostProfileDto.Id,
+                Currency = cessationCostProfileDto.Currency,
+                EPAVersion = cessationCostProfileDto.EPAVersion,
+                StartYear = cessationCostProfileDto.StartYear,
+                Values = cessationCostProfileDto.Values,
+                Surf = surf
+            };
 
-             return surfCessationCostProfile;
+            return surfCessationCostProfile;
         }
 
-       
+
     }
 }

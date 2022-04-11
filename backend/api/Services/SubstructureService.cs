@@ -86,7 +86,7 @@ namespace api.Services
                 _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
             }
 
-             if (updatedSubstructureDto.SubstructureCessasionCostProfileDto == null && existing.SubstructureCessasionCostProfile != null)
+            if (updatedSubstructureDto.SubstructureCessasionCostProfileDto == null && existing.SubstructureCessasionCostProfile != null)
             {
                 _context.SubstructureCessasionCostProfiles!.Remove(existing.SubstructureCessasionCostProfile);
             }

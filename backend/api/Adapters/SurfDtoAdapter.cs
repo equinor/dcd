@@ -22,11 +22,13 @@ namespace api.Adapters
                 CostProfile = Convert(surf.CostProfile)
             };
 
-            if (surf.CostProfile != null) {
+            if (surf.CostProfile != null)
+            {
                 surfDto.CostProfile = Convert(surf.CostProfile);
             }
 
-            if (surf.SurfCessationCostProfile != null) {
+            if (surf.SurfCessationCostProfile != null)
+            {
                 surfDto.SurfCessationCostProfileDto = Convert(surf.SurfCessationCostProfile);
             }
 
@@ -53,13 +55,16 @@ namespace api.Adapters
 
         }
 
-        private static SurfCessationCostProfileDto? Convert(SurfCessationCostProfile? surfCessationCostProfile) {
+        private static SurfCessationCostProfileDto? Convert(SurfCessationCostProfile? surfCessationCostProfile)
+        {
 
-            if (surfCessationCostProfile == null) {
+            if (surfCessationCostProfile == null)
+            {
                 return null;
             }
-            
-            SurfCessationCostProfileDto surfCessasionCostProfileDto = new SurfCessationCostProfileDto {
+
+            SurfCessationCostProfileDto surfCessasionCostProfileDto = new SurfCessationCostProfileDto
+            {
                 Id = surfCessationCostProfile.Id,
                 Currency = surfCessationCostProfile.Currency,
                 EPAVersion = surfCessationCostProfile.EPAVersion,

@@ -7,7 +7,7 @@ namespace api.Dtos
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
         public TransportCostProfileDto? CostProfile { get; set; } = null!;
-        public TransportCessationCostProfileDto? TransportCessationCostProfileDto { get; set; } = null!;  
+        public TransportCessationCostProfileDto? TransportCessationCostProfileDto { get; set; } = null!;
         public Maturity Maturity { get; set; }
         public double GasExportPipelineLength { get; set; }
         public double OilExportPipelineLength { get; set; }
@@ -18,7 +18,8 @@ namespace api.Dtos
 
     }
 
-    public class TransportCessationCostProfileDto : TimeSeriesCostDto {
+    public class TransportCessationCostProfileDto : TimeSeriesCostDto
+    {
 
     }
 }

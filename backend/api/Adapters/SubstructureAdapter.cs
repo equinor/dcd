@@ -15,14 +15,16 @@ namespace api.Adapters
                 DryWeight = substructureDto.DryWeight,
                 Maturity = substructureDto.Maturity
             };
-            if (substructureDto.CostProfile != null) {
+            if (substructureDto.CostProfile != null)
+            {
                 substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
             }
 
-            if (substructureDto.SubstructureCessasionCostProfileDto != null) {
+            if (substructureDto.SubstructureCessasionCostProfileDto != null)
+            {
                 substructure.SubstructureCessasionCostProfile = Convert(substructureDto.SubstructureCessasionCostProfileDto, substructure);
             }
-            
+
             return substructure;
         }
 
@@ -56,7 +58,7 @@ namespace api.Adapters
             return substructureCostProfile;
         }
 
-           private static SubstructureCessasionCostProfile? Convert(SubstructureCessasionCostProfileDto? substructureCessasionCostProfileDto, Substructure substructure)
+        private static SubstructureCessasionCostProfile? Convert(SubstructureCessasionCostProfileDto? substructureCessasionCostProfileDto, Substructure substructure)
         {
             if (substructureCessasionCostProfileDto == null)
             {

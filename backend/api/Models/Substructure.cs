@@ -9,7 +9,7 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public SubstructureCostProfile? CostProfile { get; set; }
-        public SubstructureCessasionCostProfile? SubstructureCessasionCostProfile { get; set; }  
+        public SubstructureCessasionCostProfile? SubstructureCessasionCostProfile { get; set; }
         public double DryWeight { get; set; }
         public Maturity Maturity { get; set; }
     }

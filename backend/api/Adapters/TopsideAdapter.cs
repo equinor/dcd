@@ -19,12 +19,14 @@ namespace api.Adapters
                 ArtificialLift = topsideDto.ArtificialLift,
                 Maturity = topsideDto.Maturity
             };
-            
-            if (topsideDto.CostProfile != null) {
+
+            if (topsideDto.CostProfile != null)
+            {
                 topside.CostProfile = Convert(topsideDto.CostProfile, topside);
             }
 
-            if (topsideDto.TopsideCessasionCostProfileDto != null) {
+            if (topsideDto.TopsideCessasionCostProfileDto != null)
+            {
                 topside.TopsideCessasionCostProfile = Convert(topsideDto.TopsideCessasionCostProfileDto, topside);
             }
 
