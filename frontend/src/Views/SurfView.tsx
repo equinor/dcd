@@ -17,7 +17,7 @@ import {
    } from "./Asset/StyledAssetComponents"
 
 const SurfView = () => {
-    const [, setProject] = useState<Project>()
+    const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [surf, setSurf] = useState<Surf>()
     const [hasChanges, setHasChanges] = useState(false)
@@ -31,42 +31,42 @@ const SurfView = () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            if (project !== undefined) {
+                const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newSurf = projectResult.surfs.find((s) => s.id === params.surfId)
+                let newSurf = project!.surfs.find((s) => s.id === params.surfId)
                 if (newSurf !== undefined) {
                     setSurf(newSurf)
                 } else {
                     newSurf = new Surf()
                     setSurf(newSurf)
                 }
-                setSurfName(newSurf.name!)
-            } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                setSurfName(newSurf?.name!)
             }
         })()
-    }, [params.projectId, params.caseId])
+    }, [project])
 
     const handleSave = async () => {
         const surfDto = new Surf(surf!)
         surfDto.name = surfName
         if (surf?.id === emptyGuid) {
             surfDto.projectId = params.projectId
-            const updatedProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
-            const updatedCase = updatedProject.cases.find((o) => o.id === params.caseId)
-            const newSurf = updatedProject.surfs.at(-1)
+            const newProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
+            const newSurf = newProject.surfs.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newSurf!.id!)
-            setProject(updatedProject)
-            setCase(updatedCase)
-            setSurf(newSurf)
             navigate(`${newUrl}`, { replace: true })
+            setProject(newProject)
         } else {
             const newProject = await GetSurfService().updateSurf(surfDto)
             setProject(newProject)
-            const newCase = newProject.cases.find((o) => o.id === params.caseId)
-            setCase(newCase)
-            const newSurf = newProject.surfs.find((a) => a.id === params.surfId)
-            setSurf(newSurf)
         }
         setHasChanges(false)
     }

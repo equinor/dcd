@@ -18,7 +18,7 @@ import {
    } from "./Asset/StyledAssetComponents"
 
 const TopsideView = () => {
-    const [, setProject] = useState<Project>()
+    const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [topside, setTopside] = useState<Topside>()
     const [hasChanges, setHasChanges] = useState(false)
@@ -32,42 +32,42 @@ const TopsideView = () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            if (project !== undefined) {
+                const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newTopside = projectResult.topsides.find((s) => s.id === params.topsideId)
+                let newTopside = project!.topsides.find((s) => s.id === params.topsideId)
                 if (newTopside !== undefined) {
                     setTopside(newTopside)
                 } else {
                     newTopside = new Topside()
                     setTopside(newTopside)
                 }
-                setTopsideName(newTopside.name!)
-            } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                setTopsideName(newTopside?.name!)
             }
         })()
-    }, [params.projectId, params.caseId])
+    }, [project])
 
     const handleSave = async () => {
         const topsideDto = new Topside(topside!)
         topsideDto.name = topsideName
         if (topside?.id === emptyGuid) {
             topsideDto.projectId = params.projectId
-            const updatedProject: Project = await GetTopsideService().createTopside(params.caseId!, topsideDto!)
-            const updatedCase = updatedProject.cases.find((o) => o.id === params.caseId)
-            const newTopside = updatedProject.topsides.at(-1)
+            const newProject: Project = await GetTopsideService().createTopside(params.caseId!, topsideDto!)
+            const newTopside = newProject.topsides.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newTopside!.id!)
-            setTopside(newTopside)
-            setCase(updatedCase)
             navigate(`${newUrl}`, { replace: true })
+            setProject(newProject)
         } else {
-            topsideDto.projectId = params.projectId
             const newProject = await GetTopsideService().updateTopside(topsideDto!)
             setProject(newProject)
-            const newCase = newProject.cases.find((o) => o.id === params.caseId)
-            setCase(newCase)
-            const newTopside = newProject.topsides.find((s) => s.id === params.topsideId)
-            setTopside(newTopside)
         }
         setHasChanges(false)
     }

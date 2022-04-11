@@ -18,7 +18,7 @@ import {
    } from "./Asset/StyledAssetComponents"
 
 const TransportView = () => {
-    const [, setProject] = useState<Project>()
+    const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [transport, setTransport] = useState<Transport>()
     const [hasChanges, setHasChanges] = useState(false)
@@ -32,43 +32,42 @@ const TransportView = () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            if (project !== undefined) {
+                const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newTransport = projectResult.transports.find((s) => s.id === params.transportId)
+                let newTransport = project!.transports.find((s) => s.id === params.transportId)
                 if (newTransport !== undefined) {
                     setTransport(newTransport)
                 } else {
                     newTransport = new Transport()
                     setTransport(newTransport)
                 }
-                setTransportName(newTransport.name!)
-            } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                setTransportName(newTransport?.name!)
             }
         })()
-    }, [params.projectId, params.caseId])
+    }, [project])
 
     const handleSave = async () => {
         const transportDto = new Transport(transport!)
         transportDto.name = transportName
         if (transport?.id === emptyGuid) {
             transportDto.projectId = params.projectId
-            const updatedProject = await GetTransportService().createTransport(params.caseId!, transportDto!)
-            const updatedCase = updatedProject.cases.find((c) => c.id === params.caseId)
-            const newTransport = updatedProject.transports.at(-1)
+            const newProject = await GetTransportService().createTransport(params.caseId!, transportDto!)
+            const newTransport = newProject.transports.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newTransport!.id!)
-            setProject(updatedProject)
-            setCase(updatedCase)
-            setTransport(newTransport)
             navigate(`${newUrl}`, { replace: true })
+            setProject(newProject)
         } else {
-            transportDto.projectId = params.projectId
             const newProject = await GetTransportService().updateTransport(transportDto!)
             setProject(newProject)
-            const newCase = newProject.cases.find((c) => c.id === params.caseId)
-            setCase(newCase)
-            const newTransport = newProject.transports.find((t) => t.id === params.transportId)
-            setTransport(newTransport)
         }
         setHasChanges(false)
     }

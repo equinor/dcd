@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* Ignored as we will be refactoring this code */
 import {
     Button, Input, Typography, Label,
 } from "@equinor/eds-core-react"
@@ -21,7 +19,7 @@ import {
    } from "./Asset/StyledAssetComponents"
 
 const DrainageStrategyView = () => {
-    const [, setProject] = useState<Project>()
+    const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
     const [drainageStrategyName, setDrainageStrategyName] = useState<string>("")
@@ -36,42 +34,43 @@ const DrainageStrategyView = () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
-                setCase(caseResult)
-                let newDrainageStrategy = projectResult.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
-                if (newDrainageStrategy !== undefined) {
-                    setDrainageStrategy(newDrainageStrategy)
-                } else {
-                    newDrainageStrategy = new DrainageStrategy()
-                    setDrainageStrategy(newDrainageStrategy)
-                }
-                setDrainageStrategyName(newDrainageStrategy.name!)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
         })()
-    }, [params.projectId, params.caseId])
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            if (project !== undefined) {
+                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                setCase(caseResult)
+                let newDrainage = project!.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
+                if (newDrainage !== undefined) {
+                    setDrainageStrategy(newDrainage)
+                } else {
+                    newDrainage = new DrainageStrategy()
+                    setDrainageStrategy(newDrainage)
+                }
+                setDrainageStrategyName(newDrainage?.name!)
+            }
+        })()
+    }, [project])
 
     const handleSave = async () => {
         const drainageStrategyDto = DrainageStrategy.toDto(drainageStrategy!)
         drainageStrategyDto.name = drainageStrategyName
         if (drainageStrategyDto?.id === emptyGuid) {
             drainageStrategyDto.projectId = params.projectId
-            const newProject: Project = await GetDrainageStrategyService().createDrainageStrategy(params.caseId!, drainageStrategyDto!)
+            const newProject: Project = await GetDrainageStrategyService()
+                .createDrainageStrategy(params.caseId!, drainageStrategyDto!)
             const newDrainageStrategy = newProject.drainageStrategies.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newDrainageStrategy!.id!)
-            const newCase = newProject.cases.find((o) => o.id === params.caseId)
-            setDrainageStrategy(newDrainageStrategy)
-            setCase(newCase)
-            navigate(`${newUrl}`, { replace: true })
+            navigate(`${newUrl}`)
+            setProject(newProject)
         } else {
-            drainageStrategyDto.projectId = params.projectId
             const newProject = await GetDrainageStrategyService().updateDrainageStrategy(drainageStrategyDto!)
             setProject(newProject)
-            const newCase = newProject.cases.find((o) => o.id === params.caseId)
-            setCase(newCase)
-            const newDrainageStrategy = newProject.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
-            setDrainageStrategy(newDrainageStrategy)
         }
         setHasChanges(false)
     }
