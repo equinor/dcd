@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
     Button, Input, Typography, Label,
 } from "@equinor/eds-core-react"
@@ -8,7 +9,7 @@ import {
 import styled from "styled-components"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import {
-    buildGridData, getColumnAbsoluteYears, replaceOldData,
+    buildGridData, buildGridZeroData, getColumnAbsoluteYears, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
 import { DrillingScheduleDto } from "../models/assets/wellproject/DrillingScheduleDto"
@@ -80,6 +81,10 @@ function WellProjectView() {
     const [drillingDialogOpen, setDrillingDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
     const [wellProjectName, setWellProjectName] = useState<string>("")
+    const [earliestStartYear, setEarliestStartYear] = useState<string>("")
+    const [latestEndYear, setLatestEndYear] = useState<string>("")
+    const [drillingStartYear, setDrillingStartYear] = useState<string>("")
+    const [drillingEndYear, setDrillingEndYear] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
@@ -102,13 +107,64 @@ function WellProjectView() {
                 }
                 setWellProjectName(newWellProject.name!)
                 const newColumnTitles = getColumnAbsoluteYears(caseResult, newWellProject?.costProfile)
-                setColumns(newColumnTitles)
-                const newGridData = buildGridData(newWellProject?.costProfile)
-                setGridData(newGridData)
                 const newDrillingColumnTitles = getColumnAbsoluteYears(caseResult, newWellProject?.drillingSchedule)
-                setDrillingColumns(newDrillingColumnTitles)
-                const newDrillingGridData = buildGridData(newWellProject?.drillingSchedule)
-                setGridDrillingData(newDrillingGridData)
+
+                // eslint-disable-next-line max-len
+                if (newColumnTitles !== newDrillingColumnTitles && newColumnTitles !== null && newDrillingColumnTitles !== null) {
+                    const timeSeriesColumns = newColumnTitles.concat(newDrillingColumnTitles).sort()
+                    const ts = Array.from(new Set(timeSeriesColumns))
+                    setColumns(ts)
+                    setDrillingColumns(ts)
+
+                    setEarliestStartYear(ts[0])
+                    setDrillingStartYear(newDrillingColumnTitles[0])
+                    setDrillingEndYear(newDrillingColumnTitles.slice(-1)[0])
+                    console.log(earliestStartYear)
+                    console.log(drillingStartYear)
+                    console.log(drillingEndYear)
+
+                    setLatestEndYear(ts.slice(-1)[0])
+                    console.log(latestEndYear)
+
+                    console.log(ts)
+                    const newGridData = buildGridData(newWellProject?.costProfile)
+                    console.log(newGridData[0])
+                    setGridData(newGridData)
+
+                    // eslint-disable-next-line max-len
+                    const drillingZeroesStart = buildGridZeroData([0])
+                    console.log(drillingZeroesStart)
+
+                    // eslint-disable-next-line max-len
+                    const drillingZeroesEnd = buildGridZeroData([0])
+                    // eslint-disable-next-line max-len
+                    // const drillingZeroesEnd = [{ value: 0 }].map((x) => x * (Number(latestEndYear) - Number(drillingEndYear)))
+                    console.log(drillingZeroesEnd)
+
+                    // const localNewDrillingData = newWellProject?.drillingSchedule?.values?.forEach(() => [].push())
+                    // console.log(localNewDrillingData)
+
+                    // eslint-disable-next-line max-len
+                    const newDrillingGridData = buildGridData(newWellProject?.drillingSchedule)
+                    setGridDrillingData(newDrillingGridData)
+                    console.log(newDrillingGridData)
+
+                    // eslint-disable-next-line max-len
+                    const alignedDrillingGridData = new Array(drillingZeroesStart[0].concat(newDrillingGridData[0], drillingZeroesEnd[0]))
+                    console.log(alignedDrillingGridData)
+
+                    setGridDrillingData(alignedDrillingGridData)
+
+                    console.log(newWellProject?.costProfile)
+                }
+
+                // const newGridData = buildGridData(newWellProject?.costProfile)
+                // console.log(newGridData[0])
+                // setGridData(newGridData)
+                // const newDrillingGridData = buildGridData(newWellProject?.drillingSchedule)
+                // setGridDrillingData(newDrillingGridData.concat(new Array(5 - ts.length)))
+                // console.log(newDrillingGridData[0])
+                // console.log(newDrillingGridData[0].unshift({ value: 2 }))
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
@@ -188,8 +244,8 @@ function WellProjectView() {
         wellProjectDto.name = wellProjectName
         if (wellProject?.id === emptyGuid) {
             wellProjectDto.projectId = params.projectId
-            const updatedProject: Project = await
-            GetWellProjectService().createWellProject(params.caseId!, wellProjectDto!)
+            // eslint-disable-next-line max-len
+            const updatedProject: Project = await GetWellProjectService().createWellProject(params.caseId!, wellProjectDto!)
             const updatedCase = updatedProject.cases.find((o) => o.id === params.caseId)
             const newWellProject = updatedProject.wellProjects.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newWellProject!.id!)
@@ -210,7 +266,7 @@ function WellProjectView() {
 
     const handleWellProjectNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setWellProjectName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
+        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== wellProject?.name) {
             setHasChanges(true)
         } else {
             setHasChanges(false)
