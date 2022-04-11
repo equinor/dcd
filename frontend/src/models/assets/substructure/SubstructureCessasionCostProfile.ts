@@ -17,7 +17,8 @@ export class SubstructureCessasionCostProfile implements Components.Schemas.Subs
         }
     }
 
-    static fromJSON(data?: Components.Schemas.SubstructureCessasionCostProfileDto): SubstructureCessasionCostProfile | undefined {
+    static fromJSON(data?: Components.Schemas.SubstructureCessasionCostProfileDto):
+        SubstructureCessasionCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }

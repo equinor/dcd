@@ -20,7 +20,8 @@ export class TransportCessationCostProfile implements Components.Schemas.Transpo
         }
     }
 
-    static fromJSON(data?: Components.Schemas.TransportCessationCostProfileDto): TransportCessationCostProfile | undefined {
+    static fromJSON(data?: Components.Schemas.TransportCessationCostProfileDto):
+        TransportCessationCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }

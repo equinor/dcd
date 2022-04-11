@@ -17,7 +17,8 @@ export class Transport implements Components.Schemas.TransportDto {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = TransportCostProfile.fromJSON(data.costProfile)
-            this.transportCessationCostProfileDto = TransportCessationCostProfile.fromJSON(data.transportCessationCostProfileDto)
+            this.transportCessationCostProfileDto = TransportCessationCostProfile
+                .fromJSON(data.transportCessationCostProfileDto)
             this.maturity = data.maturity
             this.gasExportPipelineLength = data.gasExportPipelineLength
             this.oilExportPipelineLength = data.oilExportPipelineLength

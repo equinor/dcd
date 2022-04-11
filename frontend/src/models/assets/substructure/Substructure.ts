@@ -16,7 +16,8 @@ export class Substructure implements Components.Schemas.SubstructureDto {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = SubstructureCostProfile.fromJSON(data.costProfile)
-            this.substructureCessasionCostProfileDto = SubstructureCessasionCostProfile.fromJSON(data.substructureCessasionCostProfileDto)
+            this.substructureCessasionCostProfileDto = SubstructureCessasionCostProfile
+                .fromJSON(data.substructureCessasionCostProfileDto)
             this.dryweight = data.dryWeight
             this.maturity = data.maturity
         } else {

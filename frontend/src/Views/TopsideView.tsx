@@ -72,12 +72,12 @@ const TopsideView = () => {
     const [caseItem, setCase] = useState<Case>()
     const [topside, setTopside] = useState<Topside>()
 
-    //Cost Profile
+    // Cost Profile
     const [costProfileColumns, setCostProfileColumns] = useState<string[]>([""])
     const [costProfileGridData, setCostProfileGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
 
-    //Cessasion Cost Profile
+    // Cessasion Cost Profile
     const [cessationCostProfileColumns, setCessationCostProfileColumns] = useState<string[]>([""])
     const [cessationCostProfileGridData, setCessationCostProfileGridData] = useState<CellValue[][]>([[]])
     const [cessationCostProfileDialogOpen, setCessationCostProfileDialogOpen] = useState(false)
@@ -106,11 +106,14 @@ const TopsideView = () => {
                 }
                 setTopsideName(newTopside.name!)
                 const newCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newTopside?.costProfile)
-                const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newTopside?.topsideCessasionCostProfileDto)
-                
+                const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(
+                    caseResult,
+                    newTopside?.topsideCessasionCostProfileDto,
+                )
+
                 setCostProfileColumns(newCostProfileColumnTitles)
                 setCessationCostProfileColumns(newCessationCostProfileColumnTitles)
-                
+
                 const newCostProfileGridData = buildGridData(newTopside?.costProfile)
                 const newCessationCostProfileGridData = buildGridData(newTopside?.topsideCessasionCostProfileDto)
 
@@ -122,13 +125,15 @@ const TopsideView = () => {
         })()
     }, [params.projectId, params.caseId])
 
-    const onCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
+    const onCostProfileCellsChanged = (changes:
+         { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newCostProfileGridData = replaceOldData(costProfileGridData, changes)
         setCostProfileGridData(newCostProfileGridData)
         setCostProfileColumns(getColumnAbsoluteYears(caseItem, topside?.costProfile))
     }
 
-    const onCessationCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
+    const onCessationCostProfileCellsChanged = (changes:
+         { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newCessationCostProfileGridData = replaceOldData(cessationCostProfileGridData, changes)
         setCessationCostProfileGridData(newCessationCostProfileGridData)
         setCessationCostProfileColumns(getColumnAbsoluteYears(caseItem, topside?.topsideCessasionCostProfileDto))
@@ -154,7 +159,8 @@ const TopsideView = () => {
         newTopside.topsideCessasionCostProfileDto!.values = input.replace(/(\r\n|\n|\r)/gm, "")
             .split("\t").map((i) => parseFloat(i))
         newTopside.topsideCessasionCostProfileDto!.startYear = year
-        newTopside.topsideCessasionCostProfileDto!.epaVersion = newTopside.topsideCessasionCostProfileDto.epaVersion ?? ""
+        newTopside.topsideCessasionCostProfileDto!.epaVersion = newTopside.topsideCessasionCostProfileDto
+            .epaVersion ?? ""
         return newTopside
     }
 
@@ -171,11 +177,13 @@ const TopsideView = () => {
         }
     }
 
-
     const onCessationCostProfileImport = (input: string, year: number) => {
         const newTopside = updateInsertTopsideCessasionCostProfile(input, year)
         setTopside(newTopside)
-        const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(caseItem, newTopside?.topsideCessasionCostProfileDto)
+        const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(
+            caseItem,
+            newTopside?.topsideCessasionCostProfileDto,
+        )
         setCessationCostProfileColumns(newCessationCostProfileColumnTitles)
         const newCessationCostProfileGridData = buildGridData(newTopside?.topsideCessasionCostProfileDto)
         setCessationCostProfileGridData(newCessationCostProfileGridData)
@@ -284,8 +292,14 @@ const TopsideView = () => {
                     dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
                 />
             </WrapperColumn>
-            {!costProfileDialogOpen ? null
-                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onCostProfileImport} />}
+            {!costProfileDialogOpen
+                ? null
+                : (
+                    <Import
+                        onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }}
+                        onImport={onCostProfileImport}
+                    />
+                )}
 
             <Wrapper>
                 <Typography variant="h4">Cessasion Cost profile</Typography>
@@ -299,10 +313,20 @@ const TopsideView = () => {
                 </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={cessationCostProfileColumns} gridData={cessationCostProfileGridData} onCellsChanged={onCessationCostProfileCellsChanged} dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}/>
+                <DataTable
+                    columns={cessationCostProfileColumns}
+                    gridData={cessationCostProfileGridData}
+                    onCellsChanged={onCessationCostProfileCellsChanged}
+                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                />
             </WrapperColumn>
             {!cessationCostProfileDialogOpen ? null
-                : <Import onClose={() => { setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen) }} onImport={onCessationCostProfileImport} />}
+                : (
+                    <Import
+                        onClose={() => { setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen) }}
+                        onImport={onCessationCostProfileImport}
+                    />
+                )}
 
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>

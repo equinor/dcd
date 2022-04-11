@@ -72,12 +72,10 @@ const SubstructureView = () => {
     const [caseItem, setCase] = useState<Case>()
     const [substructure, setSubstructure] = useState<Substructure>()
 
-    //Cost Profile
     const [costProfileColumns, setCostProfileColumns] = useState<string[]>([""])
     const [costProfileGridData, setCostProfileGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
-    
-    //Cessasion Cost Profile
+
     const [cessationCostProfileColumns, setCessationCostProfileColumns] = useState<string[]>([""])
     const [cessationCostProfileGridData, setCessationCostProfileGridData] = useState<CellValue[][]>([[]])
     const [cessationCostProfileDialogOpen, setCessationCostProfileDialogOpen] = useState(false)
@@ -105,16 +103,21 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure.name!)
-                
+
                 const newCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newSubstructure?.costProfile)
-                const newCessasionCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newSubstructure?.substructureCessasionCostProfileDto)
-                
+                const newCessasionCostProfileColumnTitles = getColumnAbsoluteYears(
+                    caseResult,
+                    newSubstructure?.substructureCessasionCostProfileDto,
+                )
+
                 setCostProfileColumns(newCostProfileColumnTitles)
                 setCessationCostProfileColumns(newCessasionCostProfileColumnTitles)
-                
+
                 const newCostProfileGridData = buildGridData(newSubstructure?.costProfile)
-                const newCessasionCostProfileGridData = buildGridData(newSubstructure?.substructureCessasionCostProfileDto)
-                
+                const newCessasionCostProfileGridData = buildGridData(
+                    newSubstructure?.substructureCessasionCostProfileDto,
+                )
+
                 setCostProfileGridData(newCostProfileGridData)
                 setCessationCostProfileGridData(newCessasionCostProfileGridData)
             } catch (error) {
@@ -123,16 +126,23 @@ const SubstructureView = () => {
         })()
     }, [params.projectId, params.caseId])
 
-    const onCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
+    const onCostProfileCellsChanged = (changes:
+        { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newCostProfileGridData = replaceOldData(costProfileGridData, changes)
         setCostProfileGridData(newCostProfileGridData)
         setCostProfileColumns(getColumnAbsoluteYears(caseItem, substructure?.costProfile))
     }
 
-    const onCessasionCostProfileCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
+    const onCessasionCostProfileCellsChanged = (changes:
+        { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newCessasionCostProfileGridData = replaceOldData(cessationCostProfileGridData, changes)
         setCessationCostProfileGridData(newCessasionCostProfileGridData)
-        setCessationCostProfileColumns(getColumnAbsoluteYears(caseItem, substructure?.substructureCessasionCostProfileDto))
+        setCessationCostProfileColumns(
+            getColumnAbsoluteYears(
+                caseItem,
+                substructure?.substructureCessasionCostProfileDto,
+            ),
+        )
     }
 
     const updateInsertSubstructureCostProfile = (input: string, year: number) => {
@@ -151,11 +161,13 @@ const SubstructureView = () => {
         const newSubstructure = new Substructure(substructure!)
         const newCessasionCostProfile = new SubstructureCessasionCostProfile()
         newSubstructure.id = newSubstructure.id ?? emptyGuid
-        newSubstructure.substructureCessasionCostProfileDto = newSubstructure.substructureCessasionCostProfileDto ?? newCessasionCostProfile
+        newSubstructure.substructureCessasionCostProfileDto = newSubstructure.substructureCessasionCostProfileDto
+         ?? newCessasionCostProfile
         newSubstructure.substructureCessasionCostProfileDto!.values = input.replace(/(\r\n|\n|\r)/gm, "")
             .split("\t").map((i) => parseFloat(i))
         newSubstructure.substructureCessasionCostProfileDto!.startYear = year
-        newSubstructure.substructureCessasionCostProfileDto!.epaVersion = newSubstructure.substructureCessasionCostProfileDto.epaVersion ?? ""
+        newSubstructure.substructureCessasionCostProfileDto!.epaVersion = newSubstructure
+            .substructureCessasionCostProfileDto.epaVersion ?? ""
         return newSubstructure
     }
 
@@ -175,7 +187,10 @@ const SubstructureView = () => {
     const onCessasionCostProfileImport = (input: string, year: number) => {
         const newSubstructure = updateInsertSubstructureCessasionCostProfile(input, year)
         setSubstructure(newSubstructure)
-        const newCessasionCostProfileColumnTitles = getColumnAbsoluteYears(caseItem, newSubstructure?.substructureCessasionCostProfileDto)
+        const newCessasionCostProfileColumnTitles = getColumnAbsoluteYears(
+            caseItem,
+            newSubstructure?.substructureCessasionCostProfileDto,
+        )
         setCessationCostProfileColumns(newCessasionCostProfileColumnTitles)
         const newCessasionCostProfileGridData = buildGridData(newSubstructure?.substructureCessasionCostProfileDto)
         setCessationCostProfileGridData(newCessasionCostProfileGridData)
@@ -285,10 +300,13 @@ const SubstructureView = () => {
                     dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
                 />
             </WrapperColumn>
-            {!costProfileDialogOpen ? null
-                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onCostProfileImport} />}
-
-
+            {(!costProfileDialogOpen
+                ? null : (
+                    <Import
+                        onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }}
+                        onImport={onCostProfileImport}
+                    />
+                ))}
 
             <Wrapper>
                 <Typography variant="h4">Cessasion Cost profile</Typography>
@@ -302,16 +320,22 @@ const SubstructureView = () => {
                 </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable 
+                <DataTable
                     columns={cessationCostProfileColumns}
-                    gridData={cessationCostProfileGridData} 
-                    onCellsChanged={onCessasionCostProfileCellsChanged} 
-                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}/>
+                    gridData={cessationCostProfileGridData}
+                    onCellsChanged={onCessasionCostProfileCellsChanged}
+                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                />
             </WrapperColumn>
-            {!cessationCostProfileDialogOpen ? null
-                : <Import onClose={() => { setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen) }} onImport={onCessasionCostProfileImport} />}
+            {!cessationCostProfileDialogOpen
+                ? null
+                : (
+                    <Import
+                        onClose={() => { setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen) }}
+                        onImport={onCessasionCostProfileImport}
+                    />
+                )}
 
-                
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )

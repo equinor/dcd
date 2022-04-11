@@ -35,8 +35,6 @@ export class Surf implements Components.Schemas.SurfDto {
         }
     }
 
-
-
     static fromJSON(data: Components.Schemas.SurfDto): Surf {
         return new Surf(data)
     }

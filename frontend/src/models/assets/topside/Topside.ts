@@ -20,7 +20,8 @@ export class Topside implements Components.Schemas.TopsideDto {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = TopsideCostProfile.fromJSON(data.costProfile)
-            this.topsideCessasionCostProfileDto = TopsideCessasionCostProfile.fromJSON(data.topsideCessasionCostProfileDto)
+            this.topsideCessasionCostProfileDto = TopsideCessasionCostProfile
+                .fromJSON(data.topsideCessasionCostProfileDto)
             this.dryWeight = data.dryWeight
             this.maturity = data.maturity
         } else {
