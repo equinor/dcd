@@ -7,7 +7,6 @@ import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
-import styled from "styled-components"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
@@ -17,48 +16,9 @@ import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { emptyGuid } from "../Utils/constants"
-
-const AssetHeader = styled.div`
-    margin-bottom: 2rem;
-    display: flex;
-
-    > *:first-child {
-        margin-right: 2rem;
-    }
-`
-
-const AssetViewDiv = styled.div`
-    margin: 2rem;
-    display: flex;
-    flex-direction: column;
-`
-
-const Wrapper = styled.div`
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: row;
-`
-
-const WrapperColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const SaveButton = styled(Button)`
-    margin-top: 5rem;
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-        margin-top: 5rem;
-    }
-`
-
-const Dg4Field = styled.div`
-    margin-left: 1rem;
-    margin-bottom: 2rem;
-    width: 10rem;
-    display: flex;
-`
+import {
+    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+   } from "./Asset/StyledAssetComponents"
 
 const DrainageStrategyView = () => {
     const [, setProject] = useState<Project>()

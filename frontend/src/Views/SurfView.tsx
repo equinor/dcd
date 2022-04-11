@@ -1,7 +1,6 @@
 import { ChangeEventHandler, useEffect, useState } from "react"
-import styled from "styled-components"
 import {
-    Button, Input, Label, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 
 import { useNavigate, useLocation, useParams } from "react-router"
@@ -13,46 +12,9 @@ import { GetSurfService } from "../Services/SurfService"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
 import { emptyGuid } from "../Utils/constants"
-
-const AssetHeader = styled.div`
-    margin-bottom: 2rem;
-    display: flex;
-    > *:first-child {
-        margin-right: 2rem;
-    }
-`
-
-const AssetViewDiv = styled.div`
-    margin: 2rem;
-    display: flex;
-    flex-direction: column;
-`
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-`
-
-const WrapperColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const SaveButton = styled(Button)`
-    margin-top: 5rem;
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-        margin-top: 5rem;
-    }
-`
-
-const Dg4Field = styled.div`
-    margin-left: 1rem;
-    margin-bottom: 2rem;
-    width: 10rem;
-    display: flex;
-`
+import {
+    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+   } from "./Asset/StyledAssetComponents"
 
 const SurfView = () => {
     const [, setProject] = useState<Project>()

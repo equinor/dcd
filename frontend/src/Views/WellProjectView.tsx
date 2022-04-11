@@ -1,11 +1,10 @@
 import {
-    Button, Input, Typography, Label,
+    Input, Typography, Label,
 } from "@equinor/eds-core-react"
 import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
-import styled from "styled-components"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { WellProject } from "../models/assets/wellproject/WellProject"
@@ -14,51 +13,12 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { emptyGuid } from "../Utils/constants"
-
-const AssetHeader = styled.div`
-    margin-bottom: 2rem;
-    display: flex;
-
-    > *:first-child {
-        margin-right: 2rem;
-    }
-`
-
-const AssetViewDiv = styled.div`
-    margin: 2rem;
-    display: flex;
-    flex-direction: column;
-`
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 1rem;
-`
-
-const WrapperColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const SaveButton = styled(Button)`
-    margin-top: 5rem;
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-        margin-top: 5rem;
-    }
-`
-
-const Dg4Field = styled.div`
-    margin-left: 1rem;
-    margin-bottom: 1rem;
-    width: 10rem;
-    display: flex;
-`
+import {
+    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+   } from "./Asset/StyledAssetComponents"
 
 function WellProjectView() {
-    const [, setProject] = useState<Project>()
+    const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [wellProject, setWellProject] = useState<WellProject>()
     const [hasChanges, setHasChanges] = useState(false)
@@ -72,21 +32,28 @@ function WellProjectView() {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            if (project !== undefined) {
+                const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newWellProject = projectResult.wellProjects.find((s) => s.id === params.wellProjectId)
+                let newWellProject = project!.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
                 } else {
                     newWellProject = new WellProject()
                     setWellProject(newWellProject)
                 }
-                setWellProjectName(newWellProject.name!)
-            } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                setWellProjectName(newWellProject?.name!)
             }
         })()
-    }, [params.projectId, params.caseId])
+    }, [project])
 
     const handleSave = async () => {
         const wellProjectDto = new WellProject(wellProject!)
@@ -95,20 +62,13 @@ function WellProjectView() {
             wellProjectDto.projectId = params.projectId
             const updatedProject: Project = await
             GetWellProjectService().createWellProject(params.caseId!, wellProjectDto!)
-            const updatedCase = updatedProject.cases.find((o) => o.id === params.caseId)
             const newWellProject = updatedProject.wellProjects.at(-1)
             const newUrl = location.pathname.replace(emptyGuid, newWellProject!.id!)
-            setCase(updatedCase)
-            setWellProject(newWellProject)
             navigate(`${newUrl}`, { replace: true })
+            setWellProject(newWellProject)
         } else {
-            wellProjectDto.projectId = params.projectId
             const newProject = await GetWellProjectService().updateWellProject(wellProjectDto!)
             setProject(newProject)
-            const newCase = newProject.cases.find((o) => o.id === params.caseId)
-            setCase(newCase)
-            const newWellProject = newProject.wellProjects.find((s) => s.id === params.wellProjectId)
-            setWellProject(newWellProject)
         }
         setHasChanges(false)
     }
