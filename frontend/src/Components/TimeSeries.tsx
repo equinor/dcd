@@ -108,7 +108,9 @@ const TimeSeries = ({
         const newGridData = buildGridData(newTimeSeries)
         setGridData(newGridData)
         setDialogOpen(!dialogOpen)
-        setHasChanges(true)
+        if (assetName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const deleteCostProfile = () => {

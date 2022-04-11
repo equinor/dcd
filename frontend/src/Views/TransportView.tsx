@@ -6,17 +6,14 @@ import {
     useLocation, useNavigate, useParams,
 } from "react-router"
 import styled from "styled-components"
-import DataTable, { CellValue } from "../Components/DataTable/DataTable"
-import {
-    buildGridData, getColumnAbsoluteYears, replaceOldData,
-} from "../Components/DataTable/helpers"
-import Import from "../Components/Import/Import"
+import TimeSeries from "../Components/TimeSeries"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Transport } from "../models/assets/transport/Transport"
-import { TransportCostProfile } from "../models/assets/transport/TransportCostProfile"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTransportService } from "../Services/TransportService"
+import { emptyGuid } from "../Utils/constants"
 
 const AssetHeader = styled.div`
     margin-bottom: 2rem;
@@ -43,13 +40,6 @@ const WrapperColumn = styled.div`
     flex-direction: column;
 `
 
-const ImportButton = styled(Button)`
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-    }
-`
-
 const SaveButton = styled(Button)`
     margin-top: 5rem;
     margin-left: 2rem;
@@ -70,16 +60,11 @@ const TransportView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [transport, setTransport] = useState<Transport>()
-    const [columns, setColumns] = useState<string[]>([""])
-    const [gridData, setGridData] = useState<CellValue[][]>([[]])
-    const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
     const [transportName, setTransportName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
-
-    const emptyGuid = "00000000-0000-0000-0000-000000000000"
 
     useEffect(() => {
         (async () => {
@@ -96,47 +81,11 @@ const TransportView = () => {
                     setTransport(newTransport)
                 }
                 setTransportName(newTransport.name!)
-                const newColumnTitles = getColumnAbsoluteYears(caseResult, newTransport?.costProfile)
-                setColumns(newColumnTitles)
-                const newGridData = buildGridData(newTransport?.costProfile)
-                setGridData(newGridData)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
         })()
     }, [params.projectId, params.caseId])
-
-    const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newGridData = replaceOldData(gridData, changes)
-        setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, transport?.costProfile))
-        setHasChanges(true)
-    }
-
-    const updateInsertTransportCostProfile = (input: string, year: number) => {
-        const newTransport = new Transport(transport!)
-        const newCostProfile = new TransportCostProfile()
-        newTransport.id = newTransport.id ?? emptyGuid
-        newTransport.costProfile = newTransport.costProfile ?? newCostProfile
-        newTransport.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "")
-            .split("\t").map((i) => parseFloat(i))
-        newTransport.costProfile!.startYear = year
-        newTransport.costProfile!.epaVersion = newTransport.costProfile.epaVersion ?? ""
-        return newTransport
-    }
-
-    const onImport = (input: string, year: number) => {
-        const newTransport = updateInsertTransportCostProfile(input, year)
-        setTransport(newTransport)
-        const newColumnTitles = getColumnAbsoluteYears(caseItem, newTransport?.costProfile)
-        setColumns(newColumnTitles)
-        const newGridData = buildGridData(newTransport?.costProfile)
-        setGridData(newGridData)
-        setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (transportName !== "") {
-            setHasChanges(true)
-        }
-    }
 
     const handleSave = async () => {
         const transportDto = new Transport(transport!)
@@ -172,19 +121,6 @@ const TransportView = () => {
         }
     }
 
-    const deleteCostProfile = () => {
-        const transportCopy = new Transport(transport)
-        transportCopy.costProfile = undefined
-        if (transportName !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-        setColumns([])
-        setGridData([[]])
-        setTransport(transportCopy)
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Transport</Typography>
@@ -206,27 +142,17 @@ const TransportView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
-            <Wrapper>
-                <Typography variant="h4">Cost profile</Typography>
-                <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
-                <ImportButton
-                    disabled={transport?.costProfile === undefined}
-                    color="danger"
-                    onClick={deleteCostProfile}
-                >
-                    Delete
-                </ImportButton>
-            </Wrapper>
-            <WrapperColumn>
-                <DataTable
-                    columns={columns}
-                    gridData={gridData}
-                    onCellsChanged={onCellsChanged}
-                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
-                />
-            </WrapperColumn>
-            {!costProfileDialogOpen ? null
-                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
+            <TimeSeries
+                timeSeries={transport?.costProfile}
+                caseItem={caseItem}
+                setAsset={setTransport}
+                setHasChanges={setHasChanges}
+                asset={transport}
+                timeSeriesType={TimeSeriesEnum.costProfile}
+                assetName={transportName}
+                timeSeriesTitle="Cost profile"
+            />
+            {" "}
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )

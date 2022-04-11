@@ -92,7 +92,7 @@ const DrainageStrategyView = () => {
         })()
     }, [params.projectId, params.caseId])
 
-     const handleSave = async () => {
+    const handleSave = async () => {
         const drainageStrategyDto = DrainageStrategy.toDto(drainageStrategy!)
         drainageStrategyDto.name = drainageStrategyName
         if (drainageStrategyDto?.id === emptyGuid) {
