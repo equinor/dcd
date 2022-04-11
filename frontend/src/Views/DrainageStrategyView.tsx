@@ -1,5 +1,5 @@
 import {
-    Button, Input, Typography, Label,
+    Input, Typography, Label,
 } from "@equinor/eds-core-react"
 import { ChangeEventHandler, useEffect, useState } from "react"
 import {
@@ -16,7 +16,7 @@ import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { emptyGuid } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
-   } from "./Asset/StyledAssetComponents"
+} from "./Asset/StyledAssetComponents"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()

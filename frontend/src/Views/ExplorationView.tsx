@@ -14,7 +14,7 @@ import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
 import { emptyGuid } from "../Utils/constants"
 import {
- AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 
 const ExplorationView = () => {

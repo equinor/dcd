@@ -15,7 +15,7 @@ import { GetTopsideService } from "../Services/TopsideService"
 import { emptyGuid } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
-   } from "./Asset/StyledAssetComponents"
+} from "./Asset/StyledAssetComponents"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()

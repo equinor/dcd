@@ -15,7 +15,7 @@ import { GetSubstructureService } from "../Services/SubstructureService"
 import { emptyGuid } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
-   } from "./Asset/StyledAssetComponents"
+} from "./Asset/StyledAssetComponents"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()

@@ -15,7 +15,7 @@ import { GetTransportService } from "../Services/TransportService"
 import { emptyGuid } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
-   } from "./Asset/StyledAssetComponents"
+} from "./Asset/StyledAssetComponents"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()

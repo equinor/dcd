@@ -14,7 +14,7 @@ import TimeSeries from "../Components/TimeSeries"
 import { emptyGuid } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
-   } from "./Asset/StyledAssetComponents"
+} from "./Asset/StyledAssetComponents"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
