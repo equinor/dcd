@@ -123,7 +123,12 @@ const TimeSeries = ({
                 </ImportButton>
             </Wrapper>
             <WrapperColumn>
-                <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} dG4Year="" />
+                <DataTable
+                    columns={columns}
+                    gridData={gridData}
+                    onCellsChanged={onCellsChanged}
+                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                />
             </WrapperColumn>
             {!dialogOpen ? null
                 : <Import onClose={() => { setDialogOpen(!dialogOpen) }} onImport={onImport} />}
