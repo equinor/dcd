@@ -146,18 +146,19 @@ public static class ExportToSTEA
 
     private static string columnNumber(int cellNumber)
     {
+
         string rv = "";
-        int newCellNo = cellNumber;
-        int first = 64 + cellNumber / 26;
-        int second = 65 + cellNumber % 26;
-        if (first == 64)
+        int newCellNumber = cellNumber;
+        int rest = cellNumber % 26;
+        rv = ((Char)(rest + 65)).ToString();
+        newCellNumber = (cellNumber - rest) / 26;
+        while (newCellNumber > 0)
         {
-            rv = ((Char)second).ToString();
+            rest = newCellNumber % 26;
+            rv = ((Char)(rest + 64)).ToString() + rv;
+            newCellNumber = (newCellNumber - rest) / 26;
         }
-        else
-        {
-            rv = ((Char)first).ToString() + ((Char)second).ToString();
-        }
+
         return rv;
     }
 }
