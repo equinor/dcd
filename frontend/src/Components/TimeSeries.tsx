@@ -42,6 +42,13 @@ interface asset {
     projectId?: string | undefined
     costProfile?: ts | undefined
     drillingSchedule?: ts | undefined
+    co2Emissions?: ts | undefined
+    netSalesGas?: ts | undefined
+    fuelFlaringAndLosses?: ts | undefined
+    productionProfileGas?: ts | undefined
+    productionProfileOil?: ts | undefined
+    productionProfileWater?: ts | undefined
+    productionProfileWaterInjection?: ts | undefined
     dryweight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
 }
