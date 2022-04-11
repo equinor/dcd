@@ -41,3 +41,10 @@ export const Dg4Field = styled.div`
     width: 10rem;
     display: flex;
 `
+
+export const ImportButton = styled(Button)`
+    margin-left: 2rem;
+    &:disabled {
+        margin-left: 2rem;
+    }
+`

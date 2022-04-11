@@ -1,6 +1,5 @@
-import { Button, Typography } from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import styled from "styled-components"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import {
     buildGridData, getColumnAbsoluteYears, replaceOldData,
@@ -9,23 +8,7 @@ import Import from "../Components/Import/Import"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-`
-
-const WrapperColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const ImportButton = styled(Button)`
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-    }
-`
+import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
 interface ts {
     id?: string
