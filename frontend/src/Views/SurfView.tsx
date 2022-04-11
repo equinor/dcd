@@ -127,7 +127,7 @@ const SurfView = () => {
         const newGridData = buildGridData(emptySurf?.costProfile)
         setGridData(newGridData)
         setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (emptySurf.name !== "") {
+        if (surfName !== "") {
             setHasChanges(true)
         }
     }
@@ -158,11 +158,24 @@ const SurfView = () => {
 
     const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSurfName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== surf?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
         }
+    }
+
+    const deleteCostProfile = () => {
+        const surfCopy = new Surf(surf)
+        surfCopy.costProfile = undefined
+        if (surfName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+        setColumns([])
+        setGridData([[]])
+        setSurf(surfCopy)
     }
 
     return (
@@ -175,7 +188,7 @@ const SurfView = () => {
                         id="surfName"
                         name="surfName"
                         placeholder="Enter surf name"
-                        defaultValue={surf?.name}
+                        value={surfName}
                         onChange={handleSurfNameFieldChange}
                     />
                 </WrapperColumn>
@@ -189,6 +202,13 @@ const SurfView = () => {
             <Wrapper>
                 <Typography variant="h4">Cost profile</Typography>
                 <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    disabled={surf?.costProfile === undefined}
+                    color="danger"
+                    onClick={deleteCostProfile}
+                >
+                    Delete
+                </ImportButton>
             </Wrapper>
             <WrapperColumn>
                 <DataTable

@@ -159,7 +159,7 @@ const ExplorationView = () => {
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== exploration?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
@@ -189,7 +189,7 @@ const ExplorationView = () => {
                         id="name"
                         name="name"
                         placeholder="Enter name"
-                        defaultValue={exploration?.name}
+                        value={name}
                         onChange={handleNameChange}
                     />
                 </WrapperColumn>

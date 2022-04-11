@@ -239,7 +239,9 @@ const DrainageStrategyView = () => {
         const newGridData = buildGridData(newDrainageStrategy?.co2Emissions)
         setCo2EmissionsGridData(newGridData)
         setCo2EmissionsCostProfileDialogOpen(!co2EmissionsCostProfileDialogOpen)
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onImportFuelFlaringAndLosses = (input: string, year: number) => {
@@ -255,7 +257,9 @@ const DrainageStrategyView = () => {
         const newGridData = buildGridData(newDrainageStrategy?.fuelFlaringAndLosses)
         setFuelFlaringAndLossesGridData(newGridData)
         setFuelFlaringAndLossesCostProfileDialogOpen(!fuelFlaringAndLossesCostProfileDialogOpen)
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onImportNetSalesGas = (input: string, year: number) => {
@@ -271,7 +275,9 @@ const DrainageStrategyView = () => {
         const newGridData = buildGridData(newDrainageStrategy?.netSalesGas)
         setNetSalesGasGridData(newGridData)
         setNetSalesGasCostProfileDialogOpen(!netSalesGasCostProfileDialogOpen)
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onImportProductionProfileGas = (input: string, year: number) => {
@@ -287,7 +293,9 @@ const DrainageStrategyView = () => {
         const newGridData = buildGridData(newDrainageStrategy?.productionProfileGas)
         setProductionProfileGasGridData(newGridData)
         setProductionProfileGasCostProfileDialogOpen(!productionProfileGasCostProfileDialogOpen)
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onImportProductionProfileOil = (input: string, year: number) => {
@@ -303,7 +311,9 @@ const DrainageStrategyView = () => {
         const newGridData = buildGridData(newDrainageStrategy?.productionProfileOil)
         setProductionProfileOilGridData(newGridData)
         setProductionProfileOilCostProfileDialogOpen(!productionProfileOilCostProfileDialogOpen)
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onImportProductionProfileWater = (input: string, year: number) => {
@@ -319,7 +329,9 @@ const DrainageStrategyView = () => {
         const newGridData = buildGridData(newDrainageStrategy?.productionProfileWater)
         setProductionProfileWaterGridData(newGridData)
         setProductionProfileWaterCostProfileDialogOpen(!productionProfileWaterCostProfileDialogOpen)
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const onImportProductionProfileWaterInjection = (input: string, year: number) => {
@@ -335,7 +347,9 @@ const DrainageStrategyView = () => {
         const newGridData = buildGridData(newDrainageStrategy?.productionProfileWaterInjection)
         setProductionProfileWaterInjectionGridData(newGridData)
         setProductionProfileWaterInjectionCostProfileDialogOpen(!productionProfileWaterInjectionCostProfileDialogOpen)
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        }
     }
 
     const handleSave = async () => {
@@ -364,7 +378,7 @@ const DrainageStrategyView = () => {
 
     const handleDrainageStrategyNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setDrainageStrategyName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== drainageStrategy?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
@@ -374,7 +388,11 @@ const DrainageStrategyView = () => {
     const deleteCo2EmissionsCostProfile = () => {
         const drainageCopy = new DrainageStrategy(drainageStrategy)
         drainageCopy.co2Emissions = undefined
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setCo2EmissionsColumns([])
         setCo2EmissionsGridData([[]])
         setDrainageStrategy(drainageCopy)
@@ -383,7 +401,11 @@ const DrainageStrategyView = () => {
     const deleteFuelFlaringAndLossesCostProfile = () => {
         const drainageCopy = new DrainageStrategy(drainageStrategy)
         drainageCopy.fuelFlaringAndLosses = undefined
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setFuelFlaringAndLossesColumns([])
         setFuelFlaringAndLossesGridData([[]])
         setDrainageStrategy(drainageCopy)
@@ -392,7 +414,11 @@ const DrainageStrategyView = () => {
     const deleteNetSalesGasCostProfile = () => {
         const drainageCopy = new DrainageStrategy(drainageStrategy)
         drainageCopy.netSalesGas = undefined
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setNetSalesGasColumns([])
         setNetSalesGasGridData([[]])
         setDrainageStrategy(drainageCopy)
@@ -401,7 +427,11 @@ const DrainageStrategyView = () => {
     const deleteProductionProfileGasCostProfile = () => {
         const drainageCopy = new DrainageStrategy(drainageStrategy)
         drainageCopy.productionProfileGas = undefined
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setProductionProfileGasColumns([])
         setProductionProfileGasGridData([[]])
         setDrainageStrategy(drainageCopy)
@@ -410,7 +440,11 @@ const DrainageStrategyView = () => {
     const deleteProductionProfileOilCostProfile = () => {
         const drainageCopy = new DrainageStrategy(drainageStrategy)
         drainageCopy.productionProfileOil = undefined
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setProductionProfileOilColumns([])
         setProductionProfileOilGridData([[]])
         setDrainageStrategy(drainageCopy)
@@ -419,7 +453,11 @@ const DrainageStrategyView = () => {
     const deleteProductionProfileWaterCostProfile = () => {
         const drainageCopy = new DrainageStrategy(drainageStrategy)
         drainageCopy.productionProfileWater = undefined
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setProductionProfileWaterColumns([])
         setProductionProfileWaterGridData([[]])
         setDrainageStrategy(drainageCopy)
@@ -428,7 +466,11 @@ const DrainageStrategyView = () => {
     const deleteProductionProfileWaterInjectionCostProfile = () => {
         const drainageCopy = new DrainageStrategy(drainageStrategy)
         drainageCopy.productionProfileWaterInjection = undefined
-        setHasChanges(true)
+        if (drainageStrategyName !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
         setProductionProfileWaterInjectionColumns([])
         setProductionProfileWaterInjectionGridData([[]])
         setDrainageStrategy(drainageCopy)
@@ -443,7 +485,7 @@ const DrainageStrategyView = () => {
                         id="drainagStrategyName"
                         name="drainagStrategyName"
                         placeholder="Enter Drainage Strategy name"
-                        defaultValue={drainageStrategy?.name}
+                        value={drainageStrategyName}
                         onChange={handleDrainageStrategyNameFieldChange}
                     />
                 </WrapperColumn>
