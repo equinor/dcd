@@ -1,4 +1,4 @@
-import { Button, Input, Typography } from "@equinor/eds-core-react"
+import { Button, Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
@@ -6,6 +6,7 @@ import {
     buildGridData, getColumnAbsoluteYears, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
+import CostProfile from "../models/assets/CostProfile"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 
@@ -23,15 +24,6 @@ const ImportButton = styled(Button)`
     margin-left: 2rem;
     &:disabled {
         margin-left: 2rem;
-    }
-`
-
-const SaveButton = styled(Button)`
-    margin-top: 5rem;
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-        margin-top: 5rem;
     }
 `
 
@@ -62,10 +54,6 @@ interface Props {
     costProfile: CostProfile,
     assetName: string
 }
-
-enum CostProfile {
-    costProfile = "costProfile",
-  }
 
 const TimeSeries = ({
     timeSeries,

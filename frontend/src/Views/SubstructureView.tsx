@@ -6,18 +6,14 @@ import {
     useLocation, useNavigate, useParams,
 } from "react-router"
 import styled from "styled-components"
-import DataTable, { CellValue } from "../Components/DataTable/DataTable"
-import {
-    buildGridData, getColumnAbsoluteYears, replaceOldData,
-} from "../Components/DataTable/helpers"
-import Import from "../Components/Import/Import"
 import TimeSeries from "../Components/TimeSeries"
+import CostProfile from "../models/assets/CostProfile"
 import { Substructure } from "../models/assets/substructure/Substructure"
-import { SubstructureCostProfile } from "../models/assets/substructure/SubstructureCostProfile"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSubstructureService } from "../Services/SubstructureService"
+import { emptyGuid } from "../Utils/constants"
 
 const AssetHeader = styled.div`
     margin-bottom: 2rem;
@@ -69,8 +65,6 @@ const SubstructureView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
-
-    const emptyGuid = "00000000-0000-0000-0000-000000000000"
 
     useEffect(() => {
         (async () => {
@@ -126,10 +120,6 @@ const SubstructureView = () => {
             setHasChanges(false)
         }
     }
-
-    enum CostProfile {
-        costProfile = "costProfile",
-      }
 
     return (
         <AssetViewDiv>

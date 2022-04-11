@@ -6,17 +6,14 @@ import {
     useLocation, useNavigate, useParams,
 } from "react-router"
 import styled from "styled-components"
-import DataTable, { CellValue } from "../Components/DataTable/DataTable"
-import {
-    buildGridData, getColumnAbsoluteYears, replaceOldData,
-} from "../Components/DataTable/helpers"
-import Import from "../Components/Import/Import"
+import TimeSeries from "../Components/TimeSeries"
+import CostProfile from "../models/assets/CostProfile"
 import { Topside } from "../models/assets/topside/Topside"
-import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
+import { emptyGuid } from "../Utils/constants"
 
 const AssetHeader = styled.div`
     margin-bottom: 2rem;
@@ -43,13 +40,6 @@ const WrapperColumn = styled.div`
     flex-direction: column;
 `
 
-const ImportButton = styled(Button)`
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-    }
-`
-
 const SaveButton = styled(Button)`
     margin-top: 5rem;
     margin-left: 2rem;
@@ -70,16 +60,11 @@ const TopsideView = () => {
     const [, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [topside, setTopside] = useState<Topside>()
-    const [columns, setColumns] = useState<string[]>([""])
-    const [gridData, setGridData] = useState<CellValue[][]>([[]])
-    const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
     const [topsideName, setTopsideName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
-
-    const emptyGuid = "00000000-0000-0000-0000-000000000000"
 
     useEffect(() => {
         (async () => {
@@ -96,46 +81,11 @@ const TopsideView = () => {
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside.name!)
-                const newColumnTitles = getColumnAbsoluteYears(caseResult, newTopside?.costProfile)
-                setColumns(newColumnTitles)
-                const newGridData = buildGridData(newTopside?.costProfile)
-                setGridData(newGridData)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
         })()
     }, [params.projectId, params.caseId])
-
-    const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newGridData = replaceOldData(gridData, changes)
-        setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, topside?.costProfile))
-    }
-
-    const updateInsertTopsideCostProfile = (input: string, year: number) => {
-        const newTopside = new Topside(topside!)
-        const newCostProfile = new TopsideCostProfile()
-        newTopside.id = newTopside.id ?? emptyGuid
-        newTopside.costProfile = newTopside.costProfile ?? newCostProfile
-        newTopside.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "")
-            .split("\t").map((i) => parseFloat(i))
-        newTopside.costProfile!.startYear = year
-        newTopside.costProfile!.epaVersion = newTopside.costProfile.epaVersion ?? ""
-        return newTopside
-    }
-
-    const onImport = (input: string, year: number) => {
-        const newTopside = updateInsertTopsideCostProfile(input, year)
-        setTopside(newTopside)
-        const newColumnTitles = getColumnAbsoluteYears(caseItem, newTopside?.costProfile)
-        setColumns(newColumnTitles)
-        const newGridData = buildGridData(newTopside?.costProfile)
-        setGridData(newGridData)
-        setCostProfileDialogOpen(!costProfileDialogOpen)
-        if (topsideName !== "") {
-            setHasChanges(true)
-        }
-    }
 
     const handleSave = async () => {
         const topsideDto = new Topside(topside!)
@@ -170,19 +120,6 @@ const TopsideView = () => {
         }
     }
 
-    const deleteCostProfile = () => {
-        const topsideCopy = new Topside(topside)
-        topsideCopy.costProfile = undefined
-        if (topsideName !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-        setColumns([])
-        setGridData([[]])
-        setTopside(topsideCopy)
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Topside</Typography>
@@ -204,27 +141,15 @@ const TopsideView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
-            <Wrapper>
-                <Typography variant="h4">Cost profile</Typography>
-                <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
-                <ImportButton
-                    disabled={topside?.costProfile === undefined}
-                    color="danger"
-                    onClick={deleteCostProfile}
-                >
-                    Delete
-                </ImportButton>
-            </Wrapper>
-            <WrapperColumn>
-                <DataTable
-                    columns={columns}
-                    gridData={gridData}
-                    onCellsChanged={onCellsChanged}
-                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
-                />
-            </WrapperColumn>
-            {!costProfileDialogOpen ? null
-                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
+            <TimeSeries
+                timeSeries={topside?.costProfile}
+                caseItem={caseItem}
+                setAsset={setTopside}
+                setHasChanges={setHasChanges}
+                asset={topside}
+                costProfile={CostProfile.costProfile}
+                assetName={topsideName}
+            />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )
