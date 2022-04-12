@@ -1,7 +1,7 @@
 import { Input, Label } from "@equinor/eds-core-react"
 import { ChangeEventHandler } from "react"
 import {
- AssetHeader, WrapperColumn,
+    AssetHeader, WrapperColumn,
 } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
