@@ -19,6 +19,7 @@ namespace api.Context
         public DbSet<SurfCostProfile>? SurfCostProfile { get; set; }
 
         public DbSet<Substructure>? Substructures { get; set; }
+        public DbSet<SubstructureCostProfile>? SubstructureCostProfiles { get; set; }
 
         public DbSet<Topside>? Topsides { get; set; }
 

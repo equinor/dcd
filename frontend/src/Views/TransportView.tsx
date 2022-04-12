@@ -165,7 +165,7 @@ const TransportView = () => {
 
     const handleTransportNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setTransportName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "" && e.target.value !== transport?.name) {
+        if (e.target.value !== undefined && e.target.value !== "") {
             setHasChanges(true)
         } else {
             setHasChanges(false)
