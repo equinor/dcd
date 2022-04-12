@@ -92,7 +92,7 @@ const SubstructureView = () => {
                         id="substructureName"
                         name="substructureName"
                         placeholder="Enter substructure name"
-                        defaultValue={substructure?.name}
+                        value={substructureName}
                         onChange={handleSubstructureNameFieldChange}
                     />
                 </WrapperColumn>
