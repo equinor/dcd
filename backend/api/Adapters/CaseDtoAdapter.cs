@@ -8,22 +8,24 @@ namespace api.Adapters
     {
         public static CaseDto Convert(Case case_)
         {
-            var caseDto = new CaseDto();
-            caseDto.Id = case_.Id;
-            caseDto.ProjectId = case_.ProjectId;
-            caseDto.Name = case_.Name;
-            caseDto.Description = case_.Description;
-            caseDto.ReferenceCase = case_.ReferenceCase;
-            caseDto.DG4Date = case_.DG4Date;
-            caseDto.CreateTime = case_.CreateTime;
-            caseDto.ModifyTime = case_.ModifyTime;
-            caseDto.DrainageStrategyLink = case_.DrainageStrategyLink;
-            caseDto.WellProjectLink = case_.WellProjectLink;
-            caseDto.SurfLink = case_.SurfLink;
-            caseDto.SubstructureLink = case_.SubstructureLink;
-            caseDto.TopsideLink = case_.TopsideLink;
-            caseDto.TransportLink = case_.TransportLink;
-            caseDto.ExplorationLink = case_.ExplorationLink;
+            var caseDto = new CaseDto
+            {
+                Id = case_.Id,
+                ProjectId = case_.ProjectId,
+                Name = case_.Name,
+                Description = case_.Description,
+                ReferenceCase = case_.ReferenceCase,
+                DG4Date = case_.DG4Date,
+                CreateTime = case_.CreateTime,
+                ModifyTime = case_.ModifyTime,
+                DrainageStrategyLink = case_.DrainageStrategyLink,
+                WellProjectLink = case_.WellProjectLink,
+                SurfLink = case_.SurfLink,
+                SubstructureLink = case_.SubstructureLink,
+                TopsideLink = case_.TopsideLink,
+                TransportLink = case_.TransportLink,
+                ExplorationLink = case_.ExplorationLink
+            };
 
             return caseDto;
         }
