@@ -13,7 +13,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
-import { emptyGuid } from "../Utils/constants"
+import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -60,12 +60,12 @@ const DrainageStrategyView = () => {
     const handleSave = async () => {
         const drainageStrategyDto = DrainageStrategy.toDto(drainageStrategy!)
         drainageStrategyDto.name = drainageStrategyName
-        if (drainageStrategyDto?.id === emptyGuid) {
+        if (drainageStrategyDto?.id === EMPTY_GUID) {
             drainageStrategyDto.projectId = params.projectId
             const newProject: Project = await GetDrainageStrategyService()
                 .createDrainageStrategy(params.caseId!, drainageStrategyDto!)
             const newDrainageStrategy = newProject.drainageStrategies.at(-1)
-            const newUrl = location.pathname.replace(emptyGuid, newDrainageStrategy!.id!)
+            const newUrl = location.pathname.replace(EMPTY_GUID, newDrainageStrategy!.id!)
             navigate(`${newUrl}`)
             setProject(newProject)
         } else {

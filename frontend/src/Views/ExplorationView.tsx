@@ -12,7 +12,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
-import { emptyGuid } from "../Utils/constants"
+import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -58,11 +58,11 @@ const ExplorationView = () => {
     const handleSave = async () => {
         const explorationDto = new Exploration(exploration!)
         explorationDto.name = name
-        if (exploration?.id === emptyGuid) {
+        if (exploration?.id === EMPTY_GUID) {
             explorationDto.projectId = params.projectId
             const newProject = await GetExplorationService().createExploration(params.caseId!, explorationDto!)
             const newExploration = newProject.explorations.at(-1)
-            const newUrl = location.pathname.replace(emptyGuid, newExploration!.id!)
+            const newUrl = location.pathname.replace(EMPTY_GUID, newExploration!.id!)
             navigate(`${newUrl}`)
             setProject(newProject)
         } else {

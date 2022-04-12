@@ -12,7 +12,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
-import { emptyGuid } from "../Utils/constants"
+import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -43,7 +43,7 @@ function WellProjectView() {
             if (project !== undefined) {
                 const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newWellProject = project!.wellProjects.find((s) => s.id === params.wellProjectId)
+                let newWellProject = project.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
                 } else {
@@ -58,12 +58,12 @@ function WellProjectView() {
     const handleSave = async () => {
         const wellProjectDto = new WellProject(wellProject!)
         wellProjectDto.name = wellProjectName
-        if (wellProject?.id === emptyGuid) {
+        if (wellProject?.id === EMPTY_GUID) {
             wellProjectDto.projectId = params.projectId
             const updatedProject: Project = await
             GetWellProjectService().createWellProject(params.caseId!, wellProjectDto!)
             const newWellProject = updatedProject.wellProjects.at(-1)
-            const newUrl = location.pathname.replace(emptyGuid, newWellProject!.id!)
+            const newUrl = location.pathname.replace(EMPTY_GUID, newWellProject!.id!)
             navigate(`${newUrl}`, { replace: true })
             setWellProject(newWellProject)
         } else {

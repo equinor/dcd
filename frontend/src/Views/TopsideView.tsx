@@ -12,7 +12,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
-import { emptyGuid } from "../Utils/constants"
+import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -43,7 +43,7 @@ const TopsideView = () => {
             if (project !== undefined) {
                 const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newTopside = project!.topsides.find((s) => s.id === params.topsideId)
+                let newTopside = project.topsides.find((s) => s.id === params.topsideId)
                 if (newTopside !== undefined) {
                     setTopside(newTopside)
                 } else {
@@ -58,11 +58,11 @@ const TopsideView = () => {
     const handleSave = async () => {
         const topsideDto = new Topside(topside!)
         topsideDto.name = topsideName
-        if (topside?.id === emptyGuid) {
+        if (topside?.id === EMPTY_GUID) {
             topsideDto.projectId = params.projectId
             const newProject: Project = await GetTopsideService().createTopside(params.caseId!, topsideDto!)
             const newTopside = newProject.topsides.at(-1)
-            const newUrl = location.pathname.replace(emptyGuid, newTopside!.id!)
+            const newUrl = location.pathname.replace(EMPTY_GUID, newTopside!.id!)
             navigate(`${newUrl}`, { replace: true })
             setProject(newProject)
         } else {

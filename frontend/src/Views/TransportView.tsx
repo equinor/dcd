@@ -12,7 +12,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTransportService } from "../Services/TransportService"
-import { emptyGuid } from "../Utils/constants"
+import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -43,7 +43,7 @@ const TransportView = () => {
             if (project !== undefined) {
                 const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newTransport = project!.transports.find((s) => s.id === params.transportId)
+                let newTransport = project.transports.find((s) => s.id === params.transportId)
                 if (newTransport !== undefined) {
                     setTransport(newTransport)
                 } else {
@@ -58,11 +58,11 @@ const TransportView = () => {
     const handleSave = async () => {
         const transportDto = new Transport(transport!)
         transportDto.name = transportName
-        if (transport?.id === emptyGuid) {
+        if (transport?.id === EMPTY_GUID) {
             transportDto.projectId = params.projectId
             const newProject = await GetTransportService().createTransport(params.caseId!, transportDto!)
             const newTransport = newProject.transports.at(-1)
-            const newUrl = location.pathname.replace(emptyGuid, newTransport!.id!)
+            const newUrl = location.pathname.replace(EMPTY_GUID, newTransport!.id!)
             navigate(`${newUrl}`, { replace: true })
             setProject(newProject)
         } else {

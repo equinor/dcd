@@ -12,7 +12,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSubstructureService } from "../Services/SubstructureService"
-import { emptyGuid } from "../Utils/constants"
+import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -43,7 +43,7 @@ const SubstructureView = () => {
             if (project !== undefined) {
                 const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newSubstructure = project!.substructures.find((s) => s.id === params.substructureId)
+                let newSubstructure = project.substructures.find((s) => s.id === params.substructureId)
                 if (newSubstructure !== undefined) {
                     setSubstructure(newSubstructure)
                 } else {
@@ -58,12 +58,12 @@ const SubstructureView = () => {
     const handleSave = async () => {
         const substructureDto = new Substructure(substructure!)
         substructureDto.name = substructureName
-        if (substructure?.id === emptyGuid) {
+        if (substructure?.id === EMPTY_GUID) {
             substructureDto.projectId = params.projectId
             const newProject = await GetSubstructureService()
                 .createSubstructure(params.caseId!, substructureDto!)
             const newSubstructure = newProject.substructures.at(-1)
-            const newUrl = location.pathname.replace(emptyGuid, newSubstructure!.id!)
+            const newUrl = location.pathname.replace(EMPTY_GUID, newSubstructure!.id!)
             navigate(`${newUrl}`)
             setSubstructure(newSubstructure)
         } else {
