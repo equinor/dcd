@@ -94,8 +94,8 @@ const TimeSeries = ({
     }
 
     const deleteCostProfile = () => {
-        const assetCopy = new Substructure(asset)
-        assetCopy.costProfile = undefined
+        const assetCopy: IAsset = { ...asset }
+        assetCopy[timeSeriesType] = undefined
         if (assetName !== "") {
             setHasChanges(true)
         } else {
