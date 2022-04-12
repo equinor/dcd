@@ -7,23 +7,25 @@ namespace api.Adapters
     {
         public static DrainageStrategyDto Convert(DrainageStrategy drainageStrategy)
         {
-            var drainageStrategyDto = new DrainageStrategyDto();
-            drainageStrategyDto.Id = drainageStrategy.Id;
-            drainageStrategyDto.Name = drainageStrategy.Name;
-            drainageStrategyDto.Description = drainageStrategy.Description;
-            drainageStrategyDto.ProjectId = drainageStrategy.ProjectId;
-            drainageStrategyDto.NGLYield = drainageStrategy.NGLYield;
-            drainageStrategyDto.ArtificialLift = drainageStrategy.ArtificialLift;
-            drainageStrategyDto.ProducerCount = drainageStrategy.ProducerCount;
-            drainageStrategyDto.GasInjectorCount = drainageStrategy.GasInjectorCount;
-            drainageStrategyDto.WaterInjectorCount = drainageStrategy.WaterInjectorCount;
-            drainageStrategyDto.ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil)!;
-            drainageStrategyDto.ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas)!;
-            drainageStrategyDto.ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater)!;
-            drainageStrategyDto.ProductionProfileWaterInjection = Convert(drainageStrategy.ProductionProfileWaterInjection)!;
-            drainageStrategyDto.FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses)!;
-            drainageStrategyDto.NetSalesGas = Convert(drainageStrategy.NetSalesGas)!;
-            drainageStrategyDto.Co2Emissions = Convert(drainageStrategy.Co2Emissions)!;
+            var drainageStrategyDto = new DrainageStrategyDto
+            {
+                Id = drainageStrategy.Id,
+                Name = drainageStrategy.Name,
+                Description = drainageStrategy.Description,
+                ProjectId = drainageStrategy.ProjectId,
+                NGLYield = drainageStrategy.NGLYield,
+                ArtificialLift = drainageStrategy.ArtificialLift,
+                ProducerCount = drainageStrategy.ProducerCount,
+                GasInjectorCount = drainageStrategy.GasInjectorCount,
+                WaterInjectorCount = drainageStrategy.WaterInjectorCount,
+                ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil)!,
+                ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas)!,
+                ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater)!,
+                ProductionProfileWaterInjection = Convert(drainageStrategy.ProductionProfileWaterInjection)!,
+                FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses)!,
+                NetSalesGas = Convert(drainageStrategy.NetSalesGas)!,
+                Co2Emissions = Convert(drainageStrategy.Co2Emissions)!
+            };
             return drainageStrategyDto;
         }
 
