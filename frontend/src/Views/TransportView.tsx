@@ -103,7 +103,6 @@ const TransportView = () => {
                 </Dg4Field>
             </Wrapper>
             <TimeSeries
-                timeSeries={transport?.costProfile}
                 caseItem={caseItem}
                 setAsset={setTransport}
                 setHasChanges={setHasChanges}

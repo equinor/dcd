@@ -102,7 +102,6 @@ const SurfView = () => {
                 </Dg4Field>
             </Wrapper>
             <TimeSeries
-                timeSeries={surf?.costProfile}
                 caseItem={caseItem}
                 setAsset={setSurf}
                 setHasChanges={setHasChanges}

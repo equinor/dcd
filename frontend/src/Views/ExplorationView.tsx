@@ -103,7 +103,6 @@ const ExplorationView = () => {
                 </Dg4Field>
             </Wrapper>
             <TimeSeries
-                timeSeries={exploration?.costProfile}
                 caseItem={caseItem}
                 setAsset={setExploration}
                 setHasChanges={setHasChanges}

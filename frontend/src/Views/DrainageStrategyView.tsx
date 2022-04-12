@@ -105,7 +105,6 @@ const DrainageStrategyView = () => {
                 </Dg4Field>
             </Wrapper>
             <TimeSeries
-                timeSeries={drainageStrategy?.co2Emissions}
                 caseItem={caseItem}
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
@@ -115,7 +114,6 @@ const DrainageStrategyView = () => {
                 timeSeriesTitle="CO2 emissions"
             />
             <TimeSeries
-                timeSeries={drainageStrategy?.fuelFlaringAndLosses}
                 caseItem={caseItem}
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
@@ -125,7 +123,6 @@ const DrainageStrategyView = () => {
                 timeSeriesTitle="Fuel flaring and losses"
             />
             <TimeSeries
-                timeSeries={drainageStrategy?.netSalesGas}
                 caseItem={caseItem}
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
@@ -135,7 +132,6 @@ const DrainageStrategyView = () => {
                 timeSeriesTitle="Net sales gas"
             />
             <TimeSeries
-                timeSeries={drainageStrategy?.productionProfileGas}
                 caseItem={caseItem}
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
@@ -145,7 +141,6 @@ const DrainageStrategyView = () => {
                 timeSeriesTitle="Production profile gas"
             />
             <TimeSeries
-                timeSeries={drainageStrategy?.productionProfileOil}
                 caseItem={caseItem}
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
@@ -155,7 +150,6 @@ const DrainageStrategyView = () => {
                 timeSeriesTitle="Production profile oil"
             />
             <TimeSeries
-                timeSeries={drainageStrategy?.productionProfileWater}
                 caseItem={caseItem}
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}
@@ -165,7 +159,6 @@ const DrainageStrategyView = () => {
                 timeSeriesTitle="Production profile water"
             />
             <TimeSeries
-                timeSeries={drainageStrategy?.productionProfileWaterInjection}
                 caseItem={caseItem}
                 setAsset={setDrainageStrategy}
                 setHasChanges={setHasChanges}

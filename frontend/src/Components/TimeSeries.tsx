@@ -37,7 +37,6 @@ interface asset {
 }
 
 interface Props {
-    timeSeries: ts | undefined,
     caseItem: Case | undefined,
     setAsset: React.Dispatch<React.SetStateAction<any | undefined>>
     setHasChanges: React.Dispatch<React.SetStateAction<boolean>>
@@ -48,7 +47,6 @@ interface Props {
 }
 
 const TimeSeries = ({
-    timeSeries,
     caseItem,
     setAsset,
     setHasChanges,
@@ -73,16 +71,15 @@ const TimeSeries = ({
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, timeSeries))
+        setColumns(getColumnAbsoluteYears(caseItem, asset![timeSeriesType]))
         setHasChanges(true)
     }
 
     const onImport = (input: string, year: number) => {
         const newAsset = { ...asset }
-        const newTimeSeries = { ...timeSeries }
+        const newTimeSeries = { ...asset![timeSeriesType] }
         newAsset[timeSeriesType] = newTimeSeries
         newTimeSeries!.startYear = year
-        // eslint-disable-next-line max-len
         newTimeSeries!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         newTimeSeries.epaVersion = ""
         setAsset(newAsset)

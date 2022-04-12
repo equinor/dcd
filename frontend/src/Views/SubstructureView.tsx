@@ -104,7 +104,6 @@ const SubstructureView = () => {
                 </Dg4Field>
             </Wrapper>
             <TimeSeries
-                timeSeries={substructure?.costProfile}
                 caseItem={caseItem}
                 setAsset={setSubstructure}
                 setHasChanges={setHasChanges}

@@ -104,7 +104,6 @@ function WellProjectView() {
                 </Dg4Field>
             </Wrapper>
             <TimeSeries
-                timeSeries={wellProject?.costProfile}
                 caseItem={caseItem}
                 setAsset={setWellProject}
                 setHasChanges={setHasChanges}
@@ -114,7 +113,6 @@ function WellProjectView() {
                 timeSeriesTitle="Cost profile"
             />
             <TimeSeries
-                timeSeries={wellProject?.drillingSchedule}
                 caseItem={caseItem}
                 setAsset={setWellProject}
                 setHasChanges={setHasChanges}

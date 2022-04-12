@@ -103,7 +103,6 @@ const TopsideView = () => {
                 </Dg4Field>
             </Wrapper>
             <TimeSeries
-                timeSeries={topside?.costProfile}
                 caseItem={caseItem}
                 setAsset={setTopside}
                 setHasChanges={setHasChanges}
