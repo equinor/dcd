@@ -6,7 +6,6 @@ import {
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
-import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
