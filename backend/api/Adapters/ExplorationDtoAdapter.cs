@@ -7,15 +7,17 @@ namespace api.Adapters
     {
         public static ExplorationDto Convert(Exploration exploration)
         {
-            var explorationDto = new ExplorationDto();
-            explorationDto.Id = exploration.Id;
-            explorationDto.ProjectId = exploration.ProjectId;
-            explorationDto.Name = exploration.Name;
-            explorationDto.RigMobDemob = exploration.RigMobDemob;
-            explorationDto.WellType = exploration.WellType;
-            explorationDto.CostProfile = Convert(exploration.CostProfile);
-            explorationDto.DrillingSchedule = Convert(exploration.DrillingSchedule);
-            explorationDto.GAndGAdminCost = Convert(exploration.GAndGAdminCost);
+            var explorationDto = new ExplorationDto
+            {
+                Id = exploration.Id,
+                ProjectId = exploration.ProjectId,
+                Name = exploration.Name,
+                RigMobDemob = exploration.RigMobDemob,
+                WellType = exploration.WellType,
+                CostProfile = Convert(exploration.CostProfile),
+                DrillingSchedule = Convert(exploration.DrillingSchedule),
+                GAndGAdminCost = Convert(exploration.GAndGAdminCost)
+            };
             return explorationDto;
         }
 
