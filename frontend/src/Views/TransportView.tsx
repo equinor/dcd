@@ -106,13 +106,13 @@ const TransportView = () => {
                 }
                 setTransportName(newTransport.name!)
                 const newCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newTransport?.costProfile)
-                const newCessastionCostProfileColumnTitles = getColumnAbsoluteYears(
+                const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(
                     caseResult,
                     newTransport?.transportCessationCostProfileDto,
                 )
 
                 setCostProfileColumns(newCostProfileColumnTitles)
-                setCessationCostProfileColumns(newCessastionCostProfileColumnTitles)
+                setCessationCostProfileColumns(newCessationCostProfileColumnTitles)
 
                 const newCostProfileGridData = buildGridData(newTransport?.costProfile)
                 const newCessationCostProfileGridData = buildGridData(newTransport?.transportCessationCostProfileDto)
