@@ -8,10 +8,9 @@ namespace api.Adapters
         public static CommonLibraryProjectDto? Convert(dynamic project)
         {
             var projectDto = new CommonLibraryProjectDto();
-            Guid guid;
-            if (!Guid.TryParse(project.GUID.ToString(), out guid))
+            if (!Guid.TryParse(project.GUID.ToString(), out Guid guid))
             {
-                return null as CommonLibraryProjectDto;
+                return null;
             }
 
             projectDto.ProjectState = project.ProjectState;
@@ -27,84 +26,50 @@ namespace api.Adapters
 
         private static ProjectCategory ConvertCategory(string category)
         {
-            switch (category)
+            return category switch
             {
-                case "":
-                    return ProjectCategory.Null;
-                case "BROWNFIELD":
-                    return ProjectCategory.Brownfield;
-                case "CESSATION":
-                    return ProjectCategory.Cessation;
-                case "DRILLING_UPGRADE":
-                    return ProjectCategory.DrillingUpgrade;
-                case "ONSHORE":
-                    return ProjectCategory.Onshore;
-                case "PIPELINE":
-                    return ProjectCategory.Pipeline;
-                case "PLATFORM_FPSO":
-                    return ProjectCategory.PlatformFpso;
-                case "SUBSEA":
-                    return ProjectCategory.Subsea;
-                case "SOLAR":
-                    return ProjectCategory.Solar;
-                case "CO2 STORAGE":
-                    return ProjectCategory.Co2Storage;
-                case "EFUEL":
-                    return ProjectCategory.Efuel;
-                case "NUCLEAR":
-                    return ProjectCategory.Nuclear;
-                case "CO2 CAPTURE":
-                    return ProjectCategory.Co2Capture;
-                case "FPSO":
-                    return ProjectCategory.Fpso;
-                case "HYDROGEN":
-                    return ProjectCategory.Hydrogen;
-                case "HSE":
-                    return ProjectCategory.Hse;
-                case "OFFSHORE_WIND":
-                    return ProjectCategory.OffshoreWind;
-                case "PLATFORM":
-                    return ProjectCategory.Platform;
-                case "POWER_FROM_SHORE":
-                    return ProjectCategory.PowerFromShore;
-                case "TIE-IN":
-                    return ProjectCategory.TieIn;
-                case "RENEWABLE_OTHER":
-                    return ProjectCategory.RenewableOther;
-                case "CCS":
-                    return ProjectCategory.Ccs;
-                default:
-                    throw new Exception(String.Format("Category {0} does not exist in DCD.", category));
-            }
+                "" => ProjectCategory.Null,
+                "BROWNFIELD" => ProjectCategory.Brownfield,
+                "CESSATION" => ProjectCategory.Cessation,
+                "DRILLING_UPGRADE" => ProjectCategory.DrillingUpgrade,
+                "ONSHORE" => ProjectCategory.Onshore,
+                "PIPELINE" => ProjectCategory.Pipeline,
+                "PLATFORM_FPSO" => ProjectCategory.PlatformFpso,
+                "SUBSEA" => ProjectCategory.Subsea,
+                "SOLAR" => ProjectCategory.Solar,
+                "CO2 STORAGE" => ProjectCategory.Co2Storage,
+                "EFUEL" => ProjectCategory.Efuel,
+                "NUCLEAR" => ProjectCategory.Nuclear,
+                "CO2 CAPTURE" => ProjectCategory.Co2Capture,
+                "FPSO" => ProjectCategory.Fpso,
+                "HYDROGEN" => ProjectCategory.Hydrogen,
+                "HSE" => ProjectCategory.Hse,
+                "OFFSHORE_WIND" => ProjectCategory.OffshoreWind,
+                "PLATFORM" => ProjectCategory.Platform,
+                "POWER_FROM_SHORE" => ProjectCategory.PowerFromShore,
+                "TIE-IN" => ProjectCategory.TieIn,
+                "RENEWABLE_OTHER" => ProjectCategory.RenewableOther,
+                "CCS" => ProjectCategory.Ccs,
+                _ => throw new Exception(String.Format("Category {0} does not exist in DCD.", category)),
+            };
         }
 
         private static ProjectPhase ConvertPhase(string phase)
         {
-            switch (phase)
+            return phase switch
             {
-                case "":
-                    return ProjectPhase.Null;
-                case "Bid preparations":
-                    return ProjectPhase.BidPreparations;
-                case "Business identification":
-                    return ProjectPhase.BusinessIdentification;
-                case "Business planning":
-                    return ProjectPhase.BusinessPlanning;
-                case "Concept planning":
-                    return ProjectPhase.ConceptPlanning;
-                case "Concession / Negotiations":
-                    return ProjectPhase.ConcessionNegotiations;
-                case "Definition":
-                    return ProjectPhase.Definition;
-                case "Execution":
-                    return ProjectPhase.Execution;
-                case "Operation":
-                    return ProjectPhase.Operation;
-                case "Screening business opportunities":
-                    return ProjectPhase.ScreeningBusinessOpportunities;
-                default:
-                    throw new Exception(String.Format("Phase {0} does not exist in DCD.", phase));
-            }
+                "" => ProjectPhase.Null,
+                "Bid preparations" => ProjectPhase.BidPreparations,
+                "Business identification" => ProjectPhase.BusinessIdentification,
+                "Business planning" => ProjectPhase.BusinessPlanning,
+                "Concept planning" => ProjectPhase.ConceptPlanning,
+                "Concession / Negotiations" => ProjectPhase.ConcessionNegotiations,
+                "Definition" => ProjectPhase.Definition,
+                "Execution" => ProjectPhase.Execution,
+                "Operation" => ProjectPhase.Operation,
+                "Screening business opportunities" => ProjectPhase.ScreeningBusinessOpportunities,
+                _ => throw new Exception(String.Format("Phase {0} does not exist in DCD.", phase)),
+            };
         }
     }
 }
