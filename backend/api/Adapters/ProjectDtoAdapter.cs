@@ -11,13 +11,9 @@ namespace api.Adapters
 
             if (project.Cases != null)
             {
-                if (projectDto.Cases == null)
-                {
-                    projectDto.Cases = new List<CaseDto>();
-                }
                 foreach (Case c in project.Cases)
                 {
-                    projectDto.Cases.Add(CaseDtoAdapter.Convert(c));
+                    projectDto.Cases!.Add(CaseDtoAdapter.Convert(c));
                 }
             }
             if (project.Explorations != null)
