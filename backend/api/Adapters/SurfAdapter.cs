@@ -1,6 +1,5 @@
 using api.Dtos;
 using api.Models;
-using api.Services;
 
 namespace api.Adapters
 {
@@ -20,17 +19,10 @@ namespace api.Adapters
                 ProductionFlowline = surfDto.ProductionFlowline,
                 RiserCount = surfDto.RiserCount
             };
-
-            if (surfDto.CostProfile != null)
-            {
-                surf.CostProfile = Convert(surfDto.CostProfile, surf);
-            }
-
-            if (surfDto.SurfCessationCostProfileDto != null)
-            {
-                surf.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, surf);
-            }
-
+            
+            surf.CostProfile = Convert(surfDto.CostProfile, surf);
+            surf.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, surf);
+            
             return surf;
         }
 
