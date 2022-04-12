@@ -5,35 +5,11 @@ import {
     buildGridData, getColumnAbsoluteYears, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
+import { IAsset } from "../models/assets/IAsset"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Case } from "../models/Case"
+import { ITimeSeries } from "../models/ITimeSeries"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
-
-interface ITimeSeries {
-    id?: string
-    startYear?: number | undefined
-    values?: any [] | null
-    epaVersion?: string | null
-    currency?: Components.Schemas.Currency | undefined
-    sum?: number | undefined
-}
-
-interface IAsset {
-    id?: string | undefined
-    name?: string | undefined
-    projectId?: string | undefined
-    costProfile?: ITimeSeries | undefined
-    drillingSchedule?: ITimeSeries | undefined
-    co2Emissions?: ITimeSeries | undefined
-    netSalesGas?: ITimeSeries | undefined
-    fuelFlaringAndLosses?: ITimeSeries | undefined
-    productionProfileGas?: ITimeSeries | undefined
-    productionProfileOil?: ITimeSeries | undefined
-    productionProfileWater?: ITimeSeries | undefined
-    productionProfileWaterInjection?: ITimeSeries | undefined
-    dryweight?: number | undefined
-    maturity?: Components.Schemas.Maturity | undefined
-}
 
 interface Props {
     caseItem: Case | undefined,
