@@ -10,7 +10,7 @@ import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
-interface ts {
+interface ITimeSeries {
     id?: string
     startYear?: number | undefined
     values?: any [] | null
@@ -19,19 +19,19 @@ interface ts {
     sum?: number | undefined
 }
 
-interface asset {
+interface IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
-    costProfile?: ts | undefined
-    drillingSchedule?: ts | undefined
-    co2Emissions?: ts | undefined
-    netSalesGas?: ts | undefined
-    fuelFlaringAndLosses?: ts | undefined
-    productionProfileGas?: ts | undefined
-    productionProfileOil?: ts | undefined
-    productionProfileWater?: ts | undefined
-    productionProfileWaterInjection?: ts | undefined
+    costProfile?: ITimeSeries | undefined
+    drillingSchedule?: ITimeSeries | undefined
+    co2Emissions?: ITimeSeries | undefined
+    netSalesGas?: ITimeSeries | undefined
+    fuelFlaringAndLosses?: ITimeSeries | undefined
+    productionProfileGas?: ITimeSeries | undefined
+    productionProfileOil?: ITimeSeries | undefined
+    productionProfileWater?: ITimeSeries | undefined
+    productionProfileWaterInjection?: ITimeSeries | undefined
     dryweight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
 }
@@ -40,7 +40,7 @@ interface Props {
     caseItem: Case | undefined,
     setAsset: React.Dispatch<React.SetStateAction<any | undefined>>
     setHasChanges: React.Dispatch<React.SetStateAction<boolean>>
-    asset: asset | undefined,
+    asset: IAsset | undefined,
     timeSeriesType: TimeSeriesEnum,
     assetName: string
     timeSeriesTitle: string
