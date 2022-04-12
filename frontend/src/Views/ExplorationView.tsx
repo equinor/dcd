@@ -1,7 +1,7 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -14,8 +14,9 @@ import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import AssetName from "../Components/AssetName"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -72,30 +73,14 @@ const ExplorationView = () => {
         setHasChanges(false)
     }
 
-    const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Exploration</Typography>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="name" label="Name" />
-                    <Input
-                        id="name"
-                        name="name"
-                        placeholder="Enter name"
-                        value={name}
-                        onChange={handleNameChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setName}
+                name={name}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>

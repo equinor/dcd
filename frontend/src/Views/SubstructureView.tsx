@@ -1,7 +1,7 @@
 import {
     Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -72,15 +72,6 @@ const SubstructureView = () => {
             setProject(newProject)
         }
         setHasChanges(false)
-    }
-
-    const handleSubstructureNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setSubstructureName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
     }
 
     return (

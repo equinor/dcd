@@ -1,10 +1,11 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
+import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Transport } from "../models/assets/transport/Transport"
@@ -14,7 +15,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetTransportService } from "../Services/TransportService"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 
 const TransportView = () => {
@@ -72,30 +73,14 @@ const TransportView = () => {
         setHasChanges(false)
     }
 
-    const handleTransportNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setTransportName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Transport</Typography>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="transportName" label="Name" />
-                    <Input
-                        id="transportName"
-                        name="transportName"
-                        placeholder="Enter Transport name"
-                        value={transportName}
-                        onChange={handleTransportNameFieldChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setTransportName}
+                name={transportName}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
