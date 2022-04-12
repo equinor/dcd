@@ -19,10 +19,10 @@ namespace api.Adapters
                 ProductionFlowline = surfDto.ProductionFlowline,
                 RiserCount = surfDto.RiserCount
             };
-            
+
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
             surf.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, surf);
-            
+
             return surf;
         }
 
