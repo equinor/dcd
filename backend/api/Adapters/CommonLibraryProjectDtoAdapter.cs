@@ -10,7 +10,7 @@ namespace api.Adapters
             var projectDto = new CommonLibraryProjectDto();
             if (!Guid.TryParse(project.GUID.ToString(), out Guid guid))
             {
-                return null as CommonLibraryProjectDto;
+                return null;
             }
 
             projectDto.ProjectState = project.ProjectState;
