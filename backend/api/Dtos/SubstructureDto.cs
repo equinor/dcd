@@ -8,7 +8,7 @@ namespace api.Dtos
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
         public SubstructureCostProfileDto? CostProfile { get; set; }
-        public SubstructureCessasionCostProfileDto? SubstructureCessasionCostProfileDto { get; set; }
+        public SubstructureCessationCostProfileDto? SubstructureCessationCostProfileDto { get; set; }
         public double DryWeight { get; set; }
         public Maturity Maturity { get; set; }
     }
@@ -17,7 +17,7 @@ namespace api.Dtos
     {
     }
 
-    public class SubstructureCessasionCostProfileDto : TimeSeriesCostDto
+    public class SubstructureCessationCostProfileDto : TimeSeriesCostDto
     {
     }
 }

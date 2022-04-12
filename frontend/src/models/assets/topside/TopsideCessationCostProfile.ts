@@ -1,4 +1,4 @@
-export class TopsideCessasionCostProfile implements Components.Schemas.TopsideCessasionCostProfileDto {
+export class TopsideCessationCostProfile implements Components.Schemas.TopsideCessationCostProfileDto {
     id?: string
     startYear?: number | undefined
     values?: number [] | null
@@ -6,7 +6,7 @@ export class TopsideCessasionCostProfile implements Components.Schemas.TopsideCe
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
 
-    constructor(data?: Components.Schemas.TopsideCessasionCostProfileDto) {
+    constructor(data?: Components.Schemas.TopsideCessationCostProfileDto) {
         if (data !== undefined && data !== null) {
             this.id = data?.id
             this.startYear = data?.startYear
@@ -17,10 +17,10 @@ export class TopsideCessasionCostProfile implements Components.Schemas.TopsideCe
         }
     }
 
-    static fromJSON(data?: Components.Schemas.TopsideCessasionCostProfileDto): TopsideCessasionCostProfile | undefined {
+    static fromJSON(data?: Components.Schemas.TopsideCessationCostProfileDto): TopsideCessationCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new TopsideCessasionCostProfile(data)
+        return new TopsideCessationCostProfile(data)
     }
 }

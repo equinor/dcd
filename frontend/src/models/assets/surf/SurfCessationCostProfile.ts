@@ -1,4 +1,4 @@
-export class SurfCessasionCostProfile implements Components.Schemas.SurfCessationCostProfileDto {
+export class SurfCessationCostProfile implements Components.Schemas.SurfCessationCostProfileDto {
     id?: string
     startYear?: number | undefined
     values?: number [] | null
@@ -17,10 +17,10 @@ export class SurfCessasionCostProfile implements Components.Schemas.SurfCessatio
         }
     }
 
-    static fromJSON(data?: Components.Schemas.SurfCessationCostProfileDto): SurfCessasionCostProfile | undefined {
+    static fromJSON(data?: Components.Schemas.SurfCessationCostProfileDto): SurfCessationCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new SurfCessasionCostProfile(data)
+        return new SurfCessationCostProfile(data)
     }
 }

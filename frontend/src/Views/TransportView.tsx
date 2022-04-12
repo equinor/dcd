@@ -77,7 +77,7 @@ const TransportView = () => {
     const [costProfileGridData, setCostProfileGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
 
-    // CessasionCostProfile
+    // CessationCostProfile
     const [cessationCostProfileColumns, setCessationCostProfileColumns] = useState<string[]>([""])
     const [cessationCostProfileGridData, setCessationCostProfileGridData] = useState<CellValue[][]>([[]])
     const [cessationCostProfileDialogOpen, setCessationCostProfileDialogOpen] = useState(false)

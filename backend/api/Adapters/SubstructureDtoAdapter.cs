@@ -15,7 +15,7 @@ namespace api.Adapters
                 DryWeight = substructure.DryWeight,
                 Maturity = substructure.Maturity,
                 CostProfile = Convert(substructure.CostProfile),
-                SubstructureCessasionCostProfileDto = Convert(substructure.SubstructureCessasionCostProfile)
+                SubstructureCessationCostProfileDto = Convert(substructure.SubstructureCessationCostProfile)
             };
             return substructureDto;
         }
@@ -37,21 +37,21 @@ namespace api.Adapters
             return substructureCostProfile;
         }
 
-        private static SubstructureCessasionCostProfileDto? Convert(SubstructureCessasionCostProfile? substructureCessasionCostProfile)
+        private static SubstructureCessationCostProfileDto? Convert(SubstructureCessationCostProfile? substructureCessationCostProfile)
         {
-            if (substructureCessasionCostProfile == null)
+            if (substructureCessationCostProfile == null)
             {
                 return null;
             }
-            SubstructureCessasionCostProfileDto substructureCessasionCostProfileDto = new SubstructureCessasionCostProfileDto
+            SubstructureCessationCostProfileDto substructureCessationCostProfileDto = new SubstructureCessationCostProfileDto
             {
-                Id = substructureCessasionCostProfile.Id,
-                EPAVersion = substructureCessasionCostProfile.EPAVersion,
-                Currency = substructureCessasionCostProfile.Currency,
-                StartYear = substructureCessasionCostProfile.StartYear,
-                Values = substructureCessasionCostProfile.Values
+                Id = substructureCessationCostProfile.Id,
+                EPAVersion = substructureCessationCostProfile.EPAVersion,
+                Currency = substructureCessationCostProfile.Currency,
+                StartYear = substructureCessationCostProfile.StartYear,
+                Values = substructureCessationCostProfile.Values
             };
-            return substructureCessasionCostProfileDto;
+            return substructureCessationCostProfileDto;
         }
     }
 }

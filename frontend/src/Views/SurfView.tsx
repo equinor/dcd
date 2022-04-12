@@ -13,7 +13,7 @@ import { Surf } from "../models/assets/surf/Surf"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
-import { SurfCessasionCostProfile } from "../models/assets/surf/SurfCessasionCostProfile"
+import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
 import { GetProjectService } from "../Services/ProjectService"
 import Import from "../Components/Import/Import"
 import { GetSurfService } from "../Services/SurfService"
@@ -74,7 +74,7 @@ const SurfView = () => {
     const [costProfileGridData, setCostProfileGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
 
-    // Cessasion Cost Profile
+    // Cessation Cost Profile
     const [cessationCostProfileColumns, setCessationCostProfileColumns] = useState<string[]>([""])
     const [cessationCostProfileGridData, setCessationCostProfileGridData] = useState<CellValue[][]>([[]])
     const [cessationCostProfileDialogOpen, setCessationCostProfileDialogOpen] = useState(false)
@@ -151,7 +151,7 @@ const SurfView = () => {
 
     const updateInsertSurfCessationCostProfile = (input: string, year: number) => {
         const newSurf = new Surf(surf!)
-        const newCessationCostProfile: SurfCessasionCostProfile = new SurfCessasionCostProfile()
+        const newCessationCostProfile: SurfCessationCostProfile = new SurfCessationCostProfile()
         newSurf.id = newSurf.id ?? emptyGUID
         newSurf.surfCessationCostProfileDto = newSurf.surfCessationCostProfileDto ?? newCessationCostProfile
         newSurf.surfCessationCostProfileDto.values = input.replace(/(\r\n|\n|\r)/gm, "")
@@ -298,7 +298,7 @@ const SurfView = () => {
                 )}
 
             <Wrapper>
-                <Typography variant="h4">Cessasion Cost profile</Typography>
+                <Typography variant="h4">Cessation Cost profile</Typography>
                 <ImportButton onClick={() => { setCessationCostProfileDialogOpen(true) }}>Import</ImportButton>
                 <ImportButton
                     disabled={surf?.surfCessationCostProfileDto === undefined}

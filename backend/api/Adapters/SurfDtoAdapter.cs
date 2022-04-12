@@ -63,7 +63,7 @@ namespace api.Adapters
                 return null;
             }
 
-            SurfCessationCostProfileDto surfCessasionCostProfileDto = new SurfCessationCostProfileDto
+            SurfCessationCostProfileDto surfCessationCostProfileDto = new SurfCessationCostProfileDto
             {
                 Id = surfCessationCostProfile.Id,
                 Currency = surfCessationCostProfile.Currency,
@@ -72,7 +72,7 @@ namespace api.Adapters
                 StartYear = surfCessationCostProfile.StartYear
             };
 
-            return surfCessasionCostProfileDto;
+            return surfCessationCostProfileDto;
 
         }
     }

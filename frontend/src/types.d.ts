@@ -122,6 +122,10 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+            surfCessationCostProfileDto?: SurfCessationCostProfileDto;
+            topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
+            substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
+            transportCessationCostProfileDto?: TransportCessationCostProfileDto;
         }
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
@@ -181,13 +185,14 @@ declare namespace Components {
             exploration?: ExplorationCostProfileDto;
             capex?: CapexDto;
             productionAndSalesVolumes?: ProductionAndSalesVolumesDto;
+            offshoreFacilitiesCostProfileDto?: OffshoreFacilitiesCostProfileDto;
         }
         export interface STEAProjectDto {
             name?: string | null;
             startYear?: number; // int32
             steaCases?: STEACaseDto[] | null;
         }
-        export interface SubstructureCessasionCostProfileDto {
+        export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -208,7 +213,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SubstructureCostProfileDto;
-            substructureCessasionCostProfileDto?: SubstructureCessasionCostProfileDto;
+            substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
         }
@@ -242,7 +247,7 @@ declare namespace Components {
             templateCount?: number; // int32
             productionFlowline?: ProductionFlowline /* int32 */;
         }
-        export interface TopsideCessasionCostProfileDto {
+        export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -263,7 +268,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TopsideCostProfileDto;
-            topsideCessasionCostProfileDto?: TopsideCessasionCostProfileDto;
+            topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
             dryWeight?: number; // double
             oilCapacity?: number; // double
             gasCapacity?: number; // double

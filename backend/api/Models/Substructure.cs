@@ -9,7 +9,7 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public SubstructureCostProfile? CostProfile { get; set; }
-        public SubstructureCessasionCostProfile? SubstructureCessasionCostProfile { get; set; }
+        public SubstructureCessationCostProfile? SubstructureCessationCostProfile { get; set; }
         public double DryWeight { get; set; }
         public Maturity Maturity { get; set; }
     }
@@ -20,7 +20,7 @@ namespace api.Models
         public Substructure Substructure { get; set; } = null!;
     }
 
-    public class SubstructureCessasionCostProfile : TimeSeriesCost
+    public class SubstructureCessationCostProfile : TimeSeriesCost
     {
         [ForeignKey("Substructure.Id")]
         public Substructure Substructure { get; set; } = null!;

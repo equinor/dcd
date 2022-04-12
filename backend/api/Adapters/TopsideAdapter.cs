@@ -25,9 +25,9 @@ namespace api.Adapters
                 topside.CostProfile = Convert(topsideDto.CostProfile, topside);
             }
 
-            if (topsideDto.TopsideCessasionCostProfileDto != null)
+            if (topsideDto.TopsideCessationCostProfileDto != null)
             {
-                topside.TopsideCessasionCostProfile = Convert(topsideDto.TopsideCessasionCostProfileDto, topside);
+                topside.TopsideCessationCostProfile = Convert(topsideDto.TopsideCessationCostProfileDto, topside);
             }
 
             return topside;
@@ -45,7 +45,7 @@ namespace api.Adapters
             existing.ArtificialLift = topsideDto.ArtificialLift;
             existing.Maturity = topsideDto.Maturity;
             existing.CostProfile = Convert(topsideDto.CostProfile, existing);
-            existing.TopsideCessasionCostProfile = Convert(topsideDto.TopsideCessasionCostProfileDto, existing);
+            existing.TopsideCessationCostProfile = Convert(topsideDto.TopsideCessationCostProfileDto, existing);
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {
@@ -66,23 +66,23 @@ namespace api.Adapters
             return topsideCostProfile;
         }
 
-        private static TopsideCessasionCostProfile? Convert(TopsideCessasionCostProfileDto? topsideCessasionCostProfileDto, Topside topside)
+        private static TopsideCessationCostProfile? Convert(TopsideCessationCostProfileDto? topsideCessationCostProfileDto, Topside topside)
         {
-            if (topsideCessasionCostProfileDto == null)
+            if (topsideCessationCostProfileDto == null)
             {
                 return null;
             }
-            TopsideCessasionCostProfile topsideCessasionCostProfile = new TopsideCessasionCostProfile
+            TopsideCessationCostProfile topsideCessationCostProfile = new TopsideCessationCostProfile
             {
-                Id = topsideCessasionCostProfileDto.Id,
-                Currency = topsideCessasionCostProfileDto.Currency,
-                EPAVersion = topsideCessasionCostProfileDto.EPAVersion,
+                Id = topsideCessationCostProfileDto.Id,
+                Currency = topsideCessationCostProfileDto.Currency,
+                EPAVersion = topsideCessationCostProfileDto.EPAVersion,
                 Topside = topside,
-                StartYear = topsideCessasionCostProfileDto.StartYear,
-                Values = topsideCessasionCostProfileDto.Values
+                StartYear = topsideCessationCostProfileDto.StartYear,
+                Values = topsideCessationCostProfileDto.Values
             };
 
-            return topsideCessasionCostProfile;
+            return topsideCessationCostProfile;
         }
     }
 }

@@ -50,11 +50,11 @@ namespace api.Adapters
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfile);
                 }
 
-                SubstructureCessasionCostProfileDto? substructureCessasionCostProfileDto = substructureCostProfileDto.SubstructureCessasionCostProfileDto;
-                if (substructureCessasionCostProfileDto != null)
+                SubstructureCessationCostProfileDto? substructureCessationCostProfileDto = substructureCostProfileDto.SubstructureCessationCostProfileDto;
+                if (substructureCessationCostProfileDto != null)
                 {
-                    substructureCessasionCostProfileDto.StartYear += dg4Year;
-                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCessasionCostProfileDto);
+                    substructureCessationCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCessationCostProfileDto);
                 }
 
             }
@@ -85,11 +85,11 @@ namespace api.Adapters
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCostProfileDto);
                 }
 
-                TopsideCessasionCostProfileDto? topsideCessasionCostProfileDto = topsideDto.TopsideCessasionCostProfileDto;
-                if (topsideCessasionCostProfileDto != null)
+                TopsideCessationCostProfileDto? topsideCessationCostProfileDto = topsideDto.TopsideCessationCostProfileDto;
+                if (topsideCessationCostProfileDto != null)
                 {
-                    topsideCessasionCostProfileDto.StartYear += dg4Year;
-                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCessasionCostProfileDto);
+                    topsideCessationCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCessationCostProfileDto);
                 }
             }
             if (c.TransportLink != Guid.Empty)

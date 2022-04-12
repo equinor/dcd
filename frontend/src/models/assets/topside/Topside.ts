@@ -1,12 +1,12 @@
 import { TopsideCostProfile } from "./TopsideCostProfile"
-import { TopsideCessasionCostProfile } from "./TopsideCessasionCostProfile"
+import { TopsideCessationCostProfile } from "./TopsideCessationCostProfile"
 
 export class Topside implements Components.Schemas.TopsideDto {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: TopsideCostProfile | undefined
-    topsideCessasionCostProfileDto?: TopsideCessasionCostProfile | undefined
+    topsideCessationCostProfileDto?: TopsideCessationCostProfile | undefined
     dryWeight?: number | undefined
     oilCapacity?: number | undefined
     gasCapacity?: number | undefined
@@ -20,8 +20,8 @@ export class Topside implements Components.Schemas.TopsideDto {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = TopsideCostProfile.fromJSON(data.costProfile)
-            this.topsideCessasionCostProfileDto = TopsideCessasionCostProfile
-                .fromJSON(data.topsideCessasionCostProfileDto)
+            this.topsideCessationCostProfileDto = TopsideCessationCostProfile
+                .fromJSON(data.topsideCessationCostProfileDto)
             this.dryWeight = data.dryWeight
             this.maturity = data.maturity
         } else {

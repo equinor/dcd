@@ -21,12 +21,12 @@ namespace api.Context
 
         public DbSet<Substructure>? Substructures { get; set; }
         public DbSet<SubstructureCostProfile>? SubstructureCostProfiles { get; set; }
-        public DbSet<SubstructureCessasionCostProfile>? SubstructureCessasionCostProfiles { get; set; }
+        public DbSet<SubstructureCessationCostProfile>? SubstructureCessationCostProfiles { get; set; }
 
         public DbSet<Topside>? Topsides { get; set; }
 
         public DbSet<TopsideCostProfile>? TopsideCostProfiles { get; set; }
-        public DbSet<TopsideCessasionCostProfile>? TopsideCessasionCostProfiles { get; set; }
+        public DbSet<TopsideCessationCostProfile>? TopsideCessationCostProfiles { get; set; }
 
         public DbSet<Transport>? Transports { get; set; }
         public DbSet<TransportCostProfile>? TransportCostProfile { get; set; }

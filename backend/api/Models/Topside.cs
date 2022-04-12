@@ -9,7 +9,7 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public TopsideCostProfile? CostProfile { get; set; }
-        public TopsideCessasionCostProfile? TopsideCessasionCostProfile { get; set; }
+        public TopsideCessationCostProfile? TopsideCessationCostProfile { get; set; }
         public double DryWeight { get; set; }
         public double OilCapacity { get; set; }
         public double GasCapacity { get; set; }
@@ -24,7 +24,7 @@ namespace api.Models
         public Topside Topside { get; set; } = null!;
     }
 
-    public class TopsideCessasionCostProfile : TimeSeriesCost
+    public class TopsideCessationCostProfile : TimeSeriesCost
     {
         [ForeignKey("Topside.Id")]
         public Topside Topside { get; set; } = null!;

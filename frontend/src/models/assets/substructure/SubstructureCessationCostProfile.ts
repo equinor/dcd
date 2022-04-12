@@ -1,4 +1,4 @@
-export class SubstructureCessasionCostProfile implements Components.Schemas.SubstructureCessasionCostProfileDto {
+export class SubstructureCessationCostProfile implements Components.Schemas.SubstructureCessationCostProfileDto {
     id?: string
     startYear?: number | undefined
     values?: number [] | null
@@ -6,7 +6,7 @@ export class SubstructureCessasionCostProfile implements Components.Schemas.Subs
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
 
-    constructor(data?: Components.Schemas.SubstructureCessasionCostProfileDto) {
+    constructor(data?: Components.Schemas.SubstructureCessationCostProfileDto) {
         if (data !== undefined && data !== null) {
             this.id = data?.id
             this.startYear = data?.startYear
@@ -17,11 +17,11 @@ export class SubstructureCessasionCostProfile implements Components.Schemas.Subs
         }
     }
 
-    static fromJSON(data?: Components.Schemas.SubstructureCessasionCostProfileDto):
-        SubstructureCessasionCostProfile | undefined {
+    static fromJSON(data?: Components.Schemas.SubstructureCessationCostProfileDto):
+        SubstructureCessationCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new SubstructureCessasionCostProfile(data)
+        return new SubstructureCessationCostProfile(data)
     }
 }

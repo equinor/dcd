@@ -20,9 +20,9 @@ namespace api.Adapters
                 substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
             }
 
-            if (substructureDto.SubstructureCessasionCostProfileDto != null)
+            if (substructureDto.SubstructureCessationCostProfileDto != null)
             {
-                substructure.SubstructureCessasionCostProfile = Convert(substructureDto.SubstructureCessasionCostProfileDto, substructure);
+                substructure.SubstructureCessationCostProfile = Convert(substructureDto.SubstructureCessationCostProfileDto, substructure);
             }
 
             return substructure;
@@ -37,7 +37,7 @@ namespace api.Adapters
             existing.Maturity = substructureDto.Maturity;
 
             existing.CostProfile = Convert(substructureDto.CostProfile, existing);
-            existing.SubstructureCessasionCostProfile = Convert(substructureDto.SubstructureCessasionCostProfileDto, existing);
+            existing.SubstructureCessationCostProfile = Convert(substructureDto.SubstructureCessationCostProfileDto, existing);
         }
 
         private static SubstructureCostProfile? Convert(SubstructureCostProfileDto? costprofile, Substructure substructure)
@@ -58,22 +58,22 @@ namespace api.Adapters
             return substructureCostProfile;
         }
 
-        private static SubstructureCessasionCostProfile? Convert(SubstructureCessasionCostProfileDto? substructureCessasionCostProfileDto, Substructure substructure)
+        private static SubstructureCessationCostProfile? Convert(SubstructureCessationCostProfileDto? substructureCessationCostProfileDto, Substructure substructure)
         {
-            if (substructureCessasionCostProfileDto == null)
+            if (substructureCessationCostProfileDto == null)
             {
                 return null;
             }
-            SubstructureCessasionCostProfile substructureCessasionCostProfile = new SubstructureCessasionCostProfile
+            SubstructureCessationCostProfile substructureCessationCostProfile = new SubstructureCessationCostProfile
             {
                 Substructure = substructure,
-                Id = substructureCessasionCostProfileDto.Id,
-                EPAVersion = substructureCessasionCostProfileDto.EPAVersion,
-                Currency = substructureCessasionCostProfileDto.Currency,
-                StartYear = substructureCessasionCostProfileDto.StartYear,
-                Values = substructureCessasionCostProfileDto.Values
+                Id = substructureCessationCostProfileDto.Id,
+                EPAVersion = substructureCessationCostProfileDto.EPAVersion,
+                Currency = substructureCessationCostProfileDto.Currency,
+                StartYear = substructureCessationCostProfileDto.StartYear,
+                Values = substructureCessationCostProfileDto.Values
             };
-            return substructureCessasionCostProfile;
+            return substructureCessationCostProfile;
         }
     }
 }

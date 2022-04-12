@@ -33,8 +33,8 @@ namespace api.Dtos
     public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto
     {
         public SurfCessationCostProfileDto SurfCessationCostProfileDto { get; set; } = null!;
-        public TopsideCessasionCostProfileDto TopsideCessasionCostProfileDto { get; set; } = null!;
-        public SubstructureCessasionCostProfileDto SubstructureCessasionCostProfileDto { get; set; } = null!;
+        public TopsideCessationCostProfileDto TopsideCessationCostProfileDto { get; set; } = null!;
+        public SubstructureCessationCostProfileDto SubstructureCessationCostProfileDto { get; set; } = null!;
         public TransportCessationCostProfileDto TransportCessationCostProfileDto { get; set; } = null!;
     }
 }

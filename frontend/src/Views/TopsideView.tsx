@@ -13,7 +13,7 @@ import {
 import Import from "../Components/Import/Import"
 import { Topside } from "../models/assets/topside/Topside"
 import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
-import { TopsideCessasionCostProfile } from "../models/assets/topside/TopsideCessasionCostProfile"
+import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
@@ -77,7 +77,7 @@ const TopsideView = () => {
     const [costProfileGridData, setCostProfileGridData] = useState<CellValue[][]>([[]])
     const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
 
-    // Cessasion Cost Profile
+    // Cessation Cost Profile
     const [cessationCostProfileColumns, setCessationCostProfileColumns] = useState<string[]>([""])
     const [cessationCostProfileGridData, setCessationCostProfileGridData] = useState<CellValue[][]>([[]])
     const [cessationCostProfileDialogOpen, setCessationCostProfileDialogOpen] = useState(false)
@@ -108,14 +108,14 @@ const TopsideView = () => {
                 const newCostProfileColumnTitles = getColumnAbsoluteYears(caseResult, newTopside?.costProfile)
                 const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(
                     caseResult,
-                    newTopside?.topsideCessasionCostProfileDto,
+                    newTopside?.topsideCessationCostProfileDto,
                 )
 
                 setCostProfileColumns(newCostProfileColumnTitles)
                 setCessationCostProfileColumns(newCessationCostProfileColumnTitles)
 
                 const newCostProfileGridData = buildGridData(newTopside?.costProfile)
-                const newCessationCostProfileGridData = buildGridData(newTopside?.topsideCessasionCostProfileDto)
+                const newCessationCostProfileGridData = buildGridData(newTopside?.topsideCessationCostProfileDto)
 
                 setCostProfileGridData(newCostProfileGridData)
                 setCessationCostProfileGridData(newCessationCostProfileGridData)
@@ -136,7 +136,7 @@ const TopsideView = () => {
          { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newCessationCostProfileGridData = replaceOldData(cessationCostProfileGridData, changes)
         setCessationCostProfileGridData(newCessationCostProfileGridData)
-        setCessationCostProfileColumns(getColumnAbsoluteYears(caseItem, topside?.topsideCessasionCostProfileDto))
+        setCessationCostProfileColumns(getColumnAbsoluteYears(caseItem, topside?.topsideCessationCostProfileDto))
     }
 
     const updateInsertTopsideCostProfile = (input: string, year: number) => {
@@ -151,15 +151,15 @@ const TopsideView = () => {
         return newTopside
     }
 
-    const updateInsertTopsideCessasionCostProfile = (input: string, year: number) => {
+    const updateInsertTopsideCessationCostProfile = (input: string, year: number) => {
         const newTopside = new Topside(topside!)
-        const newCessationCostProfile = new TopsideCessasionCostProfile()
+        const newCessationCostProfile = new TopsideCessationCostProfile()
         newTopside.id = newTopside.id ?? emptyGuid
-        newTopside.topsideCessasionCostProfileDto = newTopside.topsideCessasionCostProfileDto ?? newCessationCostProfile
-        newTopside.topsideCessasionCostProfileDto!.values = input.replace(/(\r\n|\n|\r)/gm, "")
+        newTopside.topsideCessationCostProfileDto = newTopside.topsideCessationCostProfileDto ?? newCessationCostProfile
+        newTopside.topsideCessationCostProfileDto!.values = input.replace(/(\r\n|\n|\r)/gm, "")
             .split("\t").map((i) => parseFloat(i))
-        newTopside.topsideCessasionCostProfileDto!.startYear = year
-        newTopside.topsideCessasionCostProfileDto!.epaVersion = newTopside.topsideCessasionCostProfileDto
+        newTopside.topsideCessationCostProfileDto!.startYear = year
+        newTopside.topsideCessationCostProfileDto!.epaVersion = newTopside.topsideCessationCostProfileDto
             .epaVersion ?? ""
         return newTopside
     }
@@ -178,14 +178,14 @@ const TopsideView = () => {
     }
 
     const onCessationCostProfileImport = (input: string, year: number) => {
-        const newTopside = updateInsertTopsideCessasionCostProfile(input, year)
+        const newTopside = updateInsertTopsideCessationCostProfile(input, year)
         setTopside(newTopside)
         const newCessationCostProfileColumnTitles = getColumnAbsoluteYears(
             caseItem,
-            newTopside?.topsideCessasionCostProfileDto,
+            newTopside?.topsideCessationCostProfileDto,
         )
         setCessationCostProfileColumns(newCessationCostProfileColumnTitles)
-        const newCessationCostProfileGridData = buildGridData(newTopside?.topsideCessasionCostProfileDto)
+        const newCessationCostProfileGridData = buildGridData(newTopside?.topsideCessationCostProfileDto)
         setCessationCostProfileGridData(newCessationCostProfileGridData)
         setCessationCostProfileDialogOpen(!cessationCostProfileDialogOpen)
         if (topsideName !== "") {
@@ -241,7 +241,7 @@ const TopsideView = () => {
 
     const deleteCessationCostProfile = () => {
         const topsideCopy = new Topside(topside)
-        topsideCopy.topsideCessasionCostProfileDto = undefined
+        topsideCopy.topsideCessationCostProfileDto = undefined
         if (topsideName !== "") {
             setHasChanges(true)
         } else {
@@ -302,10 +302,10 @@ const TopsideView = () => {
                 )}
 
             <Wrapper>
-                <Typography variant="h4">Cessasion Cost profile</Typography>
+                <Typography variant="h4">Cessation Cost profile</Typography>
                 <ImportButton onClick={() => { setCessationCostProfileDialogOpen(true) }}>Import</ImportButton>
                 <ImportButton
-                    disabled={topside?.topsideCessasionCostProfileDto === undefined}
+                    disabled={topside?.topsideCessationCostProfileDto === undefined}
                     color="danger"
                     onClick={deleteCessationCostProfile}
                 >
