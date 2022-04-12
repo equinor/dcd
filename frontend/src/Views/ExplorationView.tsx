@@ -3,7 +3,7 @@ import {
 } from "@equinor/eds-core-react"
 import { ChangeEventHandler, useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Case } from "../models/Case"
@@ -12,10 +12,10 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
-import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetHeader, AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
+import Save from "../Components/Save"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -24,8 +24,6 @@ const ExplorationView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [name, setName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
 
     useEffect(() => {
         (async () => {
@@ -54,23 +52,6 @@ const ExplorationView = () => {
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const explorationDto = new Exploration(exploration!)
-        explorationDto.name = name
-        if (exploration?.id === EMPTY_GUID) {
-            explorationDto.projectId = params.projectId
-            const newProject = await GetExplorationService().createExploration(params.caseId!, explorationDto!)
-            const newExploration = newProject.explorations.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newExploration!.id!)
-            navigate(`${newUrl}`)
-            setProject(newProject)
-        } else {
-            const newProject = await GetExplorationService().updateExploration(explorationDto!)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setName(e.target.value)
@@ -111,9 +92,15 @@ const ExplorationView = () => {
                 assetName={name}
                 timeSeriesTitle="Cost profile"
             />
-            <Wrapper>
-                <SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton>
-            </Wrapper>
+            <Save
+                name={name}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setExploration}
+                setProject={setProject}
+                asset={exploration!}
+                assetService={GetExplorationService()}
+            />
         </AssetViewDiv>
     )
 }

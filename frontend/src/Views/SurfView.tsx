@@ -3,7 +3,7 @@ import {
     Input, Label, Typography,
 } from "@equinor/eds-core-react"
 
-import { useNavigate, useLocation, useParams } from "react-router"
+import { useParams } from "react-router"
 import { Surf } from "../models/assets/surf/Surf"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
@@ -11,10 +11,10 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetSurfService } from "../Services/SurfService"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
-import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetHeader, AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
+import Save from "../Components/Save"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -23,8 +23,6 @@ const SurfView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [surfName, setSurfName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
 
     useEffect(() => {
         (async () => {
@@ -53,23 +51,6 @@ const SurfView = () => {
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const surfDto = new Surf(surf!)
-        surfDto.name = surfName
-        if (surf?.id === EMPTY_GUID) {
-            surfDto.projectId = params.projectId
-            const newProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
-            const newSurf = newProject.surfs.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newSurf!.id!)
-            navigate(`${newUrl}`, { replace: true })
-            setProject(newProject)
-        } else {
-            const newProject = await GetSurfService().updateSurf(surfDto)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setSurfName(e.target.value)
@@ -110,7 +91,15 @@ const SurfView = () => {
                 assetName={surfName}
                 timeSeriesTitle="Cost profile"
             />
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
+            <Save
+                name={surfName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setSurf}
+                setProject={setProject}
+                asset={surf!}
+                assetService={GetSurfService()}
+            />
         </AssetViewDiv>
     )
 }

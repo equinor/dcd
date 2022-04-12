@@ -3,8 +3,9 @@ import {
 } from "@equinor/eds-core-react"
 import { ChangeEventHandler, useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
+import Save from "../Components/Save"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { WellProject } from "../models/assets/wellproject/WellProject"
@@ -12,9 +13,8 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
-import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetHeader, AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 
 function WellProjectView() {
@@ -24,8 +24,6 @@ function WellProjectView() {
     const [hasChanges, setHasChanges] = useState(false)
     const [wellProjectName, setWellProjectName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
 
     useEffect(() => {
         (async () => {
@@ -54,24 +52,6 @@ function WellProjectView() {
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const wellProjectDto = new WellProject(wellProject!)
-        wellProjectDto.name = wellProjectName
-        if (wellProject?.id === EMPTY_GUID) {
-            wellProjectDto.projectId = params.projectId
-            const updatedProject: Project = await
-            GetWellProjectService().createWellProject(params.caseId!, wellProjectDto!)
-            const newWellProject = updatedProject.wellProjects.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newWellProject!.id!)
-            navigate(`${newUrl}`, { replace: true })
-            setWellProject(newWellProject)
-        } else {
-            const newProject = await GetWellProjectService().updateWellProject(wellProjectDto!)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     const handleWellProjectNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setWellProjectName(e.target.value)
@@ -121,8 +101,15 @@ function WellProjectView() {
                 assetName={wellProjectName}
                 timeSeriesTitle="Drilling schedule"
             />
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
-
+            <Save
+                name={wellProjectName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setWellProject}
+                setProject={setProject}
+                asset={wellProject!}
+                assetService={GetWellProjectService()}
+            />
         </AssetViewDiv>
     )
 }
