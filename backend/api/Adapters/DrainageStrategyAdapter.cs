@@ -9,7 +9,6 @@ namespace api.Adapters
         {
             var drainageStrategy = DrainagestrategyDtoToDrainagestrategy(null, drainageStrategyDto);
 
-
             if (drainageStrategyDto.ProductionProfileOil != null)
             {
                 drainageStrategy.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, drainageStrategy);
