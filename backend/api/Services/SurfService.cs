@@ -25,7 +25,6 @@ namespace api.Services
                 return _context.Surfs
                     .Include(c => c.CostProfile)
                     .Include(c => c.SurfCessationCostProfile)
-                    //          .ThenInclude(c => c.YearValues)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else

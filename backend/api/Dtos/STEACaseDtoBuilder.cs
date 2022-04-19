@@ -54,7 +54,7 @@ namespace api.Adapters
                 if (substructureCessationCostProfileDto != null)
                 {
                     substructureCessationCostProfileDto.StartYear += dg4Year;
-                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCessationCostProfileDto);
+                    sTEACaseDto.Capex.CessationOffshoreFacilities.AddValues(substructureCessationCostProfileDto);
                 }
 
             }
@@ -72,7 +72,7 @@ namespace api.Adapters
                 if (surfCessationCostProfileDto != null)
                 {
                     surfCessationCostProfileDto.StartYear += dg4Year;
-                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(surfCessationCostProfileDto);
+                    sTEACaseDto.Capex.CessationOffshoreFacilities.AddValues(surfCessationCostProfileDto);
                 }
             }
             if (c.TopsideLink != Guid.Empty)
@@ -89,7 +89,7 @@ namespace api.Adapters
                 if (topsideCessationCostProfileDto != null)
                 {
                     topsideCessationCostProfileDto.StartYear += dg4Year;
-                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCessationCostProfileDto);
+                    sTEACaseDto.Capex.CessationOffshoreFacilities.AddValues(topsideCessationCostProfileDto);
                 }
             }
             if (c.TransportLink != Guid.Empty)
@@ -106,10 +106,11 @@ namespace api.Adapters
                 if (transportCessationCostProfileDto != null)
                 {
                     transportCessationCostProfileDto.StartYear += dg4Year;
-                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(transportCessationCostProfileDto);
+                    sTEACaseDto.Capex.CessationOffshoreFacilities.AddValues(transportCessationCostProfileDto);
                 }
             }
             sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.OffshoreFacilities);
+            sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.CessationOffshoreFacilities);
         }
 
         private static void AddProductionSalesAndVolumes(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
