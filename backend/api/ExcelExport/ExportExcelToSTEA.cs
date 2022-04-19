@@ -171,7 +171,7 @@ public class BusinessCase
     public List<ExcelTableCell> Capex { get; set; }
 
     public List<ExcelTableCell> OffshoreFacilites { get; set; }
-    public List<ExcelTableCell> CessationOffshoreFacilites { get; set; } 
+    public List<ExcelTableCell> CessationOffshoreFacilites { get; set; }
     public List<ExcelTableCell> Drilling { get; set; }
 
     public ExcelTableCell ProductionAndSalesVolumes { get; set; } = null!;

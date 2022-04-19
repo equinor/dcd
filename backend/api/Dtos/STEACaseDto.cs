@@ -19,7 +19,7 @@ namespace api.Dtos
         public WellProjectCostProfileDto Drilling { get; set; } = null!;
 
         public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = null!;
-        public CessationOffshoreFacilities CessationOffshoreFacilities { get; set; } = null!; 
+        public CessationOffshoreFacilities CessationOffshoreFacilities { get; set; } = null!;
 
     }
 
@@ -36,7 +36,8 @@ namespace api.Dtos
 
     }
 
-    public class CessationOffshoreFacilities : TimeSeriesCostDto {
+    public class CessationOffshoreFacilities : TimeSeriesCostDto
+    {
         public SurfCessationCostProfileDto SurfCessationCostProfileDto { get; set; } = null!;
         public TopsideCessationCostProfileDto TopsideCessationCostProfileDto { get; set; } = null!;
         public SubstructureCessationCostProfileDto SubstructureCessationCostProfileDto { get; set; } = null!;
