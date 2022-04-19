@@ -39,6 +39,7 @@ namespace api.Adapters
                 }
             }
             sTEACaseDto.Capex.OffshoreFacilities = new OffshoreFacilitiesCostProfileDto();
+            sTEACaseDto.Capex.CessationOffshoreFacilities = new CessationOffshoreFacilities();
             if (c.SubstructureLink != Guid.Empty)
             {
                 SubstructureDto? substructureCostProfileDto = p.Substructures!.First(l => l.Id == c.SubstructureLink);
