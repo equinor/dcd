@@ -123,8 +123,8 @@ The following diagrams have been created using PlantUML.
 
 ### System Context Diagram
 System context diagram for the DCD application.
-![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/InGit5/dcd///main/PlantUMLC4L1)
+![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/equinor/dcd///main/PlantUMLC4L1)
 
 ### Container Diagram
 Container diagram for the DCD application.
-![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/InGit5/dcd///main/DCD_C4Container.iuml)
+![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/equinor/dcd///main/DCD_C4Container.iuml)
