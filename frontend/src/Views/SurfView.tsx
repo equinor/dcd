@@ -1,6 +1,6 @@
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 
 import { useNavigate, useLocation, useParams } from "react-router"
@@ -13,8 +13,9 @@ import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import AssetName from "../Components/AssetName"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -71,30 +72,14 @@ const SurfView = () => {
         setHasChanges(false)
     }
 
-    const handleSurfNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setSurfName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Surf</Typography>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="surfName" label="Name" />
-                    <Input
-                        id="surfName"
-                        name="surfName"
-                        placeholder="Enter surf name"
-                        value={surfName}
-                        onChange={handleSurfNameFieldChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setSurfName}
+                name={surfName}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>

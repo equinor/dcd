@@ -1,10 +1,11 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
+import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Topside } from "../models/assets/topside/Topside"
@@ -14,7 +15,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 
 const TopsideView = () => {
@@ -72,30 +73,14 @@ const TopsideView = () => {
         setHasChanges(false)
     }
 
-    const handleTopsideNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setTopsideName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Topside</Typography>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="topsideName" label="Name" />
-                    <Input
-                        id="topsideName"
-                        name="topsideName"
-                        placeholder="Enter topside name"
-                        value={topsideName}
-                        onChange={handleTopsideNameFieldChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setTopsideName}
+                name={topsideName}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
