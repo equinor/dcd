@@ -16,6 +16,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -84,6 +85,7 @@ const SurfView = () => {
                 setProject={setProject}
                 asset={surf!}
                 assetService={GetSurfService()}
+                assetType={AssetTypeEnum.surfs}
             />
         </AssetViewDiv>
     )

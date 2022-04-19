@@ -17,6 +17,7 @@ import { GetWellProjectService } from "../Services/WellProjectService"
 import {
     AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -94,6 +95,7 @@ function WellProjectView() {
                 setProject={setProject}
                 asset={wellProject!}
                 assetService={GetWellProjectService()}
+                assetType={AssetTypeEnum.wellProjects}
             />
         </AssetViewDiv>
     )

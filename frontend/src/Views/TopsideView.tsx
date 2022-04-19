@@ -17,6 +17,7 @@ import { GetTopsideService } from "../Services/TopsideService"
 import {
     AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -85,6 +86,7 @@ const TopsideView = () => {
                 setProject={setProject}
                 asset={topside!}
                 assetService={GetTopsideService()}
+                assetType={AssetTypeEnum.topsides}
             />
         </AssetViewDiv>
     )

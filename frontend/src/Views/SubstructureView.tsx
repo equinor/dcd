@@ -17,6 +17,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -85,6 +86,7 @@ const SubstructureView = () => {
                 setProject={setProject}
                 asset={substructure!}
                 assetService={GetSubstructureService()}
+                assetType={AssetTypeEnum.substructures}
             />
         </AssetViewDiv>
     )

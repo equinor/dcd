@@ -18,6 +18,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -140,6 +141,7 @@ const DrainageStrategyView = () => {
                 setProject={setProject}
                 asset={drainageStrategy!}
                 assetService={GetDrainageStrategyService()}
+                assetType={AssetTypeEnum.drainageStrategies}
             />
         </AssetViewDiv>
     )

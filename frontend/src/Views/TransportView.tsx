@@ -17,6 +17,7 @@ import { GetTransportService } from "../Services/TransportService"
 import {
     AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -85,6 +86,7 @@ const TransportView = () => {
                 setProject={setProject}
                 asset={transport!}
                 assetService={GetTransportService()}
+                assetType={AssetTypeEnum.transports}
             />
         </AssetViewDiv>
     )

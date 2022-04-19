@@ -1,4 +1,5 @@
 import { useLocation, useNavigate, useParams } from "react-router"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { IAsset } from "../models/assets/IAsset"
 import { Project } from "../models/Project"
 import { EMPTY_GUID } from "../Utils/constants"
@@ -19,6 +20,7 @@ interface Props {
     setProject: React.Dispatch<React.SetStateAction<Project | undefined>>
     asset: IAsset
     assetService: IAssetService
+    assetType: AssetTypeEnum
 }
 
 const Save = ({
@@ -29,6 +31,7 @@ const Save = ({
     setProject,
     asset,
     assetService,
+    assetType,
 }: Props) => {
     const params = useParams()
     const navigate = useNavigate()
@@ -40,7 +43,7 @@ const Save = ({
         if (asset?.id === EMPTY_GUID) {
             assetDto.projectId = params.projectId
             const newProject = await assetService.create(params.caseId!, assetDto!)
-            const newAsset = newProject.substructures.at(-1)
+            const newAsset = newProject[assetType].at(-1)
             const newUrl = location.pathname.replace(EMPTY_GUID, newAsset!.id!)
             navigate(`${newUrl}`)
             setAsset(newAsset)
