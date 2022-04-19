@@ -1,4 +1,3 @@
-// import { Cell } from "@equinor/eds-core-react/dist/types/components/Table/Cell"
 import { Case } from "../../models/Case"
 import { CellValue } from "./DataTable"
 
@@ -59,8 +58,7 @@ export const getColumnAbsoluteYears = (newCaseItem?: Case, costProfile?: any) =>
     return startYears
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const buildGridData = (costProfile?: any, dG4Year?: number) => {
+export const buildGridData = (costProfile?: any) => {
     const grid: ({value: number, readOnly?: boolean})[][] = [
         [
         ],
@@ -71,8 +69,7 @@ export const buildGridData = (costProfile?: any, dG4Year?: number) => {
     return grid
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const buildGridZeroData = (zeroes?: any, dG4Year?: number) => {
+export const buildZeroGridData = (zeroes?: any) => {
     const grid: ({value: number, readOnly?: boolean})[][] = [
         [
         ],

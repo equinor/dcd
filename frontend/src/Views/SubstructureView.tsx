@@ -27,6 +27,8 @@ const SubstructureView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -52,6 +54,10 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure?.name!)
+                // eslint-disable-next-line max-len
+                setEarliestTimeSeriesYear(Math.min(newSubstructure!.costProfile!.startYear!) + caseResult!.DG4Date!.getFullYear())
+                // eslint-disable-next-line max-len
+                setLatestTimeSeriesYear(Math.max(newSubstructure!.costProfile!.startYear! + newSubstructure.costProfile!.values!.length!) + caseResult!.DG4Date!.getFullYear())
             }
         })()
     }, [project])
@@ -96,6 +102,10 @@ const SubstructureView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={substructureName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper>
                 <SaveButton disabled={!hasChanges} onClick={handleSave}>

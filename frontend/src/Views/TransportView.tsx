@@ -27,6 +27,8 @@ const TransportView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -52,6 +54,10 @@ const TransportView = () => {
                     setTransport(newTransport)
                 }
                 setTransportName(newTransport?.name!)
+                // eslint-disable-next-line max-len
+                setEarliestTimeSeriesYear(Math.min(newTransport!.costProfile!.startYear!) + caseResult!.DG4Date!.getFullYear())
+                // eslint-disable-next-line max-len
+                setLatestTimeSeriesYear(Math.max(newTransport!.costProfile!.startYear! + newTransport.costProfile!.values!.length!) + caseResult!.DG4Date!.getFullYear())
             }
         })()
     }, [project])
@@ -95,6 +101,10 @@ const TransportView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={transportName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             {" "}
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>

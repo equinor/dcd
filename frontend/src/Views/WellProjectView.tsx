@@ -1,12 +1,10 @@
-/* eslint-disable max-len */
 import {
-    Input, Typography,
+    Input, Typography, Label,
 } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import { ChangeEventHandler, useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
-import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { WellProject } from "../models/assets/wellproject/WellProject"
@@ -16,7 +14,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 
 function WellProjectView() {
@@ -25,15 +23,11 @@ function WellProjectView() {
     const [wellProject, setWellProject] = useState<WellProject>()
     const [hasChanges, setHasChanges] = useState(false)
     const [wellProjectName, setWellProjectName] = useState<string>("")
-    const [earliestStartYear, setEarliestStartYear] = useState<string>("")
-    const [latestEndYear, setLatestEndYear] = useState<string>("")
-    const [drillingStartYear, setDrillingStartYear] = useState<string>("")
-    const [drillingEndYear, setDrillingEndYear] = useState<string>("")
-    const [costProfileStartYear, setCostProfileStartYear] = useState<string>("")
-    const [costProfileEndYear, setCostProfileEndYear] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -51,7 +45,7 @@ function WellProjectView() {
             if (project !== undefined) {
                 const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newWellProject = project.wellProjects.find((s) => s.id === params.wellProjectId)
+                let newWellProject = project!.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
                 } else {
@@ -59,6 +53,10 @@ function WellProjectView() {
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
+                // eslint-disable-next-line max-len
+                setEarliestTimeSeriesYear(Math.min(newWellProject!.costProfile!.startYear!, newWellProject!.drillingSchedule!.startYear!) + caseResult!.DG4Date!.getFullYear())
+                // eslint-disable-next-line max-len
+                setLatestTimeSeriesYear(Math.max(newWellProject!.costProfile!.startYear! + newWellProject.costProfile!.values!.length!, newWellProject!.drillingSchedule!.startYear! + newWellProject.drillingSchedule!.values!.length!) + caseResult!.DG4Date!.getFullYear())
             }
         })()
     }, [project])
@@ -81,14 +79,30 @@ function WellProjectView() {
         setHasChanges(false)
     }
 
+    const handleWellProjectNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setWellProjectName(e.target.value)
+        if (e.target.value !== undefined && e.target.value !== "") {
+            setHasChanges(true)
+        } else {
+            setHasChanges(false)
+        }
+    }
+
     return (
         <AssetViewDiv>
             <Typography variant="h2">WellProject</Typography>
-            <AssetName
-                setName={setWellProjectName}
-                name={wellProjectName}
-                setHasChanges={setHasChanges}
-            />
+            <AssetHeader>
+                <WrapperColumn>
+                    <Label htmlFor="wellProjectName" label="Name" />
+                    <Input
+                        id="wellProjectName"
+                        name="wellProjectName"
+                        placeholder="Enter wellproject name"
+                        value={wellProjectName}
+                        onChange={handleWellProjectNameFieldChange}
+                    />
+                </WrapperColumn>
+            </AssetHeader>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
@@ -103,6 +117,10 @@ function WellProjectView() {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={wellProjectName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -112,6 +130,10 @@ function WellProjectView() {
                 timeSeriesType={TimeSeriesEnum.drillingSchedule}
                 assetName={wellProjectName}
                 timeSeriesTitle="Drilling schedule"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
 

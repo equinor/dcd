@@ -26,6 +26,8 @@ const SurfView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -51,6 +53,10 @@ const SurfView = () => {
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
+                // eslint-disable-next-line max-len
+                setEarliestTimeSeriesYear(Math.min(newSurf!.costProfile!.startYear!) + caseResult!.DG4Date!.getFullYear())
+                // eslint-disable-next-line max-len
+                setLatestTimeSeriesYear(Math.max(newSurf!.costProfile!.startYear! + newSurf.costProfile!.values!.length!) + caseResult!.DG4Date!.getFullYear())
             }
         })()
     }, [project])
@@ -94,6 +100,10 @@ const SurfView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={surfName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
