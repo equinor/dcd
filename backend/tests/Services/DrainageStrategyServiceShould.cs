@@ -149,7 +149,7 @@ namespace tests
             var oldStrategy = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(oldStrategy);
             fixture.context.SaveChanges();
-            var updatedStrategy = CreateUpdatedDrainageStrategy(project);
+            var updatedStrategy = CreateUpdatedDrainageStrategy(project, oldStrategy);
 
             // Act
             var projectResult = drainageStrategyService.UpdateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(updatedStrategy));
@@ -170,7 +170,7 @@ namespace tests
             var oldStrategy = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(oldStrategy);
             fixture.context.SaveChanges();
-            var updatedStrategy = CreateUpdatedDrainageStrategy(project);
+            var updatedStrategy = CreateUpdatedDrainageStrategy(project, oldStrategy);
 
             //     // Act, assert
             //     Assert.Throws<ArgumentException>(() => drainageStrategyService.UpdateDrainageStrategy(updatedStrategy));
@@ -234,10 +234,11 @@ namespace tests
                 );
         }
 
-        private static DrainageStrategy CreateUpdatedDrainageStrategy(Project project)
+        private static DrainageStrategy CreateUpdatedDrainageStrategy(Project project, DrainageStrategy oldDrainage)
         {
             return new DrainageStrategyBuilder
             {
+                Id = oldDrainage.Id,
                 Name = "Updated strategy",
                 Description = "Updated description",
                 Project = project,

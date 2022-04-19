@@ -6,6 +6,7 @@ import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import LinkAsset from "./LinkAsset"
 import { GetCaseService } from "../Services/CaseService"
+import { EMPTY_GUID } from "../Utils/constants"
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,8 +38,6 @@ const CaseAsset = ({
     caseId,
 }: Props) => {
     const navigate = useNavigate()
-
-    const emptyGuid = "00000000-0000-0000-0000-000000000000"
 
     enum AssetLink {
         drainageStrategyLink = "drainageStrategyLink",
@@ -81,7 +80,7 @@ const CaseAsset = ({
 
     const submitCreateAsset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
         event?.preventDefault()
-        navigate(`${type.toLowerCase()}/${emptyGuid}`)
+        navigate(`${type.toLowerCase()}/${EMPTY_GUID}`)
     }
 
     return (
@@ -99,9 +98,17 @@ const CaseAsset = ({
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ) => submitOpenAsset(event, "drainagestrategy", caseItem?.drainageStrategyLink)}
-                    disabled={caseItem?.drainageStrategyLink === emptyGuid}
+                    disabled={caseItem?.drainageStrategyLink === EMPTY_GUID}
                 >
                     Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={
+                        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => submitCreateAsset(e, "drainagestrategy")
+                    }
+                >
+                    Create new
                 </AssetButton>
             </Wrapper>
             <Wrapper>
@@ -117,9 +124,17 @@ const CaseAsset = ({
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ) => submitOpenAsset(event, "exploration", caseItem?.explorationLink)}
-                    disabled={caseItem?.explorationLink === emptyGuid}
+                    disabled={caseItem?.explorationLink === EMPTY_GUID}
                 >
                     Open
+                </AssetButton>
+                <AssetButton
+                    type="submit"
+                    onClick={
+                        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => submitCreateAsset(e, "exploration")
+                    }
+                >
+                    Create new
                 </AssetButton>
             </Wrapper>
             <Wrapper>
@@ -135,7 +150,7 @@ const CaseAsset = ({
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ) => submitOpenAsset(event, "wellproject", caseItem?.wellProjectLink)}
-                    disabled={caseItem?.wellProjectLink === emptyGuid}
+                    disabled={caseItem?.wellProjectLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -161,7 +176,7 @@ const CaseAsset = ({
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ) => submitOpenAsset(event, "surf", caseItem?.surfLink)}
-                    disabled={caseItem?.surfLink === emptyGuid}
+                    disabled={caseItem?.surfLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -187,7 +202,7 @@ const CaseAsset = ({
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ) => submitOpenAsset(event, "topside", caseItem?.topsideLink)}
-                    disabled={caseItem?.topsideLink === emptyGuid}
+                    disabled={caseItem?.topsideLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -213,7 +228,7 @@ const CaseAsset = ({
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ) => submitOpenAsset(event, "substructure", caseItem?.substructureLink)}
-                    disabled={caseItem?.substructureLink === emptyGuid}
+                    disabled={caseItem?.substructureLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -239,7 +254,7 @@ const CaseAsset = ({
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
                     ) => submitOpenAsset(event, "transport", caseItem?.transportLink)}
-                    disabled={caseItem?.transportLink === emptyGuid}
+                    disabled={caseItem?.transportLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>

@@ -9,19 +9,25 @@ namespace api.Adapters
 
         public static TransportDto Convert(Transport transport)
         {
-            var transportDto = new TransportDto();
-            transportDto.Id = transport.Id;
-            transportDto.ProjectId = transport.ProjectId;
-            transportDto.Name = transport.Name;
-            transportDto.Maturity = transport.Maturity;
-            transportDto.GasExportPipelineLength = transport.GasExportPipelineLength;
-            transportDto.OilExportPipelineLength = transport.OilExportPipelineLength;
-            transportDto.CostProfile = Convert(transport.CostProfile);
+            var transportDto = new TransportDto
+            {
+                Id = transport.Id,
+                ProjectId = transport.ProjectId,
+                Name = transport.Name,
+                Maturity = transport.Maturity,
+                GasExportPipelineLength = transport.GasExportPipelineLength,
+                OilExportPipelineLength = transport.OilExportPipelineLength,
+                CostProfile = Convert(transport.CostProfile)
+            };
             return transportDto;
         }
 
-        private static TransportCostProfileDto Convert(TransportCostProfile costprofile)
+        private static TransportCostProfileDto? Convert(TransportCostProfile? costprofile)
         {
+            if (costprofile == null)
+            {
+                return null;
+            }
             return new TransportCostProfileDto()
             {
                 Id = costprofile.Id,

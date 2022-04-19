@@ -7,23 +7,25 @@ namespace api.Adapters
     {
         public static DrainageStrategyDto Convert(DrainageStrategy drainageStrategy)
         {
-            var drainageStrategyDto = new DrainageStrategyDto();
-            drainageStrategyDto.Id = drainageStrategy.Id;
-            drainageStrategyDto.Name = drainageStrategy.Name;
-            drainageStrategyDto.Description = drainageStrategy.Description;
-            drainageStrategyDto.ProjectId = drainageStrategy.ProjectId;
-            drainageStrategyDto.NGLYield = drainageStrategy.NGLYield;
-            drainageStrategyDto.ArtificialLift = drainageStrategy.ArtificialLift;
-            drainageStrategyDto.ProducerCount = drainageStrategy.ProducerCount;
-            drainageStrategyDto.GasInjectorCount = drainageStrategy.GasInjectorCount;
-            drainageStrategyDto.WaterInjectorCount = drainageStrategy.WaterInjectorCount;
-            drainageStrategyDto.ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil)!;
-            drainageStrategyDto.ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas)!;
-            drainageStrategyDto.ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater)!;
-            drainageStrategyDto.ProductionProfileWaterInjection = Convert(drainageStrategy.ProductionProfileWaterInjection)!;
-            drainageStrategyDto.FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses)!;
-            drainageStrategyDto.NetSalesGas = Convert(drainageStrategy.NetSalesGas)!;
-            drainageStrategyDto.Co2Emissions = Convert(drainageStrategy.Co2Emissions)!;
+            var drainageStrategyDto = new DrainageStrategyDto
+            {
+                Id = drainageStrategy.Id,
+                Name = drainageStrategy.Name,
+                Description = drainageStrategy.Description,
+                ProjectId = drainageStrategy.ProjectId,
+                NGLYield = drainageStrategy.NGLYield,
+                ArtificialLift = drainageStrategy.ArtificialLift,
+                ProducerCount = drainageStrategy.ProducerCount,
+                GasInjectorCount = drainageStrategy.GasInjectorCount,
+                WaterInjectorCount = drainageStrategy.WaterInjectorCount,
+                ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil)!,
+                ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas)!,
+                ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater)!,
+                ProductionProfileWaterInjection = Convert(drainageStrategy.ProductionProfileWaterInjection)!,
+                FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses)!,
+                NetSalesGas = Convert(drainageStrategy.NetSalesGas)!,
+                Co2Emissions = Convert(drainageStrategy.Co2Emissions)!
+            };
             return drainageStrategyDto;
         }
 
@@ -33,6 +35,7 @@ namespace api.Adapters
             {
                 return new ProductionProfileOilDto
                 {
+                    Id = productionProfileOil.Id,
                     StartYear = productionProfileOil.StartYear,
                     Values = productionProfileOil.Values
                 };
@@ -46,6 +49,7 @@ namespace api.Adapters
             {
                 return new ProductionProfileGasDto
                 {
+                    Id = productionProfileGas.Id,
                     StartYear = productionProfileGas.StartYear,
                     Values = productionProfileGas.Values
                 };
@@ -59,6 +63,7 @@ namespace api.Adapters
             {
                 return new ProductionProfileWaterDto
                 {
+                    Id = productionProfileWater.Id,
                     StartYear = productionProfileWater.StartYear,
                     Values = productionProfileWater.Values
                 };
@@ -72,6 +77,7 @@ namespace api.Adapters
             {
                 return new ProductionProfileWaterInjectionDto
                 {
+                    Id = productionProfileWaterInjection.Id,
                     StartYear = productionProfileWaterInjection.StartYear,
                     Values = productionProfileWaterInjection.Values
                 };
@@ -85,6 +91,7 @@ namespace api.Adapters
             {
                 return new FuelFlaringAndLossesDto
                 {
+                    Id = fuelFlaringAndLosses.Id,
                     StartYear = fuelFlaringAndLosses.StartYear,
                     Values = fuelFlaringAndLosses.Values
                 };
@@ -98,6 +105,7 @@ namespace api.Adapters
             {
                 return new NetSalesGasDto
                 {
+                    Id = netSalesGas.Id,
                     StartYear = netSalesGas.StartYear,
                     Values = netSalesGas.Values
                 };
@@ -111,6 +119,7 @@ namespace api.Adapters
             {
                 return new Co2EmissionsDto
                 {
+                    Id = co2Emissions.Id,
                     StartYear = co2Emissions.StartYear,
                     Values = co2Emissions.Values
                 };

@@ -96,7 +96,7 @@ jobs:
           }
         workingDirectory: $(Build.SourcesDirectory)/frontend/src/
         displayName: "Check if Models has been updated"
-
+        continueOnError: true
   - job: Test_Backend
     steps:
       - task: UseDotNet@2

@@ -3,7 +3,7 @@ import { WellProjectCostProfileDto } from "./WellProjectCostProfileDto"
 
 export class WellProject implements Components.Schemas.WellProjectDto {
     id?: string | undefined
-    name?: string | null
+    name?: string | undefined
     projectId?: string | undefined
     costProfile?: WellProjectCostProfileDto | undefined
     drillingSchedule?: DrillingScheduleDto | undefined
@@ -18,7 +18,7 @@ export class WellProject implements Components.Schemas.WellProjectDto {
     constructor(data?: Components.Schemas.WellProjectDto) {
         if (data !== undefined) {
             this.id = data.id
-            this.name = data.name ?? null
+            this.name = data.name ?? ""
             this.projectId = data.projectId ?? ""
             this.costProfile = WellProjectCostProfileDto.fromJSON(data.costProfile)
             this.drillingSchedule = DrillingScheduleDto.fromJSON(data.drillingSchedule)
@@ -36,14 +36,6 @@ export class WellProject implements Components.Schemas.WellProjectDto {
     }
 
     static fromJSON(data: Components.Schemas.WellProjectDto): WellProject {
-        return new WellProject(data)
-    }
-
-    static ToDto(data: Components.Schemas.WellProjectDto): WellProject {
-        return new WellProject(data)
-    }
-
-    static Copy(data: Components.Schemas.WellProjectDto): WellProject {
         return new WellProject(data)
     }
 }

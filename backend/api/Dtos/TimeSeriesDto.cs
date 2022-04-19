@@ -34,7 +34,7 @@ namespace api.Dtos
 
         public TimeSeriesCostDto AddValues(TimeSeriesCostDto timeSeriesCost)
         {
-            if (timeSeriesCost == null)
+            if (timeSeriesCost == null || timeSeriesCost.Values.IsNullOrEmpty())
             {
                 return this;
             }

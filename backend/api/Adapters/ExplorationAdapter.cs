@@ -8,16 +8,30 @@ namespace api.Adapters
 
         public static Exploration Convert(ExplorationDto explorationDto)
         {
-            var exploration = new Exploration();
-            exploration.Id = explorationDto.Id;
-            exploration.ProjectId = explorationDto.ProjectId;
-            exploration.Name = explorationDto.Name;
-            exploration.RigMobDemob = explorationDto.RigMobDemob;
-            exploration.WellType = explorationDto.WellType;
+            var exploration = new Exploration
+            {
+                Id = explorationDto.Id,
+                ProjectId = explorationDto.ProjectId,
+                Name = explorationDto.Name,
+                RigMobDemob = explorationDto.RigMobDemob,
+                WellType = explorationDto.WellType
+            };
             exploration.CostProfile = Convert(explorationDto.CostProfile, exploration);
             exploration.DrillingSchedule = Convert(explorationDto.DrillingSchedule, exploration);
             exploration.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, exploration);
             return exploration;
+        }
+
+        public static void ConvertExisting(Exploration existing, ExplorationDto explorationDto)
+        {
+            existing.Id = explorationDto.Id;
+            existing.ProjectId = explorationDto.ProjectId;
+            existing.Name = explorationDto.Name;
+            existing.RigMobDemob = explorationDto.RigMobDemob;
+            existing.WellType = explorationDto.WellType;
+            existing.CostProfile = Convert(explorationDto.CostProfile, existing);
+            existing.DrillingSchedule = Convert(explorationDto.DrillingSchedule, existing);
+            existing.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, existing);
         }
 
         private static ExplorationCostProfile Convert(ExplorationCostProfileDto? costProfileDto, Exploration exploration)

@@ -1,168 +1,104 @@
-import { Button, Input, Typography } from "@equinor/eds-core-react"
+import {
+    Input, Typography,
+} from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
-import styled from "styled-components"
-import DataTable, { CellValue } from "../Components/DataTable/DataTable"
-import {
-    buildGridData, getColumnAbsoluteYears, replaceOldData,
-} from "../Components/DataTable/helpers"
-import Import from "../Components/Import/Import"
 import { Exploration } from "../models/assets/exploration/Exploration"
-
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-
-const AssetHeader = styled.div`
-    margin-bottom: 2rem;
-    display: flex;
-
-    > *:first-child {
-        margin-right: 2rem;
-    }
-`
-
-const AssetViewDiv = styled.div`
-    margin: 2rem;
-    display: flex;
-    flex-direction: column;
-`
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-`
-
-const WrapperColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const ImportButton = styled(Button)`
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-    }
-`
-
-const SaveButton = styled(Button)`
-    margin-top: 5rem;
-    margin-left: 2rem;
-    &:disabled {
-        margin-left: 2rem;
-        margin-top: 5rem;
-    }
-`
-
-const Dg4Field = styled.div`
-    margin-left: 1rem;
-    margin-bottom: 2rem;
-    width: 10rem;
-    display: flex;
-`
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
+import TimeSeries from "../Components/TimeSeries"
+import { EMPTY_GUID } from "../Utils/constants"
+import {
+    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+} from "./Asset/StyledAssetComponents"
+import AssetName from "../Components/AssetName"
 
 const ExplorationView = () => {
-    const [, setProject] = useState<Project>()
+    const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [exploration, setExploration] = useState<Exploration>()
-    const [columns, setColumns] = useState<string[]>([""])
-    const [gridData, setGridData] = useState<CellValue[][]>([[]])
-    const [costProfileDialogOpen, setCostProfileDialogOpen] = useState(false)
     const [hasChanges, setHasChanges] = useState(false)
+    const [name, setName] = useState<string>("")
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
-
-    const emptyGuid = "00000000-0000-0000-0000-000000000000"
 
     useEffect(() => {
         (async () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            if (project !== undefined) {
+                const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newExploration = projectResult.explorations.find((s) => s.id === params.explorationId)
+                let newExploration = project!.explorations.find((s) => s.id === params.explorationId)
                 if (newExploration !== undefined) {
                     setExploration(newExploration)
                 } else {
                     newExploration = new Exploration()
                     setExploration(newExploration)
                 }
-                const newColumnTitles = getColumnAbsoluteYears(caseResult, newExploration?.costProfile)
-                setColumns(newColumnTitles)
-                const newGridData = buildGridData(newExploration?.costProfile)
-                setGridData(newGridData)
-            } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                setName(newExploration?.name!)
             }
         })()
-    }, [params.projectId, params.caseId])
-
-    const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newGridData = replaceOldData(gridData, changes)
-        setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, exploration?.costProfile))
-        setHasChanges(true)
-    }
-
-    const onImport = (input: string, year: number) => {
-        const newExploration = Exploration.Copy(exploration!)
-        newExploration.costProfile!.startYear = year
-        // eslint-disable-next-line max-len
-        newExploration.costProfile!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
-        setExploration(newExploration)
-        const newColumnTitles = getColumnAbsoluteYears(caseItem, newExploration?.costProfile)
-        setColumns(newColumnTitles)
-        const newGridData = buildGridData(newExploration?.costProfile)
-        setGridData(newGridData)
-        setCostProfileDialogOpen(!costProfileDialogOpen)
-        setHasChanges(true)
-    }
+    }, [project])
 
     const handleSave = async () => {
-        const explorationDto = Exploration.ToDto(exploration!)
-        if (exploration?.id === emptyGuid) {
+        const explorationDto = new Exploration(exploration!)
+        explorationDto.name = name
+        if (exploration?.id === EMPTY_GUID) {
             explorationDto.projectId = params.projectId
             const newProject = await GetExplorationService().createExploration(params.caseId!, explorationDto!)
             const newExploration = newProject.explorations.at(-1)
-            const newUrl = location.pathname.replace(emptyGuid, newExploration!.id!)
-            navigate(`${newUrl}`, { replace: true })
+            const newUrl = location.pathname.replace(EMPTY_GUID, newExploration!.id!)
+            navigate(`${newUrl}`)
+            setProject(newProject)
         } else {
             const newProject = await GetExplorationService().updateExploration(explorationDto!)
             setProject(newProject)
-            const newCase = newProject.cases.find((o) => o.id === params.caseId)
-            setCase(newCase)
-            const newExploration = newProject.explorations.find((s) => s.id === params.explorationId)
-            setExploration(newExploration)
         }
         setHasChanges(false)
     }
 
     return (
         <AssetViewDiv>
-            <AssetHeader>
-                <Typography variant="h2">{exploration?.name}</Typography>
-            </AssetHeader>
+            <Typography variant="h2">Exploration</Typography>
+            <AssetName
+                setName={setName}
+                name={name}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setExploration}
+                setHasChanges={setHasChanges}
+                asset={exploration}
+                timeSeriesType={TimeSeriesEnum.costProfile}
+                assetName={name}
+                timeSeriesTitle="Cost profile"
+            />
             <Wrapper>
-                <Typography variant="h4">Cost profile</Typography>
-                <ImportButton onClick={() => { setCostProfileDialogOpen(true) }}>Import</ImportButton>
+                <SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton>
             </Wrapper>
-            <WrapperColumn>
-                <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
-            </WrapperColumn>
-            {!costProfileDialogOpen ? null
-                : <Import onClose={() => { setCostProfileDialogOpen(!costProfileDialogOpen) }} onImport={onImport} />}
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )
 }

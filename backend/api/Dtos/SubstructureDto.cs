@@ -7,7 +7,7 @@ namespace api.Dtos
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
-        public SubstructureCostProfileDto CostProfile { get; set; } = null!;
+        public SubstructureCostProfileDto? CostProfile { get; set; }
         public double DryWeight { get; set; }
         public Maturity Maturity { get; set; }
     }

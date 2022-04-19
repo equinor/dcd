@@ -1,113 +1,161 @@
-import React from "react"
-import styled from "styled-components"
-import { Typography } from "@equinor/eds-core-react"
+import {
+    Input, Typography,
+} from "@equinor/eds-core-react"
+import { useEffect, useState } from "react"
+import {
+    useLocation, useNavigate, useParams,
+} from "react-router"
+import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
+import { Project } from "../models/Project"
+import { Case } from "../models/Case"
 
-import DataTable, { CellValue } from "../Components/DataTable/DataTable"
-import { replaceOldData } from "../Components/DataTable/helpers"
+import { GetProjectService } from "../Services/ProjectService"
+import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
+import TimeSeries from "../Components/TimeSeries"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
+import { EMPTY_GUID } from "../Utils/constants"
+import {
+    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+} from "./Asset/StyledAssetComponents"
+import AssetName from "../Components/AssetName"
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
+const DrainageStrategyView = () => {
+    const [project, setProject] = useState<Project>()
+    const [caseItem, setCase] = useState<Case>()
+    const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
+    const [drainageStrategyName, setDrainageStrategyName] = useState<string>("")
 
-// TODO: This data will have to be generated from the format received from the API
-const initialGridData = [
-    [
-        {
-            readOnly: true,
-            value: "Production profile oil",
-        },
-        { value: 453678 },
-        { value: 383920 },
-        { value: 481726 },
-        { value: 481726 },
-        { value: 363728 },
-    ],
-    [
-        {
-            readOnly: true,
-            value: "Production profile gas",
-        },
-        { value: 678290 },
-        { value: 647382 },
-        { value: 881726 },
-        { value: 363728 },
-        { value: 281726 },
-    ],
-    [
-        {
-            readOnly: true,
-            value: "Production profile water",
-        },
-        { value: 363728 },
-        { value: 281726 },
-        { value: 381723 },
-        { value: 481726 },
-        { value: 363728 },
-    ],
-    [
-        {
-            readOnly: true,
-            value: "Production profile water injection",
-        },
-        { value: 373638 },
-        { value: 237389 },
-        { value: 381724 },
-        { value: 281726 },
-        { value: 373638 },
-    ],
-    [
-        {
-            readOnly: true,
-            value: "Fuel flaring and losses",
-        },
-        { value: 373638 },
-        { value: 237389 },
-        { value: 363728 },
-        { value: 381724 },
-        { value: 281726 },
-    ],
-    [
-        {
-            readOnly: true,
-            value: "Net sales gas",
-        },
-        { value: 373638 },
-        { value: 237389 },
-        { value: 363728 },
-        { value: 281726 },
-        { value: 381724 },
-    ],
-    [
-        {
-            readOnly: true,
-            value: "CO2 emissions",
-        },
-        { value: 373638 },
-        { value: 237389 },
-        { value: 381724 },
-        { value: 281726 },
-        { value: 481726 },
-    ],
-]
+    const [hasChanges, setHasChanges] = useState(false)
+    const params = useParams()
+    const navigate = useNavigate()
+    const location = useLocation()
 
-const columnTitles = ["2022", "2023", "2024", "2025", "2026"]
+    useEffect(() => {
+        (async () => {
+            try {
+                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                setProject(projectResult)
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [])
 
-function DrainageStrategyView() {
-    const [columns, setColumns] = React.useState<string[]>(columnTitles)
-    const [gridData, setGridData] = React.useState<CellValue[][]>(initialGridData)
+    useEffect(() => {
+        (async () => {
+            if (project !== undefined) {
+                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                setCase(caseResult)
+                let newDrainage = project!.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
+                if (newDrainage !== undefined) {
+                    setDrainageStrategy(newDrainage)
+                } else {
+                    newDrainage = new DrainageStrategy()
+                    setDrainageStrategy(newDrainage)
+                }
+                setDrainageStrategyName(newDrainage?.name!)
+            }
+        })()
+    }, [project])
 
-    const onCellsChanged = (changes: any[]) => {
-        setColumns(columnTitles)
-        const newGridData = replaceOldData(gridData, changes)
-        setGridData(newGridData)
+    const handleSave = async () => {
+        const drainageStrategyDto = DrainageStrategy.toDto(drainageStrategy!)
+        drainageStrategyDto.name = drainageStrategyName
+        if (drainageStrategyDto?.id === EMPTY_GUID) {
+            drainageStrategyDto.projectId = params.projectId
+            const newProject: Project = await GetDrainageStrategyService()
+                .createDrainageStrategy(params.caseId!, drainageStrategyDto!)
+            const newDrainageStrategy = newProject.drainageStrategies.at(-1)
+            const newUrl = location.pathname.replace(EMPTY_GUID, newDrainageStrategy!.id!)
+            navigate(`${newUrl}`)
+            setProject(newProject)
+        } else {
+            const newProject = await GetDrainageStrategyService().updateDrainageStrategy(drainageStrategyDto!)
+            setProject(newProject)
+        }
+        setHasChanges(false)
     }
 
     return (
-        <Wrapper>
-            <Typography variant="h3">Drainage Strategy</Typography>
-            <DataTable columns={columns} gridData={gridData} onCellsChanged={onCellsChanged} />
-        </Wrapper>
+        <AssetViewDiv>
+            <AssetName
+                setName={setDrainageStrategyName}
+                name={drainageStrategyName}
+                setHasChanges={setHasChanges}
+            />
+            <Wrapper>
+                <Typography variant="h4">DG4</Typography>
+                <Dg4Field>
+                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
+                </Dg4Field>
+            </Wrapper>
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setDrainageStrategy}
+                setHasChanges={setHasChanges}
+                asset={drainageStrategy}
+                timeSeriesType={TimeSeriesEnum.co2Emissions}
+                assetName={drainageStrategyName}
+                timeSeriesTitle="CO2 emissions"
+            />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setDrainageStrategy}
+                setHasChanges={setHasChanges}
+                asset={drainageStrategy}
+                timeSeriesType={TimeSeriesEnum.fuelFlaringAndLosses}
+                assetName={drainageStrategyName}
+                timeSeriesTitle="Fuel flaring and losses"
+            />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setDrainageStrategy}
+                setHasChanges={setHasChanges}
+                asset={drainageStrategy}
+                timeSeriesType={TimeSeriesEnum.netSalesGas}
+                assetName={drainageStrategyName}
+                timeSeriesTitle="Net sales gas"
+            />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setDrainageStrategy}
+                setHasChanges={setHasChanges}
+                asset={drainageStrategy}
+                timeSeriesType={TimeSeriesEnum.productionProfileGas}
+                assetName={drainageStrategyName}
+                timeSeriesTitle="Production profile gas"
+            />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setDrainageStrategy}
+                setHasChanges={setHasChanges}
+                asset={drainageStrategy}
+                timeSeriesType={TimeSeriesEnum.productionProfileOil}
+                assetName={drainageStrategyName}
+                timeSeriesTitle="Production profile oil"
+            />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setDrainageStrategy}
+                setHasChanges={setHasChanges}
+                asset={drainageStrategy}
+                timeSeriesType={TimeSeriesEnum.productionProfileWater}
+                assetName={drainageStrategyName}
+                timeSeriesTitle="Production profile water"
+            />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setDrainageStrategy}
+                setHasChanges={setHasChanges}
+                asset={drainageStrategy}
+                timeSeriesType={TimeSeriesEnum.productionProfileWaterInjection}
+                assetName={drainageStrategyName}
+                timeSeriesTitle="Production profile water injection"
+            />
+            <Wrapper>
+                <SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton>
+            </Wrapper>
+        </AssetViewDiv>
     )
 }
 

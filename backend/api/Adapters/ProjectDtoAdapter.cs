@@ -7,22 +7,13 @@ namespace api.Adapters
     {
         public static ProjectDto Convert(Project project)
         {
-            var projectDto = new ProjectDto();
-            projectDto.ProjectId = project.Id;
-            projectDto.Name = project.Name;
-            projectDto.CommonLibraryId = project.CommonLibraryId;
-            projectDto.CommonLibraryName = project.CommonLibraryName;
-            projectDto.Description = project.Description;
-            projectDto.Country = project.Country;
-            projectDto.CreateDate = project.CreateDate;
-            projectDto.ProjectCategory = project.ProjectCategory;
-            projectDto.ProjectPhase = project.ProjectPhase;
-            projectDto.Cases = new List<CaseDto>();
+            var projectDto = ProjectToProjectDto(project);
+
             if (project.Cases != null)
             {
                 foreach (Case c in project.Cases)
                 {
-                    projectDto.Cases.Add(CaseDtoAdapter.Convert(c));
+                    projectDto.Cases!.Add(CaseDtoAdapter.Convert(c));
                 }
             }
             if (project.Explorations != null)
@@ -89,6 +80,23 @@ namespace api.Adapters
             return projectDto;
         }
 
+        private static ProjectDto ProjectToProjectDto(Project project)
+        {
+            return new ProjectDto
+            {
+                ProjectId = project.Id,
+                Name = project.Name,
+                CommonLibraryId = project.CommonLibraryId,
+                CommonLibraryName = project.CommonLibraryName,
+                Description = project.Description,
+                Country = project.Country,
+                CreateDate = project.CreateDate,
+                ProjectCategory = project.ProjectCategory,
+                ProjectPhase = project.ProjectPhase,
+                Cases = new List<CaseDto>()
+            };
+        }
+
         public static void AddCapexToCases(ProjectDto p)
         {
             foreach (CaseDto c in p.Cases!)
@@ -99,12 +107,12 @@ namespace api.Adapters
                     var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
                     if (wellProject.CostProfile != null)
                     {
-                        c.Capex += wellProject.CostProfile.Sum;
+                        c.Capex += wellProject.CostProfile?.Sum ?? 0;
                     }
                 }
                 if (c.SubstructureLink != Guid.Empty)
                 {
-                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile.Sum;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
@@ -112,11 +120,11 @@ namespace api.Adapters
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {
-                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile.Sum;
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CostProfile?.Sum ?? 0;
                 }
                 if (c.TransportLink != Guid.Empty)
                 {
-                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink).CostProfile.Sum;
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CostProfile?.Sum ?? 0;
                 }
             }
         }
