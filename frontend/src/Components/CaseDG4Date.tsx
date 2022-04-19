@@ -72,10 +72,10 @@ const CaseDG4Date = ({
 
     const dg4ReturnDate = () => {
         const dg4DateGet = caseItem?.DG4Date?.toLocaleDateString("en-CA")
-        if (dg4DateGet !== "0001-01-01") {
+        if (dg4DateGet !== "1-01-01") { // React empty format in the Browser
             return dg4DateGet
         }
-        return ""
+        return "2030-01-01"
     }
 
     return (
