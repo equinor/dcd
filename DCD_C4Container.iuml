@@ -17,7 +17,6 @@ System_Boundary(c1, "Digital Concept Appp") {
 System_Ext(steaAlias, "STEA", "System", "")
 ContainerDb_Ext(commonlibAlias, "CommonLib", "Container", "Holds the project portfolio")
 
-
 Rel(concarchAlias, FE_app, "Adds projects and concepts")
 Rel(FE_app, concarchAlias, "Compare and refine concept business cases")
 Rel(concarchAlias, engAlias, "Requests detailed cost-profiles for concepts")
