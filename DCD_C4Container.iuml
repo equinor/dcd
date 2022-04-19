@@ -11,14 +11,9 @@ Person(engAlias, "Engineers", "People in the project teams performing an estimat
 
 System_Boundary(c1, "Digital Concept Appp") {
   Container(FE_app, "Front End Application", "Container: React, Typescript", "Provides functionality to add new projects, create cases, link assets with time series and initiate export to STEA")
-<<<<<<< HEAD
-  ContainerDb(DbAlias, "Database","Container: My SQL", "Stores projects, cases and assets with cost-profile information")
-=======
   ContainerDb(DbAlias, "Database","Container: Azure SQL Database", "Stores projects, cases and assets with cost-profile information")
->>>>>>> f149e1d6641693d0796bb496d6993e5d4f2b3017
   Container(backend, "Backend", "Container: ASP.NET webapp MVC", "Provides functionality to create datastructures to export to STEA")
 }
-
 System_Ext(steaAlias, "STEA", "System", "")
 ContainerDb_Ext(commonlibAlias, "CommonLib", "Container", "Holds the project portfolio")
 
