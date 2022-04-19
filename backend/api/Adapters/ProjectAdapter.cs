@@ -12,15 +12,17 @@ namespace api.Adapters
 
         public static Project Convert(ProjectDto projectDto)
         {
-            var project = new Project();
-            project.Name = projectDto.Name;
-            project.CommonLibraryId = projectDto.CommonLibraryId;
-            project.CreateDate = projectDto.CreateDate;
-            project.CommonLibraryName = projectDto.CommonLibraryName;
-            project.Description = projectDto.Description;
-            project.Country = projectDto.Country;
-            project.ProjectCategory = projectDto.ProjectCategory;
-            project.ProjectPhase = projectDto.ProjectPhase;
+            var project = new Project
+            {
+                Name = projectDto.Name,
+                CommonLibraryId = projectDto.CommonLibraryId,
+                CreateDate = projectDto.CreateDate,
+                CommonLibraryName = projectDto.CommonLibraryName,
+                Description = projectDto.Description,
+                Country = projectDto.Country,
+                ProjectCategory = projectDto.ProjectCategory,
+                ProjectPhase = projectDto.ProjectPhase
+            };
 
             return project;
         }

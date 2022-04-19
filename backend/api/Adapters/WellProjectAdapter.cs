@@ -7,19 +7,8 @@ namespace api.Adapters
     {
         public WellProject Convert(WellProjectDto wellProjectDto)
         {
-            var wellProject = new WellProject
-            {
-                Id = wellProjectDto.Id,
-                ProjectId = wellProjectDto.ProjectId,
-                Name = wellProjectDto.Name,
-                ProducerCount = wellProjectDto.ProducerCount,
-                GasInjectorCount = wellProjectDto.GasInjectorCount,
-                WaterInjectorCount = wellProjectDto.WaterInjectorCount,
-                ArtificialLift = wellProjectDto.ArtificialLift,
-                RigMobDemob = wellProjectDto.RigMobDemob,
-                AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost,
-                PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment
-            };
+            var wellProject = WellprojectDtoToWellproject(null, wellProjectDto);
+
             if (wellProjectDto.CostProfile != null)
             {
                 wellProject.CostProfile = Convert(wellProjectDto.CostProfile, wellProject);
@@ -32,7 +21,36 @@ namespace api.Adapters
         }
         public static void ConvertExisting(WellProject existing, WellProjectDto wellProjectDto)
         {
+            WellprojectDtoToWellproject(existing, wellProjectDto);
 
+            if (wellProjectDto.CostProfile != null)
+            {
+                existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
+            }
+            if (wellProjectDto.DrillingSchedule != null)
+            {
+                existing.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, existing);
+            }
+        }
+
+        private static WellProject WellprojectDtoToWellproject(WellProject? existing, WellProjectDto wellProjectDto)
+        {
+            if (existing == null)
+            {
+                return new WellProject
+                {
+                    Id = wellProjectDto.Id,
+                    ProjectId = wellProjectDto.ProjectId,
+                    Name = wellProjectDto.Name,
+                    ProducerCount = wellProjectDto.ProducerCount,
+                    GasInjectorCount = wellProjectDto.GasInjectorCount,
+                    WaterInjectorCount = wellProjectDto.WaterInjectorCount,
+                    ArtificialLift = wellProjectDto.ArtificialLift,
+                    RigMobDemob = wellProjectDto.RigMobDemob,
+                    AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost,
+                    PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment
+                };
+            }
             existing.Id = wellProjectDto.Id;
             existing.ProjectId = wellProjectDto.ProjectId;
             existing.Name = wellProjectDto.Name;
@@ -44,14 +62,7 @@ namespace api.Adapters
             existing.AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost;
             existing.PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment;
 
-            if (wellProjectDto.CostProfile != null)
-            {
-                existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
-            }
-            if (wellProjectDto.DrillingSchedule != null)
-            {
-                existing.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, existing);
-            }
+            return existing;
         }
 
         private static WellProjectCostProfile? Convert(WellProjectCostProfileDto? costProfile, WellProject wellProject)
