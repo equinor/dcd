@@ -1,11 +1,12 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
 import Save from "../Components/Save"
+import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Topside } from "../models/assets/topside/Topside"
@@ -14,7 +15,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
 
 const TopsideView = () => {
@@ -53,30 +54,14 @@ const TopsideView = () => {
         })()
     }, [project])
 
-    const handleTopsideNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setTopsideName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Topside</Typography>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="topsideName" label="Name" />
-                    <Input
-                        id="topsideName"
-                        name="topsideName"
-                        placeholder="Enter topside name"
-                        value={topsideName}
-                        onChange={handleTopsideNameFieldChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setTopsideName}
+                name={topsideName}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
@@ -101,8 +86,6 @@ const TopsideView = () => {
                 asset={topside!}
                 assetService={GetTopsideService()}
             />
-            {" "}
-
         </AssetViewDiv>
     )
 }

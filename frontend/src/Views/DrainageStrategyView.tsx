@@ -1,7 +1,7 @@
 import {
-    Input, Typography, Label,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
@@ -17,6 +17,7 @@ import {
     AssetHeader, AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
+import AssetName from "../Components/AssetName"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -55,29 +56,13 @@ const DrainageStrategyView = () => {
         })()
     }, [project])
 
-    const handleDrainageStrategyNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setDrainageStrategyName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="drainagStrategyName" label="Name" />
-                    <Input
-                        id="drainagStrategyName"
-                        name="drainagStrategyName"
-                        placeholder="Enter Drainage Strategy name"
-                        value={drainageStrategyName}
-                        onChange={handleDrainageStrategyNameFieldChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setDrainageStrategyName}
+                name={drainageStrategyName}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>

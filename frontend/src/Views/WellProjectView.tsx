@@ -1,11 +1,12 @@
 import {
-    Input, Typography, Label,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
 import Save from "../Components/Save"
+import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { WellProject } from "../models/assets/wellproject/WellProject"
@@ -14,7 +15,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
 
 function WellProjectView() {
@@ -53,30 +54,14 @@ function WellProjectView() {
         })()
     }, [project])
 
-    const handleWellProjectNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setWellProjectName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">WellProject</Typography>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="wellProjectName" label="Name" />
-                    <Input
-                        id="wellProjectName"
-                        name="wellProjectName"
-                        placeholder="Enter wellproject name"
-                        value={wellProjectName}
-                        onChange={handleWellProjectNameFieldChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setWellProjectName}
+                name={wellProjectName}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>

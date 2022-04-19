@@ -1,7 +1,7 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
@@ -13,10 +13,10 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSubstructureService } from "../Services/SubstructureService"
 import {
-    AssetHeader,
-    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
+import AssetName from "../Components/AssetName"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -54,30 +54,14 @@ const SubstructureView = () => {
         })()
     }, [project])
 
-    const handleSubstructureNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setSubstructureName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
             <Typography variant="h2">Substructure</Typography>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="substructureName" label="Name" />
-                    <Input
-                        id="substructureName"
-                        name="substructureName"
-                        placeholder="Enter substructure name"
-                        value={substructureName}
-                        onChange={handleSubstructureNameFieldChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setSubstructureName}
+                name={substructureName}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
