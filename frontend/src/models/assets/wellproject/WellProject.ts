@@ -38,12 +38,4 @@ export class WellProject implements Components.Schemas.WellProjectDto {
     static fromJSON(data: Components.Schemas.WellProjectDto): WellProject {
         return new WellProject(data)
     }
-
-    static ToDto(data: Components.Schemas.WellProjectDto): WellProject {
-        return new WellProject(data)
-    }
-
-    static Copy(data: Components.Schemas.WellProjectDto): WellProject {
-        return new WellProject(data)
-    }
 }
