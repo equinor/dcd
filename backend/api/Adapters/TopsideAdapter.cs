@@ -20,7 +20,15 @@ namespace api.Adapters
                 Maturity = topsideDto.Maturity
             };
 
-            topside.CostProfile = Convert(topsideDto.CostProfile, topside);
+            if (topsideDto.CostProfile != null)
+            {
+                topside.CostProfile = Convert(topsideDto.CostProfile, topside);
+            }
+
+            if (topsideDto.TopsideCessationCostProfileDto != null)
+            {
+                topside.TopsideCessationCostProfile = Convert(topsideDto.TopsideCessationCostProfileDto, topside);
+            }
 
             return topside;
         }
@@ -37,6 +45,7 @@ namespace api.Adapters
             existing.ArtificialLift = topsideDto.ArtificialLift;
             existing.Maturity = topsideDto.Maturity;
             existing.CostProfile = Convert(topsideDto.CostProfile, existing);
+            existing.TopsideCessationCostProfile = Convert(topsideDto.TopsideCessationCostProfileDto, existing);
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {
@@ -55,6 +64,25 @@ namespace api.Adapters
             };
 
             return topsideCostProfile;
+        }
+
+        private static TopsideCessationCostProfile? Convert(TopsideCessationCostProfileDto? topsideCessationCostProfileDto, Topside topside)
+        {
+            if (topsideCessationCostProfileDto == null)
+            {
+                return null;
+            }
+            TopsideCessationCostProfile topsideCessationCostProfile = new TopsideCessationCostProfile
+            {
+                Id = topsideCessationCostProfileDto.Id,
+                Currency = topsideCessationCostProfileDto.Currency,
+                EPAVersion = topsideCessationCostProfileDto.EPAVersion,
+                Topside = topside,
+                StartYear = topsideCessationCostProfileDto.StartYear,
+                Values = topsideCessationCostProfileDto.Values
+            };
+
+            return topsideCessationCostProfile;
         }
     }
 }
