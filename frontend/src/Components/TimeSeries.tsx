@@ -8,14 +8,13 @@ import {
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
-import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
 interface ITimeSeries {
     id?: string
     startYear?: number | undefined
-    values?: any[] | null
+    values?: number[] | null
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
@@ -46,8 +45,8 @@ interface Props {
     timeSeriesType: TimeSeriesEnum,
     assetName: string,
     timeSeriesTitle: string,
-    earliestYear: number,
-    latestYear: number,
+    earliestYear: number | undefined,
+    latestYear: number | undefined,
     setEarliestYear: React.Dispatch<React.SetStateAction<number | undefined>>,
     setLatestYear: React.Dispatch<React.SetStateAction<number | undefined>>,
 }
@@ -70,15 +69,13 @@ const TimeSeries = ({
     const [dialogOpen, setDialogOpen] = useState(false)
 
     const buildAlignedGrid = (updatedAsset: IAsset) => {
-        if (updatedAsset !== undefined) {
-            const newColumnTitles = getColumnAbsoluteYears(caseItem, updatedAsset[timeSeriesType])
-            setColumns(newColumnTitles)
-
+        if (updatedAsset !== undefined && updatedAsset[timeSeriesType] !== undefined) {
             const columnTitles: string[] = []
-            for (let i = earliestYear; i < latestYear; i += 1) {
-                columnTitles.push(i.toString())
+            if (earliestYear !== undefined && latestYear !== undefined) {
+                for (let i = (earliestYear); i < (latestYear); i += 1) {
+                    columnTitles.push(i.toString())
+                }
             }
-            setColumns(columnTitles)
 
             const zeroesAtStart = Array.from({ length: Number(updatedAsset[timeSeriesType]!.startYear!) + Number(caseItem!.DG4Date!.getFullYear()) - Number(earliestYear) }, (() => 0))
             const zeroesAtEnd = Array.from({ length: Number(latestYear) - (Number(updatedAsset[timeSeriesType]!.startYear!) + Number(caseItem!.DG4Date!.getFullYear()) + Number(updatedAsset[timeSeriesType]!.values!.length!)) }, (() => 0))
@@ -89,7 +86,11 @@ const TimeSeries = ({
 
             const alignedAssetGridData = new Array(assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]))
 
+            setColumns(columnTitles)
             setGridData(alignedAssetGridData)
+        } else {
+            setColumns([])
+            setGridData([[]])
         }
     }
 
@@ -112,10 +113,10 @@ const TimeSeries = ({
         newTimeSeries!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         newTimeSeries.epaVersion = ""
         setAsset(newAsset)
-        if ((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!)) < earliestYear) {
+        if ((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
             setEarliestYear((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!)))
         }
-        if ((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries!.values!.length)) > latestYear) {
+        if ((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
             setLatestYear(Number(year) + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries!.values!.length))
         }
         buildAlignedGrid(newAsset)
@@ -126,8 +127,8 @@ const TimeSeries = ({
     }
 
     const deleteCostProfile = () => {
-        const assetCopy = new Substructure(asset)
-        assetCopy.costProfile = undefined
+        const assetCopy: IAsset = { ...asset }
+        assetCopy[timeSeriesType] = undefined
         if (assetName !== "") {
             setHasChanges(true)
         } else {
