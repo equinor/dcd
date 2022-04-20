@@ -7,16 +7,8 @@ namespace api.Adapters
     {
         public static DrainageStrategy Convert(DrainageStrategyDto drainageStrategyDto)
         {
-            var drainageStrategy = new DrainageStrategy();
-            drainageStrategy.Id = drainageStrategyDto.Id;
-            drainageStrategy.Name = drainageStrategyDto.Name;
-            drainageStrategy.Description = drainageStrategyDto.Description;
-            drainageStrategy.ProjectId = drainageStrategyDto.ProjectId;
-            drainageStrategy.NGLYield = drainageStrategyDto.NGLYield;
-            drainageStrategy.ArtificialLift = drainageStrategyDto.ArtificialLift;
-            drainageStrategy.ProducerCount = drainageStrategyDto.ProducerCount;
-            drainageStrategy.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
-            drainageStrategy.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;
+            var drainageStrategy = DrainagestrategyDtoToDrainagestrategy(null, drainageStrategyDto);
+
             if (drainageStrategyDto.ProductionProfileOil != null)
             {
                 drainageStrategy.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, drainageStrategy);
@@ -50,15 +42,8 @@ namespace api.Adapters
 
         public static DrainageStrategy ConvertExisting(DrainageStrategy existing, DrainageStrategyDto drainageStrategyDto)
         {
-            existing.Id = drainageStrategyDto.Id;
-            existing.Name = drainageStrategyDto.Name;
-            existing.Description = drainageStrategyDto.Description;
-            existing.ProjectId = drainageStrategyDto.ProjectId;
-            existing.NGLYield = drainageStrategyDto.NGLYield;
-            existing.ArtificialLift = drainageStrategyDto.ArtificialLift;
-            existing.ProducerCount = drainageStrategyDto.ProducerCount;
-            existing.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
-            existing.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;
+            DrainagestrategyDtoToDrainagestrategy(existing, drainageStrategyDto);
+
             if (drainageStrategyDto.ProductionProfileOil != null)
             {
                 existing.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, existing);
@@ -87,6 +72,36 @@ namespace api.Adapters
             {
                 existing.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, existing);
             }
+            return existing;
+        }
+
+        private static DrainageStrategy DrainagestrategyDtoToDrainagestrategy(DrainageStrategy? existing, DrainageStrategyDto drainageStrategyDto)
+        {
+            if (existing == null)
+            {
+                return new DrainageStrategy
+                {
+                    Id = drainageStrategyDto.Id,
+                    Name = drainageStrategyDto.Name,
+                    Description = drainageStrategyDto.Description,
+                    ProjectId = drainageStrategyDto.ProjectId,
+                    NGLYield = drainageStrategyDto.NGLYield,
+                    ArtificialLift = drainageStrategyDto.ArtificialLift,
+                    ProducerCount = drainageStrategyDto.ProducerCount,
+                    GasInjectorCount = drainageStrategyDto.GasInjectorCount,
+                    WaterInjectorCount = drainageStrategyDto.WaterInjectorCount
+                };
+            }
+            existing.Id = drainageStrategyDto.Id;
+            existing.Name = drainageStrategyDto.Name;
+            existing.Description = drainageStrategyDto.Description;
+            existing.ProjectId = drainageStrategyDto.ProjectId;
+            existing.NGLYield = drainageStrategyDto.NGLYield;
+            existing.ArtificialLift = drainageStrategyDto.ArtificialLift;
+            existing.ProducerCount = drainageStrategyDto.ProducerCount;
+            existing.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
+            existing.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;
+
             return existing;
         }
 
