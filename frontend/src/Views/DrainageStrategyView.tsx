@@ -17,6 +17,7 @@ import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -55,34 +56,41 @@ const DrainageStrategyView = () => {
                     setDrainageStrategy(newDrainage)
                 }
                 setDrainageStrategyName(newDrainage?.name!)
+
+                TimeSeriesYears(
+                    newDrainage,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                    )
                 // eslint-disable-next-line max-len
-                setEarliestTimeSeriesYear(Math.min(
-                    newDrainage!.co2Emissions!.startYear!,
-                    newDrainage!.fuelFlaringAndLosses!.startYear!,
-                    newDrainage!.netSalesGas!.startYear!,
-                    newDrainage!.productionProfileGas!.startYear!,
-                    newDrainage!.productionProfileOil!.startYear!,
-                    newDrainage!.productionProfileWater!.startYear!,
-                    newDrainage!.productionProfileWaterInjection!.startYear!,
-                )
-                     + caseResult!.DG4Date!.getFullYear())
-                // eslint-disable-next-line max-len
-                setLatestTimeSeriesYear(Math.max(
-                    newDrainage!.co2Emissions!.startYear!
-                     + newDrainage.co2Emissions!.values!.length!,
-                     newDrainage!.fuelFlaringAndLosses!.startYear!
-                     + newDrainage.fuelFlaringAndLosses!.values!.length!,
-                     newDrainage!.netSalesGas!.startYear!
-                     + newDrainage.netSalesGas!.values!.length!,
-                     newDrainage!.productionProfileGas!.startYear!
-                     + newDrainage.productionProfileGas!.values!.length!,
-                     newDrainage!.productionProfileOil!.startYear!
-                     + newDrainage.productionProfileOil!.values!.length!,
-                     newDrainage!.productionProfileWater!.startYear!
-                     + newDrainage.productionProfileWater!.values!.length!,
-                     newDrainage!.productionProfileWaterInjection!.startYear!
-                     + newDrainage.productionProfileWaterInjection!.values!.length!,
-                ) + caseResult!.DG4Date!.getFullYear())
+                // setEarliestTimeSeriesYear(Math.min(
+                //     newDrainage!.co2Emissions?.startYear!,
+                //     newDrainage!.fuelFlaringAndLosses?.startYear!,
+                //     newDrainage!.netSalesGas?.startYear!,
+                //     newDrainage!.productionProfileGas?.startYear!,
+                //     newDrainage!.productionProfileOil?.startYear!,
+                //     newDrainage!.productionProfileWater?.startYear!,
+                //     newDrainage!.productionProfileWaterInjection?.startYear!,
+                // )
+                //      + caseResult!.DG4Date!.getFullYear())
+                // // eslint-disable-next-line max-len
+                // setLatestTimeSeriesYear(Math.max(
+                //     newDrainage!.co2Emissions?.startYear!
+                //      + (newDrainage.co2Emissions?.values!.length! ?? 0),
+                //      newDrainage!.fuelFlaringAndLosses!.startYear!
+                //      + newDrainage.fuelFlaringAndLosses!.values!.length!,
+                //      newDrainage!.netSalesGas!.startYear!
+                //      + newDrainage.netSalesGas!.values!.length!,
+                //      newDrainage!.productionProfileGas!.startYear!
+                //      + newDrainage.productionProfileGas!.values!.length!,
+                //      newDrainage!.productionProfileOil!.startYear!
+                //      + newDrainage.productionProfileOil!.values!.length!,
+                //      newDrainage!.productionProfileWater!.startYear!
+                //      + newDrainage.productionProfileWater!.values!.length!,
+                //      newDrainage!.productionProfileWaterInjection!.startYear!
+                //      + newDrainage.productionProfileWaterInjection!.values!.length!,
+                // ) + caseResult!.DG4Date!.getFullYear())
             }
         })()
     }, [project])
@@ -142,8 +150,8 @@ const DrainageStrategyView = () => {
                 timeSeriesType={TimeSeriesEnum.co2Emissions}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="CO2 emissions"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
+                earliestYear={earliestTimeSeriesYear}
+                latestYear={latestTimeSeriesYear}
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
@@ -155,8 +163,8 @@ const DrainageStrategyView = () => {
                 timeSeriesType={TimeSeriesEnum.fuelFlaringAndLosses}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Fuel flaring and losses"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
+                earliestYear={earliestTimeSeriesYear}
+                latestYear={latestTimeSeriesYear}
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
@@ -168,8 +176,8 @@ const DrainageStrategyView = () => {
                 timeSeriesType={TimeSeriesEnum.netSalesGas}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Net sales gas"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
+                earliestYear={earliestTimeSeriesYear}
+                latestYear={latestTimeSeriesYear}
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
@@ -181,8 +189,8 @@ const DrainageStrategyView = () => {
                 timeSeriesType={TimeSeriesEnum.productionProfileGas}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Production profile gas"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
+                earliestYear={earliestTimeSeriesYear}
+                latestYear={latestTimeSeriesYear}
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
@@ -194,8 +202,8 @@ const DrainageStrategyView = () => {
                 timeSeriesType={TimeSeriesEnum.productionProfileOil}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Production profile oil"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
+                earliestYear={earliestTimeSeriesYear}
+                latestYear={latestTimeSeriesYear}
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
@@ -207,8 +215,8 @@ const DrainageStrategyView = () => {
                 timeSeriesType={TimeSeriesEnum.productionProfileWater}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Production profile water"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
+                earliestYear={earliestTimeSeriesYear}
+                latestYear={latestTimeSeriesYear}
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
@@ -220,8 +228,8 @@ const DrainageStrategyView = () => {
                 timeSeriesType={TimeSeriesEnum.productionProfileWaterInjection}
                 assetName={drainageStrategyName}
                 timeSeriesTitle="Production profile water injection"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
+                earliestYear={earliestTimeSeriesYear}
+                latestYear={latestTimeSeriesYear}
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
