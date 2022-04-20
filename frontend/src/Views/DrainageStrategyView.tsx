@@ -62,35 +62,7 @@ const DrainageStrategyView = () => {
                     caseResult!.DG4Date!.getFullYear(),
                     setEarliestTimeSeriesYear,
                     setLatestTimeSeriesYear,
-                    )
-                // eslint-disable-next-line max-len
-                // setEarliestTimeSeriesYear(Math.min(
-                //     newDrainage!.co2Emissions?.startYear!,
-                //     newDrainage!.fuelFlaringAndLosses?.startYear!,
-                //     newDrainage!.netSalesGas?.startYear!,
-                //     newDrainage!.productionProfileGas?.startYear!,
-                //     newDrainage!.productionProfileOil?.startYear!,
-                //     newDrainage!.productionProfileWater?.startYear!,
-                //     newDrainage!.productionProfileWaterInjection?.startYear!,
-                // )
-                //      + caseResult!.DG4Date!.getFullYear())
-                // // eslint-disable-next-line max-len
-                // setLatestTimeSeriesYear(Math.max(
-                //     newDrainage!.co2Emissions?.startYear!
-                //      + (newDrainage.co2Emissions?.values!.length! ?? 0),
-                //      newDrainage!.fuelFlaringAndLosses!.startYear!
-                //      + newDrainage.fuelFlaringAndLosses!.values!.length!,
-                //      newDrainage!.netSalesGas!.startYear!
-                //      + newDrainage.netSalesGas!.values!.length!,
-                //      newDrainage!.productionProfileGas!.startYear!
-                //      + newDrainage.productionProfileGas!.values!.length!,
-                //      newDrainage!.productionProfileOil!.startYear!
-                //      + newDrainage.productionProfileOil!.values!.length!,
-                //      newDrainage!.productionProfileWater!.startYear!
-                //      + newDrainage.productionProfileWater!.values!.length!,
-                //      newDrainage!.productionProfileWaterInjection!.startYear!
-                //      + newDrainage.productionProfileWaterInjection!.values!.length!,
-                // ) + caseResult!.DG4Date!.getFullYear())
+                )
             }
         })()
     }, [project])

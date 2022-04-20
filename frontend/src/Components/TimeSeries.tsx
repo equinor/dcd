@@ -8,7 +8,6 @@ import {
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
-import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
@@ -71,14 +70,6 @@ const TimeSeries = ({
 
     const buildAlignedGrid = (updatedAsset: IAsset) => {
         if (updatedAsset !== undefined && updatedAsset[timeSeriesType] !== undefined) {
-            // if (earliestYear === undefined || latestYear === undefined) {
-            //     setEarliestYear(caseItem?.DG4Date?.getFullYear())
-            //     setLatestYear(caseItem?.DG4Date?.getFullYear())
-            // }
-            // const newColumnTitles = getColumnAbsoluteYears(caseItem, updatedAsset[timeSeriesType])
-            // console.log(newColumnTitles)
-            // setColumns(newColumnTitles)
-
             const columnTitles: string[] = []
             if (earliestYear !== undefined && latestYear !== undefined) {
                 for (let i = (earliestYear); i < (latestYear); i += 1) {
@@ -86,28 +77,24 @@ const TimeSeries = ({
                 }
             }
 
-            setColumns(columnTitles)
-            console.log("earliestYear: ", earliestYear)
             const zeroesAtStart = Array.from({ length: Number(updatedAsset[timeSeriesType]!.startYear!) + Number(caseItem!.DG4Date!.getFullYear()) - Number(earliestYear) }, (() => 0))
-            console.log("zeroesAtStart: ", zeroesAtStart.length)
             const zeroesAtEnd = Array.from({ length: Number(latestYear) - (Number(updatedAsset[timeSeriesType]!.startYear!) + Number(caseItem!.DG4Date!.getFullYear()) + Number(updatedAsset[timeSeriesType]!.values!.length!)) }, (() => 0))
-            console.log("zeroesAtEnd: ", zeroesAtEnd.length)
+
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
             const newGridData = buildGridData(updatedAsset[timeSeriesType])
 
             const alignedAssetGridData = new Array(assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]))
-            console.log(timeSeriesType)
 
+            setColumns(columnTitles)
             setGridData(alignedAssetGridData)
+        } else {
+            setColumns([])
+            setGridData([[]])
         }
     }
 
     useEffect(() => {
-        // if (earliestYear === undefined || latestYear === undefined) {
-        //     setEarliestYear(caseItem?.DG4Date?.getFullYear())
-        //     setLatestYear(caseItem?.DG4Date?.getFullYear())
-        // }
         buildAlignedGrid(asset!)
     }, [asset])
 
@@ -140,8 +127,8 @@ const TimeSeries = ({
     }
 
     const deleteCostProfile = () => {
-        const assetCopy = new Substructure(asset)
-        assetCopy.costProfile = undefined
+        const assetCopy: IAsset = { ...asset }
+        assetCopy[timeSeriesType] = undefined
         if (assetName !== "") {
             setHasChanges(true)
         } else {
