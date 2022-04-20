@@ -10,6 +10,7 @@ namespace api.Dtos
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
         public SurfCostProfileDto? CostProfile { get; set; }
+        public SurfCessationCostProfileDto? SurfCessationCostProfileDto { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }
@@ -19,13 +20,18 @@ namespace api.Dtos
         public ProductionFlowline ProductionFlowline { get; set; }
     }
 
-    public enum ProductionFlowlineDto
-    {
-        Default = 999
-    }
-
     public class SurfCostProfileDto : TimeSeriesCostDto
     {
 
+    }
+
+    public class SurfCessationCostProfileDto : TimeSeriesCostDto
+    {
+
+    }
+
+    public enum ProductionFlowlineDto
+    {
+        Default = 999
     }
 }

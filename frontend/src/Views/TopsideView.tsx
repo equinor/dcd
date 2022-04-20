@@ -88,6 +88,27 @@ const TopsideView = () => {
                 assetService={GetTopsideService()}
                 assetType={AssetTypeEnum.topsides}
             />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setTopside}
+                setHasChanges={setHasChanges}
+                asset={topside}
+                timeSeriesType={TimeSeriesEnum.topsideCessationCostProfileDto}
+                assetName={topsideName}
+                timeSeriesTitle="Cessation Cost profile"
+            />
+            <Wrapper>
+                <Save
+                    name={topsideName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setTopside}
+                    setProject={setProject}
+                    asset={topside!}
+                    assetService={GetTopsideService()}
+                    assetType={AssetTypeEnum.topsides}
+                />
+            </Wrapper>
         </AssetViewDiv>
     )
 }

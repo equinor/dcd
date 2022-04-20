@@ -18,7 +18,16 @@ namespace api.Adapters
                 GasExportPipelineLength = transportDto.GasExportPipelineLength,
                 OilExportPipelineLength = transportDto.OilExportPipelineLength,
             };
-            transport.CostProfile = Convert(transportDto.CostProfile, transport);
+
+            if (transportDto.CostProfile != null)
+            {
+                transport.CostProfile = Convert(transportDto.CostProfile, transport);
+            }
+
+            if (transportDto.TransportCessationCostProfileDto != null)
+            {
+                transport.TransportCessationCostProfile = Convert(transportDto.TransportCessationCostProfileDto, transport);
+            }
             return transport;
         }
 
@@ -31,6 +40,7 @@ namespace api.Adapters
             existing.GasExportPipelineLength = transportDto.GasExportPipelineLength;
             existing.OilExportPipelineLength = transportDto.OilExportPipelineLength;
             existing.CostProfile = Convert(transportDto.CostProfile, existing);
+            existing.TransportCessationCostProfile = Convert(transportDto.TransportCessationCostProfileDto, existing);
         }
 
         private static TransportCostProfile? Convert(TransportCostProfileDto? costprofile, Transport transport)
@@ -51,6 +61,26 @@ namespace api.Adapters
             };
 
             return transportCostProfile;
+        }
+
+        private static TransportCessationCostProfile? Convert(TransportCessationCostProfileDto? transportCessationCostProfileDto, Transport transport)
+        {
+            if (transportCessationCostProfileDto == null)
+            {
+                return null;
+            }
+
+            TransportCessationCostProfile transportCessationCostProfile = new TransportCessationCostProfile
+            {
+                Id = transportCessationCostProfileDto.Id,
+                Currency = transportCessationCostProfileDto.Currency,
+                EPAVersion = transportCessationCostProfileDto.EPAVersion,
+                Transport = transport,
+                StartYear = transportCessationCostProfileDto.StartYear,
+                Values = transportCessationCostProfileDto.Values,
+            };
+
+            return transportCessationCostProfile;
         }
     }
 }

@@ -23,6 +23,7 @@ const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [substructure, setSubstructure] = useState<Substructure>()
+
     const [hasChanges, setHasChanges] = useState(false)
     const [substructureName, setSubstructureName] = useState<string>("")
     const params = useParams()
@@ -78,16 +79,28 @@ const SubstructureView = () => {
                 assetName={substructureName}
                 timeSeriesTitle="Cost profile"
             />
-            <Save
-                name={substructureName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
+
+            <TimeSeries
+                caseItem={caseItem}
                 setAsset={setSubstructure}
-                setProject={setProject}
-                asset={substructure!}
-                assetService={GetSubstructureService()}
-                assetType={AssetTypeEnum.substructures}
+                setHasChanges={setHasChanges}
+                asset={substructure}
+                timeSeriesType={TimeSeriesEnum.substructureCessationCostProfileDto}
+                assetName={substructureName}
+                timeSeriesTitle="Cessation Cost profile"
             />
+            <Wrapper>
+                <Save
+                    name={substructureName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setSubstructure}
+                    setProject={setProject}
+                    asset={substructure!}
+                    assetService={GetSubstructureService()}
+                    assetType={AssetTypeEnum.substructures}
+                />
+            </Wrapper>
         </AssetViewDiv>
     )
 }

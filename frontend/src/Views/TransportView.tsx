@@ -88,6 +88,27 @@ const TransportView = () => {
                 assetService={GetTransportService()}
                 assetType={AssetTypeEnum.transports}
             />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setTransport}
+                setHasChanges={setHasChanges}
+                asset={transport}
+                timeSeriesType={TimeSeriesEnum.transportCessationCostProfileDto}
+                assetName={transportName}
+                timeSeriesTitle="Cessation Cost profile"
+            />
+            <Wrapper>
+                <Save
+                    name={transportName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setTransport}
+                    setProject={setProject}
+                    asset={transport!}
+                    assetService={GetTransportService()}
+                    assetType={AssetTypeEnum.transports}
+                />
+            </Wrapper>
         </AssetViewDiv>
     )
 }

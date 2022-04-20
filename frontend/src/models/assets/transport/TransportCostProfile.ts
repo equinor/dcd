@@ -7,7 +7,7 @@ export class TransportCostProfile implements Components.Schemas.TransportCostPro
     sum?: number | undefined
 
     constructor(data?: Components.Schemas.TransportCostProfileDto) {
-        if (data !== undefined) {
+        if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear
             this.values = data.values ?? []
@@ -16,6 +16,7 @@ export class TransportCostProfile implements Components.Schemas.TransportCostPro
             this.sum = data.sum
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
+            this.epaVersion = ""
         }
     }
 

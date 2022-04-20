@@ -10,6 +10,8 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public SurfCostProfile? CostProfile { get; set; }
+
+        public SurfCessationCostProfile? SurfCessationCostProfile { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }
@@ -20,6 +22,12 @@ namespace api.Models
     }
 
     public class SurfCostProfile : TimeSeriesCost
+    {
+        [ForeignKey("Surf.Id")]
+        public Surf Surf { get; set; } = null!;
+    }
+
+    public class SurfCessationCostProfile : TimeSeriesCost
     {
         [ForeignKey("Surf.Id")]
         public Surf Surf { get; set; } = null!;

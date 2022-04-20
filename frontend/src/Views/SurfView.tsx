@@ -77,16 +77,28 @@ const SurfView = () => {
                 assetName={surfName}
                 timeSeriesTitle="Cost profile"
             />
-            <Save
-                name={surfName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
+
+            <TimeSeries
+                caseItem={caseItem}
                 setAsset={setSurf}
-                setProject={setProject}
-                asset={surf!}
-                assetService={GetSurfService()}
-                assetType={AssetTypeEnum.surfs}
+                setHasChanges={setHasChanges}
+                asset={surf}
+                timeSeriesType={TimeSeriesEnum.surfCessationCostProfileDto}
+                assetName={surfName}
+                timeSeriesTitle="Cessation Cost profile"
             />
+            <Wrapper>
+                <Save
+                    name={surfName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setSurf}
+                    setProject={setProject}
+                    asset={surf!}
+                    assetService={GetSurfService()}
+                    assetType={AssetTypeEnum.surfs}
+                />
+            </Wrapper>
         </AssetViewDiv>
     )
 }
