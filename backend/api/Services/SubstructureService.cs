@@ -25,6 +25,7 @@ namespace api.Services
             {
                 return _context.Substructures
                         .Include(c => c.CostProfile)
+                        .Include(c => c.SubstructureCessationCostProfile)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -85,6 +86,11 @@ namespace api.Services
                 _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
             }
 
+            if (updatedSubstructureDto.SubstructureCessationCostProfileDto == null && existing.SubstructureCessationCostProfile != null)
+            {
+                _context.SubstructureCessationCostProfiles!.Remove(existing.SubstructureCessationCostProfile);
+            }
+
             _context.Substructures!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(existing.ProjectId);
@@ -95,6 +101,7 @@ namespace api.Services
             var substructure = _context.Substructures!
                 .Include(c => c.Project)
                 .Include(c => c.CostProfile)
+                .Include(c => c.SubstructureCessationCostProfile)
                 .FirstOrDefault(o => o.Id == substructureId);
             if (substructure == null)
             {

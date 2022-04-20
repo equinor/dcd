@@ -27,6 +27,8 @@ public static class ExportToSTEA
             rowCount++;
             businessCase.OffshoreFacilites = CreateExcelCostRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1e-6);
             rowCount++;
+            businessCase.CessationOffshoreFacilites = CreateExcelCostRow("Cessation - Offshore Facilities", project.StartYear, c.Capex.CessationOffshoreFacilities, rowCount, 1e-6);
+            rowCount++;
             businessCase.ProductionAndSalesVolumes = new ExcelTableCell(columnNumber(1) + rowCount.ToString(), "Production And Sales Volumes");
             rowCount++;
             businessCase.TotalAndAnnualOil = CreateExcelVolumeRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear,
@@ -169,6 +171,7 @@ public class BusinessCase
     public List<ExcelTableCell> Capex { get; set; }
 
     public List<ExcelTableCell> OffshoreFacilites { get; set; }
+    public List<ExcelTableCell> CessationOffshoreFacilites { get; set; }
     public List<ExcelTableCell> Drilling { get; set; }
 
     public ExcelTableCell ProductionAndSalesVolumes { get; set; } = null!;
@@ -184,6 +187,7 @@ public class BusinessCase
         Exploration = new List<ExcelTableCell>();
         Capex = new List<ExcelTableCell>();
         OffshoreFacilites = new List<ExcelTableCell>();
+        CessationOffshoreFacilites = new List<ExcelTableCell>();
         Drilling = new List<ExcelTableCell>();
         TotalAndAnnualOil = new List<ExcelTableCell>();
         NetSalesGas = new List<ExcelTableCell>();

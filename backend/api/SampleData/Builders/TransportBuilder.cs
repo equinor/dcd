@@ -10,4 +10,11 @@ public class TransportBuilder : Transport
         this.CostProfile = costProfile;
         return this;
     }
+
+    public TransportBuilder WithTransportCessationCostProfile(TransportCessationCostProfile transportCessationCostProfile)
+    {
+        transportCessationCostProfile.Transport = this;
+        this.TransportCessationCostProfile = transportCessationCostProfile;
+        return this;
+    }
 }

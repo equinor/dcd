@@ -96,6 +96,15 @@ const TopsideView = () => {
                 assetName={topsideName}
                 timeSeriesTitle="Cost profile"
             />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setTopside}
+                setHasChanges={setHasChanges}
+                asset={topside}
+                timeSeriesType={TimeSeriesEnum.topsideCessationCostProfileDto}
+                assetName={topsideName}
+                timeSeriesTitle="Cessation Cost profile"
+            />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )
