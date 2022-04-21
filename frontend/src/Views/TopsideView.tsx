@@ -14,6 +14,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
 import { EMPTY_GUID } from "../Utils/constants"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
@@ -54,10 +55,13 @@ const TopsideView = () => {
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
-                // eslint-disable-next-line max-len
-                setEarliestTimeSeriesYear(Math.min(newTopside!.costProfile!.startYear!) + caseResult!.DG4Date!.getFullYear())
-                // eslint-disable-next-line max-len
-                setLatestTimeSeriesYear(Math.max(newTopside!.costProfile!.startYear! + newTopside.costProfile!.values!.length!) + caseResult!.DG4Date!.getFullYear())
+
+                TimeSeriesYears(
+                    newTopside,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -114,6 +118,10 @@ const TopsideView = () => {
                 timeSeriesType={TimeSeriesEnum.topsideCessationCostProfileDto}
                 assetName={topsideName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>

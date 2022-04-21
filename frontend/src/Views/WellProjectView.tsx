@@ -13,6 +13,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { EMPTY_GUID } from "../Utils/constants"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 import {
     AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -53,10 +54,13 @@ function WellProjectView() {
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
-                // eslint-disable-next-line max-len
-                setEarliestTimeSeriesYear(Math.min(newWellProject!.costProfile!.startYear!, newWellProject!.drillingSchedule!.startYear!) + caseResult!.DG4Date!.getFullYear())
-                // eslint-disable-next-line max-len
-                setLatestTimeSeriesYear(Math.max(newWellProject!.costProfile!.startYear! + newWellProject.costProfile!.values!.length!, newWellProject!.drillingSchedule!.startYear! + newWellProject.drillingSchedule!.values!.length!) + caseResult!.DG4Date!.getFullYear())
+
+                TimeSeriesYears(
+                    newWellProject,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])

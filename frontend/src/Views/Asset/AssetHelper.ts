@@ -48,5 +48,17 @@ export const TimeSeriesYears = (asset: IAsset, dG4Year: number, setFirstYear: Re
     if (asset.productionProfileWaterInjection !== undefined) {
         years = SetYears(years, asset.productionProfileWaterInjection, dG4Year, setFirstYear, setLastYear)
     }
+    if (asset.substructureCessationCostProfileDto !== undefined) {
+        years = SetYears(years, asset.substructureCessationCostProfileDto, dG4Year, setFirstYear, setLastYear)
+    }
+    if (asset.surfCessationCostProfileDto !== undefined) {
+        years = SetYears(years, asset.surfCessationCostProfileDto, dG4Year, setFirstYear, setLastYear)
+    }
+    if (asset.topsideCessationCostProfileDto !== undefined) {
+        years = SetYears(years, asset.topsideCessationCostProfileDto, dG4Year, setFirstYear, setLastYear)
+    }
+    if (asset.transportCessationCostProfileDto !== undefined) {
+        years = SetYears(years, asset.transportCessationCostProfileDto, dG4Year, setFirstYear, setLastYear)
+    }
     return years
 }

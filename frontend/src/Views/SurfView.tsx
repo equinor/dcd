@@ -16,6 +16,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -53,10 +54,13 @@ const SurfView = () => {
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
-                // eslint-disable-next-line max-len
-                setEarliestTimeSeriesYear(Math.min(newSurf!.costProfile!.startYear!) + caseResult!.DG4Date!.getFullYear())
-                // eslint-disable-next-line max-len
-                setLatestTimeSeriesYear(Math.max(newSurf!.costProfile!.startYear! + newSurf.costProfile!.values!.length!) + caseResult!.DG4Date!.getFullYear())
+
+                TimeSeriesYears(
+                    newSurf,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -113,6 +117,10 @@ const SurfView = () => {
                 timeSeriesType={TimeSeriesEnum.surfCessationCostProfileDto}
                 assetName={surfName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>

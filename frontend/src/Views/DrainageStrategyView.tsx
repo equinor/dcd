@@ -1,7 +1,7 @@
 import {
-    Input, Typography, Label,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEventHandler, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useLocation, useNavigate, useParams,
 } from "react-router"
@@ -15,9 +15,10 @@ import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetHeader, AssetViewDiv, Dg4Field, SaveButton, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
+import AssetName from "../Components/AssetName"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -85,29 +86,13 @@ const DrainageStrategyView = () => {
         setHasChanges(false)
     }
 
-    const handleDrainageStrategyNameFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setDrainageStrategyName(e.target.value)
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
-    }
-
     return (
         <AssetViewDiv>
-            <AssetHeader>
-                <WrapperColumn>
-                    <Label htmlFor="drainagStrategyName" label="Name" />
-                    <Input
-                        id="drainagStrategyName"
-                        name="drainagStrategyName"
-                        placeholder="Enter Drainage Strategy name"
-                        value={drainageStrategyName}
-                        onChange={handleDrainageStrategyNameFieldChange}
-                    />
-                </WrapperColumn>
-            </AssetHeader>
+            <AssetName
+                setName={setDrainageStrategyName}
+                name={drainageStrategyName}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>

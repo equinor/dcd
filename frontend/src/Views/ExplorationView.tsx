@@ -17,6 +17,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -54,10 +55,13 @@ const ExplorationView = () => {
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
-                // eslint-disable-next-line max-len
-                setEarliestTimeSeriesYear(Math.min(newExploration!.costProfile!.startYear!) + caseResult!.DG4Date!.getFullYear())
-                // eslint-disable-next-line max-len
-                setLatestTimeSeriesYear(Math.max(newExploration!.costProfile!.startYear! + newExploration.costProfile!.values!.length!) + caseResult!.DG4Date!.getFullYear())
+
+                TimeSeriesYears(
+                    newExploration,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])

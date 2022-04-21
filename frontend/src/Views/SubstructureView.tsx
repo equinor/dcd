@@ -17,6 +17,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -55,10 +56,13 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure?.name!)
-                // eslint-disable-next-line max-len
-                setEarliestTimeSeriesYear(Math.min(newSubstructure!.costProfile!.startYear!) + caseResult!.DG4Date!.getFullYear())
-                // eslint-disable-next-line max-len
-                setLatestTimeSeriesYear(Math.max(newSubstructure!.costProfile!.startYear! + newSubstructure.costProfile!.values!.length!) + caseResult!.DG4Date!.getFullYear())
+
+                TimeSeriesYears(
+                    newSubstructure,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -116,6 +120,10 @@ const SubstructureView = () => {
                 timeSeriesType={TimeSeriesEnum.substructureCessationCostProfileDto}
                 assetName={substructureName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper>
                 <SaveButton disabled={!hasChanges} onClick={handleSave}>

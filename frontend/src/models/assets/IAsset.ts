@@ -8,6 +8,10 @@ export interface IAsset {
     drillingSchedule?: ITimeSeries | undefined
     co2Emissions?: ITimeSeries | undefined
     netSalesGas?: ITimeSeries | undefined
+    substructureCessationCostProfileDto?: ITimeSeries | undefined
+    surfCessationCostProfileDto?: ITimeSeries | undefined
+    topsideCessationCostProfileDto?: ITimeSeries | undefined
+    transportCessationCostProfileDto?: ITimeSeries | undefined
     fuelFlaringAndLosses?: ITimeSeries | undefined
     productionProfileGas?: ITimeSeries | undefined
     productionProfileOil?: ITimeSeries | undefined
