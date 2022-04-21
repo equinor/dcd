@@ -52,6 +52,7 @@ namespace api.Services
         {
             var transport = _context.Transports!
                     .Include(c => c.CostProfile)
+                    .Include(c => c.TransportCessationCostProfile)
                 .Where(c => c.Id == transportId).First();
             if (transport == null)
             {
@@ -77,6 +78,7 @@ namespace api.Services
             {
                 return _context.Transports
                         .Include(c => c.CostProfile)
+                        .Include(c => c.TransportCessationCostProfile)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -93,6 +95,11 @@ namespace api.Services
             if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)
             {
                 _context.TransportCostProfile!.Remove(existing.CostProfile);
+            }
+
+            if (updatedTransportDto.TransportCessationCostProfileDto == null && existing.TransportCessationCostProfile != null)
+            {
+                _context.TransportCessationCostProfiles!.Remove(existing.TransportCessationCostProfile);
             }
 
             _context.Transports!.Update(existing);

@@ -105,6 +105,15 @@ const SurfView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setSurf}
+                setHasChanges={setHasChanges}
+                asset={surf}
+                timeSeriesType={TimeSeriesEnum.surfCessationCostProfileDto}
+                assetName={surfName}
+                timeSeriesTitle="Cessation Cost profile"
+            />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )

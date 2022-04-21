@@ -17,7 +17,8 @@ namespace api.Adapters
                 Maturity = transport.Maturity,
                 GasExportPipelineLength = transport.GasExportPipelineLength,
                 OilExportPipelineLength = transport.OilExportPipelineLength,
-                CostProfile = Convert(transport.CostProfile)
+                CostProfile = Convert(transport.CostProfile),
+                TransportCessationCostProfileDto = Convert(transport.TransportCessationCostProfile)
             };
             return transportDto;
         }
@@ -35,6 +36,22 @@ namespace api.Adapters
                 EPAVersion = costprofile.EPAVersion,
                 StartYear = costprofile.StartYear,
                 Values = costprofile.Values,
+            };
+        }
+
+        private static TransportCessationCostProfileDto? Convert(TransportCessationCostProfile? transportCessationCostProfile)
+        {
+            if (transportCessationCostProfile == null)
+            {
+                return null;
+            }
+            return new TransportCessationCostProfileDto()
+            {
+                Id = transportCessationCostProfile.Id,
+                Currency = transportCessationCostProfile.Currency,
+                EPAVersion = transportCessationCostProfile.EPAVersion,
+                StartYear = transportCessationCostProfile.StartYear,
+                Values = transportCessationCostProfile.Values,
             };
         }
     }

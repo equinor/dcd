@@ -1,6 +1,5 @@
 using api.Dtos;
 using api.Models;
-using api.Services;
 
 namespace api.Adapters
 {
@@ -20,7 +19,10 @@ namespace api.Adapters
                 ProductionFlowline = surfDto.ProductionFlowline,
                 RiserCount = surfDto.RiserCount
             };
+
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
+            surf.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, surf);
+
             return surf;
         }
 
@@ -35,6 +37,7 @@ namespace api.Adapters
             existing.ProductionFlowline = surfDto.ProductionFlowline;
             existing.RiserCount = surfDto.RiserCount;
             existing.CostProfile = Convert(surfDto.CostProfile, existing);
+            existing.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, existing);
         }
 
         private static SurfCostProfile? Convert(SurfCostProfileDto? costprofile, Surf surf)
@@ -54,5 +57,28 @@ namespace api.Adapters
             };
             return surfCostProfile;
         }
+
+        private static SurfCessationCostProfile? Convert(SurfCessationCostProfileDto? cessationCostProfileDto, Surf surf)
+        {
+
+            if (cessationCostProfileDto == null)
+            {
+                return null;
+            }
+
+            SurfCessationCostProfile surfCessationCostProfile = new SurfCessationCostProfile
+            {
+                Id = cessationCostProfileDto.Id,
+                Currency = cessationCostProfileDto.Currency,
+                EPAVersion = cessationCostProfileDto.EPAVersion,
+                StartYear = cessationCostProfileDto.StartYear,
+                Values = cessationCostProfileDto.Values,
+                Surf = surf
+            };
+
+            return surfCessationCostProfile;
+        }
+
+
     }
 }

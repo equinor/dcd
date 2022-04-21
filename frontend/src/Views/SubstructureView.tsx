@@ -22,6 +22,7 @@ const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [substructure, setSubstructure] = useState<Substructure>()
+
     const [hasChanges, setHasChanges] = useState(false)
     const [substructureName, setSubstructureName] = useState<string>("")
     const params = useParams()
@@ -106,6 +107,15 @@ const SubstructureView = () => {
                 latestYear={latestTimeSeriesYear!}
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
+            />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setSubstructure}
+                setHasChanges={setHasChanges}
+                asset={substructure}
+                timeSeriesType={TimeSeriesEnum.substructureCessationCostProfileDto}
+                assetName={substructureName}
+                timeSeriesTitle="Cessation Cost profile"
             />
             <Wrapper>
                 <SaveButton disabled={!hasChanges} onClick={handleSave}>

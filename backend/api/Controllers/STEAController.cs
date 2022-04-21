@@ -69,6 +69,10 @@ namespace api.Controllers
                 {
                     ws.Cell(etc.CellNo).Value = etc.Value;
                 }
+                foreach (ExcelTableCell etc in businessCase.CessationOffshoreFacilites)
+                {
+                    ws.Cell(etc.CellNo).Value = etc.Value;
+                }
                 ws.Cell(businessCase.ProductionAndSalesVolumes.CellNo).Value = businessCase.ProductionAndSalesVolumes.Value;
                 foreach (ExcelTableCell etc in businessCase.TotalAndAnnualOil)
                 {

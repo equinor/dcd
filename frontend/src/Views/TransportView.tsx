@@ -106,7 +106,15 @@ const TransportView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            {" "}
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setTransport}
+                setHasChanges={setHasChanges}
+                asset={transport}
+                timeSeriesType={TimeSeriesEnum.transportCessationCostProfileDto}
+                assetName={transportName}
+                timeSeriesTitle="Cessation Cost profile"
+            />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
     )

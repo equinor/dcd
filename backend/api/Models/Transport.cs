@@ -9,12 +9,19 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public TransportCostProfile? CostProfile { get; set; }
+        public TransportCessationCostProfile? TransportCessationCostProfile { get; set; }
         public double GasExportPipelineLength { get; set; }
         public double OilExportPipelineLength { get; set; }
         public Maturity Maturity { get; set; }
     }
 
     public class TransportCostProfile : TimeSeriesCost
+    {
+        [ForeignKey("Transport.Id")]
+        public Transport Transport { get; set; } = null!;
+    }
+
+    public class TransportCessationCostProfile : TimeSeriesCost
     {
         [ForeignKey("Transport.Id")]
         public Transport Transport { get; set; } = null!;
