@@ -48,4 +48,5 @@ export const TimeSeriesYears = (asset: IAsset, dG4Year: number, setFirstYear: Re
     if (asset.productionProfileWaterInjection !== undefined) {
         years = SetYears(years, asset.productionProfileWaterInjection, dG4Year, setFirstYear, setLastYear)
     }
+    return years
 }
