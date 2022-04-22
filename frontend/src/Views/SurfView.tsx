@@ -16,6 +16,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -26,6 +27,8 @@ const SurfView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -51,6 +54,13 @@ const SurfView = () => {
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
+
+                TimeSeriesYears(
+                    newSurf,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -94,6 +104,10 @@ const SurfView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={surfName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -103,6 +117,10 @@ const SurfView = () => {
                 timeSeriesType={TimeSeriesEnum.surfCessationCostProfileDto}
                 assetName={surfName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>

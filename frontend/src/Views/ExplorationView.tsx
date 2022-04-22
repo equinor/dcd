@@ -17,6 +17,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -27,6 +28,8 @@ const ExplorationView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -52,6 +55,13 @@ const ExplorationView = () => {
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
+
+                TimeSeriesYears(
+                    newExploration,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -95,6 +105,10 @@ const ExplorationView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={name}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper>
                 <SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton>
