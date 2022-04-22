@@ -17,6 +17,7 @@ import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetCaseService } from "../Services/CaseService"
 import { Modal } from "../Components/Modal"
+import { unwrapCase } from "../Utils/common"
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,11 +66,12 @@ const CaseDescription = ({
         setCaseDescription(e.target.value)
     }
     const submitUpdateDescription = async () => {
-        const caseDto = Case.Copy(caseItem!)
+        const unwrappedCase: Case = unwrapCase(caseItem)
+        const caseDto = Case.Copy(unwrappedCase)
         caseDto.description = caseDescription
-        const newProject = await GetCaseService().updateCase(caseDto)
+        const newProject: Project = await GetCaseService().updateCase(caseDto)
         setProject(newProject)
-        const caseResult = newProject.cases.find((o) => o.id === params.caseId)
+        const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === params.caseId))
         setCase(caseResult)
     }
     const submitDescriptionForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -88,10 +90,10 @@ const CaseDescription = ({
                     <Typography
                         variant="h4"
                         id="textfield-description"
-                        defaultValue={caseItem?.description}
-                        key={caseItem?.description}
+                        defaultValue={unwrapCase(caseItem).description}
+                        key={unwrapCase(caseItem).description}
                     >
-                        {caseItem?.description}
+                        {unwrapCase(caseItem).description}
                         <EdsProvider density="compact">
                             <ActionsContainer>
                                 <Tooltip title="Edit description">
@@ -113,7 +115,7 @@ const CaseDescription = ({
                     <TextArea
                         id="description"
                         name="description"
-                        defaultValue={caseItem?.description}
+                        defaultValue={unwrapCase(caseItem).description}
                         onChange={handleDescriptionChange}
                     />
                     <div>
