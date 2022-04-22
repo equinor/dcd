@@ -110,8 +110,8 @@ const TimeSeries = ({
     }
 
     const onImport = (input: string, year: number) => {
-        const newAsset = { ...asset }
-        const newTimeSeries = { ...asset![timeSeriesType] }
+        const newAsset: IAsset = { ...asset }
+        const newTimeSeries: ITimeSeries = { ...newAsset[timeSeriesType] }
         newAsset[timeSeriesType] = newTimeSeries
         newTimeSeries!.startYear = year
         newTimeSeries!.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
