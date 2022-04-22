@@ -7,6 +7,7 @@ import { useParams } from "react-router"
 import { Case } from "../../models/Case"
 import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
+import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../../Utils/common"
 
 const StyledDialog = styled(Dialog)`
     width: 50rem;
@@ -59,27 +60,6 @@ function Import({ onClose, onImport }: Props) {
 
     const dG4Date: number = caseItem?.DG4Date?.getFullYear()!
     const startYearImport: number = Number(dG4Date) + Number(startYear)
-
-    const unwrapProjectId = (projectId?: string | undefined): string => {
-        if (projectId === undefined || projectId === null) {
-            throw new Error("Attempted to Import Timeseries onto a Project which does not exist")
-        }
-        return projectId
-    }
-
-    const unwrapCaseId = (caseId?: string | undefined): string => {
-        if (caseId === undefined || caseId === null) {
-            throw new Error("Attempted to Import Timeseries onto a Case Id which does not exist")
-        }
-        return caseId
-    }
-
-    const unwrapCase = (casee?: Case | undefined): Case => {
-        if (casee === undefined || casee === null) {
-            throw new Error("Attempted to Import Timeseries onto a Case which does not exist")
-        }
-        return casee
-    }
 
     useEffect(() => {
         (async () => {
