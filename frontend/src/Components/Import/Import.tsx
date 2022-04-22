@@ -55,17 +55,40 @@ function Import({ onClose, onImport }: Props) {
     const params = useParams()
     const [caseItem, setCase] = useState<Case>()
 
-    const example = "value1\tvalue2\tvalue3\tvalue4"
+    const example: string = "value1\tvalue2\tvalue3\tvalue4"
 
-    const dG4Date = caseItem?.DG4Date?.getFullYear()!
-    const startYearImport = Number(dG4Date) + Number(startYear)
+    const dG4Date: number = caseItem?.DG4Date?.getFullYear()!
+    const startYearImport: number = Number(dG4Date) + Number(startYear)
+
+    const unwrapProjectId = (projectId?: string | undefined): string => {
+        if (projectId === undefined || projectId === null) {
+            throw new Error("Attempted to Import Timeseries onto a Project which does not exist")
+        }
+        return projectId
+    }
+
+    const unwrapCaseId = (caseId?: string | undefined): string => {
+        if (caseId === undefined || caseId === null) {
+            throw new Error("Attempted to Import Timeseries onto a Case Id which does not exist")
+        }
+        return caseId
+    }
+
+    const unwrapCase = (casee?: Case | undefined): Case => {
+        if (casee === undefined || casee === null) {
+            throw new Error("Attempted to Import Timeseries onto a Case which does not exist")
+        }
+        return casee
+    }
 
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const caseId: string = unwrapCaseId(params.caseId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
