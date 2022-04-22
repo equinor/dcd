@@ -70,13 +70,7 @@ const CaseDG4Date = ({
         }
     }
 
-    const dg4ReturnDate = () => {
-        const dg4DateGet = caseItem?.DG4Date?.toLocaleDateString("en-CA")
-        if (dg4DateGet !== "1-01-01") {
-            return dg4DateGet
-        }
-        return "2030-01-01"
-    }
+    const dg4ReturnDate = () => caseItem?.DG4Date?.toLocaleDateString("en-CA")
 
     return (
         <>

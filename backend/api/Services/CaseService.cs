@@ -18,6 +18,10 @@ namespace api.Services
         public ProjectDto CreateCase(CaseDto caseDto)
         {
             var case_ = CaseAdapter.Convert(caseDto);
+            if (case_.DG4Date == DateTimeOffset.MinValue)
+            {
+                case_.DG4Date = new DateTime(2030, 1, 1);
+            }
             var project = _projectService.GetProject(case_.ProjectId);
             case_.Project = project;
             _context.Cases!.Add(case_);
