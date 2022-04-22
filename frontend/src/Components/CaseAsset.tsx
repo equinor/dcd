@@ -7,6 +7,7 @@ import { Case } from "../models/Case"
 import LinkAsset from "./LinkAsset"
 import { GetCaseService } from "../Services/CaseService"
 import { EMPTY_GUID } from "../Utils/constants"
+import { unwrapCase } from "../Utils/common"
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,13 +52,14 @@ const CaseAsset = ({
 
     const onSelectAsset = async (event: React.ChangeEvent<HTMLSelectElement>, link: AssetLink) => {
         try {
-            const caseDto = Case.Copy(caseItem!)
+            const unwrappedCase: Case = unwrapCase(caseItem)
+            const caseDto = Case.Copy(unwrappedCase)
 
             caseDto[link] = event.currentTarget.selectedOptions[0].value
 
-            const newProject = await GetCaseService().updateCase(caseDto)
+            const newProject: Project = await GetCaseService().updateCase(caseDto)
             setProject(newProject)
-            const caseResult = newProject.cases.find((o) => o.id === caseId)
+            const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === caseId))
             setCase(caseResult)
         } catch (error) {
             console.error("[CaseView] error while submitting form data", error)
@@ -72,14 +74,14 @@ const CaseAsset = ({
         event.preventDefault()
 
         try {
-            navigate(`${type?.toLowerCase()}/${id}`)
+            navigate(`${type.toLowerCase()}/${id}`)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
     }
 
     const submitCreateAsset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
-        event?.preventDefault()
+        event.preventDefault()
         navigate(`${type.toLowerCase()}/${EMPTY_GUID}`)
     }
 
@@ -90,15 +92,15 @@ const CaseAsset = ({
                     assetName="Drainage strategy"
                     linkAsset={onSelectAsset}
                     values={project.drainageStrategies.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    currentValue={caseItem?.drainageStrategyLink}
+                    currentValue={unwrapCase(caseItem).drainageStrategyLink}
                     link={AssetLink.drainageStrategyLink}
                 />
                 <AssetButton
                     type="submit"
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitOpenAsset(event, "drainagestrategy", caseItem?.drainageStrategyLink)}
-                    disabled={caseItem?.drainageStrategyLink === EMPTY_GUID}
+                    ) => submitOpenAsset(event, "drainagestrategy", unwrapCase(caseItem).drainageStrategyLink)}
+                    disabled={unwrapCase(caseItem).drainageStrategyLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -116,15 +118,15 @@ const CaseAsset = ({
                     assetName="Exploration"
                     linkAsset={onSelectAsset}
                     values={project.explorations.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    currentValue={caseItem?.explorationLink}
+                    currentValue={unwrapCase(caseItem).explorationLink}
                     link={AssetLink.explorationLink}
                 />
                 <AssetButton
                     type="submit"
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitOpenAsset(event, "exploration", caseItem?.explorationLink)}
-                    disabled={caseItem?.explorationLink === EMPTY_GUID}
+                    ) => submitOpenAsset(event, "exploration", unwrapCase(caseItem).explorationLink)}
+                    disabled={unwrapCase(caseItem).explorationLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -142,15 +144,15 @@ const CaseAsset = ({
                     assetName="Well project"
                     linkAsset={onSelectAsset}
                     values={project.wellProjects.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    currentValue={caseItem?.wellProjectLink}
+                    currentValue={unwrapCase(caseItem).wellProjectLink}
                     link={AssetLink.wellProjectLink}
                 />
                 <AssetButton
                     type="submit"
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitOpenAsset(event, "wellproject", caseItem?.wellProjectLink)}
-                    disabled={caseItem?.wellProjectLink === EMPTY_GUID}
+                    ) => submitOpenAsset(event, "wellproject", unwrapCase(caseItem).wellProjectLink)}
+                    disabled={unwrapCase(caseItem).wellProjectLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -168,15 +170,15 @@ const CaseAsset = ({
                     assetName="SURF"
                     linkAsset={onSelectAsset}
                     values={project.surfs.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    currentValue={caseItem?.surfLink}
+                    currentValue={unwrapCase(caseItem).surfLink}
                     link={AssetLink.surfLink}
                 />
                 <AssetButton
                     type="submit"
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitOpenAsset(event, "surf", caseItem?.surfLink)}
-                    disabled={caseItem?.surfLink === EMPTY_GUID}
+                    ) => submitOpenAsset(event, "surf", unwrapCase(caseItem).surfLink)}
+                    disabled={unwrapCase(caseItem).surfLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -194,15 +196,15 @@ const CaseAsset = ({
                     assetName="Topside"
                     linkAsset={onSelectAsset}
                     values={project.topsides.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    currentValue={caseItem?.topsideLink}
+                    currentValue={unwrapCase(caseItem).topsideLink}
                     link={AssetLink.topsideLink}
                 />
                 <AssetButton
                     type="submit"
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitOpenAsset(event, "topside", caseItem?.topsideLink)}
-                    disabled={caseItem?.topsideLink === EMPTY_GUID}
+                    ) => submitOpenAsset(event, "topside", unwrapCase(caseItem).topsideLink)}
+                    disabled={unwrapCase(caseItem).topsideLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -220,15 +222,15 @@ const CaseAsset = ({
                     assetName="Substructure"
                     linkAsset={onSelectAsset}
                     values={project.substructures.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    currentValue={caseItem?.substructureLink}
+                    currentValue={unwrapCase(caseItem).substructureLink}
                     link={AssetLink.substructureLink}
                 />
                 <AssetButton
                     type="submit"
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitOpenAsset(event, "substructure", caseItem?.substructureLink)}
-                    disabled={caseItem?.substructureLink === EMPTY_GUID}
+                    ) => submitOpenAsset(event, "substructure", unwrapCase(caseItem).substructureLink)}
+                    disabled={unwrapCase(caseItem).substructureLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
@@ -246,15 +248,15 @@ const CaseAsset = ({
                     assetName="Transport"
                     linkAsset={onSelectAsset}
                     values={project.transports.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    currentValue={caseItem?.transportLink}
+                    currentValue={unwrapCase(caseItem).transportLink}
                     link={AssetLink.transportLink}
                 />
                 <AssetButton
                     type="submit"
                     onClick={(
                         event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-                    ) => submitOpenAsset(event, "transport", caseItem?.transportLink)}
-                    disabled={caseItem?.transportLink === EMPTY_GUID}
+                    ) => submitOpenAsset(event, "transport", unwrapCase(caseItem).transportLink)}
+                    disabled={unwrapCase(caseItem).transportLink === EMPTY_GUID}
                 >
                     Open
                 </AssetButton>
