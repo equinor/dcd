@@ -14,6 +14,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
 import { EMPTY_GUID } from "../Utils/constants"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
@@ -27,6 +28,8 @@ const TopsideView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -52,6 +55,13 @@ const TopsideView = () => {
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
+
+                TimeSeriesYears(
+                    newTopside,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -95,6 +105,10 @@ const TopsideView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={topsideName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -104,6 +118,10 @@ const TopsideView = () => {
                 timeSeriesType={TimeSeriesEnum.topsideCessationCostProfileDto}
                 assetName={topsideName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
         </AssetViewDiv>
