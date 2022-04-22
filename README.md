@@ -3,6 +3,16 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings) [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url]
 
+## Concept App, Digital Concept Application
+
+-   Product owner: Atle Svandal
+-   Business area: Early phase concept studies
+
+## Summary Description
+
+The application supports collecting time series values for cost profiles for offshore facilities, exploration, drilling (well)
+and volume profiles for drainage stragegy and creating these as assets on business cases to be compared for projects.
+
 ### Prerequisites
 
 -   [.NET 6.0+](https://dotnet.microsoft.com/download/dotnet/6.0)
@@ -112,3 +122,11 @@ System context diagram for the DCD application.
 ### Container Diagram
 Container diagram for the DCD application.
 ![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/equinor/dcd///main/DCD_C4Container.iuml)
+
+## Access to application and data - UNDER CONSTRUCTION
+
+|Access|Description|Who|How to check|
+|-|-|-|-|
+|Read| Read all information in app| All equinor employee | AD group [Equinor All Employee](https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/1db6ba0c-1d2f-4d76-9dae-0881e5913c5c) |
+|Write/Update | Insert new information in app | AccessIT Role | [Developer Fusion](https://accessit.equinor.com/Search/Search?term=Developer+%28FUSION%29)|
+|Delete| Delete information from app | AccessIT Role | [BOFH Fusion]() |
