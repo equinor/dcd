@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Dispatch } from "react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { useNavigate } from "react-router"
@@ -24,9 +24,9 @@ const AssetButton = styled(Button)`
 
 interface Props {
     project: Project,
-    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>
+    setProject: Dispatch<React.SetStateAction<Project | undefined>>
     caseItem: Case | undefined,
-    setCase: React.Dispatch<React.SetStateAction<Case | undefined>>
+    setCase: Dispatch<React.SetStateAction<Case | undefined>>
     caseId: string | undefined,
 }
 

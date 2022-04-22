@@ -1,13 +1,13 @@
 import { Input, Label } from "@equinor/eds-core-react"
-import { ChangeEventHandler } from "react"
+import { ChangeEventHandler, Dispatch } from "react"
 import {
     AssetHeader, WrapperColumn,
 } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
-    setName: React.Dispatch<React.SetStateAction<string>>
+    setName: Dispatch<React.SetStateAction<string>>
     name: string
-    setHasChanges: React.Dispatch<React.SetStateAction<boolean>>
+    setHasChanges: Dispatch<React.SetStateAction<boolean>>
 }
 
 const AssetName = ({

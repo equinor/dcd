@@ -12,6 +12,7 @@ import {
     useEffect,
     ChangeEventHandler,
     MouseEventHandler,
+    Dispatch,
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
@@ -32,9 +33,9 @@ const ActionsContainer = styled.div`
 `
 
 interface Props {
-    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>
+    setProject: Dispatch<React.SetStateAction<Project | undefined>>
     caseItem: Case | undefined,
-    setCase: React.Dispatch<React.SetStateAction<Case | undefined>>
+    setCase: Dispatch<React.SetStateAction<Case | undefined>>
 }
 
 const CaseDG4Date = ({

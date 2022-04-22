@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Dispatch } from "react"
 import { IAsset } from "../../models/assets/IAsset"
 import { ITimeSeries } from "../../models/ITimeSeries"
 
@@ -6,8 +6,8 @@ const SetYears = (
     years: [number, number],
     timeSeries: ITimeSeries,
     dG4Year: number,
-    setFirstYear: React.Dispatch<React.SetStateAction<number | undefined>>,
-    setLastYear: React.Dispatch<React.SetStateAction<number | undefined>>,
+    setFirstYear: Dispatch<React.SetStateAction<number | undefined>>,
+    setLastYear: Dispatch<React.SetStateAction<number | undefined>>,
 ): [number, number] => {
     const newYears = years
     if (timeSeries.startYear !== undefined && timeSeries.values !== undefined) {
@@ -28,8 +28,8 @@ const SetYears = (
 export const TimeSeriesYears = (
     asset: IAsset,
     dG4Year: number,
-    setFirstYear: React.Dispatch<React.SetStateAction<number | undefined>>,
-    setLastYear: React.Dispatch<React.SetStateAction<number | undefined>>,
+    setFirstYear: Dispatch<React.SetStateAction<number | undefined>>,
+    setLastYear: Dispatch<React.SetStateAction<number | undefined>>,
 ) => {
     let years: [number, number]
     years = [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
