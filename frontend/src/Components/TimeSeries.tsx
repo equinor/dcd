@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
 import { Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
@@ -76,19 +74,29 @@ const TimeSeries = ({
         if (updatedAsset !== undefined && updatedAsset[timeSeriesType] !== undefined) {
             const columnTitles: string[] = []
             if (earliestYear !== undefined && latestYear !== undefined) {
-                for (let i = (earliestYear); i < (latestYear); i += 1) {
+                for (let i = earliestYear; i < latestYear; i += 1) {
                     columnTitles.push(i.toString())
                 }
             }
 
-            const zeroesAtStart = Array.from({ length: Number(updatedAsset[timeSeriesType]!.startYear!) + Number(caseItem!.DG4Date!.getFullYear()) - Number(earliestYear) }, (() => 0))
-            const zeroesAtEnd = Array.from({ length: Number(latestYear) - (Number(updatedAsset[timeSeriesType]!.startYear!) + Number(caseItem!.DG4Date!.getFullYear()) + Number(updatedAsset[timeSeriesType]!.values!.length!)) }, (() => 0))
+            const zeroesAtStart = Array.from({
+                length: Number(updatedAsset[timeSeriesType]!.startYear!)
+                + Number(caseItem!.DG4Date!.getFullYear()) - Number(earliestYear),
+            }, (() => 0))
+            const zeroesAtEnd = Array.from({
+                length: Number(latestYear)
+                - (Number(updatedAsset[timeSeriesType]!.startYear!)
+                + Number(caseItem!.DG4Date!.getFullYear())
+                + Number(updatedAsset[timeSeriesType]!.values!.length!)),
+            }, (() => 0))
 
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
             const newGridData = buildGridData(updatedAsset[timeSeriesType])
 
-            const alignedAssetGridData = new Array(assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]))
+            const alignedAssetGridData = new Array(
+                assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
+            )
 
             setColumns(columnTitles)
             setGridData(alignedAssetGridData)
@@ -117,11 +125,15 @@ const TimeSeries = ({
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         newTimeSeries.epaVersion = ""
         setAsset(newAsset)
-        if ((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
+        if ((Number(year)
+        + Number(caseItem!.DG4Date!.getFullYear()!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
             setEarliestYear((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!)))
         }
-        if ((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
-            setLatestYear(Number(year) + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries!.values!.length))
+        if ((Number(year)
+        + Number(caseItem!.DG4Date!.getFullYear()!)
+        + Number(newTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
+            setLatestYear(Number(year)
+            + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries.values.length))
         }
         buildAlignedGrid(newAsset)
         setDialogOpen(!dialogOpen)
