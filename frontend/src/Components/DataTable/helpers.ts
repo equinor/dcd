@@ -68,3 +68,14 @@ export const buildGridData = (costProfile?: any) => {
     })
     return grid
 }
+
+export const buildZeroGridData = (zeroes?: any) => {
+    const grid: ({value: number, readOnly?: boolean})[][] = [
+        [
+        ],
+    ]
+    zeroes.forEach((element: number) => {
+        grid[0].push({ value: element })
+    })
+    return grid
+}

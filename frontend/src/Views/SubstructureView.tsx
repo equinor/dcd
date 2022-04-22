@@ -18,6 +18,7 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -27,6 +28,8 @@ const SubstructureView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [substructureName, setSubstructureName] = useState<string>("")
     const params = useParams()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -52,6 +55,13 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure?.name!)
+
+                TimeSeriesYears(
+                    newSubstructure,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -78,6 +88,10 @@ const SubstructureView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={substructureName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
 
             <TimeSeries
@@ -88,6 +102,10 @@ const SubstructureView = () => {
                 timeSeriesType={TimeSeriesEnum.substructureCessationCostProfileDto}
                 assetName={substructureName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper>
                 <Save
