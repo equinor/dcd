@@ -18,6 +18,7 @@ import styled from "styled-components"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetCaseService } from "../Services/CaseService"
+import { unwrapCase } from "../Utils/common"
 
 const Dg4Field = styled.div`
     margin-bottom: 3.5rem;
@@ -58,7 +59,8 @@ const CaseDG4Date = ({
     const saveDg4Date: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
         try {
-            const caseDto = Case.Copy(caseItem!)
+            const unwrappedCase: Case = unwrapCase(caseItem)
+            const caseDto = Case.Copy(unwrappedCase)
             caseDto.DG4Date = caseDg4Date
             const newProject = await GetCaseService().updateCase(caseDto)
             setProject(newProject)
