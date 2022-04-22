@@ -47,22 +47,6 @@ cd backend/api
 dotnet run
 ```
 
-### Testing
-
-We use Cypress to create end-to-end tests for the application.
-
-#### Test Strategy
-
-We aim to create a test automation suite that will `describe and validate the systems behavior and functionality as seen by its users`.
-
-The Cypress tests constitute a suite of automated, functional regression tests.
-
-#### Run the tests
-
-To run the Cypress tests locally, type
-
-`npm run cyopen` to open the Cypress interactive runner. This requires the application to be run locally.
-
 ## Deployment
 
 We have 4 different environments in use; dev, pr, qa and prod. Dev is built
@@ -123,8 +107,8 @@ The following diagrams have been created using PlantUML.
 
 ### System Context Diagram
 System context diagram for the DCD application.
-![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/InGit5/dcd///main/PlantUMLC4L1)
+![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/equinor/dcd///main/PlantUMLC4L1)
 
 ### Container Diagram
 Container diagram for the DCD application.
-![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/InGit5/dcd///main/DCD_C4Container.iuml)
+![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/equinor/dcd///main/DCD_C4Container.iuml)

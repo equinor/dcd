@@ -35,45 +35,79 @@ namespace api.Adapters
                 }
             }
             sTEACaseDto.Capex.OffshoreFacilities = new OffshoreFacilitiesCostProfileDto();
+            sTEACaseDto.Capex.CessationOffshoreFacilities = new CessationOffshoreFacilities();
             if (c.SubstructureLink != Guid.Empty)
             {
-                SubstructureCostProfileDto? substructureCostProfileDto = p.Substructures!.First(l => l.Id == c.SubstructureLink).CostProfile;
-                if (substructureCostProfileDto != null)
+                SubstructureDto? substructureCostProfileDto = p.Substructures!.First(l => l.Id == c.SubstructureLink);
+
+                SubstructureCostProfileDto? substructureCostProfile = substructureCostProfileDto.CostProfile;
+                if (substructureCostProfile != null)
                 {
-                    substructureCostProfileDto.StartYear += dg4Year;
-                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfileDto);
+                    substructureCostProfile.StartYear += dg4Year;
+                    sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfile);
                 }
+
+                SubstructureCessationCostProfileDto? substructureCessationCostProfileDto = substructureCostProfileDto.SubstructureCessationCostProfileDto;
+                if (substructureCessationCostProfileDto != null)
+                {
+                    substructureCessationCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.CessationOffshoreFacilities.AddValues(substructureCessationCostProfileDto);
+                }
+
             }
             if (c.SurfLink != Guid.Empty)
             {
-                SurfCostProfileDto? surfCostProfileDto = p.Surfs!.First(l => l.Id == c.SurfLink).CostProfile;
+                SurfDto? surf = p.Surfs!.First(l => l.Id == c.SurfLink);
+                SurfCostProfileDto? surfCostProfileDto = surf.CostProfile;
                 if (surfCostProfileDto != null)
                 {
                     surfCostProfileDto.StartYear += dg4Year;
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(surfCostProfileDto);
                 }
 
+                SurfCessationCostProfileDto? surfCessationCostProfileDto = surf.SurfCessationCostProfileDto;
+                if (surfCessationCostProfileDto != null)
+                {
+                    surfCessationCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.CessationOffshoreFacilities.AddValues(surfCessationCostProfileDto);
+                }
             }
             if (c.TopsideLink != Guid.Empty)
             {
-                TopsideCostProfileDto? topsideCostProfileDto = p.Topsides!.First(l => l.Id == c.TopsideLink).CostProfile;
+                TopsideDto? topsideDto = p.Topsides!.First(l => l.Id == c.TopsideLink);
+                TopsideCostProfileDto? topsideCostProfileDto = topsideDto.CostProfile;
                 if (topsideCostProfileDto != null)
                 {
                     topsideCostProfileDto.StartYear += dg4Year;
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCostProfileDto);
                 }
 
+                TopsideCessationCostProfileDto? topsideCessationCostProfileDto = topsideDto.TopsideCessationCostProfileDto;
+                if (topsideCessationCostProfileDto != null)
+                {
+                    topsideCessationCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.CessationOffshoreFacilities.AddValues(topsideCessationCostProfileDto);
+                }
             }
             if (c.TransportLink != Guid.Empty)
             {
-                TransportCostProfileDto? transportCostProfileDto = p.Transports!.First(l => l.Id == c.TransportLink).CostProfile;
+                TransportDto? transportDto = p.Transports!.First(l => l.Id == c.TransportLink);
+                TransportCostProfileDto? transportCostProfileDto = transportDto.CostProfile;
                 if (transportCostProfileDto != null)
                 {
                     transportCostProfileDto.StartYear += dg4Year;
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(transportCostProfileDto);
                 }
+
+                TransportCessationCostProfileDto? transportCessationCostProfileDto = transportDto.TransportCessationCostProfileDto;
+                if (transportCessationCostProfileDto != null)
+                {
+                    transportCessationCostProfileDto.StartYear += dg4Year;
+                    sTEACaseDto.Capex.CessationOffshoreFacilities.AddValues(transportCessationCostProfileDto);
+                }
             }
             sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.OffshoreFacilities);
+            sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.CessationOffshoreFacilities);
         }
 
         private static void AddProductionSalesAndVolumes(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
