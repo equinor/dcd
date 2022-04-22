@@ -17,6 +17,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -28,6 +29,8 @@ const SubstructureView = () => {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -53,6 +56,13 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure?.name!)
+
+                TimeSeriesYears(
+                    newSubstructure,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -97,6 +107,10 @@ const SubstructureView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={substructureName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -106,6 +120,10 @@ const SubstructureView = () => {
                 timeSeriesType={TimeSeriesEnum.substructureCessationCostProfileDto}
                 assetName={substructureName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper>
                 <SaveButton disabled={!hasChanges} onClick={handleSave}>

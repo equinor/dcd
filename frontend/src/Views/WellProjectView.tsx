@@ -14,6 +14,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { EMPTY_GUID } from "../Utils/constants"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
@@ -27,6 +28,8 @@ function WellProjectView() {
     const params = useParams()
     const navigate = useNavigate()
     const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -44,7 +47,7 @@ function WellProjectView() {
             if (project !== undefined) {
                 const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newWellProject = project.wellProjects.find((s) => s.id === params.wellProjectId)
+                let newWellProject = project!.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
                 } else {
@@ -52,6 +55,13 @@ function WellProjectView() {
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
+
+                TimeSeriesYears(
+                    newWellProject,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -96,6 +106,10 @@ function WellProjectView() {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={wellProjectName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -105,6 +119,10 @@ function WellProjectView() {
                 timeSeriesType={TimeSeriesEnum.drillingSchedule}
                 assetName={wellProjectName}
                 timeSeriesTitle="Drilling schedule"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
 
