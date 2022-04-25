@@ -66,10 +66,10 @@ const CaseArtificialLift = ({
             onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
             value={currentValue}
         >
-            <option key="0" value={0}>No Artificial Lift </option>
-            <option key="1" value={1}>Gas Lift </option>
-            <option key="2" value={2}>Electrical Submerged Pumps </option>
-            <option key="3" value={3}>Subsea Booster Pumps </option>
+            <option key="0" value={0}>No lift </option>
+            <option key="1" value={1}>Gas lift </option>
+            <option key="2" value={2}>Electrical submerged pumps </option>
+            <option key="3" value={3}>Subsea booster pumps </option>
         </ArtificialLiftDropdown>
     )
 }
