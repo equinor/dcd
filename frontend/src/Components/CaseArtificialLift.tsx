@@ -16,9 +16,9 @@ padding-bottom: 2em;
 
 interface Props {
     caseItem: Case | undefined,
-    setArtificialLift: Dispatch<SetStateAction<Components.Schemas.ArtificialLift | undefined>>,
+    setArtificialLift: Dispatch<SetStateAction<Components.Schemas.ArtificialLift>>,
     setProject: Dispatch<SetStateAction<Project | undefined>>,
-    currentValue: Components.Schemas.ArtificialLift | undefined,
+    currentValue: Components.Schemas.ArtificialLift,
 }
 
 const CaseArtificialLift = ({
@@ -28,7 +28,7 @@ const CaseArtificialLift = ({
     currentValue,
 }: Props) => {
     const onChange = async (event: ChangeEvent<HTMLSelectElement>) => {
-        let al:Components.Schemas.ArtificialLift | undefined
+        let al:Components.Schemas.ArtificialLift
         switch (event.currentTarget.selectedOptions[0].value) {
         case "0":
             setArtificialLift(0)
@@ -47,8 +47,8 @@ const CaseArtificialLift = ({
             al = 3
             break
         default:
-            al = undefined
-            setArtificialLift(undefined)
+            al = 0
+            setArtificialLift(0)
             break
         }
         if (caseItem !== undefined) {

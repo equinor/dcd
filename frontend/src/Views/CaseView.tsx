@@ -27,7 +27,7 @@ function CaseView() {
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
-    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
 
     useEffect(() => {
         (async () => {
@@ -43,6 +43,9 @@ function CaseView() {
     useEffect(() => {
         if (project !== undefined) {
             const caseResult = project.cases.find((o) => o.id === params.caseId)
+            if (caseResult !== undefined) {
+                setArtificialLift(caseResult.artificialLift)
+            }
             setCase(caseResult)
         }
     }, [project])
