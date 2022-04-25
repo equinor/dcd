@@ -1,5 +1,7 @@
 import { Typography } from "@equinor/eds-core-react"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import {
+    Dispatch, SetStateAction, useEffect, useState,
+} from "react"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
