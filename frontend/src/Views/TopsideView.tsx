@@ -3,8 +3,9 @@ import {
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
+import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
@@ -13,11 +14,11 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
-import { EMPTY_GUID } from "../Utils/constants"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -26,8 +27,6 @@ const TopsideView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [topsideName, setTopsideName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
@@ -65,23 +64,6 @@ const TopsideView = () => {
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const topsideDto = new Topside(topside!)
-        topsideDto.name = topsideName
-        if (topside?.id === EMPTY_GUID) {
-            topsideDto.projectId = params.projectId
-            const newProject: Project = await GetTopsideService().createTopside(params.caseId!, topsideDto!)
-            const newTopside = newProject.topsides.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newTopside!.id!)
-            navigate(`${newUrl}`, { replace: true })
-            setProject(newProject)
-        } else {
-            const newProject = await GetTopsideService().updateTopside(topsideDto!)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     return (
         <AssetViewDiv>
@@ -123,7 +105,16 @@ const TopsideView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
+            <Save
+                name={topsideName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setTopside}
+                setProject={setProject}
+                asset={topside!}
+                assetService={GetTopsideService()}
+                assetType={AssetTypeEnum.topsides}
+            />
         </AssetViewDiv>
     )
 }

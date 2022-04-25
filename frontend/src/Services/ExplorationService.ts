@@ -5,12 +5,12 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { Project } from "../models/Project"
 
 export class __ExplorationService extends __BaseService {
-    public async createExploration(sourceCaseId: string, body: Components.Schemas.ExplorationDto) :Promise<Project> {
+    public async create(sourceCaseId: string, body: Components.Schemas.ExplorationDto) :Promise<Project> {
         const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)
     }
 
-    public async updateExploration(body: Components.Schemas.ExplorationDto): Promise<Project> {
+    public async update(body: Components.Schemas.ExplorationDto): Promise<Project> {
         const res = await this.put("", { body })
         return Project.fromJSON(res)
     }
