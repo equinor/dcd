@@ -1,56 +1,30 @@
 import { Typography } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import {
+    Dispatch, SetStateAction, useEffect, useState,
+} from "react"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
+import { IAsset } from "../models/assets/IAsset"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Case } from "../models/Case"
+import { ITimeSeries } from "../models/ITimeSeries"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
-
-interface ITimeSeries {
-    id?: string
-    startYear?: number | undefined
-    values?: number[] | null
-    epaVersion?: string | null
-    currency?: Components.Schemas.Currency | undefined
-    sum?: number | undefined
-}
-
-interface IAsset {
-    id?: string | undefined
-    name?: string | undefined
-    projectId?: string | undefined
-    costProfile?: ITimeSeries | undefined
-    drillingSchedule?: ITimeSeries | undefined
-    co2Emissions?: ITimeSeries | undefined
-    netSalesGas?: ITimeSeries | undefined
-    substructureCessationCostProfileDto?: ITimeSeries | undefined
-    surfCessationCostProfileDto?: ITimeSeries | undefined
-    topsideCessationCostProfileDto?: ITimeSeries | undefined
-    transportCessationCostProfileDto?: ITimeSeries | undefined
-    fuelFlaringAndLosses?: ITimeSeries | undefined
-    productionProfileGas?: ITimeSeries | undefined
-    productionProfileOil?: ITimeSeries | undefined
-    productionProfileWater?: ITimeSeries | undefined
-    productionProfileWaterInjection?: ITimeSeries | undefined
-    dryweight?: number | undefined
-    maturity?: Components.Schemas.Maturity | undefined
-}
 
 interface Props {
     caseItem: Case | undefined,
-    setAsset: React.Dispatch<React.SetStateAction<any | undefined>>,
-    setHasChanges: React.Dispatch<React.SetStateAction<boolean>>,
+    setAsset: Dispatch<SetStateAction<any | undefined>>,
+    setHasChanges: Dispatch<SetStateAction<boolean>>,
     asset: IAsset | undefined,
     timeSeriesType: TimeSeriesEnum,
     assetName: string,
     timeSeriesTitle: string,
     earliestYear: number | undefined,
     latestYear: number | undefined,
-    setEarliestYear: React.Dispatch<React.SetStateAction<number | undefined>>,
-    setLatestYear: React.Dispatch<React.SetStateAction<number | undefined>>,
+    setEarliestYear: Dispatch<SetStateAction<number | undefined>>,
+    setLatestYear: Dispatch<SetStateAction<number | undefined>>,
 }
 
 const TimeSeries = ({
