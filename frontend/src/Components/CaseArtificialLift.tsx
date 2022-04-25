@@ -1,8 +1,8 @@
 import {
     NativeSelect,
 } from "@equinor/eds-core-react"
-import React, {
-    ChangeEvent,
+import {
+    ChangeEvent, Dispatch, SetStateAction,
 } from "react"
 import styled from "styled-components"
 import { Case } from "../models/Case"
@@ -16,8 +16,8 @@ padding-bottom: 2em;
 
 interface Props {
     caseItem: Case | undefined,
-    setArtificialLift: React.Dispatch<React.SetStateAction<Components.Schemas.ArtificialLift | undefined>>,
-    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>,
+    setArtificialLift: Dispatch<SetStateAction<Components.Schemas.ArtificialLift | undefined>>,
+    setProject: Dispatch<SetStateAction<Project | undefined>>,
     currentValue: Components.Schemas.ArtificialLift | undefined,
 }
 
