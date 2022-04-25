@@ -13,7 +13,8 @@ import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/CaseAsset"
 import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
-import CaseDG4Date from "../Components/CaseDG4Date"
+import CaseDGDate from "../Components/CaseDGDate"
+import DGEnum from "../models/DGEnum"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -59,10 +60,12 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
-                <CaseDG4Date
+                <CaseDGDate
                     caseItem={caseItem}
                     setProject={setProject}
                     setCase={setCase}
+                    dGType={DGEnum.DG4}
+                    dGName="DG4"
                 />
                 <CaseAsset
                     caseItem={caseItem}
