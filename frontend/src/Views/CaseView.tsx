@@ -14,6 +14,7 @@ import CaseAsset from "../Components/CaseAsset"
 import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
 import CaseDG4Date from "../Components/CaseDG4Date"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -30,9 +31,10 @@ function CaseView() {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)

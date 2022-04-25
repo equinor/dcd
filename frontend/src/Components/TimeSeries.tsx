@@ -64,7 +64,7 @@ const TimeSeries = ({
 
     useEffect(() => {
         if (asset !== undefined) {
-            const newColumnTitles = getColumnAbsoluteYears(caseItem, asset[timeSeriesType])
+            const newColumnTitles: string[] = getColumnAbsoluteYears(caseItem, asset[timeSeriesType])
             setColumns(newColumnTitles)
             const newGridData = buildGridData(asset[timeSeriesType])
             setGridData(newGridData)
@@ -72,7 +72,7 @@ const TimeSeries = ({
     }, [asset])
 
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newGridData = replaceOldData(gridData, changes)
+        const newGridData: CellValue[][] = replaceOldData(gridData, changes)
         setGridData(newGridData)
         setColumns(getColumnAbsoluteYears(caseItem, asset![timeSeriesType]))
         setHasChanges(true)
@@ -86,7 +86,7 @@ const TimeSeries = ({
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         newTimeSeries.epaVersion = ""
         setAsset(newAsset)
-        const newColumnTitles = getColumnAbsoluteYears(caseItem, newTimeSeries)
+        const newColumnTitles: string[] = getColumnAbsoluteYears(caseItem, newTimeSeries)
         setColumns(newColumnTitles)
         const newGridData = buildGridData(newTimeSeries)
         setGridData(newGridData)

@@ -26,21 +26,21 @@ export function GetToken(keyName: string) {
 
 export const unwrapCase = (casee?: Case | undefined): Case => {
     if (casee === undefined || casee === null) {
-        throw new Error("Attempted to Import Timeseries onto a Case which does not exist")
+        throw new Error("Attempted to Create a case from which has not been created")
     }
     return casee
 }
 
 export const unwrapProjectId = (projectId?: string | undefined): string => {
     if (projectId === undefined || projectId === null) {
-        throw new Error("Attempted to Import Timeseries onto a Project which does not exist")
+        throw new Error("Attempted to use a Project ID which does not exist")
     }
     return projectId
 }
 
 export const unwrapCaseId = (caseId?: string | undefined): string => {
     if (caseId === undefined || caseId === null) {
-        throw new Error("Attempted to Import Timeseries onto a Case Id which does not exist")
+        throw new Error("Attempted to use a Case ID which does not exist")
     }
     return caseId
 }

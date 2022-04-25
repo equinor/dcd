@@ -6,12 +6,12 @@ import { Project } from "../models/Project"
 
 export class __TopsideService extends __BaseService {
     public async createTopside(sourceCaseId: string, body: Components.Schemas.TopsideDto) :Promise<Project> {
-        const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
+        const res: Components.Schemas.ProjectDto = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)
     }
 
     public async updateTopside(body: Components.Schemas.TopsideDto): Promise<Project> {
-        const res = await this.put("", { body })
+        const res: Components.Schemas.ProjectDto = await this.put("", { body })
         return Project.fromJSON(res)
     }
 }

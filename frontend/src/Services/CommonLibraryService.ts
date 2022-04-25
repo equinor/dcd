@@ -5,7 +5,7 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 
 export class __CommonLibraryService extends __BaseService {
     async getProjects() {
-        const projects = await this.get("/projects")
+        const projects: Components.Schemas.CommonLibraryProjectDto[] = await this.get("/projects")
         return projects
     }
 }
