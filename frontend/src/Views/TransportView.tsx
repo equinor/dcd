@@ -92,16 +92,6 @@ const TransportView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Save
-                name={transportName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setTransport}
-                setProject={setProject}
-                asset={transport!}
-                assetService={GetTransportService()}
-                assetType={AssetTypeEnum.transports}
-            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setTransport}
@@ -115,18 +105,16 @@ const TransportView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper>
-                <Save
-                    name={transportName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setTransport}
-                    setProject={setProject}
-                    asset={transport!}
-                    assetService={GetTransportService()}
-                    assetType={AssetTypeEnum.transports}
-                />
-            </Wrapper>
+            <Save
+                name={transportName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setTransport}
+                setProject={setProject}
+                asset={transport!}
+                assetService={GetTransportService()}
+                assetType={AssetTypeEnum.transports}
+            />
         </AssetViewDiv>
     )
 }

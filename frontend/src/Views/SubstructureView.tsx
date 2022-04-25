@@ -93,7 +93,6 @@ const SubstructureView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setSubstructure}
@@ -107,18 +106,16 @@ const SubstructureView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper>
-                <Save
-                    name={substructureName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setSubstructure}
-                    setProject={setProject}
-                    asset={substructure!}
-                    assetService={GetSubstructureService()}
-                    assetType={AssetTypeEnum.substructures}
-                />
-            </Wrapper>
+            <Save
+                name={substructureName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setSubstructure}
+                setProject={setProject}
+                asset={substructure!}
+                assetService={GetSubstructureService()}
+                assetType={AssetTypeEnum.substructures}
+            />
         </AssetViewDiv>
     )
 }

@@ -92,16 +92,6 @@ const TopsideView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Save
-                name={topsideName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setTopside}
-                setProject={setProject}
-                asset={topside!}
-                assetService={GetTopsideService()}
-                assetType={AssetTypeEnum.topsides}
-            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setTopside}
@@ -115,18 +105,16 @@ const TopsideView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper>
-                <Save
-                    name={topsideName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setTopside}
-                    setProject={setProject}
-                    asset={topside!}
-                    assetService={GetTopsideService()}
-                    assetType={AssetTypeEnum.topsides}
-                />
-            </Wrapper>
+            <Save
+                name={topsideName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setTopside}
+                setProject={setProject}
+                asset={topside!}
+                assetService={GetTopsideService()}
+                assetType={AssetTypeEnum.topsides}
+            />
         </AssetViewDiv>
     )
 }
