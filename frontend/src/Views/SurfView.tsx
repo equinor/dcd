@@ -91,7 +91,6 @@ const SurfView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setSurf}
@@ -105,18 +104,16 @@ const SurfView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper>
-                <Save
-                    name={surfName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setSurf}
-                    setProject={setProject}
-                    asset={surf!}
-                    assetService={GetSurfService()}
-                    assetType={AssetTypeEnum.surfs}
-                />
-            </Wrapper>
+            <Save
+                name={surfName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setSurf}
+                setProject={setProject}
+                asset={surf!}
+                assetService={GetSurfService()}
+                assetType={AssetTypeEnum.surfs}
+            />
         </AssetViewDiv>
     )
 }
