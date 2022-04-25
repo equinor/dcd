@@ -12,14 +12,17 @@ import {
     useEffect,
     ChangeEventHandler,
     MouseEventHandler,
+    Dispatch,
+    SetStateAction,
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetCaseService } from "../Services/CaseService"
+import DGEnum from "../models/DGEnum"
 
-const Dg4Field = styled.div`
+const DgField = styled.div`
     margin-bottom: 3.5rem;
     width: 12rem;
     display: flex;
@@ -32,81 +35,79 @@ const ActionsContainer = styled.div`
 `
 
 interface Props {
-    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>
+    setProject: Dispatch<SetStateAction<Project | undefined>>
     caseItem: Case | undefined,
-    setCase: React.Dispatch<React.SetStateAction<Case | undefined>>
+    setCase: Dispatch<SetStateAction<Case | undefined>>
+    dGType: DGEnum,
+    dGName: string,
 }
 
-const CaseDG4Date = ({
+const CaseDGDate = ({
     setProject,
     caseItem,
     setCase,
+    dGType,
+    dGName,
 }: Props) => {
     const params = useParams()
-    const [caseDg4Date, setCaseDg4Date] = useState<Date>()
+    const [caseDgDate, setCaseDgDate] = useState<Date>()
 
     useEffect(() => {
         (async () => {
-            setCaseDg4Date(undefined)
+            setCaseDgDate(undefined)
         })()
     }, [params.projectId, params.caseId])
 
-    const handleDg4FieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setCaseDg4Date(new Date(e.target.value))
+    const handleDgFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setCaseDgDate(new Date(e.target.value))
     }
 
-    const saveDg4Date: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    const saveDgDate: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
         try {
             const caseDto = Case.Copy(caseItem!)
-            caseDto.DG4Date = caseDg4Date
+            caseDto[dGType] = caseDgDate
             const newProject = await GetCaseService().updateCase(caseDto)
             setProject(newProject)
             const caseResult = newProject.cases.find((o) => o.id === params.caseId)
             setCase(caseResult)
-            setCaseDg4Date(undefined)
+            setCaseDgDate(undefined)
         } catch (error) {
             console.error("[CaseView] error while submitting form data", error)
         }
     }
 
-    const dg4ReturnDate = () => {
-        const dg4DateGet = caseItem?.DG4Date?.toLocaleDateString("en-CA")
-        if (dg4DateGet !== "0001-01-01") {
-            return dg4DateGet
-        }
-        return ""
-    }
+    const dgReturnDate = () => caseItem?.[dGType]?.toLocaleDateString("en-CA")
 
     return (
         <>
-            <Typography variant="h6">DG4</Typography>
-            <Dg4Field>
+            <Typography variant="h6">{dGName}</Typography>
+            <DgField>
                 <Input
-                    defaultValue={dg4ReturnDate()}
-                    key={dg4ReturnDate()}
-                    id="dg4Date"
+                    defaultValue={dgReturnDate()}
+                    key={dgReturnDate()}
+                    id="dgDate"
                     type="date"
-                    name="dg4Date"
-                    onChange={handleDg4FieldChange}
+                    name="dgDate"
+                    onChange={handleDgFieldChange}
                 />
                 <EdsProvider density="compact">
                     <ActionsContainer>
-                        <Tooltip title="Save DG4 date">
+                        <Tooltip title={`Save ${dGName} date`}>
                             <Button
                                 variant="ghost_icon"
-                                aria-label="Save DG4 date"
-                                onClick={saveDg4Date}
-                                disabled={caseDg4Date === undefined}
+                                aria-label={`Save ${dGName} date`}
+                                onClick={saveDgDate}
+                                disabled={caseDgDate === undefined}
                             >
                                 <Icon data={save} />
                             </Button>
                         </Tooltip>
                     </ActionsContainer>
                 </EdsProvider>
-            </Dg4Field>
+            </DgField>
         </>
     )
 }
 
-export default CaseDG4Date
+export default CaseDGDate

@@ -3,7 +3,7 @@ import {
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
@@ -12,11 +12,13 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSubstructureService } from "../Services/SubstructureService"
-import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -26,8 +28,8 @@ const SubstructureView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [substructureName, setSubstructureName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -53,27 +55,16 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure?.name!)
+
+                TimeSeriesYears(
+                    newSubstructure,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const substructureDto = new Substructure(substructure!)
-        substructureDto.name = substructureName
-        if (substructure?.id === EMPTY_GUID) {
-            substructureDto.projectId = params.projectId
-            const newProject = await GetSubstructureService()
-                .createSubstructure(params.caseId!, substructureDto!)
-            const newSubstructure = newProject.substructures.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newSubstructure!.id!)
-            navigate(`${newUrl}`)
-            setSubstructure(newSubstructure)
-        } else {
-            const newProject = await GetSubstructureService().updateSubstructure(substructureDto!)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     return (
         <AssetViewDiv>
@@ -97,6 +88,10 @@ const SubstructureView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={substructureName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -106,12 +101,21 @@ const SubstructureView = () => {
                 timeSeriesType={TimeSeriesEnum.substructureCessationCostProfileDto}
                 assetName={substructureName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper>
-                <SaveButton disabled={!hasChanges} onClick={handleSave}>
-                    Save
-                </SaveButton>
-            </Wrapper>
+            <Save
+                name={substructureName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setSubstructure}
+                setProject={setProject}
+                asset={substructure!}
+                assetService={GetSubstructureService()}
+                assetType={AssetTypeEnum.substructures}
+            />
         </AssetViewDiv>
     )
 }

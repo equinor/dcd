@@ -3,7 +3,7 @@ import {
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Case } from "../models/Case"
@@ -12,11 +12,13 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
-import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -25,8 +27,8 @@ const ExplorationView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [name, setName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -52,26 +54,16 @@ const ExplorationView = () => {
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
+
+                TimeSeriesYears(
+                    newExploration,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const explorationDto = new Exploration(exploration!)
-        explorationDto.name = name
-        if (exploration?.id === EMPTY_GUID) {
-            explorationDto.projectId = params.projectId
-            const newProject = await GetExplorationService().createExploration(params.caseId!, explorationDto!)
-            const newExploration = newProject.explorations.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newExploration!.id!)
-            navigate(`${newUrl}`)
-            setProject(newProject)
-        } else {
-            const newProject = await GetExplorationService().updateExploration(explorationDto!)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     return (
         <AssetViewDiv>
@@ -95,10 +87,21 @@ const ExplorationView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={name}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper>
-                <SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton>
-            </Wrapper>
+            <Save
+                name={name}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setExploration}
+                setProject={setProject}
+                asset={exploration!}
+                assetService={GetExplorationService()}
+                assetType={AssetTypeEnum.explorations}
+            />
         </AssetViewDiv>
     )
 }

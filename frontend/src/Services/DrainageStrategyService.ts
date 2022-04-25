@@ -5,13 +5,13 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { Project } from "../models/Project"
 
 export class __DrainageStrategyService extends __BaseService {
-    public async createDrainageStrategy(sourceCaseId: string, body: Components.Schemas.DrainageStrategyDto) :
+    public async create(sourceCaseId: string, body: Components.Schemas.DrainageStrategyDto) :
         Promise<Project> {
         const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)
     }
 
-    public async updateDrainageStrategy(body: Components.Schemas.DrainageStrategyDto): Promise<Project> {
+    public async update(body: Components.Schemas.DrainageStrategyDto): Promise<Project> {
         const res = await this.put("", { body })
         return Project.fromJSON(res)
     }
