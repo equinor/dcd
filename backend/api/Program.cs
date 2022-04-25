@@ -20,6 +20,7 @@ var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
 var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
+
 Console.WriteLine("Loading config for: " + environment);
 
 configBuilder.AddAzureAppConfiguration(options =>
@@ -105,6 +106,7 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
+builder.Services.AddApplicationInsightsTelemetry(config["ApplicationInsightInstrumentationKey"]);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();
@@ -131,7 +133,8 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
-
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Fom Program, running the host now");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
