@@ -90,10 +90,10 @@ const CaseDescription = ({
                     <Typography
                         variant="h4"
                         id="textfield-description"
-                        defaultValue={unwrapCase(caseItem).description}
-                        key={unwrapCase(caseItem).description}
+                        defaultValue={caseItem?.description}
+                        key={caseItem?.description}
                     >
-                        {unwrapCase(caseItem).description}
+                        {caseItem?.description}
                         <EdsProvider density="compact">
                             <ActionsContainer>
                                 <Tooltip title="Edit description">
@@ -115,7 +115,7 @@ const CaseDescription = ({
                     <TextArea
                         id="description"
                         name="description"
-                        defaultValue={unwrapCase(caseItem).description}
+                        defaultValue={caseItem?.description}
                         onChange={handleDescriptionChange}
                     />
                     <div>
