@@ -14,6 +14,7 @@ import CaseAsset from "../Components/CaseAsset"
 import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
 import CaseDG4Date from "../Components/CaseDG4Date"
+import CaseArtificialLift from "../Components/CaseArtificialLift"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -26,19 +27,25 @@ function CaseView() {
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>()
 
     useEffect(() => {
         (async () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
-                setCase(caseResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
         })()
     }, [params.projectId, params.caseId])
+
+    useEffect(() => {
+        if (project !== undefined) {
+            const caseResult = project.cases.find((o) => o.id === params.caseId)
+            setCase(caseResult)
+        }
+    }, [project])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -63,6 +70,12 @@ function CaseView() {
                     caseItem={caseItem}
                     setProject={setProject}
                     setCase={setCase}
+                />
+                <CaseArtificialLift
+                    currentValue={artificialLift}
+                    setArtificialLift={setArtificialLift}
+                    setProject={setProject}
+                    caseItem={caseItem}
                 />
                 <CaseAsset
                     caseItem={caseItem}

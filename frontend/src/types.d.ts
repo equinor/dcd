@@ -10,6 +10,7 @@ declare namespace Components {
             sum?: number; // double
             drilling?: WellProjectCostProfileDto;
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
+            cessationOffshoreFacilities?: CessationOffshoreFacilities;
         }
         export interface CaseDto {
             id?: string; // uuid
@@ -17,6 +18,7 @@ declare namespace Components {
             name?: string | null;
             description?: string | null;
             referenceCase?: boolean;
+            artificialLift?: ArtificialLift /* int32 */;
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
             dG3Date?: string; // date-time
@@ -31,6 +33,18 @@ declare namespace Components {
             transportLink?: string; // uuid
             explorationLink?: string; // uuid
             capex?: number; // double
+        }
+        export interface CessationOffshoreFacilities {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            surfCessationCostProfileDto?: SurfCessationCostProfileDto;
+            topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
+            substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
+            transportCessationCostProfileDto?: TransportCessationCostProfileDto;
         }
         export interface Co2EmissionsDto {
             id?: string; // uuid
@@ -122,10 +136,6 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
-            surfCessationCostProfileDto?: SurfCessationCostProfileDto;
-            topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
-            substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
-            transportCessationCostProfileDto?: TransportCessationCostProfileDto;
         }
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
@@ -158,7 +168,8 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
-        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory =
+            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
