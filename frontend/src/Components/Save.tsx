@@ -1,4 +1,4 @@
-import { Dispatch } from "react"
+import { Dispatch, SetStateAction } from "react"
 import { useLocation, useNavigate, useParams } from "react-router"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { IAsset } from "../models/assets/IAsset"
@@ -15,10 +15,10 @@ interface IAssetService {
 
 interface Props {
     name: string
-    setHasChanges: Dispatch<React.SetStateAction<boolean>>
+    setHasChanges: Dispatch<SetStateAction<boolean>>
     hasChanges: boolean
-    setAsset: Dispatch<React.SetStateAction<any | undefined>>
-    setProject: Dispatch<React.SetStateAction<Project | undefined>>
+    setAsset: Dispatch<SetStateAction<any | undefined>>
+    setProject: Dispatch<SetStateAction<Project | undefined>>
     asset: IAsset
     assetService: IAssetService
     assetType: AssetTypeEnum

@@ -1,5 +1,5 @@
 import { Typography } from "@equinor/eds-core-react"
-import { Dispatch, useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import DataTable, { CellValue } from "../Components/DataTable/DataTable"
 import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
@@ -13,16 +13,16 @@ import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAsset
 
 interface Props {
     caseItem: Case | undefined,
-    setAsset: Dispatch<React.SetStateAction<any | undefined>>,
-    setHasChanges: Dispatch<React.SetStateAction<boolean>>,
+    setAsset: Dispatch<SetStateAction<any | undefined>>,
+    setHasChanges: Dispatch<SetStateAction<boolean>>,
     asset: IAsset | undefined,
     timeSeriesType: TimeSeriesEnum,
     assetName: string,
     timeSeriesTitle: string,
     earliestYear: number | undefined,
     latestYear: number | undefined,
-    setEarliestYear: Dispatch<React.SetStateAction<number | undefined>>,
-    setLatestYear: Dispatch<React.SetStateAction<number | undefined>>,
+    setEarliestYear: Dispatch<SetStateAction<number | undefined>>,
+    setLatestYear: Dispatch<SetStateAction<number | undefined>>,
 }
 
 const TimeSeries = ({

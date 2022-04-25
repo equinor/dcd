@@ -10,6 +10,7 @@ import {
     ChangeEventHandler,
     MouseEventHandler,
     Dispatch,
+    SetStateAction,
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
@@ -49,9 +50,9 @@ const CreateDescriptionForm = styled.form`
     }
 `
 interface Props {
-    setProject: Dispatch<React.SetStateAction<Project | undefined>>
+    setProject: Dispatch<SetStateAction<Project | undefined>>
     caseItem: Case | undefined,
-    setCase: Dispatch<React.SetStateAction<Case | undefined>>
+    setCase: Dispatch<SetStateAction<Case | undefined>>
 }
 const CaseDescription = ({
     setProject,
