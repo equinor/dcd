@@ -16,7 +16,7 @@ export class Project {
     createdAt: Date | null
     description: string | null
     drainageStrategies: DrainageStrategy[]
-    explorations: any[]
+    explorations: Exploration[]
     id: string
     name: string
     phase: ProjectPhase | null

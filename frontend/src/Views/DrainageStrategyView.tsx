@@ -18,6 +18,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -33,7 +34,8 @@ const DrainageStrategyView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -44,9 +46,10 @@ const DrainageStrategyView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newDrainage = project!.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
+                // eslint-disable-next-line max-len
+                let newDrainage: DrainageStrategy | undefined = project.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
                 if (newDrainage !== undefined) {
                     setDrainageStrategy(newDrainage)
                 } else {
@@ -59,18 +62,19 @@ const DrainageStrategyView = () => {
     }, [project])
 
     const handleSave = async () => {
-        const drainageStrategyDto = DrainageStrategy.toDto(drainageStrategy!)
+        const drainageStrategyDto: Components.Schemas.DrainageStrategyDto = DrainageStrategy.toDto(drainageStrategy)
         drainageStrategyDto.name = drainageStrategyName
         if (drainageStrategyDto?.id === EMPTY_GUID) {
             drainageStrategyDto.projectId = params.projectId
+            const caseId: string = unwrapCaseId(params.caseId)
             const newProject: Project = await GetDrainageStrategyService()
-                .createDrainageStrategy(params.caseId!, drainageStrategyDto!)
-            const newDrainageStrategy = newProject.drainageStrategies.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newDrainageStrategy!.id!)
+                .createDrainageStrategy(caseId, drainageStrategyDto)
+            const newDrainageStrategy: DrainageStrategy | undefined = newProject.drainageStrategies.at(-1)
+            const newUrl: string = location.pathname.replace(EMPTY_GUID, newDrainageStrategy?.id!)
             navigate(`${newUrl}`)
             setProject(newProject)
         } else {
-            const newProject = await GetDrainageStrategyService().updateDrainageStrategy(drainageStrategyDto!)
+            const newProject: Project = await GetDrainageStrategyService().updateDrainageStrategy(drainageStrategyDto)
             setProject(newProject)
         }
         setHasChanges(false)
