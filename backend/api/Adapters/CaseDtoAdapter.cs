@@ -27,7 +27,8 @@ namespace api.Adapters
                 SubstructureLink = case_.SubstructureLink,
                 TopsideLink = case_.TopsideLink,
                 TransportLink = case_.TransportLink,
-                ExplorationLink = case_.ExplorationLink
+                ExplorationLink = case_.ExplorationLink,
+                ArtificialLift = case_.ArtificialLift,
             };
 
             return caseDto;

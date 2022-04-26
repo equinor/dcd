@@ -17,6 +17,7 @@ namespace api.Models
         public DateTimeOffset DG3Date { get; set; }
         public DateTimeOffset DG4Date { get; set; }
         public Project Project { get; set; } = null!;
+        public ArtificialLift ArtificialLift { get; set; }
         public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
         public Guid WellProjectLink { get; set; } = Guid.Empty;
         public Guid SurfLink { get; set; } = Guid.Empty;
