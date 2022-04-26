@@ -17,7 +17,7 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -50,6 +50,7 @@ const SurfView = () => {
                     setSurf(newSurf)
                 } else {
                     newSurf = new Surf()
+                    newSurf.artificialLift = caseResult?.artificialLift
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
@@ -72,6 +73,7 @@ const SurfView = () => {
                 name={surfName}
                 setHasChanges={setHasChanges}
             />
+            <Typography variant="h4">{GetArtificialLiftName(surf?.artificialLift)}</Typography>
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
