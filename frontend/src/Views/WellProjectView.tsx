@@ -19,6 +19,7 @@ import {
     AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import NumberInput from "../Components/NumberInput"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -29,6 +30,9 @@ function WellProjectView() {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [rigMobDemob, setRigMobDemob] = useState<number>()
+    const [annualWellInterventionCost, setAnnualWellInterventionCost] = useState<number>()
+    const [pluggingAndAbandonment, setPluggingAndAbandonment] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -55,6 +59,10 @@ function WellProjectView() {
                 }
                 setWellProjectName(newWellProject?.name!)
 
+                setRigMobDemob(newWellProject.rigMobDemob)
+                setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
+                setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
+
                 TimeSeriesYears(
                     newWellProject,
                     caseResult!.DG4Date!.getFullYear(),
@@ -64,6 +72,14 @@ function WellProjectView() {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        const newWellProject = { ...wellProject }
+        newWellProject.rigMobDemob = rigMobDemob
+        newWellProject.annualWellInterventionCost = annualWellInterventionCost
+        newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
+        setWellProject(newWellProject)
+    }, [rigMobDemob, annualWellInterventionCost, pluggingAndAbandonment])
 
     return (
         <AssetViewDiv>
@@ -78,6 +94,29 @@ function WellProjectView() {
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setValue={setRigMobDemob}
+                    value={rigMobDemob ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    label="Rig Mob Demob"
+                />
+                <NumberInput
+                    setValue={setAnnualWellInterventionCost}
+                    value={annualWellInterventionCost ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    label="Annual well intervention cost"
+                />
+                <NumberInput
+                    setValue={setPluggingAndAbandonment}
+                    value={pluggingAndAbandonment ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    label="Plugging and abandonment"
+                />
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
