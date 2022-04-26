@@ -23,6 +23,14 @@ const CaseViewDiv = styled.div`
     flex-direction: column;
 `
 
+const Wrapper = styled.div`
+    display: flex;
+    > *:not(:last-child) {
+        margin-right: 1rem;
+    }
+    flex-direction: row;
+`
+
 function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -70,12 +78,43 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
-                <CaseDGDate
-                    caseItem={caseItem}
+                <Wrapper>
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG1}
+                        dGName="DG1"
+                    />
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG3}
+                        dGName="DG3"
+                    />
+                </Wrapper>
+                <Wrapper>
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG2}
+                        dGName="DG2"
+                    />
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG4}
+                        dGName="DG4"
+                    />
+                </Wrapper>
+                <CaseArtificialLift
+                    currentValue={artificialLift}
+                    setArtificialLift={setArtificialLift}
                     setProject={setProject}
-                    setCase={setCase}
-                    dGType={DGEnum.DG4}
-                    dGName="DG4"
+                    caseItem={caseItem}
                 />
                 <CaseArtificialLift
                     currentValue={artificialLift}
