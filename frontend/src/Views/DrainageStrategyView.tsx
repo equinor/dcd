@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,12 +14,13 @@ import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import NumberInput from "../Components/NumberInput"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -28,6 +29,10 @@ const DrainageStrategyView = () => {
     const [drainageStrategyName, setDrainageStrategyName] = useState<string>("")
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [nGLYield, setNGLYield] = useState<number>()
+    const [producerCount, setProducerCount] = useState<number>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
@@ -57,6 +62,11 @@ const DrainageStrategyView = () => {
                 }
                 setDrainageStrategyName(newDrainage?.name!)
 
+                setNGLYield(newDrainage.nglYield)
+                setProducerCount(newDrainage.producerCount)
+                setGasInjectorCount(newDrainage.gasInjectorCount)
+                setWaterInjectorCount(newDrainage.waterInjectorCount)
+
                 TimeSeriesYears(
                     newDrainage,
                     caseResult!.DG4Date!.getFullYear(),
@@ -66,6 +76,15 @@ const DrainageStrategyView = () => {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        const newDrainage = { ...drainageStrategy }
+        newDrainage.nglYield = nGLYield
+        newDrainage.producerCount = producerCount
+        newDrainage.gasInjectorCount = gasInjectorCount
+        newDrainage.waterInjectorCount = waterInjectorCount
+        setDrainageStrategy(newDrainage)
+    }, [nGLYield, producerCount, gasInjectorCount, waterInjectorCount])
 
     return (
         <AssetViewDiv>
@@ -79,6 +98,36 @@ const DrainageStrategyView = () => {
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setValue={setNGLYield}
+                    value={nGLYield}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    label="NGL Yield"
+                />
+                <NumberInput
+                    setValue={setProducerCount}
+                    value={producerCount}
+                    setHasChanges={setHasChanges}
+                    integer
+                    label="Producer count"
+                />
+                <NumberInput
+                    setValue={setGasInjectorCount}
+                    value={gasInjectorCount}
+                    setHasChanges={setHasChanges}
+                    integer
+                    label="Gas injector count"
+                />
+                <NumberInput
+                    setValue={setWaterInjectorCount}
+                    value={waterInjectorCount}
+                    setHasChanges={setHasChanges}
+                    integer
+                    label="Water injector count"
+                />
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
