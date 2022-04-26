@@ -23,7 +23,7 @@ import { GetCaseService } from "../Services/CaseService"
 import DGEnum from "../models/DGEnum"
 
 const DgField = styled.div`
-    margin-bottom: 3.5rem;
+    margin-bottom: 2.5rem;
     width: 12rem;
     display: flex;
 `
