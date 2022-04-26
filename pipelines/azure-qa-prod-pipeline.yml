@@ -35,6 +35,7 @@ stages:
       serviceConnection: "dcd-pipeline-sp"
       name: DeployQA
       environment: qa
+      dbContext: $(DbConnectionStringQa)
 
   - template: templates/stage-deploy.yml
     parameters:
@@ -43,3 +44,4 @@ stages:
       serviceConnection: "dcd-pipeline-sp"
       name: DeployProd
       environment: prod
+      dbContext: $(DbConnectionStringProd)
