@@ -3,7 +3,7 @@ import {
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { Project } from "../models/Project"
@@ -13,12 +13,13 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
-import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import Save from "../Components/Save"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -30,8 +31,6 @@ const DrainageStrategyView = () => {
 
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
 
     useEffect(() => {
         (async () => {
@@ -67,24 +66,6 @@ const DrainageStrategyView = () => {
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const drainageStrategyDto = DrainageStrategy.toDto(drainageStrategy!)
-        drainageStrategyDto.name = drainageStrategyName
-        if (drainageStrategyDto?.id === EMPTY_GUID) {
-            drainageStrategyDto.projectId = params.projectId
-            const newProject: Project = await GetDrainageStrategyService()
-                .createDrainageStrategy(params.caseId!, drainageStrategyDto!)
-            const newDrainageStrategy = newProject.drainageStrategies.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newDrainageStrategy!.id!)
-            navigate(`${newUrl}`)
-            setProject(newProject)
-        } else {
-            const newProject = await GetDrainageStrategyService().updateDrainageStrategy(drainageStrategyDto!)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     return (
         <AssetViewDiv>
@@ -190,7 +171,16 @@ const DrainageStrategyView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
+            <Save
+                name={drainageStrategyName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setDrainageStrategy}
+                setProject={setProject}
+                asset={drainageStrategy!}
+                assetService={GetDrainageStrategyService()}
+                assetType={AssetTypeEnum.drainageStrategies}
+            />
         </AssetViewDiv>
     )
 }

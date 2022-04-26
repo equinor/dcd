@@ -8,15 +8,15 @@ export interface IAsset {
     drillingSchedule?: ITimeSeries | undefined
     co2Emissions?: ITimeSeries | undefined
     netSalesGas?: ITimeSeries | undefined
-    substructureCessationCostProfileDto?: ITimeSeries | undefined
-    surfCessationCostProfileDto?: ITimeSeries | undefined
-    topsideCessationCostProfileDto?: ITimeSeries | undefined
-    transportCessationCostProfileDto?: ITimeSeries | undefined
     fuelFlaringAndLosses?: ITimeSeries | undefined
     productionProfileGas?: ITimeSeries | undefined
     productionProfileOil?: ITimeSeries | undefined
     productionProfileWater?: ITimeSeries | undefined
     productionProfileWaterInjection?: ITimeSeries | undefined
+    substructureCessationCostProfileDto?: ITimeSeries | undefined
+    surfCessationCostProfileDto?: ITimeSeries | undefined
+    topsideCessationCostProfileDto?: ITimeSeries | undefined
+    transportCessationCostProfileDto?: ITimeSeries | undefined
     dryweight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
 }

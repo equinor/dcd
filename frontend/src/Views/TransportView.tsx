@@ -3,8 +3,9 @@ import {
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
+import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
@@ -13,11 +14,11 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTransportService } from "../Services/TransportService"
-import { EMPTY_GUID } from "../Utils/constants"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -26,8 +27,6 @@ const TransportView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [transportName, setTransportName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
@@ -65,23 +64,6 @@ const TransportView = () => {
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const transportDto = new Transport(transport!)
-        transportDto.name = transportName
-        if (transport?.id === EMPTY_GUID) {
-            transportDto.projectId = params.projectId
-            const newProject = await GetTransportService().createTransport(params.caseId!, transportDto!)
-            const newTransport = newProject.transports.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newTransport!.id!)
-            navigate(`${newUrl}`, { replace: true })
-            setProject(newProject)
-        } else {
-            const newProject = await GetTransportService().updateTransport(transportDto!)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     return (
         <AssetViewDiv>
@@ -123,7 +105,16 @@ const TransportView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
+            <Save
+                name={transportName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setTransport}
+                setProject={setProject}
+                asset={transport!}
+                assetService={GetTransportService()}
+                assetType={AssetTypeEnum.transports}
+            />
         </AssetViewDiv>
     )
 }
