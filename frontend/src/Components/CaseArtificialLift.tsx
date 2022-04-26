@@ -8,6 +8,7 @@ import styled from "styled-components"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
+import { EMPTY_GUID } from "../Utils/constants"
 
 const ArtificialLiftDropdown = styled(NativeSelect)`
 width: 20rem;
@@ -58,6 +59,16 @@ const CaseArtificialLift = ({
             setProject(newProject)
         }
     }
+
+    const isDisabled = () => {
+        if (caseItem?.drainageStrategyLink !== EMPTY_GUID
+            || caseItem?.wellProjectLink !== EMPTY_GUID
+            || caseItem?.surfLink !== EMPTY_GUID
+            || caseItem?.topsideLink !== EMPTY_GUID) {
+            return true
+        }
+        return false
+    }
     return (
         <ArtificialLiftDropdown
             label="Artificial Lift"
@@ -65,6 +76,7 @@ const CaseArtificialLift = ({
             placeholder="Choose an artificial lift"
             onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
             value={currentValue}
+            disabled={isDisabled()}
         >
             <option key="0" value={0}>No lift </option>
             <option key="1" value={1}>Gas lift </option>
