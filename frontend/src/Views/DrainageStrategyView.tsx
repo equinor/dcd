@@ -1,5 +1,5 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,7 +14,7 @@ import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import {
-    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import { TimeSeriesYears } from "./Asset/AssetHelper"

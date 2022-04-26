@@ -37,10 +37,10 @@ const NumberInput = ({
                 value={value}
                 onChange={onChange}
                 onKeyPress={(event) => {
-            if (integer && !/\d/.test(event.key)) {
-                event.preventDefault()
-            }
-        }}
+                    if (integer && !/\d/.test(event.key)) {
+                        event.preventDefault()
+                    }
+                }}
             />
         </WrapperColumn>
     )

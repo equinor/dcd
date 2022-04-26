@@ -11,13 +11,16 @@ namespace api.Models
         public string Description { get; set; } = string.Empty!;
         public DateTimeOffset CreateTime { get; set; }
         public DateTimeOffset ModifyTime { get; set; }
-        public Boolean ReferenceCase { get; set; }
+        public bool ReferenceCase { get; set; }
         public DateTimeOffset DG1Date { get; set; }
         public DateTimeOffset DG2Date { get; set; }
         public DateTimeOffset DG3Date { get; set; }
         public DateTimeOffset DG4Date { get; set; }
         public Project Project { get; set; } = null!;
         public ArtificialLift ArtificialLift { get; set; }
+        public int ProducerCount { get; set; }
+        public int GasInjectorCount { get; set; }
+        public int WaterInjectorCount { get; set; }
         public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
         public Guid WellProjectLink { get; set; } = Guid.Empty;
         public Guid SurfLink { get; set; } = Guid.Empty;

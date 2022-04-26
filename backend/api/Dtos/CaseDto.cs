@@ -12,8 +12,11 @@ namespace api.Dtos
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public Boolean ReferenceCase { get; set; }
+        public bool ReferenceCase { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
+        public int ProducerCount { get; set; }
+        public int GasInjectorCount { get; set; }
+        public int WaterInjectorCount { get; set; }
         public DateTimeOffset DG1Date { get; set; }
         public DateTimeOffset DG2Date { get; set; }
         public DateTimeOffset DG3Date { get; set; }
