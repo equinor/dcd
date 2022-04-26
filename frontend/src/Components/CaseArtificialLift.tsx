@@ -1,5 +1,5 @@
 import {
-    NativeSelect,
+    NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import {
     ChangeEvent, Dispatch, SetStateAction,
@@ -70,19 +70,28 @@ const CaseArtificialLift = ({
         return false
     }
     return (
-        <ArtificialLiftDropdown
-            label="Artificial Lift"
-            id="ArtificialLift"
-            placeholder="Choose an artificial lift"
-            onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
-            value={currentValue}
-            disabled={isDisabled()}
-        >
-            <option key="0" value={0}>No lift </option>
-            <option key="1" value={1}>Gas lift </option>
-            <option key="2" value={2}>Electrical submerged pumps </option>
-            <option key="3" value={3}>Subsea booster pumps </option>
-        </ArtificialLiftDropdown>
+        <>
+            {isDisabled()
+                ? (
+                    <Typography type="p">
+                        Cant change aritificial lift while there are assets with artificial lift linked
+                    </Typography>
+                )
+                : null}
+            <ArtificialLiftDropdown
+                label="Artificial Lift"
+                id="ArtificialLift"
+                placeholder="Choose an artificial lift"
+                onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
+                value={currentValue}
+                disabled={isDisabled()}
+            >
+                <option key="0" value={0}>No lift </option>
+                <option key="1" value={1}>Gas lift </option>
+                <option key="2" value={2}>Electrical submerged pumps </option>
+                <option key="3" value={3}>Subsea booster pumps </option>
+            </ArtificialLiftDropdown>
+        </>
     )
 }
 
