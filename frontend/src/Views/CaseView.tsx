@@ -15,6 +15,7 @@ import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
 import CaseDGDate from "../Components/CaseDGDate"
 import DGEnum from "../models/DGEnum"
+import CaseArtificialLift from "../Components/CaseArtificialLift"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -27,19 +28,28 @@ function CaseView() {
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
 
     useEffect(() => {
         (async () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
-                setCase(caseResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
         })()
     }, [params.projectId, params.caseId])
+
+    useEffect(() => {
+        if (project !== undefined) {
+            const caseResult = project.cases.find((o) => o.id === params.caseId)
+            if (caseResult !== undefined) {
+                setArtificialLift(caseResult.artificialLift)
+            }
+            setCase(caseResult)
+        }
+    }, [project])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -66,6 +76,12 @@ function CaseView() {
                     setCase={setCase}
                     dGType={DGEnum.DG4}
                     dGName="DG4"
+                />
+                <CaseArtificialLift
+                    currentValue={artificialLift}
+                    setArtificialLift={setArtificialLift}
+                    setProject={setProject}
+                    caseItem={caseItem}
                 />
                 <CaseAsset
                     caseItem={caseItem}
