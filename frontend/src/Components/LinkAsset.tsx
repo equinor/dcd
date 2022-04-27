@@ -5,6 +5,7 @@ import React, {
     ChangeEvent,
 } from "react"
 import styled from "styled-components"
+import { EMPTY_GUID } from "../Utils/constants"
 
 const AssetDropdown = styled(NativeSelect)`
     width: 20rem;
@@ -34,7 +35,7 @@ const LinkAsset = ({
         value={currentValue}
     >
         {values}
-        <option key="00000000-0000-0000-0000-000000000000" value="00000000-0000-0000-0000-000000000000"> </option>
+        <option key={EMPTY_GUID} value={EMPTY_GUID}> </option>
     </AssetDropdown>
 )
 

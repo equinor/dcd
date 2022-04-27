@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,9 +14,9 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
@@ -51,6 +51,7 @@ function WellProjectView() {
                     setWellProject(newWellProject)
                 } else {
                     newWellProject = new WellProject()
+                    newWellProject.artificialLift = caseResult?.artificialLift
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
@@ -82,6 +83,16 @@ function WellProjectView() {
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(wellProject?.artificialLift)}
+                    />
+                </WrapperColumn>
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
