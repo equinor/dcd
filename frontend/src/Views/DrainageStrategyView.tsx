@@ -30,9 +30,6 @@ const DrainageStrategyView = () => {
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [nGLYield, setNGLYield] = useState<number>()
-    const [producerCount, setProducerCount] = useState<number>()
-    const [gasInjectorCount, setGasInjectorCount] = useState<number>()
-    const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
@@ -63,9 +60,6 @@ const DrainageStrategyView = () => {
                 setDrainageStrategyName(newDrainage?.name!)
 
                 setNGLYield(newDrainage.nglYield)
-                setProducerCount(newDrainage.producerCount)
-                setGasInjectorCount(newDrainage.gasInjectorCount)
-                setWaterInjectorCount(newDrainage.waterInjectorCount)
 
                 TimeSeriesYears(
                     newDrainage,
@@ -80,11 +74,8 @@ const DrainageStrategyView = () => {
     useEffect(() => {
         const newDrainage = { ...drainageStrategy }
         newDrainage.nglYield = nGLYield
-        newDrainage.producerCount = producerCount
-        newDrainage.gasInjectorCount = gasInjectorCount
-        newDrainage.waterInjectorCount = waterInjectorCount
         setDrainageStrategy(newDrainage)
-    }, [nGLYield, producerCount, gasInjectorCount, waterInjectorCount])
+    }, [nGLYield])
 
     return (
         <AssetViewDiv>
@@ -108,23 +99,17 @@ const DrainageStrategyView = () => {
                     label="NGL Yield"
                 />
                 <NumberInput
-                    setValue={setProducerCount}
-                    value={producerCount}
-                    setHasChanges={setHasChanges}
+                    value={drainageStrategy?.producerCount}
                     integer
                     label="Producer count"
                 />
                 <NumberInput
-                    setValue={setGasInjectorCount}
-                    value={gasInjectorCount}
-                    setHasChanges={setHasChanges}
+                    value={drainageStrategy?.gasInjectorCount}
                     integer
                     label="Gas injector count"
                 />
                 <NumberInput
-                    setValue={setWaterInjectorCount}
-                    value={waterInjectorCount}
-                    setHasChanges={setHasChanges}
+                    value={drainageStrategy?.waterInjectorCount}
                     integer
                     label="Water injector count"
                 />
