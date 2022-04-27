@@ -13,6 +13,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTransportService } from "../Services/TransportService"
+import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
@@ -31,7 +32,8 @@ const TransportView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -42,9 +44,9 @@ const TransportView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newTransport = project.transports.find((s) => s.id === params.transportId)
+                let newTransport: Transport | undefined = project.transports.find((s) => s.id === params.transportId)
                 if (newTransport !== undefined) {
                     setTransport(newTransport)
                 } else {
@@ -57,17 +59,18 @@ const TransportView = () => {
     }, [project])
 
     const handleSave = async () => {
-        const transportDto = new Transport(transport!)
+        const transportDto: Transport = new Transport(transport)
         transportDto.name = transportName
         if (transport?.id === EMPTY_GUID) {
             transportDto.projectId = params.projectId
-            const newProject = await GetTransportService().createTransport(params.caseId!, transportDto!)
-            const newTransport = newProject.transports.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newTransport!.id!)
+            const caseId: string = unwrapCaseId(params.caseId)
+            const newProject: Project = await GetTransportService().createTransport(caseId, transportDto)
+            const newTransport: Transport | undefined = newProject.transports.at(-1)
+            const newUrl: string = location.pathname.replace(EMPTY_GUID, newTransport?.id!)
             navigate(`${newUrl}`, { replace: true })
             setProject(newProject)
         } else {
-            const newProject = await GetTransportService().updateTransport(transportDto!)
+            const newProject: Project = await GetTransportService().updateTransport(transportDto)
             setProject(newProject)
         }
         setHasChanges(false)

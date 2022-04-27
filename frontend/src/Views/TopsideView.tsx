@@ -13,6 +13,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
+import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
@@ -31,7 +32,8 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -42,9 +44,9 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newTopside = project.topsides.find((s) => s.id === params.topsideId)
+                let newTopside: Topside | undefined = project.topsides.find((s) => s.id === params.topsideId)
                 if (newTopside !== undefined) {
                     setTopside(newTopside)
                 } else {
@@ -57,17 +59,18 @@ const TopsideView = () => {
     }, [project])
 
     const handleSave = async () => {
-        const topsideDto = new Topside(topside!)
+        const topsideDto: Topside = new Topside(topside)
         topsideDto.name = topsideName
         if (topside?.id === EMPTY_GUID) {
             topsideDto.projectId = params.projectId
-            const newProject: Project = await GetTopsideService().createTopside(params.caseId!, topsideDto!)
-            const newTopside = newProject.topsides.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newTopside!.id!)
+            const caseId: string = unwrapCaseId(params.caseId)
+            const newProject: Project = await GetTopsideService().createTopside(caseId, topsideDto)
+            const newTopside: Topside | undefined = newProject.topsides.at(-1)
+            const newUrl: string = location.pathname.replace(EMPTY_GUID, newTopside?.id!)
             navigate(`${newUrl}`, { replace: true })
             setProject(newProject)
         } else {
-            const newProject = await GetTopsideService().updateTopside(topsideDto!)
+            const newProject: Project = await GetTopsideService().updateTopside(topsideDto)
             setProject(newProject)
         }
         setHasChanges(false)

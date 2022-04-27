@@ -17,6 +17,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -32,7 +33,8 @@ const SubstructureView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -43,9 +45,10 @@ const SubstructureView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newSubstructure = project.substructures.find((s) => s.id === params.substructureId)
+                // eslint-disable-next-line max-len
+                let newSubstructure: Substructure | undefined = project.substructures.find((s) => s.id === params.substructureId)
                 if (newSubstructure !== undefined) {
                     setSubstructure(newSubstructure)
                 } else {
@@ -58,18 +61,19 @@ const SubstructureView = () => {
     }, [project])
 
     const handleSave = async () => {
-        const substructureDto = new Substructure(substructure!)
+        const substructureDto: Substructure = new Substructure(substructure)
         substructureDto.name = substructureName
         if (substructure?.id === EMPTY_GUID) {
             substructureDto.projectId = params.projectId
+            const caseId: string = unwrapCaseId(params.caseId)
             const newProject = await GetSubstructureService()
-                .createSubstructure(params.caseId!, substructureDto!)
-            const newSubstructure = newProject.substructures.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newSubstructure!.id!)
+                .createSubstructure(caseId, substructureDto)
+            const newSubstructure: Substructure | undefined = newProject.substructures.at(-1)
+            const newUrl: string = location.pathname.replace(EMPTY_GUID, newSubstructure?.id!)
             navigate(`${newUrl}`)
             setSubstructure(newSubstructure)
         } else {
-            const newProject = await GetSubstructureService().updateSubstructure(substructureDto!)
+            const newProject: Project = await GetSubstructureService().updateSubstructure(substructureDto)
             setProject(newProject)
         }
         setHasChanges(false)

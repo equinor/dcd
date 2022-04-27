@@ -16,6 +16,7 @@ import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetName from "../Components/AssetName"
+import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -30,7 +31,8 @@ const SurfView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -41,9 +43,9 @@ const SurfView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newSurf = project.surfs.find((s) => s.id === params.surfId)
+                let newSurf: Surf | undefined = project.surfs.find((s) => s.id === params.surfId)
                 if (newSurf !== undefined) {
                     setSurf(newSurf)
                 } else {
@@ -56,17 +58,18 @@ const SurfView = () => {
     }, [project])
 
     const handleSave = async () => {
-        const surfDto = new Surf(surf!)
+        const surfDto: Surf = new Surf(surf)
         surfDto.name = surfName
         if (surf?.id === EMPTY_GUID) {
             surfDto.projectId = params.projectId
-            const newProject = await GetSurfService().createSurf(params.caseId!, surfDto!)
-            const newSurf = newProject.surfs.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newSurf!.id!)
+            const caseId: string = unwrapCaseId(params.caseId)
+            const newProject: Project = await GetSurfService().createSurf(caseId, surfDto)
+            const newSurf: Surf | undefined = newProject.surfs.at(-1)
+            const newUrl: string = location.pathname.replace(EMPTY_GUID, newSurf?.id!)
             navigate(`${newUrl}`, { replace: true })
             setProject(newProject)
         } else {
-            const newProject = await GetSurfService().updateSurf(surfDto)
+            const newProject: Project = await GetSurfService().updateSurf(surfDto)
             setProject(newProject)
         }
         setHasChanges(false)

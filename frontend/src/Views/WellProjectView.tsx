@@ -13,6 +13,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
+import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
     AssetViewDiv, Dg4Field, SaveButton, Wrapper,
@@ -31,7 +32,8 @@ function WellProjectView() {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -42,9 +44,10 @@ function WellProjectView() {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newWellProject = project.wellProjects.find((s) => s.id === params.wellProjectId)
+                // eslint-disable-next-line max-len
+                let newWellProject: WellProject | undefined = project.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
                 } else {
@@ -57,18 +60,19 @@ function WellProjectView() {
     }, [project])
 
     const handleSave = async () => {
-        const wellProjectDto = new WellProject(wellProject!)
+        const wellProjectDto: WellProject = new WellProject(wellProject)
         wellProjectDto.name = wellProjectName
         if (wellProject?.id === EMPTY_GUID) {
             wellProjectDto.projectId = params.projectId
-            const updatedProject: Project = await
-            GetWellProjectService().createWellProject(params.caseId!, wellProjectDto!)
-            const newWellProject = updatedProject.wellProjects.at(-1)
-            const newUrl = location.pathname.replace(EMPTY_GUID, newWellProject!.id!)
+            const caseId: string = unwrapCaseId(params.caseId)
+            const updatedProject: Project = await GetWellProjectService()
+                .createWellProject(caseId, wellProjectDto)
+            const newWellProject: WellProject | undefined = updatedProject.wellProjects.at(-1)
+            const newUrl: string = location.pathname.replace(EMPTY_GUID, newWellProject?.id!)
             navigate(`${newUrl}`, { replace: true })
             setWellProject(newWellProject)
         } else {
-            const newProject = await GetWellProjectService().updateWellProject(wellProjectDto!)
+            const newProject: Project = await GetWellProjectService().updateWellProject(wellProjectDto)
             setProject(newProject)
         }
         setHasChanges(false)
