@@ -9,6 +9,7 @@ interface Props {
     value: number | undefined
     setHasChanges?: Dispatch<SetStateAction<boolean>>
     integer: boolean,
+    disabled?: boolean
     label: string
 }
 
@@ -17,6 +18,7 @@ const NumberInput = ({
     value,
     setHasChanges,
     integer,
+    disabled,
     label,
 }: Props) => {
     const onChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -39,7 +41,7 @@ const NumberInput = ({
                 id="NumberInput"
                 type="number"
                 value={value}
-                disabled={setValue === undefined}
+                disabled={disabled}
                 onChange={onChange}
                 onKeyPress={(event) => {
                     if (integer && !/\d/.test(event.key)) {

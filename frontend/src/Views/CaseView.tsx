@@ -18,6 +18,7 @@ import DGEnum from "../models/DGEnum"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
+import { isDisabled } from "./CaseHelper"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -69,12 +70,14 @@ function CaseView() {
 
     useEffect(() => {
         (async () => {
-            const caseDto = Case.Copy(caseItem!)
-            caseDto.producerCount = producerCount
-            caseDto.gasInjectorCount = gasInjectorCount
-            caseDto.waterInjectorCount = waterInjectorCount
+            if (caseItem) {
+                const caseDto = Case.Copy(caseItem)
+                caseDto.producerCount = producerCount
+                caseDto.gasInjectorCount = gasInjectorCount
+                caseDto.waterInjectorCount = waterInjectorCount
 
-            await GetCaseService().updateCase(caseDto)
+                await GetCaseService().updateCase(caseDto)
+            }
         })()
     }, [producerCount, gasInjectorCount, waterInjectorCount])
 
@@ -138,20 +141,23 @@ function CaseView() {
                 <Wrapper>
                     <NumberInput
                         setValue={setProducerCount}
-                        value={producerCount}
+                        value={producerCount ?? 0}
                         integer
+                        disabled={isDisabled("producerCount", caseItem)}
                         label="Producer count"
                     />
                     <NumberInput
                         setValue={setGasInjectorCount}
-                        value={gasInjectorCount}
+                        value={gasInjectorCount ?? 0}
                         integer
+                        disabled={isDisabled("gasInjectorCount", caseItem)}
                         label="Gas injector count"
                     />
                     <NumberInput
                         setValue={setWaterInjectorCount}
-                        value={waterInjectorCount}
+                        value={waterInjectorCount ?? 0}
                         integer
+                        disabled={isDisabled("waterInjectorCount", caseItem)}
                         label="Water injector count"
                     />
                 </Wrapper>

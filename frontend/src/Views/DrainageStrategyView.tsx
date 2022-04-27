@@ -55,6 +55,10 @@ const DrainageStrategyView = () => {
                     setDrainageStrategy(newDrainage)
                 } else {
                     newDrainage = new DrainageStrategy()
+                    newDrainage.producerCount = caseItem?.producerCount
+                    newDrainage.gasInjectorCount = caseItem?.gasInjectorCount
+                    newDrainage.waterInjectorCount = caseItem?.waterInjectorCount
+                    console.log(caseItem?.producerCount)
                     setDrainageStrategy(newDrainage)
                 }
                 setDrainageStrategyName(newDrainage?.name!)
@@ -93,24 +97,27 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <NumberInput
                     setValue={setNGLYield}
-                    value={nGLYield}
+                    value={nGLYield ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
                     label="NGL Yield"
                 />
                 <NumberInput
-                    value={drainageStrategy?.producerCount}
+                    value={drainageStrategy?.producerCount ?? 0}
                     integer
+                    disabled
                     label="Producer count"
                 />
                 <NumberInput
-                    value={drainageStrategy?.gasInjectorCount}
+                    value={drainageStrategy?.gasInjectorCount ?? 0}
                     integer
+                    disabled
                     label="Gas injector count"
                 />
                 <NumberInput
-                    value={drainageStrategy?.waterInjectorCount}
+                    value={drainageStrategy?.waterInjectorCount ?? 0}
                     integer
+                    disabled
                     label="Water injector count"
                 />
             </Wrapper>
