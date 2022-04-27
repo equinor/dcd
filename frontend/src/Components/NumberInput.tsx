@@ -7,7 +7,7 @@ import {
 interface Props {
     setValue: Dispatch<SetStateAction<number | undefined>>
     value: number | undefined
-    setHasChanges: Dispatch<SetStateAction<boolean>>
+    setHasChanges?: Dispatch<SetStateAction<boolean>>
     integer: boolean,
     label: string
 }
@@ -21,10 +21,12 @@ const NumberInput = ({
 }: Props) => {
     const onChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setValue(Number(e.target.value))
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
+        if (setHasChanges) {
+            if (e.target.value !== undefined && e.target.value !== "") {
+                setHasChanges(true)
+            } else {
+                setHasChanges(false)
+            }
         }
     }
 
