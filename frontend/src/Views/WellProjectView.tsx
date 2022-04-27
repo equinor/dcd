@@ -19,6 +19,7 @@ import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import NumberInput from "../Components/NumberInput"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -52,6 +53,9 @@ function WellProjectView() {
                 } else {
                     newWellProject = new WellProject()
                     newWellProject.artificialLift = caseResult?.artificialLift
+                    newWellProject.producerCount = caseResult?.producerCount
+                    newWellProject.gasInjectorCount = caseResult?.gasInjectorCount
+                    newWellProject.waterInjectorCount = caseResult?.waterInjectorCount
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
@@ -93,6 +97,26 @@ function WellProjectView() {
                         defaultValue={GetArtificialLiftName(wellProject?.artificialLift)}
                     />
                 </WrapperColumn>
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    value={wellProject?.producerCount ?? 0}
+                    integer
+                    disabled
+                    label="Producer count"
+                />
+                <NumberInput
+                    value={wellProject?.gasInjectorCount ?? 0}
+                    integer
+                    disabled
+                    label="Gas injector count"
+                />
+                <NumberInput
+                    value={wellProject?.waterInjectorCount ?? 0}
+                    integer
+                    disabled
+                    label="Water injector count"
+                />
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
