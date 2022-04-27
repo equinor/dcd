@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,10 +14,10 @@ import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
@@ -59,6 +59,7 @@ const DrainageStrategyView = () => {
                     newDrainage.gasInjectorCount = caseItem?.gasInjectorCount
                     newDrainage.waterInjectorCount = caseItem?.waterInjectorCount
                     console.log(caseItem?.producerCount)
+                    newDrainage.artificialLift = caseResult?.artificialLift
                     setDrainageStrategy(newDrainage)
                 }
                 setDrainageStrategyName(newDrainage?.name!)
@@ -93,6 +94,16 @@ const DrainageStrategyView = () => {
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(drainageStrategy?.artificialLift)}
+                    />
+                </WrapperColumn>
             </Wrapper>
             <Wrapper>
                 <NumberInput
