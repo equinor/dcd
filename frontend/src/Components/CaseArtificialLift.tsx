@@ -86,10 +86,10 @@ const CaseArtificialLift = ({
                 value={currentValue}
                 disabled={isDisabled()}
             >
-                <option key="0" value={0}>No lift </option>
-                <option key="1" value={1}>Gas lift </option>
-                <option key="2" value={2}>Electrical submerged pumps </option>
-                <option key="3" value={3}>Subsea booster pumps </option>
+                <option key="0" value={0}>No lift</option>
+                <option key="1" value={1}>Gas lift</option>
+                <option key="2" value={2}>Electrical submerged pumps</option>
+                <option key="3" value={3}>Subsea booster pumps</option>
             </ArtificialLiftDropdown>
         </>
     )
