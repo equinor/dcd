@@ -55,10 +55,9 @@ const DrainageStrategyView = () => {
                     setDrainageStrategy(newDrainage)
                 } else {
                     newDrainage = new DrainageStrategy()
-                    newDrainage.producerCount = caseItem?.producerCount
-                    newDrainage.gasInjectorCount = caseItem?.gasInjectorCount
-                    newDrainage.waterInjectorCount = caseItem?.waterInjectorCount
-                    console.log(caseItem?.producerCount)
+                    newDrainage.producerCount = caseResult?.producerCount
+                    newDrainage.gasInjectorCount = caseResult?.gasInjectorCount
+                    newDrainage.waterInjectorCount = caseResult?.waterInjectorCount
                     newDrainage.artificialLift = caseResult?.artificialLift
                     setDrainageStrategy(newDrainage)
                 }
