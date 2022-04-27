@@ -16,7 +16,7 @@ export const isDisabled = (
         }
     }
     if (caseItem && caseItem.wellProjectLink !== EMPTY_GUID) {
-        if ([""].includes(property)) {
+        if (["producerCount", "gasInjectorCount", "waterInjectorCount"].includes(property)) {
             return true
         }
     }
