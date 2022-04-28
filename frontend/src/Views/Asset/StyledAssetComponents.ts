@@ -36,6 +36,7 @@ export const SaveButton = styled(Button)`
 `
 
 export const Dg4Field = styled.div`
+    margin-right: 1rem;
     margin-left: 1rem;
     margin-bottom: 2rem;
     width: 10rem;
