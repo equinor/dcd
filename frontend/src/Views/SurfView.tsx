@@ -19,7 +19,6 @@ import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
-import { isDisabled } from "./CaseHelper"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -72,11 +71,10 @@ const SurfView = () => {
     }, [project])
 
     useEffect(() => {
-        const newSurf = surf
-        if (newSurf !== undefined) {
-            newSurf.riserCount = riserCount ?? 0
-            newSurf.templateCount = templateCount ?? 0
-            setSurf(newSurf)
+        if (surf !== undefined) {
+            surf.riserCount = riserCount ?? 0
+            surf.templateCount = templateCount ?? 0
+            setSurf(surf)
         }
     }, [riserCount, templateCount])
 
@@ -115,7 +113,6 @@ const SurfView = () => {
                     setValue={setRiserCount}
                     value={riserCount ?? 0}
                     integer
-                    disabled={isDisabled("riserCount", caseItem)}
                     label="Riser count"
                 />
                 <NumberInput
@@ -123,7 +120,6 @@ const SurfView = () => {
                     setValue={setTemplateCount}
                     value={templateCount ?? 0}
                     integer
-                    disabled={isDisabled("templateCount", caseItem)}
                     label="Template count"
                 />
             </Wrapper>
