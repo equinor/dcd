@@ -42,7 +42,7 @@ interface Props {
     dGName: string,
 }
 
-const DGDateGeneric = ({
+const CaseDGDate = ({
     setProject,
     caseItem,
     setCase,
@@ -124,4 +124,4 @@ const DGDateGeneric = ({
     )
 }
 
-export default DGDateGeneric
+export default CaseDGDate
