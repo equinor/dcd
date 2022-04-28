@@ -57,7 +57,7 @@ const Save = ({
 
     return (
         <Wrapper>
-            <SaveButton disabled={!hasChanges} onClick={handleSave}>
+            <SaveButton disabled={!hasChanges || name === ""} onClick={handleSave}>
                 Save
             </SaveButton>
         </Wrapper>
