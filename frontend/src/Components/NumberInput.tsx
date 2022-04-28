@@ -5,10 +5,11 @@ import {
 } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
-    setValue: Dispatch<SetStateAction<number | undefined>>
+    setValue?: Dispatch<SetStateAction<number | undefined>>
     value: number | undefined
-    setHasChanges: Dispatch<SetStateAction<boolean>>
+    setHasChanges?: Dispatch<SetStateAction<boolean>>
     integer: boolean,
+    disabled?: boolean
     label: string
 }
 
@@ -17,14 +18,19 @@ const NumberInput = ({
     value,
     setHasChanges,
     integer,
+    disabled,
     label,
 }: Props) => {
     const onChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setValue(Number(e.target.value))
-        if (e.target.value !== undefined && e.target.value !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
+        if (setValue) {
+            setValue(Number(e.target.value))
+        }
+        if (setHasChanges) {
+            if (e.target.value !== undefined && e.target.value !== "") {
+                setHasChanges(true)
+            } else {
+                setHasChanges(false)
+            }
         }
     }
 
@@ -35,6 +41,7 @@ const NumberInput = ({
                 id="NumberInput"
                 type="number"
                 value={value}
+                disabled={disabled}
                 onChange={onChange}
                 onKeyPress={(event) => {
                     if (integer && !/\d/.test(event.key)) {

@@ -19,6 +19,9 @@ export class Case implements Components.Schemas.CaseDto {
     transportLink?: string
     wellProjectLink?: string
     artificialLift: Components.Schemas.ArtificialLift
+    producerCount?: number
+    gasInjectorCount?: number
+    waterInjectorCount?: number
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -41,6 +44,9 @@ export class Case implements Components.Schemas.CaseDto {
         this.transportLink = data.transportLink ?? ""
         this.wellProjectLink = data.wellProjectLink ?? ""
         this.artificialLift = data.artificialLift ?? 0
+        this.producerCount = data.producerCount
+        this.gasInjectorCount = data.gasInjectorCount
+        this.waterInjectorCount = data.waterInjectorCount
     }
 
     static Copy(data: Case) {

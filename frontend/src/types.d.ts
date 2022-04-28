@@ -19,6 +19,9 @@ declare namespace Components {
             description?: string | null;
             referenceCase?: boolean;
             artificialLift?: ArtificialLift /* int32 */;
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
             dG3Date?: string; // date-time
