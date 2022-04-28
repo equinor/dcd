@@ -17,6 +17,7 @@ namespace api.Adapters
                 ArtificialLift = surf.ArtificialLift,
                 Maturity = surf.Maturity,
                 InfieldPipelineSystemLength = surf.InfieldPipelineSystemLength,
+                UmbilicalSystemLength = surf.UmbilicalSystemLength,
                 ProductionFlowline = surf.ProductionFlowline,
                 RiserCount = surf.RiserCount,
                 TemplateCount = surf.TemplateCount,

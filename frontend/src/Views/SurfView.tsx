@@ -31,6 +31,8 @@ const SurfView = () => {
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [riserCount, setRiserCount] = useState<number | undefined>()
     const [templateCount, setTemplateCount] = useState<number | undefined>()
+    const [infieldPipelineSystemLength, setInfieldPipelineSystemLength] = useState<number | undefined>()
+    const [umbilicalSystemLength, setUmbilicalSystemLength] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -59,6 +61,8 @@ const SurfView = () => {
                 setSurfName(newSurf?.name!)
                 setRiserCount(newSurf?.riserCount)
                 setTemplateCount(newSurf?.templateCount)
+                setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
+                setUmbilicalSystemLength(newSurf?.umbilicalSystemLength)
 
                 TimeSeriesYears(
                     newSurf,
@@ -75,9 +79,11 @@ const SurfView = () => {
             const newSurf: Surf = { ...surf }
             newSurf.riserCount = riserCount
             newSurf.templateCount = templateCount
+            newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
+            newSurf.umbilicalSystemLength = umbilicalSystemLength
             setSurf(newSurf)
         }
-    }, [riserCount, templateCount])
+    }, [riserCount, templateCount, infieldPipelineSystemLength, umbilicalSystemLength])
 
     return (
         <AssetViewDiv>
@@ -122,6 +128,20 @@ const SurfView = () => {
                     value={templateCount ?? 0}
                     integer
                     label="Template count"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setInfieldPipelineSystemLength}
+                    value={infieldPipelineSystemLength ?? 0}
+                    integer
+                    label="Length of production lines"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setUmbilicalSystemLength}
+                    value={umbilicalSystemLength ?? 0}
+                    integer
+                    label="Length of umbilical system"
                 />
             </Wrapper>
             <TimeSeries

@@ -16,6 +16,7 @@ namespace api.Adapters
                 ArtificialLift = surfDto.ArtificialLift,
                 Maturity = surfDto.Maturity,
                 InfieldPipelineSystemLength = surfDto.InfieldPipelineSystemLength,
+                UmbilicalSystemLength = surfDto.UmbilicalSystemLength,
                 ProductionFlowline = surfDto.ProductionFlowline,
                 RiserCount = surfDto.RiserCount,
                 TemplateCount = surfDto.TemplateCount,
@@ -35,6 +36,7 @@ namespace api.Adapters
             existing.ArtificialLift = surfDto.ArtificialLift;
             existing.Maturity = surfDto.Maturity;
             existing.InfieldPipelineSystemLength = surfDto.InfieldPipelineSystemLength;
+            existing.UmbilicalSystemLength = surfDto.UmbilicalSystemLength;
             existing.ProductionFlowline = surfDto.ProductionFlowline;
             existing.RiserCount = surfDto.RiserCount;
             existing.TemplateCount = surfDto.TemplateCount;
