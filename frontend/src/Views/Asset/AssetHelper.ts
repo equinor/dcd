@@ -74,3 +74,18 @@ export const TimeSeriesYears = (
     }
     return years
 }
+
+export const GetArtificialLiftName = (value: number | undefined): string => {
+    switch (value) {
+    case 0:
+        return "No lift"
+    case 1:
+        return "Gas lift"
+    case 2:
+        return "Electrical submerged pumps"
+    case 3:
+        return "Subsea booster pumps"
+    default:
+        return ""
+    }
+}

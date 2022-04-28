@@ -27,5 +27,4 @@ stages:
       webAppName: "ase-dcd"
       serviceConnection: "dcd-pipeline-sp"
       name: DeployDev
-      environment: dev
-      dbContext: $(DbConnectionStringDev)
+      environment: dev      
