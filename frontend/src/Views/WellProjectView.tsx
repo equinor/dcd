@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,11 +14,12 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import NumberInput from "../Components/NumberInput"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -51,6 +52,10 @@ function WellProjectView() {
                     setWellProject(newWellProject)
                 } else {
                     newWellProject = new WellProject()
+                    newWellProject.artificialLift = caseResult?.artificialLift
+                    newWellProject.producerCount = caseResult?.producerCount
+                    newWellProject.gasInjectorCount = caseResult?.gasInjectorCount
+                    newWellProject.waterInjectorCount = caseResult?.waterInjectorCount
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
@@ -74,10 +79,44 @@ function WellProjectView() {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
+                <Typography variant="h4">DG3</Typography>
+                <Dg4Field>
+                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
+                </Dg4Field>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(wellProject?.artificialLift)}
+                    />
+                </WrapperColumn>
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    value={wellProject?.producerCount ?? 0}
+                    integer
+                    disabled
+                    label="Producer count"
+                />
+                <NumberInput
+                    value={wellProject?.gasInjectorCount ?? 0}
+                    integer
+                    disabled
+                    label="Gas injector count"
+                />
+                <NumberInput
+                    value={wellProject?.waterInjectorCount ?? 0}
+                    integer
+                    disabled
+                    label="Water injector count"
+                />
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}

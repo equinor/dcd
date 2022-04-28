@@ -16,6 +16,9 @@ import CaseName from "../Components/CaseName"
 import CaseDGDate from "../Components/CaseDGDate"
 import DGEnum from "../models/DGEnum"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
+import NumberInput from "../Components/NumberInput"
+import { GetCaseService } from "../Services/CaseService"
+import { isDisabled } from "./CaseHelper"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -37,6 +40,9 @@ function CaseView() {
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
+    const [producerCount, setProducerCount] = useState<number>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -56,8 +62,24 @@ function CaseView() {
                 setArtificialLift(caseResult.artificialLift)
             }
             setCase(caseResult)
+            setProducerCount(caseResult?.producerCount)
+            setGasInjectorCount(caseResult?.gasInjectorCount)
+            setWaterInjectorCount(caseResult?.waterInjectorCount)
         }
     }, [project])
+
+    useEffect(() => {
+        (async () => {
+            if (caseItem) {
+                const caseDto = Case.Copy(caseItem)
+                caseDto.producerCount = producerCount
+                caseDto.gasInjectorCount = gasInjectorCount
+                caseDto.waterInjectorCount = waterInjectorCount
+
+                await GetCaseService().updateCase(caseDto)
+            }
+        })()
+    }, [producerCount, gasInjectorCount, waterInjectorCount])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -122,6 +144,29 @@ function CaseView() {
                     setProject={setProject}
                     caseItem={caseItem}
                 />
+                <Wrapper>
+                    <NumberInput
+                        setValue={setProducerCount}
+                        value={producerCount ?? 0}
+                        integer
+                        disabled={isDisabled("producerCount", caseItem)}
+                        label="Producer count"
+                    />
+                    <NumberInput
+                        setValue={setGasInjectorCount}
+                        value={gasInjectorCount ?? 0}
+                        integer
+                        disabled={isDisabled("gasInjectorCount", caseItem)}
+                        label="Gas injector count"
+                    />
+                    <NumberInput
+                        setValue={setWaterInjectorCount}
+                        value={waterInjectorCount ?? 0}
+                        integer
+                        disabled={isDisabled("waterInjectorCount", caseItem)}
+                        label="Water injector count"
+                    />
+                </Wrapper>
                 <CaseAsset
                     caseItem={caseItem}
                     project={project}
