@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Dispatch, SetStateAction } from "react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { useNavigate } from "react-router"
@@ -25,9 +25,9 @@ const AssetButton = styled(Button)`
 
 interface Props {
     project: Project,
-    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>
+    setProject: Dispatch<SetStateAction<Project | undefined>>
     caseItem: Case | undefined,
-    setCase: React.Dispatch<React.SetStateAction<Case | undefined>>
+    setCase: Dispatch<SetStateAction<Case | undefined>>
     caseId: string | undefined,
 }
 
@@ -91,7 +91,9 @@ const CaseAsset = ({
                 <LinkAsset
                     assetName="Drainage strategy"
                     linkAsset={onSelectAsset}
-                    values={project.drainageStrategies.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    values={project.drainageStrategies
+                        .filter((ds) => ds.artificialLift === caseItem?.artificialLift)
+                        .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.drainageStrategyLink}
                     link={AssetLink.drainageStrategyLink}
                 />
@@ -143,7 +145,9 @@ const CaseAsset = ({
                 <LinkAsset
                     assetName="Well project"
                     linkAsset={onSelectAsset}
-                    values={project.wellProjects.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    values={project.wellProjects
+                        .filter((wp) => wp.artificialLift === caseItem?.artificialLift)
+                        .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.wellProjectLink}
                     link={AssetLink.wellProjectLink}
                 />
@@ -169,7 +173,9 @@ const CaseAsset = ({
                 <LinkAsset
                     assetName="SURF"
                     linkAsset={onSelectAsset}
-                    values={project.surfs.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    values={project.surfs
+                        .filter((s) => s.artificialLift === caseItem?.artificialLift)
+                        .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.surfLink}
                     link={AssetLink.surfLink}
                 />
@@ -195,7 +201,9 @@ const CaseAsset = ({
                 <LinkAsset
                     assetName="Topside"
                     linkAsset={onSelectAsset}
-                    values={project.topsides.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    values={project.topsides
+                        .filter((ts) => ts.artificialLift === caseItem?.artificialLift)
+                        .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.topsideLink}
                     link={AssetLink.topsideLink}
                 />

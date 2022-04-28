@@ -1,10 +1,11 @@
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
+import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
@@ -13,11 +14,12 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
-import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
-import { EMPTY_GUID } from "../Utils/constants"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -26,8 +28,8 @@ const TopsideView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [topsideName, setTopsideName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -51,30 +53,20 @@ const TopsideView = () => {
                     setTopside(newTopside)
                 } else {
                     newTopside = new Topside()
+                    newTopside.artificialLift = caseResult?.artificialLift
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
+
+                TimeSeriesYears(
+                    newTopside,
+                    caseResult?.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const topsideDto: Topside = new Topside(topside)
-        topsideDto.name = topsideName
-        if (topside?.id === EMPTY_GUID) {
-            topsideDto.projectId = params.projectId
-            const caseId: string = unwrapCaseId(params.caseId)
-            const newProject: Project = await GetTopsideService().createTopside(caseId, topsideDto)
-            const newTopside: Topside | undefined = newProject.topsides.at(-1)
-            const newUrl: string = location.pathname.replace(EMPTY_GUID, newTopside?.id!)
-            navigate(`${newUrl}`, { replace: true })
-            setProject(newProject)
-        } else {
-            const newProject: Project = await GetTopsideService().updateTopside(topsideDto)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     return (
         <AssetViewDiv>
@@ -90,6 +82,16 @@ const TopsideView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(topside?.artificialLift)}
+                    />
+                </WrapperColumn>
+            </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setTopside}
@@ -98,6 +100,10 @@ const TopsideView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={topsideName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -107,8 +113,21 @@ const TopsideView = () => {
                 timeSeriesType={TimeSeriesEnum.topsideCessationCostProfileDto}
                 assetName={topsideName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
+            <Save
+                name={topsideName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setTopside}
+                setProject={setProject}
+                asset={topside!}
+                assetService={GetTopsideService()}
+                assetType={AssetTypeEnum.topsides}
+            />
         </AssetViewDiv>
     )
 }

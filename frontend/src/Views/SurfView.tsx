@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 
-import { useNavigate, useLocation, useParams } from "react-router"
+import { useParams } from "react-router"
 import { Surf } from "../models/assets/surf/Surf"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
@@ -11,12 +11,14 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetSurfService } from "../Services/SurfService"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
-import { EMPTY_GUID } from "../Utils/constants"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
+import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -25,8 +27,8 @@ const SurfView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [surfName, setSurfName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -50,30 +52,20 @@ const SurfView = () => {
                     setSurf(newSurf)
                 } else {
                     newSurf = new Surf()
+                    newSurf.artificialLift = caseResult?.artificialLift
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
+
+                TimeSeriesYears(
+                    newSurf,
+                    caseResult?.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const surfDto: Surf = new Surf(surf)
-        surfDto.name = surfName
-        if (surf?.id === EMPTY_GUID) {
-            surfDto.projectId = params.projectId
-            const caseId: string = unwrapCaseId(params.caseId)
-            const newProject: Project = await GetSurfService().createSurf(caseId, surfDto)
-            const newSurf: Surf | undefined = newProject.surfs.at(-1)
-            const newUrl: string = location.pathname.replace(EMPTY_GUID, newSurf?.id!)
-            navigate(`${newUrl}`, { replace: true })
-            setProject(newProject)
-        } else {
-            const newProject: Project = await GetSurfService().updateSurf(surfDto)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     return (
         <AssetViewDiv>
@@ -84,6 +76,21 @@ const SurfView = () => {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(surf?.artificialLift)}
+                    />
+                </WrapperColumn>
+            </Wrapper>
+
+            <Wrapper>
+                <Typography variant="h4">DG3</Typography>
+                <Dg4Field>
+                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
+                </Dg4Field>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
@@ -97,6 +104,10 @@ const SurfView = () => {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={surfName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -106,8 +117,21 @@ const SurfView = () => {
                 timeSeriesType={TimeSeriesEnum.surfCessationCostProfileDto}
                 assetName={surfName}
                 timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
+            <Save
+                name={surfName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setSurf}
+                setProject={setProject}
+                asset={surf!}
+                assetService={GetSurfService()}
+                assetType={AssetTypeEnum.surfs}
+            />
         </AssetViewDiv>
     )
 }

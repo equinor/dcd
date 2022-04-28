@@ -1,17 +1,19 @@
 export class ProductionProfileWaterCostProfile implements Components.Schemas.ProductionProfileWaterDto {
     id?: string
-    startYear?: number | undefined
-    values?: number [] | null
+    startYear: number
+    values: number []
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileWaterDto) {
-        if (data !== null && data !== undefined) {
-            this.id = data?.id
-            this.startYear = data?.startYear
-            this.values = data?.values ?? []
-            this.sum = data?.sum
+        if (data !== undefined && data !== null) {
+            this.id = data.id
+            this.startYear = data.startYear ?? 0
+            this.values = data.values ?? []
+            this.sum = data.sum
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
+            this.startYear = 0
+            this.values = []
         }
     }
 

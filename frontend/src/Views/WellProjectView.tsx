@@ -1,10 +1,11 @@
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
-    useLocation, useNavigate, useParams,
+    useParams,
 } from "react-router"
+import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
@@ -13,11 +14,12 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
-import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
-import { EMPTY_GUID } from "../Utils/constants"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, SaveButton, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
+import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -26,8 +28,8 @@ function WellProjectView() {
     const [hasChanges, setHasChanges] = useState(false)
     const [wellProjectName, setWellProjectName] = useState<string>("")
     const params = useParams()
-    const navigate = useNavigate()
-    const location = useLocation()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -47,36 +49,25 @@ function WellProjectView() {
                 const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
                 // eslint-disable-next-line max-len
-                let newWellProject: WellProject | undefined = project.wellProjects.find((s) => s.id === params.wellProjectId)
+                let newWellProject: WellProject | undefined = project?.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
                 } else {
                     newWellProject = new WellProject()
+                    newWellProject.artificialLift = caseResult?.artificialLift
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
+
+                TimeSeriesYears(
+                    newWellProject,
+                    caseResult?.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
-
-    const handleSave = async () => {
-        const wellProjectDto: WellProject = new WellProject(wellProject)
-        wellProjectDto.name = wellProjectName
-        if (wellProject?.id === EMPTY_GUID) {
-            wellProjectDto.projectId = params.projectId
-            const caseId: string = unwrapCaseId(params.caseId)
-            const updatedProject: Project = await GetWellProjectService()
-                .createWellProject(caseId, wellProjectDto)
-            const newWellProject: WellProject | undefined = updatedProject.wellProjects.at(-1)
-            const newUrl: string = location.pathname.replace(EMPTY_GUID, newWellProject?.id!)
-            navigate(`${newUrl}`, { replace: true })
-            setWellProject(newWellProject)
-        } else {
-            const newProject: Project = await GetWellProjectService().updateWellProject(wellProjectDto)
-            setProject(newProject)
-        }
-        setHasChanges(false)
-    }
 
     return (
         <AssetViewDiv>
@@ -87,10 +78,24 @@ function WellProjectView() {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
+                <Typography variant="h4">DG3</Typography>
+                <Dg4Field>
+                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
+                </Dg4Field>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(wellProject?.artificialLift)}
+                    />
+                </WrapperColumn>
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
@@ -100,6 +105,10 @@ function WellProjectView() {
                 timeSeriesType={TimeSeriesEnum.costProfile}
                 assetName={wellProjectName}
                 timeSeriesTitle="Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
                 caseItem={caseItem}
@@ -109,9 +118,21 @@ function WellProjectView() {
                 timeSeriesType={TimeSeriesEnum.drillingSchedule}
                 assetName={wellProjectName}
                 timeSeriesTitle="Drilling schedule"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
-            <Wrapper><SaveButton disabled={!hasChanges} onClick={handleSave}>Save</SaveButton></Wrapper>
-
+            <Save
+                name={wellProjectName}
+                setHasChanges={setHasChanges}
+                hasChanges={hasChanges}
+                setAsset={setWellProject}
+                setProject={setProject}
+                asset={wellProject!}
+                assetService={GetWellProjectService()}
+                assetType={AssetTypeEnum.wellProjects}
+            />
         </AssetViewDiv>
     )
 }

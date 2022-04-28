@@ -28,3 +28,4 @@ stages:
       serviceConnection: "dcd-pipeline-sp"
       name: DeployDev
       environment: dev
+      dbContext: $(DbConnectionStringDev)

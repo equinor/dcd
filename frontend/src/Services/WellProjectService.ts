@@ -5,12 +5,12 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { Project } from "../models/Project"
 
 export class __WellProjectService extends __BaseService {
-    public async createWellProject(sourceCaseId: string, body: Components.Schemas.WellProjectDto) : Promise<Project> {
+    public async create(sourceCaseId: string, body: Components.Schemas.WellProjectDto) : Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)
     }
 
-    public async updateWellProject(body: Components.Schemas.WellProjectDto): Promise<Project> {
+    public async update(body: Components.Schemas.WellProjectDto): Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.put("", { body })
         return Project.fromJSON(res)
     }

@@ -17,7 +17,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto 
     gasInjectorCount?: number
     artificialLift?: Components.Schemas.ArtificialLift
     netSalesGas?: NetSalesGasCostProfile | undefined
-    co2Emissions?: Co2EmissionsCostProfile
+    co2Emissions?: Co2EmissionsCostProfile | undefined
     fuelFlaringAndLosses?: FuelFlaringAndLossesCostProfile | undefined
     productionProfileGas?: ProductionProfileGasCostProfile | undefined
     productionProfileOil?: ProductionProfileOilCostProfile | undefined
