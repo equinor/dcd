@@ -138,12 +138,6 @@ function CaseView() {
                     setProject={setProject}
                     caseItem={caseItem}
                 />
-                <CaseArtificialLift
-                    currentValue={artificialLift}
-                    setArtificialLift={setArtificialLift}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                />
                 <Wrapper>
                     <NumberInput
                         setValue={setProducerCount}

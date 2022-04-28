@@ -17,7 +17,8 @@ namespace api.Adapters
                 Maturity = surfDto.Maturity,
                 InfieldPipelineSystemLength = surfDto.InfieldPipelineSystemLength,
                 ProductionFlowline = surfDto.ProductionFlowline,
-                RiserCount = surfDto.RiserCount
+                RiserCount = surfDto.RiserCount,
+                TemplateCount = surfDto.TemplateCount,
             };
 
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
@@ -36,6 +37,7 @@ namespace api.Adapters
             existing.InfieldPipelineSystemLength = surfDto.InfieldPipelineSystemLength;
             existing.ProductionFlowline = surfDto.ProductionFlowline;
             existing.RiserCount = surfDto.RiserCount;
+            existing.TemplateCount = surfDto.TemplateCount;
             existing.CostProfile = Convert(surfDto.CostProfile, existing);
             existing.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, existing);
         }

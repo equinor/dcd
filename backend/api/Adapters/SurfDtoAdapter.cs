@@ -19,6 +19,7 @@ namespace api.Adapters
                 InfieldPipelineSystemLength = surf.InfieldPipelineSystemLength,
                 ProductionFlowline = surf.ProductionFlowline,
                 RiserCount = surf.RiserCount,
+                TemplateCount = surf.TemplateCount,
                 CostProfile = Convert(surf.CostProfile)
             };
 

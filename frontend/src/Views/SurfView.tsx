@@ -18,6 +18,8 @@ import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
+import NumberInput from "../Components/NumberInput"
+import { isDisabled } from "./CaseHelper"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -28,6 +30,8 @@ const SurfView = () => {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [riserCount, setRiserCount] = useState<number | undefined>()
+    const [templateCount, setTemplateCount] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -54,6 +58,8 @@ const SurfView = () => {
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
+                setRiserCount(newSurf?.riserCount)
+                setTemplateCount(newSurf?.templateCount)
 
                 TimeSeriesYears(
                     newSurf,
@@ -64,6 +70,15 @@ const SurfView = () => {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        const newSurf = surf
+        if (newSurf !== undefined) {
+            newSurf.riserCount = riserCount ?? 0
+            newSurf.templateCount = templateCount ?? 0
+            setSurf(newSurf)
+        }
+    }, [riserCount, templateCount])
 
     return (
         <AssetViewDiv>
@@ -93,6 +108,24 @@ const SurfView = () => {
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setRiserCount}
+                    value={riserCount ?? 0}
+                    integer
+                    disabled={isDisabled("riserCount", caseItem)}
+                    label="Riser count"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setTemplateCount}
+                    value={templateCount ?? 0}
+                    integer
+                    disabled={isDisabled("templateCount", caseItem)}
+                    label="Template count"
+                />
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
