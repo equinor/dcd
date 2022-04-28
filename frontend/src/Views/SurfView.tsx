@@ -72,9 +72,10 @@ const SurfView = () => {
 
     useEffect(() => {
         if (surf !== undefined) {
-            surf.riserCount = riserCount ?? 0
-            surf.templateCount = templateCount ?? 0
-            setSurf(surf)
+            const newSurf: Surf = { ...surf }
+            newSurf.riserCount = riserCount
+            newSurf.templateCount = templateCount
+            setSurf(newSurf)
         }
     }, [riserCount, templateCount])
 
