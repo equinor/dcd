@@ -23,6 +23,7 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             rigMobDemob?: number; // double
+            facilitiesAvailability?: number; // double
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
             dG3Date?: string; // date-time

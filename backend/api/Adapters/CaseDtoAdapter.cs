@@ -32,7 +32,8 @@ namespace api.Adapters
                 ProducerCount = case_.ProducerCount,
                 GasInjectorCount = case_.GasInjectorCount,
                 WaterInjectorCount = case_.WaterInjectorCount,
-                RigMobDemob = case_.RigMobDemob
+                RigMobDemob = case_.RigMobDemob,
+                FacilitiesAvailability = case_.FacilitiesAvailability
             };
 
             return caseDto;

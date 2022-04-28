@@ -22,6 +22,7 @@ namespace api.Models
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }
         public double RigMobDemob { get; set; }
+        public double FacilitiesAvailability { get; set; }
         public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
         public Guid WellProjectLink { get; set; } = Guid.Empty;
         public Guid SurfLink { get; set; } = Guid.Empty;

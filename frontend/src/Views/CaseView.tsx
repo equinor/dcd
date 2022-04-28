@@ -44,6 +44,7 @@ function CaseView() {
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -61,12 +62,14 @@ function CaseView() {
             const caseResult = project.cases.find((o) => o.id === params.caseId)
             if (caseResult !== undefined) {
                 setArtificialLift(caseResult.artificialLift)
+                setFacilitiesAvailability(caseResult?.facilitiesAvailability)
             }
             setCase(caseResult)
             setProducerCount(caseResult?.producerCount)
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
             setRigMobDemob(caseResult?.rigMobDemob)
+            setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
     }, [project])
 
@@ -78,11 +81,12 @@ function CaseView() {
                 caseDto.gasInjectorCount = gasInjectorCount
                 caseDto.waterInjectorCount = waterInjectorCount
                 caseDto.rigMobDemob = rigMobDemob
+                caseDto.facilitiesAvailability = facilitiesAvailability
 
                 await GetCaseService().updateCase(caseDto)
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, rigMobDemob])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, rigMobDemob, facilitiesAvailability])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -169,6 +173,13 @@ function CaseView() {
                         integer={false}
                         disabled={isDisabled("rigMobDemob", caseItem)}
                         label="Rig mob demob"
+                    />
+                    <NumberInput
+                        setValue={setFacilitiesAvailability}
+                        value={facilitiesAvailability ?? 0}
+                        integer
+                        disabled={isDisabled("facilitiesAvailability", caseItem)}
+                        label="Facilities Availability"
                     />
                 </Wrapper>
                 <CaseAsset
