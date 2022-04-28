@@ -21,7 +21,7 @@ export const isDisabled = (
         }
     }
     if (caseItem && caseItem.surfLink !== EMPTY_GUID) {
-        if ([""].includes(property)) {
+        if (["riserCount", "templateCount"].includes(property)) {
             return true
         }
     }

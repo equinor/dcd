@@ -43,6 +43,8 @@ function CaseView() {
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
+    const [riserCount, setRicerCount] = useState<number>()
+    const [templateCount, setTemplateCount] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -65,6 +67,8 @@ function CaseView() {
             setProducerCount(caseResult?.producerCount)
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
+            setRicerCount(caseResult?.riserCount)
+            setTemplateCount(caseResult?.templateCount)
         }
     }, [project])
 
@@ -75,11 +79,13 @@ function CaseView() {
                 caseDto.producerCount = producerCount
                 caseDto.gasInjectorCount = gasInjectorCount
                 caseDto.waterInjectorCount = waterInjectorCount
+                caseDto.riserCount = riserCount
+                caseDto.templateCount = templateCount
 
                 await GetCaseService().updateCase(caseDto)
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount, templateCount])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -159,6 +165,22 @@ function CaseView() {
                         integer
                         disabled={isDisabled("waterInjectorCount", caseItem)}
                         label="Water injector count"
+                    />
+                </Wrapper>
+                <Wrapper>
+                    <NumberInput
+                        setValue={setRicerCount}
+                        value={riserCount ?? 0}
+                        integer
+                        disabled={isDisabled("riserCount", caseItem)}
+                        label="Riser count"
+                    />
+                    <NumberInput
+                        setValue={setTemplateCount}
+                        value={templateCount ?? 0}
+                        integer
+                        disabled={isDisabled("templateCount", caseItem)}
+                        label="Template count"
                     />
                 </Wrapper>
                 <CaseAsset
