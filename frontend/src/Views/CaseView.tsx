@@ -15,11 +15,20 @@ import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
 import CaseDGDate from "../Components/CaseDGDate"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
+import DGEnum from "../models/DGEnum"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
     display: flex;
     flex-direction: column;
+`
+
+const Wrapper = styled.div`
+    display: flex;
+    > *:not(:last-child) {
+        margin-right: 1rem;
+    }
+    flex-direction: row;
 `
 
 function CaseView() {
@@ -69,11 +78,38 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
-                <CaseDGDate
-                    caseItem={caseItem}
-                    setProject={setProject}
-                    setCase={setCase}
-                />
+                <Wrapper>
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG1}
+                        dGName="DG1"
+                    />
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG3}
+                        dGName="DG3"
+                    />
+                </Wrapper>
+                <Wrapper>
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG2}
+                        dGName="DG2"
+                    />
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG4}
+                        dGName="DG4"
+                    />
+                </Wrapper>
                 <CaseArtificialLift
                     currentValue={artificialLift}
                     setArtificialLift={setArtificialLift}
