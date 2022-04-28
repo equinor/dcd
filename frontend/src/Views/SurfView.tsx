@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 
 import { useParams } from "react-router"
@@ -12,12 +12,12 @@ import { GetSurfService } from "../Services/SurfService"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -50,6 +50,7 @@ const SurfView = () => {
                     setSurf(newSurf)
                 } else {
                     newSurf = new Surf()
+                    newSurf.artificialLift = caseResult?.artificialLift
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
@@ -72,6 +73,17 @@ const SurfView = () => {
                 name={surfName}
                 setHasChanges={setHasChanges}
             />
+            <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(surf?.artificialLift)}
+                    />
+                </WrapperColumn>
+            </Wrapper>
+
             <Wrapper>
                 <Typography variant="h4">DG3</Typography>
                 <Dg4Field>

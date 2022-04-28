@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,12 +14,13 @@ import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import NumberInput from "../Components/NumberInput"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -28,6 +29,7 @@ const DrainageStrategyView = () => {
     const [drainageStrategyName, setDrainageStrategyName] = useState<string>("")
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [nGLYield, setNGLYield] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
@@ -53,9 +55,15 @@ const DrainageStrategyView = () => {
                     setDrainageStrategy(newDrainage)
                 } else {
                     newDrainage = new DrainageStrategy()
+                    newDrainage.producerCount = caseResult?.producerCount
+                    newDrainage.gasInjectorCount = caseResult?.gasInjectorCount
+                    newDrainage.waterInjectorCount = caseResult?.waterInjectorCount
+                    newDrainage.artificialLift = caseResult?.artificialLift
                     setDrainageStrategy(newDrainage)
                 }
                 setDrainageStrategyName(newDrainage?.name!)
+
+                setNGLYield(newDrainage.nglYield)
 
                 TimeSeriesYears(
                     newDrainage,
@@ -66,6 +74,12 @@ const DrainageStrategyView = () => {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        const newDrainage = { ...drainageStrategy }
+        newDrainage.nglYield = nGLYield
+        setDrainageStrategy(newDrainage)
+    }, [nGLYield])
 
     return (
         <AssetViewDiv>
@@ -79,6 +93,43 @@ const DrainageStrategyView = () => {
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(drainageStrategy?.artificialLift)}
+                    />
+                </WrapperColumn>
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setValue={setNGLYield}
+                    value={nGLYield ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    label="NGL Yield"
+                />
+                <NumberInput
+                    value={drainageStrategy?.producerCount ?? 0}
+                    integer
+                    disabled
+                    label="Producer count"
+                />
+                <NumberInput
+                    value={drainageStrategy?.gasInjectorCount ?? 0}
+                    integer
+                    disabled
+                    label="Gas injector count"
+                />
+                <NumberInput
+                    value={drainageStrategy?.waterInjectorCount ?? 0}
+                    integer
+                    disabled
+                    label="Water injector count"
+                />
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
