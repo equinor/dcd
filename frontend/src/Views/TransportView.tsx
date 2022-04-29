@@ -103,14 +103,14 @@ const TransportView = () => {
                     setValue={setGasExportPipelineLength}
                     value={gasExportPipelineLength ?? 0}
                     integer
-                    label="Length of gas export lines"
+                    label="Length of gas export pipeline"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setOilExportPipelineLength}
                     value={oilExportPipelineLength ?? 0}
                     integer
-                    label="Length of oil export lines"
+                    label="Length of oil export pipeline"
                 />
             </Wrapper>
             <TimeSeries
