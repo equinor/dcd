@@ -19,6 +19,7 @@ import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
+import NumberInput from "../Components/NumberInput"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -52,6 +53,7 @@ const ExplorationView = () => {
                     setExploration(newExploration)
                 } else {
                     newExploration = new Exploration()
+                    newExploration.rigMobDemob = caseResult?.rigMobDemob
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
@@ -112,6 +114,15 @@ const ExplorationView = () => {
                 <option value={0}>Oil</option>
                 <option value={1}>Gas</option>
             </NativeSelect>
+            <Wrapper>
+                <NumberInput
+                    value={exploration?.rigMobDemob ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    disabled
+                    label="Rig Mob Demob"
+                />
+            </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setExploration}
