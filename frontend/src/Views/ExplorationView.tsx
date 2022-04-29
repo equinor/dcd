@@ -78,16 +78,16 @@ const ExplorationView = () => {
 
     const onWellTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
         switch (event.currentTarget.selectedOptions[0].value) {
-            case "0":
-                setWellType(0)
-                setHasChanges(true)
-                break
-            case "1":
-                setWellType(1)
-                setHasChanges(true)
-                break
-            default:
-                break
+        case "0":
+            setWellType(0)
+            setHasChanges(true)
+            break
+        case "1":
+            setWellType(1)
+            setHasChanges(true)
+            break
+        default:
+            break
         }
     }
 
