@@ -67,7 +67,7 @@ function CaseView() {
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
             setRigMobDemob(caseResult?.rigMobDemob)
-            }
+        }
     }, [project])
 
     useEffect(() => {
