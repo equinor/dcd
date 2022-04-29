@@ -1,7 +1,7 @@
 import {
-    Input, Typography,
+    Input, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
@@ -29,6 +29,7 @@ const ExplorationView = () => {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [wellType, setWellType] = useState<Components.Schemas.WellType>()
 
     useEffect(() => {
         (async () => {
@@ -55,6 +56,8 @@ const ExplorationView = () => {
                 }
                 setName(newExploration?.name!)
 
+                setWellType(newExploration.wellType)
+
                 TimeSeriesYears(
                     newExploration,
                     caseResult!.DG4Date!.getFullYear(),
@@ -64,6 +67,27 @@ const ExplorationView = () => {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        const newExploration: Exploration = { ...exploration }
+        newExploration.wellType = wellType
+        setExploration(newExploration)
+    }, [wellType])
+
+    const onWellTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        switch (event.currentTarget.selectedOptions[0].value) {
+            case "0":
+                setWellType(0)
+                setHasChanges(true)
+                break
+            case "1":
+                setWellType(1)
+                setHasChanges(true)
+                break
+            default:
+                break
+        }
+    }
 
     return (
         <AssetViewDiv>
@@ -79,6 +103,15 @@ const ExplorationView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <NativeSelect
+                id="wellType"
+                label="Well type"
+                onChange={(event: ChangeEvent<HTMLSelectElement>) => onWellTypeChange(event)}
+                value={wellType}
+            >
+                <option value={0}>Oil</option>
+                <option value={1}>Gas</option>
+            </NativeSelect>
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setExploration}
