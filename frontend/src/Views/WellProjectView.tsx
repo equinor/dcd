@@ -77,7 +77,7 @@ function WellProjectView() {
     }, [project])
 
     useEffect(() => {
-        const newWellProject = { ...wellProject }
+        const newWellProject: WellProject = { ...wellProject }
         newWellProject.annualWellInterventionCost = annualWellInterventionCost
         newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
         setWellProject(newWellProject)
