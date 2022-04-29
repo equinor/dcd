@@ -15,6 +15,7 @@ namespace api.Adapters
                 Name = case_.Name,
                 Description = case_.Description,
                 ReferenceCase = case_.ReferenceCase,
+                DG0Date = case_.DG0Date,
                 DG1Date = case_.DG1Date,
                 DG2Date = case_.DG2Date,
                 DG3Date = case_.DG3Date,
