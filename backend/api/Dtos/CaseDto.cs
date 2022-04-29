@@ -17,6 +17,7 @@ namespace api.Dtos
         public int ProducerCount { get; set; }
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }
+        public double RigMobDemob { get; set; }
         public DateTimeOffset DG1Date { get; set; }
         public DateTimeOffset DG2Date { get; set; }
         public DateTimeOffset DG3Date { get; set; }

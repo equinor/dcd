@@ -31,7 +31,8 @@ namespace api.Adapters
                 ArtificialLift = caseDto.ArtificialLift,
                 ProducerCount = caseDto.ProducerCount,
                 GasInjectorCount = caseDto.GasInjectorCount,
-                WaterInjectorCount = caseDto.WaterInjectorCount
+                WaterInjectorCount = caseDto.WaterInjectorCount,
+                RigMobDemob = caseDto.RigMobDemob
             };
         }
     }

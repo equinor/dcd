@@ -11,12 +11,12 @@ export const isDisabled = (
         }
     }
     if (caseItem && caseItem.explorationLink !== EMPTY_GUID) {
-        if ([""].includes(property)) {
+        if (["rigMobDemob"].includes(property)) {
             return true
         }
     }
     if (caseItem && caseItem.wellProjectLink !== EMPTY_GUID) {
-        if (["producerCount", "gasInjectorCount", "waterInjectorCount"].includes(property)) {
+        if (["producerCount", "gasInjectorCount", "waterInjectorCount", "rigMobDemob"].includes(property)) {
             return true
         }
     }
