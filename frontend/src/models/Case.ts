@@ -24,6 +24,7 @@ export class Case implements Components.Schemas.CaseDto {
     waterInjectorCount?: number
     riserCount?: number
     templateCount?: number
+    rigMobDemob?: number
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -51,6 +52,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.waterInjectorCount = data.waterInjectorCount
         this.riserCount = data.riserCount
         this.templateCount = data.templateCount
+        this.rigMobDemob = data.rigMobDemob
     }
 
     static Copy(data: Case) {

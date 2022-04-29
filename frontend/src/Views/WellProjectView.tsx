@@ -30,6 +30,8 @@ function WellProjectView() {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [annualWellInterventionCost, setAnnualWellInterventionCost] = useState<number>()
+    const [pluggingAndAbandonment, setPluggingAndAbandonment] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -56,9 +58,13 @@ function WellProjectView() {
                     newWellProject.producerCount = caseResult?.producerCount
                     newWellProject.gasInjectorCount = caseResult?.gasInjectorCount
                     newWellProject.waterInjectorCount = caseResult?.waterInjectorCount
+                    newWellProject.rigMobDemob = caseResult?.rigMobDemob
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
+
+                setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
+                setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
 
                 TimeSeriesYears(
                     newWellProject,
@@ -69,6 +75,13 @@ function WellProjectView() {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
+        newWellProject.annualWellInterventionCost = annualWellInterventionCost
+        newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
+        setWellProject(newWellProject)
+    }, [annualWellInterventionCost, pluggingAndAbandonment])
 
     return (
         <AssetViewDiv>
@@ -99,6 +112,27 @@ function WellProjectView() {
                 </WrapperColumn>
             </Wrapper>
             <Wrapper>
+                <NumberInput
+                    value={wellProject?.rigMobDemob ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    disabled
+                    label="Rig Mob Demob"
+                />
+                <NumberInput
+                    setValue={setAnnualWellInterventionCost}
+                    value={annualWellInterventionCost ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    label="Annual well intervention cost"
+                />
+                <NumberInput
+                    setValue={setPluggingAndAbandonment}
+                    value={pluggingAndAbandonment ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    label="Plugging and abandonment"
+                />
                 <NumberInput
                     value={wellProject?.producerCount ?? 0}
                     integer

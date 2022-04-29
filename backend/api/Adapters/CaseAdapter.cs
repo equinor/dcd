@@ -34,6 +34,7 @@ namespace api.Adapters
                 WaterInjectorCount = caseDto.WaterInjectorCount,
                 RiserCount = caseDto.RiserCount,
                 TemplateCount = caseDto.TemplateCount,
+                RigMobDemob = caseDto.RigMobDemob
             };
         }
     }

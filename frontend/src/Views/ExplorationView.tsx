@@ -19,6 +19,7 @@ import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
+import NumberInput from "../Components/NumberInput"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -51,6 +52,7 @@ const ExplorationView = () => {
                     setExploration(newExploration)
                 } else {
                     newExploration = new Exploration()
+                    newExploration.rigMobDemob = caseResult?.rigMobDemob
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
@@ -78,6 +80,15 @@ const ExplorationView = () => {
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    value={exploration?.rigMobDemob ?? 0}
+                    setHasChanges={setHasChanges}
+                    integer={false}
+                    disabled
+                    label="Rig Mob Demob"
+                />
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}

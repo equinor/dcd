@@ -45,6 +45,7 @@ function CaseView() {
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
     const [riserCount, setRicerCount] = useState<number>()
     const [templateCount, setTemplateCount] = useState<number>()
+    const [rigMobDemob, setRigMobDemob] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -69,6 +70,7 @@ function CaseView() {
             setWaterInjectorCount(caseResult?.waterInjectorCount)
             setRicerCount(caseResult?.riserCount)
             setTemplateCount(caseResult?.templateCount)
+            setRigMobDemob(caseResult?.rigMobDemob)
         }
     }, [project])
 
@@ -81,11 +83,12 @@ function CaseView() {
                 caseDto.waterInjectorCount = waterInjectorCount
                 caseDto.riserCount = riserCount
                 caseDto.templateCount = templateCount
+                caseDto.rigMobDemob = rigMobDemob
 
                 await GetCaseService().updateCase(caseDto)
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount, templateCount])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount, templateCount, rigMobDemob])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -165,6 +168,13 @@ function CaseView() {
                         integer
                         disabled={isDisabled("waterInjectorCount", caseItem)}
                         label="Water injector count"
+                    />
+                    <NumberInput
+                        setValue={setRigMobDemob}
+                        value={rigMobDemob ?? 0}
+                        integer={false}
+                        disabled={isDisabled("rigMobDemob", caseItem)}
+                        label="Rig mob demob"
                     />
                 </Wrapper>
                 <Wrapper>
