@@ -19,6 +19,7 @@ import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
+import Maturity from "../Components/Maturity"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -33,6 +34,7 @@ const SurfView = () => {
     const [templateCount, setTemplateCount] = useState<number | undefined>()
     const [infieldPipelineSystemLength, setInfieldPipelineSystemLength] = useState<number | undefined>()
     const [umbilicalSystemLength, setUmbilicalSystemLength] = useState<number | undefined>()
+    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -56,6 +58,8 @@ const SurfView = () => {
                 } else {
                     newSurf = new Surf()
                     newSurf.artificialLift = caseResult?.artificialLift
+                    newSurf.riserCount = caseResult?.riserCount
+                    newSurf.templateCount = caseResult?.templateCount
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
@@ -63,6 +67,7 @@ const SurfView = () => {
                 setTemplateCount(newSurf?.templateCount)
                 setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
                 setUmbilicalSystemLength(newSurf?.umbilicalSystemLength)
+                setMaturity(newSurf.maturity ?? undefined)
 
                 TimeSeriesYears(
                     newSurf,
@@ -81,9 +86,10 @@ const SurfView = () => {
             newSurf.templateCount = templateCount
             newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
             newSurf.umbilicalSystemLength = umbilicalSystemLength
+            newSurf.maturity = maturity
             setSurf(newSurf)
         }
-    }, [riserCount, templateCount, infieldPipelineSystemLength, umbilicalSystemLength])
+    }, [riserCount, templateCount, infieldPipelineSystemLength, umbilicalSystemLength, maturity])
 
     return (
         <AssetViewDiv>
@@ -144,6 +150,11 @@ const SurfView = () => {
                     label="Length of umbilical system"
                 />
             </Wrapper>
+            <Maturity
+                setMaturity={setMaturity}
+                currentValue={maturity}
+                setHasChanges={setHasChanges}
+            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setSurf}
