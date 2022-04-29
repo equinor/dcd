@@ -76,7 +76,7 @@ const DrainageStrategyView = () => {
     }, [project])
 
     useEffect(() => {
-        const newDrainage = { ...drainageStrategy }
+        const newDrainage: DrainageStrategy = { ...drainageStrategy }
         newDrainage.nglYield = nGLYield
         setDrainageStrategy(newDrainage)
     }, [nGLYield])
