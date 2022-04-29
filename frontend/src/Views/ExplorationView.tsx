@@ -136,6 +136,32 @@ const ExplorationView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setExploration}
+                setHasChanges={setHasChanges}
+                asset={exploration}
+                timeSeriesType={TimeSeriesEnum.drillingSchedule}
+                assetName={name}
+                timeSeriesTitle="Drilling schedule"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
+            />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setExploration}
+                setHasChanges={setHasChanges}
+                asset={exploration}
+                timeSeriesType={TimeSeriesEnum.gAndGAdminCost}
+                assetName={name}
+                timeSeriesTitle="G and g admin cost"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
+            />
             <Save
                 name={name}
                 setHasChanges={setHasChanges}

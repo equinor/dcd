@@ -6,6 +6,7 @@ export interface IAsset {
     projectId?: string | undefined
     costProfile?: ITimeSeries | undefined
     drillingSchedule?: ITimeSeries | undefined
+    gAndGAdminCost?: ITimeSeries | undefined
     co2Emissions?: ITimeSeries | undefined
     netSalesGas?: ITimeSeries | undefined
     fuelFlaringAndLosses?: ITimeSeries | undefined
