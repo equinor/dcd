@@ -30,7 +30,6 @@ function WellProjectView() {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
-    const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [annualWellInterventionCost, setAnnualWellInterventionCost] = useState<number>()
     const [pluggingAndAbandonment, setPluggingAndAbandonment] = useState<number>()
 
@@ -59,11 +58,11 @@ function WellProjectView() {
                     newWellProject.producerCount = caseResult?.producerCount
                     newWellProject.gasInjectorCount = caseResult?.gasInjectorCount
                     newWellProject.waterInjectorCount = caseResult?.waterInjectorCount
+                    newWellProject.rigMobDemob = caseResult?.rigMobDemob
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
 
-                setRigMobDemob(newWellProject.rigMobDemob)
                 setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
                 setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
 
@@ -79,11 +78,10 @@ function WellProjectView() {
 
     useEffect(() => {
         const newWellProject = { ...wellProject }
-        newWellProject.rigMobDemob = rigMobDemob
         newWellProject.annualWellInterventionCost = annualWellInterventionCost
         newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
         setWellProject(newWellProject)
-    }, [rigMobDemob, annualWellInterventionCost, pluggingAndAbandonment])
+    }, [annualWellInterventionCost, pluggingAndAbandonment])
 
     return (
         <AssetViewDiv>
@@ -115,10 +113,10 @@ function WellProjectView() {
             </Wrapper>
             <Wrapper>
                 <NumberInput
-                    setValue={setRigMobDemob}
-                    value={rigMobDemob ?? 0}
+                    value={wellProject?.rigMobDemob ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
+                    disabled
                     label="Rig Mob Demob"
                 />
                 <NumberInput
