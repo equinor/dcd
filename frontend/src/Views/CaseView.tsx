@@ -85,7 +85,8 @@ function CaseView() {
                 caseDto.templateCount = templateCount
                 caseDto.rigMobDemob = rigMobDemob
 
-                await GetCaseService().updateCase(caseDto)
+                const newProject = await GetCaseService().updateCase(caseDto)
+                setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
     }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount, templateCount, rigMobDemob])
