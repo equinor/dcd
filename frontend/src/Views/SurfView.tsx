@@ -18,6 +18,8 @@ import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
+import NumberInput from "../Components/NumberInput"
+import Maturity from "../Components/Maturity"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -28,6 +30,11 @@ const SurfView = () => {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [riserCount, setRiserCount] = useState<number | undefined>()
+    const [templateCount, setTemplateCount] = useState<number | undefined>()
+    const [infieldPipelineSystemLength, setInfieldPipelineSystemLength] = useState<number | undefined>()
+    const [umbilicalSystemLength, setUmbilicalSystemLength] = useState<number | undefined>()
+    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -51,9 +58,16 @@ const SurfView = () => {
                 } else {
                     newSurf = new Surf()
                     newSurf.artificialLift = caseResult?.artificialLift
+                    newSurf.riserCount = caseResult?.riserCount
+                    newSurf.templateCount = caseResult?.templateCount
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
+                setRiserCount(newSurf?.riserCount)
+                setTemplateCount(newSurf?.templateCount)
+                setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
+                setUmbilicalSystemLength(newSurf?.umbilicalSystemLength)
+                setMaturity(newSurf.maturity ?? undefined)
 
                 TimeSeriesYears(
                     newSurf,
@@ -64,6 +78,18 @@ const SurfView = () => {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        if (surf !== undefined) {
+            const newSurf: Surf = { ...surf }
+            newSurf.riserCount = riserCount
+            newSurf.templateCount = templateCount
+            newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
+            newSurf.umbilicalSystemLength = umbilicalSystemLength
+            newSurf.maturity = maturity
+            setSurf(newSurf)
+        }
+    }, [riserCount, templateCount, infieldPipelineSystemLength, umbilicalSystemLength, maturity])
 
     return (
         <AssetViewDiv>
@@ -94,6 +120,43 @@ const SurfView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setRiserCount}
+                    value={riserCount ?? 0}
+                    integer
+                    disabled
+                    label="Riser count"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setTemplateCount}
+                    value={templateCount ?? 0}
+                    integer
+                    disabled
+                    label="Template count"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setInfieldPipelineSystemLength}
+                    value={infieldPipelineSystemLength ?? 0}
+                    integer
+                    label="Length of production lines"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setUmbilicalSystemLength}
+                    value={umbilicalSystemLength ?? 0}
+                    integer
+                    label="Length of umbilical system"
+                />
+            </Wrapper>
+            <Maturity
+                setMaturity={setMaturity}
+                currentValue={maturity}
+                setHasChanges={setHasChanges}
+            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setSurf}
