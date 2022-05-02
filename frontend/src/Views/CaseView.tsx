@@ -46,6 +46,7 @@ function CaseView() {
     const [riserCount, setRiserCount] = useState<number>()
     const [templateCount, setTemplateCount] = useState<number>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -63,6 +64,7 @@ function CaseView() {
             const caseResult = project.cases.find((o) => o.id === params.caseId)
             if (caseResult !== undefined) {
                 setArtificialLift(caseResult.artificialLift)
+                setFacilitiesAvailability(caseResult?.facilitiesAvailability)
             }
             setCase(caseResult)
             setProducerCount(caseResult?.producerCount)
@@ -71,6 +73,7 @@ function CaseView() {
             setRiserCount(caseResult?.riserCount)
             setTemplateCount(caseResult?.templateCount)
             setRigMobDemob(caseResult?.rigMobDemob)
+            setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
     }, [project])
 
@@ -84,12 +87,14 @@ function CaseView() {
                 caseDto.riserCount = riserCount
                 caseDto.templateCount = templateCount
                 caseDto.rigMobDemob = rigMobDemob
+                caseDto.facilitiesAvailability = facilitiesAvailability
 
                 const newProject = await GetCaseService().updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount, templateCount, rigMobDemob])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount,
+        templateCount, rigMobDemob, facilitiesAvailability])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -176,6 +181,13 @@ function CaseView() {
                         integer={false}
                         disabled={isDisabled("rigMobDemob", caseItem)}
                         label="Rig mob demob"
+                    />
+                    <NumberInput
+                        setValue={setFacilitiesAvailability}
+                        value={facilitiesAvailability ?? 0}
+                        integer
+                        disabled={isDisabled("facilitiesAvailability", caseItem)}
+                        label="Facilities Availability"
                     />
                 </Wrapper>
                 <Wrapper>

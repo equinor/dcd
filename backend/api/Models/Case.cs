@@ -24,6 +24,7 @@ namespace api.Models
         public int RiserCount { get; set; }
         public int TemplateCount { get; set; }
         public double RigMobDemob { get; set; }
+        public double FacilitiesAvailability { get; set; }
         public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
         public Guid WellProjectLink { get; set; } = Guid.Empty;
         public Guid SurfLink { get; set; } = Guid.Empty;
