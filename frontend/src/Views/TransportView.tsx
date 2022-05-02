@@ -20,6 +20,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
+import Maturity from "../Components/Maturity"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -32,6 +33,7 @@ const TransportView = () => {
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [gasExportPipelineLength, setGasExportPipelineLength] = useState<number | undefined>()
     const [oilExportPipelineLength, setOilExportPipelineLength] = useState<number | undefined>()
+    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>(undefined)
 
     useEffect(() => {
         (async () => {
@@ -59,6 +61,7 @@ const TransportView = () => {
                 setTransportName(newTransport?.name!)
                 setGasExportPipelineLength(newTransport?.gasExportPipelineLength)
                 setOilExportPipelineLength(newTransport?.oilExportPipelineLength)
+                setMaturity(newTransport?.maturity ?? undefined)
 
                 TimeSeriesYears(
                     newTransport,
@@ -75,9 +78,10 @@ const TransportView = () => {
             const newTransport: Transport = { ...transport }
             newTransport.gasExportPipelineLength = gasExportPipelineLength
             newTransport.oilExportPipelineLength = oilExportPipelineLength
+            newTransport.maturity = maturity
             setTransport(newTransport)
         }
-    }, [gasExportPipelineLength, oilExportPipelineLength])
+    }, [gasExportPipelineLength, oilExportPipelineLength, maturity])
 
     return (
         <AssetViewDiv>
@@ -113,6 +117,11 @@ const TransportView = () => {
                     label="Length of oil export pipeline"
                 />
             </Wrapper>
+            <Maturity
+                setMaturity={setMaturity}
+                currentValue={maturity}
+                setHasChanges={setHasChanges}
+            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setTransport}
