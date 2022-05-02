@@ -126,6 +126,7 @@ const SurfView = () => {
                     setValue={setRiserCount}
                     value={riserCount ?? 0}
                     integer
+                    disabled
                     label="Riser count"
                 />
                 <NumberInput
@@ -133,6 +134,7 @@ const SurfView = () => {
                     setValue={setTemplateCount}
                     value={templateCount ?? 0}
                     integer
+                    disabled
                     label="Template count"
                 />
                 <NumberInput
