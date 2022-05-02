@@ -44,6 +44,8 @@ function CaseView() {
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
+    const [riserCount, setRiserCount] = useState<number>()
+    const [templateCount, setTemplateCount] = useState<number>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
@@ -69,6 +71,8 @@ function CaseView() {
             setProducerCount(caseResult?.producerCount)
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
+            setRiserCount(caseResult?.riserCount)
+            setTemplateCount(caseResult?.templateCount)
             setRigMobDemob(caseResult?.rigMobDemob)
             setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
@@ -81,13 +85,17 @@ function CaseView() {
                 caseDto.producerCount = producerCount
                 caseDto.gasInjectorCount = gasInjectorCount
                 caseDto.waterInjectorCount = waterInjectorCount
+                caseDto.riserCount = riserCount
+                caseDto.templateCount = templateCount
                 caseDto.rigMobDemob = rigMobDemob
                 caseDto.facilitiesAvailability = facilitiesAvailability
 
-                await GetCaseService().updateCase(caseDto)
+                const newProject = await GetCaseService().updateCase(caseDto)
+                setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, rigMobDemob, facilitiesAvailability])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount,
+        templateCount, rigMobDemob, facilitiesAvailability])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -108,6 +116,15 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
+                <Wrapper>
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG0}
+                        dGName="DG0"
+                    />
+                </Wrapper>
                 <Wrapper>
                     <CaseDGDate
                         caseItem={caseItem}
@@ -181,6 +198,22 @@ function CaseView() {
                         integer
                         disabled={isDisabled("facilitiesAvailability", caseItem)}
                         label="Facilities Availability"
+                    />
+                </Wrapper>
+                <Wrapper>
+                    <NumberInput
+                        setValue={setRiserCount}
+                        value={riserCount ?? 0}
+                        integer
+                        disabled={isDisabled("riserCount", caseItem)}
+                        label="Riser count"
+                    />
+                    <NumberInput
+                        setValue={setTemplateCount}
+                        value={templateCount ?? 0}
+                        integer
+                        disabled={isDisabled("templateCount", caseItem)}
+                        label="Template count"
                     />
                 </Wrapper>
                 <CaseAsset

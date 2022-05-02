@@ -15,6 +15,7 @@ namespace api.Adapters
                 Name = caseDto.Name,
                 Description = caseDto.Description,
                 ReferenceCase = caseDto.ReferenceCase,
+                DG0Date = caseDto.DG0Date,
                 DG1Date = caseDto.DG1Date,
                 DG2Date = caseDto.DG2Date,
                 DG3Date = caseDto.DG3Date,
@@ -32,6 +33,8 @@ namespace api.Adapters
                 ProducerCount = caseDto.ProducerCount,
                 GasInjectorCount = caseDto.GasInjectorCount,
                 WaterInjectorCount = caseDto.WaterInjectorCount,
+                RiserCount = caseDto.RiserCount,
+                TemplateCount = caseDto.TemplateCount,
                 RigMobDemob = caseDto.RigMobDemob,
                 FacilitiesAvailability = caseDto.FacilitiesAvailability
             };
