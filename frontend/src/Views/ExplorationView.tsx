@@ -19,11 +19,8 @@ import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import { unwrapCase } from "../Utils/common"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
-<<<<<<< HEAD
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-=======
 import NumberInput from "../Components/NumberInput"
->>>>>>> main
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()

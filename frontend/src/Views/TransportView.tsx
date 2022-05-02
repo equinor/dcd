@@ -14,8 +14,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTransportService } from "../Services/TransportService"
-import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
-import { EMPTY_GUID } from "../Utils/constants"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper,

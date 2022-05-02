@@ -17,7 +17,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
-import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../Utils/common"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 
