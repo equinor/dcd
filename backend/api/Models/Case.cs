@@ -12,6 +12,7 @@ namespace api.Models
         public DateTimeOffset CreateTime { get; set; }
         public DateTimeOffset ModifyTime { get; set; }
         public bool ReferenceCase { get; set; }
+        public DateTimeOffset DG0Date { get; set; }
         public DateTimeOffset DG1Date { get; set; }
         public DateTimeOffset DG2Date { get; set; }
         public DateTimeOffset DG3Date { get; set; }
