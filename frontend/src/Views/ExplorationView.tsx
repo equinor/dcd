@@ -10,8 +10,6 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
-import TimeSeries from "../Components/TimeSeries"
 import {
     AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
@@ -20,6 +18,8 @@ import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
+import TimeSeriesNoAsset from "../Components/TimeSeriesNoAsset"
+import { ITimeSeries } from "../models/ITimeSeries"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -31,6 +31,9 @@ const ExplorationView = () => {
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [wellType, setWellType] = useState<Components.Schemas.WellType>()
+    const [costProfile, setCostProfile] = useState<ITimeSeries>()
+    const [drillingSchedule, setDrillingSchedule] = useState<ITimeSeries>()
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<ITimeSeries>()
 
     useEffect(() => {
         (async () => {
@@ -59,6 +62,9 @@ const ExplorationView = () => {
                 setName(newExploration?.name!)
 
                 setWellType(newExploration.wellType)
+                setCostProfile(newExploration.costProfile)
+                setDrillingSchedule(newExploration.drillingSchedule)
+                setGAndGAdminCost(newExploration.gAndGAdminCost)
 
                 TimeSeriesYears(
                     newExploration,
@@ -73,8 +79,11 @@ const ExplorationView = () => {
     useEffect(() => {
         const newExploration: Exploration = { ...exploration }
         newExploration.wellType = wellType
+        newExploration.costProfile = costProfile
+        newExploration.drillingSchedule = drillingSchedule
+        newExploration.gAndGAdminCost = gAndGAdminCost
         setExploration(newExploration)
-    }, [wellType])
+    }, [wellType, costProfile, drillingSchedule, gAndGAdminCost])
 
     const onWellTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
         switch (event.currentTarget.selectedOptions[0].value) {
@@ -123,12 +132,11 @@ const ExplorationView = () => {
                     label="Rig Mob Demob"
                 />
             </Wrapper>
-            <TimeSeries
+            <TimeSeriesNoAsset
                 caseItem={caseItem}
-                setAsset={setExploration}
+                setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                asset={exploration}
-                timeSeriesType={TimeSeriesEnum.costProfile}
+                timeSeries={costProfile}
                 assetName={name}
                 timeSeriesTitle="Cost profile"
                 earliestYear={earliestTimeSeriesYear!}
@@ -136,12 +144,11 @@ const ExplorationView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <TimeSeries
+            <TimeSeriesNoAsset
                 caseItem={caseItem}
-                setAsset={setExploration}
+                setTimeSeries={setDrillingSchedule}
                 setHasChanges={setHasChanges}
-                asset={exploration}
-                timeSeriesType={TimeSeriesEnum.drillingSchedule}
+                timeSeries={drillingSchedule}
                 assetName={name}
                 timeSeriesTitle="Drilling schedule"
                 earliestYear={earliestTimeSeriesYear!}
@@ -149,12 +156,11 @@ const ExplorationView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
-            <TimeSeries
+            <TimeSeriesNoAsset
                 caseItem={caseItem}
-                setAsset={setExploration}
+                setTimeSeries={setGAndGAdminCost}
                 setHasChanges={setHasChanges}
-                asset={exploration}
-                timeSeriesType={TimeSeriesEnum.gAndGAdminCost}
+                timeSeries={gAndGAdminCost}
                 assetName={name}
                 timeSeriesTitle="G and g admin cost"
                 earliestYear={earliestTimeSeriesYear!}

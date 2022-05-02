@@ -2,58 +2,33 @@ import { Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
-import DataTable, { CellValue } from "../Components/DataTable/DataTable"
+import DataTable, { CellValue } from "./DataTable/DataTable"
 import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
-} from "../Components/DataTable/helpers"
-import Import from "../Components/Import/Import"
-import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
+} from "./DataTable/helpers"
+import Import from "./Import/Import"
 import { Case } from "../models/Case"
 import { ITimeSeries } from "../models/ITimeSeries"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
     caseItem: Case | undefined,
-    setAsset: Dispatch<SetStateAction<any | undefined>>,
+    setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     setHasChanges: Dispatch<SetStateAction<boolean>>,
-    asset: IAsset | undefined,
-    timeSeriesType: TimeSeriesEnum,
     assetName: string,
     timeSeriesTitle: string,
     earliestYear: number | undefined,
     latestYear: number | undefined,
     setEarliestYear: Dispatch<SetStateAction<number | undefined>>,
     setLatestYear: Dispatch<SetStateAction<number | undefined>>,
+    timeSeries: ITimeSeries | undefined
 }
 
-interface IAsset {
-    id?: string | undefined
-    name?: string | undefined
-    projectId?: string | undefined
-    costProfile?: ITimeSeries | undefined
-    drillingSchedule?: ITimeSeries | undefined
-    gAndGAdminCost?: ITimeSeries | undefined
-    co2Emissions?: ITimeSeries | undefined
-    netSalesGas?: ITimeSeries | undefined
-    fuelFlaringAndLosses?: ITimeSeries | undefined
-    productionProfileGas?: ITimeSeries | undefined
-    productionProfileOil?: ITimeSeries | undefined
-    productionProfileWater?: ITimeSeries | undefined
-    productionProfileWaterInjection?: ITimeSeries | undefined
-    substructureCessationCostProfileDto?: ITimeSeries | undefined
-    surfCessationCostProfileDto?: ITimeSeries | undefined
-    topsideCessationCostProfileDto?: ITimeSeries | undefined
-    transportCessationCostProfileDto?: ITimeSeries | undefined
-    dryweight?: number | undefined
-    maturity?: Components.Schemas.Maturity | undefined
-}
-
-const TimeSeries = ({
+const TimeSeriesNoAsset = ({
     caseItem,
-    setAsset,
+    setTimeSeries,
     setHasChanges,
-    asset,
-    timeSeriesType,
+    timeSeries,
     assetName,
     timeSeriesTitle,
     earliestYear,
@@ -65,8 +40,8 @@ const TimeSeries = ({
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
 
-    const buildAlignedGrid = (updatedAsset: IAsset) => {
-        if (updatedAsset !== undefined && updatedAsset[timeSeriesType] !== undefined) {
+    const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
+        if (updatedTimeSeries !== undefined && timeSeries !== undefined) {
             const columnTitles: string[] = []
             if (earliestYear !== undefined && latestYear !== undefined) {
                 for (let i = earliestYear; i < latestYear; i += 1) {
@@ -75,19 +50,19 @@ const TimeSeries = ({
             }
 
             const zeroesAtStart = Array.from({
-                length: Number(updatedAsset[timeSeriesType]!.startYear!)
+                length: Number(timeSeries!.startYear!)
                 + Number(caseItem!.DG4Date!.getFullYear()) - Number(earliestYear),
             }, (() => 0))
             const zeroesAtEnd = Array.from({
                 length: Number(latestYear)
-                - (Number(updatedAsset[timeSeriesType]!.startYear!)
+                - (Number(timeSeries!.startYear!)
                 + Number(caseItem!.DG4Date!.getFullYear())
-                + Number(updatedAsset[timeSeriesType]!.values!.length!)),
+                + Number(timeSeries!.values!.length!)),
             }, (() => 0))
 
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
-            const newGridData = buildGridData(updatedAsset[timeSeriesType])
+            const newGridData = buildGridData(timeSeries)
 
             const alignedAssetGridData = new Array(
                 assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
@@ -102,24 +77,21 @@ const TimeSeries = ({
     }
 
     useEffect(() => {
-        buildAlignedGrid(asset!)
-    }, [asset])
+        buildAlignedGrid(timeSeries!)
+    }, [timeSeries])
 
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, asset![timeSeriesType]))
+        setColumns(getColumnAbsoluteYears(caseItem, timeSeries))
         setHasChanges(true)
     }
 
     const onImport = (input: string, year: number) => {
-        const newAsset: IAsset = { ...asset }
-        const newTimeSeries: ITimeSeries = { ...newAsset[timeSeriesType] }
-        newAsset[timeSeriesType] = newTimeSeries
+        const newTimeSeries: ITimeSeries = { ...timeSeries }
         newTimeSeries.startYear = year
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
-        // newTimeSeries.epaVersion = ""
-        setAsset(newAsset)
+        setTimeSeries(newTimeSeries)
         if ((Number(year)
         + Number(caseItem!.DG4Date!.getFullYear()!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
             setEarliestYear((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!)))
@@ -130,16 +102,14 @@ const TimeSeries = ({
             setLatestYear(Number(year)
             + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries.values.length))
         }
-        buildAlignedGrid(newAsset)
+        buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
         if (assetName !== "") {
             setHasChanges(true)
         }
     }
 
-    const deleteCostProfile = () => {
-        const assetCopy: IAsset = { ...asset }
-        assetCopy[timeSeriesType] = undefined
+    const deleteTimeseries = () => {
         if (assetName !== "") {
             setHasChanges(true)
         } else {
@@ -147,7 +117,7 @@ const TimeSeries = ({
         }
         setColumns([])
         setGridData([[]])
-        setAsset(assetCopy)
+        setTimeSeries(undefined)
     }
 
     return (
@@ -156,9 +126,9 @@ const TimeSeries = ({
                 <Typography variant="h4">{timeSeriesTitle}</Typography>
                 <ImportButton onClick={() => { setDialogOpen(true) }}>Import</ImportButton>
                 <ImportButton
-                    disabled={asset !== undefined && asset[timeSeriesType] === undefined}
+                    disabled={timeSeries === undefined}
                     color="danger"
-                    onClick={deleteCostProfile}
+                    onClick={deleteTimeseries}
                 >
                     Delete
                 </ImportButton>
@@ -177,4 +147,4 @@ const TimeSeries = ({
     )
 }
 
-export default TimeSeries
+export default TimeSeriesNoAsset

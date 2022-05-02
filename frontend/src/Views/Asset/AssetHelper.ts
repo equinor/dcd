@@ -1,6 +1,26 @@
 import { Dispatch, SetStateAction } from "react"
-import { IAsset } from "../../models/assets/IAsset"
 import { ITimeSeries } from "../../models/ITimeSeries"
+
+interface IAsset {
+    id?: string | undefined
+    name?: string | undefined
+    projectId?: string | undefined
+    costProfile?: ITimeSeries | undefined
+    drillingSchedule?: ITimeSeries | undefined
+    gAndGAdminCost?: ITimeSeries | undefined
+    co2Emissions?: ITimeSeries | undefined
+    netSalesGas?: ITimeSeries | undefined
+    fuelFlaringAndLosses?: ITimeSeries | undefined
+    productionProfileGas?: ITimeSeries | undefined
+    productionProfileOil?: ITimeSeries | undefined
+    productionProfileWater?: ITimeSeries | undefined
+    productionProfileWaterInjection?: ITimeSeries | undefined
+    substructureCessationCostProfileDto?: ITimeSeries | undefined
+    surfCessationCostProfileDto?: ITimeSeries | undefined
+    topsideCessationCostProfileDto?: ITimeSeries | undefined
+    transportCessationCostProfileDto?: ITimeSeries | undefined
+    dryweight?: number | undefined
+    maturity?: Components.Schemas.Maturity | undefined}
 
 const SetYears = (
     years: [number, number],
