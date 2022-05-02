@@ -22,6 +22,7 @@ export class Topside implements Components.Schemas.TopsideDto {
             this.costProfile = TopsideCostProfile.fromJSON(data.costProfile)
             this.topsideCessationCostProfileDto = TopsideCessationCostProfile
                 .fromJSON(data.topsideCessationCostProfileDto)
+            this.artificialLift = data.artificialLift ?? 0
             this.dryWeight = data.dryWeight
             this.maturity = data.maturity
         } else {
