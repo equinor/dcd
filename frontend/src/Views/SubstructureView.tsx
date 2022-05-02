@@ -110,7 +110,7 @@ const SubstructureView = () => {
                     setValue={setDryWeight}
                     value={dryWeight ?? 0}
                     integer
-                    label="Dry weight"
+                    label="Dryweight"
                 />
             </Wrapper>
             <TimeSeries
