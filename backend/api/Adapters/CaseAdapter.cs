@@ -29,10 +29,11 @@ namespace api.Adapters
                 SubstructureLink = caseDto.SubstructureLink,
                 TransportLink = caseDto.TransportLink,
                 ArtificialLift = caseDto.ArtificialLift,
+                ProducerCount = caseDto.ProducerCount,
+                GasInjectorCount = caseDto.GasInjectorCount,
+                WaterInjectorCount = caseDto.WaterInjectorCount,
+                RigMobDemob = caseDto.RigMobDemob
             };
         }
-
-
     }
 }
-

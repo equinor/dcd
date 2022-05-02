@@ -29,6 +29,10 @@ namespace api.Adapters
                 TransportLink = case_.TransportLink,
                 ExplorationLink = case_.ExplorationLink,
                 ArtificialLift = case_.ArtificialLift,
+                ProducerCount = case_.ProducerCount,
+                GasInjectorCount = case_.GasInjectorCount,
+                WaterInjectorCount = case_.WaterInjectorCount,
+                RigMobDemob = case_.RigMobDemob
             };
 
             return caseDto;
