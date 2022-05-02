@@ -120,6 +120,15 @@ function CaseView() {
                         caseItem={caseItem}
                         setProject={setProject}
                         setCase={setCase}
+                        dGType={DGEnum.DG0}
+                        dGName="DG0"
+                    />
+                </Wrapper>
+                <Wrapper>
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
                         dGType={DGEnum.DG1}
                         dGName="DG1"
                     />
