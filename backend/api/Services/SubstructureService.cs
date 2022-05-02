@@ -12,11 +12,13 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<SubstructureService> _logger;
 
-        public SubstructureService(DcdDbContext context, ProjectService projectService)
+        public SubstructureService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<SubstructureService>();
         }
 
         public IEnumerable<Substructure> GetSubstructures(Guid projectId)

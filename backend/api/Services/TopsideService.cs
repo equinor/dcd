@@ -11,11 +11,13 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<TopsideService> _logger;
 
-        public TopsideService(DcdDbContext context, ProjectService projectService)
+        public TopsideService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<TopsideService>();
         }
 
         public IEnumerable<Topside> GetTopsides(Guid projectId)

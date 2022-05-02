@@ -11,11 +11,13 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<TransportService> _logger;
 
-        public TransportService(DcdDbContext context, ProjectService projectService)
+        public TransportService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<TransportService>();
         }
         public ProjectDto CreateTransport(TransportDto transportDto, Guid sourceCaseId)
         {
