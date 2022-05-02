@@ -43,7 +43,7 @@ function CaseView() {
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
-    const [riserCount, setRicerCount] = useState<number>()
+    const [riserCount, setRiserCount] = useState<number>()
     const [templateCount, setTemplateCount] = useState<number>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
 
@@ -68,7 +68,7 @@ function CaseView() {
             setProducerCount(caseResult?.producerCount)
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
-            setRicerCount(caseResult?.riserCount)
+            setRiserCount(caseResult?.riserCount)
             setTemplateCount(caseResult?.templateCount)
             setRigMobDemob(caseResult?.rigMobDemob)
         }
@@ -179,7 +179,7 @@ function CaseView() {
                 </Wrapper>
                 <Wrapper>
                     <NumberInput
-                        setValue={setRicerCount}
+                        setValue={setRiserCount}
                         value={riserCount ?? 0}
                         integer
                         disabled={isDisabled("riserCount", caseItem)}
