@@ -57,6 +57,7 @@ export class Case implements Components.Schemas.CaseDto {
         const caseCopy = new Case(data)
         return {
             ...caseCopy,
+            DG0Date: data.DG0Date,
             DG1Date: data.DG1Date,
             DG2Date: data.DG2Date,
             DG3Date: data.DG3Date,
