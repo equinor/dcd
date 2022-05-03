@@ -26,8 +26,6 @@ namespace api.Services
         {
             if (_context.WellProjects != null)
             {
-                _logger.LogWarning("An example of a Warning trace..");
-                _logger.LogError("An example of an Error level message");
 
                 return _context.WellProjects
                         .Include(c => c.CostProfile)
@@ -43,9 +41,6 @@ namespace api.Services
 
         public ProjectDto CreateWellProject(WellProject wellProject, Guid sourceCaseId)
         {
-            _logger.LogWarning("An example of a Warning trace..");
-            _logger.LogError("An example of an Error level message");
-
             var project = _projectService.GetProject(wellProject.ProjectId);
             wellProject.Project = project;
             _context.WellProjects!.Add(wellProject);
@@ -56,9 +51,6 @@ namespace api.Services
 
         private void SetCaseLink(WellProject wellProject, Guid sourceCaseId, Project project)
         {
-            _logger.LogWarning("An example of a Warning trace..");
-            _logger.LogError("An example of an Error level message");
-
             var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
             if (case_ == null)
             {
@@ -82,9 +74,6 @@ namespace api.Services
 
         private void DeleteCaseLinks(Guid wellProjectId)
         {
-            _logger.LogWarning("An example of a Warning trace..");
-            _logger.LogError("An example of an Error level message");
-
             foreach (Case c in _context.Cases!)
             {
                 if (c.WellProjectLink == wellProjectId)
@@ -96,9 +85,6 @@ namespace api.Services
 
         public ProjectDto UpdateWellProject(WellProjectDto updatedWellProject)
         {
-            _logger.LogWarning("An example of a Warning trace..");
-            _logger.LogError("An example of an Error level message");
-
             var existing = GetWellProject(updatedWellProject.Id);
             WellProjectAdapter.ConvertExisting(existing, updatedWellProject);
 
@@ -119,9 +105,6 @@ namespace api.Services
 
         public WellProject GetWellProject(Guid wellProjectId)
         {
-            _logger.LogWarning("An example of a Warning trace..");
-            _logger.LogError("An example of an Error level message");
-
             var wellProject = _context.WellProjects!
                 .Include(c => c.CostProfile)
                 .Include(c => c.DrillingSchedule)

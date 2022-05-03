@@ -8,6 +8,7 @@ using Azure.Identity;
 
 using Equinor.TI.CommonLibrary.Client;
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Azure.Services.AppAuthentication;
@@ -99,8 +100,13 @@ builder.Services.AddCors(options =>
 
 ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
 {
-    builder.AddApplicationInsights(config["ApplicationInsightInstrumentationKey"]);
+    
 });
+
+var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions() {
+    InstrumentationKey = config["ApplicationInsightInstrumentationKey"]
+};
+
 if (environment == "localdev")
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
@@ -109,7 +115,8 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
-builder.Services.AddApplicationInsightsTelemetry(config["ApplicationInsightInstrumentationKey"]);
+
+builder.Services.AddApplicationInsightsTelemetry();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();

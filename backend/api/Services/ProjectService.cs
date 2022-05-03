@@ -53,14 +53,14 @@ namespace api.Services
                 if (existingProjectLibIds.Contains(project.CommonLibraryId))
                 {
                     // Project already exists, navigate to project
-                    _logger.LogInformation("Project exists: ", project);
+                    _logger.LogWarning("Project exists: ", project);
                     return GetProjectDto(_context.Projects.Where(p => p.CommonLibraryId == project.CommonLibraryId).First().Id);
                 }
             }
 
             if (_context.Projects == null)
             {
-                _logger.LogInformation("New Project:", project);
+                _logger.LogWarning("New Project:", project);
                 var projects = new List<Project>();
                 projects.Add(project);
                 _context.AddRange(projects);
@@ -84,7 +84,7 @@ namespace api.Services
                 {
                     AddAssetsToProject(project);
                 }
-                _logger.LogInformation("Get All projects");
+                _logger.LogWarning("Get All projects");
                 return projects;
             }
             else
@@ -104,7 +104,7 @@ namespace api.Services
                     var projectDto = ProjectDtoAdapter.Convert(project);
                     projectDtos.Add(projectDto);
                 }
-                _logger.LogInformation("Get All dtos");
+                _logger.LogWarning("Get All dtos");
                 return projectDtos;
             }
             else
@@ -126,7 +126,7 @@ namespace api.Services
                     throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
                 }
                 AddAssetsToProject(project);
-                _logger.LogInformation("Get Project:", projectId.ToString());
+                _logger.LogError(new DivideByZeroException("oh noes"), "Add assets to project", project.ToString());
                 return project;
             }
             throw new NotFoundInDBException($"The database contains no projects");
@@ -136,7 +136,7 @@ namespace api.Services
         {
             var project = GetProject(projectId);
             var projectDto = ProjectDtoAdapter.Convert(project);
-            _logger.LogInformation("Project exists: ", projectDto);
+            _logger.LogWarning("Project exists: ", projectDto);
             return projectDto;
         }
 
@@ -149,7 +149,7 @@ namespace api.Services
             project.Topsides = _topsideService.GetTopsides(project.Id).ToList();
             project.Transports = _transportService.GetTransports(project.Id).ToList();
             project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
-            _logger.LogInformation("Add assets to project: ", project);
+            _logger.LogWarning("Add assets to project: ", project);
             return project;
         }
     }
