@@ -34,7 +34,8 @@
         "react/jsx-indent-props": [2, 4],
         "react/require-default-props": 0,
         "react/prop-types": 0,
-        "max-len": ["error", 120]
+        "max-len": ["error", 120],
+        "linebreak-style": 0
     },
     "overrides": [
         {
