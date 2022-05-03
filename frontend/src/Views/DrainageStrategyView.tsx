@@ -96,7 +96,7 @@ const DrainageStrategyView = () => {
             </Wrapper>
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Label htmlFor="name" label="Artificial lift" />
                     <Input
                         id="artificialLift"
                         disabled
@@ -110,7 +110,7 @@ const DrainageStrategyView = () => {
                     value={nGLYield ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    label="NGL Yield"
+                    label="NGL yield"
                 />
                 <NumberInput
                     value={drainageStrategy?.producerCount ?? 0}

@@ -196,7 +196,7 @@ function CaseView() {
                         value={facilitiesAvailability ?? 0}
                         integer
                         disabled={isDisabled("facilitiesAvailability", caseItem)}
-                        label="Facilities Availability"
+                        label="Facilities availability"
                     />
                 </Wrapper>
                 <Wrapper>
