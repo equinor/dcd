@@ -19,6 +19,8 @@ import {
     AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import NumberInput from "../Components/NumberInput"
+import Maturity from "../Components/Maturity"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -29,6 +31,9 @@ const TransportView = () => {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [gasExportPipelineLength, setGasExportPipelineLength] = useState<number | undefined>()
+    const [oilExportPipelineLength, setOilExportPipelineLength] = useState<number | undefined>()
+    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -54,6 +59,9 @@ const TransportView = () => {
                     setTransport(newTransport)
                 }
                 setTransportName(newTransport?.name!)
+                setGasExportPipelineLength(newTransport?.gasExportPipelineLength)
+                setOilExportPipelineLength(newTransport?.oilExportPipelineLength)
+                setMaturity(newTransport?.maturity ?? undefined)
 
                 TimeSeriesYears(
                     newTransport,
@@ -64,6 +72,16 @@ const TransportView = () => {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        if (transport !== undefined) {
+            const newTransport: Transport = { ...transport }
+            newTransport.gasExportPipelineLength = gasExportPipelineLength
+            newTransport.oilExportPipelineLength = oilExportPipelineLength
+            newTransport.maturity = maturity
+            setTransport(newTransport)
+        }
+    }, [gasExportPipelineLength, oilExportPipelineLength, maturity])
 
     return (
         <AssetViewDiv>
@@ -83,6 +101,27 @@ const TransportView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setGasExportPipelineLength}
+                    value={gasExportPipelineLength ?? 0}
+                    integer
+                    label="Length of gas export pipeline"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setOilExportPipelineLength}
+                    value={oilExportPipelineLength ?? 0}
+                    integer
+                    label="Length of oil export pipeline"
+                />
+            </Wrapper>
+            <Maturity
+                setMaturity={setMaturity}
+                currentValue={maturity}
+                setHasChanges={setHasChanges}
+            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setTransport}
