@@ -25,6 +25,8 @@ export class Topside implements Components.Schemas.TopsideDto {
             this.artificialLift = data.artificialLift ?? 0
             this.dryWeight = data.dryWeight
             this.maturity = data.maturity
+            this.oilCapacity = data.oilCapacity
+            this.gasCapacity = data.gasCapacity
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
