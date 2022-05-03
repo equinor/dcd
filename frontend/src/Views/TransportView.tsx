@@ -33,7 +33,7 @@ const TransportView = () => {
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [gasExportPipelineLength, setGasExportPipelineLength] = useState<number | undefined>()
     const [oilExportPipelineLength, setOilExportPipelineLength] = useState<number | undefined>()
-    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>(undefined)
+    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
 
     useEffect(() => {
         (async () => {
