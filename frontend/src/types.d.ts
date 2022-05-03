@@ -22,7 +22,11 @@ declare namespace Components {
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
+            riserCount?: number; // int32
+            templateCount?: number; // int32
             rigMobDemob?: number; // double
+            dG0Date?: string; // date-time
+            facilitiesAvailability?: number; // double
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
             dG3Date?: string; // date-time
@@ -172,7 +176,8 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
-        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory =
+            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;

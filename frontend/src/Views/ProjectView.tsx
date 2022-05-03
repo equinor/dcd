@@ -27,6 +27,7 @@ import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
 
 import { GetSTEAService } from "../Services/STEAService"
+import { WrapperColumn } from "./Asset/StyledAssetComponents"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -43,8 +44,9 @@ const Header = styled.header`
     }
 `
 
-const ProjectDescription = styled(Typography)`
+const ProjectDataFieldLabel = styled(Typography)`
     margin-top: 1rem;
+    font-weight: bold;
     white-space: pre-wrap;
 `
 
@@ -159,8 +161,28 @@ const ProjectView = () => {
                 </EdsProvider>
             </Header>
 
-            <ProjectDescription variant="h4">{project.description}</ProjectDescription>
-
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
+                <Typography variant="h3">{project.description}</Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Project phase">
+                    {project.phase?.toString() ?? ""}
+                </Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Project category">
+                    {project.category?.toString() ?? ""}
+                </Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Country">
+                    {project.country ?? "Not defined in Common Library"}
+                </Typography>
+            </WrapperColumn>
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>
