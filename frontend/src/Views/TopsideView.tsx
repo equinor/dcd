@@ -19,6 +19,8 @@ import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
+import Maturity from "../Components/Maturity"
+import NumberInput from "../Components/NumberInput"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -29,6 +31,10 @@ const TopsideView = () => {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [oilCapacity, setOilCapacity] = useState<number | undefined>()
+    const [gasCapacity, setGasCapacity] = useState<number | undefined>()
+    const [dryweight, setDryweight] = useState<number | undefined>()
+    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -55,6 +61,10 @@ const TopsideView = () => {
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
+                setDryweight(newTopside?.dryWeight)
+                setOilCapacity(newTopside?.oilCapacity)
+                setGasCapacity(newTopside?.gasCapacity)
+                setMaturity(newTopside?.maturity ?? undefined)
 
                 TimeSeriesYears(
                     newTopside,
@@ -65,6 +75,17 @@ const TopsideView = () => {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        if (topside !== undefined) {
+            const newTopside: Topside = { ...topside }
+            newTopside.dryWeight = dryweight
+            newTopside.oilCapacity = oilCapacity
+            newTopside.gasCapacity = gasCapacity
+            newTopside.maturity = maturity
+            setTopside(newTopside)
+        }
+    }, [dryweight, oilCapacity, gasCapacity, maturity])
 
     return (
         <AssetViewDiv>
@@ -90,6 +111,34 @@ const TopsideView = () => {
                     />
                 </WrapperColumn>
             </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setDryweight}
+                    value={dryweight ?? 0}
+                    integer
+                    label="Dryweight"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setOilCapacity}
+                    value={oilCapacity ?? 0}
+                    integer={false}
+                    label="Capacity Oil"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setGasCapacity}
+                    value={gasCapacity ?? 0}
+                    integer={false}
+                    label="Capacity Gas"
+                />
+            </Wrapper>
+            <Maturity
+                setMaturity={setMaturity}
+                currentValue={maturity}
+                setHasChanges={setHasChanges}
+            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setTopside}
