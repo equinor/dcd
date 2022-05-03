@@ -74,7 +74,7 @@ const CaseArtificialLift = ({
             {isDisabled()
                 ? (
                     <Typography type="p" style={{ color: "red" }}>
-                        Can not change artificial lift while there are assets with artificial lift linked
+                        Cannot change artificial lift while there are assets with artificial lift linked
                     </Typography>
                 )
                 : null}
