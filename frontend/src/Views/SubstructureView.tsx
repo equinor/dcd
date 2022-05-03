@@ -99,20 +99,20 @@ const SubstructureView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
-            <Maturity
-                setMaturity={setMaturity}
-                currentValue={maturity}
-                setHasChanges={setHasChanges}
-            />
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setDryWeight}
                     value={dryWeight ?? 0}
-                    integer
+                    integer={false}
                     label="Dryweight"
                 />
             </Wrapper>
+            <Maturity
+                setMaturity={setMaturity}
+                currentValue={maturity}
+                setHasChanges={setHasChanges}
+            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setSubstructure}
