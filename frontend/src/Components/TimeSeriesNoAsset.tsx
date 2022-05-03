@@ -109,7 +109,7 @@ const TimeSeriesNoAsset = ({
         }
     }
 
-    const deleteCostProfile = () => {
+    const deleteTimeseries = () => {
         if (assetName !== "") {
             setHasChanges(true)
         } else {
@@ -128,7 +128,7 @@ const TimeSeriesNoAsset = ({
                 <ImportButton
                     disabled={timeSeries === undefined}
                     color="danger"
-                    onClick={deleteCostProfile}
+                    onClick={deleteTimeseries}
                 >
                     Delete
                 </ImportButton>
