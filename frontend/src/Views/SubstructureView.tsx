@@ -105,7 +105,7 @@ const SubstructureView = () => {
                     setValue={setDryWeight}
                     value={dryWeight ?? 0}
                     integer={false}
-                    label="Dryweight"
+                    label="Substructure dry weight"
                 />
             </Wrapper>
             <Maturity
