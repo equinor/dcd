@@ -27,6 +27,7 @@ export class Case implements Components.Schemas.CaseDto {
     templateCount?: number
     rigMobDemob?: number
     facilitiesAvailability?: number
+    productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -57,6 +58,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.templateCount = data.templateCount
         this.rigMobDemob = data.rigMobDemob
         this.facilitiesAvailability = data.facilitiesAvailability
+        this.productionStrategyOverview = data.productionStrategyOverview ?? 0
     }
 
     static Copy(data: Case) {
