@@ -19,6 +19,8 @@ import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
+import Maturity from "../Components/Maturity"
+import NumberInput from "../Components/NumberInput"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -30,6 +32,8 @@ const SubstructureView = () => {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
+    const [dryWeight, setDryWeight] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -55,6 +59,8 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure?.name!)
+                setMaturity(newSubstructure.maturity)
+                setDryWeight(newSubstructure.dryweight)
 
                 TimeSeriesYears(
                     newSubstructure,
@@ -65,6 +71,15 @@ const SubstructureView = () => {
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        if (substructure !== undefined) {
+            const newSubstructure: Substructure = { ...substructure }
+            newSubstructure.maturity = maturity
+            newSubstructure.dryweight = dryWeight
+            setSubstructure(newSubstructure)
+        }
+    }, [maturity, dryWeight])
 
     return (
         <AssetViewDiv>
@@ -84,6 +99,20 @@ const SubstructureView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setDryWeight}
+                    value={dryWeight ?? 0}
+                    integer={false}
+                    label="Dryweight"
+                />
+            </Wrapper>
+            <Maturity
+                setMaturity={setMaturity}
+                currentValue={maturity}
+                setHasChanges={setHasChanges}
+            />
             <TimeSeries
                 caseItem={caseItem}
                 setAsset={setSubstructure}
