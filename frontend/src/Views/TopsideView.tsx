@@ -34,7 +34,7 @@ const TopsideView = () => {
     const [oilCapacity, setOilCapacity] = useState<number | undefined>()
     const [gasCapacity, setGasCapacity] = useState<number | undefined>()
     const [dryweight, setDryweight] = useState<number | undefined>()
-    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>(undefined)
+    const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
 
     useEffect(() => {
         (async () => {
