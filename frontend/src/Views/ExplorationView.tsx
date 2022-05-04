@@ -129,7 +129,7 @@ const ExplorationView = () => {
                     setHasChanges={setHasChanges}
                     integer={false}
                     disabled
-                    label="Rig Mob Demob"
+                    label="Rig mob demob"
                 />
             </Wrapper>
             <TimeSeriesNoAsset

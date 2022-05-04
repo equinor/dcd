@@ -103,7 +103,7 @@ const TopsideView = () => {
             </Wrapper>
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Label htmlFor="name" label="Artificial lift" />
                     <Input
                         id="artificialLift"
                         disabled
@@ -117,21 +117,21 @@ const TopsideView = () => {
                     setValue={setDryweight}
                     value={dryweight ?? 0}
                     integer
-                    label="Dryweight"
+                    label="Topside dry weight"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setOilCapacity}
                     value={oilCapacity ?? 0}
                     integer={false}
-                    label="Capacity Oil"
+                    label="Capacity oil"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setGasCapacity}
                     value={gasCapacity ?? 0}
                     integer={false}
-                    label="Capacity Gas"
+                    label="Capacity gas"
                 />
             </Wrapper>
             <Maturity
