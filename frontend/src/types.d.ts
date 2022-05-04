@@ -151,7 +151,7 @@ declare namespace Components {
             totalAndAnnualSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
         }
-        export type ProductionFlowline = 999; // int32
+        export type ProductionFlowline = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
         export interface ProductionProfileGasDto {
             id?: string; // uuid
             startYear?: number; // int32
