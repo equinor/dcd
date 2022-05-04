@@ -15,11 +15,10 @@ import CaseAsset from "../Components/CaseAsset"
 import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
 import CaseDGDate from "../Components/CaseDGDate"
-import DGEnum from "../models/DGEnum"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
+import DGEnum from "../models/DGEnum"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
-import { isDisabled } from "./CaseHelper"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -168,35 +167,35 @@ function CaseView() {
                         setValue={setProducerCount}
                         value={producerCount ?? 0}
                         integer
-                        disabled={isDisabled("producerCount", caseItem)}
+                        disabled={false}
                         label="Producer count"
                     />
                     <NumberInput
                         setValue={setGasInjectorCount}
                         value={gasInjectorCount ?? 0}
                         integer
-                        disabled={isDisabled("gasInjectorCount", caseItem)}
+                        disabled={false}
                         label="Gas injector count"
                     />
                     <NumberInput
                         setValue={setWaterInjectorCount}
                         value={waterInjectorCount ?? 0}
                         integer
-                        disabled={isDisabled("waterInjectorCount", caseItem)}
+                        disabled={false}
                         label="Water injector count"
                     />
                     <NumberInput
                         setValue={setRigMobDemob}
                         value={rigMobDemob ?? 0}
                         integer={false}
-                        disabled={isDisabled("rigMobDemob", caseItem)}
+                        disabled={false}
                         label="Rig mob demob"
                     />
                     <NumberInput
                         setValue={setFacilitiesAvailability}
                         value={facilitiesAvailability ?? 0}
                         integer
-                        disabled={isDisabled("facilitiesAvailability", caseItem)}
+                        disabled={false}
                         label="Facilities Availability"
                     />
                 </Wrapper>
@@ -205,14 +204,14 @@ function CaseView() {
                         setValue={setRiserCount}
                         value={riserCount ?? 0}
                         integer
-                        disabled={isDisabled("riserCount", caseItem)}
+                        disabled={false}
                         label="Riser count"
                     />
                     <NumberInput
                         setValue={setTemplateCount}
                         value={templateCount ?? 0}
                         integer
-                        disabled={isDisabled("templateCount", caseItem)}
+                        disabled={false}
                         label="Template count"
                     />
                 </Wrapper>

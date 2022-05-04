@@ -103,7 +103,7 @@ function WellProjectView() {
             </Wrapper>
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Label htmlFor="name" label="Artificial lift" />
                     <Input
                         id="artificialLift"
                         disabled
@@ -117,7 +117,7 @@ function WellProjectView() {
                     setHasChanges={setHasChanges}
                     integer={false}
                     disabled
-                    label="Rig Mob Demob"
+                    label="Rig mob demob"
                 />
                 <NumberInput
                     setValue={setAnnualWellInterventionCost}

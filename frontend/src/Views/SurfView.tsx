@@ -21,6 +21,7 @@ import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import Maturity from "../Components/Maturity"
+import ProductionFlowline from "../Components/ProductionFlowline"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -36,6 +37,7 @@ const SurfView = () => {
     const [infieldPipelineSystemLength, setInfieldPipelineSystemLength] = useState<number | undefined>()
     const [umbilicalSystemLength, setUmbilicalSystemLength] = useState<number | undefined>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
+    const [productionFlowline, setProductionFlowline] = useState<Components.Schemas.ProductionFlowline | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -69,6 +71,7 @@ const SurfView = () => {
                 setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
                 setUmbilicalSystemLength(newSurf?.umbilicalSystemLength)
                 setMaturity(newSurf.maturity ?? undefined)
+                setProductionFlowline(newSurf.productionFlowline ?? 0)
 
                 TimeSeriesYears(
                     newSurf,
@@ -88,9 +91,10 @@ const SurfView = () => {
             newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
             newSurf.umbilicalSystemLength = umbilicalSystemLength
             newSurf.maturity = maturity
+            newSurf.productionFlowline = productionFlowline
             setSurf(newSurf)
         }
-    }, [riserCount, templateCount, infieldPipelineSystemLength, umbilicalSystemLength, maturity])
+    }, [riserCount, templateCount, infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline])
 
     return (
         <AssetViewDiv>
@@ -102,7 +106,7 @@ const SurfView = () => {
             />
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Label htmlFor="name" label="Artificial lift" />
                     <Input
                         id="artificialLift"
                         disabled
@@ -157,6 +161,11 @@ const SurfView = () => {
                 setMaturity={setMaturity}
                 currentValue={maturity}
                 setHasChanges={setHasChanges}
+            />
+            <ProductionFlowline
+                setHasChanges={setHasChanges}
+                currentValue={productionFlowline}
+                setProductionFlowline={setProductionFlowline}
             />
             <TimeSeries
                 caseItem={caseItem}
