@@ -74,12 +74,12 @@ const CaseArtificialLift = ({
             {isDisabled()
                 ? (
                     <Typography type="p" style={{ color: "red" }}>
-                        Cant change aritificial lift while there are assets with artificial lift linked
+                        Cannot change artificial lift while there are assets with artificial lift linked
                     </Typography>
                 )
                 : null}
             <ArtificialLiftDropdown
-                label="Artificial Lift"
+                label="Artificial lift"
                 id="ArtificialLift"
                 placeholder="Choose an artificial lift"
                 onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
