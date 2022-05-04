@@ -1,5 +1,5 @@
 import {
-    NativeSelect, Typography,
+    NativeSelect,
 } from "@equinor/eds-core-react"
 import {
     ChangeEvent, Dispatch, SetStateAction,
@@ -8,7 +8,6 @@ import styled from "styled-components"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
-import { EMPTY_GUID } from "../Utils/constants"
 
 const ArtificialLiftDropdown = styled(NativeSelect)`
 width: 20rem;
@@ -60,38 +59,20 @@ const CaseArtificialLift = ({
         }
     }
 
-    const isDisabled = () => {
-        if (caseItem?.drainageStrategyLink !== EMPTY_GUID
-            || caseItem?.wellProjectLink !== EMPTY_GUID
-            || caseItem?.surfLink !== EMPTY_GUID
-            || caseItem?.topsideLink !== EMPTY_GUID) {
-            return true
-        }
-        return false
-    }
     return (
-        <>
-            {isDisabled()
-                ? (
-                    <Typography type="p" style={{ color: "red" }}>
-                        Cant change aritificial lift while there are assets with artificial lift linked
-                    </Typography>
-                )
-                : null}
-            <ArtificialLiftDropdown
-                label="Artificial Lift"
-                id="ArtificialLift"
-                placeholder="Choose an artificial lift"
-                onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
-                value={currentValue}
-                disabled={isDisabled()}
-            >
-                <option key="0" value={0}>No lift</option>
-                <option key="1" value={1}>Gas lift</option>
-                <option key="2" value={2}>Electrical submerged pumps</option>
-                <option key="3" value={3}>Subsea booster pumps</option>
-            </ArtificialLiftDropdown>
-        </>
+        <ArtificialLiftDropdown
+            label="Artificial Lift"
+            id="ArtificialLift"
+            placeholder="Choose an artificial lift"
+            onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
+            value={currentValue}
+            disabled={false}
+        >
+            <option key="0" value={0}>No lift</option>
+            <option key="1" value={1}>Gas lift</option>
+            <option key="2" value={2}>Electrical submerged pumps</option>
+            <option key="3" value={3}>Subsea booster pumps</option>
+        </ArtificialLiftDropdown>
     )
 }
 
