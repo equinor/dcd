@@ -84,7 +84,7 @@ function WellProjectView() {
         newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
         newWellProject.rigMobDemob = rigMobDemob
         setWellProject(newWellProject)
-    }, [annualWellInterventionCost, pluggingAndAbandonment])
+    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob])
 
     return (
         <AssetViewDiv>
