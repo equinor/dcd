@@ -19,7 +19,9 @@ import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import TimeSeriesNoAsset from "../Components/TimeSeriesNoAsset"
-import { ITimeSeries } from "../models/ITimeSeries"
+import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
+import { ExplorationDrillingScheduleDto } from "../models/assets/exploration/ExplorationDrillingScheduleDto"
+import { GAndGAdminCostDto } from "../models/assets/exploration/GAndAdminCostDto"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -31,9 +33,9 @@ const ExplorationView = () => {
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [wellType, setWellType] = useState<Components.Schemas.WellType>()
-    const [costProfile, setCostProfile] = useState<ITimeSeries>()
-    const [drillingSchedule, setDrillingSchedule] = useState<ITimeSeries>()
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<ITimeSeries>()
+    const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
+    const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingScheduleDto>()
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCostDto>()
 
     useEffect(() => {
         (async () => {
@@ -66,12 +68,12 @@ const ExplorationView = () => {
                 setDrillingSchedule(newExploration.drillingSchedule)
                 setGAndGAdminCost(newExploration.gAndGAdminCost)
 
-                TimeSeriesYears(
-                    newExploration,
-                    caseResult!.DG4Date!.getFullYear(),
-                    setEarliestTimeSeriesYear,
-                    setLatestTimeSeriesYear,
-                )
+                // TimeSeriesYears(
+                //     newExploration,
+                //     caseResult!.DG4Date!.getFullYear(),
+                //     setEarliestTimeSeriesYear,
+                //     setLatestTimeSeriesYear,
+                // )
             }
         })()
     }, [project])
@@ -129,15 +131,14 @@ const ExplorationView = () => {
                     setHasChanges={setHasChanges}
                     integer={false}
                     disabled
-                    label="Rig mob demob"
+                    label="Rig Mob Demob"
                 />
             </Wrapper>
             <TimeSeriesNoAsset
-                caseItem={caseItem}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                assetName={name}
                 timeSeriesTitle="Cost profile"
                 earliestYear={earliestTimeSeriesYear!}
                 latestYear={latestTimeSeriesYear!}
@@ -145,11 +146,10 @@ const ExplorationView = () => {
                 setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeriesNoAsset
-                caseItem={caseItem}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setDrillingSchedule}
                 setHasChanges={setHasChanges}
                 timeSeries={drillingSchedule}
-                assetName={name}
                 timeSeriesTitle="Drilling schedule"
                 earliestYear={earliestTimeSeriesYear!}
                 latestYear={latestTimeSeriesYear!}
@@ -157,11 +157,10 @@ const ExplorationView = () => {
                 setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeriesNoAsset
-                caseItem={caseItem}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setGAndGAdminCost}
                 setHasChanges={setHasChanges}
                 timeSeries={gAndGAdminCost}
-                assetName={name}
                 timeSeriesTitle="G and g admin cost"
                 earliestYear={earliestTimeSeriesYear!}
                 latestYear={latestTimeSeriesYear!}

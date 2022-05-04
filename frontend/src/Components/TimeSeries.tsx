@@ -108,7 +108,7 @@ const TimeSeries = ({
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, asset![timeSeriesType]))
+        setColumns(getColumnAbsoluteYears(caseItem?.DG4Date?.getFullYear(), asset![timeSeriesType]))
         setHasChanges(true)
     }
 

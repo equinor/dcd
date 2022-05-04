@@ -12,10 +12,9 @@ import { ITimeSeries } from "../models/ITimeSeries"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
-    caseItem: Case | undefined,
+    dG4Year: number | undefined
     setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     setHasChanges: Dispatch<SetStateAction<boolean>>,
-    assetName: string,
     timeSeriesTitle: string,
     earliestYear: number | undefined,
     latestYear: number | undefined,
@@ -25,11 +24,10 @@ interface Props {
 }
 
 const TimeSeriesNoAsset = ({
-    caseItem,
+    dG4Year,
     setTimeSeries,
     setHasChanges,
     timeSeries,
-    assetName,
     timeSeriesTitle,
     earliestYear,
     latestYear,
@@ -51,12 +49,12 @@ const TimeSeriesNoAsset = ({
 
             const zeroesAtStart = Array.from({
                 length: Number(timeSeries!.startYear!)
-                + Number(caseItem!.DG4Date!.getFullYear()) - Number(earliestYear),
+                + Number(dG4Year) - Number(earliestYear),
             }, (() => 0))
             const zeroesAtEnd = Array.from({
                 length: Number(latestYear)
                 - (Number(timeSeries!.startYear!)
-                + Number(caseItem!.DG4Date!.getFullYear())
+                + Number(dG4Year)
                 + Number(timeSeries!.values!.length!)),
             }, (() => 0))
 
@@ -67,6 +65,17 @@ const TimeSeriesNoAsset = ({
             const alignedAssetGridData = new Array(
                 assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
             )
+
+            if ((Number(updatedTimeSeries.startYear)
+            + Number(dG4Year!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
+                setEarliestYear((Number(updatedTimeSeries.startYear) + Number(dG4Year!)))
+            }
+            if ((Number(updatedTimeSeries.startYear)
+            + Number(dG4Year!)
+            + Number(updatedTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
+                setLatestYear(Number(updatedTimeSeries.startYear)
+                + Number(dG4Year!) + Number(updatedTimeSeries.values!.length))
+            }
 
             setColumns(columnTitles)
             setGridData(alignedAssetGridData)
@@ -83,7 +92,7 @@ const TimeSeriesNoAsset = ({
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, timeSeries))
+        setColumns(getColumnAbsoluteYears(dG4Year, timeSeries))
         setHasChanges(true)
     }
 
@@ -93,28 +102,22 @@ const TimeSeriesNoAsset = ({
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setTimeSeries(newTimeSeries)
         if ((Number(year)
-        + Number(caseItem!.DG4Date!.getFullYear()!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
-            setEarliestYear((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!)))
+        + Number(dG4Year!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
+            setEarliestYear((Number(year) + Number(dG4Year!)))
         }
         if ((Number(year)
-        + Number(caseItem!.DG4Date!.getFullYear()!)
+        + Number(dG4Year!)
         + Number(newTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
             setLatestYear(Number(year)
-            + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries.values.length))
+            + Number(dG4Year!) + Number(newTimeSeries.values.length))
         }
         buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
-        if (assetName !== "") {
-            setHasChanges(true)
-        }
+        setHasChanges(true)
     }
 
     const deleteTimeseries = () => {
-        if (assetName !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
+        setHasChanges(true)
         setColumns([])
         setGridData([[]])
         setTimeSeries(undefined)
@@ -138,7 +141,7 @@ const TimeSeriesNoAsset = ({
                     columns={columns}
                     gridData={gridData}
                     onCellsChanged={onCellsChanged}
-                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                    dG4Year={dG4Year?.toString()!}
                 />
             </WrapperColumn>
             {!dialogOpen ? null
