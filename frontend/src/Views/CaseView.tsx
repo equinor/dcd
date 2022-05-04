@@ -14,8 +14,8 @@ import CaseAsset from "../Components/CaseAsset"
 import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
 import CaseDGDate from "../Components/CaseDGDate"
-import DGEnum from "../models/DGEnum"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
+import DGEnum from "../models/DGEnum"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import { isDisabled } from "./CaseHelper"
@@ -196,7 +196,7 @@ function CaseView() {
                         value={facilitiesAvailability ?? 0}
                         integer
                         disabled={isDisabled("facilitiesAvailability", caseItem)}
-                        label="Facilities Availability"
+                        label="Facilities availability"
                     />
                 </Wrapper>
                 <Wrapper>

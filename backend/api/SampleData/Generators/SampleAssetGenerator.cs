@@ -201,7 +201,7 @@ public static class SampleAssetGenerator
             {
                 Name = "Surf 1",
                 Maturity = Maturity.A,
-                ProductionFlowline = ProductionFlowline.Default,
+                ProductionFlowline = ProductionFlowline.No_production_flowline,
                 InfieldPipelineSystemLength = 5.5,
                 UmbilicalSystemLength = 1.1,
                 RiserCount = 5,
