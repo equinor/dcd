@@ -90,7 +90,6 @@ const CaseAsset = ({
                     assetName="Drainage strategy"
                     linkAsset={onSelectAsset}
                     values={project.drainageStrategies
-                        .filter((ds) => ds.artificialLift === caseItem?.artificialLift)
                         .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.drainageStrategyLink}
                     link={AssetLink.drainageStrategyLink}
@@ -144,7 +143,6 @@ const CaseAsset = ({
                     assetName="Well project"
                     linkAsset={onSelectAsset}
                     values={project.wellProjects
-                        .filter((wp) => wp.artificialLift === caseItem?.artificialLift)
                         .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.wellProjectLink}
                     link={AssetLink.wellProjectLink}
@@ -172,7 +170,6 @@ const CaseAsset = ({
                     assetName="SURF"
                     linkAsset={onSelectAsset}
                     values={project.surfs
-                        .filter((s) => s.artificialLift === caseItem?.artificialLift)
                         .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.surfLink}
                     link={AssetLink.surfLink}
@@ -200,7 +197,6 @@ const CaseAsset = ({
                     assetName="Topside"
                     linkAsset={onSelectAsset}
                     values={project.topsides
-                        .filter((ts) => ts.artificialLift === caseItem?.artificialLift)
                         .map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                     currentValue={caseItem?.topsideLink}
                     link={AssetLink.topsideLink}
