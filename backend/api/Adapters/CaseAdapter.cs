@@ -30,6 +30,7 @@ namespace api.Adapters
                 SubstructureLink = caseDto.SubstructureLink,
                 TransportLink = caseDto.TransportLink,
                 ArtificialLift = caseDto.ArtificialLift,
+                ProductionStrategyOverview = caseDto.ProductionStrategyOverview,
                 ProducerCount = caseDto.ProducerCount,
                 GasInjectorCount = caseDto.GasInjectorCount,
                 WaterInjectorCount = caseDto.WaterInjectorCount,
