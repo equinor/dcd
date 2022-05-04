@@ -185,13 +185,6 @@ function CaseView() {
                         label="Water injector count"
                     />
                     <NumberInput
-                        setValue={setRigMobDemob}
-                        value={rigMobDemob ?? 0}
-                        integer={false}
-                        disabled={isDisabled("rigMobDemob", caseItem)}
-                        label="Rig mob demob"
-                    />
-                    <NumberInput
                         setValue={setFacilitiesAvailability}
                         value={facilitiesAvailability ?? 0}
                         integer
