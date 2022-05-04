@@ -42,8 +42,6 @@ function CaseView() {
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
-    const [riserCount, setRiserCount] = useState<number>()
-    const [templateCount, setTemplateCount] = useState<number>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
@@ -69,8 +67,6 @@ function CaseView() {
             setProducerCount(caseResult?.producerCount)
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
-            setRiserCount(caseResult?.riserCount)
-            setTemplateCount(caseResult?.templateCount)
             setRigMobDemob(caseResult?.rigMobDemob)
             setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
@@ -83,8 +79,6 @@ function CaseView() {
                 caseDto.producerCount = producerCount
                 caseDto.gasInjectorCount = gasInjectorCount
                 caseDto.waterInjectorCount = waterInjectorCount
-                caseDto.riserCount = riserCount
-                caseDto.templateCount = templateCount
                 caseDto.rigMobDemob = rigMobDemob
                 caseDto.facilitiesAvailability = facilitiesAvailability
 
@@ -92,8 +86,7 @@ function CaseView() {
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount,
-        templateCount, rigMobDemob, facilitiesAvailability])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, rigMobDemob, facilitiesAvailability])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -196,22 +189,6 @@ function CaseView() {
                         integer
                         disabled={false}
                         label="Facilities Availability"
-                    />
-                </Wrapper>
-                <Wrapper>
-                    <NumberInput
-                        setValue={setRiserCount}
-                        value={riserCount ?? 0}
-                        integer
-                        disabled={false}
-                        label="Riser count"
-                    />
-                    <NumberInput
-                        setValue={setTemplateCount}
-                        value={templateCount ?? 0}
-                        integer
-                        disabled={false}
-                        label="Template count"
                     />
                 </Wrapper>
                 <CaseAsset
