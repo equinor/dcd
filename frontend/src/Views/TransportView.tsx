@@ -21,6 +21,7 @@ import {
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
 import Maturity from "../Components/Maturity"
+import Unit from "../Components/Unit"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -34,6 +35,8 @@ const TransportView = () => {
     const [gasExportPipelineLength, setGasExportPipelineLength] = useState<number | undefined>()
     const [oilExportPipelineLength, setOilExportPipelineLength] = useState<number | undefined>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
+    const [unitOil, setUnitOil] = useState<Components.Schemas.Unit | undefined>()
+    const [unitGas, setUnitGas] = useState<Components.Schemas.Unit | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -61,6 +64,8 @@ const TransportView = () => {
                 setTransportName(newTransport?.name!)
                 setGasExportPipelineLength(newTransport?.gasExportPipelineLength)
                 setOilExportPipelineLength(newTransport?.oilExportPipelineLength)
+                setUnitGas(newTransport?.gasExportPipelineLengthUnit)
+                setUnitOil(newTransport?.oilExportPipelineLengthUnit)
                 setMaturity(newTransport?.maturity ?? undefined)
 
                 TimeSeriesYears(
@@ -78,10 +83,12 @@ const TransportView = () => {
             const newTransport: Transport = { ...transport }
             newTransport.gasExportPipelineLength = gasExportPipelineLength
             newTransport.oilExportPipelineLength = oilExportPipelineLength
+            newTransport.gasExportPipelineLengthUnit = unitGas
+            newTransport.oilExportPipelineLengthUnit = unitOil
             newTransport.maturity = maturity
             setTransport(newTransport)
         }
-    }, [gasExportPipelineLength, oilExportPipelineLength, maturity])
+    }, [gasExportPipelineLength, oilExportPipelineLength, maturity, unitGas, unitOil])
 
     return (
         <AssetViewDiv>
@@ -109,12 +116,22 @@ const TransportView = () => {
                     integer
                     label="Length of gas export pipeline"
                 />
+                <Unit
+                    setUnit={setUnitGas}
+                    currentValue={unitGas}
+                    setHasChanges={setHasChanges}
+                />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setOilExportPipelineLength}
                     value={oilExportPipelineLength ?? 0}
                     integer
                     label="Length of oil export pipeline"
+                />
+                <Unit
+                    setUnit={setUnitOil}
+                    currentValue={unitOil}
+                    setHasChanges={setHasChanges}
                 />
             </Wrapper>
             <Maturity

@@ -70,6 +70,7 @@ declare namespace Components {
             projectCategory?: ProjectCategory /* int32 */;
         }
         export type Currency = 0 | 1; // int32
+        export type Unit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface DrainageStrategyDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -320,6 +321,8 @@ declare namespace Components {
             maturity?: Maturity /* int32 */;
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
+            gasExportPipelineLengthUnit?: Unit; /* int32 */
+            oilExportPipelineLengthUnit?: Unit; /* int32 */
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid

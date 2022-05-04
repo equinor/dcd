@@ -11,6 +11,8 @@ namespace api.Dtos
         public Maturity Maturity { get; set; }
         public double GasExportPipelineLength { get; set; }
         public double OilExportPipelineLength { get; set; }
+        public Unit GasExportPipelineLengthUnit { get; set; }
+        public Unit OilExportPipelineLengthUnit { get; set; }
     }
 
     public class TransportCostProfileDto : TimeSeriesCostDto

@@ -10,6 +10,8 @@ export class Transport implements Components.Schemas.TransportDto {
     maturity?: Components.Schemas.Maturity | undefined
     gasExportPipelineLength?: number | undefined
     oilExportPipelineLength?: number | undefined
+    gasExportPipelineLengthUnit?: Components.Schemas.Unit | undefined
+    oilExportPipelineLengthUnit?: Components.Schemas.Unit | undefined
 
     constructor(data?: Components.Schemas.TransportDto) {
         if (data !== undefined) {
@@ -22,6 +24,8 @@ export class Transport implements Components.Schemas.TransportDto {
             this.maturity = data.maturity
             this.gasExportPipelineLength = data.gasExportPipelineLength
             this.oilExportPipelineLength = data.oilExportPipelineLength
+            this.gasExportPipelineLengthUnit = data.gasExportPipelineLengthUnit
+            this.oilExportPipelineLengthUnit = data.oilExportPipelineLengthUnit
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""

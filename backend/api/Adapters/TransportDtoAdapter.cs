@@ -17,6 +17,8 @@ namespace api.Adapters
                 Maturity = transport.Maturity,
                 GasExportPipelineLength = transport.GasExportPipelineLength,
                 OilExportPipelineLength = transport.OilExportPipelineLength,
+                GasExportPipelineLengthUnit = transport.GasExportPipelineLengthUnit,
+                OilExportPipelineLengthUnit = transport.OilExportPipelineLengthUnit,
                 CostProfile = Convert(transport.CostProfile),
                 TransportCessationCostProfileDto = Convert(transport.TransportCessationCostProfile)
             };
