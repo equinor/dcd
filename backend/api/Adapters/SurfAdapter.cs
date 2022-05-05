@@ -20,6 +20,9 @@ namespace api.Adapters
                 ProductionFlowline = surfDto.ProductionFlowline,
                 RiserCount = surfDto.RiserCount,
                 TemplateCount = surfDto.TemplateCount,
+                ProducerCount = surfDto.ProducerCount,
+                GasInjectorCount = surfDto.GasInjectorCount,
+                WaterInjectorCount = surfDto.WaterInjectorCount,
             };
 
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
@@ -40,6 +43,9 @@ namespace api.Adapters
             existing.ProductionFlowline = surfDto.ProductionFlowline;
             existing.RiserCount = surfDto.RiserCount;
             existing.TemplateCount = surfDto.TemplateCount;
+            existing.ProducerCount = surfDto.ProducerCount;
+            existing.GasInjectorCount = surfDto.GasInjectorCount;
+            existing.WaterInjectorCount = surfDto.GasInjectorCount;
             existing.CostProfile = Convert(surfDto.CostProfile, existing);
             existing.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, existing);
         }

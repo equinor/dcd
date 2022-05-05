@@ -21,6 +21,9 @@ namespace api.Adapters
                 ProductionFlowline = surf.ProductionFlowline,
                 RiserCount = surf.RiserCount,
                 TemplateCount = surf.TemplateCount,
+                ProducerCount = surf.ProducerCount,
+                GasInjectorCount = surf.GasInjectorCount,
+                WaterInjectorCount = surf.WaterInjectorCount,
                 CostProfile = Convert(surf.CostProfile)
             };
 

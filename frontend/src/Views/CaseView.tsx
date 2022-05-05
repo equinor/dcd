@@ -16,6 +16,7 @@ import CaseName from "../Components/CaseName"
 import CaseDGDate from "../Components/CaseDGDate"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
 import DGEnum from "../models/DGEnum"
+import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 
@@ -39,11 +40,10 @@ function CaseView() {
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
+    const [prodStratOverview, setProdStratOverview] = useState<Components.Schemas.ProductionStrategyOverview>(0)
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
-    const [riserCount, setRiserCount] = useState<number>()
-    const [templateCount, setTemplateCount] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     useEffect(() => {
@@ -62,14 +62,13 @@ function CaseView() {
             const caseResult = project.cases.find((o) => o.id === params.caseId)
             if (caseResult !== undefined) {
                 setArtificialLift(caseResult.artificialLift)
+                setProdStratOverview(caseResult.productionStrategyOverview)
                 setFacilitiesAvailability(caseResult?.facilitiesAvailability)
             }
             setCase(caseResult)
             setProducerCount(caseResult?.producerCount)
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
-            setRiserCount(caseResult?.riserCount)
-            setTemplateCount(caseResult?.templateCount)
             setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
     }, [project])
@@ -81,16 +80,13 @@ function CaseView() {
                 caseDto.producerCount = producerCount
                 caseDto.gasInjectorCount = gasInjectorCount
                 caseDto.waterInjectorCount = waterInjectorCount
-                caseDto.riserCount = riserCount
-                caseDto.templateCount = templateCount
                 caseDto.facilitiesAvailability = facilitiesAvailability
 
                 const newProject = await GetCaseService().updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount,
-        templateCount, facilitiesAvailability])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -158,6 +154,12 @@ function CaseView() {
                     setProject={setProject}
                     caseItem={caseItem}
                 />
+                <ProductionStrategyOverview
+                    currentValue={prodStratOverview}
+                    setProductionStrategyOverview={setProdStratOverview}
+                    setProject={setProject}
+                    caseItem={caseItem}
+                />
                 <Wrapper>
                     <NumberInput
                         setValue={setProducerCount}
@@ -186,22 +188,6 @@ function CaseView() {
                         integer
                         disabled={false}
                         label="Facilities Availability"
-                    />
-                </Wrapper>
-                <Wrapper>
-                    <NumberInput
-                        setValue={setRiserCount}
-                        value={riserCount ?? 0}
-                        integer
-                        disabled={false}
-                        label="Riser count"
-                    />
-                    <NumberInput
-                        setValue={setTemplateCount}
-                        value={templateCount ?? 0}
-                        integer
-                        disabled={false}
-                        label="Template count"
                     />
                 </Wrapper>
                 <CaseAsset
