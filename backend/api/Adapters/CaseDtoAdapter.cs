@@ -30,11 +30,10 @@ namespace api.Adapters
                 TransportLink = case_.TransportLink,
                 ExplorationLink = case_.ExplorationLink,
                 ArtificialLift = case_.ArtificialLift,
+                ProductionStrategyOverview = case_.ProductionStrategyOverview,
                 ProducerCount = case_.ProducerCount,
                 GasInjectorCount = case_.GasInjectorCount,
                 WaterInjectorCount = case_.WaterInjectorCount,
-                RiserCount = case_.RiserCount,
-                TemplateCount = case_.TemplateCount,
                 FacilitiesAvailability = case_.FacilitiesAvailability
             };
 

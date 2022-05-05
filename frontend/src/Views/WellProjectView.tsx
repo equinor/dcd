@@ -32,6 +32,7 @@ function WellProjectView() {
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [annualWellInterventionCost, setAnnualWellInterventionCost] = useState<number>()
     const [pluggingAndAbandonment, setPluggingAndAbandonment] = useState<number>()
+    const [rigMobDemob, setRigMobDemob] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -64,6 +65,7 @@ function WellProjectView() {
 
                 setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
                 setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
+                setRigMobDemob(newWellProject.rigMobDemob)
 
                 TimeSeriesYears(
                     newWellProject,
@@ -79,8 +81,9 @@ function WellProjectView() {
         const newWellProject: WellProject = { ...wellProject }
         newWellProject.annualWellInterventionCost = annualWellInterventionCost
         newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
+        newWellProject.rigMobDemob = rigMobDemob
         setWellProject(newWellProject)
-    }, [annualWellInterventionCost, pluggingAndAbandonment])
+    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob])
 
     return (
         <AssetViewDiv>
@@ -112,10 +115,10 @@ function WellProjectView() {
             </Wrapper>
             <Wrapper>
                 <NumberInput
-                    value={wellProject?.rigMobDemob ?? 0}
+                    setValue={setRigMobDemob}
+                    value={rigMobDemob ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    disabled
                     label="Rig mob demob"
                 />
                 <NumberInput
