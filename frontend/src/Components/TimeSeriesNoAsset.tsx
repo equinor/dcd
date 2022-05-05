@@ -7,7 +7,6 @@ import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
 } from "./DataTable/helpers"
 import Import from "./Import/Import"
-import { Case } from "../models/Case"
 import { ITimeSeries } from "../models/ITimeSeries"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
@@ -42,12 +41,10 @@ const TimeSeriesNoAsset = ({
         if (updatedTimeSeries !== undefined && timeSeries !== undefined) {
             let tempEarliest = earliestYear
             let tempLatest = latestYear
-            console.log("Earliest", earliestYear)
 
             if ((Number(updatedTimeSeries.startYear)
             + Number(dG4Year!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
                 tempEarliest = (Number(updatedTimeSeries.startYear) + Number(dG4Year!))
-                console.log("Entered if")
                 setEarliestYear((Number(updatedTimeSeries.startYear) + Number(dG4Year!)))
             }
             if ((Number(updatedTimeSeries.startYear)

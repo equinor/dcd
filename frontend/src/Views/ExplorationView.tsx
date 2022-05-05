@@ -69,7 +69,6 @@ const ExplorationView = () => {
                 setGAndGAdminCost(newExploration.gAndGAdminCost)
 
                 if (caseResult?.DG4Date) {
-                    console.log("Entered if in asset")
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
                         [newExploration.costProfile, newExploration.drillingSchedule, newExploration.gAndGAdminCost],

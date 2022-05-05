@@ -1,4 +1,3 @@
-import { Case } from "../../models/Case"
 import { CellValue } from "./DataTable"
 
 export const generateEmptyGridWithRowTitles = (rowTitles: string[]) => {
