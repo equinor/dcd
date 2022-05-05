@@ -140,9 +140,6 @@ export const initializeFirstAndLastYear = (
     setLastYear: Dispatch<SetStateAction<number | undefined>>,
 ) => {
     let years: [number, number] = [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
-
-    const firstYear = Number.MAX_SAFE_INTEGER
-    const lastYear = Number.MIN_SAFE_INTEGER
     timeSeries.forEach((ts) => {
         if (ts) {
             years = setYears(years, ts, dG4, setFirstYear, setLastYear)
