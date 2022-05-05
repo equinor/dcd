@@ -16,7 +16,7 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear, TimeSeriesYears } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import TimeSeriesNoAsset from "../Components/TimeSeriesNoAsset"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
@@ -30,8 +30,8 @@ const ExplorationView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [name, setName] = useState<string>("")
     const params = useParams()
-    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>(Number.MAX_SAFE_INTEGER)
-    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>(Number.MIN_SAFE_INTEGER)
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [wellType, setWellType] = useState<Components.Schemas.WellType>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
     const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingScheduleDto>()
@@ -42,6 +42,7 @@ const ExplorationView = () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
+                // (earliest, latest) = GetYears([]: ITimeseries)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
@@ -52,34 +53,31 @@ const ExplorationView = () => {
         (async () => {
             if (project !== undefined) {
                 const caseResult = project.cases.find((o) => o.id === params.caseId)
-                if (caseResult !== undefined) {
-                    setCase(caseResult)
-                    let newExploration: Exploration = project!.explorations.find((s) => s.id === params.explorationId)
-                    if (newExploration !== undefined) {
-                        setExploration(newExploration)
-                    } else {
-                        newExploration = new Exploration()
-                        newExploration.rigMobDemob = caseResult?.rigMobDemob
-                        setExploration(newExploration)
-                    }
-                    setName(newExploration?.name!)
+                setCase(caseResult)
+                let newExploration: Exploration = project!.explorations.find((s) => s.id === params.explorationId)
+                if (newExploration !== undefined) {
+                    setExploration(newExploration)
+                } else {
+                    newExploration = new Exploration()
+                    newExploration.rigMobDemob = caseResult?.rigMobDemob
+                    setExploration(newExploration)
+                }
+                setName(newExploration?.name!)
 
-                    setWellType(newExploration.wellType)
+                setWellType(newExploration.wellType)
 
-                    setCostProfile(newExploration.costProfile)
-                    setDrillingSchedule(newExploration.drillingSchedule)
-                    setGAndGAdminCost(newExploration.gAndGAdminCost)
+                setCostProfile(newExploration.costProfile)
+                setDrillingSchedule(newExploration.drillingSchedule)
+                setGAndGAdminCost(newExploration.gAndGAdminCost)
 
-                    if (earliestTimeSeriesYear) {
-                        setCostProfile(newExploration.costProfile)
-                        setDrillingSchedule(newExploration.drillingSchedule)
-                        setGAndGAdminCost(newExploration.gAndGAdminCost)
-                        // setEarliestTimeSeriesYear(Math.min(
-                        //     newExploration.costProfile?.startYear,
-                        //     newExploration.drillingSchedule?.startYear,
-                        //     newExploration.gAndGAdminCost?.startYear,
-                        //     ) + caseResult.DG4Date.getFullYear())
-                    }
+                if (caseResult?.DG4Date) {
+                    console.log("Entered if in asset")
+                    initializeFirstAndLastYear(
+                        caseResult?.DG4Date?.getFullYear(),
+                        [newExploration.costProfile, newExploration.drillingSchedule, newExploration.gAndGAdminCost],
+                        setEarliestTimeSeriesYear,
+                        setLatestTimeSeriesYear,
+                    )
                 }
 
                 // TimeSeriesYears(
@@ -99,7 +97,7 @@ const ExplorationView = () => {
         newExploration.drillingSchedule = drillingSchedule
         newExploration.gAndGAdminCost = gAndGAdminCost
         setExploration(newExploration)
-    }, [wellType, costProfile, drillingSchedule, gAndGAdminCost, earliestTimeSeriesYear, latestTimeSeriesYear])
+    }, [wellType, costProfile, drillingSchedule, gAndGAdminCost])
 
     const onWellTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
         switch (event.currentTarget.selectedOptions[0].value) {

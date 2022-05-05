@@ -109,3 +109,54 @@ export const GetArtificialLiftName = (value: number | undefined): string => {
         return ""
     }
 }
+
+const setYears = (
+    years: [number, number],
+    timeSeries: ITimeSeries,
+    dG4Year: number,
+    setFirstYear: Dispatch<SetStateAction<number | undefined>>,
+    setLastYear: Dispatch<SetStateAction<number | undefined>>,
+): [number, number] => {
+    const newYears = years
+    if (timeSeries.startYear !== undefined && timeSeries.values !== undefined) {
+        if (timeSeries.startYear + dG4Year < years[0]) {
+            setFirstYear(timeSeries.startYear + dG4Year)
+            newYears[0] = timeSeries.startYear + dG4Year
+        }
+
+        if (timeSeries.startYear + dG4Year + timeSeries.values.length > years[1]) {
+            setLastYear(timeSeries.startYear + dG4Year + timeSeries.values.length)
+            newYears[1] = timeSeries.startYear + dG4Year + timeSeries.values.length
+        }
+    }
+
+    return newYears
+}
+
+export const initializeFirstAndLastYear = (
+    dG4: number,
+    timeSeries: (ITimeSeries | undefined)[],
+    setFirstYear: Dispatch<SetStateAction<number | undefined>>,
+    setLastYear: Dispatch<SetStateAction<number | undefined>>,
+) => {
+    let years: [number, number] = [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
+
+    const firstYear = Number.MAX_SAFE_INTEGER
+    const lastYear = Number.MIN_SAFE_INTEGER
+    timeSeries.forEach((ts) => {
+        // if (ts.startYear && ts.startYear < firstYear) {
+        //     firstYear = ts.startYear
+        // }
+        // if (ts.startYear && ts.values && ts.startYear + ts.values.length > lastYear) {
+        //     lastYear = ts.startYear + ts.values.length
+        // }
+        if (ts) {
+            years = setYears(years, ts, dG4, setFirstYear, setLastYear)
+        }
+    })
+
+    // years[0] = firstYear + dG4
+    // years[1] = lastYear + dG4
+
+    return years
+}

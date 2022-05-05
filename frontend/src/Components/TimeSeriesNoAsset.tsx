@@ -18,8 +18,8 @@ interface Props {
     timeSeriesTitle: string,
     earliestYear: number | undefined,
     latestYear: number | undefined,
-    setEarliestYear: Dispatch<SetStateAction<number>>,
-    setLatestYear: Dispatch<SetStateAction<number>>,
+    setEarliestYear: Dispatch<SetStateAction<number | undefined>>,
+    setLatestYear: Dispatch<SetStateAction<number | undefined>>,
     timeSeries: ITimeSeries | undefined
 }
 
