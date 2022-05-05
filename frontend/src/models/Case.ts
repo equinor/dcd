@@ -52,7 +52,6 @@ export class Case implements Components.Schemas.CaseDto {
         this.producerCount = data.producerCount
         this.gasInjectorCount = data.gasInjectorCount
         this.waterInjectorCount = data.waterInjectorCount
-        this.rigMobDemob = data.rigMobDemob
         this.facilitiesAvailability = data.facilitiesAvailability
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
     }

@@ -44,7 +44,6 @@ function CaseView() {
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
-    const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     useEffect(() => {
@@ -70,7 +69,6 @@ function CaseView() {
             setProducerCount(caseResult?.producerCount)
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
-            setRigMobDemob(caseResult?.rigMobDemob)
             setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
     }, [project])
@@ -82,14 +80,13 @@ function CaseView() {
                 caseDto.producerCount = producerCount
                 caseDto.gasInjectorCount = gasInjectorCount
                 caseDto.waterInjectorCount = waterInjectorCount
-                caseDto.rigMobDemob = rigMobDemob
                 caseDto.facilitiesAvailability = facilitiesAvailability
 
                 const newProject = await GetCaseService().updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, rigMobDemob, facilitiesAvailability])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -184,13 +181,6 @@ function CaseView() {
                         integer
                         disabled={false}
                         label="Water injector count"
-                    />
-                    <NumberInput
-                        setValue={setRigMobDemob}
-                        value={rigMobDemob ?? 0}
-                        integer={false}
-                        disabled={false}
-                        label="Rig mob demob"
                     />
                     <NumberInput
                         setValue={setFacilitiesAvailability}
