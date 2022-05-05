@@ -178,9 +178,6 @@ public static class SampleAssetGenerator
                 RigMobDemob = 100.0,
                 AnnualWellInterventionCost = 200.0,
                 PluggingAndAbandonment = 300.0,
-                ProducerCount = 2,
-                GasInjectorCount = 3,
-                WaterInjectorCount = 4,
                 ArtificialLift = ArtificialLift.GasLift
             }
                 .WithWellProjectCostProfile(new WellProjectCostProfile
