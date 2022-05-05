@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -11,7 +11,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
