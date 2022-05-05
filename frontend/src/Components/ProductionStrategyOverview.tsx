@@ -28,36 +28,36 @@ const ProductionStrategyOverview = ({
     currentValue,
 }: Props) => {
     const onChange = async (event: ChangeEvent<HTMLSelectElement>) => {
-        let al:Components.Schemas.ProductionStrategyOverview
+        let pso:Components.Schemas.ProductionStrategyOverview
         switch (event.currentTarget.selectedOptions[0].value) {
         case "0":
             setProductionStrategyOverview(0)
-            al = 0
+            pso = 0
             break
         case "1":
             setProductionStrategyOverview(1)
-            al = 1
+            pso = 1
             break
         case "2":
             setProductionStrategyOverview(2)
-            al = 2
+            pso = 2
             break
         case "3":
             setProductionStrategyOverview(3)
-            al = 3
+            pso = 3
             break
         case "4":
             setProductionStrategyOverview(4)
-            al = 4
+            pso = 4
             break
         default:
-            al = 0
+            pso = 0
             setProductionStrategyOverview(0)
             break
         }
         if (caseItem !== undefined) {
             const newCase = Case.Copy(caseItem)
-            newCase.productionStrategyOverview = al
+            newCase.productionStrategyOverview = pso
             const newProject = await GetCaseService().updateCase(newCase)
             setProject(newProject)
         }
