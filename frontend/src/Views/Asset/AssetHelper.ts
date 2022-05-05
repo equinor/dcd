@@ -114,18 +114,14 @@ const setYears = (
     years: [number, number],
     timeSeries: ITimeSeries,
     dG4Year: number,
-    setFirstYear: Dispatch<SetStateAction<number | undefined>>,
-    setLastYear: Dispatch<SetStateAction<number | undefined>>,
 ): [number, number] => {
     const newYears = years
     if (timeSeries.startYear !== undefined && timeSeries.values !== undefined) {
-        if (timeSeries.startYear + dG4Year < years[0]) {
-            setFirstYear(Number(timeSeries.startYear) + Number(dG4Year))
+        if (Number(timeSeries.startYear) + dG4Year < years[0]) {
             newYears[0] = Number(timeSeries.startYear) + Number(dG4Year)
         }
 
-        if (timeSeries.startYear + dG4Year + timeSeries.values.length > years[1]) {
-            setLastYear(Number(timeSeries.startYear) + Number(dG4Year) + Number(timeSeries.values.length))
+        if (Number(timeSeries.startYear) + dG4Year + timeSeries.values.length > years[1]) {
             newYears[1] = Number(timeSeries.startYear) + Number(dG4Year) + Number(timeSeries.values.length)
         }
     }
@@ -142,7 +138,10 @@ export const initializeFirstAndLastYear = (
     let years: [number, number] = [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
     timeSeries.forEach((ts) => {
         if (ts) {
-            years = setYears(years, ts, dG4, setFirstYear, setLastYear)
+            years = setYears(years, ts, dG4)
         }
     })
+
+    setFirstYear(years[0])
+    setLastYear(years[1])
 }

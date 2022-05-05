@@ -30,8 +30,8 @@ const ExplorationView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [name, setName] = useState<string>("")
     const params = useParams()
-    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
-    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [firstTSYear, setFirstTSYear] = useState<number>()
+    const [lastTSYear, setLastTSYear] = useState<number>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
     const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingScheduleDto>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCostDto>()
@@ -72,8 +72,8 @@ const ExplorationView = () => {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
                         [newExploration.costProfile, newExploration.drillingSchedule, newExploration.gAndGAdminCost],
-                        setEarliestTimeSeriesYear,
-                        setLatestTimeSeriesYear,
+                        setFirstTSYear,
+                        setLastTSYear,
                     )
                 }
             }
@@ -91,9 +91,9 @@ const ExplorationView = () => {
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [newExploration.costProfile, newExploration.drillingSchedule, newExploration.gAndGAdminCost],
-                setEarliestTimeSeriesYear,
-                setLatestTimeSeriesYear,
+                [costProfile, drillingSchedule, gAndGAdminCost],
+                setFirstTSYear,
+                setLastTSYear,
             )
         }
     }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost])
@@ -128,10 +128,10 @@ const ExplorationView = () => {
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
                 timeSeriesTitle="Cost profile"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
             <TimeSeriesNoAsset
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
@@ -139,10 +139,10 @@ const ExplorationView = () => {
                 setHasChanges={setHasChanges}
                 timeSeries={drillingSchedule}
                 timeSeriesTitle="Drilling schedule"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
             <TimeSeriesNoAsset
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
@@ -150,10 +150,10 @@ const ExplorationView = () => {
                 setHasChanges={setHasChanges}
                 timeSeries={gAndGAdminCost}
                 timeSeriesTitle="G and g admin cost"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
             <Save
                 name={name}

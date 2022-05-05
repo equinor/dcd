@@ -15,10 +15,10 @@ interface Props {
     setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     setHasChanges: Dispatch<SetStateAction<boolean>>,
     timeSeriesTitle: string,
-    earliestYear: number | undefined,
-    latestYear: number | undefined,
-    setEarliestYear: Dispatch<SetStateAction<number | undefined>>,
-    setLatestYear: Dispatch<SetStateAction<number | undefined>>,
+    firstYear: number | undefined,
+    lastYear: number | undefined,
+    setFirstYear: Dispatch<SetStateAction<number | undefined>>,
+    setLastYear: Dispatch<SetStateAction<number | undefined>>,
     timeSeries: ITimeSeries | undefined
 }
 
@@ -28,10 +28,10 @@ const TimeSeriesNoAsset = ({
     setHasChanges,
     timeSeries,
     timeSeriesTitle,
-    earliestYear,
-    latestYear,
-    setEarliestYear,
-    setLatestYear,
+    firstYear,
+    lastYear,
+    setFirstYear,
+    setLastYear,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -40,8 +40,8 @@ const TimeSeriesNoAsset = ({
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (updatedTimeSeries !== undefined && timeSeries !== undefined) {
             const columnTitles: string[] = []
-            if (earliestYear !== undefined && latestYear !== undefined) {
-                for (let i = earliestYear; i < latestYear; i += 1) {
+            if (firstYear !== undefined && lastYear !== undefined) {
+                for (let i = firstYear; i < lastYear; i += 1) {
                     columnTitles.push(i.toString())
                 }
             }
@@ -49,11 +49,11 @@ const TimeSeriesNoAsset = ({
 
             const zeroesAtStart = Array.from({
                 length: Number(timeSeries!.startYear!)
-                + Number(dG4Year) - Number(earliestYear),
+                + Number(dG4Year) - Number(firstYear),
             }, (() => 0))
 
             const zeroesAtEnd = Array.from({
-                length: Number(latestYear)
+                length: Number(lastYear)
                 - (Number(timeSeries!.startYear!)
                 + Number(dG4Year)
                 + Number(timeSeries!.values!.length!)),
@@ -75,7 +75,7 @@ const TimeSeriesNoAsset = ({
 
     useEffect(() => {
         buildAlignedGrid(timeSeries!)
-    }, [timeSeries, latestYear, earliestYear])
+    }, [timeSeries, lastYear, firstYear])
 
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
@@ -90,13 +90,13 @@ const TimeSeriesNoAsset = ({
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setTimeSeries(newTimeSeries)
         if ((Number(year)
-        + Number(dG4Year!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
-            setEarliestYear((Number(year) + Number(dG4Year!)))
+        + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
+            setFirstYear((Number(year) + Number(dG4Year!)))
         }
         if ((Number(year)
         + Number(dG4Year!)
-        + Number(newTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
-            setLatestYear(Number(year)
+        + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
+            setLastYear(Number(year)
             + Number(dG4Year!) + Number(newTimeSeries.values.length))
         }
         buildAlignedGrid(newTimeSeries)
