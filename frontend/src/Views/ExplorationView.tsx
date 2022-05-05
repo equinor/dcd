@@ -1,7 +1,7 @@
 import {
-    Input, NativeSelect, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
-import { ChangeEvent, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
@@ -16,7 +16,7 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { initializeFirstAndLastYear, TimeSeriesYears } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import TimeSeriesNoAsset from "../Components/TimeSeriesNoAsset"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
