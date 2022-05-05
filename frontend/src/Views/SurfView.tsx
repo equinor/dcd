@@ -34,6 +34,9 @@ const SurfView = () => {
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [riserCount, setRiserCount] = useState<number | undefined>()
     const [templateCount, setTemplateCount] = useState<number | undefined>()
+    const [producerCount, setProducerCount] = useState<number | undefined>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number | undefined>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number | undefined>()
     const [infieldPipelineSystemLength, setInfieldPipelineSystemLength] = useState<number | undefined>()
     const [umbilicalSystemLength, setUmbilicalSystemLength] = useState<number | undefined>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
@@ -61,13 +64,17 @@ const SurfView = () => {
                 } else {
                     newSurf = new Surf()
                     newSurf.artificialLift = caseResult?.artificialLift
-                    newSurf.riserCount = caseResult?.riserCount
-                    newSurf.templateCount = caseResult?.templateCount
+                    newSurf.producerCount = caseResult?.producerCount
+                    newSurf.gasInjectorCount = caseResult?.gasInjectorCount
+                    newSurf.waterInjectorCount = caseResult?.waterInjectorCount
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
                 setRiserCount(newSurf?.riserCount)
                 setTemplateCount(newSurf?.templateCount)
+                setProducerCount(newSurf?.producerCount)
+                setGasInjectorCount(newSurf?.gasInjectorCount)
+                setWaterInjectorCount(newSurf?.waterInjectorCount)
                 setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
                 setUmbilicalSystemLength(newSurf?.umbilicalSystemLength)
                 setMaturity(newSurf.maturity ?? undefined)
@@ -88,13 +95,17 @@ const SurfView = () => {
             const newSurf: Surf = { ...surf }
             newSurf.riserCount = riserCount
             newSurf.templateCount = templateCount
+            newSurf.producerCount = producerCount
+            newSurf.gasInjectorCount = gasInjectorCount
+            newSurf.waterInjectorCount = waterInjectorCount
             newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
             newSurf.umbilicalSystemLength = umbilicalSystemLength
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             setSurf(newSurf)
         }
-    }, [riserCount, templateCount, infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline])
+    }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
+        infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline])
 
     return (
         <AssetViewDiv>
@@ -128,10 +139,35 @@ const SurfView = () => {
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
+                    setValue={setProducerCount}
+                    value={producerCount ?? 0}
+                    integer
+                    disabled
+                    label="Producer count"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setGasInjectorCount}
+                    value={gasInjectorCount ?? 0}
+                    integer
+                    disabled
+                    label="Gas injector count"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setWaterInjectorCount}
+                    value={waterInjectorCount ?? 0}
+                    integer
+                    disabled
+                    label="Water injector count"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
                     setValue={setRiserCount}
                     value={riserCount ?? 0}
                     integer
-                    disabled
                     label="Riser count"
                 />
                 <NumberInput
@@ -139,7 +175,6 @@ const SurfView = () => {
                     setValue={setTemplateCount}
                     value={templateCount ?? 0}
                     integer
-                    disabled
                     label="Template count"
                 />
                 <NumberInput

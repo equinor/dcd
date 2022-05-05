@@ -13,6 +13,9 @@ export class Surf implements Components.Schemas.SurfDto {
     artificialLift?: Components.Schemas.ArtificialLift | undefined
     riserCount?: number | undefined
     templateCount?: number | undefined
+    producerCount?: number | undefined
+    gasInjectorCount?: number | undefined
+    waterInjectorCount?: number | undefined
     productionFlowline?: Components.Schemas.ProductionFlowline | undefined
 
     constructor(data?: Components.Schemas.SurfDto) {
@@ -28,6 +31,9 @@ export class Surf implements Components.Schemas.SurfDto {
             this.artificialLift = data.artificialLift
             this.riserCount = data.riserCount
             this.templateCount = data.templateCount
+            this.producerCount = data.producerCount
+            this.gasInjectorCount = data.gasInjectorCount
+            this.waterInjectorCount = data.waterInjectorCount
             this.productionFlowline = data.productionFlowline
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"

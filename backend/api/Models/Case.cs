@@ -19,11 +19,10 @@ namespace api.Models
         public DateTimeOffset DG4Date { get; set; }
         public Project Project { get; set; } = null!;
         public ArtificialLift ArtificialLift { get; set; }
+        public ProductionStrategyOverview ProductionStrategyOverview { get; set; }
         public int ProducerCount { get; set; }
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }
-        public int RiserCount { get; set; }
-        public int TemplateCount { get; set; }
         public double RigMobDemob { get; set; }
         public double FacilitiesAvailability { get; set; }
         public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
@@ -41,6 +40,14 @@ namespace api.Models
         GasLift,
         ElectricalSubmergedPumps,
         SubseaBoosterPumps
+    }
+    public enum ProductionStrategyOverview
+    {
+        Depletion,
+        WaterInjection,
+        GasInjection,
+        WAG,
+        Mixed
     }
     public class CessationCost : TimeSeriesCost
     {
