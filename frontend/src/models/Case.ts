@@ -25,7 +25,6 @@ export class Case implements Components.Schemas.CaseDto {
     waterInjectorCount?: number
     riserCount?: number
     templateCount?: number
-    rigMobDemob?: number
     facilitiesAvailability?: number
 
     constructor(data: Components.Schemas.CaseDto) {
@@ -55,7 +54,6 @@ export class Case implements Components.Schemas.CaseDto {
         this.waterInjectorCount = data.waterInjectorCount
         this.riserCount = data.riserCount
         this.templateCount = data.templateCount
-        this.rigMobDemob = data.rigMobDemob
         this.facilitiesAvailability = data.facilitiesAvailability
     }
 

@@ -58,7 +58,6 @@ function WellProjectView() {
                     newWellProject.producerCount = caseResult?.producerCount
                     newWellProject.gasInjectorCount = caseResult?.gasInjectorCount
                     newWellProject.waterInjectorCount = caseResult?.waterInjectorCount
-                    newWellProject.rigMobDemob = caseResult?.rigMobDemob
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)

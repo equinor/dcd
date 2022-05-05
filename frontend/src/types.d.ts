@@ -24,7 +24,6 @@ declare namespace Components {
             waterInjectorCount?: number; // int32
             riserCount?: number; // int32
             templateCount?: number; // int32
-            rigMobDemob?: number; // double
             dG0Date?: string; // date-time
             facilitiesAvailability?: number; // double
             dG1Date?: string; // date-time

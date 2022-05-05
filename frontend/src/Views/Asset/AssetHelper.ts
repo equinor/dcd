@@ -144,19 +144,8 @@ export const initializeFirstAndLastYear = (
     const firstYear = Number.MAX_SAFE_INTEGER
     const lastYear = Number.MIN_SAFE_INTEGER
     timeSeries.forEach((ts) => {
-        // if (ts.startYear && ts.startYear < firstYear) {
-        //     firstYear = ts.startYear
-        // }
-        // if (ts.startYear && ts.values && ts.startYear + ts.values.length > lastYear) {
-        //     lastYear = ts.startYear + ts.values.length
-        // }
         if (ts) {
             years = setYears(years, ts, dG4, setFirstYear, setLastYear)
         }
     })
-
-    // years[0] = firstYear + dG4
-    // years[1] = lastYear + dG4
-
-    return years
 }

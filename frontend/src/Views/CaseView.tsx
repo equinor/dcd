@@ -44,7 +44,6 @@ function CaseView() {
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
     const [riserCount, setRiserCount] = useState<number>()
     const [templateCount, setTemplateCount] = useState<number>()
-    const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     useEffect(() => {
@@ -71,7 +70,6 @@ function CaseView() {
             setWaterInjectorCount(caseResult?.waterInjectorCount)
             setRiserCount(caseResult?.riserCount)
             setTemplateCount(caseResult?.templateCount)
-            setRigMobDemob(caseResult?.rigMobDemob)
             setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
     }, [project])
@@ -85,7 +83,6 @@ function CaseView() {
                 caseDto.waterInjectorCount = waterInjectorCount
                 caseDto.riserCount = riserCount
                 caseDto.templateCount = templateCount
-                caseDto.rigMobDemob = rigMobDemob
                 caseDto.facilitiesAvailability = facilitiesAvailability
 
                 const newProject = await GetCaseService().updateCase(caseDto)
@@ -93,7 +90,7 @@ function CaseView() {
             }
         })()
     }, [producerCount, gasInjectorCount, waterInjectorCount, riserCount,
-        templateCount, rigMobDemob, facilitiesAvailability])
+        templateCount, facilitiesAvailability])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
@@ -182,13 +179,6 @@ function CaseView() {
                         integer
                         disabled={false}
                         label="Water injector count"
-                    />
-                    <NumberInput
-                        setValue={setRigMobDemob}
-                        value={rigMobDemob ?? 0}
-                        integer={false}
-                        disabled={false}
-                        label="Rig mob demob"
                     />
                     <NumberInput
                         setValue={setFacilitiesAvailability}

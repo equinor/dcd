@@ -32,17 +32,16 @@ const ExplorationView = () => {
     const params = useParams()
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
-    const [wellType, setWellType] = useState<Components.Schemas.WellType>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
     const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingScheduleDto>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCostDto>()
+    const [rigMobDemob, setRigMobDemob] = useState<number>()
 
     useEffect(() => {
         (async () => {
             try {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
-                // (earliest, latest) = GetYears([]: ITimeseries)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
@@ -59,12 +58,11 @@ const ExplorationView = () => {
                     setExploration(newExploration)
                 } else {
                     newExploration = new Exploration()
-                    newExploration.rigMobDemob = caseResult?.rigMobDemob
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
 
-                setWellType(newExploration.wellType)
+                setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
                 setDrillingSchedule(newExploration.drillingSchedule)
@@ -79,41 +77,18 @@ const ExplorationView = () => {
                         setLatestTimeSeriesYear,
                     )
                 }
-
-                // TimeSeriesYears(
-                //     newExploration,
-                //     caseResult!.DG4Date!.getFullYear(),
-                //     setEarliestTimeSeriesYear,
-                //     setLatestTimeSeriesYear,
-                // )
             }
         })()
     }, [project])
 
     useEffect(() => {
         const newExploration: Exploration = { ...exploration }
-        newExploration.wellType = wellType
+        newExploration.rigMobDemob = rigMobDemob
         newExploration.costProfile = costProfile
         newExploration.drillingSchedule = drillingSchedule
         newExploration.gAndGAdminCost = gAndGAdminCost
         setExploration(newExploration)
-    }, [wellType, costProfile, drillingSchedule, gAndGAdminCost])
-
-    const onWellTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        switch (event.currentTarget.selectedOptions[0].value) {
-        case "0":
-            setWellType(0)
-            setHasChanges(true)
-            break
-        case "1":
-            setWellType(1)
-            setHasChanges(true)
-            break
-        default:
-            break
-        }
-    }
-
+    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost])
     return (
         <AssetViewDiv>
             <Typography variant="h2">Exploration</Typography>
@@ -128,22 +103,14 @@ const ExplorationView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
-            <NativeSelect
-                id="wellType"
-                label="Well type"
-                onChange={(event: ChangeEvent<HTMLSelectElement>) => onWellTypeChange(event)}
-                value={wellType}
-            >
-                <option value={0}>Oil</option>
-                <option value={1}>Gas</option>
-            </NativeSelect>
             <Wrapper>
                 <NumberInput
-                    value={exploration?.rigMobDemob ?? 0}
+                    setValue={setRigMobDemob}
+                    value={rigMobDemob ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    disabled
-                    label="Rig Mob Demob"
+                    disabled={false}
+                    label="Rig mob demob"
                 />
             </Wrapper>
             <TimeSeriesNoAsset
