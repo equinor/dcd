@@ -8,19 +8,20 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
-import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Transport } from "../models/assets/transport/Transport"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTransportService } from "../Services/TransportService"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
 import Maturity from "../Components/Maturity"
+import { TransportCostProfile } from "../models/assets/transport/TransportCostProfile"
+import { TransportCessationCostProfile } from "../models/assets/transport/TransportCessationCostProfile"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -29,11 +30,13 @@ const TransportView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [transportName, setTransportName] = useState<string>("")
     const params = useParams()
-    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
-    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [firstTSYear, setFirstTSYear] = useState<number>()
+    const [lastTSYear, setLastTSYear] = useState<number>()
     const [gasExportPipelineLength, setGasExportPipelineLength] = useState<number | undefined>()
     const [oilExportPipelineLength, setOilExportPipelineLength] = useState<number | undefined>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
+    const [costProfile, setCostProfile] = useState<TransportCostProfile>()
+    const [cessationCostProfile, setCessationCostProfile] = useState<TransportCessationCostProfile>()
 
     useEffect(() => {
         (async () => {
@@ -63,12 +66,17 @@ const TransportView = () => {
                 setOilExportPipelineLength(newTransport?.oilExportPipelineLength)
                 setMaturity(newTransport?.maturity ?? undefined)
 
-                TimeSeriesYears(
-                    newTransport,
-                    caseResult!.DG4Date!.getFullYear(),
-                    setEarliestTimeSeriesYear,
-                    setLatestTimeSeriesYear,
-                )
+                setCostProfile(newTransport.costProfile)
+                setCessationCostProfile(newTransport.cessationCostProfile)
+
+                if (caseResult?.DG4Date) {
+                    initializeFirstAndLastYear(
+                        caseResult?.DG4Date?.getFullYear(),
+                        [newTransport.costProfile, newTransport.cessationCostProfile],
+                        setFirstTSYear,
+                        setLastTSYear,
+                    )
+                }
             }
         })()
     }, [project])
@@ -79,6 +87,17 @@ const TransportView = () => {
             newTransport.gasExportPipelineLength = gasExportPipelineLength
             newTransport.oilExportPipelineLength = oilExportPipelineLength
             newTransport.maturity = maturity
+            newTransport.costProfile = costProfile
+            newTransport.cessationCostProfile = cessationCostProfile
+
+            if (caseItem?.DG4Date) {
+                initializeFirstAndLastYear(
+                    caseItem?.DG4Date?.getFullYear(),
+                    [costProfile, cessationCostProfile],
+                    setFirstTSYear,
+                    setLastTSYear,
+                )
+            }
             setTransport(newTransport)
         }
     }, [gasExportPipelineLength, oilExportPipelineLength, maturity])
@@ -123,30 +142,26 @@ const TransportView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setTransport}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                asset={transport}
-                timeSeriesType={TimeSeriesEnum.costProfile}
-                assetName={transportName}
+                timeSeries={costProfile}
                 timeSeriesTitle="Cost profile"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setTransport}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
-                asset={transport}
-                timeSeriesType={TimeSeriesEnum.transportCessationCostProfileDto}
-                assetName={transportName}
-                timeSeriesTitle="Cessation Cost profile"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={cessationCostProfile}
+                timeSeriesTitle="Cessation cost profile"
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
             <Save
                 name={transportName}

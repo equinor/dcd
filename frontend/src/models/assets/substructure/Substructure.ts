@@ -1,12 +1,13 @@
 import { SubstructureCostProfile } from "./SubstructureCostProfile"
 import { SubstructureCessationCostProfile } from "./SubstructureCessationCostProfile"
+import { IAsset } from "../IAsset"
 
-export class Substructure implements Components.Schemas.SubstructureDto {
+export class Substructure implements Components.Schemas.SubstructureDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: SubstructureCostProfile | undefined
-    substructureCessationCostProfileDto?: SubstructureCessationCostProfile | undefined
+    cessationCostProfile?: SubstructureCessationCostProfile | undefined
     dryweight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
 
@@ -16,8 +17,8 @@ export class Substructure implements Components.Schemas.SubstructureDto {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = SubstructureCostProfile.fromJSON(data.costProfile)
-            this.substructureCessationCostProfileDto = SubstructureCessationCostProfile
-                .fromJSON(data.substructureCessationCostProfileDto)
+            this.cessationCostProfile = SubstructureCessationCostProfile
+                .fromJSON(data.cessationCostProfile)
             this.dryweight = data.dryWeight
             this.maturity = data.maturity
         } else {

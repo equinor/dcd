@@ -19,7 +19,7 @@ namespace api.Adapters
                 ArtificialLift = topside.ArtificialLift,
                 Maturity = topside.Maturity,
                 CostProfile = Convert(topside.CostProfile),
-                TopsideCessationCostProfileDto = Convert(topside.TopsideCessationCostProfile)
+                CessationCostProfile = Convert(topside.CessationCostProfile)
             };
             return topsideDto;
         }

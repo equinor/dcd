@@ -1,7 +1,9 @@
-export class WellProjectCostProfileDto implements Components.Schemas.WellProjectCostProfileDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class WellProjectCostProfile implements Components.Schemas.WellProjectCostProfileDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
@@ -22,10 +24,10 @@ export class WellProjectCostProfileDto implements Components.Schemas.WellProject
         }
     }
 
-    static fromJSON(data?: Components.Schemas.WellProjectCostProfileDto): WellProjectCostProfileDto | undefined {
+    static fromJSON(data?: Components.Schemas.WellProjectCostProfileDto): WellProjectCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new WellProjectCostProfileDto(data)
+        return new WellProjectCostProfile(data)
     }
 }
