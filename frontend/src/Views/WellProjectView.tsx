@@ -117,7 +117,7 @@ function WellProjectView() {
                     value={rigMobDemob ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    label="Rig mob demob"
+                    label="Rig mob demob "
                 />
                 <NumberInput
                     setValue={setAnnualWellInterventionCost}
