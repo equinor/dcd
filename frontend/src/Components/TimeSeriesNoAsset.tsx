@@ -18,8 +18,8 @@ interface Props {
     timeSeriesTitle: string,
     earliestYear: number | undefined,
     latestYear: number | undefined,
-    setEarliestYear: Dispatch<SetStateAction<number | undefined>>,
-    setLatestYear: Dispatch<SetStateAction<number | undefined>>,
+    setEarliestYear: Dispatch<SetStateAction<number>>,
+    setLatestYear: Dispatch<SetStateAction<number>>,
     timeSeries: ITimeSeries | undefined
 }
 
@@ -40,19 +40,39 @@ const TimeSeriesNoAsset = ({
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (updatedTimeSeries !== undefined && timeSeries !== undefined) {
+            let tempEarliest = earliestYear
+            let tempLatest = latestYear
+            console.log("Earliest", earliestYear)
+
+            if ((Number(updatedTimeSeries.startYear)
+            + Number(dG4Year!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
+                tempEarliest = (Number(updatedTimeSeries.startYear) + Number(dG4Year!))
+                console.log("Entered if")
+                setEarliestYear((Number(updatedTimeSeries.startYear) + Number(dG4Year!)))
+            }
+            if ((Number(updatedTimeSeries.startYear)
+            + Number(dG4Year!)
+            + Number(updatedTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
+                tempLatest = Number(updatedTimeSeries.startYear)
+                + Number(dG4Year!) + Number(updatedTimeSeries.values!.length)
+
+                setLatestYear(Number(updatedTimeSeries.startYear)
+                + Number(dG4Year!) + Number(updatedTimeSeries.values!.length))
+            }
+
             const columnTitles: string[] = []
-            if (earliestYear !== undefined && latestYear !== undefined) {
-                for (let i = earliestYear; i < latestYear; i += 1) {
+            if (tempEarliest !== undefined && tempLatest !== undefined) {
+                for (let i = tempEarliest; i < tempLatest; i += 1) {
                     columnTitles.push(i.toString())
                 }
             }
 
             const zeroesAtStart = Array.from({
                 length: Number(timeSeries!.startYear!)
-                + Number(dG4Year) - Number(earliestYear),
+                + Number(dG4Year) - Number(tempEarliest),
             }, (() => 0))
             const zeroesAtEnd = Array.from({
-                length: Number(latestYear)
+                length: Number(tempLatest)
                 - (Number(timeSeries!.startYear!)
                 + Number(dG4Year)
                 + Number(timeSeries!.values!.length!)),
@@ -65,17 +85,6 @@ const TimeSeriesNoAsset = ({
             const alignedAssetGridData = new Array(
                 assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
             )
-
-            if ((Number(updatedTimeSeries.startYear)
-            + Number(dG4Year!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
-                setEarliestYear((Number(updatedTimeSeries.startYear) + Number(dG4Year!)))
-            }
-            if ((Number(updatedTimeSeries.startYear)
-            + Number(dG4Year!)
-            + Number(updatedTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
-                setLatestYear(Number(updatedTimeSeries.startYear)
-                + Number(dG4Year!) + Number(updatedTimeSeries.values!.length))
-            }
 
             setColumns(columnTitles)
             setGridData(alignedAssetGridData)
