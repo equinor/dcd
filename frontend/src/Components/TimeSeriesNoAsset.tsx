@@ -75,7 +75,7 @@ const TimeSeriesNoAsset = ({
 
     useEffect(() => {
         buildAlignedGrid(timeSeries!)
-    }, [timeSeries])
+    }, [timeSeries, latestYear, earliestYear])
 
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)

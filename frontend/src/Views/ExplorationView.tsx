@@ -87,10 +87,20 @@ const ExplorationView = () => {
         newExploration.drillingSchedule = drillingSchedule
         newExploration.gAndGAdminCost = gAndGAdminCost
         setExploration(newExploration)
+
+        if (caseItem?.DG4Date) {
+            initializeFirstAndLastYear(
+                caseItem?.DG4Date?.getFullYear(),
+                [newExploration.costProfile, newExploration.drillingSchedule, newExploration.gAndGAdminCost],
+                setEarliestTimeSeriesYear,
+                setLatestTimeSeriesYear,
+            )
+        }
     }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost])
+
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Exploration</Typography>
+            <Typography variant="h2">{latestTimeSeriesYear}</Typography>
             <AssetName
                 setName={setName}
                 name={name}

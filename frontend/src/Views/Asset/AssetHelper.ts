@@ -120,13 +120,13 @@ const setYears = (
     const newYears = years
     if (timeSeries.startYear !== undefined && timeSeries.values !== undefined) {
         if (timeSeries.startYear + dG4Year < years[0]) {
-            setFirstYear(timeSeries.startYear + dG4Year)
-            newYears[0] = timeSeries.startYear + dG4Year
+            setFirstYear(Number(timeSeries.startYear) + Number(dG4Year))
+            newYears[0] = Number(timeSeries.startYear) + Number(dG4Year)
         }
 
         if (timeSeries.startYear + dG4Year + timeSeries.values.length > years[1]) {
-            setLastYear(timeSeries.startYear + dG4Year + timeSeries.values.length)
-            newYears[1] = timeSeries.startYear + dG4Year + timeSeries.values.length
+            setLastYear(Number(timeSeries.startYear) + Number(dG4Year) + Number(timeSeries.values.length))
+            newYears[1] = Number(timeSeries.startYear) + Number(dG4Year) + Number(timeSeries.values.length)
         }
     }
 
