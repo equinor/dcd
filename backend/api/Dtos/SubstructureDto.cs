@@ -10,6 +10,7 @@ namespace api.Dtos
         public SubstructureCostProfileDto? CostProfile { get; set; }
         public SubstructureCessationCostProfileDto? SubstructureCessationCostProfileDto { get; set; }
         public double DryWeight { get; set; }
+        public Unit DryWeightUnit { get; set; }
         public Maturity Maturity { get; set; }
     }
 

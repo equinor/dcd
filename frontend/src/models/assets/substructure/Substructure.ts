@@ -8,6 +8,7 @@ export class Substructure implements Components.Schemas.SubstructureDto {
     costProfile?: SubstructureCostProfile | undefined
     substructureCessationCostProfileDto?: SubstructureCessationCostProfile | undefined
     dryweight?: number | undefined
+    dryWeightUnit?: Components.Schemas.Unit | undefined
     maturity?: Components.Schemas.Maturity | undefined
 
     constructor(data?: Components.Schemas.SubstructureDto) {
@@ -19,6 +20,7 @@ export class Substructure implements Components.Schemas.SubstructureDto {
             this.substructureCessationCostProfileDto = SubstructureCessationCostProfile
                 .fromJSON(data.substructureCessationCostProfileDto)
             this.dryweight = data.dryWeight
+            this.dryWeightUnit = data.dryWeightUnit
             this.maturity = data.maturity
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"

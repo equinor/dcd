@@ -21,6 +21,7 @@ import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { TimeSeriesYears } from "./Asset/AssetHelper"
 import Maturity from "../Components/Maturity"
 import NumberInput from "../Components/NumberInput"
+import Unit from "../Components/Unit"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -34,6 +35,7 @@ const SubstructureView = () => {
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
     const [dryWeight, setDryWeight] = useState<number | undefined>()
+    const [dryWeightUnit, setDryWeightUnit] = useState<Components.Schemas.Unit | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -61,6 +63,7 @@ const SubstructureView = () => {
                 setSubstructureName(newSubstructure?.name!)
                 setMaturity(newSubstructure.maturity)
                 setDryWeight(newSubstructure.dryweight)
+                setDryWeightUnit(newSubstructure.dryWeightUnit)
 
                 TimeSeriesYears(
                     newSubstructure,
@@ -77,9 +80,10 @@ const SubstructureView = () => {
             const newSubstructure: Substructure = { ...substructure }
             newSubstructure.maturity = maturity
             newSubstructure.dryweight = dryWeight
+            newSubstructure.dryWeightUnit = dryWeightUnit
             setSubstructure(newSubstructure)
         }
-    }, [maturity, dryWeight])
+    }, [maturity, dryWeight, dryWeightUnit])
 
     return (
         <AssetViewDiv>
@@ -106,6 +110,11 @@ const SubstructureView = () => {
                     value={dryWeight ?? 0}
                     integer={false}
                     label="Substructure dry weight"
+                />
+                <Unit
+                    setUnit={setDryWeightUnit}
+                    currentValue={dryWeightUnit}
+                    setHasChanges={setHasChanges}
                 />
             </Wrapper>
             <Maturity

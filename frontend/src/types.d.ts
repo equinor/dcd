@@ -235,6 +235,7 @@ declare namespace Components {
             costProfile?: SubstructureCostProfileDto;
             substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
             dryWeight?: number; // double
+            dryWeightUnit?: Unit /* int32 */;
             maturity?: Maturity /* int32 */;
         }
         export interface SurfCessationCostProfileDto {
@@ -290,8 +291,11 @@ declare namespace Components {
             costProfile?: TopsideCostProfileDto;
             topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
             dryWeight?: number; // double
+            dryWeightUnit?: Unit /* int32 */;
             oilCapacity?: number; // double
+            oilCapacityUnit?: Unit /* int32 */;
             gasCapacity?: number; // double
+            gasCapacityUnit?: Unit /* int32 */;
             facilitiesAvailability?: number; // double
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;

@@ -13,8 +13,11 @@ namespace api.Adapters
                 Name = topsideDto.Name,
                 ProjectId = topsideDto.ProjectId,
                 DryWeight = topsideDto.DryWeight,
+                DryWeightUnit = topsideDto.DryWeightUnit,
                 OilCapacity = topsideDto.OilCapacity,
+                OilCapacityUnit = topsideDto.OilCapacityUnit,
                 GasCapacity = topsideDto.GasCapacity,
+                GasCapacityUnit = topsideDto.GasCapacityUnit,
                 FacilitiesAvailability = topsideDto.FacilitiesAvailability,
                 ArtificialLift = topsideDto.ArtificialLift,
                 Maturity = topsideDto.Maturity
@@ -39,8 +42,11 @@ namespace api.Adapters
             existing.Name = topsideDto.Name;
             existing.ProjectId = topsideDto.ProjectId;
             existing.DryWeight = topsideDto.DryWeight;
+            existing.DryWeightUnit = topsideDto.DryWeightUnit;
             existing.OilCapacity = topsideDto.OilCapacity;
+            existing.OilCapacityUnit = topsideDto.OilCapacityUnit;
             existing.GasCapacity = topsideDto.GasCapacity;
+            existing.GasCapacityUnit = topsideDto.GasCapacityUnit;
             existing.FacilitiesAvailability = topsideDto.FacilitiesAvailability;
             existing.ArtificialLift = topsideDto.ArtificialLift;
             existing.Maturity = topsideDto.Maturity;

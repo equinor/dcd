@@ -11,6 +11,7 @@ namespace api.Models
         public SubstructureCostProfile? CostProfile { get; set; }
         public SubstructureCessationCostProfile? SubstructureCessationCostProfile { get; set; }
         public double DryWeight { get; set; }
+        public Unit DryWeightUnit { get; set; }
         public Maturity Maturity { get; set; }
     }
 

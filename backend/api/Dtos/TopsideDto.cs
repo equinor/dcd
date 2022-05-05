@@ -11,8 +11,11 @@ namespace api.Dtos
         public TopsideCostProfileDto? CostProfile { get; set; }
         public TopsideCessationCostProfileDto? TopsideCessationCostProfileDto { get; set; }
         public double DryWeight { get; set; }
+        public Unit DryWeightUnit { get; set; }
         public double OilCapacity { get; set; }
+        public Unit OilCapacityUnit { get; set; }
         public double GasCapacity { get; set; }
+        public Unit GasCapacityUnit { get; set; }
         public double FacilitiesAvailability { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public Maturity Maturity { get; set; }

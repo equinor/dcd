@@ -13,6 +13,7 @@ namespace api.Adapters
                 ProjectId = substructure.ProjectId,
                 Name = substructure.Name,
                 DryWeight = substructure.DryWeight,
+                DryWeightUnit = substructure.DryWeightUnit,
                 Maturity = substructure.Maturity,
                 CostProfile = Convert(substructure.CostProfile),
                 SubstructureCessationCostProfileDto = Convert(substructure.SubstructureCessationCostProfile)

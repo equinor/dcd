@@ -13,6 +13,7 @@ namespace api.Adapters
                 ProjectId = substructureDto.ProjectId,
                 Name = substructureDto.Name,
                 DryWeight = substructureDto.DryWeight,
+                DryWeightUnit = substructureDto.DryWeightUnit,
                 Maturity = substructureDto.Maturity
             };
 
@@ -28,6 +29,7 @@ namespace api.Adapters
             existing.ProjectId = substructureDto.ProjectId;
             existing.Name = substructureDto.Name;
             existing.DryWeight = substructureDto.DryWeight;
+            existing.DryWeightUnit = substructureDto.DryWeightUnit;
             existing.Maturity = substructureDto.Maturity;
 
             existing.CostProfile = Convert(substructureDto.CostProfile, existing);

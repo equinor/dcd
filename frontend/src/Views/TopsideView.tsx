@@ -21,6 +21,7 @@ import {
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import Maturity from "../Components/Maturity"
 import NumberInput from "../Components/NumberInput"
+import Unit from "../Components/Unit"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -32,8 +33,11 @@ const TopsideView = () => {
     const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
     const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [oilCapacity, setOilCapacity] = useState<number | undefined>()
+    const [oilCapacityUnit, setOilCapacityUnit] = useState<Components.Schemas.Unit | undefined>()
     const [gasCapacity, setGasCapacity] = useState<number | undefined>()
+    const [gasCapacityUnit, setGasCapacityUnit] = useState<Components.Schemas.Unit | undefined>()
     const [dryweight, setDryweight] = useState<number | undefined>()
+    const [dryweightUnit, setDryweightUnit] = useState<Components.Schemas.Unit | undefined>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
 
     useEffect(() => {
@@ -62,8 +66,11 @@ const TopsideView = () => {
                 }
                 setTopsideName(newTopside?.name!)
                 setDryweight(newTopside?.dryWeight)
+                setDryweightUnit(newTopside?.dryWeightUnit)
                 setOilCapacity(newTopside?.oilCapacity)
+                setOilCapacityUnit(newTopside?.oilCapacityUnit)
                 setGasCapacity(newTopside?.gasCapacity)
+                setGasCapacityUnit(newTopside?.gasCapacityUnit)
                 setMaturity(newTopside?.maturity ?? undefined)
 
                 TimeSeriesYears(
@@ -80,12 +87,15 @@ const TopsideView = () => {
         if (topside !== undefined) {
             const newTopside: Topside = { ...topside }
             newTopside.dryWeight = dryweight
+            newTopside.dryWeightUnit = dryweightUnit
             newTopside.oilCapacity = oilCapacity
+            newTopside.oilCapacityUnit = oilCapacityUnit
             newTopside.gasCapacity = gasCapacity
+            newTopside.gasCapacityUnit = gasCapacityUnit
             newTopside.maturity = maturity
             setTopside(newTopside)
         }
-    }, [dryweight, oilCapacity, gasCapacity, maturity])
+    }, [dryweight, dryweightUnit, oilCapacity, oilCapacityUnit, gasCapacity, gasCapacityUnit, maturity])
 
     return (
         <AssetViewDiv>
@@ -119,6 +129,11 @@ const TopsideView = () => {
                     integer
                     label="Topside dry weight"
                 />
+                <Unit
+                    setUnit={setDryweightUnit}
+                    currentValue={dryweightUnit}
+                    setHasChanges={setHasChanges}
+                />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setOilCapacity}
@@ -126,12 +141,22 @@ const TopsideView = () => {
                     integer={false}
                     label="Capacity oil"
                 />
+                <Unit
+                    setUnit={setOilCapacityUnit}
+                    currentValue={oilCapacityUnit}
+                    setHasChanges={setHasChanges}
+                />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setGasCapacity}
                     value={gasCapacity ?? 0}
                     integer={false}
                     label="Capacity gas"
+                />
+                <Unit
+                    setUnit={setGasCapacityUnit}
+                    currentValue={gasCapacityUnit}
+                    setHasChanges={setHasChanges}
                 />
             </Wrapper>
             <Maturity
