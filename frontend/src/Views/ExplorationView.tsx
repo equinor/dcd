@@ -100,7 +100,7 @@ const ExplorationView = () => {
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">{latestTimeSeriesYear}</Typography>
+            <Typography variant="h2">Exploration</Typography>
             <AssetName
                 setName={setName}
                 name={name}
