@@ -28,6 +28,7 @@ import { GetCaseService } from "../Services/CaseService"
 
 import { GetSTEAService } from "../Services/STEAService"
 import { WrapperColumn } from "./Asset/StyledAssetComponents"
+import PhysicalUnit from "../Components/PhysicalUnit"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -75,6 +76,7 @@ const ProjectView = () => {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
+    const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
 
     useEffect(() => {
         (async () => {
@@ -87,6 +89,22 @@ const ProjectView = () => {
             }
         })()
     }, [params.projectId])
+
+    useEffect(() => {
+        (async () => {
+            try {
+                if (project !== undefined) {
+                    const projectDto = Project.fromJSON(project)
+                    projectDto.physUnit = physicalUnit
+                    const res = await GetProjectService().updateProject(projectDto)
+                    console.log("[ProjectView]", res)
+                    setProject(res)
+                }
+            } catch (error) {
+                console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [physicalUnit])
 
     const chartData = useMemo(() => (project ? {
         x: project?.cases.map((c) => c.name ?? ""),
@@ -183,6 +201,17 @@ const ProjectView = () => {
                     {project.country ?? "Not defined in Common Library"}
                 </Typography>
             </WrapperColumn>
+            <PhysicalUnit
+                currentValue={physicalUnit}
+                setPhysicalUnit={setPhysicalUnit}
+                setProject={setProject}
+                project={project}
+            />
+            {/* <Currency
+                    currentValue={currency}
+                    setCurrency={setCurrency}
+                    setProject={setProject}
+            /> */}
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>
