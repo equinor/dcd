@@ -1,11 +1,11 @@
-export class ProductionProfileWaterCostProfile implements Components.Schemas.ProductionProfileWaterDto {
+export class FuelFlaringAndLosses implements Components.Schemas.FuelFlaringAndLossesDto {
     id?: string
     startYear: number
-    values: number []
+    values: number[]
     sum?: number
 
-    constructor(data?: Components.Schemas.ProductionProfileWaterDto) {
-        if (data !== undefined && data !== null) {
+    constructor(data?: Components.Schemas.FuelFlaringAndLossesDto) {
+        if (data !== null && data !== undefined) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
             this.values = data.values ?? []
@@ -17,11 +17,10 @@ export class ProductionProfileWaterCostProfile implements Components.Schemas.Pro
         }
     }
 
-    static fromJson(data?: Components.Schemas.ProductionProfileWaterDto):
-    ProductionProfileWaterCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.NetSalesGasDto): FuelFlaringAndLosses | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new ProductionProfileWaterCostProfile(data)
+        return new FuelFlaringAndLosses(data)
     }
 }

@@ -1,4 +1,4 @@
-export class DrillingScheduleDto implements Components.Schemas.DrillingScheduleDto {
+export class DrillingSchedule implements Components.Schemas.DrillingScheduleDto {
     id?: string
     startYear: number
     values: number []
@@ -15,10 +15,10 @@ export class DrillingScheduleDto implements Components.Schemas.DrillingScheduleD
         }
     }
 
-    static fromJSON(data?: Components.Schemas.DrillingScheduleDto): DrillingScheduleDto | undefined {
+    static fromJSON(data?: Components.Schemas.DrillingScheduleDto): DrillingSchedule | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new DrillingScheduleDto(data!)
+        return new DrillingSchedule(data!)
     }
 }

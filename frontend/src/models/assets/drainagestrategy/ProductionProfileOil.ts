@@ -1,4 +1,4 @@
-export class ProductionProfileOilCostProfile implements Components.Schemas.ProductionProfileOilDto {
+export class ProductionProfileOil implements Components.Schemas.ProductionProfileOilDto {
     id?: string
     startYear: number
     values: number []
@@ -17,10 +17,10 @@ export class ProductionProfileOilCostProfile implements Components.Schemas.Produ
         }
     }
 
-    static fromJson(data?: Components.Schemas.ProductionProfileOilDto): ProductionProfileOilCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.ProductionProfileOilDto): ProductionProfileOil | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new ProductionProfileOilCostProfile(data)
+        return new ProductionProfileOil(data)
     }
 }

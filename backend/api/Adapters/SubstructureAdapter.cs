@@ -17,7 +17,7 @@ namespace api.Adapters
             };
 
             substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
-            substructure.SubstructureCessationCostProfile = Convert(substructureDto.SubstructureCessationCostProfileDto, substructure);
+            substructure.CessationCostProfile = Convert(substructureDto.CessationCostProfile, substructure);
 
             return substructure;
         }
@@ -31,7 +31,7 @@ namespace api.Adapters
             existing.Maturity = substructureDto.Maturity;
 
             existing.CostProfile = Convert(substructureDto.CostProfile, existing);
-            existing.SubstructureCessationCostProfile = Convert(substructureDto.SubstructureCessationCostProfileDto, existing);
+            existing.CessationCostProfile = Convert(substructureDto.CessationCostProfile, existing);
         }
 
         private static SubstructureCostProfile? Convert(SubstructureCostProfileDto? costprofile, Substructure substructure)

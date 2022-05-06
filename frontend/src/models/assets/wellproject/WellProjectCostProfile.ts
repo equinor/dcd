@@ -1,4 +1,4 @@
-export class WellProjectCostProfileDto implements Components.Schemas.WellProjectCostProfileDto {
+export class WellProjectCostProfile implements Components.Schemas.WellProjectCostProfileDto {
     id?: string
     startYear: number
     values: number []
@@ -22,10 +22,10 @@ export class WellProjectCostProfileDto implements Components.Schemas.WellProject
         }
     }
 
-    static fromJSON(data?: Components.Schemas.WellProjectCostProfileDto): WellProjectCostProfileDto | undefined {
+    static fromJSON(data?: Components.Schemas.WellProjectCostProfileDto): WellProjectCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new WellProjectCostProfileDto(data)
+        return new WellProjectCostProfile(data)
     }
 }

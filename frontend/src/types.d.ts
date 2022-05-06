@@ -23,8 +23,6 @@ declare namespace Components {
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
-            riserCount?: number; // int32
-            templateCount?: number; // int32
             dG0Date?: string; // date-time
             facilitiesAvailability?: number; // double
             dG1Date?: string; // date-time
@@ -177,8 +175,7 @@ declare namespace Components {
             sum?: number; // double
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
-        export type ProjectCategory =
-            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
@@ -233,7 +230,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SubstructureCostProfileDto;
-            substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
+            cessationCostProfile?: SubstructureCessationCostProfileDto;
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
         }
@@ -258,7 +255,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SurfCostProfileDto;
-            surfCessationCostProfileDto?: SurfCessationCostProfileDto;
+            cessationCostProfile?: SurfCessationCostProfileDto;
             maturity?: Maturity /* int32 */;
             infieldPipelineSystemLength?: number; // double
             umbilicalSystemLength?: number; // double
@@ -291,7 +288,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TopsideCostProfileDto;
-            topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
+            cessationCostProfile?: TopsideCessationCostProfileDto;
             dryWeight?: number; // double
             oilCapacity?: number; // double
             gasCapacity?: number; // double
@@ -320,7 +317,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TransportCostProfileDto;
-            transportCessationCostProfileDto?: TransportCessationCostProfileDto;
+            cessationCostProfile?: TransportCessationCostProfileDto;
             maturity?: Maturity /* int32 */;
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double

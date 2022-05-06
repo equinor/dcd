@@ -1,11 +1,10 @@
-export class ProductionProfileWaterInjectionCostProfile implements
-Components.Schemas.ProductionProfileWaterInjectionDto {
+export class Co2Emissions implements Components.Schemas.Co2EmissionsDto {
     id?: string
     startYear: number
     values: number []
     sum?: number
 
-    constructor(data?: Components.Schemas.ProductionProfileWaterInjectionDto) {
+    constructor(data?: Components.Schemas.Co2EmissionsDto) {
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
@@ -18,11 +17,10 @@ Components.Schemas.ProductionProfileWaterInjectionDto {
         }
     }
 
-    static fromJson(data?: Components.Schemas.ProductionProfileWaterInjectionDto):
-    ProductionProfileWaterInjectionCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.NetSalesGasDto): Co2Emissions | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new ProductionProfileWaterInjectionCostProfile(data)
+        return new Co2Emissions(data)
     }
 }

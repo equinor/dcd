@@ -6,7 +6,7 @@ export class Surf implements Components.Schemas.SurfDto {
     name: string | undefined
     projectId?: string | undefined
     costProfile?: SurfCostProfile | undefined
-    surfCessationCostProfileDto: SurfCessationCostProfile | undefined
+    cessationCostProfile: SurfCessationCostProfile | undefined
     maturity?: Components.Schemas.Maturity | undefined
     infieldPipelineSystemLength?: number | undefined
     umbilicalSystemLength?: number | undefined
@@ -23,7 +23,7 @@ export class Surf implements Components.Schemas.SurfDto {
             this.id = data.id ?? ""
             this.name = data.name ?? ""
             this.projectId = data.projectId
-            this.surfCessationCostProfileDto = SurfCessationCostProfile.fromJSON(data.surfCessationCostProfileDto)
+            this.cessationCostProfile = SurfCessationCostProfile.fromJSON(data.cessationCostProfile)
             this.costProfile = SurfCostProfile.fromJSON(data.costProfile)
             this.maturity = data.maturity
             this.infieldPipelineSystemLength = data.infieldPipelineSystemLength

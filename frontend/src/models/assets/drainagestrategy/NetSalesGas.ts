@@ -1,12 +1,12 @@
-export class ProductionProfileGasCostProfile implements Components.Schemas.ProductionProfileGasDto {
+export class NetSalesGas implements Components.Schemas.NetSalesGasDto {
     id?: string
     startYear: number
     values: number []
     sum?: number
 
-    constructor(data?: Components.Schemas.ProductionProfileGasDto) {
-        if (data !== undefined && data !== null) {
-            this.id = data.id
+    constructor(data?: Components.Schemas.NetSalesGasDto) {
+        if (data !== null && data !== undefined) {
+            this.id = data?.id
             this.startYear = data.startYear ?? 0
             this.values = data.values ?? []
             this.sum = data.sum
@@ -17,10 +17,10 @@ export class ProductionProfileGasCostProfile implements Components.Schemas.Produ
         }
     }
 
-    static fromJson(data?: Components.Schemas.ProductionProfileGasDto): ProductionProfileGasCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.NetSalesGasDto): NetSalesGas | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new ProductionProfileGasCostProfile(data)
+        return new NetSalesGas(data)
     }
 }
