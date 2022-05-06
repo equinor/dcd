@@ -5,8 +5,9 @@ import { ProductionProfileGasCostProfile } from "./ProductionProfileGasCostProfi
 import { ProductionProfileOilCostProfile } from "./ProductionProfileOilCostProfile"
 import { ProductionProfileWaterCostProfile } from "./ProductionProfileWaterCostProfile"
 import { ProductionProfileWaterInjectionCostProfile } from "./ProductionProfileWaterInjectionCostProfile"
+import { IAsset } from "../IAsset"
 
-export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto {
+export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
     id?: string
     projectId?: string
     name?: string | undefined
