@@ -14,7 +14,7 @@ public class TopsideBuilder : Topside
     public TopsideBuilder WithTopsideCessationCostProfile(TopsideCessationCostProfile topsideCessationCostProfile)
     {
         topsideCessationCostProfile.Topside = this;
-        this.CessationCostProfile = topsideCessationCostProfile;
+        this.TopsideCessationCostProfile = topsideCessationCostProfile;
         return this;
     }
 }

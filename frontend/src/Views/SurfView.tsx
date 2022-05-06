@@ -9,6 +9,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSurfService } from "../Services/SurfService"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import TimeSeries from "../Components/TimeSeries"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
@@ -16,12 +17,10 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import Maturity from "../Components/Maturity"
 import ProductionFlowline from "../Components/ProductionFlowline"
-import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
-import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -30,8 +29,8 @@ const SurfView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [surfName, setSurfName] = useState<string>("")
     const params = useParams()
-    const [firstTSYear, setFirstTSYear] = useState<number>()
-    const [lastTSYear, setLastTSYear] = useState<number>()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [riserCount, setRiserCount] = useState<number | undefined>()
     const [templateCount, setTemplateCount] = useState<number | undefined>()
     const [producerCount, setProducerCount] = useState<number | undefined>()
@@ -41,8 +40,6 @@ const SurfView = () => {
     const [umbilicalSystemLength, setUmbilicalSystemLength] = useState<number | undefined>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
     const [productionFlowline, setProductionFlowline] = useState<Components.Schemas.ProductionFlowline | undefined>()
-    const [costProfile, setCostProfile] = useState<SurfCostProfile>()
-    const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
 
     useEffect(() => {
         (async () => {
@@ -82,17 +79,12 @@ const SurfView = () => {
                 setMaturity(newSurf.maturity ?? undefined)
                 setProductionFlowline(newSurf.productionFlowline ?? 0)
 
-                setCostProfile(newSurf.costProfile)
-                setCessationCostProfile(newSurf.cessationCostProfile)
-
-                if (caseResult?.DG4Date) {
-                    initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
-                        [newSurf.costProfile, newSurf.cessationCostProfile],
-                        setFirstTSYear,
-                        setLastTSYear,
-                    )
-                }
+                TimeSeriesYears(
+                    newSurf,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -109,23 +101,10 @@ const SurfView = () => {
             newSurf.umbilicalSystemLength = umbilicalSystemLength
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
-
-            newSurf.costProfile = costProfile
-            newSurf.cessationCostProfile = cessationCostProfile
-
-            if (caseItem?.DG4Date) {
-                initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
-                    [costProfile, cessationCostProfile],
-                    setFirstTSYear,
-                    setLastTSYear,
-                )
-            }
             setSurf(newSurf)
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
-        infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile])
+        infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline])
 
     return (
         <AssetViewDiv>
@@ -223,26 +202,30 @@ const SurfView = () => {
                 setProductionFlowline={setProductionFlowline}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
+                caseItem={caseItem}
+                setAsset={setSurf}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
+                asset={surf}
+                timeSeriesType={TimeSeriesEnum.costProfile}
+                assetName={surfName}
                 timeSeriesTitle="Cost profile"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
+                caseItem={caseItem}
+                setAsset={setSurf}
                 setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle="Cessation cost profile"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                asset={surf}
+                timeSeriesType={TimeSeriesEnum.surfCessationCostProfileDto}
+                assetName={surfName}
+                timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Save
                 name={surfName}

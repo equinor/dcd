@@ -1,9 +1,7 @@
-import { ITimeSeries } from "../../ITimeSeries"
-
-export class DrillingSchedule implements Components.Schemas.DrillingScheduleDto, ITimeSeries {
+export class DrillingScheduleDto implements Components.Schemas.DrillingScheduleDto {
     id?: string
-    startYear?: number
-    values?: number []
+    startYear: number
+    values: number []
 
     constructor(data?: Components.Schemas.DrillingScheduleDto) {
         if (data !== undefined && data !== null) {
@@ -17,10 +15,10 @@ export class DrillingSchedule implements Components.Schemas.DrillingScheduleDto,
         }
     }
 
-    static fromJSON(data?: Components.Schemas.DrillingScheduleDto): DrillingSchedule | undefined {
+    static fromJSON(data?: Components.Schemas.DrillingScheduleDto): DrillingScheduleDto | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new DrillingSchedule(data!)
+        return new DrillingScheduleDto(data!)
     }
 }

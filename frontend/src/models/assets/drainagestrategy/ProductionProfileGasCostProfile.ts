@@ -1,13 +1,10 @@
-import { ITimeSeries } from "../../ITimeSeries"
-
-export class ProductionProfileWaterInjection implements
-Components.Schemas.ProductionProfileWaterInjectionDto, ITimeSeries {
+export class ProductionProfileGasCostProfile implements Components.Schemas.ProductionProfileGasDto {
     id?: string
-    startYear?: number
-    values?: number []
+    startYear: number
+    values: number []
     sum?: number
 
-    constructor(data?: Components.Schemas.ProductionProfileWaterInjectionDto) {
+    constructor(data?: Components.Schemas.ProductionProfileGasDto) {
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
@@ -20,11 +17,10 @@ Components.Schemas.ProductionProfileWaterInjectionDto, ITimeSeries {
         }
     }
 
-    static fromJson(data?: Components.Schemas.ProductionProfileWaterInjectionDto):
-    ProductionProfileWaterInjection | undefined {
+    static fromJson(data?: Components.Schemas.ProductionProfileGasDto): ProductionProfileGasCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new ProductionProfileWaterInjection(data)
+        return new ProductionProfileGasCostProfile(data)
     }
 }

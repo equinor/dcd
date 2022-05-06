@@ -1,13 +1,12 @@
-import { IAsset } from "../IAsset"
-import { DrillingSchedule } from "./DrillingSchedule"
-import { WellProjectCostProfile } from "./WellProjectCostProfile"
+import { DrillingScheduleDto } from "./DrillingScheduleDto"
+import { WellProjectCostProfileDto } from "./WellProjectCostProfileDto"
 
-export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
+export class WellProject implements Components.Schemas.WellProjectDto {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
-    costProfile?: WellProjectCostProfile | undefined
-    drillingSchedule?: DrillingSchedule | undefined
+    costProfile?: WellProjectCostProfileDto | undefined
+    drillingSchedule?: DrillingScheduleDto | undefined
     producerCount?: number | undefined
     gasInjectorCount?: number | undefined
     waterInjectorCount?: number | undefined
@@ -21,8 +20,8 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.id = data.id
             this.name = data.name ?? ""
             this.projectId = data.projectId ?? ""
-            this.costProfile = WellProjectCostProfile.fromJSON(data.costProfile)
-            this.drillingSchedule = DrillingSchedule.fromJSON(data.drillingSchedule)
+            this.costProfile = WellProjectCostProfileDto.fromJSON(data.costProfile)
+            this.drillingSchedule = DrillingScheduleDto.fromJSON(data.drillingSchedule)
             this.producerCount = data.producerCount ?? 0
             this.gasInjectorCount = data.gasInjectorCount ?? 0
             this.waterInjectorCount = data.waterInjectorCount ?? 0

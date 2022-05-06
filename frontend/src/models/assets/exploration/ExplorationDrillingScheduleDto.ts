@@ -1,6 +1,6 @@
 import { ITimeSeries } from "../../ITimeSeries"
 
-export class ExplorationDrillingSchedule implements Components.Schemas.ExplorationDrillingScheduleDto, ITimeSeries {
+export class ExplorationDrillingScheduleDto implements Components.Schemas.ExplorationDrillingScheduleDto, ITimeSeries {
     id?: string
     startYear?: number
     values?: number []
@@ -18,10 +18,10 @@ export class ExplorationDrillingSchedule implements Components.Schemas.Explorati
     }
 
     static fromJSON(data?: Components.Schemas.ExplorationDrillingScheduleDto):
-    ExplorationDrillingSchedule | undefined {
+    ExplorationDrillingScheduleDto | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new ExplorationDrillingSchedule(data)
+        return new ExplorationDrillingScheduleDto(data)
     }
 }

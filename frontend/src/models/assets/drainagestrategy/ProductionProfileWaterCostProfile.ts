@@ -1,9 +1,7 @@
-import { ITimeSeries } from "../../ITimeSeries"
-
-export class ProductionProfileWater implements Components.Schemas.ProductionProfileWaterDto, ITimeSeries {
+export class ProductionProfileWaterCostProfile implements Components.Schemas.ProductionProfileWaterDto {
     id?: string
-    startYear?: number
-    values?: number []
+    startYear: number
+    values: number []
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileWaterDto) {
@@ -20,10 +18,10 @@ export class ProductionProfileWater implements Components.Schemas.ProductionProf
     }
 
     static fromJson(data?: Components.Schemas.ProductionProfileWaterDto):
-    ProductionProfileWater | undefined {
+    ProductionProfileWaterCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new ProductionProfileWater(data)
+        return new ProductionProfileWaterCostProfile(data)
     }
 }

@@ -24,7 +24,7 @@ namespace api.Services
             {
                 return _context.Surfs
                     .Include(c => c.CostProfile)
-                    .Include(c => c.CessationCostProfile)
+                    .Include(c => c.SurfCessationCostProfile)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -43,9 +43,9 @@ namespace api.Services
                 _context.SurfCostProfile!.Remove(existing.CostProfile);
             }
 
-            if (updatedSurfDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+            if (updatedSurfDto.SurfCessationCostProfileDto == null && existing.SurfCessationCostProfile != null)
             {
-                _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
+                _context.SurfCessationCostProfiles!.Remove(existing.SurfCessationCostProfile);
             }
             _context.Surfs!.Update(existing);
             _context.SaveChanges();
@@ -55,7 +55,7 @@ namespace api.Services
         {
             var surf = _context.Surfs!
                 .Include(c => c.CostProfile)
-                .Include(c => c.CessationCostProfile)
+                .Include(c => c.SurfCessationCostProfile)
                 .FirstOrDefault(o => o.Id == surfId);
             if (surf == null)
             {

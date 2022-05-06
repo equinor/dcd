@@ -9,7 +9,7 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public TopsideCostProfile? CostProfile { get; set; }
-        public TopsideCessationCostProfile? CessationCostProfile { get; set; }
+        public TopsideCessationCostProfile? TopsideCessationCostProfile { get; set; }
         public double DryWeight { get; set; }
         public double OilCapacity { get; set; }
         public double GasCapacity { get; set; }

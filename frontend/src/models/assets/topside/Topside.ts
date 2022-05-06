@@ -1,13 +1,12 @@
 import { TopsideCostProfile } from "./TopsideCostProfile"
 import { TopsideCessationCostProfile } from "./TopsideCessationCostProfile"
-import { IAsset } from "../IAsset"
 
-export class Topside implements Components.Schemas.TopsideDto, IAsset {
+export class Topside implements Components.Schemas.TopsideDto {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: TopsideCostProfile | undefined
-    cessationCostProfile?: TopsideCessationCostProfile | undefined
+    topsideCessationCostProfileDto?: TopsideCessationCostProfile | undefined
     dryWeight?: number | undefined
     oilCapacity?: number | undefined
     gasCapacity?: number | undefined
@@ -21,8 +20,8 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = TopsideCostProfile.fromJSON(data.costProfile)
-            this.cessationCostProfile = TopsideCessationCostProfile
-                .fromJSON(data.cessationCostProfile)
+            this.topsideCessationCostProfileDto = TopsideCessationCostProfile
+                .fromJSON(data.topsideCessationCostProfileDto)
             this.artificialLift = data.artificialLift ?? 0
             this.dryWeight = data.dryWeight
             this.maturity = data.maturity

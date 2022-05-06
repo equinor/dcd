@@ -1,13 +1,12 @@
-import { IAsset } from "../IAsset"
 import { TransportCessationCostProfile } from "./TransportCessationCostProfile"
 import { TransportCostProfile } from "./TransportCostProfile"
 
-export class Transport implements Components.Schemas.TransportDto, IAsset {
+export class Transport implements Components.Schemas.TransportDto {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: TransportCostProfile | undefined
-    cessationCostProfile?: TransportCessationCostProfile | undefined
+    transportCessationCostProfileDto?: TransportCessationCostProfile | undefined
     maturity?: Components.Schemas.Maturity | undefined
     gasExportPipelineLength?: number | undefined
     oilExportPipelineLength?: number | undefined
@@ -18,8 +17,8 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = TransportCostProfile.fromJSON(data.costProfile)
-            this.cessationCostProfile = TransportCessationCostProfile
-                .fromJSON(data.cessationCostProfile)
+            this.transportCessationCostProfileDto = TransportCessationCostProfile
+                .fromJSON(data.transportCessationCostProfileDto)
             this.maturity = data.maturity
             this.gasExportPipelineLength = data.gasExportPipelineLength
             this.oilExportPipelineLength = data.oilExportPipelineLength

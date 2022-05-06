@@ -3,11 +3,15 @@ import { useLocation, useNavigate, useParams } from "react-router"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { IAsset } from "../models/assets/IAsset"
 import { Project } from "../models/Project"
-import { IAssetService } from "../Services/IAssetService"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
     SaveButton, Wrapper,
 } from "../Views/Asset/StyledAssetComponents"
+
+interface IAssetService {
+    create: (caseId: string, asset: IAsset) => Promise<Project>
+    update: (asset: IAsset) => Promise<Project>
+}
 
 interface Props {
     name: string

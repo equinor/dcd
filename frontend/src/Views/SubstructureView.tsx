@@ -6,6 +6,7 @@ import {
     useParams,
 } from "react-router"
 import TimeSeries from "../Components/TimeSeries"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
@@ -17,11 +18,9 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { TimeSeriesYears } from "./Asset/AssetHelper"
 import Maturity from "../Components/Maturity"
 import NumberInput from "../Components/NumberInput"
-import { SubstructureCostProfile } from "../models/assets/substructure/SubstructureCostProfile"
-import { SubstructureCessationCostProfile } from "../models/assets/substructure/SubstructureCessationCostProfile"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -31,12 +30,10 @@ const SubstructureView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [substructureName, setSubstructureName] = useState<string>("")
     const params = useParams()
-    const [firstTSYear, setFirstTSYear] = useState<number>()
-    const [lastTSYear, setLastTSYear] = useState<number>()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
     const [dryWeight, setDryWeight] = useState<number | undefined>()
-    const [costProfile, setCostProfile] = useState<SubstructureCostProfile>()
-    const [cessationCostProfile, setCessationCostProfile] = useState<SubstructureCessationCostProfile>()
 
     useEffect(() => {
         (async () => {
@@ -65,17 +62,12 @@ const SubstructureView = () => {
                 setMaturity(newSubstructure.maturity)
                 setDryWeight(newSubstructure.dryweight)
 
-                setCostProfile(newSubstructure.costProfile)
-                setCessationCostProfile(newSubstructure.cessationCostProfile)
-
-                if (caseResult?.DG4Date) {
-                    initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
-                        [newSubstructure.costProfile, newSubstructure.cessationCostProfile],
-                        setFirstTSYear,
-                        setLastTSYear,
-                    )
-                }
+                TimeSeriesYears(
+                    newSubstructure,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -85,20 +77,9 @@ const SubstructureView = () => {
             const newSubstructure: Substructure = { ...substructure }
             newSubstructure.maturity = maturity
             newSubstructure.dryweight = dryWeight
-            newSubstructure.costProfile = costProfile
-            newSubstructure.cessationCostProfile = cessationCostProfile
-
-            if (caseItem?.DG4Date) {
-                initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
-                    [costProfile, cessationCostProfile],
-                    setFirstTSYear,
-                    setLastTSYear,
-                )
-            }
             setSubstructure(newSubstructure)
         }
-    }, [maturity, dryWeight, costProfile, cessationCostProfile])
+    }, [maturity, dryWeight])
 
     return (
         <AssetViewDiv>
@@ -133,26 +114,30 @@ const SubstructureView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
+                caseItem={caseItem}
+                setAsset={setSubstructure}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
+                asset={substructure}
+                timeSeriesType={TimeSeriesEnum.costProfile}
+                assetName={substructureName}
                 timeSeriesTitle="Cost profile"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
+                caseItem={caseItem}
+                setAsset={setSubstructure}
                 setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle="Cessation cost profile"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                asset={substructure}
+                timeSeriesType={TimeSeriesEnum.substructureCessationCostProfileDto}
+                assetName={substructureName}
+                timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Save
                 name={substructureName}

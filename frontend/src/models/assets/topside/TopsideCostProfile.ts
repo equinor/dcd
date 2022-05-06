@@ -1,9 +1,7 @@
-import { ITimeSeries } from "../../ITimeSeries"
-
-export class TopsideCostProfile implements Components.Schemas.TopsideCostProfileDto, ITimeSeries {
+export class TopsideCostProfile implements Components.Schemas.TopsideCostProfileDto {
     id?: string
-    startYear?: number
-    values?: number []
+    startYear: number
+    values: number []
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined

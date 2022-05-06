@@ -10,7 +10,7 @@ namespace api.Dtos
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
         public SurfCostProfileDto? CostProfile { get; set; }
-        public SurfCessationCostProfileDto? CessationCostProfile { get; set; }
+        public SurfCessationCostProfileDto? SurfCessationCostProfileDto { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }

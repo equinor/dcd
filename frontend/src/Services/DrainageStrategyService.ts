@@ -3,9 +3,8 @@ import { __BaseService } from "./__BaseService"
 
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { Project } from "../models/Project"
-import { IAssetService } from "./IAssetService"
 
-export class __DrainageStrategyService extends __BaseService implements IAssetService {
+export class __DrainageStrategyService extends __BaseService {
     public async create(sourceCaseId: string, body: Components.Schemas.DrainageStrategyDto) :
         Promise<Project> {
         const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })

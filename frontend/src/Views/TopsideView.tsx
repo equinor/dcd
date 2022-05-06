@@ -8,20 +8,19 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
+import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Topside } from "../models/assets/topside/Topside"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import Maturity from "../Components/Maturity"
 import NumberInput from "../Components/NumberInput"
-import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
-import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -30,14 +29,12 @@ const TopsideView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [topsideName, setTopsideName] = useState<string>("")
     const params = useParams()
-    const [firstTSYear, setFirstTSYear] = useState<number>()
-    const [lastTSYear, setLastTSYear] = useState<number>()
+    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
+    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
     const [oilCapacity, setOilCapacity] = useState<number | undefined>()
     const [gasCapacity, setGasCapacity] = useState<number | undefined>()
     const [dryweight, setDryweight] = useState<number | undefined>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
-    const [costProfile, setCostProfile] = useState<TopsideCostProfile>()
-    const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
 
     useEffect(() => {
         (async () => {
@@ -69,17 +66,12 @@ const TopsideView = () => {
                 setGasCapacity(newTopside?.gasCapacity)
                 setMaturity(newTopside?.maturity ?? undefined)
 
-                setCostProfile(newTopside.costProfile)
-                setCessationCostProfile(newTopside.cessationCostProfile)
-
-                if (caseResult?.DG4Date) {
-                    initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
-                        [newTopside.costProfile, newTopside.cessationCostProfile],
-                        setFirstTSYear,
-                        setLastTSYear,
-                    )
-                }
+                TimeSeriesYears(
+                    newTopside,
+                    caseResult!.DG4Date!.getFullYear(),
+                    setEarliestTimeSeriesYear,
+                    setLatestTimeSeriesYear,
+                )
             }
         })()
     }, [project])
@@ -91,19 +83,9 @@ const TopsideView = () => {
             newTopside.oilCapacity = oilCapacity
             newTopside.gasCapacity = gasCapacity
             newTopside.maturity = maturity
-            newTopside.costProfile = costProfile
-            newTopside.cessationCostProfile = cessationCostProfile
-            if (caseItem?.DG4Date) {
-                initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
-                    [newTopside.costProfile, newTopside.cessationCostProfile],
-                    setFirstTSYear,
-                    setLastTSYear,
-                )
-            }
             setTopside(newTopside)
         }
-    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile])
+    }, [dryweight, oilCapacity, gasCapacity, maturity])
 
     return (
         <AssetViewDiv>
@@ -158,26 +140,30 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
+                caseItem={caseItem}
+                setAsset={setTopside}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
+                asset={topside}
+                timeSeriesType={TimeSeriesEnum.costProfile}
+                assetName={topsideName}
                 timeSeriesTitle="Cost profile"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
+                caseItem={caseItem}
+                setAsset={setTopside}
                 setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle="Cessation cost profile"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                asset={topside}
+                timeSeriesType={TimeSeriesEnum.topsideCessationCostProfileDto}
+                assetName={topsideName}
+                timeSeriesTitle="Cessation Cost profile"
+                earliestYear={earliestTimeSeriesYear!}
+                latestYear={latestTimeSeriesYear!}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
             />
             <Save
                 name={topsideName}

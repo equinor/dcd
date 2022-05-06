@@ -14,7 +14,7 @@ public class TransportBuilder : Transport
     public TransportBuilder WithTransportCessationCostProfile(TransportCessationCostProfile transportCessationCostProfile)
     {
         transportCessationCostProfile.Transport = this;
-        CessationCostProfile = transportCessationCostProfile;
+        this.TransportCessationCostProfile = transportCessationCostProfile;
         return this;
     }
 }

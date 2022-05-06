@@ -26,7 +26,7 @@ namespace api.Adapters
             };
 
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
-            surf.CessationCostProfile = Convert(surfDto.CessationCostProfile, surf);
+            surf.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, surf);
 
             return surf;
         }
@@ -47,7 +47,7 @@ namespace api.Adapters
             existing.GasInjectorCount = surfDto.GasInjectorCount;
             existing.WaterInjectorCount = surfDto.GasInjectorCount;
             existing.CostProfile = Convert(surfDto.CostProfile, existing);
-            existing.CessationCostProfile = Convert(surfDto.CessationCostProfile, existing);
+            existing.SurfCessationCostProfile = Convert(surfDto.SurfCessationCostProfileDto, existing);
         }
 
         private static SurfCostProfile? Convert(SurfCostProfileDto? costprofile, Surf surf)

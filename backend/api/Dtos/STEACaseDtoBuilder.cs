@@ -47,7 +47,7 @@ namespace api.Adapters
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(substructureCostProfile);
                 }
 
-                SubstructureCessationCostProfileDto? substructureCessationCostProfileDto = substructureCostProfileDto.CessationCostProfile;
+                SubstructureCessationCostProfileDto? substructureCessationCostProfileDto = substructureCostProfileDto.SubstructureCessationCostProfileDto;
                 if (substructureCessationCostProfileDto != null)
                 {
                     substructureCessationCostProfileDto.StartYear += dg4Year;
@@ -65,7 +65,7 @@ namespace api.Adapters
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(surfCostProfileDto);
                 }
 
-                SurfCessationCostProfileDto? surfCessationCostProfileDto = surf.CessationCostProfile;
+                SurfCessationCostProfileDto? surfCessationCostProfileDto = surf.SurfCessationCostProfileDto;
                 if (surfCessationCostProfileDto != null)
                 {
                     surfCessationCostProfileDto.StartYear += dg4Year;
@@ -82,7 +82,7 @@ namespace api.Adapters
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(topsideCostProfileDto);
                 }
 
-                TopsideCessationCostProfileDto? topsideCessationCostProfileDto = topsideDto.CessationCostProfile;
+                TopsideCessationCostProfileDto? topsideCessationCostProfileDto = topsideDto.TopsideCessationCostProfileDto;
                 if (topsideCessationCostProfileDto != null)
                 {
                     topsideCessationCostProfileDto.StartYear += dg4Year;
@@ -99,7 +99,7 @@ namespace api.Adapters
                     sTEACaseDto.Capex.OffshoreFacilities.AddValues(transportCostProfileDto);
                 }
 
-                TransportCessationCostProfileDto? transportCessationCostProfileDto = transportDto.CessationCostProfile;
+                TransportCessationCostProfileDto? transportCessationCostProfileDto = transportDto.TransportCessationCostProfileDto;
                 if (transportCessationCostProfileDto != null)
                 {
                     transportCessationCostProfileDto.StartYear += dg4Year;

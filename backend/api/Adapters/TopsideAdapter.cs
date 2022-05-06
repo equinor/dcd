@@ -25,9 +25,9 @@ namespace api.Adapters
                 topside.CostProfile = Convert(topsideDto.CostProfile, topside);
             }
 
-            if (topsideDto.CessationCostProfile != null)
+            if (topsideDto.TopsideCessationCostProfileDto != null)
             {
-                topside.CessationCostProfile = Convert(topsideDto.CessationCostProfile, topside);
+                topside.TopsideCessationCostProfile = Convert(topsideDto.TopsideCessationCostProfileDto, topside);
             }
 
             return topside;
@@ -45,7 +45,7 @@ namespace api.Adapters
             existing.ArtificialLift = topsideDto.ArtificialLift;
             existing.Maturity = topsideDto.Maturity;
             existing.CostProfile = Convert(topsideDto.CostProfile, existing);
-            existing.CessationCostProfile = Convert(topsideDto.CessationCostProfile, existing);
+            existing.TopsideCessationCostProfile = Convert(topsideDto.TopsideCessationCostProfileDto, existing);
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {
