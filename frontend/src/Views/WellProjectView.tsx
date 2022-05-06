@@ -56,9 +56,6 @@ function WellProjectView() {
                 } else {
                     newWellProject = new WellProject()
                     newWellProject.artificialLift = caseResult?.artificialLift
-                    newWellProject.producerCount = caseResult?.producerCount
-                    newWellProject.gasInjectorCount = caseResult?.gasInjectorCount
-                    newWellProject.waterInjectorCount = caseResult?.waterInjectorCount
                     newWellProject.rigMobDemob = caseResult?.rigMobDemob
                     setWellProject(newWellProject)
                 }
@@ -120,7 +117,7 @@ function WellProjectView() {
                     value={rigMobDemob ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    label="Rig mob demob"
+                    label="Rig mob demob "
                 />
                 <NumberInput
                     setValue={setAnnualWellInterventionCost}
@@ -135,24 +132,6 @@ function WellProjectView() {
                     setHasChanges={setHasChanges}
                     integer={false}
                     label="Plugging and abandonment"
-                />
-                <NumberInput
-                    value={wellProject?.producerCount ?? 0}
-                    integer
-                    disabled
-                    label="Producer count"
-                />
-                <NumberInput
-                    value={wellProject?.gasInjectorCount ?? 0}
-                    integer
-                    disabled
-                    label="Gas injector count"
-                />
-                <NumberInput
-                    value={wellProject?.waterInjectorCount ?? 0}
-                    integer
-                    disabled
-                    label="Water injector count"
                 />
             </Wrapper>
             <TimeSeries
