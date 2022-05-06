@@ -1,7 +1,9 @@
-export class ProductionProfileWaterCostProfile implements Components.Schemas.ProductionProfileWaterDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class ProductionProfileWaterCostProfile implements Components.Schemas.ProductionProfileWaterDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileWaterDto) {

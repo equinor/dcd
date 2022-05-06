@@ -50,34 +50,6 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto 
         }
     }
 
-    static Copy(data: DrainageStrategy) {
-        const drainageStrategyCopy: DrainageStrategy = new DrainageStrategy(data)
-        return {
-            ...drainageStrategyCopy,
-            co2Emissions: data.co2Emissions,
-            fuelFlaringAndLosses: data.fuelFlaringAndLosses,
-            netSalesGas: data.netSalesGas,
-            productionProfileGas: data.productionProfileGas,
-            productionProfileOil: data.productionProfileOil,
-            productionProfileWater: data.productionProfileWater,
-            productionProfileWaterInjection: data.productionProfileWaterInjection,
-        }
-    }
-
-    static toDto(data: DrainageStrategy): Components.Schemas.DrainageStrategyDto {
-        const drainageStrategyCopy = new DrainageStrategy(data)
-        return {
-            ...drainageStrategyCopy,
-            co2Emissions: data.co2Emissions,
-            fuelFlaringAndLosses: data.fuelFlaringAndLosses,
-            netSalesGas: data.netSalesGas,
-            productionProfileGas: data.productionProfileGas,
-            productionProfileOil: data.productionProfileOil,
-            productionProfileWater: data.productionProfileWater,
-            productionProfileWaterInjection: data.productionProfileWaterInjection,
-        }
-    }
-
     static fromJSON(data: Components.Schemas.DrainageStrategyDto): DrainageStrategy {
         return new DrainageStrategy(data)
     }
