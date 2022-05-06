@@ -7,7 +7,6 @@ import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
 } from "../Components/DataTable/helpers"
 import Import from "../Components/Import/Import"
-import { IAsset } from "../models/assets/IAsset"
 import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { Case } from "../models/Case"
 import { ITimeSeries } from "../models/ITimeSeries"
@@ -25,6 +24,28 @@ interface Props {
     latestYear: number | undefined,
     setEarliestYear: Dispatch<SetStateAction<number | undefined>>,
     setLatestYear: Dispatch<SetStateAction<number | undefined>>,
+}
+
+interface IAsset {
+    id?: string | undefined
+    name?: string | undefined
+    projectId?: string | undefined
+    costProfile?: ITimeSeries | undefined
+    drillingSchedule?: ITimeSeries | undefined
+    gAndGAdminCost?: ITimeSeries | undefined
+    co2Emissions?: ITimeSeries | undefined
+    netSalesGas?: ITimeSeries | undefined
+    fuelFlaringAndLosses?: ITimeSeries | undefined
+    productionProfileGas?: ITimeSeries | undefined
+    productionProfileOil?: ITimeSeries | undefined
+    productionProfileWater?: ITimeSeries | undefined
+    productionProfileWaterInjection?: ITimeSeries | undefined
+    substructureCessationCostProfileDto?: ITimeSeries | undefined
+    surfCessationCostProfileDto?: ITimeSeries | undefined
+    topsideCessationCostProfileDto?: ITimeSeries | undefined
+    transportCessationCostProfileDto?: ITimeSeries | undefined
+    dryweight?: number | undefined
+    maturity?: Components.Schemas.Maturity | undefined
 }
 
 const TimeSeries = ({
@@ -87,7 +108,7 @@ const TimeSeries = ({
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, asset![timeSeriesType]))
+        setColumns(getColumnAbsoluteYears(caseItem?.DG4Date?.getFullYear(), asset![timeSeriesType]))
         setHasChanges(true)
     }
 
@@ -97,7 +118,6 @@ const TimeSeries = ({
         newAsset[timeSeriesType] = newTimeSeries
         newTimeSeries.startYear = year
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
-        newTimeSeries.epaVersion = ""
         setAsset(newAsset)
         if ((Number(year)
         + Number(caseItem!.DG4Date!.getFullYear()!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {

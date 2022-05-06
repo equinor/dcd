@@ -1,6 +1,26 @@
 import { Dispatch, SetStateAction } from "react"
-import { IAsset } from "../../models/assets/IAsset"
 import { ITimeSeries } from "../../models/ITimeSeries"
+
+interface IAsset {
+    id?: string | undefined
+    name?: string | undefined
+    projectId?: string | undefined
+    costProfile?: ITimeSeries | undefined
+    drillingSchedule?: ITimeSeries | undefined
+    gAndGAdminCost?: ITimeSeries | undefined
+    co2Emissions?: ITimeSeries | undefined
+    netSalesGas?: ITimeSeries | undefined
+    fuelFlaringAndLosses?: ITimeSeries | undefined
+    productionProfileGas?: ITimeSeries | undefined
+    productionProfileOil?: ITimeSeries | undefined
+    productionProfileWater?: ITimeSeries | undefined
+    productionProfileWaterInjection?: ITimeSeries | undefined
+    substructureCessationCostProfileDto?: ITimeSeries | undefined
+    surfCessationCostProfileDto?: ITimeSeries | undefined
+    topsideCessationCostProfileDto?: ITimeSeries | undefined
+    transportCessationCostProfileDto?: ITimeSeries | undefined
+    dryweight?: number | undefined
+    maturity?: Components.Schemas.Maturity | undefined}
 
 const SetYears = (
     years: [number, number],
@@ -88,4 +108,40 @@ export const GetArtificialLiftName = (value: number | undefined): string => {
     default:
         return ""
     }
+}
+
+const setYears = (
+    years: [number, number],
+    timeSeries: ITimeSeries,
+    dG4Year: number,
+): [number, number] => {
+    const newYears = years
+    if (timeSeries.startYear !== undefined && timeSeries.values !== undefined) {
+        if (Number(timeSeries.startYear) + dG4Year < years[0]) {
+            newYears[0] = Number(timeSeries.startYear) + Number(dG4Year)
+        }
+
+        if (Number(timeSeries.startYear) + dG4Year + timeSeries.values.length > years[1]) {
+            newYears[1] = Number(timeSeries.startYear) + Number(dG4Year) + Number(timeSeries.values.length)
+        }
+    }
+
+    return newYears
+}
+
+export const initializeFirstAndLastYear = (
+    dG4: number,
+    timeSeries: (ITimeSeries | undefined)[],
+    setFirstYear: Dispatch<SetStateAction<number | undefined>>,
+    setLastYear: Dispatch<SetStateAction<number | undefined>>,
+) => {
+    let years: [number, number] = [Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER]
+    timeSeries.forEach((ts) => {
+        if (ts) {
+            years = setYears(years, ts, dG4)
+        }
+    })
+
+    setFirstYear(years[0])
+    setLastYear(years[1])
 }
