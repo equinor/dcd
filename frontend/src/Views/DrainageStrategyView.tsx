@@ -222,6 +222,19 @@ const DrainageStrategyView = () => {
                 setEarliestYear={setEarliestTimeSeriesYear!}
                 setLatestYear={setLatestTimeSeriesYear}
             />
+            <TimeSeries
+                caseItem={caseItem}
+                setAsset={setDrainageStrategy}
+                setHasChanges={setHasChanges}
+                asset={drainageStrategy}
+                timeSeriesType={TimeSeriesEnum.productionProfileNGL}
+                assetName={drainageStrategyName}
+                timeSeriesTitle="Production profile NGL"
+                earliestYear={earliestTimeSeriesYear}
+                latestYear={latestTimeSeriesYear}
+                setEarliestYear={setEarliestTimeSeriesYear!}
+                setLatestYear={setLatestTimeSeriesYear}
+            />
             <Save
                 name={drainageStrategyName}
                 setHasChanges={setHasChanges}

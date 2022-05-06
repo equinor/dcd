@@ -13,6 +13,7 @@ export interface IAsset {
     productionProfileOil?: ITimeSeries | undefined
     productionProfileWater?: ITimeSeries | undefined
     productionProfileWaterInjection?: ITimeSeries | undefined
+    productionProfileNGL?: ITimeSeries | undefined
     substructureCessationCostProfileDto?: ITimeSeries | undefined
     surfCessationCostProfileDto?: ITimeSeries | undefined
     topsideCessationCostProfileDto?: ITimeSeries | undefined
