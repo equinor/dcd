@@ -1,5 +1,3 @@
-import { ProductionProfileNGLCostProfile } from "./models/assets/drainagestrategy/ProductionProfileNGLCostProfile";
-
 declare namespace Components {
     namespace Schemas {
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
