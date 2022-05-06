@@ -7,9 +7,6 @@ export class WellProject implements Components.Schemas.WellProjectDto {
     projectId?: string | undefined
     costProfile?: WellProjectCostProfileDto | undefined
     drillingSchedule?: DrillingScheduleDto | undefined
-    producerCount?: number | undefined
-    gasInjectorCount?: number | undefined
-    waterInjectorCount?: number | undefined
     artificialLift?: Components.Schemas.ArtificialLift | undefined
     rigMobDemob?: number | undefined
     annualWellInterventionCost?: number | undefined
@@ -22,9 +19,6 @@ export class WellProject implements Components.Schemas.WellProjectDto {
             this.projectId = data.projectId ?? ""
             this.costProfile = WellProjectCostProfileDto.fromJSON(data.costProfile)
             this.drillingSchedule = DrillingScheduleDto.fromJSON(data.drillingSchedule)
-            this.producerCount = data.producerCount ?? 0
-            this.gasInjectorCount = data.gasInjectorCount ?? 0
-            this.waterInjectorCount = data.waterInjectorCount ?? 0
             this.artificialLift = data.artificialLift ?? 0
             this.rigMobDemob = data.rigMobDemob ?? 0
             this.annualWellInterventionCost = data.annualWellInterventionCost ?? 0
