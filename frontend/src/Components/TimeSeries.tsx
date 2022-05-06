@@ -118,7 +118,6 @@ const TimeSeries = ({
         newAsset[timeSeriesType] = newTimeSeries
         newTimeSeries.startYear = year
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
-        // newTimeSeries.epaVersion = ""
         setAsset(newAsset)
         if ((Number(year)
         + Number(caseItem!.DG4Date!.getFullYear()!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
