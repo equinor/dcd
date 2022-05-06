@@ -1,7 +1,9 @@
 import {
+    Switch,
     Tabs,
 } from "@equinor/eds-core-react"
 import {
+    MouseEventHandler,
     useEffect,
     useState,
 } from "react"
@@ -45,6 +47,7 @@ function CaseView() {
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
+    const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -64,6 +67,7 @@ function CaseView() {
                 setArtificialLift(caseResult.artificialLift)
                 setProdStratOverview(caseResult.productionStrategyOverview)
                 setFacilitiesAvailability(caseResult?.facilitiesAvailability)
+                setIsReferenceCase(caseResult?.referenceCase ?? false)
             }
             setCase(caseResult)
             setProducerCount(caseResult?.producerCount)
@@ -81,15 +85,22 @@ function CaseView() {
                 caseDto.gasInjectorCount = gasInjectorCount
                 caseDto.waterInjectorCount = waterInjectorCount
                 caseDto.facilitiesAvailability = facilitiesAvailability
+                caseDto.referenceCase = isReferenceCase ?? false
 
                 const newProject = await GetCaseService().updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
+    }
+
+    const switchReferance: MouseEventHandler<HTMLInputElement> = () => {
+        if (!isReferenceCase || isReferenceCase === undefined) {
+            setIsReferenceCase(true)
+        } else setIsReferenceCase(false)
     }
 
     if (!project) return null
@@ -107,6 +118,7 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
+                <Switch onClick={switchReferance} label="Reference case" checked={isReferenceCase ?? false} />
                 <Wrapper>
                     <CaseDGDate
                         caseItem={caseItem}
