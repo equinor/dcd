@@ -56,7 +56,6 @@ function WellProjectView() {
                 } else {
                     newWellProject = new WellProject()
                     newWellProject.artificialLift = caseResult?.artificialLift
-                    newWellProject.rigMobDemob = caseResult?.rigMobDemob
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
@@ -117,7 +116,7 @@ function WellProjectView() {
                     value={rigMobDemob ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    label="Rig mob demob "
+                    label="Rig mob demob"
                 />
                 <NumberInput
                     setValue={setAnnualWellInterventionCost}
