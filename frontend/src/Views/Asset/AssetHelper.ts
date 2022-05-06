@@ -60,6 +60,9 @@ export const TimeSeriesYears = (
     if (asset.productionProfileWaterInjection !== undefined) {
         years = SetYears(years, asset.productionProfileWaterInjection, dG4Year, setFirstYear, setLastYear)
     }
+    if (asset.productionProfileNGL !== undefined) {
+        years = SetYears(years, asset.productionProfileNGL, dG4Year, setFirstYear, setLastYear)
+    }
     if (asset.substructureCessationCostProfileDto !== undefined) {
         years = SetYears(years, asset.substructureCessationCostProfileDto, dG4Year, setFirstYear, setLastYear)
     }
