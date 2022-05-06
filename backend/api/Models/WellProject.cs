@@ -11,9 +11,6 @@ namespace api.Models
 
         public WellProjectCostProfile? CostProfile { get; set; }
         public DrillingSchedule? DrillingSchedule { get; set; }
-        public int ProducerCount { get; set; }
-        public int GasInjectorCount { get; set; }
-        public int WaterInjectorCount { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public double RigMobDemob { get; set; }
         public double AnnualWellInterventionCost { get; set; }
