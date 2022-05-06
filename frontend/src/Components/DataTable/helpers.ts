@@ -1,4 +1,3 @@
-import { Case } from "../../models/Case"
 import { CellValue } from "./DataTable"
 
 export const generateEmptyGridWithRowTitles = (rowTitles: string[]) => {
@@ -48,10 +47,10 @@ export const generateNewGrid = (data: { [key: string]: string }[], rowTitles: st
     return { newGridData, newColumns }
 }
 
-export const getColumnAbsoluteYears = (newCaseItem?: Case, costProfile?: any) => {
+export const getColumnAbsoluteYears = (dG4Year?: number, costProfile?: any) => {
     const startYears: string[] = []
     const relativeYear: number = parseInt(costProfile?.startYear, 10)
-    const startYear: number = (newCaseItem?.DG4Date?.getFullYear() ?? 0) + (relativeYear ?? 0)
+    const startYear: number = (dG4Year ?? 0) + (relativeYear ?? 0)
     costProfile?.values?.forEach((_: any, i: number) => {
         startYears.push((startYear + i).toString())
     })
