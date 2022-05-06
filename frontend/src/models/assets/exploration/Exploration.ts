@@ -1,8 +1,9 @@
+import { IAsset } from "../IAsset"
 import { ExplorationCostProfile } from "./ExplorationCostProfile"
 import { ExplorationDrillingScheduleDto } from "./ExplorationDrillingScheduleDto"
 import { GAndGAdminCostDto } from "./GAndAdminCostDto"
 
-export class Exploration implements Components.Schemas.ExplorationDto {
+export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     id?: string | undefined
     projectId?: string | undefined
     name?: string | undefined
