@@ -339,9 +339,6 @@ declare namespace Components {
             name?: string | null;
             costProfile?: WellProjectCostProfileDto;
             drillingSchedule?: DrillingScheduleDto;
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
             artificialLift?: ArtificialLift /* int32 */;
             rigMobDemob?: number; // double
             annualWellInterventionCost?: number; // double
