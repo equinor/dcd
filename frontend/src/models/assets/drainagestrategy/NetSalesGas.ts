@@ -1,7 +1,9 @@
-export class NetSalesGas implements Components.Schemas.NetSalesGasDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class NetSalesGas implements Components.Schemas.NetSalesGasDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     sum?: number
 
     constructor(data?: Components.Schemas.NetSalesGasDto) {

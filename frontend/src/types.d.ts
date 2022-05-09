@@ -143,6 +143,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
             totalAndAnnualOil?: ProductionProfileOilDto;
@@ -183,6 +184,8 @@ declare namespace Components {
             commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
+            currency?: Currency /* int32 */;
+            physUnit?: PhysUnit /* int32 */;
             createDate?: string; // date-time
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;

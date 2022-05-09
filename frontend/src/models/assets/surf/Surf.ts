@@ -1,7 +1,8 @@
 import { SurfCostProfile } from "./SurfCostProfile"
 import { SurfCessationCostProfile } from "./SurfCessationCostProfile"
+import { IAsset } from "../IAsset"
 
-export class Surf implements Components.Schemas.SurfDto {
+export class Surf implements Components.Schemas.SurfDto, IAsset {
     id?: string | undefined
     name: string | undefined
     projectId?: string | undefined

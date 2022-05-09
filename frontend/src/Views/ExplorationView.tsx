@@ -18,10 +18,10 @@ import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
-import TimeSeriesNoAsset from "../Components/TimeSeriesNoAsset"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
 import { ExplorationDrillingSchedule } from "../models/assets/exploration/ExplorationDrillingSchedule"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
+import TimeSeries from "../Components/TimeSeries"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -116,7 +116,7 @@ const ExplorationView = () => {
                     label="Rig mob demob"
                 />
             </Wrapper>
-            <TimeSeriesNoAsset
+            <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
@@ -127,7 +127,7 @@ const ExplorationView = () => {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
-            <TimeSeriesNoAsset
+            <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setDrillingSchedule}
                 setHasChanges={setHasChanges}
@@ -138,7 +138,7 @@ const ExplorationView = () => {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
-            <TimeSeriesNoAsset
+            <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setGAndGAdminCost}
                 setHasChanges={setHasChanges}

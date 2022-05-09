@@ -1,7 +1,9 @@
-export class Co2Emissions implements Components.Schemas.Co2EmissionsDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class Co2Emissions implements Components.Schemas.Co2EmissionsDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     sum?: number
 
     constructor(data?: Components.Schemas.Co2EmissionsDto) {
@@ -17,7 +19,7 @@ export class Co2Emissions implements Components.Schemas.Co2EmissionsDto {
         }
     }
 
-    static fromJson(data?: Components.Schemas.NetSalesGasDto): Co2Emissions | undefined {
+    static fromJson(data?: Components.Schemas.Co2EmissionsDto): Co2Emissions | undefined {
         if (data === undefined || data === null) {
             return undefined
         }

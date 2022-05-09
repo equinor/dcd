@@ -1,7 +1,9 @@
-export class ProductionProfileOil implements Components.Schemas.ProductionProfileOilDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class ProductionProfileOil implements Components.Schemas.ProductionProfileOilDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileOilDto) {

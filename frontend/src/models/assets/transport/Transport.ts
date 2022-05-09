@@ -1,7 +1,8 @@
+import { IAsset } from "../IAsset"
 import { TransportCessationCostProfile } from "./TransportCessationCostProfile"
 import { TransportCostProfile } from "./TransportCostProfile"
 
-export class Transport implements Components.Schemas.TransportDto {
+export class Transport implements Components.Schemas.TransportDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined

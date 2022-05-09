@@ -1,7 +1,8 @@
+import { IAsset } from "../IAsset"
 import { DrillingSchedule } from "./DrillingSchedule"
 import { WellProjectCostProfile } from "./WellProjectCostProfile"
 
-export class WellProject implements Components.Schemas.WellProjectDto {
+export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
