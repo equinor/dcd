@@ -1,7 +1,9 @@
-export class ProductionProfileNGLCostProfile implements Components.Schemas.ProductionProfileNGLDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class ProductionProfileNGLCostProfile implements Components.Schemas.ProductionProfileNGLDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileNGLDto) {

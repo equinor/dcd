@@ -22,7 +22,7 @@ interface Props {
     timeSeries: ITimeSeries | undefined
 }
 
-const TimeSeriesNoAsset = ({
+const TimeSeries = ({
     dG4Year,
     setTimeSeries,
     setHasChanges,
@@ -138,4 +138,4 @@ const TimeSeriesNoAsset = ({
     )
 }
 
-export default TimeSeriesNoAsset
+export default TimeSeries
