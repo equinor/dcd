@@ -11,7 +11,7 @@ import { WellProject } from "./assets/wellproject/WellProject"
 
 export class Project implements Components.Schemas.ProjectDto {
     cases: Case[]
-    category?: ProjectCategory
+    category?: Components.Schemas.ProjectCategory
     country: string | null
     createdAt: Date | null
     description: string | null
@@ -20,7 +20,7 @@ export class Project implements Components.Schemas.ProjectDto {
     id: string
     projectId: string
     name: string
-    phase?: ProjectPhase
+    phase?: Components.Schemas.ProjectPhase
     substructures: Substructure[]
     surfs: Surf[]
     topsides: Topside[]
@@ -33,7 +33,7 @@ export class Project implements Components.Schemas.ProjectDto {
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
-        this.category = data.projectCategory ? new ProjectCategory(data.projectCategory) : undefined
+        this.category = data.projectCategory
         this.country = data.country ?? null
         this.createdAt = data.createDate ? new Date(data.createDate) : null
         this.description = data.description ?? null
@@ -44,7 +44,7 @@ export class Project implements Components.Schemas.ProjectDto {
         this.commonLibId = data.commonLibraryId ?? ""
         this.commonLibraryName = data.commonLibraryName ?? ""
         this.name = data.name ?? ""
-        this.phase = data.projectPhase ? new ProjectPhase(data.projectPhase) : undefined
+        this.phase = data.projectPhase
         this.substructures = data.substructures?.map(Substructure.fromJSON) ?? []
         this.surfs = data.surfs?.map(Surf.fromJSON) ?? []
         this.topsides = data.topsides?.map(Topside.fromJSON) ?? []
@@ -62,8 +62,8 @@ export class Project implements Components.Schemas.ProjectDto {
         const projectCopy = new Project(data)
         return {
             ...projectCopy,
-            projectCategory: 1,
-            projectPhase: 2,
+            projectCategory: data.category,
+            projectPhase: data.phase,
         }
     }
 

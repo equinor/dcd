@@ -30,6 +30,7 @@ import { GetSTEAService } from "../Services/STEAService"
 import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
 import { Case } from "../models/Case"
+import { GetProjectCategoryName, GetProjectPhaseName } from "../Utils/common"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -106,7 +107,6 @@ const ProjectView = () => {
                     project.cases.forEach((c) => cases.push(Case.Copy(c)))
                     projectDto.cases = cases
                     const res = await GetProjectService().updateProject(projectDto)
-                    console.log("[ProjectView]", res)
                     setProject(res)
                 }
             } catch (error) {
@@ -195,13 +195,13 @@ const ProjectView = () => {
             <WrapperColumn>
                 <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
                 <Typography variant="h4" aria-label="Project phase">
-                    {project.phase?.toString() ?? ""}
+                    {GetProjectPhaseName(project.phase)}
                 </Typography>
             </WrapperColumn>
             <WrapperColumn>
                 <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
                 <Typography variant="h4" aria-label="Project category">
-                    {project.category?.toString() ?? ""}
+                    {GetProjectCategoryName(project.category)}
                 </Typography>
             </WrapperColumn>
             <WrapperColumn>
