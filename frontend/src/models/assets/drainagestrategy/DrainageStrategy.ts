@@ -5,6 +5,7 @@ import { ProductionProfileGas } from "./ProductionProfileGas"
 import { ProductionProfileOil } from "./ProductionProfileOil"
 import { ProductionProfileWater } from "./ProductionProfileWater"
 import { ProductionProfileWaterInjection } from "./ProductionProfileWaterInjection"
+import { ProductionProfileNGL } from "./ProductionProfileNGL"
 import { IAsset } from "../IAsset"
 
 export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
@@ -24,6 +25,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     productionProfileOil?: ProductionProfileOil | undefined
     productionProfileWater?: ProductionProfileWater | undefined
     productionProfileWaterInjection?: ProductionProfileWaterInjection | undefined
+    productionProfileNGL?: ProductionProfileNGL | undefined
 
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
         if (data !== undefined) {
@@ -42,6 +44,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.productionProfileGas = ProductionProfileGas.fromJson(data.productionProfileGas)
             this.productionProfileOil = ProductionProfileOil.fromJson(data.productionProfileOil)
             this.productionProfileWater = ProductionProfileWater.fromJson(data.productionProfileWater)
+            this.productionProfileNGL = ProductionProfileNGL.fromJson(data.productionProfileNGL)
             this.productionProfileWaterInjection = ProductionProfileWaterInjection
                 .fromJson(data.productionProfileWaterInjection)
         } else {

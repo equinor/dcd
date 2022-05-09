@@ -37,6 +37,10 @@ namespace api.Adapters
             {
                 drainageStrategy.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, drainageStrategy);
             }
+            if (drainageStrategyDto.ProductionProfileNGL != null)
+            {
+                drainageStrategy.ProductionProfileNGL = Convert(drainageStrategyDto.ProductionProfileNGL, drainageStrategy);
+            }
             return drainageStrategy;
         }
 
@@ -71,6 +75,10 @@ namespace api.Adapters
             if (drainageStrategyDto.Co2Emissions != null)
             {
                 existing.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, existing);
+            }
+            if (drainageStrategyDto.ProductionProfileNGL != null)
+            {
+                existing.ProductionProfileNGL = Convert(drainageStrategyDto.ProductionProfileNGL, existing);
             }
             return existing;
         }
@@ -179,6 +187,17 @@ namespace api.Adapters
                 DrainageStrategy = drainageStrategy,
                 StartYear = co2EmissionsDto.StartYear,
                 Values = co2EmissionsDto.Values
+            };
+        }
+
+        private static ProductionProfileNGL? Convert(ProductionProfileNGLDto? productionProfileNGLDto, DrainageStrategy drainageStrategy)
+        {
+            return productionProfileNGLDto == null ? null : new ProductionProfileNGL
+            {
+                Id = productionProfileNGLDto.Id,
+                DrainageStrategy = drainageStrategy,
+                StartYear = productionProfileNGLDto.StartYear,
+                Values = productionProfileNGLDto.Values
             };
         }
     }

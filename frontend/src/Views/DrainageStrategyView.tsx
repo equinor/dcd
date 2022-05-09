@@ -27,6 +27,7 @@ import { ProductionProfileGas } from "../models/assets/drainagestrategy/Producti
 import { ProductionProfileOil } from "../models/assets/drainagestrategy/ProductionProfileOil"
 import { ProductionProfileWater } from "../models/assets/drainagestrategy/ProductionProfileWater"
 import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
+import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -41,6 +42,7 @@ const DrainageStrategyView = () => {
     const [productionProfileGas, setProductionProfileGas] = useState<ProductionProfileGas>()
     const [productionProfileOil, setProductionProfileOil] = useState<ProductionProfileOil>()
     const [productionProfileWater, setProductionProfileWater] = useState<ProductionProfileWater>()
+    const [productionProfileNGL, setProductionProfileNGL] = useState<ProductionProfileNGL>()
     // eslint-disable-next-line max-len
     const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjection>()
     const [nGLYield, setNGLYield] = useState<number>()
@@ -86,13 +88,15 @@ const DrainageStrategyView = () => {
                 setProductionProfileOil(newDrainage.productionProfileOil)
                 setProductionProfileWater(newDrainage.productionProfileWater)
                 setProductionProfileWaterInjection(newDrainage.productionProfileWaterInjection)
+                setProductionProfileNGL(newDrainage.productionProfileNGL)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
                         [newDrainage.netSalesGas, newDrainage.co2Emissions, newDrainage.fuelFlaringAndLosses,
                             newDrainage.productionProfileGas, newDrainage.productionProfileOil,
-                            newDrainage.productionProfileWater, newDrainage.productionProfileWaterInjection],
+                            newDrainage.productionProfileWater, newDrainage.productionProfileWaterInjection,
+                            newDrainage.productionProfileNGL],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -111,6 +115,7 @@ const DrainageStrategyView = () => {
         newDrainage.productionProfileOil = productionProfileOil
         newDrainage.productionProfileWater = productionProfileWater
         newDrainage.productionProfileWaterInjection = productionProfileWaterInjection
+        newDrainage.productionProfileNGL = productionProfileNGL
         setDrainageStrategy(newDrainage)
 
         if (caseItem?.DG4Date) {
@@ -118,13 +123,15 @@ const DrainageStrategyView = () => {
                 caseItem?.DG4Date?.getFullYear(),
                 [newDrainage.netSalesGas, newDrainage.co2Emissions, newDrainage.fuelFlaringAndLosses,
                     newDrainage.productionProfileGas, newDrainage.productionProfileOil,
-                    newDrainage.productionProfileWater, newDrainage.productionProfileWaterInjection],
+                    newDrainage.productionProfileWater, newDrainage.productionProfileWaterInjection,
+                    newDrainage.productionProfileNGL],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
     }, [nGLYield, co2Emissions, netSalesGas, fuelFlaringAndLosses,
-        productionProfileGas, productionProfileOil, productionProfileWater, productionProfileWaterInjection])
+        productionProfileGas, productionProfileOil, productionProfileWater, productionProfileWaterInjection,
+        productionProfileNGL])
 
     return (
         <AssetViewDiv>
@@ -257,6 +264,17 @@ const DrainageStrategyView = () => {
                 firstYear={firstTSYear}
                 lastYear={lastTSYear}
                 setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileNGL}
+                setHasChanges={setHasChanges}
+                timeSeries={productionProfileNGL}
+                timeSeriesTitle="Production profile NGL"
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
             <Save

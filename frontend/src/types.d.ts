@@ -82,6 +82,7 @@ declare namespace Components {
             productionProfileGas?: ProductionProfileGasDto;
             productionProfileWater?: ProductionProfileWaterDto;
             productionProfileWaterInjection?: ProductionProfileWaterInjectionDto;
+            productionProfileNGL?: ProductionProfileNGLDto;
             fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
@@ -170,6 +171,12 @@ declare namespace Components {
             sum?: number; // double
         }
         export interface ProductionProfileWaterInjectionDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
+        export interface ProductionProfileNGLDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;
