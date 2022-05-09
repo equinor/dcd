@@ -11,36 +11,40 @@ import { WellProject } from "./assets/wellproject/WellProject"
 
 export class Project implements Components.Schemas.ProjectDto {
     cases: Case[]
-    category: ProjectCategory | null
+    category?: ProjectCategory
     country: string | null
     createdAt: Date | null
     description: string | null
     drainageStrategies: DrainageStrategy[]
     explorations: any[]
     id: string
+    projectId: string
     name: string
-    phase: ProjectPhase | null
+    phase?: ProjectPhase
     substructures: Substructure[]
     surfs: Surf[]
     topsides: Topside[]
     transports: Transport[]
     wellProjects: WellProject[]
     commonLibId: string
+    commonLibraryName: string
     currency: Components.Schemas.Currency
     physUnit: Components.Schemas.PhysUnit
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
-        this.category = data.projectCategory ? new ProjectCategory(data.projectCategory) : null
+        this.category = data.projectCategory ? new ProjectCategory(data.projectCategory) : undefined
         this.country = data.country ?? null
         this.createdAt = data.createDate ? new Date(data.createDate) : null
         this.description = data.description ?? null
         this.drainageStrategies = data.drainageStrategies?.map(DrainageStrategy.fromJSON) ?? []
         this.explorations = data.explorations?.map(Exploration.fromJSON) ?? []
         this.id = data.projectId ?? ""
+        this.projectId = data.projectId ?? ""
         this.commonLibId = data.commonLibraryId ?? ""
+        this.commonLibraryName = data.commonLibraryName ?? ""
         this.name = data.name ?? ""
-        this.phase = data.projectPhase ? new ProjectPhase(data.projectPhase) : null
+        this.phase = data.projectPhase ? new ProjectPhase(data.projectPhase) : undefined
         this.substructures = data.substructures?.map(Substructure.fromJSON) ?? []
         this.surfs = data.surfs?.map(Surf.fromJSON) ?? []
         this.topsides = data.topsides?.map(Topside.fromJSON) ?? []
@@ -52,6 +56,15 @@ export class Project implements Components.Schemas.ProjectDto {
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {
         return new Project(data)
+    }
+
+    static Copy(data: Project): Components.Schemas.ProjectDto {
+        const projectCopy = new Project(data)
+        return {
+            ...projectCopy,
+            projectCategory: 1,
+            projectPhase: 2,
+        }
     }
 
     public static deserialize(data: string): Project[] {

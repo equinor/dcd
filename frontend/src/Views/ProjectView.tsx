@@ -29,6 +29,7 @@ import { GetCaseService } from "../Services/CaseService"
 import { GetSTEAService } from "../Services/STEAService"
 import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
+import { Case } from "../models/Case"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -82,6 +83,10 @@ const ProjectView = () => {
         (async () => {
             try {
                 const res = await GetProjectService().getProjectByID(params.projectId!)
+                if (res !== undefined) {
+                    console.log(res.physUnit)
+                    setPhysicalUnit(res?.physUnit)
+                }
                 console.log("[ProjectView]", res)
                 setProject(res)
             } catch (error) {
@@ -94,8 +99,12 @@ const ProjectView = () => {
         (async () => {
             try {
                 if (project !== undefined) {
-                    const projectDto = Project.fromJSON(project)
+                    const projectDto = Project.Copy(project)
                     projectDto.physUnit = physicalUnit
+                    projectDto.projectId = params.projectId!
+                    const cases: Case[] = []
+                    project.cases.forEach((c) => cases.push(Case.Copy(c)))
+                    projectDto.cases = cases
                     const res = await GetProjectService().updateProject(projectDto)
                     console.log("[ProjectView]", res)
                     setProject(res)
