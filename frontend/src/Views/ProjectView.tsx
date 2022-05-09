@@ -29,6 +29,7 @@ import { GetCaseService } from "../Services/CaseService"
 import { GetSTEAService } from "../Services/STEAService"
 import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
+import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
 import { GetProjectCategoryName, GetProjectPhaseName } from "../Utils/common"
 
@@ -79,14 +80,15 @@ const ProjectView = () => {
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.PhysUnit>(0)
 
     useEffect(() => {
         (async () => {
             try {
                 const res = await GetProjectService().getProjectByID(params.projectId!)
                 if (res !== undefined) {
-                    console.log(res.physUnit)
                     setPhysicalUnit(res?.physUnit)
+                    setCurrency(res?.currency)
                 }
                 console.log("[ProjectView]", res)
                 setProject(res)
@@ -102,6 +104,7 @@ const ProjectView = () => {
                 if (project !== undefined) {
                     const projectDto = Project.Copy(project)
                     projectDto.physUnit = physicalUnit
+                    projectDto.currency = currency
                     projectDto.projectId = params.projectId!
                     const cases: Case[] = []
                     project.cases.forEach((c) => cases.push(Case.Copy(c)))
@@ -113,7 +116,7 @@ const ProjectView = () => {
                 console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
             }
         })()
-    }, [physicalUnit])
+    }, [physicalUnit, currency])
 
     const chartData = useMemo(() => (project ? {
         x: project?.cases.map((c) => c.name ?? ""),
@@ -216,11 +219,12 @@ const ProjectView = () => {
                 setProject={setProject}
                 project={project}
             />
-            {/* <Currency
-                    currentValue={currency}
-                    setCurrency={setCurrency}
-                    setProject={setProject}
-            /> */}
+            <Currency
+                currentValue={currency}
+                setCurrency={setCurrency}
+                setProject={setProject}
+                project={project}
+            />
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>

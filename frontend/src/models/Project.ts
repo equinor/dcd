@@ -1,7 +1,6 @@
 import { Case } from "./Case"
 import { DrainageStrategy } from "./assets/drainagestrategy/DrainageStrategy"
 import { Exploration } from "./assets/exploration/Exploration"
-import { ProjectCategory } from "./ProjectCategory"
 import { ProjectPhase } from "./ProjectPhase"
 import { Substructure } from "./assets/substructure/Substructure"
 import { Surf } from "./assets/surf/Surf"

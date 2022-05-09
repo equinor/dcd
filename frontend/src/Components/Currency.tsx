@@ -7,60 +7,60 @@ import {
 import styled from "styled-components"
 import { Project } from "../models/Project"
 
-const PhysicalUnitDropdown = styled(NativeSelect)`
+const CurrencyDropdown = styled(NativeSelect)`
 width: 20rem;
 padding-bottom: 2em;
 `
 
 interface Props {
     project: Project
-    setPhysicalUnit: Dispatch<SetStateAction<Components.Schemas.PhysUnit>>,
+    setCurrency: Dispatch<SetStateAction<Components.Schemas.Currency>>,
     setProject: Dispatch<SetStateAction<Project | undefined>>,
-    currentValue: Components.Schemas.PhysUnit,
+    currentValue: Components.Schemas.Currency,
 }
 
-const PhysicalUnit = ({
+const Currency = ({
     project,
-    setPhysicalUnit,
+    setCurrency,
     setProject,
     currentValue,
 }: Props) => {
     const onChange = async (event: ChangeEvent<HTMLSelectElement>) => {
-        let pu:Components.Schemas.PhysUnit
+        let pu:Components.Schemas.Currency
         switch (event.currentTarget.selectedOptions[0].value) {
         case "0":
-            setPhysicalUnit(0)
+            setCurrency(0)
             pu = 0
             break
         case "1":
-            setPhysicalUnit(1)
+            setCurrency(1)
             pu = 1
             break
         default:
             pu = 0
-            setPhysicalUnit(0)
+            setCurrency(0)
             break
         }
         if (project !== undefined) {
             const newProject = project
-            newProject.physUnit = pu
+            newProject.currency = pu
             setProject(newProject)
         }
     }
 
     return (
-        <PhysicalUnitDropdown
-            label="Physical Unit"
-            id="physicalUnit"
-            placeholder="Choose a physical unit"
+        <CurrencyDropdown
+            label="Currency"
+            id="currency"
+            placeholder="Choose a currency"
             onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
             value={currentValue}
             disabled={false}
         >
-            <option key="0" value={0}>SI</option>
-            <option key="1" value={1}>Oil field</option>
-        </PhysicalUnitDropdown>
+            <option key="0" value={0}>USD</option>
+            <option key="1" value={1}>NOK</option>
+        </CurrencyDropdown>
     )
 }
 
-export default PhysicalUnit
+export default Currency
