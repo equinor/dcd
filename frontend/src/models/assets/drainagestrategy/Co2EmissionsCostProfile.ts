@@ -1,7 +1,9 @@
-export class Co2EmissionsCostProfile implements Components.Schemas.Co2EmissionsDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class Co2EmissionsCostProfile implements Components.Schemas.Co2EmissionsDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     sum?: number
 
     constructor(data?: Components.Schemas.Co2EmissionsDto) {

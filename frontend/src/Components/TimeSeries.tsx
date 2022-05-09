@@ -2,77 +2,70 @@ import { Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
-import DataTable, { CellValue } from "../Components/DataTable/DataTable"
+import DataTable, { CellValue } from "./DataTable/DataTable"
 import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
-} from "../Components/DataTable/helpers"
-import Import from "../Components/Import/Import"
-import { IAsset } from "../models/assets/IAsset"
-import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
-import { Case } from "../models/Case"
+} from "./DataTable/helpers"
+import Import from "./Import/Import"
 import { ITimeSeries } from "../models/ITimeSeries"
 import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
-    caseItem: Case | undefined,
-    setAsset: Dispatch<SetStateAction<any | undefined>>,
+    dG4Year: number | undefined
+    setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     setHasChanges: Dispatch<SetStateAction<boolean>>,
-    asset: IAsset | undefined,
-    timeSeriesType: TimeSeriesEnum,
-    assetName: string,
     timeSeriesTitle: string,
-    earliestYear: number | undefined,
-    latestYear: number | undefined,
-    setEarliestYear: Dispatch<SetStateAction<number | undefined>>,
-    setLatestYear: Dispatch<SetStateAction<number | undefined>>,
+    firstYear: number | undefined,
+    lastYear: number | undefined,
+    setFirstYear: Dispatch<SetStateAction<number | undefined>>,
+    setLastYear: Dispatch<SetStateAction<number | undefined>>,
+    timeSeries: ITimeSeries | undefined
 }
 
-const TimeSeries = ({
-    caseItem,
-    setAsset,
+const TimeSeriesNoAsset = ({
+    dG4Year,
+    setTimeSeries,
     setHasChanges,
-    asset,
-    timeSeriesType,
-    assetName,
+    timeSeries,
     timeSeriesTitle,
-    earliestYear,
-    latestYear,
-    setEarliestYear,
-    setLatestYear,
+    firstYear,
+    lastYear,
+    setFirstYear,
+    setLastYear,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
 
-    const buildAlignedGrid = (updatedAsset: IAsset) => {
-        if (updatedAsset !== undefined && updatedAsset[timeSeriesType] !== undefined) {
+    const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
+        if (updatedTimeSeries !== undefined && timeSeries !== undefined) {
             const columnTitles: string[] = []
-            if (earliestYear !== undefined && latestYear !== undefined) {
-                for (let i = earliestYear; i < latestYear; i += 1) {
+            if (firstYear !== undefined && lastYear !== undefined) {
+                for (let i = firstYear; i < lastYear; i += 1) {
                     columnTitles.push(i.toString())
                 }
             }
+            setColumns(columnTitles)
 
             const zeroesAtStart = Array.from({
-                length: Number(updatedAsset[timeSeriesType]!.startYear!)
-                + Number(caseItem!.DG4Date!.getFullYear()) - Number(earliestYear),
+                length: Number(timeSeries!.startYear!)
+                + Number(dG4Year) - Number(firstYear),
             }, (() => 0))
+
             const zeroesAtEnd = Array.from({
-                length: Number(latestYear)
-                - (Number(updatedAsset[timeSeriesType]!.startYear!)
-                + Number(caseItem!.DG4Date!.getFullYear())
-                + Number(updatedAsset[timeSeriesType]!.values!.length!)),
+                length: Number(lastYear)
+                - (Number(timeSeries!.startYear!)
+                + Number(dG4Year)
+                + Number(timeSeries!.values!.length!)),
             }, (() => 0))
 
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
-            const newGridData = buildGridData(updatedAsset[timeSeriesType])
+            const newGridData = buildGridData(timeSeries)
 
             const alignedAssetGridData = new Array(
                 assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
             )
-
-            setColumns(columnTitles)
             setGridData(alignedAssetGridData)
         } else {
             setColumns([])
@@ -81,52 +74,41 @@ const TimeSeries = ({
     }
 
     useEffect(() => {
-        buildAlignedGrid(asset!)
-    }, [asset])
+        buildAlignedGrid(timeSeries!)
+    }, [timeSeries, lastYear, firstYear])
 
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData = replaceOldData(gridData, changes)
         setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(caseItem, asset![timeSeriesType]))
+        setColumns(getColumnAbsoluteYears(dG4Year, timeSeries))
         setHasChanges(true)
     }
 
     const onImport = (input: string, year: number) => {
-        const newAsset: IAsset = { ...asset }
-        const newTimeSeries: ITimeSeries = { ...newAsset[timeSeriesType] }
-        newAsset[timeSeriesType] = newTimeSeries
+        const newTimeSeries: ITimeSeries = { ...timeSeries }
         newTimeSeries.startYear = year
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
-        newTimeSeries.epaVersion = ""
-        setAsset(newAsset)
+        setTimeSeries(newTimeSeries)
         if ((Number(year)
-        + Number(caseItem!.DG4Date!.getFullYear()!)) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
-            setEarliestYear((Number(year) + Number(caseItem!.DG4Date!.getFullYear()!)))
+        + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
+            setFirstYear((Number(year) + Number(dG4Year!)))
         }
         if ((Number(year)
-        + Number(caseItem!.DG4Date!.getFullYear()!)
-        + Number(newTimeSeries!.values!.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
-            setLatestYear(Number(year)
-            + Number(caseItem!.DG4Date!.getFullYear()!) + Number(newTimeSeries.values.length))
+        + Number(dG4Year!)
+        + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
+            setLastYear(Number(year)
+            + Number(dG4Year!) + Number(newTimeSeries.values.length))
         }
-        buildAlignedGrid(newAsset)
+        buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
-        if (assetName !== "") {
-            setHasChanges(true)
-        }
+        setHasChanges(true)
     }
 
-    const deleteCostProfile = () => {
-        const assetCopy: IAsset = { ...asset }
-        assetCopy[timeSeriesType] = undefined
-        if (assetName !== "") {
-            setHasChanges(true)
-        } else {
-            setHasChanges(false)
-        }
+    const deleteTimeseries = () => {
+        setHasChanges(true)
         setColumns([])
         setGridData([[]])
-        setAsset(assetCopy)
+        setTimeSeries(undefined)
     }
 
     return (
@@ -135,9 +117,9 @@ const TimeSeries = ({
                 <Typography variant="h4">{timeSeriesTitle}</Typography>
                 <ImportButton onClick={() => { setDialogOpen(true) }}>Import</ImportButton>
                 <ImportButton
-                    disabled={asset !== undefined && asset[timeSeriesType] === undefined}
+                    disabled={timeSeries === undefined}
                     color="danger"
-                    onClick={deleteCostProfile}
+                    onClick={deleteTimeseries}
                 >
                     Delete
                 </ImportButton>
@@ -147,7 +129,7 @@ const TimeSeries = ({
                     columns={columns}
                     gridData={gridData}
                     onCellsChanged={onCellsChanged}
-                    dG4Year={caseItem?.DG4Date?.getFullYear().toString()!}
+                    dG4Year={dG4Year?.toString()!}
                 />
             </WrapperColumn>
             {!dialogOpen ? null
@@ -156,4 +138,4 @@ const TimeSeries = ({
     )
 }
 
-export default TimeSeries
+export default TimeSeriesNoAsset

@@ -11,7 +11,7 @@ export class Case implements Components.Schemas.CaseDto {
     projectId?: string
     updatedAt?: Date | null
     name?: string
-    isRef: boolean
+    referenceCase: boolean
     drainageStrategyLink?: string
     explorationLink?: string
     substructureLink?: string
@@ -23,7 +23,6 @@ export class Case implements Components.Schemas.CaseDto {
     producerCount?: number
     gasInjectorCount?: number
     waterInjectorCount?: number
-    rigMobDemob?: number
     facilitiesAvailability?: number
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
 
@@ -40,7 +39,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.projectId = data.projectId
         this.updatedAt = data.modifyTime ? new Date(data.modifyTime) : null
         this.name = data.name ?? ""
-        this.isRef = data.referenceCase ?? false
+        this.referenceCase = data.referenceCase ?? false
         this.drainageStrategyLink = data.drainageStrategyLink ?? ""
         this.explorationLink = data.explorationLink ?? ""
         this.substructureLink = data.substructureLink ?? ""

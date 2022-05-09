@@ -1,7 +1,8 @@
 import { SubstructureCostProfile } from "./SubstructureCostProfile"
 import { SubstructureCessationCostProfile } from "./SubstructureCessationCostProfile"
+import { IAsset } from "../IAsset"
 
-export class Substructure implements Components.Schemas.SubstructureDto {
+export class Substructure implements Components.Schemas.SubstructureDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined

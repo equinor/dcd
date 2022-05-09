@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -10,16 +10,18 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
-import TimeSeries from "../Components/TimeSeries"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { TimeSeriesYears } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
+import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
+import { ExplorationDrillingScheduleDto } from "../models/assets/exploration/ExplorationDrillingScheduleDto"
+import { GAndGAdminCostDto } from "../models/assets/exploration/GAndAdminCostDto"
+import TimeSeries from "../Components/TimeSeries"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -28,8 +30,12 @@ const ExplorationView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const [name, setName] = useState<string>("")
     const params = useParams()
-    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
-    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [firstTSYear, setFirstTSYear] = useState<number>()
+    const [lastTSYear, setLastTSYear] = useState<number>()
+    const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
+    const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingScheduleDto>()
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCostDto>()
+    const [rigMobDemob, setRigMobDemob] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -47,25 +53,50 @@ const ExplorationView = () => {
             if (project !== undefined) {
                 const caseResult = project.cases.find((o) => o.id === params.caseId)
                 setCase(caseResult)
-                let newExploration = project!.explorations.find((s) => s.id === params.explorationId)
+                let newExploration: Exploration = project!.explorations.find((s) => s.id === params.explorationId)
                 if (newExploration !== undefined) {
                     setExploration(newExploration)
                 } else {
                     newExploration = new Exploration()
-                    newExploration.rigMobDemob = caseResult?.rigMobDemob
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
 
-                TimeSeriesYears(
-                    newExploration,
-                    caseResult!.DG4Date!.getFullYear(),
-                    setEarliestTimeSeriesYear,
-                    setLatestTimeSeriesYear,
-                )
+                setRigMobDemob(newExploration.rigMobDemob)
+
+                setCostProfile(newExploration.costProfile)
+                setDrillingSchedule(newExploration.drillingSchedule)
+                setGAndGAdminCost(newExploration.gAndGAdminCost)
+
+                if (caseResult?.DG4Date) {
+                    initializeFirstAndLastYear(
+                        caseResult?.DG4Date?.getFullYear(),
+                        [newExploration.costProfile, newExploration.drillingSchedule, newExploration.gAndGAdminCost],
+                        setFirstTSYear,
+                        setLastTSYear,
+                    )
+                }
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        const newExploration: Exploration = { ...exploration }
+        newExploration.rigMobDemob = rigMobDemob
+        newExploration.costProfile = costProfile
+        newExploration.drillingSchedule = drillingSchedule
+        newExploration.gAndGAdminCost = gAndGAdminCost
+        setExploration(newExploration)
+
+        if (caseItem?.DG4Date) {
+            initializeFirstAndLastYear(
+                caseItem?.DG4Date?.getFullYear(),
+                [costProfile, drillingSchedule, gAndGAdminCost],
+                setFirstTSYear,
+                setLastTSYear,
+            )
+        }
+    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost])
 
     return (
         <AssetViewDiv>
@@ -76,32 +107,47 @@ const ExplorationView = () => {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-            </Wrapper>
-            <Wrapper>
                 <NumberInput
-                    value={exploration?.rigMobDemob ?? 0}
+                    setValue={setRigMobDemob}
+                    value={rigMobDemob ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    disabled
+                    disabled={false}
                     label="Rig mob demob"
                 />
             </Wrapper>
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setExploration}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                asset={exploration}
-                timeSeriesType={TimeSeriesEnum.costProfile}
-                assetName={name}
+                timeSeries={costProfile}
                 timeSeriesTitle="Cost profile"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setDrillingSchedule}
+                setHasChanges={setHasChanges}
+                timeSeries={drillingSchedule}
+                timeSeriesTitle="Drilling schedule"
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setGAndGAdminCost}
+                setHasChanges={setHasChanges}
+                timeSeries={gAndGAdminCost}
+                timeSeriesTitle="G and g admin cost"
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
             <Save
                 name={name}

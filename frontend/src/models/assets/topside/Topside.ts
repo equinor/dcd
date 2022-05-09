@@ -1,7 +1,8 @@
 import { TopsideCostProfile } from "./TopsideCostProfile"
 import { TopsideCessationCostProfile } from "./TopsideCessationCostProfile"
+import { IAsset } from "../IAsset"
 
-export class Topside implements Components.Schemas.TopsideDto {
+export class Topside implements Components.Schemas.TopsideDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
