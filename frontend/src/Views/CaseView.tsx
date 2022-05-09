@@ -118,7 +118,7 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
-                <Switch onClick={switchReferance} label="Reference case" checked={isReferenceCase ?? false} />
+                <Switch onClick={switchReferance} label="Reference case" readOnly checked={isReferenceCase ?? false} />
                 <Wrapper>
                     <CaseDGDate
                         caseItem={caseItem}
