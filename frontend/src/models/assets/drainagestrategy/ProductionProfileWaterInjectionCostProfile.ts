@@ -1,8 +1,10 @@
+import { ITimeSeries } from "../../ITimeSeries"
+
 export class ProductionProfileWaterInjectionCostProfile implements
-Components.Schemas.ProductionProfileWaterInjectionDto {
+Components.Schemas.ProductionProfileWaterInjectionDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     sum?: number
 
     constructor(data?: Components.Schemas.ProductionProfileWaterInjectionDto) {
