@@ -130,6 +130,12 @@ const DrainageStrategyView = () => {
                     disabled
                     label="Water injector count"
                 />
+                <NumberInput
+                    value={caseItem?.facilitiesAvailability ?? 0}
+                    integer={false}
+                    disabled
+                    label="Facilities availability"
+                />
             </Wrapper>
             <TimeSeries
                 caseItem={caseItem}
