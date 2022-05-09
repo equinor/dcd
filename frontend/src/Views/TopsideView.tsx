@@ -96,6 +96,10 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
+                <Typography variant="h4">DG3</Typography>
+                <Dg4Field>
+                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
+                </Dg4Field>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
@@ -132,6 +136,12 @@ const TopsideView = () => {
                     value={gasCapacity ?? 0}
                     integer={false}
                     label="Capacity gas"
+                />
+                <NumberInput
+                    value={caseItem?.facilitiesAvailability ?? 0}
+                    integer={false}
+                    disabled
+                    label="Facilities availability"
                 />
             </Wrapper>
             <Maturity
