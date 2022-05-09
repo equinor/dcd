@@ -24,7 +24,8 @@ namespace api.Adapters
                 ProductionProfileWaterInjection = Convert(drainageStrategy.ProductionProfileWaterInjection)!,
                 FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses)!,
                 NetSalesGas = Convert(drainageStrategy.NetSalesGas)!,
-                Co2Emissions = Convert(drainageStrategy.Co2Emissions)!
+                Co2Emissions = Convert(drainageStrategy.Co2Emissions)!,
+                ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL)!
             };
             return drainageStrategyDto;
         }
@@ -122,6 +123,20 @@ namespace api.Adapters
                     Id = co2Emissions.Id,
                     StartYear = co2Emissions.StartYear,
                     Values = co2Emissions.Values
+                };
+            }
+            return null;
+        }
+
+        private static ProductionProfileNGLDto? Convert(ProductionProfileNGL? productionProfileNGL)
+        {
+            if (productionProfileNGL != null)
+            {
+                return new ProductionProfileNGLDto
+                {
+                    Id = productionProfileNGL.Id,
+                    StartYear = productionProfileNGL.StartYear,
+                    Values = productionProfileNGL.Values
                 };
             }
             return null;

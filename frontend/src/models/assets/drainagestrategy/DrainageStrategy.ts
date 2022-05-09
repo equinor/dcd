@@ -5,6 +5,7 @@ import { ProductionProfileGasCostProfile } from "./ProductionProfileGasCostProfi
 import { ProductionProfileOilCostProfile } from "./ProductionProfileOilCostProfile"
 import { ProductionProfileWaterCostProfile } from "./ProductionProfileWaterCostProfile"
 import { ProductionProfileWaterInjectionCostProfile } from "./ProductionProfileWaterInjectionCostProfile"
+import { ProductionProfileNGLCostProfile } from "./ProductionProfileNGLCostProfile"
 import { IAsset } from "../IAsset"
 
 export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
@@ -24,6 +25,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     productionProfileOil?: ProductionProfileOilCostProfile | undefined
     productionProfileWater?: ProductionProfileWaterCostProfile | undefined
     productionProfileWaterInjection?: ProductionProfileWaterInjectionCostProfile | undefined
+    productionProfileNGL?: ProductionProfileNGLCostProfile | undefined
 
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
         if (data !== undefined) {
@@ -42,6 +44,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.productionProfileGas = ProductionProfileGasCostProfile.fromJson(data.productionProfileGas)
             this.productionProfileOil = ProductionProfileOilCostProfile.fromJson(data.productionProfileOil)
             this.productionProfileWater = ProductionProfileWaterCostProfile.fromJson(data.productionProfileWater)
+            this.productionProfileNGL = ProductionProfileNGLCostProfile.fromJson(data.productionProfileNGL)
             this.productionProfileWaterInjection = ProductionProfileWaterInjectionCostProfile
                 .fromJson(data.productionProfileWaterInjection)
         } else {
