@@ -70,12 +70,12 @@ const TopsideView = () => {
                 setMaturity(newTopside?.maturity ?? undefined)
 
                 setCostProfile(newTopside.costProfile)
-                setCessationCostProfile(newTopside.topsideCessationCostProfileDto)
+                setCessationCostProfile(newTopside.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newTopside.costProfile, newTopside.topsideCessationCostProfileDto],
+                        [newTopside.costProfile, newTopside.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -92,11 +92,11 @@ const TopsideView = () => {
             newTopside.gasCapacity = gasCapacity
             newTopside.maturity = maturity
             newTopside.costProfile = costProfile
-            newTopside.topsideCessationCostProfileDto = cessationCostProfile
+            newTopside.cessationCostProfile = cessationCostProfile
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
                     caseItem?.DG4Date?.getFullYear(),
-                    [newTopside.costProfile, newTopside.topsideCessationCostProfileDto],
+                    [newTopside.costProfile, newTopside.cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
                 )

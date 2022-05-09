@@ -1,14 +1,14 @@
 import { ITimeSeries } from "../../ITimeSeries"
 
-export class Co2EmissionsCostProfile implements Components.Schemas.Co2EmissionsDto, ITimeSeries {
+export class NetSalesGas implements Components.Schemas.NetSalesGasDto, ITimeSeries {
     id?: string
     startYear?: number
     values?: number []
     sum?: number
 
-    constructor(data?: Components.Schemas.Co2EmissionsDto) {
-        if (data !== undefined && data !== null) {
-            this.id = data.id
+    constructor(data?: Components.Schemas.NetSalesGasDto) {
+        if (data !== null && data !== undefined) {
+            this.id = data?.id
             this.startYear = data.startYear ?? 0
             this.values = data.values ?? []
             this.sum = data.sum
@@ -19,10 +19,10 @@ export class Co2EmissionsCostProfile implements Components.Schemas.Co2EmissionsD
         }
     }
 
-    static fromJson(data?: Components.Schemas.NetSalesGasDto): Co2EmissionsCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.NetSalesGasDto): NetSalesGas | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new Co2EmissionsCostProfile(data)
+        return new NetSalesGas(data)
     }
 }

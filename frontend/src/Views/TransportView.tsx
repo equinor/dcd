@@ -67,12 +67,12 @@ const TransportView = () => {
                 setMaturity(newTransport?.maturity ?? undefined)
 
                 setCostProfile(newTransport.costProfile)
-                setCessationCostProfile(newTransport.transportCessationCostProfileDto)
+                setCessationCostProfile(newTransport.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newTransport.costProfile, newTransport.transportCessationCostProfileDto],
+                        [newTransport.costProfile, newTransport.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -88,7 +88,7 @@ const TransportView = () => {
             newTransport.oilExportPipelineLength = oilExportPipelineLength
             newTransport.maturity = maturity
             newTransport.costProfile = costProfile
-            newTransport.transportCessationCostProfileDto = cessationCostProfile
+            newTransport.cessationCostProfile = cessationCostProfile
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(

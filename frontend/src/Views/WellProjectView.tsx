@@ -19,8 +19,8 @@ import {
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
-import { WellProjectCostProfileDto } from "../models/assets/wellproject/WellProjectCostProfileDto"
-import { DrillingScheduleDto } from "../models/assets/wellproject/DrillingScheduleDto"
+import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
+import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -34,8 +34,8 @@ function WellProjectView() {
     const [annualWellInterventionCost, setAnnualWellInterventionCost] = useState<number>()
     const [pluggingAndAbandonment, setPluggingAndAbandonment] = useState<number>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
-    const [costProfile, setCostProfile] = useState<WellProjectCostProfileDto>()
-    const [drillingSchedule, setDrillingSchedule] = useState<DrillingScheduleDto>()
+    const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
+    const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
 
     useEffect(() => {
         (async () => {

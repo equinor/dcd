@@ -20,15 +20,14 @@ import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/Asset
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
-import { ProductionProfileGasCostProfile } from "../models/assets/drainagestrategy/ProductionProfileGasCostProfile"
-import { NetSalesGasCostProfile } from "../models/assets/drainagestrategy/NetSalesGasCostProfile"
-import { Co2EmissionsCostProfile } from "../models/assets/drainagestrategy/Co2EmissionsCostProfile"
-import { FuelFlaringAndLossesCostProfile } from "../models/assets/drainagestrategy/FuelFlaringAndLossesCostProfile"
-import { ProductionProfileOilCostProfile } from "../models/assets/drainagestrategy/ProductionProfileOilCostProfile"
-import { ProductionProfileWaterCostProfile } from "../models/assets/drainagestrategy/ProductionProfileWaterCostProfile"
-// eslint-disable-next-line max-len
-import { ProductionProfileWaterInjectionCostProfile } from "../models/assets/drainagestrategy/ProductionProfileWaterInjectionCostProfile"
-import { ProductionProfileNGLCostProfile } from "../models/assets/drainagestrategy/ProductionProfileNGLCostProfile"
+import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
+import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
+import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
+import { ProductionProfileGas } from "../models/assets/drainagestrategy/ProductionProfileGas"
+import { ProductionProfileOil } from "../models/assets/drainagestrategy/ProductionProfileOil"
+import { ProductionProfileWater } from "../models/assets/drainagestrategy/ProductionProfileWater"
+import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
+import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -37,15 +36,15 @@ const DrainageStrategyView = () => {
     const [drainageStrategyName, setDrainageStrategyName] = useState<string>("")
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
-    const [netSalesGas, setNetSalesGas] = useState<NetSalesGasCostProfile>()
-    const [co2Emissions, setCo2Emissions] = useState<Co2EmissionsCostProfile>()
-    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLossesCostProfile>()
-    const [productionProfileGas, setProductionProfileGas] = useState<ProductionProfileGasCostProfile>()
-    const [productionProfileOil, setProductionProfileOil] = useState<ProductionProfileOilCostProfile>()
-    const [productionProfileWater, setProductionProfileWater] = useState<ProductionProfileWaterCostProfile>()
-    const [productionProfileNGL, setProductionProfileNGL] = useState<ProductionProfileNGLCostProfile>()
+    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
+    const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
+    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
+    const [productionProfileGas, setProductionProfileGas] = useState<ProductionProfileGas>()
+    const [productionProfileOil, setProductionProfileOil] = useState<ProductionProfileOil>()
+    const [productionProfileWater, setProductionProfileWater] = useState<ProductionProfileWater>()
+    const [productionProfileNGL, setProductionProfileNGL] = useState<ProductionProfileNGL>()
     // eslint-disable-next-line max-len
-    const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjectionCostProfile>()
+    const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjection>()
     const [nGLYield, setNGLYield] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)

@@ -19,8 +19,8 @@ import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
-import { ExplorationDrillingScheduleDto } from "../models/assets/exploration/ExplorationDrillingScheduleDto"
-import { GAndGAdminCostDto } from "../models/assets/exploration/GAndAdminCostDto"
+import { ExplorationDrillingSchedule } from "../models/assets/exploration/ExplorationDrillingSchedule"
+import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 
 const ExplorationView = () => {
@@ -33,8 +33,8 @@ const ExplorationView = () => {
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
-    const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingScheduleDto>()
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCostDto>()
+    const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingSchedule>()
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
 
     useEffect(() => {

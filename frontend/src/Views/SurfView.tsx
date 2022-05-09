@@ -83,12 +83,12 @@ const SurfView = () => {
                 setProductionFlowline(newSurf.productionFlowline ?? 0)
 
                 setCostProfile(newSurf.costProfile)
-                setCessationCostProfile(newSurf.surfCessationCostProfileDto)
+                setCessationCostProfile(newSurf.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newSurf.costProfile, newSurf.surfCessationCostProfileDto],
+                        [newSurf.costProfile, newSurf.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -111,7 +111,7 @@ const SurfView = () => {
             newSurf.productionFlowline = productionFlowline
 
             newSurf.costProfile = costProfile
-            newSurf.surfCessationCostProfileDto = cessationCostProfile
+            newSurf.cessationCostProfile = cessationCostProfile
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(

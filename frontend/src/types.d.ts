@@ -240,7 +240,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SubstructureCostProfileDto;
-            substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
+            cessationCostProfile?: SubstructureCessationCostProfileDto;
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
         }
@@ -265,7 +265,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SurfCostProfileDto;
-            surfCessationCostProfileDto?: SurfCessationCostProfileDto;
+            cessationCostProfile?: SurfCessationCostProfileDto;
             maturity?: Maturity /* int32 */;
             infieldPipelineSystemLength?: number; // double
             umbilicalSystemLength?: number; // double
@@ -298,7 +298,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TopsideCostProfileDto;
-            topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
+            cessationCostProfile?: TopsideCessationCostProfileDto;
             dryWeight?: number; // double
             oilCapacity?: number; // double
             gasCapacity?: number; // double
@@ -327,7 +327,7 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TransportCostProfileDto;
-            transportCessationCostProfileDto?: TransportCessationCostProfileDto;
+            cessationCostProfile?: TransportCessationCostProfileDto;
             maturity?: Maturity /* int32 */;
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double

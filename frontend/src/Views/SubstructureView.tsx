@@ -66,12 +66,12 @@ const SubstructureView = () => {
                 setDryWeight(newSubstructure.dryweight)
 
                 setCostProfile(newSubstructure.costProfile)
-                setCessationCostProfile(newSubstructure.substructureCessationCostProfileDto)
+                setCessationCostProfile(newSubstructure.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newSubstructure.costProfile, newSubstructure.substructureCessationCostProfileDto],
+                        [newSubstructure.costProfile, newSubstructure.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -86,7 +86,7 @@ const SubstructureView = () => {
             newSubstructure.maturity = maturity
             newSubstructure.dryweight = dryWeight
             newSubstructure.costProfile = costProfile
-            newSubstructure.substructureCessationCostProfileDto = cessationCostProfile
+            newSubstructure.cessationCostProfile = cessationCostProfile
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
