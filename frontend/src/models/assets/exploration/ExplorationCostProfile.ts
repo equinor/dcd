@@ -1,7 +1,9 @@
-export class ExplorationCostProfile implements Components.Schemas.ExplorationCostProfileDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class ExplorationCostProfile implements Components.Schemas.ExplorationCostProfileDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     epaVersion?: string
     currency?: Components.Schemas.Currency
     sum?: number

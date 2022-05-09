@@ -11,7 +11,8 @@ enum TimeSeriesEnum {
     productionProfileGas = "productionProfileGas",
     productionProfileOil = "productionProfileOil",
     productionProfileWater = "productionProfileWater",
-    productionProfileWaterInjection = "productionProfileWaterInjection"
+    productionProfileWaterInjection = "productionProfileWaterInjection",
+    gAndGAdminCost = "gAndGAdminCost"
   }
 
 export default TimeSeriesEnum
