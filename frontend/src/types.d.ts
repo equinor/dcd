@@ -23,8 +23,6 @@ declare namespace Components {
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
-            riserCount?: number; // int32
-            templateCount?: number; // int32
             dG0Date?: string; // date-time
             facilitiesAvailability?: number; // double
             dG1Date?: string; // date-time
@@ -146,6 +144,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
             totalAndAnnualOil?: ProductionProfileOilDto;
@@ -184,8 +183,7 @@ declare namespace Components {
             sum?: number; // double
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
-        export type ProjectCategory =
-            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
@@ -193,6 +191,8 @@ declare namespace Components {
             commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
+            currency?: Currency /* int32 */;
+            physUnit?: PhysUnit /* int32 */;
             createDate?: string; // date-time
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;

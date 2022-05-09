@@ -28,6 +28,10 @@ import { GetCaseService } from "../Services/CaseService"
 
 import { GetSTEAService } from "../Services/STEAService"
 import { WrapperColumn } from "./Asset/StyledAssetComponents"
+import PhysicalUnit from "../Components/PhysicalUnit"
+import Currency from "../Components/Currency"
+import { Case } from "../models/Case"
+import { GetProjectCategoryName, GetProjectPhaseName } from "../Utils/common"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -75,11 +79,17 @@ const ProjectView = () => {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
+    const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.PhysUnit>(0)
 
     useEffect(() => {
         (async () => {
             try {
                 const res = await GetProjectService().getProjectByID(params.projectId!)
+                if (res !== undefined) {
+                    setPhysicalUnit(res?.physUnit)
+                    setCurrency(res?.currency)
+                }
                 console.log("[ProjectView]", res)
                 setProject(res)
             } catch (error) {
@@ -87,6 +97,26 @@ const ProjectView = () => {
             }
         })()
     }, [params.projectId])
+
+    useEffect(() => {
+        (async () => {
+            try {
+                if (project !== undefined) {
+                    const projectDto = Project.Copy(project)
+                    projectDto.physUnit = physicalUnit
+                    projectDto.currency = currency
+                    projectDto.projectId = params.projectId!
+                    const cases: Case[] = []
+                    project.cases.forEach((c) => cases.push(Case.Copy(c)))
+                    projectDto.cases = cases
+                    const res = await GetProjectService().updateProject(projectDto)
+                    setProject(res)
+                }
+            } catch (error) {
+                console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [physicalUnit, currency])
 
     const chartData = useMemo(() => (project ? {
         x: project?.cases.map((c) => c.name ?? ""),
@@ -168,13 +198,13 @@ const ProjectView = () => {
             <WrapperColumn>
                 <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
                 <Typography variant="h4" aria-label="Project phase">
-                    {project.phase?.toString() ?? ""}
+                    {GetProjectPhaseName(project.phase)}
                 </Typography>
             </WrapperColumn>
             <WrapperColumn>
                 <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
                 <Typography variant="h4" aria-label="Project category">
-                    {project.category?.toString() ?? ""}
+                    {GetProjectCategoryName(project.category)}
                 </Typography>
             </WrapperColumn>
             <WrapperColumn>
@@ -183,6 +213,18 @@ const ProjectView = () => {
                     {project.country ?? "Not defined in Common Library"}
                 </Typography>
             </WrapperColumn>
+            <PhysicalUnit
+                currentValue={physicalUnit}
+                setPhysicalUnit={setPhysicalUnit}
+                setProject={setProject}
+                project={project}
+            />
+            <Currency
+                currentValue={currency}
+                setCurrency={setCurrency}
+                setProject={setProject}
+                project={project}
+            />
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>
