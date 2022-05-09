@@ -176,6 +176,12 @@ const DrainageStrategyView = () => {
                     disabled
                     label="Water injector count"
                 />
+                <NumberInput
+                    value={caseItem?.facilitiesAvailability ?? 0}
+                    integer={false}
+                    disabled
+                    label="Facilities availability"
+                />
             </Wrapper>
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
