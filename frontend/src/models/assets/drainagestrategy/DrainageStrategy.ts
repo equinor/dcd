@@ -5,8 +5,9 @@ import { ProductionProfileGasCostProfile } from "./ProductionProfileGasCostProfi
 import { ProductionProfileOilCostProfile } from "./ProductionProfileOilCostProfile"
 import { ProductionProfileWaterCostProfile } from "./ProductionProfileWaterCostProfile"
 import { ProductionProfileWaterInjectionCostProfile } from "./ProductionProfileWaterInjectionCostProfile"
+import { IAsset } from "../IAsset"
 
-export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto {
+export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
     id?: string
     projectId?: string
     name?: string | undefined
@@ -47,34 +48,6 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto 
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
             this.description = ""
-        }
-    }
-
-    static Copy(data: DrainageStrategy) {
-        const drainageStrategyCopy: DrainageStrategy = new DrainageStrategy(data)
-        return {
-            ...drainageStrategyCopy,
-            co2Emissions: data.co2Emissions,
-            fuelFlaringAndLosses: data.fuelFlaringAndLosses,
-            netSalesGas: data.netSalesGas,
-            productionProfileGas: data.productionProfileGas,
-            productionProfileOil: data.productionProfileOil,
-            productionProfileWater: data.productionProfileWater,
-            productionProfileWaterInjection: data.productionProfileWaterInjection,
-        }
-    }
-
-    static toDto(data: DrainageStrategy): Components.Schemas.DrainageStrategyDto {
-        const drainageStrategyCopy = new DrainageStrategy(data)
-        return {
-            ...drainageStrategyCopy,
-            co2Emissions: data.co2Emissions,
-            fuelFlaringAndLosses: data.fuelFlaringAndLosses,
-            netSalesGas: data.netSalesGas,
-            productionProfileGas: data.productionProfileGas,
-            productionProfileOil: data.productionProfileOil,
-            productionProfileWater: data.productionProfileWater,
-            productionProfileWaterInjection: data.productionProfileWaterInjection,
         }
     }
 

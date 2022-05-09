@@ -1,7 +1,9 @@
-export class ExplorationDrillingScheduleDto implements Components.Schemas.ExplorationDrillingScheduleDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class ExplorationDrillingScheduleDto implements Components.Schemas.ExplorationDrillingScheduleDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
 
     constructor(data?: Components.Schemas.ExplorationDrillingScheduleDto) {
         if (data !== undefined && data !== null) {
