@@ -149,27 +149,27 @@ const TopsideView = () => {
                     setValue={setDryweight}
                     value={dryweight ?? 0}
                     integer
-                    label="Topside dry weight"
+                    label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setOilCapacity}
                     value={oilCapacity ?? 0}
                     integer={false}
-                    label="Capacity oil"
+                    label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setGasCapacity}
                     value={gasCapacity ?? 0}
                     integer={false}
-                    label="Capacity gas"
+                    label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     value={caseItem?.facilitiesAvailability ?? 0}
                     integer={false}
                     disabled
-                    label="Facilities availability"
+                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <Maturity
