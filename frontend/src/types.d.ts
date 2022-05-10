@@ -82,10 +82,10 @@ declare namespace Components {
             productionProfileGas?: ProductionProfileGasDto;
             productionProfileWater?: ProductionProfileWaterDto;
             productionProfileWaterInjection?: ProductionProfileWaterInjectionDto;
-            productionProfileNGL?: ProductionProfileNGLDto;
             fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
+            productionProfileNGL?: ProductionProfileNGLDto;
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid
@@ -114,6 +114,7 @@ declare namespace Components {
             drillingSchedule?: ExplorationDrillingScheduleDto;
             gAndGAdminCost?: GAndGAdminCostDto;
             rigMobDemob?: number; // double
+            currency?: Currency /* int32 */;
         }
         export interface FuelFlaringAndLossesDto {
             id?: string; // uuid
@@ -158,6 +159,12 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
+        export interface ProductionProfileNGLDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
         export interface ProductionProfileOilDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -171,12 +178,6 @@ declare namespace Components {
             sum?: number; // double
         }
         export interface ProductionProfileWaterInjectionDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface ProductionProfileNGLDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -243,6 +244,7 @@ declare namespace Components {
             cessationCostProfile?: SubstructureCessationCostProfileDto;
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
+            currency?: Currency /* int32 */;
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
@@ -276,6 +278,7 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             productionFlowline?: ProductionFlowline /* int32 */;
+            currency?: Currency /* int32 */;
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
@@ -305,6 +308,7 @@ declare namespace Components {
             facilitiesAvailability?: number; // double
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;
+            currency?: Currency /* int32 */;
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
@@ -331,6 +335,7 @@ declare namespace Components {
             maturity?: Maturity /* int32 */;
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
+            currency?: Currency /* int32 */;
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid
@@ -350,6 +355,7 @@ declare namespace Components {
             rigMobDemob?: number; // double
             annualWellInterventionCost?: number; // double
             pluggingAndAbandonment?: number; // double
+            currency?: Currency /* int32 */;
         }
         export type WellType = 0 | 1; // int32
     }
@@ -586,6 +592,12 @@ declare namespace Paths {
     }
     namespace UpdateExploration {
         export type RequestBody = Components.Schemas.ExplorationDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateProject {
+        export type RequestBody = Components.Schemas.ProjectDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

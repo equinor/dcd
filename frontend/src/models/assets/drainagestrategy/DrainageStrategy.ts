@@ -7,6 +7,7 @@ import { ProductionProfileWater } from "./ProductionProfileWater"
 import { ProductionProfileWaterInjection } from "./ProductionProfileWaterInjection"
 import { ProductionProfileNGL } from "./ProductionProfileNGL"
 import { IAsset } from "../IAsset"
+import { EMPTY_GUID } from "../../../Utils/constants"
 
 export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
     id?: string
@@ -48,7 +49,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.productionProfileWaterInjection = ProductionProfileWaterInjection
                 .fromJson(data.productionProfileWaterInjection)
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.name = ""
             this.description = ""
         }

@@ -22,6 +22,7 @@ import Maturity from "../Components/Maturity"
 import NumberInput from "../Components/NumberInput"
 import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
+import AssetCurrency from "../Components/AssetCurrency"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -38,6 +39,7 @@ const TopsideView = () => {
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
     const [costProfile, setCostProfile] = useState<TopsideCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
 
     useEffect(() => {
         (async () => {
@@ -61,6 +63,7 @@ const TopsideView = () => {
                 } else {
                     newTopside = new Topside()
                     newTopside.artificialLift = caseResult?.artificialLift
+                    newTopside.currency = project.currency
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
@@ -68,6 +71,7 @@ const TopsideView = () => {
                 setOilCapacity(newTopside?.oilCapacity)
                 setGasCapacity(newTopside?.gasCapacity)
                 setMaturity(newTopside?.maturity ?? undefined)
+                setCurrency(newTopside.currency ?? 0)
 
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
@@ -93,17 +97,18 @@ const TopsideView = () => {
             newTopside.maturity = maturity
             newTopside.costProfile = costProfile
             newTopside.cessationCostProfile = cessationCostProfile
+            newTopside.currency = currency
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
                     caseItem?.DG4Date?.getFullYear(),
-                    [newTopside.costProfile, newTopside.cessationCostProfile],
+                    [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
                 )
             }
             setTopside(newTopside)
         }
-    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile])
+    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency])
 
     return (
         <AssetViewDiv>
@@ -123,6 +128,11 @@ const TopsideView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <AssetCurrency
+                setCurrency={setCurrency}
+                setHasChanges={setHasChanges}
+                currentValue={currency}
+            />
             <Wrapper>
                 <WrapperColumn>
                     <Label htmlFor="name" label="Artificial lift" />
@@ -139,27 +149,27 @@ const TopsideView = () => {
                     setValue={setDryweight}
                     value={dryweight ?? 0}
                     integer
-                    label="Topside dry weight"
+                    label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setOilCapacity}
                     value={oilCapacity ?? 0}
                     integer={false}
-                    label="Capacity oil"
+                    label={`Capacity oil ${project?.physUnit === 0 ? "(Sm3/sd)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setGasCapacity}
                     value={gasCapacity ?? 0}
                     integer={false}
-                    label="Capacity gas"
+                    label={`Capacity gas ${project?.physUnit === 0 ? "(MSm3/sd)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     value={caseItem?.facilitiesAvailability ?? 0}
                     integer={false}
                     disabled
-                    label="Facilities availability"
+                    label={`Facilities Availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <Maturity
@@ -172,7 +182,7 @@ const TopsideView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle="Cost profile"
+                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -183,7 +193,7 @@ const TopsideView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle="Cessation cost profile"
+                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

@@ -22,6 +22,7 @@ import Maturity from "../Components/Maturity"
 import NumberInput from "../Components/NumberInput"
 import { SubstructureCostProfile } from "../models/assets/substructure/SubstructureCostProfile"
 import { SubstructureCessationCostProfile } from "../models/assets/substructure/SubstructureCessationCostProfile"
+import AssetCurrency from "../Components/AssetCurrency"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -37,6 +38,7 @@ const SubstructureView = () => {
     const [dryWeight, setDryWeight] = useState<number | undefined>()
     const [costProfile, setCostProfile] = useState<SubstructureCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SubstructureCessationCostProfile>()
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
 
     useEffect(() => {
         (async () => {
@@ -59,11 +61,13 @@ const SubstructureView = () => {
                     setSubstructure(newSubstructure)
                 } else {
                     newSubstructure = new Substructure()
+                    newSubstructure.currency = project.currency
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure?.name!)
                 setMaturity(newSubstructure.maturity)
                 setDryWeight(newSubstructure.dryweight)
+                setCurrency(newSubstructure.currency ?? 0)
 
                 setCostProfile(newSubstructure.costProfile)
                 setCessationCostProfile(newSubstructure.cessationCostProfile)
@@ -87,6 +91,7 @@ const SubstructureView = () => {
             newSubstructure.dryweight = dryWeight
             newSubstructure.costProfile = costProfile
             newSubstructure.cessationCostProfile = cessationCostProfile
+            newSubstructure.currency = currency
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -98,7 +103,7 @@ const SubstructureView = () => {
             }
             setSubstructure(newSubstructure)
         }
-    }, [maturity, dryWeight, costProfile, cessationCostProfile])
+    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency])
 
     return (
         <AssetViewDiv>
@@ -118,13 +123,18 @@ const SubstructureView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <AssetCurrency
+                setCurrency={setCurrency}
+                setHasChanges={setHasChanges}
+                currentValue={currency}
+            />
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setDryWeight}
                     value={dryWeight ?? 0}
                     integer={false}
-                    label="Substructure dry weight"
+                    label={`Substructure dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <Maturity
@@ -137,7 +147,7 @@ const SubstructureView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle="Cost profile"
+                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -148,7 +158,7 @@ const SubstructureView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle="Cessation cost profile"
+                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

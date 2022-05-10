@@ -199,7 +199,7 @@ function CaseView() {
                         value={facilitiesAvailability ?? 0}
                         integer
                         disabled={false}
-                        label="Facilities Availability"
+                        label={`Facilities Availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                     />
                 </Wrapper>
                 <CaseAsset
