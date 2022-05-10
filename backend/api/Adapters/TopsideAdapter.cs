@@ -17,7 +17,8 @@ namespace api.Adapters
                 GasCapacity = topsideDto.GasCapacity,
                 FacilitiesAvailability = topsideDto.FacilitiesAvailability,
                 ArtificialLift = topsideDto.ArtificialLift,
-                Maturity = topsideDto.Maturity
+                Maturity = topsideDto.Maturity,
+                Currency = topsideDto.Currency
             };
 
             if (topsideDto.CostProfile != null)
@@ -44,6 +45,7 @@ namespace api.Adapters
             existing.FacilitiesAvailability = topsideDto.FacilitiesAvailability;
             existing.ArtificialLift = topsideDto.ArtificialLift;
             existing.Maturity = topsideDto.Maturity;
+            existing.Currency = topsideDto.Currency;
             existing.CostProfile = Convert(topsideDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(topsideDto.CessationCostProfile, existing);
         }

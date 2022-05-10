@@ -16,6 +16,7 @@ namespace api.Models
         public double FacilitiesAvailability { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public Maturity Maturity { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class TopsideCostProfile : TimeSeriesCost

@@ -23,6 +23,7 @@ import Maturity from "../Components/Maturity"
 import ProductionFlowline from "../Components/ProductionFlowline"
 import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
 import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
+import AssetCurrency from "../Components/AssetCurrency"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -44,6 +45,7 @@ const SurfView = () => {
     const [productionFlowline, setProductionFlowline] = useState<Components.Schemas.ProductionFlowline | undefined>()
     const [costProfile, setCostProfile] = useState<SurfCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
 
     useEffect(() => {
         (async () => {
@@ -70,6 +72,7 @@ const SurfView = () => {
                     newSurf.producerCount = caseResult?.producerCount
                     newSurf.gasInjectorCount = caseResult?.gasInjectorCount
                     newSurf.waterInjectorCount = caseResult?.waterInjectorCount
+                    newSurf.currency = project.currency
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
@@ -82,6 +85,7 @@ const SurfView = () => {
                 setUmbilicalSystemLength(newSurf?.umbilicalSystemLength)
                 setMaturity(newSurf.maturity ?? undefined)
                 setProductionFlowline(newSurf.productionFlowline ?? 0)
+                setCurrency(newSurf.currency ?? 0)
 
                 setCostProfile(newSurf.costProfile)
                 setCessationCostProfile(newSurf.cessationCostProfile)
@@ -110,6 +114,7 @@ const SurfView = () => {
             newSurf.umbilicalSystemLength = umbilicalSystemLength
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
+            newSurf.currency = currency
 
             newSurf.costProfile = costProfile
             newSurf.cessationCostProfile = cessationCostProfile
@@ -127,7 +132,7 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile])
+        costProfile, cessationCostProfile, currency])
 
     return (
         <AssetViewDiv>
@@ -136,6 +141,11 @@ const SurfView = () => {
                 setName={setSurfName}
                 name={surfName}
                 setHasChanges={setHasChanges}
+            />
+            <AssetCurrency
+                setCurrency={setCurrency}
+                setHasChanges={setHasChanges}
+                currentValue={currency}
             />
             <Wrapper>
                 <WrapperColumn>
@@ -229,7 +239,7 @@ const SurfView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle="Cost profile"
+                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -240,7 +250,7 @@ const SurfView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle="Cessation cost profile"
+                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

@@ -1,3 +1,4 @@
+import { EMPTY_GUID } from "../../../Utils/constants"
 import { IAsset } from "../IAsset"
 import { DrillingSchedule } from "./DrillingSchedule"
 import { WellProjectCostProfile } from "./WellProjectCostProfile"
@@ -12,6 +13,7 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     rigMobDemob?: number | undefined
     annualWellInterventionCost?: number | undefined
     pluggingAndAbandonment?: number | undefined
+    currency?: Components.Schemas.Currency
 
     constructor(data?: Components.Schemas.WellProjectDto) {
         if (data !== undefined) {
@@ -24,8 +26,9 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.rigMobDemob = data.rigMobDemob ?? 0
             this.annualWellInterventionCost = data.annualWellInterventionCost ?? 0
             this.pluggingAndAbandonment = data.pluggingAndAbandonment ?? 0
+            this.currency = data.currency ?? 0
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.name = ""
         }
     }
