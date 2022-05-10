@@ -20,6 +20,7 @@ import { Modal } from "../Components/Modal"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetCaseService } from "../Services/CaseService"
+import { unwrapCase } from "../Utils/common"
 
 const CaseHeader = styled.div`
     margin-bottom: 2rem;
@@ -66,11 +67,12 @@ const CaseName = ({
     }
 
     const submitUpdateCaseName = async () => {
-        const caseDto = Case.Copy(caseItem!)
+        const unwrappedCase: Case = unwrapCase(caseItem)
+        const caseDto = Case.Copy(unwrappedCase)
         caseDto.name = caseName
-        const newProject = await GetCaseService().updateCase(caseDto)
+        const newProject: Project = await GetCaseService().updateCase(caseDto)
         setProject(newProject)
-        const caseResult = newProject.cases.find((o) => o.id === params.caseId)
+        const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === params.caseId))
         setCase(caseResult)
     }
 
@@ -100,7 +102,7 @@ const CaseName = ({
                         <Tooltip title="Edit case name">
                             <Button
                                 variant="ghost_icon"
-                                aria-label={`Edit ${caseItem?.name}`}
+                                aria-label={`Edit ${caseItem?.name ?? ""}`}
                                 onClick={toggleEditCaseNameModal}
                             >
                                 <Icon data={edit} />
@@ -115,7 +117,7 @@ const CaseName = ({
                         label="Case name"
                         id="caseName"
                         name="name"
-                        placeholder={caseItem?.name}
+                        placeholder={caseItem?.name ?? ""}
                         onChange={handleCaseNameChange}
                     />
 

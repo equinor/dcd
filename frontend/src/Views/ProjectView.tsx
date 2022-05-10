@@ -27,11 +27,11 @@ import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
 
 import { GetSTEAService } from "../Services/STEAService"
+import { unwrapProjectId, GetProjectCategoryName, GetProjectPhaseName } from "../Utils/common"
 import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
-import { GetProjectCategoryName, GetProjectPhaseName } from "../Utils/common"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -85,7 +85,8 @@ const ProjectView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const res = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const res: Project = await GetProjectService().getProjectByID(projectId)
                 if (res !== undefined) {
                     setPhysicalUnit(res?.physUnit)
                     setCurrency(res?.currency)
@@ -139,7 +140,8 @@ const ProjectView = () => {
         e.preventDefault()
 
         try {
-            const projectResult: Project = await GetProjectService().getProjectByID(params.projectId!)
+            const projectId: string = unwrapProjectId(params.projectId)
+            const projectResult: Project = await GetProjectService().getProjectByID(projectId)
             GetSTEAService().excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -150,7 +152,7 @@ const ProjectView = () => {
         e.preventDefault()
 
         try {
-            const projectResult = await GetCaseService().createCase({
+            const projectResult: Project = await GetCaseService().createCase({
                 description: caseDescription,
                 name: caseName,
                 projectId: params.projectId,

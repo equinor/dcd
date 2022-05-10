@@ -7,12 +7,12 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 
 class __CaseService extends __BaseService {
     public async createCase(data: Components.Schemas.CaseDto): Promise<Project> {
-        const res = await this.post("", { body: data })
+        const res: Components.Schemas.ProjectDto = await this.post("", { body: data })
         return Project.fromJSON(res)
     }
 
     public async updateCase(body: Components.Schemas.CaseDto): Promise<Project> {
-        const res = await this.put("", { body })
+        const res: Components.Schemas.ProjectDto = await this.put("", { body })
         return Project.fromJSON(res)
     }
 }

@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react"
 import ReactDOM from "react-dom"
 
-const portalElement = document.getElementById("portal")!
+const portalElement: HTMLElement = document.getElementById("portal")!
 
 type Props = {}
 

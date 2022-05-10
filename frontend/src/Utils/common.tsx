@@ -1,3 +1,5 @@
+import { Case } from "../models/Case"
+
 export const LoginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
@@ -20,6 +22,27 @@ export function StoreToken(keyName: string, token: string) {
 
 export function GetToken(keyName: string) {
     return window.sessionStorage.getItem(keyName)
+}
+
+export const unwrapCase = (_case?: Case | undefined): Case => {
+    if (_case === undefined || _case === null) {
+        throw new Error("Attempted to Create a case from which has not been created")
+    }
+    return _case
+}
+
+export const unwrapProjectId = (projectId?: string | undefined): string => {
+    if (projectId === undefined || projectId === null) {
+        throw new Error("Attempted to use a Project ID which does not exist")
+    }
+    return projectId
+}
+
+export const unwrapCaseId = (caseId?: string | undefined): string => {
+    if (caseId === undefined || caseId === null) {
+        throw new Error("Attempted to use a Case ID which does not exist")
+    }
+    return caseId
 }
 
 export function GetProjectCategoryName(key?: Components.Schemas.ProjectCategory): string {

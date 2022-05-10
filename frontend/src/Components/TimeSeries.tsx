@@ -47,12 +47,12 @@ const TimeSeries = ({
             }
             setColumns(columnTitles)
 
-            const zeroesAtStart = Array.from({
+            const zeroesAtStart: Number[] = Array.from({
                 length: Number(timeSeries!.startYear!)
                 + Number(dG4Year) - Number(firstYear),
             }, (() => 0))
 
-            const zeroesAtEnd = Array.from({
+            const zeroesAtEnd: Number[] = Array.from({
                 length: Number(lastYear)
                 - (Number(timeSeries!.startYear!)
                 + Number(dG4Year)
@@ -78,7 +78,7 @@ const TimeSeries = ({
     }, [timeSeries, lastYear, firstYear])
 
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newGridData = replaceOldData(gridData, changes)
+        const newGridData: CellValue[][] = replaceOldData(gridData, changes)
         setGridData(newGridData)
         setColumns(getColumnAbsoluteYears(dG4Year, timeSeries))
         setHasChanges(true)
