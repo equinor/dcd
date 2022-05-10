@@ -70,9 +70,9 @@ function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
                     {subItems.map((subItem, index) => (
                         <SubItem key={`menu-sub-item-${index + 1}`}>
                             <nav>
-                                <LinkWithoutStyle to={CasePath(projectId, subItem.id!)}>
+                                <LinkWithoutStyle to={CasePath(projectId, subItem.id ? subItem.id : "")}>
                                     <MenuItem
-                                        title={subItem.name!}
+                                        title={subItem.name ? subItem.name : "Untitled"}
                                         isSelected={isSelected && params.caseId === subItem.id}
                                         padding="0.25rem 2rem"
                                     />

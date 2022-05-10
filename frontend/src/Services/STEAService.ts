@@ -8,7 +8,7 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 
 class __STEAService extends __BaseService {
     public async excelToSTEA(project: Project) {
-        const postExcelResponse = await this.postExcel(project.id, "blob", { headers: { accept: "text/plain" } })
+        const postExcelResponse: any = await this.postExcel(project.id, "blob", { headers: { accept: "text/plain" } })
         FileSaver.saveAs(postExcelResponse, (`${project.name}.xlsx`))
     }
 }

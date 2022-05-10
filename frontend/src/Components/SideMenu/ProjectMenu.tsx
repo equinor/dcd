@@ -57,7 +57,7 @@ function ProjectMenu({ project }: Props) {
     return (
         <ExpandableDiv>
             <nav>
-                <LinkWithoutStyle to={ProjectPath(project.id!)}>
+                <LinkWithoutStyle to={ProjectPath(project.id)}>
                     <MenuItem
                         title={project.name!}
                         isSelected={params.projectId === project.id}
@@ -76,7 +76,7 @@ function ProjectMenu({ project }: Props) {
                                     <LinkWithoutStyle to={`/project/${project.id}`}>
                                         <ProjectMenuItemComponent
                                             item={projectMenuItem}
-                                            projectId={project.id!}
+                                            projectId={project.id}
                                         />
                                     </LinkWithoutStyle>
                                 </nav>
@@ -84,8 +84,8 @@ function ProjectMenu({ project }: Props) {
                             {projectMenuItem.name === ProjectMenuItemType.CASES && (
                                 <ProjectMenuItemComponent
                                     item={projectMenuItem}
-                                    projectId={project.id!}
-                                    subItems={project.cases!}
+                                    projectId={project.id}
+                                    subItems={project.cases}
                                 />
                             )}
                         </Item>
