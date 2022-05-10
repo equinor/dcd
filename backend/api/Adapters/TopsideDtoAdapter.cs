@@ -18,6 +18,7 @@ namespace api.Adapters
                 FacilitiesAvailability = topside.FacilitiesAvailability,
                 ArtificialLift = topside.ArtificialLift,
                 Maturity = topside.Maturity,
+                Currency = topside.Currency,
                 CostProfile = Convert(topside.CostProfile),
                 CessationCostProfile = Convert(topside.CessationCostProfile)
             };

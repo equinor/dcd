@@ -11,6 +11,7 @@ namespace api.Dtos
         public SubstructureCessationCostProfileDto? CessationCostProfile { get; set; }
         public double DryWeight { get; set; }
         public Maturity Maturity { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class SubstructureCostProfileDto : TimeSeriesCostDto

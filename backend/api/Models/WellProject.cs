@@ -15,6 +15,7 @@ namespace api.Models
         public double RigMobDemob { get; set; }
         public double AnnualWellInterventionCost { get; set; }
         public double PluggingAndAbandonment { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class WellProjectCostProfile : TimeSeriesCost

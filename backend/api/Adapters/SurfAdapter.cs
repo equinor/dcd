@@ -23,6 +23,7 @@ namespace api.Adapters
                 ProducerCount = surfDto.ProducerCount,
                 GasInjectorCount = surfDto.GasInjectorCount,
                 WaterInjectorCount = surfDto.WaterInjectorCount,
+                Currency = surfDto.Currency
             };
 
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
@@ -46,6 +47,7 @@ namespace api.Adapters
             existing.ProducerCount = surfDto.ProducerCount;
             existing.GasInjectorCount = surfDto.GasInjectorCount;
             existing.WaterInjectorCount = surfDto.GasInjectorCount;
+            existing.Currency = surfDto.Currency;
             existing.CostProfile = Convert(surfDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(surfDto.CessationCostProfile, existing);
         }

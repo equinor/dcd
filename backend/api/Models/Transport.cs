@@ -13,6 +13,7 @@ namespace api.Models
         public double GasExportPipelineLength { get; set; }
         public double OilExportPipelineLength { get; set; }
         public Maturity Maturity { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class TransportCostProfile : TimeSeriesCost

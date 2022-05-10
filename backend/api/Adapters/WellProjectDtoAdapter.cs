@@ -15,7 +15,8 @@ namespace api.Adapters
                 ArtificialLift = wellProject.ArtificialLift,
                 RigMobDemob = wellProject.RigMobDemob,
                 AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
-                PluggingAndAbandonment = wellProject.PluggingAndAbandonment
+                PluggingAndAbandonment = wellProject.PluggingAndAbandonment,
+                Currency = wellProject.Currency
             };
             if (wellProject.CostProfile != null)
             {

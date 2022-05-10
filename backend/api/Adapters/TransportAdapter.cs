@@ -17,6 +17,7 @@ namespace api.Adapters
                 Maturity = transportDto.Maturity,
                 GasExportPipelineLength = transportDto.GasExportPipelineLength,
                 OilExportPipelineLength = transportDto.OilExportPipelineLength,
+                Currency = transportDto.Currency
             };
 
             if (transportDto.CostProfile != null)
@@ -39,6 +40,7 @@ namespace api.Adapters
             existing.Maturity = transportDto.Maturity;
             existing.GasExportPipelineLength = transportDto.GasExportPipelineLength;
             existing.OilExportPipelineLength = transportDto.OilExportPipelineLength;
+            existing.Currency = transportDto.Currency;
             existing.CostProfile = Convert(transportDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(transportDto.CessationCostProfile, existing);
         }
