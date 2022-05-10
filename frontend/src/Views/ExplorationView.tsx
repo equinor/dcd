@@ -104,7 +104,19 @@ const ExplorationView = () => {
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Exploration</Typography>
+            <Wrapper>
+                <Typography variant="h2">Exploration</Typography>
+                <Save
+                    name={name}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setExploration}
+                    setProject={setProject}
+                    asset={exploration!}
+                    assetService={GetExplorationService()}
+                    assetType={AssetTypeEnum.explorations}
+                />
+            </Wrapper>
             <AssetName
                 setName={setName}
                 name={name}
@@ -157,16 +169,6 @@ const ExplorationView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={name}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setExploration}
-                setProject={setProject}
-                asset={exploration!}
-                assetService={GetExplorationService()}
-                assetType={AssetTypeEnum.explorations}
             />
         </AssetViewDiv>
     )
