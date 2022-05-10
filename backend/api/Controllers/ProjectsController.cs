@@ -39,5 +39,11 @@ namespace api.Controllers
             var project = ProjectAdapter.Convert(projectDto);
             return _projectService.CreateProject(project);
         }
+
+        [HttpPut(Name = "UpdateProject")]
+        public ProjectDto UpdateProject([FromBody] ProjectDto projectDto)
+        {
+            return _projectService.UpdateProject(projectDto);
+        }
     }
 }

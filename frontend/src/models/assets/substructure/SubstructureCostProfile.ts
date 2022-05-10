@@ -1,7 +1,9 @@
-export class SubstructureCostProfile implements Components.Schemas.SubstructureCostProfileDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class SubstructureCostProfile implements Components.Schemas.SubstructureCostProfileDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined

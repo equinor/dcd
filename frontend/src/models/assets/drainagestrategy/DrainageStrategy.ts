@@ -1,12 +1,14 @@
-import { NetSalesGasCostProfile } from "./NetSalesGasCostProfile"
-import { Co2EmissionsCostProfile } from "./Co2EmissionsCostProfile"
-import { FuelFlaringAndLossesCostProfile } from "./FuelFlaringAndLossesCostProfile"
-import { ProductionProfileGasCostProfile } from "./ProductionProfileGasCostProfile"
-import { ProductionProfileOilCostProfile } from "./ProductionProfileOilCostProfile"
-import { ProductionProfileWaterCostProfile } from "./ProductionProfileWaterCostProfile"
-import { ProductionProfileWaterInjectionCostProfile } from "./ProductionProfileWaterInjectionCostProfile"
+import { NetSalesGas } from "./NetSalesGas"
+import { Co2Emissions } from "./Co2Emissions"
+import { FuelFlaringAndLosses } from "./FuelFlaringAndLosses"
+import { ProductionProfileGas } from "./ProductionProfileGas"
+import { ProductionProfileOil } from "./ProductionProfileOil"
+import { ProductionProfileWater } from "./ProductionProfileWater"
+import { ProductionProfileWaterInjection } from "./ProductionProfileWaterInjection"
+import { ProductionProfileNGL } from "./ProductionProfileNGL"
+import { IAsset } from "../IAsset"
 
-export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto {
+export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
     id?: string
     projectId?: string
     name?: string | undefined
@@ -16,13 +18,14 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto 
     producerCount?: number
     gasInjectorCount?: number
     artificialLift?: Components.Schemas.ArtificialLift
-    netSalesGas?: NetSalesGasCostProfile | undefined
-    co2Emissions?: Co2EmissionsCostProfile | undefined
-    fuelFlaringAndLosses?: FuelFlaringAndLossesCostProfile | undefined
-    productionProfileGas?: ProductionProfileGasCostProfile | undefined
-    productionProfileOil?: ProductionProfileOilCostProfile | undefined
-    productionProfileWater?: ProductionProfileWaterCostProfile | undefined
-    productionProfileWaterInjection?: ProductionProfileWaterInjectionCostProfile | undefined
+    netSalesGas?: NetSalesGas | undefined
+    co2Emissions?: Co2Emissions | undefined
+    fuelFlaringAndLosses?: FuelFlaringAndLosses | undefined
+    productionProfileGas?: ProductionProfileGas | undefined
+    productionProfileOil?: ProductionProfileOil | undefined
+    productionProfileWater?: ProductionProfileWater | undefined
+    productionProfileWaterInjection?: ProductionProfileWaterInjection | undefined
+    productionProfileNGL?: ProductionProfileNGL | undefined
 
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
         if (data !== undefined) {
@@ -35,46 +38,19 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto 
             this.gasInjectorCount = data.gasInjectorCount
             this.producerCount = data.producerCount
             this.artificialLift = data.artificialLift
-            this.netSalesGas = NetSalesGasCostProfile.fromJson(data.netSalesGas)
-            this.co2Emissions = Co2EmissionsCostProfile.fromJson(data.co2Emissions)
-            this.fuelFlaringAndLosses = FuelFlaringAndLossesCostProfile.fromJson(data.fuelFlaringAndLosses)
-            this.productionProfileGas = ProductionProfileGasCostProfile.fromJson(data.productionProfileGas)
-            this.productionProfileOil = ProductionProfileOilCostProfile.fromJson(data.productionProfileOil)
-            this.productionProfileWater = ProductionProfileWaterCostProfile.fromJson(data.productionProfileWater)
-            this.productionProfileWaterInjection = ProductionProfileWaterInjectionCostProfile
+            this.netSalesGas = NetSalesGas.fromJson(data.netSalesGas)
+            this.co2Emissions = Co2Emissions.fromJson(data.co2Emissions)
+            this.fuelFlaringAndLosses = FuelFlaringAndLosses.fromJson(data.fuelFlaringAndLosses)
+            this.productionProfileGas = ProductionProfileGas.fromJson(data.productionProfileGas)
+            this.productionProfileOil = ProductionProfileOil.fromJson(data.productionProfileOil)
+            this.productionProfileWater = ProductionProfileWater.fromJson(data.productionProfileWater)
+            this.productionProfileNGL = ProductionProfileNGL.fromJson(data.productionProfileNGL)
+            this.productionProfileWaterInjection = ProductionProfileWaterInjection
                 .fromJson(data.productionProfileWaterInjection)
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
             this.description = ""
-        }
-    }
-
-    static Copy(data: DrainageStrategy) {
-        const drainageStrategyCopy: DrainageStrategy = new DrainageStrategy(data)
-        return {
-            ...drainageStrategyCopy,
-            co2Emissions: data.co2Emissions,
-            fuelFlaringAndLosses: data.fuelFlaringAndLosses,
-            netSalesGas: data.netSalesGas,
-            productionProfileGas: data.productionProfileGas,
-            productionProfileOil: data.productionProfileOil,
-            productionProfileWater: data.productionProfileWater,
-            productionProfileWaterInjection: data.productionProfileWaterInjection,
-        }
-    }
-
-    static toDto(data: DrainageStrategy): Components.Schemas.DrainageStrategyDto {
-        const drainageStrategyCopy = new DrainageStrategy(data)
-        return {
-            ...drainageStrategyCopy,
-            co2Emissions: data.co2Emissions,
-            fuelFlaringAndLosses: data.fuelFlaringAndLosses,
-            netSalesGas: data.netSalesGas,
-            productionProfileGas: data.productionProfileGas,
-            productionProfileOil: data.productionProfileOil,
-            productionProfileWater: data.productionProfileWater,
-            productionProfileWaterInjection: data.productionProfileWaterInjection,
         }
     }
 

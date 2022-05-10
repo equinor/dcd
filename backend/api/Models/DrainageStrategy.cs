@@ -23,6 +23,7 @@ namespace api.Models
         public FuelFlaringAndLosses? FuelFlaringAndLosses { get; set; }
         public NetSalesGas? NetSalesGas { get; set; }
         public Co2Emissions? Co2Emissions { get; set; }
+        public ProductionProfileNGL? ProductionProfileNGL { get; set; }
     }
     public class ProductionProfileOil : TimeSeriesVolume
     {
@@ -56,6 +57,11 @@ namespace api.Models
         public DrainageStrategy DrainageStrategy { get; set; } = null!;
     }
     public class Co2Emissions : TimeSeriesMass
+    {
+        [ForeignKey("DrainageStrategy.Id")]
+        public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    }
+    public class ProductionProfileNGL : TimeSeriesVolume
     {
         [ForeignKey("DrainageStrategy.Id")]
         public DrainageStrategy DrainageStrategy { get; set; } = null!;
