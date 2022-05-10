@@ -12,13 +12,11 @@ namespace api.Adapters
                 Id = wellProject.Id,
                 ProjectId = wellProject.ProjectId,
                 Name = wellProject.Name,
-                ProducerCount = wellProject.ProducerCount,
-                GasInjectorCount = wellProject.GasInjectorCount,
-                WaterInjectorCount = wellProject.WaterInjectorCount,
                 ArtificialLift = wellProject.ArtificialLift,
                 RigMobDemob = wellProject.RigMobDemob,
                 AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
-                PluggingAndAbandonment = wellProject.PluggingAndAbandonment
+                PluggingAndAbandonment = wellProject.PluggingAndAbandonment,
+                Currency = wellProject.Currency
             };
             if (wellProject.CostProfile != null)
             {

@@ -18,6 +18,11 @@ export class __ProjectService extends __BaseService {
     createProject(project: Components.Schemas.ProjectDto) {
         return this.post("", { body: project })
     }
+
+    public async updateProject(body: Components.Schemas.ProjectDto): Promise<Project> {
+        const res = await this.put("", { body })
+        return Project.fromJSON(res)
+    }
 }
 
 export function GetProjectService() {

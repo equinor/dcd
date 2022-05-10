@@ -15,6 +15,7 @@ namespace api.Adapters
                 Name = case_.Name,
                 Description = case_.Description,
                 ReferenceCase = case_.ReferenceCase,
+                DG0Date = case_.DG0Date,
                 DG1Date = case_.DG1Date,
                 DG2Date = case_.DG2Date,
                 DG3Date = case_.DG3Date,
@@ -29,10 +30,11 @@ namespace api.Adapters
                 TransportLink = case_.TransportLink,
                 ExplorationLink = case_.ExplorationLink,
                 ArtificialLift = case_.ArtificialLift,
+                ProductionStrategyOverview = case_.ProductionStrategyOverview,
                 ProducerCount = case_.ProducerCount,
                 GasInjectorCount = case_.GasInjectorCount,
                 WaterInjectorCount = case_.WaterInjectorCount,
-                RigMobDemob = case_.RigMobDemob
+                FacilitiesAvailability = case_.FacilitiesAvailability
             };
 
             return caseDto;

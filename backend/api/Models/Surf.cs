@@ -11,14 +11,18 @@ namespace api.Models
         public Guid ProjectId { get; set; }
         public SurfCostProfile? CostProfile { get; set; }
 
-        public SurfCessationCostProfile? SurfCessationCostProfile { get; set; }
+        public SurfCessationCostProfile? CessationCostProfile { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public int RiserCount { get; set; }
         public int TemplateCount { get; set; }
+        public int ProducerCount { get; set; }
+        public int GasInjectorCount { get; set; }
+        public int WaterInjectorCount { get; set; }
         public ProductionFlowline ProductionFlowline { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class SurfCostProfile : TimeSeriesCost
@@ -35,6 +39,19 @@ namespace api.Models
 
     public enum ProductionFlowline
     {
-        Default = 999
+        No_production_flowline,
+        Carbon,
+        SSClad,
+        Cr13,
+        Carbon_Insulation,
+        SSClad_Insulation,
+        Cr13_Insulation,
+        Carbon_Insulation_DEH,
+        SSClad_Insulation_DEH,
+        Cr13_Insulation_DEH,
+        Carbon_PIP,
+        SSClad_PIP,
+        Cr13_PIP,
+        HDPELinedCS
     }
 }

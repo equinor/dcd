@@ -178,9 +178,6 @@ public static class SampleAssetGenerator
                 RigMobDemob = 100.0,
                 AnnualWellInterventionCost = 200.0,
                 PluggingAndAbandonment = 300.0,
-                ProducerCount = 2,
-                GasInjectorCount = 3,
-                WaterInjectorCount = 4,
                 ArtificialLift = ArtificialLift.GasLift
             }
                 .WithWellProjectCostProfile(new WellProjectCostProfile
@@ -201,7 +198,7 @@ public static class SampleAssetGenerator
             {
                 Name = "Surf 1",
                 Maturity = Maturity.A,
-                ProductionFlowline = ProductionFlowline.Default,
+                ProductionFlowline = ProductionFlowline.No_production_flowline,
                 InfieldPipelineSystemLength = 5.5,
                 UmbilicalSystemLength = 1.1,
                 RiserCount = 5,

@@ -21,6 +21,7 @@ namespace api.Dtos
         public FuelFlaringAndLossesDto? FuelFlaringAndLosses { get; set; }
         public NetSalesGasDto? NetSalesGas { get; set; }
         public Co2EmissionsDto? Co2Emissions { get; set; }
+        public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
     }
     public class ProductionProfileOilDto : TimeSeriesVolumeDto
     {
@@ -42,6 +43,10 @@ namespace api.Dtos
     {
     }
     public class Co2EmissionsDto : TimeSeriesMassDto
+    {
+    }
+
+    public class ProductionProfileNGLDto : TimeSeriesVolumeDto
     {
     }
 }

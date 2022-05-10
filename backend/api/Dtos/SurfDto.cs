@@ -10,14 +10,18 @@ namespace api.Dtos
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
         public SurfCostProfileDto? CostProfile { get; set; }
-        public SurfCessationCostProfileDto? SurfCessationCostProfileDto { get; set; }
+        public SurfCessationCostProfileDto? CessationCostProfile { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public int RiserCount { get; set; }
         public int TemplateCount { get; set; }
+        public int ProducerCount { get; set; }
+        public int GasInjectorCount { get; set; }
+        public int WaterInjectorCount { get; set; }
         public ProductionFlowline ProductionFlowline { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class SurfCostProfileDto : TimeSeriesCostDto

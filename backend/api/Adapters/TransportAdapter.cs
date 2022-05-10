@@ -17,6 +17,7 @@ namespace api.Adapters
                 Maturity = transportDto.Maturity,
                 GasExportPipelineLength = transportDto.GasExportPipelineLength,
                 OilExportPipelineLength = transportDto.OilExportPipelineLength,
+                Currency = transportDto.Currency
             };
 
             if (transportDto.CostProfile != null)
@@ -24,9 +25,9 @@ namespace api.Adapters
                 transport.CostProfile = Convert(transportDto.CostProfile, transport);
             }
 
-            if (transportDto.TransportCessationCostProfileDto != null)
+            if (transportDto.CessationCostProfile != null)
             {
-                transport.TransportCessationCostProfile = Convert(transportDto.TransportCessationCostProfileDto, transport);
+                transport.CessationCostProfile = Convert(transportDto.CessationCostProfile, transport);
             }
             return transport;
         }
@@ -39,8 +40,9 @@ namespace api.Adapters
             existing.Maturity = transportDto.Maturity;
             existing.GasExportPipelineLength = transportDto.GasExportPipelineLength;
             existing.OilExportPipelineLength = transportDto.OilExportPipelineLength;
+            existing.Currency = transportDto.Currency;
             existing.CostProfile = Convert(transportDto.CostProfile, existing);
-            existing.TransportCessationCostProfile = Convert(transportDto.TransportCessationCostProfileDto, existing);
+            existing.CessationCostProfile = Convert(transportDto.CessationCostProfile, existing);
         }
 
         private static TransportCostProfile? Convert(TransportCostProfileDto? costprofile, Transport transport)

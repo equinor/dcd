@@ -19,10 +19,12 @@ declare namespace Components {
             description?: string | null;
             referenceCase?: boolean;
             artificialLift?: ArtificialLift /* int32 */;
+            productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
-            rigMobDemob?: number; // double
+            dG0Date?: string; // date-time
+            facilitiesAvailability?: number; // double
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
             dG3Date?: string; // date-time
@@ -83,6 +85,7 @@ declare namespace Components {
             fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
+            productionProfileNGL?: ProductionProfileNGLDto;
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid
@@ -111,6 +114,7 @@ declare namespace Components {
             drillingSchedule?: ExplorationDrillingScheduleDto;
             gAndGAdminCost?: GAndGAdminCostDto;
             rigMobDemob?: number; // double
+            currency?: Currency /* int32 */;
         }
         export interface FuelFlaringAndLossesDto {
             id?: string; // uuid
@@ -141,14 +145,21 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
             totalAndAnnualOil?: ProductionProfileOilDto;
             totalAndAnnualSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
         }
-        export type ProductionFlowline = 999; // int32
+        export type ProductionFlowline = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
         export interface ProductionProfileGasDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
+        export interface ProductionProfileNGLDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -172,6 +183,7 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
+        export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
         export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
@@ -180,6 +192,8 @@ declare namespace Components {
             commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
+            currency?: Currency /* int32 */;
+            physUnit?: PhysUnit /* int32 */;
             createDate?: string; // date-time
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
@@ -227,9 +241,10 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SubstructureCostProfileDto;
-            substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
+            cessationCostProfile?: SubstructureCessationCostProfileDto;
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
+            currency?: Currency /* int32 */;
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
@@ -252,14 +267,18 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SurfCostProfileDto;
-            surfCessationCostProfileDto?: SurfCessationCostProfileDto;
+            cessationCostProfile?: SurfCessationCostProfileDto;
             maturity?: Maturity /* int32 */;
             infieldPipelineSystemLength?: number; // double
             umbilicalSystemLength?: number; // double
             artificialLift?: ArtificialLift /* int32 */;
             riserCount?: number; // int32
             templateCount?: number; // int32
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
             productionFlowline?: ProductionFlowline /* int32 */;
+            currency?: Currency /* int32 */;
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
@@ -282,13 +301,14 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TopsideCostProfileDto;
-            topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
+            cessationCostProfile?: TopsideCessationCostProfileDto;
             dryWeight?: number; // double
             oilCapacity?: number; // double
             gasCapacity?: number; // double
             facilitiesAvailability?: number; // double
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;
+            currency?: Currency /* int32 */;
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
@@ -311,10 +331,11 @@ declare namespace Components {
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TransportCostProfileDto;
-            transportCessationCostProfileDto?: TransportCessationCostProfileDto;
+            cessationCostProfile?: TransportCessationCostProfileDto;
             maturity?: Maturity /* int32 */;
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
+            currency?: Currency /* int32 */;
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid
@@ -330,13 +351,11 @@ declare namespace Components {
             name?: string | null;
             costProfile?: WellProjectCostProfileDto;
             drillingSchedule?: DrillingScheduleDto;
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
             artificialLift?: ArtificialLift /* int32 */;
             rigMobDemob?: number; // double
             annualWellInterventionCost?: number; // double
             pluggingAndAbandonment?: number; // double
+            currency?: Currency /* int32 */;
         }
         export type WellType = 0 | 1; // int32
     }
@@ -573,6 +592,12 @@ declare namespace Paths {
     }
     namespace UpdateExploration {
         export type RequestBody = Components.Schemas.ExplorationDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateProject {
+        export type RequestBody = Components.Schemas.ProjectDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

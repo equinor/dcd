@@ -1,8 +1,5 @@
 using api.Models;
 
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.Identity.Client;
-
 namespace api.Dtos
 {
 
@@ -14,10 +11,12 @@ namespace api.Dtos
         public string Description { get; set; } = null!;
         public bool ReferenceCase { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
+        public ProductionStrategyOverview ProductionStrategyOverview { get; set; }
         public int ProducerCount { get; set; }
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }
-        public double RigMobDemob { get; set; }
+        public DateTimeOffset DG0Date { get; set; }
+        public double FacilitiesAvailability { get; set; }
         public DateTimeOffset DG1Date { get; set; }
         public DateTimeOffset DG2Date { get; set; }
         public DateTimeOffset DG3Date { get; set; }
