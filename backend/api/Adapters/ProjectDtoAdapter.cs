@@ -93,6 +93,8 @@ namespace api.Adapters
                 CreateDate = project.CreateDate,
                 ProjectCategory = project.ProjectCategory,
                 ProjectPhase = project.ProjectPhase,
+                Currency = project.Currency,
+                PhysUnit = project.PhysicalUnit,
                 Cases = new List<CaseDto>()
             };
         }

@@ -54,11 +54,6 @@ namespace api.Models
         public Currency Currency { get; set; }
     }
 
-    public enum Currency
-    {
-        USD,
-        NOK
-    }
     public class TimeSeriesSchedule : TimeSeries<int>
     {
 

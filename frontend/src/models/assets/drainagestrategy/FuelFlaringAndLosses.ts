@@ -1,7 +1,9 @@
-export class FuelFlaringAndLossesCostProfile implements Components.Schemas.FuelFlaringAndLossesDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class FuelFlaringAndLosses implements Components.Schemas.FuelFlaringAndLossesDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number[]
+    startYear?: number
+    values?: number[]
     sum?: number
 
     constructor(data?: Components.Schemas.FuelFlaringAndLossesDto) {
@@ -17,10 +19,10 @@ export class FuelFlaringAndLossesCostProfile implements Components.Schemas.FuelF
         }
     }
 
-    static fromJson(data?: Components.Schemas.NetSalesGasDto): FuelFlaringAndLossesCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.FuelFlaringAndLossesDto): FuelFlaringAndLosses | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new FuelFlaringAndLossesCostProfile(data)
+        return new FuelFlaringAndLosses(data)
     }
 }

@@ -21,7 +21,10 @@ namespace api.Adapters
                 Description = projectDto.Description,
                 Country = projectDto.Country,
                 ProjectCategory = projectDto.ProjectCategory,
-                ProjectPhase = projectDto.ProjectPhase
+                ProjectPhase = projectDto.ProjectPhase,
+                Currency = projectDto.Currency,
+                PhysicalUnit = projectDto.PhysUnit,
+                Id = projectDto.ProjectId
             };
 
             return project;

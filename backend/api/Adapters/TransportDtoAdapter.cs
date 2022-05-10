@@ -18,7 +18,7 @@ namespace api.Adapters
                 GasExportPipelineLength = transport.GasExportPipelineLength,
                 OilExportPipelineLength = transport.OilExportPipelineLength,
                 CostProfile = Convert(transport.CostProfile),
-                TransportCessationCostProfileDto = Convert(transport.TransportCessationCostProfile)
+                CessationCostProfile = Convert(transport.CessationCostProfile)
             };
             return transportDto;
         }
