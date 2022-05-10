@@ -63,7 +63,6 @@ export class Project implements Components.Schemas.ProjectDto {
             ...projectCopy,
             projectCategory: data.category,
             projectPhase: data.phase,
-            commonLibraryId: data.commonLibraryId,
             projectId: data.id,
         }
     }
