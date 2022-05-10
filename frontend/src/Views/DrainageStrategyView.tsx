@@ -186,7 +186,7 @@ const DrainageStrategyView = () => {
                     value={caseItem?.facilitiesAvailability ?? 0}
                     integer={false}
                     disabled
-                    label={`Facilities Availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <TimeSeries
