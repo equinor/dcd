@@ -214,14 +214,14 @@ const SurfView = () => {
                     setValue={setInfieldPipelineSystemLength}
                     value={infieldPipelineSystemLength ?? 0}
                     integer
-                    label="Length of production lines"
+                    label={`Length of production lines ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setUmbilicalSystemLength}
                     value={umbilicalSystemLength ?? 0}
                     integer
-                    label="Length of umbilical system"
+                    label={`Length of umbilical system ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <Maturity
