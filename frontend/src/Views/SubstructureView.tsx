@@ -137,7 +137,7 @@ const SubstructureView = () => {
                     setValue={setDryWeight}
                     value={dryWeight ?? 0}
                     integer={false}
-                    label="Substructure dry weight"
+                    label={`Substructure dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <Maturity
