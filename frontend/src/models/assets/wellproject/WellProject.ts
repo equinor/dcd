@@ -1,3 +1,4 @@
+import { EMPTY_GUID } from "../../../Utils/constants"
 import { IAsset } from "../IAsset"
 import { DrillingSchedule } from "./DrillingSchedule"
 import { WellProjectCostProfile } from "./WellProjectCostProfile"
@@ -27,7 +28,7 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.pluggingAndAbandonment = data.pluggingAndAbandonment ?? 0
             this.currency = data.currency ?? 0
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.name = ""
         }
     }

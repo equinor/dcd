@@ -1,3 +1,4 @@
+import { EMPTY_GUID } from "../../../Utils/constants"
 import { IAsset } from "../IAsset"
 import { TransportCessationCostProfile } from "./TransportCessationCostProfile"
 import { TransportCostProfile } from "./TransportCostProfile"
@@ -26,7 +27,7 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
             this.oilExportPipelineLength = data.oilExportPipelineLength
             this.currency = data.currency ?? 0
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.name = ""
         }
     }

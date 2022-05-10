@@ -1,6 +1,7 @@
 import { TopsideCostProfile } from "./TopsideCostProfile"
 import { TopsideCessationCostProfile } from "./TopsideCessationCostProfile"
 import { IAsset } from "../IAsset"
+import { EMPTY_GUID } from "../../../Utils/constants"
 
 export class Topside implements Components.Schemas.TopsideDto, IAsset {
     id?: string | undefined
@@ -31,7 +32,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.gasCapacity = data.gasCapacity
             this.currency = data.currency ?? 0
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.name = ""
         }
     }
