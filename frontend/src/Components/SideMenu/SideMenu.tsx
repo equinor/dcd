@@ -8,6 +8,7 @@ import styled from "styled-components"
 import ProjectMenu from "./ProjectMenu"
 import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
+import { unwrapProjectId } from "../../Utils/common"
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -119,7 +120,9 @@ function SideMenu() {
         if (params.projectId) {
             (async () => {
                 try {
-                    setProject(await GetProjectService().getProjectByID(params.projectId!))
+                    const projectId: string = unwrapProjectId(params.projectId)
+                    const fetchedProject: Project = await GetProjectService().getProjectByID(projectId)
+                    setProject(fetchedProject)
                 } catch (error) {
                     console.error()
                 }

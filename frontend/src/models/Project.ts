@@ -15,7 +15,7 @@ export class Project implements Components.Schemas.ProjectDto {
     createdAt: Date | null
     description: string | null
     drainageStrategies: DrainageStrategy[]
-    explorations: any[]
+    explorations: Exploration[]
     id: string
     projectId: string
     name: string

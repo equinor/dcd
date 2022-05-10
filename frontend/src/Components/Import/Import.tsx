@@ -7,6 +7,7 @@ import { useParams } from "react-router"
 import { Case } from "../../models/Case"
 import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
+import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../../Utils/common"
 
 const StyledDialog = styled(Dialog)`
     width: 50rem;
@@ -57,15 +58,17 @@ function Import({ onClose, onImport }: Props) {
 
     const example = "value1\tvalue2\tvalue3\tvalue4"
 
-    const dG4Date = caseItem?.DG4Date?.getFullYear()!
-    const startYearImport = Number(dG4Date) + Number(startYear)
+    const dG4Date: number = caseItem?.DG4Date?.getFullYear()!
+    const startYearImport: number = Number(dG4Date) + Number(startYear)
 
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const caseId: string = unwrapCaseId(params.caseId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)

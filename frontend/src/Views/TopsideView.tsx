@@ -13,6 +13,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
@@ -44,7 +45,8 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -55,9 +57,9 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newTopside = project.topsides.find((s) => s.id === params.topsideId)
+                let newTopside: Topside | undefined = project.topsides.find((s) => s.id === params.topsideId)
                 if (newTopside !== undefined) {
                     setTopside(newTopside)
                 } else {

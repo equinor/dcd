@@ -15,6 +15,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
+import { unwrapCase } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
@@ -42,7 +43,7 @@ const ExplorationView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectResult: Project = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -53,9 +54,10 @@ const ExplorationView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newExploration: Exploration = project!.explorations.find((s) => s.id === params.explorationId)
+                // eslint-disable-next-line max-len
+                let newExploration: Exploration | undefined = project.explorations.find((s) => s.id === params.explorationId)
                 if (newExploration !== undefined) {
                     setExploration(newExploration)
                 } else {

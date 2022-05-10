@@ -7,12 +7,12 @@ import { IAssetService } from "./IAssetService"
 
 export class __ExplorationService extends __BaseService implements IAssetService {
     public async create(sourceCaseId: string, body: Components.Schemas.ExplorationDto) :Promise<Project> {
-        const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
+        const res: Components.Schemas.ProjectDto = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)
     }
 
     public async update(body: Components.Schemas.ExplorationDto): Promise<Project> {
-        const res = await this.put("", { body })
+        const res: Components.Schemas.ProjectDto = await this.put("", { body })
         return Project.fromJSON(res)
     }
 }
