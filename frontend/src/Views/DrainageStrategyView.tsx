@@ -135,6 +135,19 @@ const DrainageStrategyView = () => {
 
     return (
         <AssetViewDiv>
+            <Wrapper>
+                <Typography variant="h2">Drainage strategy</Typography>
+                <Save
+                    name={drainageStrategyName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setDrainageStrategy}
+                    setProject={setProject}
+                    asset={drainageStrategy!}
+                    assetService={GetDrainageStrategyService()}
+                    assetType={AssetTypeEnum.drainageStrategies}
+                />
+            </Wrapper>
             <AssetName
                 setName={setDrainageStrategyName}
                 name={drainageStrategyName}
@@ -278,16 +291,6 @@ const DrainageStrategyView = () => {
                 lastYear={lastTSYear}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={drainageStrategyName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setDrainageStrategy}
-                setProject={setProject}
-                asset={drainageStrategy!}
-                assetService={GetDrainageStrategyService()}
-                assetType={AssetTypeEnum.drainageStrategies}
             />
         </AssetViewDiv>
     )

@@ -6,7 +6,7 @@ import { Project } from "../models/Project"
 import { IAssetService } from "../Services/IAssetService"
 import { EMPTY_GUID } from "../Utils/constants"
 import {
-    SaveButton, Wrapper,
+    SaveButton,
 } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
@@ -52,11 +52,9 @@ const Save = ({
     }
 
     return (
-        <Wrapper>
-            <SaveButton disabled={!hasChanges || name === ""} onClick={handleSave}>
-                Save
-            </SaveButton>
-        </Wrapper>
+        <SaveButton disabled={!hasChanges || name === ""} onClick={handleSave}>
+            Save
+        </SaveButton>
     )
 }
 
