@@ -24,6 +24,7 @@ namespace api.Adapters
                 ProducerCount = surf.ProducerCount,
                 GasInjectorCount = surf.GasInjectorCount,
                 WaterInjectorCount = surf.WaterInjectorCount,
+                Currency = surf.Currency,
                 CostProfile = Convert(surf.CostProfile)
             };
 

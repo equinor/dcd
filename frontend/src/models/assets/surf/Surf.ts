@@ -1,6 +1,7 @@
 import { SurfCostProfile } from "./SurfCostProfile"
 import { SurfCessationCostProfile } from "./SurfCessationCostProfile"
 import { IAsset } from "../IAsset"
+import { EMPTY_GUID } from "../../../Utils/constants"
 
 export class Surf implements Components.Schemas.SurfDto, IAsset {
     id?: string | undefined
@@ -18,6 +19,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
     gasInjectorCount?: number | undefined
     waterInjectorCount?: number | undefined
     productionFlowline?: Components.Schemas.ProductionFlowline | undefined
+    currency?: Components.Schemas.Currency
 
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {
@@ -36,8 +38,9 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
             this.gasInjectorCount = data.gasInjectorCount
             this.waterInjectorCount = data.waterInjectorCount
             this.productionFlowline = data.productionFlowline
+            this.currency = data.currency ?? 0
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.name = ""
         }
     }

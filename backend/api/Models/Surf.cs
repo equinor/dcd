@@ -22,6 +22,7 @@ namespace api.Models
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }
         public ProductionFlowline ProductionFlowline { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class SurfCostProfile : TimeSeriesCost

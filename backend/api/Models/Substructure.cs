@@ -12,6 +12,7 @@ namespace api.Models
         public SubstructureCessationCostProfile? CessationCostProfile { get; set; }
         public double DryWeight { get; set; }
         public Maturity Maturity { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class SubstructureCostProfile : TimeSeriesCost

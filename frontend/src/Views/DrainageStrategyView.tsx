@@ -121,10 +121,10 @@ const DrainageStrategyView = () => {
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [newDrainage.netSalesGas, newDrainage.co2Emissions, newDrainage.fuelFlaringAndLosses,
-                    newDrainage.productionProfileGas, newDrainage.productionProfileOil,
-                    newDrainage.productionProfileWater, newDrainage.productionProfileWaterInjection,
-                    newDrainage.productionProfileNGL],
+                [netSalesGas, co2Emissions, fuelFlaringAndLosses,
+                    productionProfileGas, productionProfileOil,
+                    productionProfileWater, productionProfileWaterInjection,
+                    productionProfileNGL],
                 setFirstTSYear,
                 setLastTSYear,
             )
