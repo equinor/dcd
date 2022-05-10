@@ -92,10 +92,10 @@ const CaseName = ({
             <CaseHeader>
                 <Typography
                     variant="h2"
-                    defaultValue={caseItem?.name ?? ""}
-                    key={caseItem?.name ?? ""}
+                    defaultValue={caseItem?.name}
+                    key={caseItem?.name}
                 >
-                    {caseItem?.name ?? ""}
+                    {caseItem?.name}
                 </Typography>
                 <EdsProvider density="compact">
                     <ActionsContainer>

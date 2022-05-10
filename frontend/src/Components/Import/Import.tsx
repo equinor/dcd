@@ -56,7 +56,7 @@ function Import({ onClose, onImport }: Props) {
     const params = useParams()
     const [caseItem, setCase] = useState<Case>()
 
-    const example: string = "value1\tvalue2\tvalue3\tvalue4"
+    const example = "value1\tvalue2\tvalue3\tvalue4"
 
     const dG4Date: number = caseItem?.DG4Date?.getFullYear()!
     const startYearImport: number = Number(dG4Date) + Number(startYear)

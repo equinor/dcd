@@ -12,7 +12,7 @@ export function ProjectPath(projectId: string) {
     return `/project/${projectId}`
 }
 
-export function CasePath(projectId: string, caseId?: string) {
+export function CasePath(projectId: string, caseId: string) {
     return `${ProjectPath(projectId)}/case/${caseId}`
 }
 
@@ -24,11 +24,11 @@ export function GetToken(keyName: string) {
     return window.sessionStorage.getItem(keyName)
 }
 
-export const unwrapCase = (casee?: Case | undefined): Case => {
-    if (casee === undefined || casee === null) {
+export const unwrapCase = (_case?: Case | undefined): Case => {
+    if (_case === undefined || _case === null) {
         throw new Error("Attempted to Create a case from which has not been created")
     }
-    return casee
+    return _case
 }
 
 export const unwrapProjectId = (projectId?: string | undefined): string => {
