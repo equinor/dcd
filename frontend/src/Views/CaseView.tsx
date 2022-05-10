@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 import {
     Switch,
     Tabs,
