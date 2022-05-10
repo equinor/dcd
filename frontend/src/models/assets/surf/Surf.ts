@@ -1,12 +1,14 @@
 import { SurfCostProfile } from "./SurfCostProfile"
 import { SurfCessationCostProfile } from "./SurfCessationCostProfile"
+import { IAsset } from "../IAsset"
+import { EMPTY_GUID } from "../../../Utils/constants"
 
-export class Surf implements Components.Schemas.SurfDto {
+export class Surf implements Components.Schemas.SurfDto, IAsset {
     id?: string | undefined
     name: string | undefined
     projectId?: string | undefined
     costProfile?: SurfCostProfile | undefined
-    surfCessationCostProfileDto: SurfCessationCostProfile | undefined
+    cessationCostProfile: SurfCessationCostProfile | undefined
     maturity?: Components.Schemas.Maturity | undefined
     infieldPipelineSystemLength?: number | undefined
     umbilicalSystemLength?: number | undefined
@@ -17,13 +19,14 @@ export class Surf implements Components.Schemas.SurfDto {
     gasInjectorCount?: number | undefined
     waterInjectorCount?: number | undefined
     productionFlowline?: Components.Schemas.ProductionFlowline | undefined
+    currency?: Components.Schemas.Currency
 
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {
             this.id = data.id ?? ""
             this.name = data.name ?? ""
             this.projectId = data.projectId
-            this.surfCessationCostProfileDto = SurfCessationCostProfile.fromJSON(data.surfCessationCostProfileDto)
+            this.cessationCostProfile = SurfCessationCostProfile.fromJSON(data.cessationCostProfile)
             this.costProfile = SurfCostProfile.fromJSON(data.costProfile)
             this.maturity = data.maturity
             this.infieldPipelineSystemLength = data.infieldPipelineSystemLength
@@ -35,8 +38,9 @@ export class Surf implements Components.Schemas.SurfDto {
             this.gasInjectorCount = data.gasInjectorCount
             this.waterInjectorCount = data.waterInjectorCount
             this.productionFlowline = data.productionFlowline
+            this.currency = data.currency ?? 0
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.name = ""
         }
     }

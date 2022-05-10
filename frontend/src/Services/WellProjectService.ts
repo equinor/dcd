@@ -3,8 +3,9 @@ import { __BaseService } from "./__BaseService"
 
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { Project } from "../models/Project"
+import { IAssetService } from "./IAssetService"
 
-export class __WellProjectService extends __BaseService {
+export class __WellProjectService extends __BaseService implements IAssetService {
     public async create(sourceCaseId: string, body: Components.Schemas.WellProjectDto) : Promise<Project> {
         const res = await this.postWithParams("", { body }, { params: { sourceCaseId } })
         return Project.fromJSON(res)

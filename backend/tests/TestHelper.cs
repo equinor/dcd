@@ -481,11 +481,6 @@ namespace tests
                     actual.AnnualWellInterventionCost);
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
-            Assert.Equal(expected.ProducerCount, actual.ProducerCount);
-            Assert.Equal(expected.GasInjectorCount,
-                    actual.GasInjectorCount);
-            Assert.Equal(expected.WaterInjectorCount,
-                    actual.WaterInjectorCount);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
             TestHelper.CompareYearValues(expected.DrillingSchedule,
                     actual.DrillingSchedule);
@@ -507,11 +502,6 @@ namespace tests
                     actual.AnnualWellInterventionCost);
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
-            Assert.Equal(expected.ProducerCount, actual.ProducerCount);
-            Assert.Equal(expected.GasInjectorCount,
-                    actual.GasInjectorCount);
-            Assert.Equal(expected.WaterInjectorCount,
-                    actual.WaterInjectorCount);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
             TestHelper.CompareYearValues(expected.DrillingSchedule,
                     actual.DrillingSchedule);
@@ -538,11 +528,6 @@ namespace tests
                     actual.AnnualWellInterventionCost);
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
-            Assert.Equal(expected.ProducerCount, actual.ProducerCount);
-            Assert.Equal(expected.GasInjectorCount,
-                    actual.GasInjectorCount);
-            Assert.Equal(expected.WaterInjectorCount,
-                    actual.WaterInjectorCount);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
             TestHelper.CompareYearValues(expected.DrillingSchedule,
                     actual.DrillingSchedule);

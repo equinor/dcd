@@ -12,23 +12,39 @@ import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import TimeSeries from "../Components/TimeSeries"
-import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
-import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
+import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
+import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
+import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
+import { ProductionProfileGas } from "../models/assets/drainagestrategy/ProductionProfileGas"
+import { ProductionProfileOil } from "../models/assets/drainagestrategy/ProductionProfileOil"
+import { ProductionProfileWater } from "../models/assets/drainagestrategy/ProductionProfileWater"
+import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
+import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
     const [drainageStrategyName, setDrainageStrategyName] = useState<string>("")
-    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
-    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [firstTSYear, setFirstTSYear] = useState<number>()
+    const [lastTSYear, setLastTSYear] = useState<number>()
+    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
+    const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
+    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
+    const [productionProfileGas, setProductionProfileGas] = useState<ProductionProfileGas>()
+    const [productionProfileOil, setProductionProfileOil] = useState<ProductionProfileOil>()
+    const [productionProfileWater, setProductionProfileWater] = useState<ProductionProfileWater>()
+    const [productionProfileNGL, setProductionProfileNGL] = useState<ProductionProfileNGL>()
+    // eslint-disable-next-line max-len
+    const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjection>()
     const [nGLYield, setNGLYield] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
@@ -65,12 +81,26 @@ const DrainageStrategyView = () => {
 
                 setNGLYield(newDrainage.nglYield)
 
-                TimeSeriesYears(
-                    newDrainage,
-                    caseResult!.DG4Date!.getFullYear(),
-                    setEarliestTimeSeriesYear,
-                    setLatestTimeSeriesYear,
-                )
+                setNetSalesGas(newDrainage.netSalesGas)
+                setCo2Emissions(newDrainage.co2Emissions)
+                setFuelFlaringAndLosses(newDrainage.fuelFlaringAndLosses)
+                setProductionProfileGas(newDrainage.productionProfileGas)
+                setProductionProfileOil(newDrainage.productionProfileOil)
+                setProductionProfileWater(newDrainage.productionProfileWater)
+                setProductionProfileWaterInjection(newDrainage.productionProfileWaterInjection)
+                setProductionProfileNGL(newDrainage.productionProfileNGL)
+
+                if (caseResult?.DG4Date) {
+                    initializeFirstAndLastYear(
+                        caseResult?.DG4Date?.getFullYear(),
+                        [newDrainage.netSalesGas, newDrainage.co2Emissions, newDrainage.fuelFlaringAndLosses,
+                            newDrainage.productionProfileGas, newDrainage.productionProfileOil,
+                            newDrainage.productionProfileWater, newDrainage.productionProfileWaterInjection,
+                            newDrainage.productionProfileNGL],
+                        setFirstTSYear,
+                        setLastTSYear,
+                    )
+                }
             }
         })()
     }, [project])
@@ -78,8 +108,30 @@ const DrainageStrategyView = () => {
     useEffect(() => {
         const newDrainage: DrainageStrategy = { ...drainageStrategy }
         newDrainage.nglYield = nGLYield
+        newDrainage.co2Emissions = co2Emissions
+        newDrainage.netSalesGas = netSalesGas
+        newDrainage.fuelFlaringAndLosses = fuelFlaringAndLosses
+        newDrainage.productionProfileGas = productionProfileGas
+        newDrainage.productionProfileOil = productionProfileOil
+        newDrainage.productionProfileWater = productionProfileWater
+        newDrainage.productionProfileWaterInjection = productionProfileWaterInjection
+        newDrainage.productionProfileNGL = productionProfileNGL
         setDrainageStrategy(newDrainage)
-    }, [nGLYield])
+
+        if (caseItem?.DG4Date) {
+            initializeFirstAndLastYear(
+                caseItem?.DG4Date?.getFullYear(),
+                [netSalesGas, co2Emissions, fuelFlaringAndLosses,
+                    productionProfileGas, productionProfileOil,
+                    productionProfileWater, productionProfileWaterInjection,
+                    productionProfileNGL],
+                setFirstTSYear,
+                setLastTSYear,
+            )
+        }
+    }, [nGLYield, co2Emissions, netSalesGas, fuelFlaringAndLosses,
+        productionProfileGas, productionProfileOil, productionProfileWater, productionProfileWaterInjection,
+        productionProfileNGL])
 
     return (
         <AssetViewDiv>
@@ -110,7 +162,7 @@ const DrainageStrategyView = () => {
                     value={nGLYield ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    label="NGL yield"
+                    label={`NGL yield ${project?.physUnit === 0 ? "(tonnes/MSm³)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     value={drainageStrategy?.producerCount ?? 0}
@@ -130,97 +182,102 @@ const DrainageStrategyView = () => {
                     disabled
                     label="Water injector count"
                 />
+                <NumberInput
+                    value={caseItem?.facilitiesAvailability ?? 0}
+                    integer={false}
+                    disabled
+                    label="Facilities availability"
+                />
             </Wrapper>
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setDrainageStrategy}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCo2Emissions}
                 setHasChanges={setHasChanges}
-                asset={drainageStrategy}
-                timeSeriesType={TimeSeriesEnum.co2Emissions}
-                assetName={drainageStrategyName}
-                timeSeriesTitle="CO2 emissions"
-                earliestYear={earliestTimeSeriesYear}
-                latestYear={latestTimeSeriesYear}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={co2Emissions}
+                timeSeriesTitle={`CO2 emissions ${project?.physUnit === 0 ? "(million tonnes)" : "(Oilfield)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setDrainageStrategy}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setNetSalesGas}
                 setHasChanges={setHasChanges}
-                asset={drainageStrategy}
-                timeSeriesType={TimeSeriesEnum.fuelFlaringAndLosses}
-                assetName={drainageStrategyName}
-                timeSeriesTitle="Fuel flaring and losses"
-                earliestYear={earliestTimeSeriesYear}
-                latestYear={latestTimeSeriesYear}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={netSalesGas}
+                timeSeriesTitle={`Net sales gas ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setDrainageStrategy}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setFuelFlaringAndLosses}
                 setHasChanges={setHasChanges}
-                asset={drainageStrategy}
-                timeSeriesType={TimeSeriesEnum.netSalesGas}
-                assetName={drainageStrategyName}
-                timeSeriesTitle="Net sales gas"
-                earliestYear={earliestTimeSeriesYear}
-                latestYear={latestTimeSeriesYear}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={fuelFlaringAndLosses}
+                timeSeriesTitle={`Fuel flaring and losses ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setDrainageStrategy}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileGas}
                 setHasChanges={setHasChanges}
-                asset={drainageStrategy}
-                timeSeriesType={TimeSeriesEnum.productionProfileGas}
-                assetName={drainageStrategyName}
-                timeSeriesTitle="Production profile gas"
-                earliestYear={earliestTimeSeriesYear}
-                latestYear={latestTimeSeriesYear}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={productionProfileGas}
+                timeSeriesTitle={`Production profile gas ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setDrainageStrategy}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileOil}
                 setHasChanges={setHasChanges}
-                asset={drainageStrategy}
-                timeSeriesType={TimeSeriesEnum.productionProfileOil}
-                assetName={drainageStrategyName}
-                timeSeriesTitle="Production profile oil"
-                earliestYear={earliestTimeSeriesYear}
-                latestYear={latestTimeSeriesYear}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={productionProfileOil}
+                timeSeriesTitle={`Production profile oil ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setDrainageStrategy}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileWater}
                 setHasChanges={setHasChanges}
-                asset={drainageStrategy}
-                timeSeriesType={TimeSeriesEnum.productionProfileWater}
-                assetName={drainageStrategyName}
-                timeSeriesTitle="Production profile water"
-                earliestYear={earliestTimeSeriesYear}
-                latestYear={latestTimeSeriesYear}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={productionProfileWater}
+                timeSeriesTitle={`Production profile water ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setDrainageStrategy}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileWaterInjection}
                 setHasChanges={setHasChanges}
-                asset={drainageStrategy}
-                timeSeriesType={TimeSeriesEnum.productionProfileWaterInjection}
-                assetName={drainageStrategyName}
-                timeSeriesTitle="Production profile water injection"
-                earliestYear={earliestTimeSeriesYear}
-                latestYear={latestTimeSeriesYear}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={productionProfileWaterInjection}
+                timeSeriesTitle={`Production profile water injection 
+                    ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileNGL}
+                setHasChanges={setHasChanges}
+                timeSeries={productionProfileNGL}
+                timeSeriesTitle={`Production profile NGL 
+                    ${project?.physUnit === 0 ? "(million tonnes)" : "(Oilfield)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
             <Save
                 name={drainageStrategyName}

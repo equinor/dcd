@@ -202,6 +202,9 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -380,6 +383,30 @@ namespace api.Migrations
                     b.ToTable("ProductionProfileGas");
                 });
 
+            modelBuilder.Entity("api.Models.ProductionProfileNGL", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DrainageStrategy.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DrainageStrategy.Id")
+                        .IsUnique();
+
+                    b.ToTable("ProductionProfileNGL");
+                });
+
             modelBuilder.Entity("api.Models.ProductionProfileOil", b =>
                 {
                     b.Property<Guid>("Id")
@@ -472,6 +499,9 @@ namespace api.Migrations
                     b.Property<DateTimeOffset>("CreateDate")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -479,6 +509,9 @@ namespace api.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PhysicalUnit")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProjectCategory")
                         .HasColumnType("int");
@@ -496,6 +529,9 @@ namespace api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
 
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
@@ -586,6 +622,9 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ArtificialLift")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Currency")
                         .HasColumnType("int");
 
                     b.Property<int>("GasInjectorCount")
@@ -700,6 +739,9 @@ namespace api.Migrations
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
 
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
 
@@ -796,6 +838,9 @@ namespace api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
 
                     b.Property<double>("GasExportPipelineLength")
                         .HasColumnType("float");
@@ -894,7 +939,7 @@ namespace api.Migrations
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
 
-                    b.Property<int>("GasInjectorCount")
+                    b.Property<int>("Currency")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -904,17 +949,11 @@ namespace api.Migrations
                     b.Property<double>("PluggingAndAbandonment")
                         .HasColumnType("float");
 
-                    b.Property<int>("ProducerCount")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("RigMobDemob")
                         .HasColumnType("float");
-
-                    b.Property<int>("WaterInjectorCount")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1075,6 +1114,17 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy");
                 });
 
+            modelBuilder.Entity("api.Models.ProductionProfileNGL", b =>
+                {
+                    b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
+                        .WithOne("ProductionProfileNGL")
+                        .HasForeignKey("api.Models.ProductionProfileNGL", "DrainageStrategy.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DrainageStrategy");
+                });
+
             modelBuilder.Entity("api.Models.ProductionProfileOil", b =>
                 {
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
@@ -1122,7 +1172,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.SubstructureCessationCostProfile", b =>
                 {
                     b.HasOne("api.Models.Substructure", "Substructure")
-                        .WithOne("SubstructureCessationCostProfile")
+                        .WithOne("CessationCostProfile")
                         .HasForeignKey("api.Models.SubstructureCessationCostProfile", "Substructure.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1155,7 +1205,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.SurfCessationCostProfile", b =>
                 {
                     b.HasOne("api.Models.Surf", "Surf")
-                        .WithOne("SurfCessationCostProfile")
+                        .WithOne("CessationCostProfile")
                         .HasForeignKey("api.Models.SurfCessationCostProfile", "Surf.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1188,7 +1238,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.TopsideCessationCostProfile", b =>
                 {
                     b.HasOne("api.Models.Topside", "Topside")
-                        .WithOne("TopsideCessationCostProfile")
+                        .WithOne("CessationCostProfile")
                         .HasForeignKey("api.Models.TopsideCessationCostProfile", "Topside.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1221,7 +1271,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.TransportCessationCostProfile", b =>
                 {
                     b.HasOne("api.Models.Transport", "Transport")
-                        .WithOne("TransportCessationCostProfile")
+                        .WithOne("CessationCostProfile")
                         .HasForeignKey("api.Models.TransportCessationCostProfile", "Transport.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1272,6 +1322,8 @@ namespace api.Migrations
 
                     b.Navigation("ProductionProfileGas");
 
+                    b.Navigation("ProductionProfileNGL");
+
                     b.Navigation("ProductionProfileOil");
 
                     b.Navigation("ProductionProfileWater");
@@ -1309,30 +1361,30 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Substructure", b =>
                 {
-                    b.Navigation("CostProfile");
+                    b.Navigation("CessationCostProfile");
 
-                    b.Navigation("SubstructureCessationCostProfile");
+                    b.Navigation("CostProfile");
                 });
 
             modelBuilder.Entity("api.Models.Surf", b =>
                 {
-                    b.Navigation("CostProfile");
+                    b.Navigation("CessationCostProfile");
 
-                    b.Navigation("SurfCessationCostProfile");
+                    b.Navigation("CostProfile");
                 });
 
             modelBuilder.Entity("api.Models.Topside", b =>
                 {
-                    b.Navigation("CostProfile");
+                    b.Navigation("CessationCostProfile");
 
-                    b.Navigation("TopsideCessationCostProfile");
+                    b.Navigation("CostProfile");
                 });
 
             modelBuilder.Entity("api.Models.Transport", b =>
                 {
-                    b.Navigation("CostProfile");
+                    b.Navigation("CessationCostProfile");
 
-                    b.Navigation("TransportCessationCostProfile");
+                    b.Navigation("CostProfile");
                 });
 
             modelBuilder.Entity("api.Models.WellProject", b =>

@@ -12,11 +12,12 @@ namespace api.Dtos
         public string CommonLibraryName { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string Country { get; set; } = null!;
+        public Currency Currency { get; set; }
+        public PhysUnit PhysUnit { get; set; }
         public DateTimeOffset CreateDate { get; set; }
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
         public ICollection<CaseDto>? Cases { get; set; }
-
         public ICollection<ExplorationDto>? Explorations { get; set; }
         public ICollection<SurfDto>? Surfs { get; set; }
         public ICollection<SubstructureDto>? Substructures { get; set; }

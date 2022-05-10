@@ -14,8 +14,9 @@ namespace api.Adapters
                 Name = substructure.Name,
                 DryWeight = substructure.DryWeight,
                 Maturity = substructure.Maturity,
+                Currency = substructure.Currency,
                 CostProfile = Convert(substructure.CostProfile),
-                SubstructureCessationCostProfileDto = Convert(substructure.SubstructureCessationCostProfile)
+                CessationCostProfile = Convert(substructure.CessationCostProfile)
             };
             return substructureDto;
         }

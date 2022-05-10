@@ -40,6 +40,7 @@ namespace api.Context
         public DbSet<FuelFlaringAndLosses>? FuelFlaringAndLosses { get; set; }
         public DbSet<NetSalesGas>? NetSalesGas { get; set; }
         public DbSet<Co2Emissions>? Co2Emissions { get; set; }
+        public DbSet<ProductionProfileNGL>? ProductionProfileNGL { get; set; }
 
         public DbSet<WellProject>? WellProjects { get; set; }
         public DbSet<WellProjectCostProfile>? WellProjectCostProfile { get; set; }

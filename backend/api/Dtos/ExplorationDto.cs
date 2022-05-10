@@ -13,6 +13,7 @@ namespace api.Dtos
         public ExplorationDrillingScheduleDto? DrillingSchedule { get; set; }
         public GAndGAdminCostDto? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class ExplorationCostProfileDto : TimeSeriesCostDto { }

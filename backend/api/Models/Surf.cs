@@ -11,7 +11,7 @@ namespace api.Models
         public Guid ProjectId { get; set; }
         public SurfCostProfile? CostProfile { get; set; }
 
-        public SurfCessationCostProfile? SurfCessationCostProfile { get; set; }
+        public SurfCessationCostProfile? CessationCostProfile { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }
@@ -22,6 +22,7 @@ namespace api.Models
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }
         public ProductionFlowline ProductionFlowline { get; set; }
+        public Currency Currency { get; set; }
     }
 
     public class SurfCostProfile : TimeSeriesCost
