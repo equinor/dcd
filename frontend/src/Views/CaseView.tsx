@@ -56,7 +56,7 @@ function CaseView() {
                 const projectResult = await GetProjectService().getProjectByID(params.projectId!)
                 setProject(projectResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project. ${params.projectId}`, error)
             }
         })()
     }, [params.projectId, params.caseId])
