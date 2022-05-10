@@ -12,6 +12,7 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     drillingSchedule?: ExplorationDrillingSchedule | undefined
     gAndGAdminCost?: GAndGAdminCost | undefined
     rigMobDemob?: number | undefined
+    currency?: Components.Schemas.Currency
 
     constructor(data?: Components.Schemas.ExplorationDto) {
         if (data !== undefined) {
@@ -23,6 +24,7 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
             this.drillingSchedule = ExplorationDrillingSchedule.fromJSON(data.drillingSchedule)
             this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)
             this.rigMobDemob = data.rigMobDemob
+            this.currency = data.currency ?? 0
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""

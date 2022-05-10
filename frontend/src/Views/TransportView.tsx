@@ -22,6 +22,7 @@ import NumberInput from "../Components/NumberInput"
 import Maturity from "../Components/Maturity"
 import { TransportCostProfile } from "../models/assets/transport/TransportCostProfile"
 import { TransportCessationCostProfile } from "../models/assets/transport/TransportCessationCostProfile"
+import AssetCurrency from "../Components/AssetCurrency"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -37,6 +38,7 @@ const TransportView = () => {
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
     const [costProfile, setCostProfile] = useState<TransportCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TransportCessationCostProfile>()
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
 
     useEffect(() => {
         (async () => {
@@ -59,12 +61,14 @@ const TransportView = () => {
                     setTransport(newTransport)
                 } else {
                     newTransport = new Transport()
+                    newTransport.currency = project.currency
                     setTransport(newTransport)
                 }
                 setTransportName(newTransport?.name!)
                 setGasExportPipelineLength(newTransport?.gasExportPipelineLength)
                 setOilExportPipelineLength(newTransport?.oilExportPipelineLength)
                 setMaturity(newTransport?.maturity ?? undefined)
+                setCurrency(newTransport.currency ?? 0)
 
                 setCostProfile(newTransport.costProfile)
                 setCessationCostProfile(newTransport.cessationCostProfile)
@@ -89,6 +93,7 @@ const TransportView = () => {
             newTransport.maturity = maturity
             newTransport.costProfile = costProfile
             newTransport.cessationCostProfile = cessationCostProfile
+            newTransport.currency = currency
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -100,7 +105,7 @@ const TransportView = () => {
             }
             setTransport(newTransport)
         }
-    }, [gasExportPipelineLength, oilExportPipelineLength, maturity, costProfile, cessationCostProfile])
+    }, [gasExportPipelineLength, oilExportPipelineLength, maturity, costProfile, cessationCostProfile, currency])
 
     return (
         <AssetViewDiv>
@@ -120,6 +125,11 @@ const TransportView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <AssetCurrency
+                setCurrency={setCurrency}
+                setHasChanges={setHasChanges}
+                currentValue={currency}
+            />
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -146,7 +156,7 @@ const TransportView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle="Cost profile"
+                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -157,7 +167,7 @@ const TransportView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle="Cessation cost profile"
+                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

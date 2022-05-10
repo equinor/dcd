@@ -11,6 +11,7 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
     maturity?: Components.Schemas.Maturity | undefined
     gasExportPipelineLength?: number | undefined
     oilExportPipelineLength?: number | undefined
+    currency?: Components.Schemas.Currency
 
     constructor(data?: Components.Schemas.TransportDto) {
         if (data !== undefined) {
@@ -23,6 +24,7 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
             this.maturity = data.maturity
             this.gasExportPipelineLength = data.gasExportPipelineLength
             this.oilExportPipelineLength = data.oilExportPipelineLength
+            this.currency = data.currency ?? 0
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.name = ""
