@@ -156,14 +156,14 @@ const TopsideView = () => {
                     setValue={setOilCapacity}
                     value={oilCapacity ?? 0}
                     integer={false}
-                    label={`Capacity oil ${project?.physUnit === 0 ? "(Sm3/sd)" : "(Oilfield)"}`}
+                    label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setGasCapacity}
                     value={gasCapacity ?? 0}
                     integer={false}
-                    label={`Capacity gas ${project?.physUnit === 0 ? "(MSm3/sd)" : "(Oilfield)"}`}
+                    label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     value={caseItem?.facilitiesAvailability ?? 0}
