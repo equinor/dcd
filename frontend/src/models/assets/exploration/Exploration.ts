@@ -1,15 +1,16 @@
+import { IAsset } from "../IAsset"
 import { ExplorationCostProfile } from "./ExplorationCostProfile"
-import { ExplorationDrillingScheduleDto } from "./ExplorationDrillingScheduleDto"
-import { GAndGAdminCostDto } from "./GAndAdminCostDto"
+import { ExplorationDrillingSchedule } from "./ExplorationDrillingSchedule"
+import { GAndGAdminCost } from "./GAndAdminCost"
 
-export class Exploration implements Components.Schemas.ExplorationDto {
+export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     id?: string | undefined
     projectId?: string | undefined
     name?: string | undefined
     wellType?: Components.Schemas.WellType | undefined
     costProfile?: ExplorationCostProfile | undefined
-    drillingSchedule?: ExplorationDrillingScheduleDto | undefined
-    gAndGAdminCost?: GAndGAdminCostDto | undefined
+    drillingSchedule?: ExplorationDrillingSchedule | undefined
+    gAndGAdminCost?: GAndGAdminCost | undefined
     rigMobDemob?: number | undefined
 
     constructor(data?: Components.Schemas.ExplorationDto) {
@@ -19,8 +20,8 @@ export class Exploration implements Components.Schemas.ExplorationDto {
             this.name = data.name ?? ""
             this.wellType = data.wellType
             this.costProfile = ExplorationCostProfile.fromJSON(data.costProfile)
-            this.drillingSchedule = ExplorationDrillingScheduleDto.fromJSON(data.drillingSchedule)
-            this.gAndGAdminCost = GAndGAdminCostDto.fromJSON(data.gAndGAdminCost)
+            this.drillingSchedule = ExplorationDrillingSchedule.fromJSON(data.drillingSchedule)
+            this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)
             this.rigMobDemob = data.rigMobDemob
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"

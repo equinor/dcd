@@ -1,20 +1,16 @@
 import { ITimeSeries } from "../../ITimeSeries"
 
-export class SurfCessationCostProfile implements Components.Schemas.SurfCessationCostProfileDto, ITimeSeries {
+export class ProductionProfileNGL implements Components.Schemas.ProductionProfileNGLDto, ITimeSeries {
     id?: string
     startYear?: number
     values?: number []
-    epaVersion?: string | null
-    currency?: Components.Schemas.Currency | undefined
-    sum?: number | undefined
+    sum?: number
 
-    constructor(data?: Components.Schemas.SurfCessationCostProfileDto) {
+    constructor(data?: Components.Schemas.ProductionProfileNGLDto) {
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
             this.values = data.values ?? []
-            this.epaVersion = data.epaVersion ?? ""
-            this.currency = data.currency
             this.sum = data.sum
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
@@ -23,10 +19,10 @@ export class SurfCessationCostProfile implements Components.Schemas.SurfCessatio
         }
     }
 
-    static fromJSON(data?: Components.Schemas.SurfCessationCostProfileDto): SurfCessationCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.ProductionProfileNGLDto): ProductionProfileNGL | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new SurfCessationCostProfile(data)
+        return new ProductionProfileNGL(data)
     }
 }

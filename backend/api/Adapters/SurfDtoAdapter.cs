@@ -32,9 +32,9 @@ namespace api.Adapters
                 surfDto.CostProfile = Convert(surf.CostProfile);
             }
 
-            if (surf.SurfCessationCostProfile != null)
+            if (surf.CessationCostProfile != null)
             {
-                surfDto.SurfCessationCostProfileDto = Convert(surf.SurfCessationCostProfile);
+                surfDto.CessationCostProfile = Convert(surf.CessationCostProfile);
             }
 
             return surfDto;
