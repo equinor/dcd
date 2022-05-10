@@ -101,7 +101,7 @@ const TopsideView = () => {
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
                     caseItem?.DG4Date?.getFullYear(),
-                    [newTopside.costProfile, newTopside.cessationCostProfile],
+                    [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
                 )

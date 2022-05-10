@@ -94,6 +94,14 @@ function WellProjectView() {
         newWellProject.costProfile = costProfile
         newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
+        if (caseItem?.DG4Date) {
+            initializeFirstAndLastYear(
+                caseItem?.DG4Date?.getFullYear(),
+                [costProfile, drillingSchedule],
+                setFirstTSYear,
+                setLastTSYear,
+            )
+        }
         setWellProject(newWellProject)
     }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency])
 
