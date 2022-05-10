@@ -90,16 +90,6 @@ const TimeSeries = ({
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setTimeSeries(newTimeSeries)
         if ((Number(year)
-<<<<<<< HEAD
-        + Number(caseItem?.DG4Date?.getFullYear())) < (earliestYear ?? Number.MAX_SAFE_INTEGER)) {
-            setEarliestYear((Number(year) + Number(caseItem?.DG4Date?.getFullYear())))
-        }
-        if ((Number(year)
-        + Number(caseItem?.DG4Date?.getFullYear())
-        + Number(newTimeSeries.values.length)) > (latestYear ?? Number.MIN_SAFE_INTEGER)) {
-            setLatestYear(Number(year)
-            + Number(caseItem?.DG4Date?.getFullYear()) + Number(newTimeSeries.values.length))
-=======
         + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
             setFirstYear((Number(year) + Number(dG4Year!)))
         }
@@ -108,7 +98,6 @@ const TimeSeries = ({
         + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
             setLastYear(Number(year)
             + Number(dG4Year!) + Number(newTimeSeries.values.length))
->>>>>>> main
         }
         buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
