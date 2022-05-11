@@ -70,7 +70,7 @@ const DashboardView = () => {
                     })
                     setFetching(false)
                 } catch (error) {
-                    console.error("Could not retrieve commonlibprojects or dcdprojects. ", error)
+                    console.error("Could not retrieve commonlibprojects or dcdprojects.. ", error)
                 }
             }
         })()
