@@ -15,6 +15,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/CaseAsset"
 import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import CaseDGDate from "../Components/CaseDGDate"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
 import DGEnum from "../models/DGEnum"
@@ -52,8 +53,11 @@ function CaseView() {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
+                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === params.caseId))
+                setCase(caseResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
@@ -62,7 +66,7 @@ function CaseView() {
 
     useEffect(() => {
         if (project !== undefined) {
-            const caseResult = project.cases.find((o) => o.id === params.caseId)
+            const caseResult: Case | undefined = project.cases.find((o) => o.id === params.caseId)
             if (caseResult !== undefined) {
                 setArtificialLift(caseResult.artificialLift)
                 setProdStratOverview(caseResult.productionStrategyOverview)
@@ -199,7 +203,7 @@ function CaseView() {
                         value={facilitiesAvailability ?? 0}
                         integer
                         disabled={false}
-                        label="Facilities Availability"
+                        label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                     />
                 </Wrapper>
                 <CaseAsset

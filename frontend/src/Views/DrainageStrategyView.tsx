@@ -18,6 +18,7 @@ import {
 import Save from "../Components/Save"
 import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
 import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
@@ -53,7 +54,8 @@ const DrainageStrategyView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -64,9 +66,10 @@ const DrainageStrategyView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newDrainage = project!.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
+                // eslint-disable-next-line max-len
+                let newDrainage: DrainageStrategy | undefined = project.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
                 if (newDrainage !== undefined) {
                     setDrainageStrategy(newDrainage)
                 } else {
@@ -186,7 +189,7 @@ const DrainageStrategyView = () => {
                     value={caseItem?.facilitiesAvailability ?? 0}
                     integer={false}
                     disabled
-                    label="Facilities availability"
+                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <TimeSeries

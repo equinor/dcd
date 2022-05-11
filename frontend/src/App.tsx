@@ -1,5 +1,6 @@
 import { ApplicationInsights } from "@microsoft/applicationinsights-web"
 import {
+    AccountInfo,
     AuthenticationResult,
     EventMessage,
     EventType,
@@ -41,16 +42,16 @@ const App: VoidFunctionComponent = () => {
                 const appConfig = await RetrieveConfigFromAzure()
 
                 // Set up MSAL
-                const msalClient = new PublicClientApplication(appConfig.msal)
+                const msalClient: PublicClientApplication = new PublicClientApplication(appConfig.msal)
 
-                const accounts = msalClient.getAllAccounts()
+                const accounts: AccountInfo[] = msalClient.getAllAccounts()
                 if (accounts.length > 0) {
                     msalClient.setActiveAccount(accounts[0])
                 }
 
                 msalClient.addEventCallback((event: EventMessage) => {
                     if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
-                        const payload = event.payload as AuthenticationResult
+                        const payload: AuthenticationResult = event.payload as AuthenticationResult
                         const { account } = payload
                         msalClient.setActiveAccount(account)
                     }
@@ -59,7 +60,7 @@ const App: VoidFunctionComponent = () => {
                 setMsalInstance(msalClient)
 
                 // Set up AppInsights
-                const appInsights = new ApplicationInsights({
+                const appInsights: ApplicationInsights = new ApplicationInsights({
                     config: {
                         instrumentationKey: appConfig.applicationInsightInstrumentationKey,
                         extensions: [reactPlugin],

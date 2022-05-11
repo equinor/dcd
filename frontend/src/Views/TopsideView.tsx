@@ -13,6 +13,7 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
@@ -44,7 +45,8 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -55,9 +57,9 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newTopside = project.topsides.find((s) => s.id === params.topsideId)
+                let newTopside: Topside | undefined = project.topsides.find((s) => s.id === params.topsideId)
                 if (newTopside !== undefined) {
                     setTopside(newTopside)
                 } else {
@@ -149,27 +151,27 @@ const TopsideView = () => {
                     setValue={setDryweight}
                     value={dryweight ?? 0}
                     integer
-                    label="Topside dry weight"
+                    label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setOilCapacity}
                     value={oilCapacity ?? 0}
                     integer={false}
-                    label="Capacity oil"
+                    label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setGasCapacity}
                     value={gasCapacity ?? 0}
                     integer={false}
-                    label="Capacity gas"
+                    label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
                 />
                 <NumberInput
                     value={caseItem?.facilitiesAvailability ?? 0}
                     integer={false}
                     disabled
-                    label="Facilities availability"
+                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <Maturity

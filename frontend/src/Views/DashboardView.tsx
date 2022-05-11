@@ -77,7 +77,7 @@ const DashboardView = () => {
     }, [])
 
     const onSelected = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const project = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
+        const project:Project | undefined = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         if (project) {
             navigate(ProjectPath(project.id))
         } else {
@@ -87,7 +87,7 @@ const DashboardView = () => {
         }
     }
 
-    const grey = tokens.colors.ui.background__scrim.rgba
+    const grey: string = tokens.colors.ui.background__scrim.rgba
 
     if (isFetching) {
         return (
@@ -117,23 +117,23 @@ const DashboardView = () => {
                         <option value="empty" disabled> </option>
                         {projects?.map((project) => (
                             <option
-                                value={project.id!}
+                                value={project.id}
                                 key={project.id}
                                 style={{
                                     fontWeight: 700,
-                                    background: clp?.find((p) => p.id === project.commonLibId) === undefined
+                                    background: clp?.find((p) => p.id === project.commonLibraryId) === undefined
                                         ? "rgba(255,0,0,.5)" : "rgba(51,170,51,.4)",
                                 }}
                             >
-                                {project.name!}
+                                {project.name}
                             </option>
                         ))}
-                        {clp?.filter((p) => !projects.find((proj) => p.id === proj.commonLibId)).map((project) => (
+                        {clp?.filter((p) => !projects.find((proj) => p.id === proj.commonLibraryId)).map((project) => (
                             <option
-                                value={project.id!}
-                                key={project.id!}
+                                value={project.id}
+                                key={project.id}
                             >
-                                {project.name!}
+                                {project.name}
                             </option>
                         ))}
                     </ProjectDropdown>
