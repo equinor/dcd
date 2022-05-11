@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 using api.Context;
 using api.SampleData.Generators;
 using api.Services;
@@ -11,7 +9,6 @@ using Equinor.TI.CommonLibrary.Client;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
@@ -98,12 +95,8 @@ builder.Services.AddCors(options =>
         });
     });
 
-ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 {
-    
-});
-
-var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions() {
     InstrumentationKey = config["ApplicationInsightInstrumentationKey"]
 };
 
@@ -115,8 +108,7 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
-
-builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();

@@ -56,7 +56,7 @@ public class TopsideServiceShould : IDisposable
         var caseId = project.Cases.FirstOrDefault().Id;
         var testTopside = CreateTestTopside(project);
         var loggerFactory = new LoggerFactory();
-        ProjectService projectService = new ProjectService(fixture.context,loggerFactory);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
         TopsideService topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
 
         // Act
