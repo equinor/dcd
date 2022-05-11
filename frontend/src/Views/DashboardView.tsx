@@ -121,14 +121,14 @@ const DashboardView = () => {
                                 key={project.id}
                                 style={{
                                     fontWeight: 700,
-                                    background: clp?.find((p) => p.id === project.commonLibId) === undefined
+                                    background: clp?.find((p) => p.id === project.commonLibraryId) === undefined
                                         ? "rgba(255,0,0,.5)" : "rgba(51,170,51,.4)",
                                 }}
                             >
                                 {project.name}
                             </option>
                         ))}
-                        {clp?.filter((p) => !projects.find((proj) => p.id === proj.commonLibId)).map((project) => (
+                        {clp?.filter((p) => !projects.find((proj) => p.id === proj.commonLibraryId)).map((project) => (
                             <option
                                 value={project.id}
                                 key={project.id}
