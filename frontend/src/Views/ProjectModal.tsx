@@ -92,7 +92,7 @@ const ProjectModal = ({
     }
 
     const convertCommonLibProjectToProject = (
-        commonLibraryProject: Components.Schemas.CommonLibraryProjectDto,
+        commonLibraryProject?: Components.Schemas.CommonLibraryProjectDto,
     ): Components.Schemas.ProjectDto => {
         const project: Components.Schemas.ProjectDto = {
             name: inputName ?? commonLibraryProject?.name,
@@ -121,7 +121,7 @@ const ProjectModal = ({
         let project
         if (pressedOkButton === true) {
             try {
-                project = convertCommonLibProjectToProject(selectedProject!)
+                project = convertCommonLibProjectToProject(selectedProject)
                 await GetProjectService().createProject(project).then((createdProject) => {
                     closeModal()
                     navigate(`/project/${createdProject.projectId}`)
@@ -153,7 +153,7 @@ const ProjectModal = ({
             setSelectedProject(passedInProject)
         }
         if (passedInProjects !== undefined) {
-            setProjects(passedInProjects!)
+            setProjects(passedInProjects)
         }
         setCommonLibFetchError(false)
     }, [passedInProject, passedInProjects])
@@ -185,7 +185,7 @@ const ProjectModal = ({
                         {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                         <option value={selectedProject?.name ?? ""}>{selectedProject?.name ?? ""}</option>
                         {projects?.map((project) => (
-                            <option value={project.id!} key={project.id}>{project.name!}</option>
+                            <option value={project.id} key={project.id}>{project.name}</option>
                         ))}
                     </ProjectDropdown>
                 </ProjectSelect>

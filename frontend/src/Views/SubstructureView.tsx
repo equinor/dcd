@@ -16,6 +16,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import Maturity from "../Components/Maturity"
@@ -43,7 +44,8 @@ const SubstructureView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -54,9 +56,10 @@ const SubstructureView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newSubstructure = project.substructures.find((s) => s.id === params.substructureId)
+                // eslint-disable-next-line max-len
+                let newSubstructure: Substructure | undefined = project.substructures.find((s) => s.id === params.substructureId)
                 if (newSubstructure !== undefined) {
                     setSubstructure(newSubstructure)
                 } else {
@@ -146,7 +149,7 @@ const SubstructureView = () => {
                     setValue={setDryWeight}
                     value={dryWeight ?? 0}
                     integer={false}
-                    label="Substructure dry weight"
+                    label={`Substructure dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
                 />
             </Wrapper>
             <Maturity
