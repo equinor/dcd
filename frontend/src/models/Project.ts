@@ -25,7 +25,7 @@ export class Project implements Components.Schemas.ProjectDto {
     topsides: Topside[]
     transports: Transport[]
     wellProjects: WellProject[]
-    commonLibId: string
+    commonLibraryId: string
     commonLibraryName: string
     currency: Components.Schemas.Currency
     physUnit: Components.Schemas.PhysUnit
@@ -40,7 +40,7 @@ export class Project implements Components.Schemas.ProjectDto {
         this.explorations = data.explorations?.map(Exploration.fromJSON) ?? []
         this.id = data.projectId ?? ""
         this.projectId = data.projectId ?? ""
-        this.commonLibId = data.commonLibraryId ?? ""
+        this.commonLibraryId = data.commonLibraryId ?? ""
         this.commonLibraryName = data.commonLibraryName ?? ""
         this.name = data.name ?? ""
         this.phase = data.projectPhase
@@ -63,6 +63,7 @@ export class Project implements Components.Schemas.ProjectDto {
             ...projectCopy,
             projectCategory: data.category,
             projectPhase: data.phase,
+            projectId: data.id,
         }
     }
 
