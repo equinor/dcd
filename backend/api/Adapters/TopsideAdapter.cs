@@ -81,8 +81,24 @@ namespace api.Adapters
                 EPAVersion = topsideCessationCostProfileDto.EPAVersion,
                 Topside = topside,
                 StartYear = topsideCessationCostProfileDto.StartYear,
-                Values = topsideCessationCostProfileDto.Values
+                Values = currencyChange(topsideCessationCostProfileDto.Values, topside.Currency, topsideCessationCostProfileDto.Id)
             };
+
+            static double[] currencyChange(double[] values, Currency currency, Guid id)
+            {
+                if (id != Guid.Empty)
+                {
+                    if (currency == Currency.USD)
+                    {
+                        values = Array.ConvertAll(values, x => x * 10);
+                    }
+                    else if (currency == Currency.NOK)
+                    {
+                        values = Array.ConvertAll(values, x => x / 10);
+                    }
+                }
+                return values;
+            }
 
             return topsideCessationCostProfile;
         }
