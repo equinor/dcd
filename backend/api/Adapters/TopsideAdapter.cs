@@ -81,20 +81,23 @@ namespace api.Adapters
                 EPAVersion = topsideCessationCostProfileDto.EPAVersion,
                 Topside = topside,
                 StartYear = topsideCessationCostProfileDto.StartYear,
-                Values = currencyChange(topsideCessationCostProfileDto.Values, topside.Currency, topsideCessationCostProfileDto.Id)
+                Values = ValuesPerCurrency(topsideCessationCostProfileDto.Values, topside.Currency, topsideCessationCostProfileDto.Id, topsideCessationCostProfileDto, topside)
             };
 
-            static double[] currencyChange(double[] values, Currency currency, Guid id)
+            static double[] ValuesPerCurrency(double[] values, Currency currency, Guid id, TopsideCessationCostProfileDto? dto, Topside topside)
             {
-                if (id != Guid.Empty)
+                if (id != Guid.Empty && dto != null && topside.CessationCostProfile != null)
                 {
-                    if (currency == Currency.USD)
+                    bool currentValueIsOldValue = dto.Values.SequenceEqual(topside.CessationCostProfile.Values);
+                    double USCurrencyFactor = 10;
+
+                    if (currency == Currency.USD && currentValueIsOldValue)
                     {
-                        values = Array.ConvertAll(values, x => x * 10);
+                        values = Array.ConvertAll(values, x => x * USCurrencyFactor);
                     }
-                    else if (currency == Currency.NOK)
+                    else if (currency == Currency.NOK && currentValueIsOldValue)
                     {
-                        values = Array.ConvertAll(values, x => x / 10);
+                        values = Array.ConvertAll(values, x => x / USCurrencyFactor);
                     }
                 }
                 return values;
