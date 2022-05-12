@@ -249,7 +249,7 @@ function CaseView() {
                         <Button
                             type="submit"
                             onClick={submitUpdateDescription}
-                            disabled={caseDescription === ""}
+                            // disabled={submitIsDisabled}
                         >
                             Submit
                         </Button>
