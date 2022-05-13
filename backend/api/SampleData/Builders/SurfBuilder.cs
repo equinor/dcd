@@ -14,7 +14,7 @@ public class SurfBuilder : Surf
     public SurfBuilder WithSurfCessationCostProfile(SurfCessationCostProfile surfCessationCostProfile)
     {
         surfCessationCostProfile.Surf = this;
-        this.SurfCessationCostProfile = surfCessationCostProfile;
+        this.CessationCostProfile = surfCessationCostProfile;
         return this;
     }
 }

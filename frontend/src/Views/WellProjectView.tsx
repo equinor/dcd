@@ -8,18 +8,21 @@ import {
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
-import TimeSeriesEnum from "../models/assets/TimeSeriesEnum"
 import { WellProject } from "../models/assets/wellproject/WellProject"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
-import { GetArtificialLiftName, TimeSeriesYears } from "./Asset/AssetHelper"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
+import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
+import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
+import AssetCurrency from "../Components/AssetCurrency"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -28,15 +31,20 @@ function WellProjectView() {
     const [hasChanges, setHasChanges] = useState(false)
     const [wellProjectName, setWellProjectName] = useState<string>("")
     const params = useParams()
-    const [earliestTimeSeriesYear, setEarliestTimeSeriesYear] = useState<number>()
-    const [latestTimeSeriesYear, setLatestTimeSeriesYear] = useState<number>()
+    const [firstTSYear, setFirstTSYear] = useState<number>()
+    const [lastTSYear, setLastTSYear] = useState<number>()
     const [annualWellInterventionCost, setAnnualWellInterventionCost] = useState<number>()
     const [pluggingAndAbandonment, setPluggingAndAbandonment] = useState<number>()
+    const [rigMobDemob, setRigMobDemob] = useState<number>()
+    const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
+    const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
 
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -47,31 +55,36 @@ function WellProjectView() {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult = project.cases.find((o) => o.id === params.caseId)
+                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                let newWellProject = project!.wellProjects.find((s) => s.id === params.wellProjectId)
+                // eslint-disable-next-line max-len
+                let newWellProject: WellProject | undefined = project?.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
                 } else {
                     newWellProject = new WellProject()
                     newWellProject.artificialLift = caseResult?.artificialLift
-                    newWellProject.producerCount = caseResult?.producerCount
-                    newWellProject.gasInjectorCount = caseResult?.gasInjectorCount
-                    newWellProject.waterInjectorCount = caseResult?.waterInjectorCount
-                    newWellProject.rigMobDemob = caseResult?.rigMobDemob
+                    newWellProject.currency = project.currency
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
 
                 setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
                 setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
+                setRigMobDemob(newWellProject.rigMobDemob)
+                setCurrency(newWellProject.currency ?? 0)
 
-                TimeSeriesYears(
-                    newWellProject,
-                    caseResult!.DG4Date!.getFullYear(),
-                    setEarliestTimeSeriesYear,
-                    setLatestTimeSeriesYear,
-                )
+                setCostProfile(newWellProject.costProfile)
+                setDrillingSchedule(newWellProject.drillingSchedule)
+
+                if (caseResult?.DG4Date) {
+                    initializeFirstAndLastYear(
+                        caseResult?.DG4Date?.getFullYear(),
+                        [newWellProject.costProfile, newWellProject.drillingSchedule],
+                        setFirstTSYear,
+                        setLastTSYear,
+                    )
+                }
             }
         })()
     }, [project])
@@ -80,12 +93,36 @@ function WellProjectView() {
         const newWellProject: WellProject = { ...wellProject }
         newWellProject.annualWellInterventionCost = annualWellInterventionCost
         newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
+        newWellProject.rigMobDemob = rigMobDemob
+        newWellProject.costProfile = costProfile
+        newWellProject.drillingSchedule = drillingSchedule
+        newWellProject.currency = currency
+        if (caseItem?.DG4Date) {
+            initializeFirstAndLastYear(
+                caseItem?.DG4Date?.getFullYear(),
+                [costProfile, drillingSchedule],
+                setFirstTSYear,
+                setLastTSYear,
+            )
+        }
         setWellProject(newWellProject)
-    }, [annualWellInterventionCost, pluggingAndAbandonment])
+    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency])
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">WellProject</Typography>
+            <Wrapper>
+                <Typography variant="h2">WellProject</Typography>
+                <Save
+                    name={wellProjectName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setWellProject}
+                    setProject={setProject}
+                    asset={wellProject!}
+                    assetService={GetWellProjectService()}
+                    assetType={AssetTypeEnum.wellProjects}
+                />
+            </Wrapper>
             <AssetName
                 setName={setWellProjectName}
                 name={wellProjectName}
@@ -101,9 +138,14 @@ function WellProjectView() {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <AssetCurrency
+                setCurrency={setCurrency}
+                setHasChanges={setHasChanges}
+                currentValue={currency}
+            />
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial Lift" />
+                    <Label htmlFor="name" label="Artificial lift" />
                     <Input
                         id="artificialLift"
                         disabled
@@ -113,11 +155,11 @@ function WellProjectView() {
             </Wrapper>
             <Wrapper>
                 <NumberInput
-                    value={wellProject?.rigMobDemob ?? 0}
+                    setValue={setRigMobDemob}
+                    value={rigMobDemob ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    disabled
-                    label="Rig Mob Demob"
+                    label="Rig mob demob"
                 />
                 <NumberInput
                     setValue={setAnnualWellInterventionCost}
@@ -133,60 +175,28 @@ function WellProjectView() {
                     integer={false}
                     label="Plugging and abandonment"
                 />
-                <NumberInput
-                    value={wellProject?.producerCount ?? 0}
-                    integer
-                    disabled
-                    label="Producer count"
-                />
-                <NumberInput
-                    value={wellProject?.gasInjectorCount ?? 0}
-                    integer
-                    disabled
-                    label="Gas injector count"
-                />
-                <NumberInput
-                    value={wellProject?.waterInjectorCount ?? 0}
-                    integer
-                    disabled
-                    label="Water injector count"
-                />
             </Wrapper>
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setWellProject}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                asset={wellProject}
-                timeSeriesType={TimeSeriesEnum.costProfile}
-                assetName={wellProjectName}
-                timeSeriesTitle="Cost profile"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
+                timeSeries={costProfile}
+                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
             <TimeSeries
-                caseItem={caseItem}
-                setAsset={setWellProject}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setDrillingSchedule}
                 setHasChanges={setHasChanges}
-                asset={wellProject}
-                timeSeriesType={TimeSeriesEnum.drillingSchedule}
-                assetName={wellProjectName}
+                timeSeries={drillingSchedule}
                 timeSeriesTitle="Drilling schedule"
-                earliestYear={earliestTimeSeriesYear!}
-                latestYear={latestTimeSeriesYear!}
-                setEarliestYear={setEarliestTimeSeriesYear!}
-                setLatestYear={setLatestTimeSeriesYear}
-            />
-            <Save
-                name={wellProjectName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setWellProject}
-                setProject={setProject}
-                asset={wellProject!}
-                assetService={GetWellProjectService()}
-                assetType={AssetTypeEnum.wellProjects}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
     )

@@ -1,6 +1,8 @@
-export class GAndGAdminCostDto implements Components.Schemas.GAndGAdminCostDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class GAndGAdminCost implements Components.Schemas.GAndGAdminCostDto, ITimeSeries {
     id?: string
-    startYear: number
+    startYear?: number
     values?: number []
 
     constructor(data?: Components.Schemas.GAndGAdminCostDto) {
@@ -9,10 +11,10 @@ export class GAndGAdminCostDto implements Components.Schemas.GAndGAdminCostDto {
         this.values = data?.values ?? []
     }
 
-    static fromJSON(data?: Components.Schemas.GAndGAdminCostDto): GAndGAdminCostDto | undefined {
+    static fromJSON(data?: Components.Schemas.GAndGAdminCostDto): GAndGAdminCost | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new GAndGAdminCostDto(data)
+        return new GAndGAdminCost(data)
     }
 }

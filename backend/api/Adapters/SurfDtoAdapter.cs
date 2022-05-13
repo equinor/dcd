@@ -17,8 +17,14 @@ namespace api.Adapters
                 ArtificialLift = surf.ArtificialLift,
                 Maturity = surf.Maturity,
                 InfieldPipelineSystemLength = surf.InfieldPipelineSystemLength,
+                UmbilicalSystemLength = surf.UmbilicalSystemLength,
                 ProductionFlowline = surf.ProductionFlowline,
                 RiserCount = surf.RiserCount,
+                TemplateCount = surf.TemplateCount,
+                ProducerCount = surf.ProducerCount,
+                GasInjectorCount = surf.GasInjectorCount,
+                WaterInjectorCount = surf.WaterInjectorCount,
+                Currency = surf.Currency,
                 CostProfile = Convert(surf.CostProfile)
             };
 
@@ -27,9 +33,9 @@ namespace api.Adapters
                 surfDto.CostProfile = Convert(surf.CostProfile);
             }
 
-            if (surf.SurfCessationCostProfile != null)
+            if (surf.CessationCostProfile != null)
             {
-                surfDto.SurfCessationCostProfileDto = Convert(surf.SurfCessationCostProfile);
+                surfDto.CessationCostProfile = Convert(surf.CessationCostProfile);
             }
 
             return surfDto;

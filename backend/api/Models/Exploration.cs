@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models
 {
-
     public class Exploration
     {
         public Guid Id { get; set; }
@@ -14,7 +13,7 @@ namespace api.Models
         public ExplorationDrillingSchedule? DrillingSchedule { get; set; }
         public GAndGAdminCost? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
-
+        public Currency Currency { get; set; }
     }
 
     public class ExplorationCostProfile : TimeSeriesCost

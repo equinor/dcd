@@ -42,25 +42,21 @@ namespace api.Adapters
                     Id = wellProjectDto.Id,
                     ProjectId = wellProjectDto.ProjectId,
                     Name = wellProjectDto.Name,
-                    ProducerCount = wellProjectDto.ProducerCount,
-                    GasInjectorCount = wellProjectDto.GasInjectorCount,
-                    WaterInjectorCount = wellProjectDto.WaterInjectorCount,
                     ArtificialLift = wellProjectDto.ArtificialLift,
                     RigMobDemob = wellProjectDto.RigMobDemob,
                     AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost,
-                    PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment
+                    PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment,
+                    Currency = wellProjectDto.Currency
                 };
             }
             existing.Id = wellProjectDto.Id;
             existing.ProjectId = wellProjectDto.ProjectId;
             existing.Name = wellProjectDto.Name;
-            existing.ProducerCount = wellProjectDto.ProducerCount;
-            existing.GasInjectorCount = wellProjectDto.GasInjectorCount;
-            existing.WaterInjectorCount = wellProjectDto.WaterInjectorCount;
             existing.ArtificialLift = wellProjectDto.ArtificialLift;
             existing.RigMobDemob = wellProjectDto.RigMobDemob;
             existing.AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost;
             existing.PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment;
+            existing.Currency = wellProjectDto.Currency;
 
             return existing;
         }

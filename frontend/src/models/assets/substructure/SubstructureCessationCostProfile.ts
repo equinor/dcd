@@ -1,7 +1,10 @@
-export class SubstructureCessationCostProfile implements Components.Schemas.SubstructureCessationCostProfileDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class SubstructureCessationCostProfile implements
+    Components.Schemas.SubstructureCessationCostProfileDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined

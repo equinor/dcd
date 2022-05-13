@@ -39,6 +39,15 @@ namespace api.Services
             _transportService = new TransportService(_context, this, loggerFactory);
         }
 
+        public ProjectDto UpdateProject(ProjectDto projectDto)
+        {
+
+            var updatedProject = ProjectAdapter.Convert(projectDto);
+            _context.Projects!.Update(updatedProject);
+            _context.SaveChanges();
+            return GetProjectDto(updatedProject.Id);
+        }
+
         public ProjectDto CreateProject(Project project)
         {
             project.CreateDate = DateTimeOffset.UtcNow.Date;

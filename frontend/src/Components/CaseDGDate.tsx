@@ -20,6 +20,7 @@ import styled from "styled-components"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetCaseService } from "../Services/CaseService"
+import { unwrapCase } from "../Utils/common"
 import DGEnum from "../models/DGEnum"
 
 const DgField = styled.div`
@@ -65,7 +66,8 @@ const CaseDGDate = ({
     const saveDgDate: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
         try {
-            const caseDto = Case.Copy(caseItem!)
+            const unwrappedCase: Case = unwrapCase(caseItem)
+            const caseDto = Case.Copy(unwrappedCase)
             caseDto[dGType] = caseDgDate
             const newProject = await GetCaseService().updateCase(caseDto)
             setProject(newProject)
@@ -79,6 +81,19 @@ const CaseDGDate = ({
 
     const dgReturnDate = () => caseItem?.[dGType]?.toLocaleDateString("en-CA")
 
+    const limitDateToNextDGDate = () => {
+        if (dGType === DGEnum.DG1) {
+            return caseItem?.DG2Date?.toLocaleDateString("en-CA")
+        }
+        if (dGType === DGEnum.DG2) {
+            return caseItem?.DG3Date?.toLocaleDateString("en-CA")
+        }
+        if (dGType === DGEnum.DG3) {
+            return caseItem?.DG4Date?.toLocaleDateString("en-CA")
+        }
+        return undefined
+    }
+
     return (
         <>
             <Typography variant="h6">{dGName}</Typography>
@@ -90,6 +105,7 @@ const CaseDGDate = ({
                     type="date"
                     name="dgDate"
                     onChange={handleDgFieldChange}
+                    max={limitDateToNextDGDate()}
                 />
                 <EdsProvider density="compact">
                     <ActionsContainer>

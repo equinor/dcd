@@ -1,14 +1,17 @@
 import { SubstructureCostProfile } from "./SubstructureCostProfile"
 import { SubstructureCessationCostProfile } from "./SubstructureCessationCostProfile"
+import { IAsset } from "../IAsset"
+import { EMPTY_GUID } from "../../../Utils/constants"
 
-export class Substructure implements Components.Schemas.SubstructureDto {
+export class Substructure implements Components.Schemas.SubstructureDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: SubstructureCostProfile | undefined
-    substructureCessationCostProfileDto?: SubstructureCessationCostProfile | undefined
+    cessationCostProfile?: SubstructureCessationCostProfile | undefined
     dryweight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
+    currency?: Components.Schemas.Currency
 
     constructor(data?: Components.Schemas.SubstructureDto) {
         if (data !== undefined) {
@@ -16,12 +19,13 @@ export class Substructure implements Components.Schemas.SubstructureDto {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = SubstructureCostProfile.fromJSON(data.costProfile)
-            this.substructureCessationCostProfileDto = SubstructureCessationCostProfile
-                .fromJSON(data.substructureCessationCostProfileDto)
+            this.cessationCostProfile = SubstructureCessationCostProfile
+                .fromJSON(data.cessationCostProfile)
             this.dryweight = data.dryWeight
             this.maturity = data.maturity
+            this.currency = data.currency ?? 0
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.name = ""
         }
     }

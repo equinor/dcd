@@ -27,6 +27,11 @@ import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
 
 import { GetSTEAService } from "../Services/STEAService"
+import { unwrapProjectId, GetProjectCategoryName, GetProjectPhaseName } from "../Utils/common"
+import { WrapperColumn } from "./Asset/StyledAssetComponents"
+import PhysicalUnit from "../Components/PhysicalUnit"
+import Currency from "../Components/Currency"
+import { Case } from "../models/Case"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -43,8 +48,9 @@ const Header = styled.header`
     }
 `
 
-const ProjectDescription = styled(Typography)`
+const ProjectDataFieldLabel = styled(Typography)`
     margin-top: 1rem;
+    font-weight: bold;
     white-space: pre-wrap;
 `
 
@@ -73,11 +79,18 @@ const ProjectView = () => {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
+    const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.PhysUnit>(0)
 
     useEffect(() => {
         (async () => {
             try {
-                const res = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const res: Project = await GetProjectService().getProjectByID(projectId)
+                if (res !== undefined) {
+                    setPhysicalUnit(res?.physUnit)
+                    setCurrency(res?.currency)
+                }
                 console.log("[ProjectView]", res)
                 setProject(res)
             } catch (error) {
@@ -85,6 +98,26 @@ const ProjectView = () => {
             }
         })()
     }, [params.projectId])
+
+    useEffect(() => {
+        (async () => {
+            try {
+                if (project !== undefined) {
+                    const projectDto = Project.Copy(project)
+                    projectDto.physUnit = physicalUnit
+                    projectDto.currency = currency
+                    projectDto.projectId = params.projectId!
+                    const cases: Case[] = []
+                    project.cases.forEach((c) => cases.push(Case.Copy(c)))
+                    projectDto.cases = cases
+                    const res = await GetProjectService().updateProject(projectDto)
+                    setProject(res)
+                }
+            } catch (error) {
+                console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [physicalUnit, currency])
 
     const chartData = useMemo(() => (project ? {
         x: project?.cases.map((c) => c.name ?? ""),
@@ -107,7 +140,8 @@ const ProjectView = () => {
         e.preventDefault()
 
         try {
-            const projectResult: Project = await GetProjectService().getProjectByID(params.projectId!)
+            const projectId: string = unwrapProjectId(params.projectId)
+            const projectResult: Project = await GetProjectService().getProjectByID(projectId)
             GetSTEAService().excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -118,7 +152,7 @@ const ProjectView = () => {
         e.preventDefault()
 
         try {
-            const projectResult = await GetCaseService().createCase({
+            const projectResult: Project = await GetCaseService().createCase({
                 description: caseDescription,
                 name: caseName,
                 projectId: params.projectId,
@@ -159,8 +193,40 @@ const ProjectView = () => {
                 </EdsProvider>
             </Header>
 
-            <ProjectDescription variant="h4">{project.description}</ProjectDescription>
-
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
+                <Typography variant="h3">{project.description}</Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Project phase">
+                    {GetProjectPhaseName(project.phase)}
+                </Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Project category">
+                    {GetProjectCategoryName(project.category)}
+                </Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Country">
+                    {project.country ?? "Not defined in Common Library"}
+                </Typography>
+            </WrapperColumn>
+            <PhysicalUnit
+                currentValue={physicalUnit}
+                setPhysicalUnit={setPhysicalUnit}
+                setProject={setProject}
+                project={project}
+            />
+            <Currency
+                currentValue={currency}
+                setCurrency={setCurrency}
+                setProject={setProject}
+                project={project}
+            />
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
             </ChartsContainer>

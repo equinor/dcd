@@ -1,7 +1,9 @@
-export class NetSalesGasCostProfile implements Components.Schemas.NetSalesGasDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class NetSalesGas implements Components.Schemas.NetSalesGasDto, ITimeSeries {
     id?: string
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     sum?: number
 
     constructor(data?: Components.Schemas.NetSalesGasDto) {
@@ -17,10 +19,10 @@ export class NetSalesGasCostProfile implements Components.Schemas.NetSalesGasDto
         }
     }
 
-    static fromJson(data?: Components.Schemas.NetSalesGasDto): NetSalesGasCostProfile | undefined {
+    static fromJson(data?: Components.Schemas.NetSalesGasDto): NetSalesGas | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new NetSalesGasCostProfile(data)
+        return new NetSalesGas(data)
     }
 }

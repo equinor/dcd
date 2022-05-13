@@ -1,7 +1,9 @@
-export class TransportCostProfile implements Components.Schemas.TransportCostProfileDto {
+import { ITimeSeries } from "../../ITimeSeries"
+
+export class TransportCostProfile implements Components.Schemas.TransportCostProfileDto, ITimeSeries {
     id?: string | undefined
-    startYear: number
-    values: number []
+    startYear?: number
+    values?: number []
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined

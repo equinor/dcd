@@ -188,9 +188,6 @@ namespace tests
             return new WellProjectBuilder
             {
                 Name = "DrainStrat Test",
-                ProducerCount = 3,
-                GasInjectorCount = 4,
-                WaterInjectorCount = 5,
                 ArtificialLift = ArtificialLift.ElectricalSubmergedPumps,
                 RigMobDemob = 2.2,
                 AnnualWellInterventionCost = 3.3,
@@ -219,9 +216,6 @@ namespace tests
             return new WellProjectBuilder
             {
                 Name = "updated name",
-                ProducerCount = 4,
-                GasInjectorCount = 5,
-                WaterInjectorCount = 6,
                 ArtificialLift = ArtificialLift.GasLift,
                 RigMobDemob = 3.3,
                 AnnualWellInterventionCost = 4.4,

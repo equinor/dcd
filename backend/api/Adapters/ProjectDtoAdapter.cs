@@ -93,6 +93,8 @@ namespace api.Adapters
                 CreateDate = project.CreateDate,
                 ProjectCategory = project.ProjectCategory,
                 ProjectPhase = project.ProjectPhase,
+                Currency = project.Currency,
+                PhysUnit = project.PhysicalUnit,
                 Cases = new List<CaseDto>()
             };
         }
@@ -113,18 +115,22 @@ namespace api.Adapters
                 if (c.SubstructureLink != Guid.Empty)
                 {
                     c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CessationCostProfile?.Sum ?? 0;
                 }
                 if (c.SurfLink != Guid.Empty)
                 {
                     c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CessationCostProfile?.Sum ?? 0;
                 }
                 if (c.TopsideLink != Guid.Empty)
                 {
                     c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CessationCostProfile?.Sum ?? 0;
                 }
                 if (c.TransportLink != Guid.Empty)
                 {
                     c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CessationCostProfile?.Sum ?? 0;
                 }
             }
         }

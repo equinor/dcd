@@ -33,6 +33,7 @@ namespace api.Services
                         .Include(c => c.FuelFlaringAndLosses)
                         .Include(c => c.NetSalesGas)
                         .Include(c => c.Co2Emissions)
+                        .Include(c => c.ProductionProfileNGL)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
             else
@@ -116,6 +117,10 @@ namespace api.Services
             {
                 _context.Co2Emissions!.Remove(existing.Co2Emissions);
             }
+            if (updatedDrainageStrategyDto.ProductionProfileNGL == null && existing.ProductionProfileNGL != null)
+            {
+                _context.ProductionProfileNGL!.Remove(existing.ProductionProfileNGL);
+            }
 
             _context.DrainageStrategies!.Update(existing);
             _context.SaveChanges();
@@ -133,6 +138,7 @@ namespace api.Services
                 .Include(c => c.FuelFlaringAndLosses)
                 .Include(c => c.NetSalesGas)
                 .Include(c => c.Co2Emissions)
+                .Include(c => c.ProductionProfileNGL)
                 .FirstOrDefault(o => o.Id == drainageStrategyId);
             if (drainageStrategy == null)
             {

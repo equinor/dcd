@@ -1,7 +1,9 @@
 import {
+    Switch,
     Tabs,
 } from "@equinor/eds-core-react"
 import {
+    MouseEventHandler,
     useEffect,
     useState,
 } from "react"
@@ -13,12 +15,13 @@ import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/CaseAsset"
 import CaseDescription from "../Components/CaseDescription"
 import CaseName from "../Components/CaseName"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import CaseDGDate from "../Components/CaseDGDate"
-import DGEnum from "../models/DGEnum"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
+import DGEnum from "../models/DGEnum"
+import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
-import { isDisabled } from "./CaseHelper"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -40,16 +43,21 @@ function CaseView() {
     const [activeTab, setActiveTab] = useState<number>(0)
     const params = useParams()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
+    const [prodStratOverview, setProdStratOverview] = useState<Components.Schemas.ProductionStrategyOverview>(0)
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
-    const [rigMobDemob, setRigMobDemob] = useState<number>()
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
+    const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
 
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await GetProjectService().getProjectByID(params.projectId!)
+                const projectId: string = unwrapProjectId(params.projectId)
+                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
+                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === params.caseId))
+                setCase(caseResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
             }
@@ -58,15 +66,18 @@ function CaseView() {
 
     useEffect(() => {
         if (project !== undefined) {
-            const caseResult = project.cases.find((o) => o.id === params.caseId)
+            const caseResult: Case | undefined = project.cases.find((o) => o.id === params.caseId)
             if (caseResult !== undefined) {
                 setArtificialLift(caseResult.artificialLift)
+                setProdStratOverview(caseResult.productionStrategyOverview)
+                setFacilitiesAvailability(caseResult?.facilitiesAvailability)
+                setIsReferenceCase(caseResult?.referenceCase ?? false)
             }
             setCase(caseResult)
             setProducerCount(caseResult?.producerCount)
             setGasInjectorCount(caseResult?.gasInjectorCount)
             setWaterInjectorCount(caseResult?.waterInjectorCount)
-            setRigMobDemob(caseResult?.rigMobDemob)
+            setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
     }, [project])
 
@@ -77,15 +88,23 @@ function CaseView() {
                 caseDto.producerCount = producerCount
                 caseDto.gasInjectorCount = gasInjectorCount
                 caseDto.waterInjectorCount = waterInjectorCount
-                caseDto.rigMobDemob = rigMobDemob
+                caseDto.facilitiesAvailability = facilitiesAvailability
+                caseDto.referenceCase = isReferenceCase ?? false
 
-                await GetCaseService().updateCase(caseDto)
+                const newProject = await GetCaseService().updateCase(caseDto)
+                setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, rigMobDemob])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
+    }
+
+    const switchReferance: MouseEventHandler<HTMLInputElement> = () => {
+        if (!isReferenceCase || isReferenceCase === undefined) {
+            setIsReferenceCase(true)
+        } else setIsReferenceCase(false)
     }
 
     if (!project) return null
@@ -103,6 +122,16 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
+                <Switch onClick={switchReferance} label="Reference case" readOnly checked={isReferenceCase ?? false} />
+                <Wrapper>
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
+                        dGType={DGEnum.DG0}
+                        dGName="DG0"
+                    />
+                </Wrapper>
                 <Wrapper>
                     <CaseDGDate
                         caseItem={caseItem}
@@ -141,34 +170,40 @@ function CaseView() {
                     setProject={setProject}
                     caseItem={caseItem}
                 />
+                <ProductionStrategyOverview
+                    currentValue={prodStratOverview}
+                    setProductionStrategyOverview={setProdStratOverview}
+                    setProject={setProject}
+                    caseItem={caseItem}
+                />
                 <Wrapper>
                     <NumberInput
                         setValue={setProducerCount}
                         value={producerCount ?? 0}
                         integer
-                        disabled={isDisabled("producerCount", caseItem)}
+                        disabled={false}
                         label="Producer count"
                     />
                     <NumberInput
                         setValue={setGasInjectorCount}
                         value={gasInjectorCount ?? 0}
                         integer
-                        disabled={isDisabled("gasInjectorCount", caseItem)}
+                        disabled={false}
                         label="Gas injector count"
                     />
                     <NumberInput
                         setValue={setWaterInjectorCount}
                         value={waterInjectorCount ?? 0}
                         integer
-                        disabled={isDisabled("waterInjectorCount", caseItem)}
+                        disabled={false}
                         label="Water injector count"
                     />
                     <NumberInput
-                        setValue={setRigMobDemob}
-                        value={rigMobDemob ?? 0}
-                        integer={false}
-                        disabled={isDisabled("rigMobDemob", caseItem)}
-                        label="Rig mob demob"
+                        setValue={setFacilitiesAvailability}
+                        value={facilitiesAvailability ?? 0}
+                        integer
+                        disabled={false}
+                        label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                     />
                 </Wrapper>
                 <CaseAsset

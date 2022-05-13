@@ -26,7 +26,7 @@ namespace api.Services
             {
                 return _context.Topsides
                         .Include(c => c.CostProfile)
-                        .Include(c => c.TopsideCessationCostProfile)
+                        .Include(c => c.CessationCostProfile)
                     .Where(c => c.Project.Id.Equals(projectId));
             }
             else
@@ -87,9 +87,9 @@ namespace api.Services
                 _context.TopsideCostProfiles!.Remove(existing.CostProfile);
             }
 
-            if (updatedTopsideDto.TopsideCessationCostProfileDto == null && existing.TopsideCessationCostProfile != null)
+            if (updatedTopsideDto.CessationCostProfile == null && existing.CessationCostProfile != null)
             {
-                _context.TopsideCessationCostProfiles!.Remove(existing.TopsideCessationCostProfile);
+                _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
             }
 
             _context.Topsides!.Update(existing);
@@ -102,7 +102,7 @@ namespace api.Services
             var topside = _context.Topsides!
                 .Include(c => c.Project)
                 .Include(c => c.CostProfile)
-                .Include(c => c.TopsideCessationCostProfile)
+                .Include(c => c.CessationCostProfile)
                 .FirstOrDefault(o => o.Id == topsideId);
             if (topside == null)
             {
