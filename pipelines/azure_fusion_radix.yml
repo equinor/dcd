@@ -1,0 +1,52 @@
+trigger:
+    branches:
+        include:
+            - main
+    tags:
+        include:
+            - v*
+    paths:
+        exclude:
+            - /*
+pool:
+    vmImage: "ubuntu-latest"
+
+variables:
+  - group: DCD
+  - group: DCD-KeyVault
+
+stages:
+  - template: templates/stage-build.yml
+    parameters:
+      workSpace: $(Pipeline.Workspace)
+      buildId: $(Build.BuildId)
+      dt_tenant: $(dynatrace_tenant)
+      dt_password: $(dynatrace-prod-token)
+      dt_url: $(dynatrace_baseurl)
+      azAppConfig: $(azureAppConfig)
+      sourcesDirectory: $(Build.SourcesDirectory)
+      name: "DCD"
+
+  - template: templates/stage-deploy.yml
+    parameters:
+        name: Deploy_QA
+        envshortname: qa
+        envfullname: QA
+        fusionToken: $(fusionClientIdDev)
+        portalUrl: "https://pro-s-portal-fqa.azurewebsites.net/"
+        buildId: $(Build.BuildId)
+        radixToken: $(RadixToken)
+        branch: qa
+        DBContext: $(dbContextQa)
+
+  - template: templates/stage-deploy.yml
+    parameters:
+        name: Deploy_Prod
+        envshortname: prod
+        envfullname: Production
+        fusionToken: $(fusionClientIdProd)
+        portalUrl: "https://pro-s-portal-fprd.azurewebsites.net"
+        buildId: $(Build.BuildId)
+        radixToken: $(RadixToken)
+        branch: prod
+        DBContext: $(dbContextProd)
