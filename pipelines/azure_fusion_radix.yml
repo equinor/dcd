@@ -16,7 +16,7 @@ variables:
   - group: DCD-KeyVault
 
 stages:
-  - template: templates/stage-build.yml
+  - template: templates/stage-build-fusion.yml
     parameters:
       workSpace: $(Pipeline.Workspace)
       buildId: $(Build.BuildId)
