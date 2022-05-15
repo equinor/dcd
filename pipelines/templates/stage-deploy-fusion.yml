@@ -55,21 +55,21 @@ stages:
                         steps:
                             - task: Docker@2
                               inputs:
-                                  containerRegistry: "BMT Registry"
+                                  containerRegistry: "DCD Registry"
                                   command: "login"
 
                             - template: step-tag-dockerimage.yml
                               parameters:
                                   buildid: ${{ parameters.buildid }}
                                   envshortname: ${{ parameters.envshortname }}
-                                  registry: "fusionbmt.azurecr.io"
+                                  registry: "crdcd.azurecr.io"
                                   repository: "frontend"
 
                             - template: step-tag-dockerimage.yml
                               parameters:
                                   buildid: ${{ parameters.buildid }}
                                   envshortname: ${{ parameters.envshortname }}
-                                  registry: "fusionbmt.azurecr.io"
+                                  registry: "crdcd.azurecr.io"
                                   repository: "backend"
 
           - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
@@ -85,7 +85,7 @@ stages:
                   inputs:
                       targetType: "inline"
                       script: |
-                          $url = "https://api.radix.equinor.com/api/v1/applications/fusion-bmt/pipelines/build-deploy"
+                          $url = "https://api.radix.equinor.com/api/v1/applications/dcd/pipelines/build-deploy"
 
                           $Headers = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
 
@@ -105,7 +105,7 @@ stages:
                   inputs:
                       targetType: "inline"
                       script: |
-                          $url = 'https://api.radix.equinor.com/api/v1/applications/fusion-bmt/jobs/$(radixJobName)'
+                          $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'
 
                           $Headers = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
 
