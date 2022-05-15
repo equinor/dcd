@@ -1,12 +1,16 @@
 parameters:
-  - name: imageTag
-  - name: webAppName
-  - name: environment
-  - name: serviceConnection
-  - name: name
+    - name: appName
+    - name: envshortname
+    - name: envfullname
+    - name: fusionToken
+    - name: portalUrl
+    - name: buildId
+    - name: radixToken
+    - name: branch
+    - name: DBContext
 
 stages:
-    - stage: ${{ parameters.name }}
+    - stage: ${{ parameters.appName }}
       displayName: "Deploy  ${{ parameters.envshortname }}"
       jobs:
           - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
