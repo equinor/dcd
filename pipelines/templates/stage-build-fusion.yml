@@ -30,7 +30,7 @@ stages:
             inputs:
                 versionSpec: "16.x"
           - task: Npm@1
-            displayName: "Install frontend"
+            displayName: "NPM Install"
             inputs:
                 command: "install"
                 workingDir: "frontend"
@@ -42,8 +42,8 @@ stages:
                 customCommand: "run-script build"
           - task: PublishPipelineArtifact@1
             inputs:
-                targetPath: "${{ parameters.workSpace }}/s/frontend/out/bmt.zip"
-                artifactName: FusionBMT
+                targetPath: "${{ parameters.workSpace }}/s/frontend/out/dcd.zip"
+                artifactName: ConceptAppPack
 
       - job: "Build_backend_container_and_Push_To_acr"
         steps:
