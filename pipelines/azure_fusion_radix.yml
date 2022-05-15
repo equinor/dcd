@@ -27,7 +27,7 @@ stages:
       sourcesDirectory: $(Build.SourcesDirectory)
       name: "DCD"
 
-  - template: templates/stage-deploy.yml
+  - template: templates/stage-deploy-fusion.yml
     parameters:
         name: Deploy_QA
         envshortname: qa
