@@ -30,8 +30,9 @@ namespace tests
         public void GetDrainageStrategies()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var expectedStrategies = fixture.context.DrainageStrategies.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -52,8 +53,9 @@ namespace tests
         public void CreateNewDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedStrategy = CreateTestDrainageStrategy(project);
@@ -73,8 +75,9 @@ namespace tests
         public void ThrowNotInDatabaseExceptionWhenCreatingDrainageStrategyWithBadProjectId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedStrategy = CreateTestDrainageStrategy(new Project { Id = new Guid() });
@@ -88,8 +91,9 @@ namespace tests
         public void ThrowNotFoundInDatabaseExceptionWhenCreatingDrainageStrategyWithBadCaseId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var expectedStrategy = CreateTestDrainageStrategy(project);
 
@@ -102,8 +106,9 @@ namespace tests
         public void DeleteDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(drainageStrategyToDelete);
@@ -128,8 +133,9 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToDeleteNonExistentDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(drainageStrategyToDelete);
@@ -143,8 +149,9 @@ namespace tests
         public void UpdateDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldStrategy = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(oldStrategy);
@@ -164,8 +171,9 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToUpdateNonExistentDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldStrategy = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(oldStrategy);
