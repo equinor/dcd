@@ -214,6 +214,12 @@ namespace tests
                     Values = new double[] { 7.89, 8.91, 9.01 }
                 }
                 )
+                .WithProductionProfileNGL(new ProductionProfileNGL()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 2.34, 3.45, 4.56 }
+                }
+                )
                 .WithFuelFlaringAndLosses(new FuelFlaringAndLosses()
                 {
                     StartYear = 2030,
@@ -271,6 +277,12 @@ namespace tests
                 {
                     StartYear = 20230,
                     Values = new double[] { 7.89, 28.91, 9.01 }
+                }
+                )
+                .WithProductionProfileNGL(new ProductionProfileNGL()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 2.34, 3.45, 4.56 }
                 }
                 )
                 .WithFuelFlaringAndLosses(new FuelFlaringAndLosses()
