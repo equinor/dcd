@@ -1,5 +1,6 @@
 using api.Dtos;
 using api.Models;
+using api.Utilities;
 
 namespace api.Adapters
 {
@@ -197,8 +198,31 @@ namespace api.Adapters
                 Id = productionProfileNGLDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileNGLDto.StartYear,
-                Values = productionProfileNGLDto.Values
+                // Values = ValuesPerUnitTimeSeries(productionProfileNGLDto.Values, project.PhysicalUnit, productionProfileNGLDto.Id, productionProfileNGLDto, drainageStrategy);
+                Values = UnitConversion.ValuesPerUnitProductionProfileNgl(productionProfileNGLDto.Values, productionProfileNGLDto.Id, productionProfileNGLDto, drainageStrategy)
             };
+
+            // static double[] ValuesPerUnitTimeSeries(double[] values, PhysUnit physUnit, Guid id, ProductionProfileNGLDto? dto, DrainageStrategy drainageStrategy)
+            // {
+            //     if (id != Guid.Empty && dto != null && drainageStrategy.ProductionProfileNGL != null)
+            //     {
+            //         bool currentValueIsOldValue = dto.Values.SequenceEqual(drainageStrategy.ProductionProfileNGL.Values);
+            //         double oilfieldFactor = 6.29;
+
+            //         // const project = projectService.GetProject();
+            //         // const physUnit = project.PhysicalUnit;
+
+            //         if (physUnit == PhysUnit.OilField && currentValueIsOldValue)
+            //         {
+            //             values = Array.ConvertAll(values, x => x * oilfieldFactor);
+            //         }
+            //         else if (physUnit == PhysUnit.SI && currentValueIsOldValue)
+            //         {
+            //             values = Array.ConvertAll(values, x => x / oilfieldFactor);
+            //         }
+            //     }
+            //     return values;
+            // }
         }
     }
 }
