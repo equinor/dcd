@@ -115,7 +115,11 @@ const TimeSeries = ({
         <>
             <Wrapper>
                 <Typography variant="h4">{timeSeriesTitle}</Typography>
-                <ImportButton onClick={() => { setDialogOpen(true) }}>Import</ImportButton>
+                <ImportButton
+                    onClick={() => { setDialogOpen(true) }}
+                >
+                    {timeSeries !== undefined ? "Edit" : "Import"}
+                </ImportButton>
                 <ImportButton
                     disabled={timeSeries === undefined}
                     color="danger"

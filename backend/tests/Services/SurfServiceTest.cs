@@ -28,8 +28,9 @@ namespace tests
         [Fact]
         public void GetAllSurf()
         {
-            ProjectService projectService = new ProjectService(fixture.context);
-            SurfService surfService = new SurfService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+            SurfService surfService = new SurfService(fixture.context, projectService, loggerFactory);
             var project = projectsFromSampleDataGenerator.First();
             surfService.GetSurfs(project.Id);
 
