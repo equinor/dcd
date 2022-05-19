@@ -8,11 +8,13 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<CaseService> _logger;
 
-        public CaseService(DcdDbContext context, ProjectService projectService)
+        public CaseService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<CaseService>();
         }
 
         public ProjectDto CreateCase(CaseDto caseDto)

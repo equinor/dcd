@@ -29,8 +29,9 @@ public class TopsideServiceShould : IDisposable
     public void GetTopsides()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedTopsides = fixture.context.Topsides.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -54,8 +55,9 @@ public class TopsideServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
         var testTopside = CreateTestTopside(project);
-        ProjectService projectService = new ProjectService(fixture.context);
-        TopsideService topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+        TopsideService topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
 
         // Act
         var projectResult = topsideService.CreateTopside(TopsideDtoAdapter.Convert(testTopside), caseId);
@@ -73,8 +75,9 @@ public class TopsideServiceShould : IDisposable
     public void ThrowNotInDatabaseExceptionWhenCreatingTopsideWithBadProjectId()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
         var expectedTopside = CreateTestTopside(new Project { Id = new Guid() });
@@ -87,8 +90,9 @@ public class TopsideServiceShould : IDisposable
     public void ThrowNotFoundInDatabaseExceptionWhenCreatingTopsideWithBadCaseId()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedTopside = CreateTestTopside(project);
 
@@ -100,8 +104,9 @@ public class TopsideServiceShould : IDisposable
     public void DeleteTopside()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var topsideToDelete = CreateTestTopside(project);
         fixture.context.Topsides.Add(topsideToDelete);
@@ -126,8 +131,9 @@ public class TopsideServiceShould : IDisposable
     public void ThrowArgumentExceptionIfTryingToDeleteNonExistentTopside()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var topsideToDelete = CreateTestTopside(project);
         fixture.context.Topsides.Add(topsideToDelete);
@@ -141,8 +147,9 @@ public class TopsideServiceShould : IDisposable
     public void UpdateTopside()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldTopside = CreateTestTopside(project);
         fixture.context.Topsides.Add(oldTopside);
@@ -162,8 +169,9 @@ public class TopsideServiceShould : IDisposable
     public void ThrowArgumentExceptionIfTryingToUpdateNonExistentTopside()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldTopside = CreateTestTopside(project);
         fixture.context.Topsides.Add(oldTopside);

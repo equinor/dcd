@@ -30,8 +30,9 @@ public class ExplorationServiceShould : IDisposable
     public void GetExplorations()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedExplorations = fixture.context.Explorations.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -52,8 +53,9 @@ public class ExplorationServiceShould : IDisposable
     public void CreateNewExploration()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
         var testExploration = CreateTestExploration(project);
@@ -71,8 +73,9 @@ public class ExplorationServiceShould : IDisposable
     public void DeleteExploration()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var ExplorationToDelete = CreateTestExploration(project);
@@ -96,8 +99,9 @@ public class ExplorationServiceShould : IDisposable
     public void UpdateExploration()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var oldExploration = CreateTestExploration(project);
