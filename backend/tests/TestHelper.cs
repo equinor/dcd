@@ -265,6 +265,8 @@ namespace tests
                     actual.ProductionProfileWater);
             CompareVolumes(expected.ProductionProfileWaterInjection,
                     actual.ProductionProfileWaterInjection);
+            CompareVolumes(expected.ProductionProfileNGL,
+                    actual.ProductionProfileNGL);
             CompareVolumes(expected.FuelFlaringAndLosses,
                     actual.FuelFlaringAndLosses);
             CompareVolumes(expected.NetSalesGas, actual.NetSalesGas);
@@ -301,6 +303,8 @@ namespace tests
                     actual.ProductionProfileWater);
             CompareVolumes(expected.ProductionProfileWaterInjection,
                     actual.ProductionProfileWaterInjection);
+            CompareVolumes(expected.ProductionProfileNGL,
+                    actual.ProductionProfileNGL);
             CompareVolumes(expected.FuelFlaringAndLosses,
                     actual.FuelFlaringAndLosses);
             CompareVolumes(expected.NetSalesGas, actual.NetSalesGas);

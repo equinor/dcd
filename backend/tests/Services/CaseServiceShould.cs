@@ -29,11 +29,12 @@ public class CaseShould : IDisposable
     [Fact]
     public void CreateNewCase()
     {
+        var loggerFactory = new LoggerFactory();
         var project = fixture.context.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        ProjectService projectService = new ProjectService(fixture.context);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
         CaseService caseService = new
-            CaseService(fixture.context, projectService);
+            CaseService(fixture.context, projectService, loggerFactory);
 
         caseService.CreateCase(CaseDtoAdapter.Convert(actual));
 
@@ -56,8 +57,9 @@ public class CaseShould : IDisposable
     [Fact]
     public void UpdateCase()
     {
-        var projectService = new ProjectService(fixture.context);
-        var caseService = new CaseService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldCase = CreateCase(project);
         fixture.context.Cases.Add(oldCase);

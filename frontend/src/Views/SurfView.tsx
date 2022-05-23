@@ -137,7 +137,19 @@ const SurfView = () => {
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Surf</Typography>
+            <Wrapper>
+                <Typography variant="h2">Surf</Typography>
+                <Save
+                    name={surfName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setSurf}
+                    setProject={setProject}
+                    asset={surf!}
+                    assetService={GetSurfService()}
+                    assetType={AssetTypeEnum.surfs}
+                />
+            </Wrapper>
             <AssetName
                 setName={setSurfName}
                 name={surfName}
@@ -256,16 +268,6 @@ const SurfView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={surfName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setSurf}
-                setProject={setProject}
-                asset={surf!}
-                assetService={GetSurfService()}
-                assetType={AssetTypeEnum.surfs}
             />
         </AssetViewDiv>
     )
