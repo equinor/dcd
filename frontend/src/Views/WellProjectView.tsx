@@ -110,7 +110,19 @@ function WellProjectView() {
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">WellProject</Typography>
+            <Wrapper>
+                <Typography variant="h2">WellProject</Typography>
+                <Save
+                    name={wellProjectName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setWellProject}
+                    setProject={setProject}
+                    asset={wellProject!}
+                    assetService={GetWellProjectService()}
+                    assetType={AssetTypeEnum.wellProjects}
+                />
+            </Wrapper>
             <AssetName
                 setName={setWellProjectName}
                 name={wellProjectName}
@@ -185,16 +197,6 @@ function WellProjectView() {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={wellProjectName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setWellProject}
-                setProject={setProject}
-                asset={wellProject!}
-                assetService={GetWellProjectService()}
-                assetType={AssetTypeEnum.wellProjects}
             />
         </AssetViewDiv>
     )

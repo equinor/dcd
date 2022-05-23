@@ -27,8 +27,9 @@ namespace tests
         public void GetTransports()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var transportService = new TransportService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var expectedTransports = fixture.context.Transports.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -49,8 +50,9 @@ namespace tests
         public void CreateNewTransport()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var transportService = new TransportService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedTransport = CreateTestTransport(project);
@@ -68,8 +70,9 @@ namespace tests
         public void DeleteTransport()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var transportService = new TransportService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var transportToDelete = CreateTestTransport(project);
 
@@ -88,8 +91,9 @@ namespace tests
         public void UpdateTransport()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var transportService = new TransportService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldTransport = CreateTestTransport(project);
             fixture.context.Transports.Add(oldTransport);

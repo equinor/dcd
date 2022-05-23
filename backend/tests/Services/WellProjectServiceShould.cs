@@ -30,8 +30,9 @@ namespace tests
         public void GetWellProjects()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var expectedWellProjects = fixture.context.WellProjects.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -52,8 +53,9 @@ namespace tests
         public void CreateNewWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedWellProject = CreateTestWellProject(project);
@@ -73,8 +75,9 @@ namespace tests
         public void ThrowNotInDatabaseExceptionWhenCreatingWellProjectWithBadProjectId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedWellProject = CreateTestWellProject(new Project { Id = new Guid() });
@@ -87,8 +90,9 @@ namespace tests
         public void ThrowNotFoundInDatabaseExceptionWhenCreatingWellProjectWithBadCaseId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var expectedWellProject = CreateTestWellProject(project);
 
@@ -100,8 +104,9 @@ namespace tests
         public void DeleteWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var wellProjectToDelete = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(wellProjectToDelete);
@@ -126,8 +131,9 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToDeleteNonExistentWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var wellProjectToDelete = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(wellProjectToDelete);
@@ -141,8 +147,9 @@ namespace tests
         public void UpdateWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldWellProject = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(oldWellProject);
@@ -163,8 +170,9 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToUpdateNonExistentWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldWellProject = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(oldWellProject);
