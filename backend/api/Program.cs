@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 using api.Context;
 using api.SampleData.Generators;
 using api.Services;
@@ -8,9 +6,9 @@ using Azure.Identity;
 
 using Equinor.TI.CommonLibrary.Client;
 
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
@@ -20,6 +18,7 @@ var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
 var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
+
 Console.WriteLine("Loading config for: " + environment);
 
 configBuilder.AddAzureAppConfiguration(options =>
@@ -96,6 +95,10 @@ builder.Services.AddCors(options =>
         });
     });
 
+var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
+{
+    InstrumentationKey = config["ApplicationInsightInstrumentationKey"]
+};
 
 if (environment == "localdev")
 {
@@ -105,6 +108,7 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
+builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();
@@ -131,7 +135,8 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
-
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Fom Program, running the host now");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
