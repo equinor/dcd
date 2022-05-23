@@ -26,6 +26,23 @@ namespace tests
             projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.Name);
         }
 
+        public Surf InitializeTestSurf()
+        {
+            var project = fixture.context.Projects.FirstOrDefault();
+            var testSurf = CreateTestSurf(project);
+            fixture.context.Surfs.Add(testSurf);
+            fixture.context.SaveChanges();
+            return testSurf;
+        }
+
+        public SurfService GetSurfService()
+        {
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var surfService = new SurfService(fixture.context, projectService, loggerFactory);
+            return surfService;
+        }
+
         [Fact]
         public void GetAllSurf()
         {
@@ -37,7 +54,7 @@ namespace tests
         }
 
         [Fact]
-        public void CreateNewSurf() 
+        public void CreateNewSurf()
         {
             var loggerFactory = new LoggerFactory();
             var projectService = new ProjectService(fixture.context, loggerFactory);
@@ -60,41 +77,34 @@ namespace tests
         [Fact]
         public void DeleteSurf()
         {
-            var loggerFactory = new LoggerFactory();
-            var projectService = new ProjectService(fixture.context, loggerFactory);
-            var surfService = new SurfService(fixture.context, projectService, loggerFactory);
+            var surfService = GetSurfService();
             var project = fixture.context.Projects.FirstOrDefault();
-            var surfToDelete = CreateTestSurf(project);
-            fixture.context.Surfs.Add(surfToDelete);
+            var testSurf = InitializeTestSurf();
             fixture.context.Cases.Add(new Case
             {
                 Project = project,
-                SurfLink = surfToDelete.Id
+                SurfLink = testSurf.Id
             });
             fixture.context.SaveChanges();
 
             // Act
-            var projectResult = surfService.DeleteSurf(surfToDelete.Id);
+            var projectResult = surfService.DeleteSurf(testSurf.Id);
 
             // Assert
-            var actualSurf = projectResult.Surfs.FirstOrDefault(s => s.Name == surfToDelete.Name);
-            Assert.NotNull(actualSurf);
-            var casesWithSurfLink = projectResult.Cases.Where(c => c.SurfLink == surfToDelete.Id);
-            Assert.NotEmpty(casesWithSurfLink);
+            var actualSurf = projectResult.Surfs.FirstOrDefault(s => s.Name == testSurf.Name);
+            Assert.Null(actualSurf);
+            var casesWithSurfLink = projectResult.Cases.Where(c => c.SurfLink == testSurf.Id);
+            Assert.Empty(casesWithSurfLink);
         }
 
         [Fact]
         public void UpdateSurf()
         {
             // Arrange
-            var loggerFactory = new LoggerFactory();
-            var projectService = new ProjectService(fixture.context, loggerFactory);
-            var surfService = new SurfService(fixture.context, projectService, loggerFactory);
+            var surfService = GetSurfService();
             var project = fixture.context.Projects.FirstOrDefault();
-            var oldSurf = CreateTestSurf(project);
-            fixture.context.Surfs.Add(oldSurf);
-            fixture.context.SaveChanges();
-            var updatedSurf = CreateUpdatedSurf(project, oldSurf);
+            var testSurf = InitializeTestSurf();
+            var updatedSurf = CreateUpdatedSurf(project, testSurf);
 
             // Act
             var projectResult = surfService.UpdateSurf(SurfDtoAdapter.Convert(updatedSurf));
@@ -106,17 +116,43 @@ namespace tests
         }
 
         [Fact]
-        public void ThrowArgumentExceptionIfTryingToUpdateNonExistentSurf()
+        public void ThrowNotInDatabaseExceptionWhenCreatingSurfWithBadProjectId()
         {
-            var loggerFactory = new LoggerFactory();
-            var projectService = new ProjectService(fixture.context, loggerFactory);
-            var surfService = new SurfService(fixture.context, projectService, loggerFactory);
-            var project = fixture.context.Projects.FirstOrDefault();
-            var oldSurf = CreateTestSurf(project);
-            fixture.context.Surfs.Add(oldSurf);
+            // Arrange
+            var surfService = GetSurfService();
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var caseId = project.Cases.FirstOrDefault().Id;
+            var testSurf = CreateTestSurf(new Project { Id = new Guid() });
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => surfService.CreateSurf(SurfDtoAdapter.Convert(testSurf), caseId));
+        }
+
+        [Fact]
+        public void ThrowNotFoundInDatabaseExceptionWhenCreatingSurfWithBadCaseId()
+        {
+            // Arrange
+            var surfService = GetSurfService();
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var testSurf = CreateTestSurf(project);
+            fixture.context.Cases.Add(new Case
+            {
+                Project = project,
+                SurfLink = testSurf.Id
+            });
             fixture.context.SaveChanges();
 
-            var updatedSurf = SurfDtoAdapter.Convert(CreateUpdatedSurf(project, oldSurf));
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => surfService.CreateSurf(SurfDtoAdapter.Convert(testSurf), Guid.NewGuid()));
+        }
+
+        [Fact]
+        public void ThrowArgumentExceptionIfTryingToUpdateNonExistentSurf()
+        {
+            var surfService = GetSurfService();
+            var project = fixture.context.Projects.FirstOrDefault();
+            var testSurf = InitializeTestSurf();
+
+            var updatedSurf = SurfDtoAdapter.Convert(CreateUpdatedSurf(project, testSurf));
 
             // Act
             surfService.DeleteSurf(updatedSurf.Id);
@@ -125,9 +161,22 @@ namespace tests
             Assert.Throws<ArgumentException>(() => surfService.UpdateSurf(updatedSurf));
         }
 
+        [Fact]
+        public void ThrowArgumentExceptionWhenTryingToDeleteNonExistentSurf()
+        {
+            var surfService = GetSurfService();
+            var project = fixture.context.Projects.FirstOrDefault();
+            var testSurf = InitializeTestSurf();
+
+            // Act
+            surfService.DeleteSurf(testSurf.Id);
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => surfService.DeleteSurf(testSurf.Id));
+        }
 
 
-        private static Surf CreateTestSurf(Project project) 
+        private static Surf CreateTestSurf(Project project)
         {
             return new SurfBuilder
             {
