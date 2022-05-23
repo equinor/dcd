@@ -356,7 +356,8 @@ namespace tests
             {
                 Assert.Null(expected);
                 Assert.Null(actual);
-            } else
+            }
+            else
             {
                 Assert.Equal(expected.Name, actual.Name);
                 Assert.Equal(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
