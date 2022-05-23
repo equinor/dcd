@@ -345,28 +345,6 @@ namespace tests
             }
         }
 
-        public static void CompareTransports(TransportDto expected, Transport actual)
-        {
-            CompareTransports(actual, expected);
-        }
-
-        public static void CompareTransports(TransportDto expected, TransportDto actual)
-        {
-            if (expected == null || actual == null)
-            {
-                Assert.Null(expected);
-                Assert.Null(actual);
-            }
-            else
-            {
-                Assert.Equal(expected.Name, actual.Name);
-                Assert.Equal(expected.OilExportPipelineLength, actual.OilExportPipelineLength);
-                Assert.Equal(expected.GasExportPipelineLength, actual.GasExportPipelineLength);
-                Assert.Equal(expected.Maturity, actual.Maturity);
-                CompareCosts(expected.CostProfile, actual.CostProfile);
-            }
-        }
-
         public static void CompareExplorations(Exploration expected, Exploration actual)
         {
             if (expected == null || actual == null)

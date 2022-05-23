@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using api.Adapters;
-using api.Dtos;
 using api.Models;
 using api.SampleData.Builders;
 using api.SampleData.Generators;
@@ -137,8 +136,11 @@ namespace tests
             fixture.context.Transports.Add(transportToDelete);
             fixture.context.SaveChanges();
 
-            // Act, assert
-            Assert.Throws<ArgumentException>(() => transportService.DeleteTransport(new Guid()));
+            // Act
+            transportService.DeleteTransport(transportToDelete.Id);
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => transportService.DeleteTransport(transportToDelete.Id));
         }
 
         [Fact]
@@ -156,7 +158,7 @@ namespace tests
             updatedTransport.Id = oldTransport.Id;
 
             // Act
-            var projectResult = transportService.UpdateTransport(updatedTransport);
+            var projectResult = transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport));
 
             // Assert
             var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == updatedTransport.Name);
@@ -164,9 +166,9 @@ namespace tests
             TestHelper.CompareTransports(updatedTransport, actualTransport);
         }
 
-        private static TransportDto CreateUpdatedTransport(Project project, Transport oldTransport)
+        private static Transport CreateUpdatedTransport(Project project, Transport oldTransport)
         {
-            return TransportDtoAdapter.Convert(new TransportBuilder
+            return new TransportBuilder
             {
                 Id = oldTransport.Id,
                 Name = "Updated Transport",
@@ -185,7 +187,7 @@ namespace tests
                 Currency = Currency.USD,
                 StartYear = 2030,
                 Values = new double[] { 17.4, 17.9, 37.3 }
-            }));
+            });
         }
 
         [Fact]
@@ -203,7 +205,7 @@ namespace tests
             updatedTransport.Id = new Guid();
 
             // Act, assert
-            Assert.Throws<ArgumentException>(() => transportService.UpdateTransport(updatedTransport));
+            Assert.Throws<ArgumentException>(() => transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport)));
         }
 
         private static Transport CreateTestTransport(Project project)

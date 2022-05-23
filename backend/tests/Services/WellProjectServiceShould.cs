@@ -140,8 +140,11 @@ namespace tests
             fixture.context.WellProjects.Add(wellProjectToDelete);
             fixture.context.SaveChanges();
 
+            // Act
+            wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
+
             // Act, assert
-            Assert.Throws<ArgumentException>(() => wellProjectService.DeleteWellProject(new Guid()));
+            Assert.Throws<ArgumentException>(() => wellProjectService.DeleteWellProject(wellProjectToDelete.Id));
         }
 
         [Fact]
