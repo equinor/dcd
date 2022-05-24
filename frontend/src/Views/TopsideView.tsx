@@ -114,7 +114,19 @@ const TopsideView = () => {
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Topside</Typography>
+            <Wrapper>
+                <Typography variant="h2">Topside</Typography>
+                <Save
+                    name={topsideName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setTopside}
+                    setProject={setProject}
+                    asset={topside!}
+                    assetService={GetTopsideService()}
+                    assetType={AssetTypeEnum.topsides}
+                />
+            </Wrapper>
             <AssetName
                 setName={setTopsideName}
                 name={topsideName}
@@ -200,16 +212,6 @@ const TopsideView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={topsideName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setTopside}
-                setProject={setProject}
-                asset={topside!}
-                assetService={GetTopsideService()}
-                assetType={AssetTypeEnum.topsides}
             />
         </AssetViewDiv>
     )

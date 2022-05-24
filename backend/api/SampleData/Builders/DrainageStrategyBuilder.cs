@@ -29,6 +29,12 @@ public class DrainageStrategyBuilder : DrainageStrategy
         this.ProductionProfileWaterInjection = p;
         return this;
     }
+    public DrainageStrategyBuilder WithProductionProfileNGL(ProductionProfileNGL p)
+    {
+        p.DrainageStrategy = this;
+        this.ProductionProfileNGL = p;
+        return this;
+    }
     public DrainageStrategyBuilder WithFuelFlaringAndLosses(FuelFlaringAndLosses p)
     {
         p.DrainageStrategy = this;

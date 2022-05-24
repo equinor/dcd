@@ -111,7 +111,19 @@ const TransportView = () => {
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Transport</Typography>
+            <Wrapper>
+                <Typography variant="h2">Transport</Typography>
+                <Save
+                    name={transportName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setTransport}
+                    setProject={setProject}
+                    asset={transport!}
+                    assetService={GetTransportService()}
+                    assetType={AssetTypeEnum.transports}
+                />
+            </Wrapper>
             <AssetName
                 setName={setTransportName}
                 name={transportName}
@@ -174,16 +186,6 @@ const TransportView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={transportName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setTransport}
-                setProject={setProject}
-                asset={transport!}
-                assetService={GetTransportService()}
-                assetType={AssetTypeEnum.transports}
             />
         </AssetViewDiv>
     )

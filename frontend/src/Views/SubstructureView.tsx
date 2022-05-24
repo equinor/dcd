@@ -110,7 +110,19 @@ const SubstructureView = () => {
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Substructure</Typography>
+            <Wrapper>
+                <Typography variant="h2">Substructure</Typography>
+                <Save
+                    name={substructureName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setSubstructure}
+                    setProject={setProject}
+                    asset={substructure!}
+                    assetService={GetSubstructureService()}
+                    assetType={AssetTypeEnum.substructures}
+                />
+            </Wrapper>
             <AssetName
                 setName={setSubstructureName}
                 name={substructureName}
@@ -166,16 +178,6 @@ const SubstructureView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={substructureName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setSubstructure}
-                setProject={setProject}
-                asset={substructure!}
-                assetService={GetSubstructureService()}
-                assetType={AssetTypeEnum.substructures}
             />
         </AssetViewDiv>
     )

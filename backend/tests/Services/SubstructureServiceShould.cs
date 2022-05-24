@@ -28,8 +28,9 @@ namespace tests
         public void GetSubstructures()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var substructureService = new SubstructureService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var expectedSubstructures = fixture.context.Substructures.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -50,8 +51,9 @@ namespace tests
         public void CreateNewSubstructure()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var substructureService = new SubstructureService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedSubstructure = CreateTestSubstructure(project);
@@ -71,8 +73,9 @@ namespace tests
         public void ThrowNotInDatabaseExceptionWhenCreatingSubstructureWithBadProjectId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var substructureService = new SubstructureService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedSubstructure = CreateTestSubstructure(new Project { Id = new Guid() });
@@ -85,8 +88,9 @@ namespace tests
         public void ThrowNotFoundInDatabaseExceptionWhenCreatingSubstructureWithBadCaseId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var substructureService = new SubstructureService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var expectedSubstructure = CreateTestSubstructure(project);
 
@@ -98,8 +102,9 @@ namespace tests
         public void DeleteSubstructure()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var substructureService = new SubstructureService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var substructureToDelete = CreateTestSubstructure(project);
             var sourceCaseId = project.Cases.FirstOrDefault().Id;
@@ -119,8 +124,9 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToDeleteNonExistentSubstructure()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var substructureService = new SubstructureService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
 
             // Act, assert
             Assert.Throws<ArgumentException>(() => substructureService.DeleteSubstructure(new Guid()));
@@ -130,8 +136,9 @@ namespace tests
         public void UpdateSubstructure()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var substructureService = new SubstructureService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldSubstructure = CreateTestSubstructure(project);
             fixture.context.Substructures.Add(oldSubstructure);
@@ -152,8 +159,9 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToUpdateNonExistentSubstructure()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var substructureService = new SubstructureService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldSubstructure = CreateTestSubstructure(project);
             fixture.context.Substructures.Add(oldSubstructure);
