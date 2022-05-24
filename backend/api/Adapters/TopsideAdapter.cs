@@ -18,7 +18,19 @@ namespace api.Adapters
                 FacilitiesAvailability = topsideDto.FacilitiesAvailability,
                 ArtificialLift = topsideDto.ArtificialLift,
                 Maturity = topsideDto.Maturity,
-                Currency = topsideDto.Currency
+                Currency = topsideDto.Currency,
+                FuelConsumption = topsideDto.FuelConsumption,
+                FlaredGas = topsideDto.FlaredGas,
+                CO2ShareOilProfile = topsideDto.CO2ShareOilProfile,
+                CO2ShareGasProfile = topsideDto.CO2ShareGasProfile,
+                CO2ShareWaterInjectionProfile = topsideDto.CO2ShareWaterInjectionProfile,
+                CO2OnMaxOilProfile = topsideDto.CO2OnMaxOilProfile,
+                CO2OnMaxGasProfile = topsideDto.CO2OnMaxGasProfile,
+                CO2OnMaxWaterInjectionProfile = topsideDto.CO2OnMaxWaterInjectionProfile,
+                CostYear = topsideDto.CostYear,
+                ProspVersion = topsideDto.ProspVersion,
+                LastChanged = topsideDto.LastChanged,
+                Source = topsideDto.Source
             };
 
             if (topsideDto.CostProfile != null)
@@ -48,6 +60,18 @@ namespace api.Adapters
             existing.Currency = topsideDto.Currency;
             existing.CostProfile = Convert(topsideDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(topsideDto.CessationCostProfile, existing);
+            existing.FuelConsumption = topsideDto.FuelConsumption;
+            existing.FlaredGas = topsideDto.FlaredGas;
+            existing.CO2ShareOilProfile = topsideDto.CO2ShareOilProfile;
+            existing.CO2ShareGasProfile = topsideDto.CO2ShareGasProfile;
+            existing.CO2ShareWaterInjectionProfile = topsideDto.CO2ShareWaterInjectionProfile;
+            existing.CO2OnMaxOilProfile = topsideDto.CO2OnMaxOilProfile;
+            existing.CO2OnMaxGasProfile = topsideDto.CO2OnMaxGasProfile;
+            existing.CO2OnMaxWaterInjectionProfile = topsideDto.CO2OnMaxWaterInjectionProfile;
+            existing.CostYear = topsideDto.CostYear;
+            existing.ProspVersion = topsideDto.ProspVersion;
+            existing.LastChanged = topsideDto.LastChanged;
+            existing.Source = topsideDto.Source;
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {
@@ -62,7 +86,8 @@ namespace api.Adapters
                 EPAVersion = costprofile.EPAVersion,
                 Topside = topside,
                 StartYear = costprofile.StartYear,
-                Values = costprofile.Values
+                Values = costprofile.Values,
+                Source = costprofile.Source
             };
 
             return topsideCostProfile;
@@ -81,7 +106,8 @@ namespace api.Adapters
                 EPAVersion = topsideCessationCostProfileDto.EPAVersion,
                 Topside = topside,
                 StartYear = topsideCessationCostProfileDto.StartYear,
-                Values = topsideCessationCostProfileDto.Values
+                Values = topsideCessationCostProfileDto.Values,
+                Source = topsideCessationCostProfileDto.Source
             };
 
             return topsideCessationCostProfile;

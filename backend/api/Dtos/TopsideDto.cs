@@ -9,13 +9,14 @@ namespace api.Dtos
         public string Name { get; set; } = string.Empty!;
         public Guid ProjectId { get; set; }
         public TopsideCostProfileDto? CostProfile { get; set; }
-        public TopsideCessationCostProfileDto? TopsideCessationCostProfileDto { get; set; }
+        public TopsideCessationCostProfileDto? CessationCostProfile { get; set; }
         public double DryWeight { get; set; }
         public double OilCapacity { get; set; }
         public double GasCapacity { get; set; }
         public double FacilitiesAvailability { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public Maturity Maturity { get; set; }
+        public Currency Currency { get; set; }
         public double FuelConsumption { get; set; }
         public double FlaredGas { get; set; }
         public double CO2ShareOilProfile { get; set; }
@@ -27,14 +28,15 @@ namespace api.Dtos
         public DateTimeOffset CostYear { get; set; }
         public DateTimeOffset ProspVersion { get; set; }
         public DateTimeOffset LastChanged { get; set; }
+        public Source Source { get; set; }
     }
 
-    public class TopsideCostProfileDto : TimeSeriesCostDto
+    public class TopsideCostProfileDto : TimeSeriesFacilityCostDto
     {
 
     }
 
-    public class TopsideCessationCostProfileDto : TimeSeriesCostDto
+    public class TopsideCessationCostProfileDto : TimeSeriesFacilityCostDto
     {
 
     }

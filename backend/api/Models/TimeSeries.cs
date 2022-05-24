@@ -58,5 +58,16 @@ namespace api.Models
     {
 
     }
+
+    public class TimeSeriesFacilityCost : TimeSeriesCost
+    {
+        public Source Source { get; set; }
+    }
+
+    public enum Source
+    {
+        Import,
+        Prosp
+    }
 }
 

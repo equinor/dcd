@@ -17,15 +17,27 @@ namespace api.Models
         public ArtificialLift ArtificialLift { get; set; }
         public Maturity Maturity { get; set; }
         public Currency Currency { get; set; }
+        public double FuelConsumption { get; set; }
+        public double FlaredGas { get; set; }
+        public double CO2ShareOilProfile { get; set; }
+        public double CO2ShareGasProfile { get; set; }
+        public double CO2ShareWaterInjectionProfile { get; set; }
+        public double CO2OnMaxOilProfile { get; set; }
+        public double CO2OnMaxGasProfile { get; set; }
+        public double CO2OnMaxWaterInjectionProfile { get; set; }
+        public DateTimeOffset CostYear { get; set; }
+        public DateTimeOffset ProspVersion { get; set; }
+        public DateTimeOffset LastChanged { get; set; }
+        public Source Source { get; set; }
     }
 
-    public class TopsideCostProfile : TimeSeriesCost
+    public class TopsideCostProfile : TimeSeriesFacilityCost
     {
         [ForeignKey("Topside.Id")]
         public Topside Topside { get; set; } = null!;
     }
 
-    public class TopsideCessationCostProfile : TimeSeriesCost
+    public class TopsideCessationCostProfile : TimeSeriesFacilityCost
     {
         [ForeignKey("Topside.Id")]
         public Topside Topside { get; set; } = null!;
