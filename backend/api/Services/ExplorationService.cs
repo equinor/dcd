@@ -12,12 +12,14 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<ExplorationService> _logger;
 
         public ExplorationService(DcdDbContext context, ProjectService
-                projectService)
+                projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<ExplorationService>();
         }
 
         public IEnumerable<Exploration> GetExplorations(Guid projectId)
