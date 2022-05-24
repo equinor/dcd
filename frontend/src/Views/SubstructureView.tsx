@@ -24,6 +24,7 @@ import NumberInput from "../Components/NumberInput"
 import { SubstructureCostProfile } from "../models/assets/substructure/SubstructureCostProfile"
 import { SubstructureCessationCostProfile } from "../models/assets/substructure/SubstructureCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import ApprovedBy from "../Components/ApprovedBy"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -40,6 +41,7 @@ const SubstructureView = () => {
     const [costProfile, setCostProfile] = useState<SubstructureCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SubstructureCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [approvedBy, setApprovedBy] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -71,6 +73,7 @@ const SubstructureView = () => {
                 setMaturity(newSubstructure.maturity)
                 setDryWeight(newSubstructure.dryweight)
                 setCurrency(newSubstructure.currency ?? 0)
+                setApprovedBy(newSubstructure?.approvedBy!)
 
                 setCostProfile(newSubstructure.costProfile)
                 setCessationCostProfile(newSubstructure.cessationCostProfile)
@@ -95,6 +98,7 @@ const SubstructureView = () => {
             newSubstructure.costProfile = costProfile
             newSubstructure.cessationCostProfile = cessationCostProfile
             newSubstructure.currency = currency
+            newSubstructure.approvedBy = approvedBy
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -106,7 +110,7 @@ const SubstructureView = () => {
             }
             setSubstructure(newSubstructure)
         }
-    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency])
+    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency, approvedBy])
 
     return (
         <AssetViewDiv>
@@ -126,6 +130,11 @@ const SubstructureView = () => {
             <AssetName
                 setName={setSubstructureName}
                 name={substructureName}
+                setHasChanges={setHasChanges}
+            />
+            <ApprovedBy
+                setApprovedBy={setApprovedBy}
+                approvedBy={approvedBy}
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
@@ -157,6 +166,7 @@ const SubstructureView = () => {
                 currentValue={maturity}
                 setHasChanges={setHasChanges}
             />
+
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}

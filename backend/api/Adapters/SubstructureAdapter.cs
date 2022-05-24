@@ -14,7 +14,8 @@ namespace api.Adapters
                 Name = substructureDto.Name,
                 DryWeight = substructureDto.DryWeight,
                 Maturity = substructureDto.Maturity,
-                Currency = substructureDto.Currency
+                Currency = substructureDto.Currency,
+                ApprovedBy = substructureDto.ApprovedBy
             };
 
             substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
@@ -31,6 +32,7 @@ namespace api.Adapters
             existing.DryWeight = substructureDto.DryWeight;
             existing.Maturity = substructureDto.Maturity;
             existing.Currency = substructureDto.Currency;
+            existing.ApprovedBy = substructureDto.ApprovedBy;
 
             existing.CostProfile = Convert(substructureDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(substructureDto.CessationCostProfile, existing);

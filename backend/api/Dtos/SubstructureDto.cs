@@ -12,7 +12,8 @@ namespace api.Dtos
         public double DryWeight { get; set; }
         public Maturity Maturity { get; set; }
         public Currency Currency { get; set; }
-    }
+        public string ApprovedBy { get; set; } = string.Empty;
+     }
 
     public class SubstructureCostProfileDto : TimeSeriesCostDto
     {

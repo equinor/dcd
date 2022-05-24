@@ -12,6 +12,7 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
     dryweight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
     currency?: Components.Schemas.Currency
+    approvedBy?: string | null | undefined
 
     constructor(data?: Components.Schemas.SubstructureDto) {
         if (data !== undefined) {
@@ -24,9 +25,11 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
             this.dryweight = data.dryWeight
             this.maturity = data.maturity
             this.currency = data.currency ?? 0
+            this.approvedBy = data.approvedBy ?? ""
         } else {
             this.id = EMPTY_GUID
             this.name = ""
+            this.approvedBy = ""
         }
     }
 

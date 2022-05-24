@@ -245,6 +245,7 @@ declare namespace Components {
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;
+            approvedBy?: string | null;
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
