@@ -20,7 +20,19 @@ namespace api.Adapters
                 Maturity = topside.Maturity,
                 Currency = topside.Currency,
                 CostProfile = Convert(topside.CostProfile),
-                CessationCostProfile = Convert(topside.CessationCostProfile)
+                CessationCostProfile = Convert(topside.CessationCostProfile),
+                FuelConsumption = topside.FuelConsumption,
+                FlaredGas = topside.FlaredGas,
+                CO2ShareOilProfile = topside.CO2ShareOilProfile,
+                CO2ShareGasProfile = topside.CO2ShareGasProfile,
+                CO2ShareWaterInjectionProfile = topside.CO2ShareWaterInjectionProfile,
+                CO2OnMaxOilProfile = topside.CO2OnMaxOilProfile,
+                CO2OnMaxGasProfile = topside.CO2OnMaxGasProfile,
+                CO2OnMaxWaterInjectionProfile = topside.CO2OnMaxWaterInjectionProfile,
+                CostYear = topside.CostYear,
+                ProspVersion = topside.ProspVersion,
+                LastChanged = topside.LastChanged,
+                Source = topside.Source
             };
             return topsideDto;
         }
@@ -38,7 +50,8 @@ namespace api.Adapters
                 Currency = costProfile.Currency,
                 EPAVersion = costProfile.EPAVersion,
                 Values = costProfile.Values,
-                StartYear = costProfile.StartYear
+                StartYear = costProfile.StartYear,
+                Source = costProfile.Source
             };
             return topsideCostProfile;
         }
@@ -56,7 +69,8 @@ namespace api.Adapters
                 Currency = topsideCessationCostProfile.Currency,
                 EPAVersion = topsideCessationCostProfile.EPAVersion,
                 Values = topsideCessationCostProfile.Values,
-                StartYear = topsideCessationCostProfile.StartYear
+                StartYear = topsideCessationCostProfile.StartYear,
+                Source = topsideCessationCostProfile.Source
             };
             return topsideCostProfile;
         }
