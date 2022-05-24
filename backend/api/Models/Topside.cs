@@ -26,7 +26,7 @@ namespace api.Models
         public double CO2OnMaxGasProfile { get; set; }
         public double CO2OnMaxWaterInjectionProfile { get; set; }
         public DateTimeOffset CostYear { get; set; }
-        public DateTimeOffset ProspVersion { get; set; }
+        public string ProspVersion { get; set; } = string.Empty!;
         public DateTimeOffset LastChanged { get; set; }
         public Source Source { get; set; }
     }

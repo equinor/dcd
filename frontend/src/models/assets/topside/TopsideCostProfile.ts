@@ -7,6 +7,7 @@ export class TopsideCostProfile implements Components.Schemas.TopsideCostProfile
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
+    source?: Components.Schemas.Source | undefined
 
     constructor(data?: Components.Schemas.TopsideCostProfileDto) {
         if (data !== undefined && data !== null) {
@@ -16,6 +17,7 @@ export class TopsideCostProfile implements Components.Schemas.TopsideCostProfile
             this.epaVersion = data.epaVersion ?? null
             this.currency = data.currency
             this.sum = data.sum
+            this.source = data.source
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.startYear = 0

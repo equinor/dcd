@@ -41,6 +41,12 @@ const TopsideView = () => {
     const [costProfile, setCostProfile] = useState<TopsideCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [cO2ShareOilProfile, setCO2ShareOilProfile] = useState<number | undefined>()
+    const [cO2ShareGasProfile, setCO2ShareGasProfile] = useState<number | undefined>()
+    const [cO2ShareWaterInjectionProfile, setCO2ShareWaterInjectionProfile] = useState<number | undefined>()
+    const [cO2OnMaxOilProfile, setCO2OnMaxOilProfile] = useState<number | undefined>()
+    const [cO2OnMaxGasProfile, setCO2OnMaxGasProfile] = useState<number | undefined>()
+    const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -186,11 +192,77 @@ const TopsideView = () => {
                     label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                 />
             </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareOilProfile}
+                    value={cO2ShareOilProfile ?? 0}
+                    integer
+                    label="CO2 Share Oil Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareGasProfile}
+                    value={cO2ShareGasProfile ?? 0}
+                    integer
+                    label="CO2 Share Gas Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareWaterInjectionProfile}
+                    value={cO2ShareWaterInjectionProfile ?? 0}
+                    integer
+                    label="CO2 Share Water Injection Profile (%)"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxOilProfile}
+                    value={cO2OnMaxOilProfile ?? 0}
+                    integer
+                    label="CO2 On Max Oil Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxGasProfile}
+                    value={cO2OnMaxGasProfile ?? 0}
+                    integer
+                    label="CO2 On Max Gas Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxWaterInjectionProfile}
+                    value={cO2OnMaxWaterInjectionProfile ?? 0}
+                    integer
+                    label="CO2 On Max Water Injection Profile (%)"
+                />
+            </Wrapper>
             <Maturity
                 setMaturity={setMaturity}
                 currentValue={maturity}
                 setHasChanges={setHasChanges}
             />
+            <Wrapper>
+                <Input
+                    defaultValue={topside?.prospVersion}
+                    key={topside?.prospVersion}
+                    type="string"
+                    name="Prosp version"
+                />
+                <Input
+                    defaultValue={topside?.lastChanged?.toLocaleDateString("en-CA")}
+                    key={topside?.lastChanged?.toLocaleDateString("en-CA")}
+                    type="date"
+                    name="Last changed"
+                />
+                <Input
+                    defaultValue={topside?.costYear?.toLocaleDateString("en-CA")}
+                    key={topside?.costYear?.toLocaleDateString("en-CA")}
+                    type="date"
+                    name="Cost year"
+                />
+            </Wrapper>
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
