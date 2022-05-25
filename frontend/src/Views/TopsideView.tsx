@@ -162,7 +162,7 @@ const TopsideView = () => {
             <Typography>
                 Source:
                 {" "}
-                {topside?.source === 0 ? "ConceptApp" : "Prosp"}
+                {topside?.source === 0 || topside?.source === undefined ? "ConceptApp" : "Prosp"}
             </Typography>
             <NumberInput
                 setHasChanges={setHasChanges}
