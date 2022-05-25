@@ -24,9 +24,10 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     cO2OnMaxOilProfile?: number | undefined
     cO2OnMaxGasProfile?: number | undefined
     cO2OnMaxWaterInjectionProfile?: number | undefined
-    costYear?: Date | null
-    prospVersion?: string | undefined
+    costYear?: number | undefined
+    prospVersion?: Date | null
     lastChanged?: Date | null
+    source?: Components.Schemas.Source
 
     constructor(data?: Components.Schemas.TopsideDto) {
         if (data !== undefined) {
@@ -50,9 +51,10 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.cO2OnMaxOilProfile = data.cO2OnMaxOilProfile
             this.cO2OnMaxGasProfile = data.cO2OnMaxGasProfile
             this.cO2OnMaxWaterInjectionProfile = data.cO2OnMaxWaterInjectionProfile
-            this.costYear = data.costYear ? new Date(data.costYear) : null
-            this.prospVersion = data.prospVersion ?? ""
+            this.costYear = data.costYear
+            this.prospVersion = data.prospVersion ? new Date(data.prospVersion) : null
             this.lastChanged = data.lastChanged ? new Date(data.lastChanged) : null
+            this.source = data.source
         } else {
             this.id = EMPTY_GUID
             this.name = ""

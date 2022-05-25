@@ -47,6 +47,7 @@ const TopsideView = () => {
     const [cO2OnMaxOilProfile, setCO2OnMaxOilProfile] = useState<number | undefined>()
     const [cO2OnMaxGasProfile, setCO2OnMaxGasProfile] = useState<number | undefined>()
     const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
+    const [costYear, setCostYear] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -153,6 +154,23 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Typography>
+                Prosp version:
+                {" "}
+                {topside?.prospVersion ? topside?.prospVersion.toLocaleDateString("en-CA") : "N/A"}
+            </Typography>
+            <Typography>
+                Source:
+                {" "}
+                {topside?.source === 0 ? "ConceptApp" : "Prosp"}
+            </Typography>
+            <NumberInput
+                setHasChanges={setHasChanges}
+                setValue={setCostYear}
+                value={costYear ?? 0}
+                integer
+                label="Cost year"
+            />
             <Wrapper>
                 <WrapperColumn>
                     <Label htmlFor="name" label="Artificial lift" />
@@ -243,26 +261,6 @@ const TopsideView = () => {
                 currentValue={maturity}
                 setHasChanges={setHasChanges}
             />
-            <Wrapper>
-                <Input
-                    defaultValue={topside?.prospVersion}
-                    key={topside?.prospVersion}
-                    type="string"
-                    name="Prosp version"
-                />
-                <Input
-                    defaultValue={topside?.lastChanged?.toLocaleDateString("en-CA")}
-                    key={topside?.lastChanged?.toLocaleDateString("en-CA")}
-                    type="date"
-                    name="Last changed"
-                />
-                <Input
-                    defaultValue={topside?.costYear?.toLocaleDateString("en-CA")}
-                    key={topside?.costYear?.toLocaleDateString("en-CA")}
-                    type="date"
-                    name="Cost year"
-                />
-            </Wrapper>
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}

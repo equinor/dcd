@@ -288,7 +288,6 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
-            source?: Source /* int32 */;
         }
         export interface TopsideCostProfileDto {
             id?: string; // uuid
@@ -297,7 +296,6 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
-            source?: Source /* int32 */;
         }
         export interface TopsideDto {
             id?: string; // uuid
@@ -320,9 +318,9 @@ declare namespace Components {
             cO2OnMaxOilProfile?: number; // double
             cO2OnMaxGasProfile?: number; // double
             cO2OnMaxWaterInjectionProfile?: number; // double
-            costYear?: string; // date-time
-            prospVersion?: string | null;
-            lastChanged?: string; // date-time
+            costYear?: number; // int32
+            prospVersion?: Date; // date-time
+            lastChanged?: Date; // date-time
             source?: Source /* int32 */;
         }
         export interface TransportCessationCostProfileDto {

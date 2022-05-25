@@ -50,8 +50,7 @@ namespace api.Adapters
                 Currency = costProfile.Currency,
                 EPAVersion = costProfile.EPAVersion,
                 Values = costProfile.Values,
-                StartYear = costProfile.StartYear,
-                Source = costProfile.Source
+                StartYear = costProfile.StartYear
             };
             return topsideCostProfile;
         }
@@ -69,8 +68,7 @@ namespace api.Adapters
                 Currency = topsideCessationCostProfile.Currency,
                 EPAVersion = topsideCessationCostProfile.EPAVersion,
                 Values = topsideCessationCostProfile.Values,
-                StartYear = topsideCessationCostProfile.StartYear,
-                Source = topsideCessationCostProfile.Source
+                StartYear = topsideCessationCostProfile.StartYear
             };
             return topsideCostProfile;
         }

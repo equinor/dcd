@@ -86,8 +86,7 @@ namespace api.Adapters
                 EPAVersion = costprofile.EPAVersion,
                 Topside = topside,
                 StartYear = costprofile.StartYear,
-                Values = costprofile.Values,
-                Source = costprofile.Source
+                Values = costprofile.Values
             };
 
             return topsideCostProfile;
@@ -106,8 +105,7 @@ namespace api.Adapters
                 EPAVersion = topsideCessationCostProfileDto.EPAVersion,
                 Topside = topside,
                 StartYear = topsideCessationCostProfileDto.StartYear,
-                Values = topsideCessationCostProfileDto.Values,
-                Source = topsideCessationCostProfileDto.Source
+                Values = topsideCessationCostProfileDto.Values
             };
 
             return topsideCessationCostProfile;

@@ -25,18 +25,18 @@ namespace api.Dtos
         public double CO2OnMaxOilProfile { get; set; }
         public double CO2OnMaxGasProfile { get; set; }
         public double CO2OnMaxWaterInjectionProfile { get; set; }
-        public DateTimeOffset CostYear { get; set; }
-        public string ProspVersion { get; set; } = string.Empty!;
+        public int CostYear { get; set; }
+        public DateTimeOffset ProspVersion { get; set; }
         public DateTimeOffset LastChanged { get; set; }
         public Source Source { get; set; }
     }
 
-    public class TopsideCostProfileDto : TimeSeriesFacilityCostDto
+    public class TopsideCostProfileDto : TimeSeriesCostDto
     {
 
     }
 
-    public class TopsideCessationCostProfileDto : TimeSeriesFacilityCostDto
+    public class TopsideCessationCostProfileDto : TimeSeriesCostDto
     {
 
     }
