@@ -162,6 +162,16 @@ const SurfView = () => {
                 name={surfName}
                 setHasChanges={setHasChanges}
             />
+            <Wrapper>
+                <Typography variant="h4">DG3</Typography>
+                <Dg4Field>
+                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
+                </Dg4Field>
+                <Typography variant="h4">DG4</Typography>
+                <Dg4Field>
+                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
+                </Dg4Field>
+            </Wrapper>
             <AssetCurrency
                 setCurrency={setCurrency}
                 setHasChanges={setHasChanges}
@@ -181,19 +191,16 @@ const SurfView = () => {
                         disabled
                         defaultValue={GetArtificialLiftName(surf?.artificialLift)}
                     />
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
+                    />
                 </WrapperColumn>
             </Wrapper>
 
-            <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-            </Wrapper>
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -218,13 +225,6 @@ const SurfView = () => {
                     integer
                     disabled
                     label="Water injector count"
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setCostYear}
-                    value={costYear ?? 0}
-                    integer
-                    label="Cost year"
                 />
             </Wrapper>
             <Wrapper>
