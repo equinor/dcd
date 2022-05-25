@@ -23,6 +23,10 @@ namespace api.Models
         public int WaterInjectorCount { get; set; }
         public ProductionFlowline ProductionFlowline { get; set; }
         public Currency Currency { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
+        public int CostYear { get; set; }
+        public Source Source { get; set; }
+        public DateTimeOffset? ProspVersion { get; set; }
     }
 
     public class SurfCostProfile : TimeSeriesCost

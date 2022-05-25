@@ -41,6 +41,13 @@ const TopsideView = () => {
     const [costProfile, setCostProfile] = useState<TopsideCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [cO2ShareOilProfile, setCO2ShareOilProfile] = useState<number | undefined>()
+    const [cO2ShareGasProfile, setCO2ShareGasProfile] = useState<number | undefined>()
+    const [cO2ShareWaterInjectionProfile, setCO2ShareWaterInjectionProfile] = useState<number | undefined>()
+    const [cO2OnMaxOilProfile, setCO2OnMaxOilProfile] = useState<number | undefined>()
+    const [cO2OnMaxGasProfile, setCO2OnMaxGasProfile] = useState<number | undefined>()
+    const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
+    const [costYear, setCostYear] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -74,6 +81,13 @@ const TopsideView = () => {
                 setGasCapacity(newTopside?.gasCapacity)
                 setMaturity(newTopside?.maturity ?? undefined)
                 setCurrency(newTopside.currency ?? 0)
+                setCostYear(newTopside?.costYear)
+                setCO2ShareOilProfile(newTopside?.cO2ShareOilProfile)
+                setCO2ShareGasProfile(newTopside?.cO2ShareGasProfile)
+                setCO2ShareWaterInjectionProfile(newTopside?.cO2ShareWaterInjectionProfile)
+                setCO2OnMaxOilProfile(newTopside?.cO2OnMaxOilProfile)
+                setCO2OnMaxGasProfile(newTopside?.cO2OnMaxGasProfile)
+                setCO2OnMaxWaterInjectionProfile(newTopside?.cO2OnMaxWaterInjectionProfile)
 
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
@@ -100,6 +114,14 @@ const TopsideView = () => {
             newTopside.costProfile = costProfile
             newTopside.cessationCostProfile = cessationCostProfile
             newTopside.currency = currency
+            newTopside.costYear = costYear
+            newTopside.cO2ShareOilProfile = cO2ShareOilProfile
+            newTopside.cO2ShareGasProfile = cO2ShareGasProfile
+            newTopside.cO2ShareWaterInjectionProfile = cO2ShareWaterInjectionProfile
+            newTopside.cO2OnMaxOilProfile = cO2OnMaxOilProfile
+            newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
+            newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
+
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
                     caseItem?.DG4Date?.getFullYear(),
@@ -110,7 +132,9 @@ const TopsideView = () => {
             }
             setTopside(newTopside)
         }
-    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency])
+    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
+        cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
+        cO2OnMaxWaterInjectionProfile])
 
     return (
         <AssetViewDiv>
@@ -126,6 +150,10 @@ const TopsideView = () => {
                     assetService={GetTopsideService()}
                     assetType={AssetTypeEnum.topsides}
                 />
+                <Typography variant="h6">
+                    {topside?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${topside?.LastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
             </Wrapper>
             <AssetName
                 setName={setTopsideName}
@@ -147,6 +175,12 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Typography>
+                {`Prosp version: ${topside?.ProspVersion ? topside?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+            </Typography>
+            <Typography>
+                {`Source: ${topside?.source === 0 || topside?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
             <Wrapper>
                 <WrapperColumn>
                     <Label htmlFor="name" label="Artificial lift" />
@@ -154,6 +188,13 @@ const TopsideView = () => {
                         id="artificialLift"
                         disabled
                         defaultValue={GetArtificialLiftName(topside?.artificialLift)}
+                    />
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
                     />
                 </WrapperColumn>
             </Wrapper>
@@ -184,6 +225,52 @@ const TopsideView = () => {
                     integer={false}
                     disabled
                     label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareOilProfile}
+                    value={cO2ShareOilProfile ?? 0}
+                    integer
+                    label="CO2 Share Oil Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareGasProfile}
+                    value={cO2ShareGasProfile ?? 0}
+                    integer
+                    label="CO2 Share Gas Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareWaterInjectionProfile}
+                    value={cO2ShareWaterInjectionProfile ?? 0}
+                    integer
+                    label="CO2 Share Water Injection Profile (%)"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxOilProfile}
+                    value={cO2OnMaxOilProfile ?? 0}
+                    integer
+                    label="CO2 On Max Oil Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxGasProfile}
+                    value={cO2OnMaxGasProfile ?? 0}
+                    integer
+                    label="CO2 On Max Gas Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxWaterInjectionProfile}
+                    value={cO2OnMaxWaterInjectionProfile ?? 0}
+                    integer
+                    label="CO2 On Max Water Injection Profile (%)"
                 />
             </Wrapper>
             <Maturity
