@@ -311,6 +311,18 @@ declare namespace Components {
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;
+            fuelConsumption?: number; // double
+            flaredGas?: number; // double
+            cO2ShareOilProfile?: number; // double
+            cO2ShareGasProfile?: number; // double
+            cO2ShareWaterInjectionProfile?: number; // double
+            cO2OnMaxOilProfile?: number; // double
+            cO2OnMaxGasProfile?: number; // double
+            cO2OnMaxWaterInjectionProfile?: number; // double
+            costYear?: number; // int32
+            prospVersion?: string | null; // date-time
+            lastChangedDate?: string; // date-time
+            source?: Source /* int32 */;
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
