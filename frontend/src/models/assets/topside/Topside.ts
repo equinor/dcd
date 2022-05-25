@@ -16,6 +16,18 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     artificialLift?: Components.Schemas.ArtificialLift | undefined
     maturity?: Components.Schemas.Maturity | undefined
     currency?: Components.Schemas.Currency
+    fuelConsumption?: number | undefined
+    flaredGas?: number | undefined
+    cO2ShareOilProfile?: number | undefined
+    cO2ShareGasProfile?: number | undefined
+    cO2ShareWaterInjectionProfile?: number | undefined
+    cO2OnMaxOilProfile?: number | undefined
+    cO2OnMaxGasProfile?: number | undefined
+    cO2OnMaxWaterInjectionProfile?: number | undefined
+    costYear?: number | undefined
+    ProspVersion?: Date | null
+    LastChangedDate?: Date | null
+    source?: Components.Schemas.Source
 
     constructor(data?: Components.Schemas.TopsideDto) {
         if (data !== undefined) {
@@ -31,9 +43,29 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.oilCapacity = data.oilCapacity
             this.gasCapacity = data.gasCapacity
             this.currency = data.currency ?? 0
+            this.fuelConsumption = data.fuelConsumption
+            this.flaredGas = data.flaredGas
+            this.cO2ShareOilProfile = data.cO2ShareOilProfile
+            this.cO2ShareGasProfile = data.cO2ShareGasProfile
+            this.cO2ShareWaterInjectionProfile = data.cO2ShareWaterInjectionProfile
+            this.cO2OnMaxOilProfile = data.cO2OnMaxOilProfile
+            this.cO2OnMaxGasProfile = data.cO2OnMaxGasProfile
+            this.cO2OnMaxWaterInjectionProfile = data.cO2OnMaxWaterInjectionProfile
+            this.costYear = data.costYear
+            this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
+            this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
+            this.source = data.source
         } else {
             this.id = EMPTY_GUID
             this.name = ""
+        }
+    }
+
+    static Copy(data: Topside) {
+        const topsideCopy: Topside = new Topside(data)
+        return {
+            ...topsideCopy,
+            ProspVersion: data.ProspVersion,
         }
     }
 

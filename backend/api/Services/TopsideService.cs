@@ -40,6 +40,8 @@ namespace api.Services
             var topside = TopsideAdapter.Convert(topsideDto);
             var project = _projectService.GetProject(topsideDto.ProjectId);
             topside.Project = project;
+            topside.LastChangedDate = DateTimeOffset.Now;
+            topside.ProspVersion = null;
             _context.Topsides!.Add(topside);
             _context.SaveChanges();
             SetCaseLink(topside, sourceCaseId, project);
@@ -91,7 +93,7 @@ namespace api.Services
             {
                 _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
             }
-
+            existing.LastChangedDate = DateTimeOffset.Now;
             _context.Topsides!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
