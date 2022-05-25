@@ -46,6 +46,7 @@ const SurfView = () => {
     const [costProfile, setCostProfile] = useState<SurfCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [costYear, setCostYear] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -80,6 +81,7 @@ const SurfView = () => {
                 setRiserCount(newSurf?.riserCount)
                 setTemplateCount(newSurf?.templateCount)
                 setProducerCount(newSurf?.producerCount)
+                setCostYear(newSurf?.costYear)
                 setGasInjectorCount(newSurf?.gasInjectorCount)
                 setWaterInjectorCount(newSurf?.waterInjectorCount)
                 setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
@@ -113,6 +115,7 @@ const SurfView = () => {
             newSurf.waterInjectorCount = waterInjectorCount
             newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
             newSurf.umbilicalSystemLength = umbilicalSystemLength
+            newSurf.costYear = costYear
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
@@ -133,7 +136,7 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency])
+        costProfile, cessationCostProfile, currency, costYear])
 
     return (
         <AssetViewDiv>
@@ -149,28 +152,16 @@ const SurfView = () => {
                     assetService={GetSurfService()}
                     assetType={AssetTypeEnum.surfs}
                 />
+                <Typography variant="h6">
+                    {surf?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${surf?.LastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
             </Wrapper>
             <AssetName
                 setName={setSurfName}
                 name={surfName}
                 setHasChanges={setHasChanges}
             />
-            <AssetCurrency
-                setCurrency={setCurrency}
-                setHasChanges={setHasChanges}
-                currentValue={currency}
-            />
-            <Wrapper>
-                <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(surf?.artificialLift)}
-                    />
-                </WrapperColumn>
-            </Wrapper>
-
             <Wrapper>
                 <Typography variant="h4">DG3</Typography>
                 <Dg4Field>
@@ -181,6 +172,35 @@ const SurfView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <AssetCurrency
+                setCurrency={setCurrency}
+                setHasChanges={setHasChanges}
+                currentValue={currency}
+            />
+            <Typography>
+                {`Prosp version: ${surf?.ProspVersion ? surf?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+            </Typography>
+            <Typography>
+                {`Source: ${surf?.source === 0 || surf?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
+            <Wrapper>
+                <WrapperColumn>
+                    <Label htmlFor="name" label="Artificial lift" />
+                    <Input
+                        id="artificialLift"
+                        disabled
+                        defaultValue={GetArtificialLiftName(surf?.artificialLift)}
+                    />
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
+                    />
+                </WrapperColumn>
+            </Wrapper>
+
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
