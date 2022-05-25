@@ -184,7 +184,8 @@ declare namespace Components {
             sum?: number; // double
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
-        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory =
+            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
@@ -280,6 +281,10 @@ declare namespace Components {
             waterInjectorCount?: number; // int32
             productionFlowline?: ProductionFlowline /* int32 */;
             currency?: Currency /* int32 */;
+            lastChangedDate?: string | null; // date-time
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            prospVersion?: string | null; // date-time
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
