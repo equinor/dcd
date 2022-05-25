@@ -354,6 +354,10 @@ declare namespace Components {
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
             currency?: Currency /* int32 */;
+            lastChangedDate?: string | null; // date-time
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            prospVersion?: string | null; // date-time
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid
