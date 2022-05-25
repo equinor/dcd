@@ -25,7 +25,9 @@ namespace api.Adapters
                 GasInjectorCount = surf.GasInjectorCount,
                 WaterInjectorCount = surf.WaterInjectorCount,
                 Currency = surf.Currency,
-                CostProfile = Convert(surf.CostProfile)
+                CostProfile = Convert(surf.CostProfile),
+                LastChangedDate = surf.LastChangedDate,
+                CostYear = surf.CostYear
             };
 
             if (surf.CostProfile != null)

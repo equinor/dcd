@@ -23,7 +23,9 @@ namespace api.Adapters
                 ProducerCount = surfDto.ProducerCount,
                 GasInjectorCount = surfDto.GasInjectorCount,
                 WaterInjectorCount = surfDto.WaterInjectorCount,
-                Currency = surfDto.Currency
+                Currency = surfDto.Currency,
+                LastChangedDate = surfDto.LastChangedDate,
+                CostYear = surfDto.CostYear
             };
 
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
@@ -50,6 +52,8 @@ namespace api.Adapters
             existing.Currency = surfDto.Currency;
             existing.CostProfile = Convert(surfDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(surfDto.CessationCostProfile, existing);
+            existing.LastChangedDate = surfDto.LastChangedDate;
+            existing.CostYear = surfDto.CostYear;
         }
 
         private static SurfCostProfile? Convert(SurfCostProfileDto? costprofile, Surf surf)

@@ -20,6 +20,8 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
     waterInjectorCount?: number | undefined
     productionFlowline?: Components.Schemas.ProductionFlowline | undefined
     currency?: Components.Schemas.Currency
+    lastChangedDate?: Date | null
+    costYear?: number | undefined
 
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {
@@ -39,6 +41,8 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
             this.waterInjectorCount = data.waterInjectorCount
             this.productionFlowline = data.productionFlowline
             this.currency = data.currency ?? 0
+            this.lastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
+            this.costYear = data.costYear
         } else {
             this.id = EMPTY_GUID
             this.name = ""

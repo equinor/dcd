@@ -46,6 +46,7 @@ const SurfView = () => {
     const [costProfile, setCostProfile] = useState<SurfCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [costYear, setCostYear] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -80,6 +81,7 @@ const SurfView = () => {
                 setRiserCount(newSurf?.riserCount)
                 setTemplateCount(newSurf?.templateCount)
                 setProducerCount(newSurf?.producerCount)
+                setCostYear(newSurf?.costYear)
                 setGasInjectorCount(newSurf?.gasInjectorCount)
                 setWaterInjectorCount(newSurf?.waterInjectorCount)
                 setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
@@ -113,6 +115,7 @@ const SurfView = () => {
             newSurf.waterInjectorCount = waterInjectorCount
             newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
             newSurf.umbilicalSystemLength = umbilicalSystemLength
+            newSurf.costYear = costYear
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
@@ -133,7 +136,7 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency])
+        costProfile, cessationCostProfile, currency, costYear])
 
     return (
         <AssetViewDiv>
@@ -149,6 +152,10 @@ const SurfView = () => {
                     assetService={GetSurfService()}
                     assetType={AssetTypeEnum.surfs}
                 />
+                <Typography variant="h6">
+                    {surf?.lastChangedDate?.toLocaleString()
+                        ? `Last changed: ${surf?.lastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
             </Wrapper>
             <AssetName
                 setName={setSurfName}
@@ -205,6 +212,13 @@ const SurfView = () => {
                     integer
                     disabled
                     label="Water injector count"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCostYear}
+                    value={costYear ?? 0}
+                    integer
+                    label="Cost year"
                 />
             </Wrapper>
             <Wrapper>

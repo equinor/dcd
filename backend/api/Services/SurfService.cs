@@ -49,6 +49,7 @@ namespace api.Services
             {
                 _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
             }
+            existing.LastChangedDate = DateTimeOffset.Now;
             _context.Surfs!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(existing.ProjectId);
@@ -71,6 +72,7 @@ namespace api.Services
             var surf = SurfAdapter.Convert(surfDto);
             var project = _projectService.GetProject(surf.ProjectId);
             surf.Project = project;
+            surf.LastChangedDate = DateTimeOffset.Now;
             _context.Surfs!.Add(surf);
             _context.SaveChanges();
             SetCaseLink(surf, sourceCaseId, project);
