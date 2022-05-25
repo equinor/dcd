@@ -22,6 +22,7 @@ import DGEnum from "../models/DGEnum"
 import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
+import ExcelUpload from "../Components/ExcelUpload"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -116,6 +117,7 @@ function CaseView() {
                 setProject={setProject}
                 setCase={setCase}
             />
+            <ExcelUpload />
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
                 <CaseDescription
                     caseItem={caseItem}
