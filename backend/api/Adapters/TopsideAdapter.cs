@@ -29,7 +29,7 @@ namespace api.Adapters
                 CO2OnMaxWaterInjectionProfile = topsideDto.CO2OnMaxWaterInjectionProfile,
                 CostYear = topsideDto.CostYear,
                 ProspVersion = topsideDto.ProspVersion,
-                LastChanged = topsideDto.LastChanged,
+                LastChangedDate = topsideDto.LastChangedDate,
                 Source = topsideDto.Source
             };
 
@@ -70,7 +70,7 @@ namespace api.Adapters
             existing.CO2OnMaxWaterInjectionProfile = topsideDto.CO2OnMaxWaterInjectionProfile;
             existing.CostYear = topsideDto.CostYear;
             existing.ProspVersion = topsideDto.ProspVersion;
-            existing.LastChanged = topsideDto.LastChanged;
+            existing.LastChangedDate = topsideDto.LastChangedDate;
             existing.Source = topsideDto.Source;
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)

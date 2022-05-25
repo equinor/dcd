@@ -319,8 +319,8 @@ declare namespace Components {
             cO2OnMaxGasProfile?: number; // double
             cO2OnMaxWaterInjectionProfile?: number; // double
             costYear?: number; // int32
-            prospVersion?: string; // date-time
-            lastChanged?: string; // date-time
+            prospVersion?: string | null; // date-time
+            lastChangedDate?: string; // date-time
             source?: Source /* int32 */;
         }
         export interface TransportCessationCostProfileDto {

@@ -25,8 +25,8 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     cO2OnMaxGasProfile?: number | undefined
     cO2OnMaxWaterInjectionProfile?: number | undefined
     costYear?: number | undefined
-    prospVersion?: Date | null
-    lastChanged?: Date | null
+    ProspVersion?: Date | null
+    LastChangedDate?: Date | null
     source?: Components.Schemas.Source
 
     constructor(data?: Components.Schemas.TopsideDto) {
@@ -52,12 +52,20 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.cO2OnMaxGasProfile = data.cO2OnMaxGasProfile
             this.cO2OnMaxWaterInjectionProfile = data.cO2OnMaxWaterInjectionProfile
             this.costYear = data.costYear
-            this.prospVersion = data.prospVersion ? new Date(data.prospVersion) : null
-            this.lastChanged = data.lastChanged ? new Date(data.lastChanged) : null
+            this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
+            this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
             this.source = data.source
         } else {
             this.id = EMPTY_GUID
             this.name = ""
+        }
+    }
+
+    static Copy(data: Topside) {
+        const topsideCopy: Topside = new Topside(data)
+        return {
+            ...topsideCopy,
+            ProspVersion: data.ProspVersion,
         }
     }
 

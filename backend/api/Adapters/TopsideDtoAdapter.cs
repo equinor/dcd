@@ -31,7 +31,7 @@ namespace api.Adapters
                 CO2OnMaxWaterInjectionProfile = topside.CO2OnMaxWaterInjectionProfile,
                 CostYear = topside.CostYear,
                 ProspVersion = topside.ProspVersion,
-                LastChanged = topside.LastChanged,
+                LastChangedDate = topside.LastChangedDate,
                 Source = topside.Source
             };
             return topsideDto;

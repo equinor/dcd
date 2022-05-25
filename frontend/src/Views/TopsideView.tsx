@@ -81,6 +81,13 @@ const TopsideView = () => {
                 setGasCapacity(newTopside?.gasCapacity)
                 setMaturity(newTopside?.maturity ?? undefined)
                 setCurrency(newTopside.currency ?? 0)
+                setCostYear(newTopside?.costYear)
+                setCO2ShareOilProfile(newTopside?.cO2ShareOilProfile)
+                setCO2ShareGasProfile(newTopside?.cO2ShareGasProfile)
+                setCO2ShareWaterInjectionProfile(newTopside?.cO2ShareWaterInjectionProfile)
+                setCO2OnMaxOilProfile(newTopside?.cO2OnMaxOilProfile)
+                setCO2OnMaxGasProfile(newTopside?.cO2OnMaxGasProfile)
+                setCO2OnMaxWaterInjectionProfile(newTopside?.cO2OnMaxWaterInjectionProfile)
 
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
@@ -107,6 +114,14 @@ const TopsideView = () => {
             newTopside.costProfile = costProfile
             newTopside.cessationCostProfile = cessationCostProfile
             newTopside.currency = currency
+            newTopside.costYear = costYear
+            newTopside.cO2ShareOilProfile = cO2ShareOilProfile
+            newTopside.cO2ShareGasProfile = cO2ShareGasProfile
+            newTopside.cO2ShareWaterInjectionProfile = cO2ShareWaterInjectionProfile
+            newTopside.cO2OnMaxOilProfile = cO2OnMaxOilProfile
+            newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
+            newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
+
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
                     caseItem?.DG4Date?.getFullYear(),
@@ -117,7 +132,9 @@ const TopsideView = () => {
             }
             setTopside(newTopside)
         }
-    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency])
+    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
+        cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
+        cO2OnMaxWaterInjectionProfile])
 
     return (
         <AssetViewDiv>
@@ -133,6 +150,10 @@ const TopsideView = () => {
                     assetService={GetTopsideService()}
                     assetType={AssetTypeEnum.topsides}
                 />
+                <Typography variant="h6">
+                    {topside?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${topside?.LastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
             </Wrapper>
             <AssetName
                 setName={setTopsideName}
@@ -155,22 +176,11 @@ const TopsideView = () => {
                 currentValue={currency}
             />
             <Typography>
-                Prosp version:
-                {" "}
-                {topside?.prospVersion ? topside?.prospVersion.toLocaleDateString("en-CA") : "N/A"}
+                {`Prosp version: ${topside?.ProspVersion ? topside?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
             </Typography>
             <Typography>
-                Source:
-                {" "}
-                {topside?.source === 0 || topside?.source === undefined ? "ConceptApp" : "Prosp"}
+                {`Source: ${topside?.source === 0 || topside?.source === undefined ? "ConceptApp" : "Prosp"}`}
             </Typography>
-            <NumberInput
-                setHasChanges={setHasChanges}
-                setValue={setCostYear}
-                value={costYear ?? 0}
-                integer
-                label="Cost year"
-            />
             <Wrapper>
                 <WrapperColumn>
                     <Label htmlFor="name" label="Artificial lift" />
@@ -178,6 +188,13 @@ const TopsideView = () => {
                         id="artificialLift"
                         disabled
                         defaultValue={GetArtificialLiftName(topside?.artificialLift)}
+                    />
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
                     />
                 </WrapperColumn>
             </Wrapper>
