@@ -27,7 +27,8 @@ namespace api.Adapters
                 Currency = surf.Currency,
                 CostProfile = Convert(surf.CostProfile),
                 LastChangedDate = surf.LastChangedDate,
-                CostYear = surf.CostYear
+                CostYear = surf.CostYear,
+                Source = surf.Source
             };
 
             if (surf.CostProfile != null)

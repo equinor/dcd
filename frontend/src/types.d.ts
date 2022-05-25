@@ -221,6 +221,7 @@ declare namespace Components {
             startYear?: number; // int32
             steaCases?: STEACaseDto[] | null;
         }
+        export type Source = 0 | 1; // int32
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -282,6 +283,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             lastChangedDate?: Date | null; // date-time
             costYear?: number; // int32
+            source?: Source /* int32 */;
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid

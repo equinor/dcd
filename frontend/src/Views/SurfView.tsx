@@ -167,6 +167,9 @@ const SurfView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Typography>
+                {`Source: ${surf?.source === 0 || surf?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
             <Wrapper>
                 <WrapperColumn>
                     <Label htmlFor="name" label="Artificial lift" />

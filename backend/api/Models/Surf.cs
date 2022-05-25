@@ -25,6 +25,7 @@ namespace api.Models
         public Currency Currency { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
         public int? CostYear { get; set; }
+        public Source Source { get; set; }
     }
 
     public class SurfCostProfile : TimeSeriesCost

@@ -22,6 +22,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
     currency?: Components.Schemas.Currency
     lastChangedDate?: Date | null
     costYear?: number | undefined
+    source?: Components.Schemas.Source
 
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {
@@ -43,6 +44,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
             this.currency = data.currency ?? 0
             this.lastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
             this.costYear = data.costYear
+            this.source = data.source
         } else {
             this.id = EMPTY_GUID
             this.name = ""
