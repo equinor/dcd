@@ -16,7 +16,6 @@ namespace api.Dtos
         public int CostYear { get; set; }
         public Source Source { get; set; }
         public DateTimeOffset? ProspVersion { get; set; }
-        
     }
 
     public class TransportCostProfileDto : TimeSeriesCostDto
