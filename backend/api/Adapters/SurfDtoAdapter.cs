@@ -28,7 +28,8 @@ namespace api.Adapters
                 CostProfile = Convert(surf.CostProfile),
                 LastChangedDate = surf.LastChangedDate,
                 CostYear = surf.CostYear,
-                Source = surf.Source
+                Source = surf.Source,
+                ProspVersion = surf.ProspVersion
             };
 
             if (surf.CostProfile != null)

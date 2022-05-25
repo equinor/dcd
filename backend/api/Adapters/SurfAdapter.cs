@@ -26,7 +26,8 @@ namespace api.Adapters
                 Currency = surfDto.Currency,
                 LastChangedDate = surfDto.LastChangedDate,
                 CostYear = surfDto.CostYear,
-                Source = surfDto.Source
+                Source = surfDto.Source,
+                ProspVersion = surfDto.ProspVersion
             };
 
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
@@ -56,6 +57,7 @@ namespace api.Adapters
             existing.LastChangedDate = surfDto.LastChangedDate;
             existing.CostYear = surfDto.CostYear;
             existing.Source = surfDto.Source;
+            existing.ProspVersion = surfDto.ProspVersion;
         }
 
         private static SurfCostProfile? Convert(SurfCostProfileDto? costprofile, Surf surf)

@@ -72,6 +72,7 @@ namespace api.Services
             var surf = SurfAdapter.Convert(surfDto);
             var project = _projectService.GetProject(surf.ProjectId);
             surf.Project = project;
+            surf.ProspVersion = null;
             surf.LastChangedDate = DateTimeOffset.Now;
             _context.Surfs!.Add(surf);
             _context.SaveChanges();

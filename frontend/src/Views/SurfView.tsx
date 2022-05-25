@@ -153,8 +153,8 @@ const SurfView = () => {
                     assetType={AssetTypeEnum.surfs}
                 />
                 <Typography variant="h6">
-                    {surf?.lastChangedDate?.toLocaleString()
-                        ? `Last changed: ${surf?.lastChangedDate?.toLocaleString()}` : ""}
+                    {surf?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${surf?.LastChangedDate?.toLocaleString()}` : ""}
                 </Typography>
             </Wrapper>
             <AssetName
@@ -167,6 +167,9 @@ const SurfView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Typography>
+                {`Prosp version: ${surf?.ProspVersion ? surf?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+            </Typography>
             <Typography>
                 {`Source: ${surf?.source === 0 || surf?.source === undefined ? "ConceptApp" : "Prosp"}`}
             </Typography>

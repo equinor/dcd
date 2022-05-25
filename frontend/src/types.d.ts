@@ -281,9 +281,10 @@ declare namespace Components {
             waterInjectorCount?: number; // int32
             productionFlowline?: ProductionFlowline /* int32 */;
             currency?: Currency /* int32 */;
-            lastChangedDate?: Date | null; // date-time
+            lastChangedDate?: string | null; // date-time
             costYear?: number; // int32
             source?: Source /* int32 */;
+            prospVersion?: string | null; // date-time
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
