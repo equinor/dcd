@@ -25,8 +25,6 @@ import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import NumberInputInherited from "../Components/NumberInputInherited"
-// import MetadataMismatchWarning from "../Components/MetadataMismatchWarning"
-// import MetadataTypeEnum from "../models/MetadataTypeEnum"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
