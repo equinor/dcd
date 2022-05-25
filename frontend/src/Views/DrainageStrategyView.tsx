@@ -166,30 +166,40 @@ const DrainageStrategyView = () => {
                     setHasChanges={setHasChanges}
                     integer={false}
                     label={`NGL yield ${project?.physUnit === 0 ? "(tonnes/MSm³)" : "(Oilfield)"}`}
+                    caseValue={undefined}
+                    name="NGL yield"
                 />
                 <NumberInput
                     value={drainageStrategy?.producerCount ?? 0}
                     integer
                     disabled
                     label="Producer count"
+                    caseValue={undefined}
+                    name="Producer count"
                 />
                 <NumberInput
                     value={drainageStrategy?.gasInjectorCount ?? 0}
                     integer
                     disabled
                     label="Gas injector count"
+                    caseValue={undefined}
+                    name="Gas injector count"
                 />
                 <NumberInput
                     value={drainageStrategy?.waterInjectorCount ?? 0}
                     integer
                     disabled
                     label="Water injector count"
+                    caseValue={undefined}
+                    name="Water injector count"
                 />
                 <NumberInput
                     value={caseItem?.facilitiesAvailability ?? 0}
                     integer={false}
                     disabled
-                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                    label="Facilities availability (%)"
+                    caseValue={undefined}
+                    name="Facilities availability"
                 />
             </Wrapper>
             <TimeSeries

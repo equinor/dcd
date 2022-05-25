@@ -177,6 +177,8 @@ const SurfView = () => {
                     integer
                     disabled
                     label="Producer count"
+                    caseValue={undefined}
+                    name="Topside dry weight"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -185,6 +187,8 @@ const SurfView = () => {
                     integer
                     disabled
                     label="Gas injector count"
+                    caseValue={undefined}
+                    name="Topside dry weight"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -193,6 +197,8 @@ const SurfView = () => {
                     integer
                     disabled
                     label="Water injector count"
+                    caseValue={undefined}
+                    name="Topside dry weight"
                 />
             </Wrapper>
             <Wrapper>
@@ -202,6 +208,8 @@ const SurfView = () => {
                     value={riserCount ?? 0}
                     integer
                     label="Riser count"
+                    caseValue={undefined}
+                    name="Riser count"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -209,6 +217,8 @@ const SurfView = () => {
                     value={templateCount ?? 0}
                     integer
                     label="Template count"
+                    caseValue={undefined}
+                    name="Template count"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -216,6 +226,8 @@ const SurfView = () => {
                     value={infieldPipelineSystemLength ?? 0}
                     integer
                     label={`Length of production lines ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
+                    caseValue={undefined}
+                    name="Length of production lines"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -223,6 +235,8 @@ const SurfView = () => {
                     value={umbilicalSystemLength ?? 0}
                     integer
                     label={`Length of umbilical system ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
+                    caseValue={undefined}
+                    name="Length of umbilical system"
                 />
             </Wrapper>
             <Maturity

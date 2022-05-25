@@ -139,6 +139,8 @@ const TransportView = () => {
                     value={gasExportPipelineLength ?? 0}
                     integer
                     label="Length of gas export pipeline"
+                    caseValue={undefined}
+                    name="Length of gas export pipeline"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -146,6 +148,8 @@ const TransportView = () => {
                     value={oilExportPipelineLength ?? 0}
                     integer
                     label="Length of oil export pipeline"
+                    caseValue={undefined}
+                    name="Length of oil export pipeline"
                 />
             </Wrapper>
             <Maturity

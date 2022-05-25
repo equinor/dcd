@@ -24,6 +24,8 @@ import NumberInput from "../Components/NumberInput"
 import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+// import MetadataMismatchWarning from "../Components/MetadataMismatchWarning"
+// import MetadataTypeEnum from "../models/MetadataTypeEnum"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -41,6 +43,7 @@ const TopsideView = () => {
     const [costProfile, setCostProfile] = useState<TopsideCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -66,6 +69,7 @@ const TopsideView = () => {
                     newTopside = new Topside()
                     newTopside.artificialLift = caseResult?.artificialLift
                     newTopside.currency = project.currency
+                    newTopside.facilitiesAvailability = caseResult?.facilitiesAvailability
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
@@ -74,6 +78,7 @@ const TopsideView = () => {
                 setGasCapacity(newTopside?.gasCapacity)
                 setMaturity(newTopside?.maturity ?? undefined)
                 setCurrency(newTopside.currency ?? 0)
+                setFacilitiesAvailability(newTopside?.facilitiesAvailability)
 
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
@@ -100,6 +105,7 @@ const TopsideView = () => {
             newTopside.costProfile = costProfile
             newTopside.cessationCostProfile = cessationCostProfile
             newTopside.currency = currency
+            newTopside.facilitiesAvailability = facilitiesAvailability
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
                     caseItem?.DG4Date?.getFullYear(),
@@ -110,7 +116,8 @@ const TopsideView = () => {
             }
             setTopside(newTopside)
         }
-    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency])
+    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency,
+        facilitiesAvailability])
 
     return (
         <AssetViewDiv>
@@ -152,6 +159,8 @@ const TopsideView = () => {
                     value={dryweight ?? 0}
                     integer
                     label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
+                    caseValue={undefined}
+                    name="Topside dry weight"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -159,6 +168,8 @@ const TopsideView = () => {
                     value={oilCapacity ?? 0}
                     integer={false}
                     label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
+                    caseValue={undefined}
+                    name="Capacity oil"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -166,12 +177,23 @@ const TopsideView = () => {
                     value={gasCapacity ?? 0}
                     integer={false}
                     label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
+                    caseValue={undefined}
+                    name="Capacity gas"
                 />
+                {/* <MetadataMismatchWarning
+                    caseMetadataValue={caseItem?.facilitiesAvailability}
+                    assetMetadataValue={facilitiesAvailability}
+                    metaData={MetadataTypeEnum.facilitiesAvailability}
+                /> */}
                 <NumberInput
-                    value={caseItem?.facilitiesAvailability ?? 0}
-                    integer={false}
-                    disabled
-                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                    setHasChanges={setHasChanges}
+                    setValue={setFacilitiesAvailability}
+                    value={facilitiesAvailability ?? 0}
+                    integer
+                    disabled={false}
+                    label="Facilities availability (%)"
+                    caseValue={caseItem?.facilitiesAvailability}
+                    name="Facilities availability"
                 />
             </Wrapper>
             <Maturity
