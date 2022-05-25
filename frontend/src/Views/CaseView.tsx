@@ -183,8 +183,6 @@ function CaseView() {
                         integer
                         disabled={false}
                         label="Producer count"
-                        caseValue={undefined}
-                        name="Producer count"
                     />
                     <NumberInput
                         setValue={setGasInjectorCount}
@@ -192,8 +190,6 @@ function CaseView() {
                         integer
                         disabled={false}
                         label="Gas injector count"
-                        caseValue={undefined}
-                        name="Gas injector count"
                     />
                     <NumberInput
                         setValue={setWaterInjectorCount}
@@ -201,8 +197,6 @@ function CaseView() {
                         integer
                         disabled={false}
                         label="Water injector count"
-                        caseValue={undefined}
-                        name="Water injector count"
                     />
                     <NumberInput
                         setValue={setFacilitiesAvailability}
@@ -210,8 +204,6 @@ function CaseView() {
                         integer
                         disabled={false}
                         label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
-                        caseValue={undefined}
-                        name="Facilities availability"
                     />
                 </Wrapper>
                 <CaseAsset
