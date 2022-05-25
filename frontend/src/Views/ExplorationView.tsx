@@ -125,8 +125,6 @@ const ExplorationView = () => {
                     integer={false}
                     disabled={false}
                     label="Rig mob demob"
-                    caseValue={undefined}
-                    name="Rig mob demob"
                 />
             </Wrapper>
             <TimeSeries

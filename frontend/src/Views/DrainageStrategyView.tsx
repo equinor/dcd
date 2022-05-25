@@ -29,6 +29,7 @@ import { ProductionProfileOil } from "../models/assets/drainagestrategy/Producti
 import { ProductionProfileWater } from "../models/assets/drainagestrategy/ProductionProfileWater"
 import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
+import NumberInputInherited from "../Components/NumberInputInherited"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -166,39 +167,37 @@ const DrainageStrategyView = () => {
                     setHasChanges={setHasChanges}
                     integer={false}
                     label={`NGL yield ${project?.physUnit === 0 ? "(tonnes/MSm³)" : "(Oilfield)"}`}
-                    caseValue={undefined}
-                    name="NGL yield"
                 />
-                <NumberInput
+                <NumberInputInherited
                     value={drainageStrategy?.producerCount ?? 0}
                     integer
                     disabled
                     label="Producer count"
-                    caseValue={undefined}
+                    caseValue={caseItem?.producerCount}
                     name="Producer count"
                 />
-                <NumberInput
+                <NumberInputInherited
                     value={drainageStrategy?.gasInjectorCount ?? 0}
                     integer
                     disabled
                     label="Gas injector count"
-                    caseValue={undefined}
+                    caseValue={caseItem?.gasInjectorCount}
                     name="Gas injector count"
                 />
-                <NumberInput
+                <NumberInputInherited
                     value={drainageStrategy?.waterInjectorCount ?? 0}
                     integer
                     disabled
                     label="Water injector count"
-                    caseValue={undefined}
+                    caseValue={caseItem?.waterInjectorCount}
                     name="Water injector count"
                 />
-                <NumberInput
+                <NumberInputInherited
                     value={caseItem?.facilitiesAvailability ?? 0}
                     integer={false}
                     disabled
                     label="Facilities availability (%)"
-                    caseValue={undefined}
+                    caseValue={caseItem?.facilitiesAvailability}
                     name="Facilities availability"
                 />
             </Wrapper>

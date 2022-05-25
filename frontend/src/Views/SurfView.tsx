@@ -24,6 +24,7 @@ import ProductionFlowline from "../Components/ProductionFlowline"
 import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
 import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import NumberInputInherited from "../Components/NumberInputInherited"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -170,35 +171,35 @@ const SurfView = () => {
                 </Dg4Field>
             </Wrapper>
             <Wrapper>
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setProducerCount}
                     value={producerCount ?? 0}
                     integer
                     disabled
                     label="Producer count"
-                    caseValue={undefined}
-                    name="Topside dry weight"
+                    caseValue={caseItem?.producerCount}
+                    name="Producer count"
                 />
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setGasInjectorCount}
                     value={gasInjectorCount ?? 0}
                     integer
                     disabled
                     label="Gas injector count"
-                    caseValue={undefined}
-                    name="Topside dry weight"
+                    caseValue={caseItem?.gasInjectorCount}
+                    name="Gas injector count"
                 />
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setWaterInjectorCount}
                     value={waterInjectorCount ?? 0}
                     integer
                     disabled
                     label="Water injector count"
-                    caseValue={undefined}
-                    name="Topside dry weight"
+                    caseValue={caseItem?.waterInjectorCount}
+                    name="Water injector count"
                 />
             </Wrapper>
             <Wrapper>
@@ -208,8 +209,6 @@ const SurfView = () => {
                     value={riserCount ?? 0}
                     integer
                     label="Riser count"
-                    caseValue={undefined}
-                    name="Riser count"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -217,8 +216,6 @@ const SurfView = () => {
                     value={templateCount ?? 0}
                     integer
                     label="Template count"
-                    caseValue={undefined}
-                    name="Template count"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -226,8 +223,6 @@ const SurfView = () => {
                     value={infieldPipelineSystemLength ?? 0}
                     integer
                     label={`Length of production lines ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
-                    caseValue={undefined}
-                    name="Length of production lines"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -235,8 +230,6 @@ const SurfView = () => {
                     value={umbilicalSystemLength ?? 0}
                     integer
                     label={`Length of umbilical system ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
-                    caseValue={undefined}
-                    name="Length of umbilical system"
                 />
             </Wrapper>
             <Maturity

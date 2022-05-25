@@ -148,8 +148,6 @@ function WellProjectView() {
                     setHasChanges={setHasChanges}
                     integer={false}
                     label="Rig mob demob"
-                    caseValue={undefined}
-                    name="Rig mob demob"
                 />
                 <NumberInput
                     setValue={setAnnualWellInterventionCost}
@@ -157,8 +155,6 @@ function WellProjectView() {
                     setHasChanges={setHasChanges}
                     integer={false}
                     label="Annual well intervention cost"
-                    caseValue={undefined}
-                    name="Annual well intervention cost"
                 />
                 <NumberInput
                     setValue={setPluggingAndAbandonment}
@@ -166,8 +162,6 @@ function WellProjectView() {
                     setHasChanges={setHasChanges}
                     integer={false}
                     label="Plugging and abandonment"
-                    caseValue={undefined}
-                    name="Plugging and abandonment"
                 />
             </Wrapper>
             <TimeSeries

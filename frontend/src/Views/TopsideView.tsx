@@ -24,6 +24,7 @@ import NumberInput from "../Components/NumberInput"
 import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import NumberInputInherited from "../Components/NumberInputInherited"
 // import MetadataMismatchWarning from "../Components/MetadataMismatchWarning"
 // import MetadataTypeEnum from "../models/MetadataTypeEnum"
 
@@ -159,8 +160,6 @@ const TopsideView = () => {
                     value={dryweight ?? 0}
                     integer
                     label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
-                    caseValue={undefined}
-                    name="Topside dry weight"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -168,8 +167,6 @@ const TopsideView = () => {
                     value={oilCapacity ?? 0}
                     integer={false}
                     label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
-                    caseValue={undefined}
-                    name="Capacity oil"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -177,15 +174,8 @@ const TopsideView = () => {
                     value={gasCapacity ?? 0}
                     integer={false}
                     label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
-                    caseValue={undefined}
-                    name="Capacity gas"
                 />
-                {/* <MetadataMismatchWarning
-                    caseMetadataValue={caseItem?.facilitiesAvailability}
-                    assetMetadataValue={facilitiesAvailability}
-                    metaData={MetadataTypeEnum.facilitiesAvailability}
-                /> */}
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setFacilitiesAvailability}
                     value={facilitiesAvailability ?? 0}

@@ -1,5 +1,7 @@
-import { Input, Label } from "@equinor/eds-core-react"
-import { ChangeEventHandler, Dispatch, SetStateAction } from "react"
+import { Input, Label, Typography } from "@equinor/eds-core-react"
+import {
+    ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
+} from "react"
 import {
     WrapperColumn,
 } from "../Views/Asset/StyledAssetComponents"
@@ -11,16 +13,35 @@ interface Props {
     integer: boolean,
     disabled?: boolean
     label: string
+    caseValue: number | undefined,
+    name: string | undefined,
 }
 
-const NumberInput = ({
+const NumberInputInherited = ({
     setValue,
     value,
     setHasChanges,
     integer,
     disabled,
     label,
+    caseValue,
+    name,
 }: Props) => {
+    const [warning, setWarning] = useState<string>("")
+
+    const resetWarning = () => {
+        setWarning("")
+    }
+
+    useEffect(() => {
+        (async () => {
+            if (caseValue !== null && caseValue !== undefined && caseValue !== value) {
+                return setWarning(`${name} does not match case ${name}`)
+            }
+            return resetWarning()
+        })()
+    })
+
     const onChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         if (setValue) {
             setValue(Number(e.target.value))
@@ -36,6 +57,7 @@ const NumberInput = ({
 
     return (
         <WrapperColumn style={{ paddingLeft: 10 }}>
+            <Typography variant="h6" color="red">{warning}</Typography>
             <Label htmlFor="NumberInput" label={label} />
             <Input
                 id="NumberInput"
@@ -53,4 +75,4 @@ const NumberInput = ({
     )
 }
 
-export default NumberInput
+export default NumberInputInherited
