@@ -184,7 +184,8 @@ declare namespace Components {
             sum?: number; // double
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
-        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory =
+            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
@@ -220,6 +221,7 @@ declare namespace Components {
             startYear?: number; // int32
             steaCases?: STEACaseDto[] | null;
         }
+        export type Source = 0 | 1; // int32
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -336,6 +338,10 @@ declare namespace Components {
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
             currency?: Currency /* int32 */;
+            lastChangedDate?: string | null; // date-time
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            prospVersion?: string | null; // date-time
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid
