@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 
 using api.Adapters;
+using api.Dtos;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -139,8 +140,11 @@ namespace tests
             fixture.context.WellProjects.Add(wellProjectToDelete);
             fixture.context.SaveChanges();
 
+            // Act
+            wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
+
             // Act, assert
-            Assert.Throws<ArgumentException>(() => wellProjectService.DeleteWellProject(new Guid()));
+            Assert.Throws<ArgumentException>(() => wellProjectService.DeleteWellProject(wellProjectToDelete.Id));
         }
 
         [Fact]
@@ -158,7 +162,7 @@ namespace tests
             updatedWellProject.Id = oldWellProject.Id;
 
             // Act
-            var projectResult = wellProjectService.UpdateWellProject(WellProjectDtoAdapter.Convert(updatedWellProject));
+            var projectResult = wellProjectService.UpdateWellProject(updatedWellProject);
 
             // Assert
             var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == updatedWellProject.Name);
@@ -180,7 +184,7 @@ namespace tests
             var updatedWellProject = CreateUpdatedWellProject(project);
 
             // Act, assert
-            // Assert.Throws<ArgumentException>(() => wellProjectService.UpdateWellProject(updatedWellProject));
+            Assert.Throws<ArgumentException>(() => wellProjectService.UpdateWellProject(updatedWellProject));
         }
 
         private static WellProject CreateTestWellProject(Project project)
@@ -211,9 +215,9 @@ namespace tests
                 );
         }
 
-        private static WellProject CreateUpdatedWellProject(Project project)
+        private static WellProjectDto CreateUpdatedWellProject(Project project)
         {
-            return new WellProjectBuilder
+            return WellProjectDtoAdapter.Convert(new WellProjectBuilder
             {
                 Name = "updated name",
                 ArtificialLift = ArtificialLift.GasLift,
@@ -238,7 +242,8 @@ namespace tests
                     StartYear = 2030,
                     Values = new int[] { 13, 18, 34 }
                 }
-                );
+                )
+            );
         }
     }
 }
