@@ -66,11 +66,6 @@ namespace api.Dtos
         }
     }
 
-    public class TimeSeriesFacilityCostDto : TimeSeriesCostDto
-    {
-        public Source Source { get; set; }
-    }
-
     public class TimeSeriesVolumeDto : TimeSeriesDto<double>
     {
         public double Sum
