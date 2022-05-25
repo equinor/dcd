@@ -162,6 +162,15 @@ const TransportView = () => {
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
+                    setValue={setCostYear}
+                    value={costYear ?? 0}
+                    integer
+                    label="Cost year"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
                     setValue={setGasExportPipelineLength}
                     value={gasExportPipelineLength ?? 0}
                     integer
@@ -173,13 +182,6 @@ const TransportView = () => {
                     value={oilExportPipelineLength ?? 0}
                     integer
                     label="Length of oil export pipeline"
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setCostYear}
-                    value={costYear ?? 0}
-                    integer
-                    label="Cost year"
                 />
             </Wrapper>
             <Maturity
