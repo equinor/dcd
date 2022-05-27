@@ -17,7 +17,11 @@ namespace api.Adapters
                 Maturity = transportDto.Maturity,
                 GasExportPipelineLength = transportDto.GasExportPipelineLength,
                 OilExportPipelineLength = transportDto.OilExportPipelineLength,
-                Currency = transportDto.Currency
+                Currency = transportDto.Currency,
+                LastChangedDate = transportDto.LastChangedDate,
+                CostYear = transportDto.CostYear,
+                Source = transportDto.Source,
+                ProspVersion = transportDto.ProspVersion
             };
 
             if (transportDto.CostProfile != null)
@@ -43,6 +47,10 @@ namespace api.Adapters
             existing.Currency = transportDto.Currency;
             existing.CostProfile = Convert(transportDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(transportDto.CessationCostProfile, existing);
+            existing.LastChangedDate = transportDto.LastChangedDate;
+            existing.CostYear = transportDto.CostYear;
+            existing.Source = transportDto.Source;
+            existing.ProspVersion = transportDto.ProspVersion;
         }
 
         private static TransportCostProfile? Convert(TransportCostProfileDto? costprofile, Transport transport)

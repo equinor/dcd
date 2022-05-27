@@ -20,7 +20,19 @@ namespace api.Adapters
                 Maturity = topside.Maturity,
                 Currency = topside.Currency,
                 CostProfile = Convert(topside.CostProfile),
-                CessationCostProfile = Convert(topside.CessationCostProfile)
+                CessationCostProfile = Convert(topside.CessationCostProfile),
+                FuelConsumption = topside.FuelConsumption,
+                FlaredGas = topside.FlaredGas,
+                CO2ShareOilProfile = topside.CO2ShareOilProfile,
+                CO2ShareGasProfile = topside.CO2ShareGasProfile,
+                CO2ShareWaterInjectionProfile = topside.CO2ShareWaterInjectionProfile,
+                CO2OnMaxOilProfile = topside.CO2OnMaxOilProfile,
+                CO2OnMaxGasProfile = topside.CO2OnMaxGasProfile,
+                CO2OnMaxWaterInjectionProfile = topside.CO2OnMaxWaterInjectionProfile,
+                CostYear = topside.CostYear,
+                ProspVersion = topside.ProspVersion,
+                LastChangedDate = topside.LastChangedDate,
+                Source = topside.Source
             };
             return topsideDto;
         }
