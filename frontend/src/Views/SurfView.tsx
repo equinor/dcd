@@ -180,7 +180,6 @@ const SurfView = () => {
                     setValue={setProducerCount}
                     value={producerCount ?? 0}
                     integer
-                    disabled
                     label="Producer count"
                     caseValue={caseItem?.producerCount}
                 />
@@ -189,7 +188,6 @@ const SurfView = () => {
                     setValue={setGasInjectorCount}
                     value={gasInjectorCount ?? 0}
                     integer
-                    disabled
                     label="Gas injector count"
                     caseValue={caseItem?.gasInjectorCount}
                 />
@@ -198,7 +196,6 @@ const SurfView = () => {
                     setValue={setWaterInjectorCount}
                     value={waterInjectorCount ?? 0}
                     integer
-                    disabled
                     label="Water injector count"
                     caseValue={caseItem?.waterInjectorCount}
                 />

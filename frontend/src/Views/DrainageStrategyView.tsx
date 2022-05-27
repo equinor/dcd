@@ -50,6 +50,10 @@ const DrainageStrategyView = () => {
     const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjection>()
     const [nGLYield, setNGLYield] = useState<number>()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
+    const [producerCount, setProducerCount] = useState<number>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
@@ -96,6 +100,10 @@ const DrainageStrategyView = () => {
                 setProductionProfileWaterInjection(newDrainage.productionProfileWaterInjection)
                 setProductionProfileNGL(newDrainage.productionProfileNGL)
                 setArtificialLift(newDrainage.artificialLift)
+                setGasInjectorCount(newDrainage?.gasInjectorCount)
+                setWaterInjectorCount(newDrainage?.waterInjectorCount)
+                setProducerCount(newDrainage?.producerCount)
+                setFacilitiesAvailability(newDrainage?.facilitiesAvailability)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -124,6 +132,10 @@ const DrainageStrategyView = () => {
         newDrainage.productionProfileWaterInjection = productionProfileWaterInjection
         newDrainage.productionProfileNGL = productionProfileNGL
         newDrainage.artificialLift = artificialLift
+        newDrainage.producerCount = producerCount
+        newDrainage.gasInjectorCount = gasInjectorCount
+        newDrainage.waterInjectorCount = waterInjectorCount
+        newDrainage.facilitiesAvailability = facilitiesAvailability
         setDrainageStrategy(newDrainage)
 
         if (caseItem?.DG4Date) {
@@ -139,7 +151,8 @@ const DrainageStrategyView = () => {
         }
     }, [nGLYield, co2Emissions, netSalesGas, fuelFlaringAndLosses,
         productionProfileGas, productionProfileOil, productionProfileWater, productionProfileWaterInjection,
-        productionProfileNGL, artificialLift])
+        productionProfileNGL, artificialLift, producerCount, gasInjectorCount, waterInjectorCount,
+        facilitiesAvailability])
 
     return (
         <AssetViewDiv>
@@ -174,29 +187,33 @@ const DrainageStrategyView = () => {
                 />
                 <NumberInputInherited
                     value={drainageStrategy?.producerCount ?? 0}
+                    setValue={setProducerCount}
+                    setHasChanges={setHasChanges}
                     integer
-                    disabled
                     label="Producer count"
                     caseValue={caseItem?.producerCount}
                 />
                 <NumberInputInherited
                     value={drainageStrategy?.gasInjectorCount ?? 0}
+                    setValue={setGasInjectorCount}
+                    setHasChanges={setHasChanges}
                     integer
-                    disabled
                     label="Gas injector count"
                     caseValue={caseItem?.gasInjectorCount}
                 />
                 <NumberInputInherited
                     value={drainageStrategy?.waterInjectorCount ?? 0}
+                    setValue={setWaterInjectorCount}
+                    setHasChanges={setHasChanges}
                     integer
-                    disabled
                     label="Water injector count"
                     caseValue={caseItem?.waterInjectorCount}
                 />
                 <NumberInputInherited
-                    value={caseItem?.facilitiesAvailability ?? 0}
+                    value={drainageStrategy?.facilitiesAvailability ?? 0}
+                    setValue={setFacilitiesAvailability}
+                    setHasChanges={setHasChanges}
                     integer={false}
-                    disabled
                     label="Facilities availability (%)"
                     caseValue={caseItem?.facilitiesAvailability}
                 />
