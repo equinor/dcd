@@ -11,7 +11,7 @@ import {
     ChangeEvent, Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
-import { Wrapper } from "../Views/Asset/StyledAssetComponents"
+import { WrapperInherited } from "../Views/Asset/StyledAssetComponents"
 
 const ArtificialLiftDropdown = styled(NativeSelect)`
 width: 20rem;
@@ -45,10 +45,8 @@ const ArtificialLiftInherited = ({
         (async () => {
             if (caseArtificialLift !== currentValue) {
                 return setIsMismatchedToCase(true)
-                // return setWarning(`${name} does not match case ${name}`)
             }
             return setIsMismatchedToCase(false)
-            // return resetWarning()
         })()
     })
 
@@ -82,7 +80,7 @@ const ArtificialLiftInherited = ({
     }
 
     return (
-        <Wrapper>
+        <WrapperInherited>
             <ArtificialLiftDropdown
                 label="Artificial Lift"
                 id="ArtificialLift"
@@ -112,7 +110,7 @@ const ArtificialLiftInherited = ({
                     </Tooltip>
                 </ActionsContainer>
             </EdsProvider>
-        </Wrapper>
+        </WrapperInherited>
     )
 }
 
