@@ -21,6 +21,14 @@ export const Wrapper = styled.div`
     flex-direction: row;
 `
 
+export const WrapperInherited = styled.div`
+    display: flex;
+    flex-direction: row;
+    > *:not(:last-child) {
+        color: blue;
+    }
+`
+
 export const WrapperColumn = styled.div`
     display: flex;
     flex-direction: column;

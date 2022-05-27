@@ -8,8 +8,8 @@ import {
 } from "react"
 import styled from "styled-components"
 import {
-    Wrapper,
     WrapperColumn,
+    WrapperInherited,
 } from "../Views/Asset/StyledAssetComponents"
 
 const ActionsContainer = styled.div`
@@ -61,8 +61,8 @@ const NumberInputInherited = ({
 
     return (
         <WrapperColumn style={{ paddingLeft: 10 }}>
-            <Wrapper>
-                <Label htmlFor="NumberInput" label={label} color="blue" />
+            <WrapperInherited>
+                <Label htmlFor="NumberInput" label={label} />
                 <EdsProvider density="compact">
                     <ActionsContainer hidden={!isMismatchedToCase}>
                         <Tooltip
@@ -79,7 +79,7 @@ const NumberInputInherited = ({
                         </Tooltip>
                     </ActionsContainer>
                 </EdsProvider>
-            </Wrapper>
+            </WrapperInherited>
             <Input
                 id="NumberInput"
                 type="number"
