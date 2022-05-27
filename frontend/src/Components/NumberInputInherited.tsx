@@ -1,10 +1,20 @@
-import { Input, Label, Typography } from "@equinor/eds-core-react"
+/* eslint-disable camelcase */
+import {
+    Button, EdsProvider, Icon, Input, Label, Tooltip,
+} from "@equinor/eds-core-react"
+import { info_circle } from "@equinor/eds-icons"
 import {
     ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
 } from "react"
+import styled from "styled-components"
 import {
+    Wrapper,
     WrapperColumn,
 } from "../Views/Asset/StyledAssetComponents"
+
+const ActionsContainer = styled.div`
+    margin-top: -1rem;
+`
 
 interface Props {
     setValue?: Dispatch<SetStateAction<number | undefined>>
@@ -14,7 +24,6 @@ interface Props {
     disabled?: boolean
     label: string
     caseValue: number | undefined,
-    name: string | undefined,
 }
 
 const NumberInputInherited = ({
@@ -25,20 +34,15 @@ const NumberInputInherited = ({
     disabled,
     label,
     caseValue,
-    name,
 }: Props) => {
-    const [warning, setWarning] = useState<string>("")
-
-    const resetWarning = () => {
-        setWarning("")
-    }
+    const [isMismatchedToCase, setIsMismatchedToCase] = useState<boolean | undefined>()
 
     useEffect(() => {
         (async () => {
             if (caseValue !== null && caseValue !== undefined && caseValue !== value) {
-                return setWarning(`${name} does not match case ${name}`)
+                return setIsMismatchedToCase(true)
             }
-            return resetWarning()
+            return setIsMismatchedToCase(false)
         })()
     })
 
@@ -57,8 +61,25 @@ const NumberInputInherited = ({
 
     return (
         <WrapperColumn style={{ paddingLeft: 10 }}>
-            <Typography variant="h6" color="red">{warning}</Typography>
-            <Label htmlFor="NumberInput" label={label} />
+            <Wrapper>
+                <Label htmlFor="NumberInput" label={label} color="blue" />
+                <EdsProvider density="compact">
+                    <ActionsContainer hidden={!isMismatchedToCase}>
+                        <Tooltip
+                            title="Data does not match data on case. Using this data will overwrite asset data."
+                            hidden={!isMismatchedToCase}
+                        >
+                            <Button
+                                variant="ghost_icon"
+                                aria-label="Case mismatch"
+                                color="danger"
+                            >
+                                <Icon data={info_circle} />
+                            </Button>
+                        </Tooltip>
+                    </ActionsContainer>
+                </EdsProvider>
+            </Wrapper>
             <Input
                 id="NumberInput"
                 type="number"

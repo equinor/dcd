@@ -13,7 +13,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     oilCapacity?: number | undefined
     gasCapacity?: number | undefined
     facilitiesAvailability?: number | undefined
-    artificialLift?: Components.Schemas.ArtificialLift | undefined
+    artificialLift?: Components.Schemas.ArtificialLift
     maturity?: Components.Schemas.Maturity | undefined
     currency?: Components.Schemas.Currency
 

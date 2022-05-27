@@ -1,5 +1,5 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -16,7 +16,7 @@ import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
@@ -30,6 +30,7 @@ import { ProductionProfileWater } from "../models/assets/drainagestrategy/Produc
 import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
 import NumberInputInherited from "../Components/NumberInputInherited"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -48,6 +49,7 @@ const DrainageStrategyView = () => {
     // eslint-disable-next-line max-len
     const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjection>()
     const [nGLYield, setNGLYield] = useState<number>()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
 
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
@@ -93,6 +95,7 @@ const DrainageStrategyView = () => {
                 setProductionProfileWater(newDrainage.productionProfileWater)
                 setProductionProfileWaterInjection(newDrainage.productionProfileWaterInjection)
                 setProductionProfileNGL(newDrainage.productionProfileNGL)
+                setArtificialLift(newDrainage.artificialLift)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -120,6 +123,7 @@ const DrainageStrategyView = () => {
         newDrainage.productionProfileWater = productionProfileWater
         newDrainage.productionProfileWaterInjection = productionProfileWaterInjection
         newDrainage.productionProfileNGL = productionProfileNGL
+        newDrainage.artificialLift = artificialLift
         setDrainageStrategy(newDrainage)
 
         if (caseItem?.DG4Date) {
@@ -135,7 +139,7 @@ const DrainageStrategyView = () => {
         }
     }, [nGLYield, co2Emissions, netSalesGas, fuelFlaringAndLosses,
         productionProfileGas, productionProfileOil, productionProfileWater, productionProfileWaterInjection,
-        productionProfileNGL])
+        productionProfileNGL, artificialLift])
 
     return (
         <AssetViewDiv>
@@ -152,11 +156,11 @@ const DrainageStrategyView = () => {
             </Wrapper>
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(drainageStrategy?.artificialLift)}
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
                     />
                 </WrapperColumn>
             </Wrapper>
@@ -174,7 +178,6 @@ const DrainageStrategyView = () => {
                     disabled
                     label="Producer count"
                     caseValue={caseItem?.producerCount}
-                    name="Producer count"
                 />
                 <NumberInputInherited
                     value={drainageStrategy?.gasInjectorCount ?? 0}
@@ -182,7 +185,6 @@ const DrainageStrategyView = () => {
                     disabled
                     label="Gas injector count"
                     caseValue={caseItem?.gasInjectorCount}
-                    name="Gas injector count"
                 />
                 <NumberInputInherited
                     value={drainageStrategy?.waterInjectorCount ?? 0}
@@ -190,7 +192,6 @@ const DrainageStrategyView = () => {
                     disabled
                     label="Water injector count"
                     caseValue={caseItem?.waterInjectorCount}
-                    name="Water injector count"
                 />
                 <NumberInputInherited
                     value={caseItem?.facilitiesAvailability ?? 0}
@@ -198,7 +199,6 @@ const DrainageStrategyView = () => {
                     disabled
                     label="Facilities availability (%)"
                     caseValue={caseItem?.facilitiesAvailability}
-                    name="Facilities availability"
                 />
             </Wrapper>
             <TimeSeries

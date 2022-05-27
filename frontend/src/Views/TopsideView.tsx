@@ -1,5 +1,5 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,7 +14,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -25,6 +25,7 @@ import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import NumberInputInherited from "../Components/NumberInputInherited"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -43,6 +44,7 @@ const TopsideView = () => {
     const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -78,6 +80,7 @@ const TopsideView = () => {
                 setMaturity(newTopside?.maturity ?? undefined)
                 setCurrency(newTopside.currency ?? 0)
                 setFacilitiesAvailability(newTopside?.facilitiesAvailability)
+                setArtificialLift(newTopside.artificialLift)
 
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
@@ -105,6 +108,7 @@ const TopsideView = () => {
             newTopside.cessationCostProfile = cessationCostProfile
             newTopside.currency = currency
             newTopside.facilitiesAvailability = facilitiesAvailability
+            newTopside.artificialLift = artificialLift
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
                     caseItem?.DG4Date?.getFullYear(),
@@ -116,7 +120,7 @@ const TopsideView = () => {
             setTopside(newTopside)
         }
     }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency,
-        facilitiesAvailability])
+        facilitiesAvailability, artificialLift])
 
     return (
         <AssetViewDiv>
@@ -143,11 +147,11 @@ const TopsideView = () => {
             />
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(topside?.artificialLift)}
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
                     />
                 </WrapperColumn>
             </Wrapper>
@@ -181,7 +185,6 @@ const TopsideView = () => {
                     disabled={false}
                     label="Facilities availability (%)"
                     caseValue={caseItem?.facilitiesAvailability}
-                    name="Facilities availability"
                 />
             </Wrapper>
             <Maturity
