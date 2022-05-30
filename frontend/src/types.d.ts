@@ -291,6 +291,7 @@ declare namespace Components {
             costYear?: number; // int32
             source?: Source /* int32 */;
             prospVersion?: string | null; // date-time
+            approvedBy?: string | null;
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
