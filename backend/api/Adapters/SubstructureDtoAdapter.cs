@@ -18,7 +18,10 @@ namespace api.Adapters
                 ApprovedBy = substructure.ApprovedBy,
                 CostYear = substructure.CostYear,
                 CostProfile = Convert(substructure.CostProfile),
-                CessationCostProfile = Convert(substructure.CessationCostProfile)
+                CessationCostProfile = Convert(substructure.CessationCostProfile),
+                ProspVersion = substructure.ProspVersion,
+                Source = substructure.Source,
+                LastChangedDate = substructure.LastChangedDate
             };
             return substructureDto;
         }

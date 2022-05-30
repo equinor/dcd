@@ -16,7 +16,10 @@ namespace api.Adapters
                 Maturity = substructureDto.Maturity,
                 Currency = substructureDto.Currency,
                 ApprovedBy = substructureDto.ApprovedBy,
-                CostYear = substructureDto.CostYear
+                CostYear = substructureDto.CostYear,
+                ProspVersion = substructureDto.ProspVersion,
+                Source = substructureDto.Source,
+                LastChangedDate = substructureDto.LastChangedDate
             };
 
             substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
@@ -34,6 +37,10 @@ namespace api.Adapters
             existing.Maturity = substructureDto.Maturity;
             existing.Currency = substructureDto.Currency;
             existing.ApprovedBy = substructureDto.ApprovedBy;
+            existing.CostYear = substructureDto.CostYear;
+            existing.ProspVersion = substructureDto.ProspVersion;
+            existing.Source = substructureDto.Source;
+            existing.LastChangedDate = substructureDto.LastChangedDate;
 
             existing.CostProfile = Convert(substructureDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(substructureDto.CessationCostProfile, existing);

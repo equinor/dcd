@@ -14,6 +14,9 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
     currency?: Components.Schemas.Currency
     approvedBy?: string | null | undefined
     costYear?: number | undefined
+    ProspVersion?: Date | null
+    source?: Components.Schemas.Source
+    LastChangedDate?: Date | null
 
     constructor(data?: Components.Schemas.SubstructureDto) {
         if (data !== undefined) {
@@ -28,10 +31,21 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
             this.currency = data.currency ?? 0
             this.approvedBy = data.approvedBy ?? ""
             this.costYear = data.costYear
+            this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
+            this.source = data.source
+            this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
         } else {
             this.id = EMPTY_GUID
             this.name = ""
             this.approvedBy = ""
+        }
+    }
+
+    static Copy(data: Substructure) {
+        const substructureCopy: Substructure = new Substructure(data)
+        return {
+            ...substructureCopy,
+            ProspVersion: data.ProspVersion,
         }
     }
 

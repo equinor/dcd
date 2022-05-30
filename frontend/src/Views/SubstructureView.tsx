@@ -12,7 +12,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSubstructureService } from "../Services/SubstructureService"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
@@ -25,7 +25,6 @@ import { SubstructureCostProfile } from "../models/assets/substructure/Substruct
 import { SubstructureCessationCostProfile } from "../models/assets/substructure/SubstructureCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import ApprovedBy from "../Components/ApprovedBy"
-import CostYear from "../Components/CostYear"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -43,7 +42,7 @@ const SubstructureView = () => {
     const [cessationCostProfile, setCessationCostProfile] = useState<SubstructureCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [approvedBy, setApprovedBy] = useState<string>("")
-    const [costYear, setCostYear] = useState<number>()
+    const [costYear, setCostYear] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -141,11 +140,29 @@ const SubstructureView = () => {
                 approvedBy={approvedBy}
                 setHasChanges={setHasChanges}
             />
-            <CostYear
-                setCostYear={setCostYear}
-                costYear={costYear}
-                setHasChanges={setHasChanges}
-            />
+            <Wrapper>
+                <WrapperColumn>
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
+                    />
+                </WrapperColumn>
+            </Wrapper>
+
+            <Typography>
+                {`Prosp version: ${substructure?.ProspVersion
+                    ? substructure?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+            </Typography>
+            <Typography>
+                {`Source: ${substructure?.source === 0 || substructure?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
+            <Typography variant="h6">
+                {substructure?.LastChangedDate?.toLocaleString()
+                    ? `Last changed: ${substructure?.LastChangedDate?.toLocaleString()}` : ""}
+            </Typography>
             <Wrapper>
                 <Typography variant="h4">DG3</Typography>
                 <Dg4Field>
