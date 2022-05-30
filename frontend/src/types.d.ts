@@ -334,6 +334,7 @@ declare namespace Components {
             prospVersion?: string | null; // date-time
             lastChangedDate?: string; // date-time
             source?: Source /* int32 */;
+            approvedBy?: string | null;
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
