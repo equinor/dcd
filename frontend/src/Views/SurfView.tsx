@@ -49,6 +49,7 @@ const SurfView = () => {
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
+    const [costYear, setCostYear] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -83,6 +84,7 @@ const SurfView = () => {
                 setRiserCount(newSurf?.riserCount)
                 setTemplateCount(newSurf?.templateCount)
                 setProducerCount(newSurf?.producerCount)
+                setCostYear(newSurf?.costYear)
                 setGasInjectorCount(newSurf?.gasInjectorCount)
                 setWaterInjectorCount(newSurf?.waterInjectorCount)
                 setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
@@ -117,6 +119,7 @@ const SurfView = () => {
             newSurf.waterInjectorCount = waterInjectorCount
             newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
             newSurf.umbilicalSystemLength = umbilicalSystemLength
+            newSurf.costYear = costYear
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
@@ -138,32 +141,32 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency, artificialLift])
+        costProfile, cessationCostProfile, currency, costYear, artificialLift])
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Surf</Typography>
+            <Wrapper>
+                <Typography variant="h2">Surf</Typography>
+                <Save
+                    name={surfName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setSurf}
+                    setProject={setProject}
+                    asset={surf!}
+                    assetService={GetSurfService()}
+                    assetType={AssetTypeEnum.surfs}
+                />
+                <Typography variant="h6">
+                    {surf?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${surf?.LastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
+            </Wrapper>
             <AssetName
                 setName={setSurfName}
                 name={surfName}
                 setHasChanges={setHasChanges}
             />
-            <AssetCurrency
-                setCurrency={setCurrency}
-                setHasChanges={setHasChanges}
-                currentValue={currency}
-            />
-            <Wrapper>
-                <WrapperColumn>
-                    <ArtificialLiftInherited
-                        currentValue={artificialLift}
-                        setArtificialLift={setArtificialLift}
-                        setHasChanges={setHasChanges}
-                        caseArtificialLift={caseItem?.artificialLift}
-                    />
-                </WrapperColumn>
-            </Wrapper>
-
             <Wrapper>
                 <Typography variant="h4">DG3</Typography>
                 <Dg4Field>
@@ -174,6 +177,35 @@ const SurfView = () => {
                     <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
                 </Dg4Field>
             </Wrapper>
+            <AssetCurrency
+                setCurrency={setCurrency}
+                setHasChanges={setHasChanges}
+                currentValue={currency}
+            />
+            <Typography>
+                {`Prosp version: ${surf?.ProspVersion ? surf?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+            </Typography>
+            <Typography>
+                {`Source: ${surf?.source === 0 || surf?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
+            <Wrapper>
+                <WrapperColumn>
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
+                    />
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
+                    />
+                </WrapperColumn>
+            </Wrapper>
+
             <Wrapper>
                 <NumberInputInherited
                     setHasChanges={setHasChanges}
@@ -261,16 +293,6 @@ const SurfView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={surfName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setSurf}
-                setProject={setProject}
-                asset={surf!}
-                assetService={GetSurfService()}
-                assetType={AssetTypeEnum.surfs}
             />
         </AssetViewDiv>
     )

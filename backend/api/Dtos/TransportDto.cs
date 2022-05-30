@@ -12,6 +12,10 @@ namespace api.Dtos
         public double GasExportPipelineLength { get; set; }
         public double OilExportPipelineLength { get; set; }
         public Currency Currency { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
+        public int CostYear { get; set; }
+        public Source Source { get; set; }
+        public DateTimeOffset? ProspVersion { get; set; }
     }
 
     public class TransportCostProfileDto : TimeSeriesCostDto

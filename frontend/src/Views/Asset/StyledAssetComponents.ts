@@ -35,11 +35,10 @@ export const WrapperColumn = styled.div`
 `
 
 export const SaveButton = styled(Button)`
-    margin-top: 5rem;
-    margin-left: 2rem;
+    margin-left: 3rem;
+    width: 5rem;
     &:disabled {
-        margin-left: 2rem;
-        margin-top: 5rem;
+        margin-left: 3rem;
     }
 `
 

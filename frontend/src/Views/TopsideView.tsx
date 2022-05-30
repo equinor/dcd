@@ -45,6 +45,13 @@ const TopsideView = () => {
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
+    const [cO2ShareOilProfile, setCO2ShareOilProfile] = useState<number | undefined>()
+    const [cO2ShareGasProfile, setCO2ShareGasProfile] = useState<number | undefined>()
+    const [cO2ShareWaterInjectionProfile, setCO2ShareWaterInjectionProfile] = useState<number | undefined>()
+    const [cO2OnMaxOilProfile, setCO2OnMaxOilProfile] = useState<number | undefined>()
+    const [cO2OnMaxGasProfile, setCO2OnMaxGasProfile] = useState<number | undefined>()
+    const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
+    const [costYear, setCostYear] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -81,6 +88,13 @@ const TopsideView = () => {
                 setCurrency(newTopside.currency ?? 0)
                 setFacilitiesAvailability(newTopside?.facilitiesAvailability)
                 setArtificialLift(newTopside.artificialLift)
+                setCostYear(newTopside?.costYear)
+                setCO2ShareOilProfile(newTopside?.cO2ShareOilProfile)
+                setCO2ShareGasProfile(newTopside?.cO2ShareGasProfile)
+                setCO2ShareWaterInjectionProfile(newTopside?.cO2ShareWaterInjectionProfile)
+                setCO2OnMaxOilProfile(newTopside?.cO2OnMaxOilProfile)
+                setCO2OnMaxGasProfile(newTopside?.cO2OnMaxGasProfile)
+                setCO2OnMaxWaterInjectionProfile(newTopside?.cO2OnMaxWaterInjectionProfile)
 
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
@@ -109,6 +123,14 @@ const TopsideView = () => {
             newTopside.currency = currency
             newTopside.facilitiesAvailability = facilitiesAvailability
             newTopside.artificialLift = artificialLift
+            newTopside.costYear = costYear
+            newTopside.cO2ShareOilProfile = cO2ShareOilProfile
+            newTopside.cO2ShareGasProfile = cO2ShareGasProfile
+            newTopside.cO2ShareWaterInjectionProfile = cO2ShareWaterInjectionProfile
+            newTopside.cO2OnMaxOilProfile = cO2OnMaxOilProfile
+            newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
+            newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
+
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
                     caseItem?.DG4Date?.getFullYear(),
@@ -119,12 +141,29 @@ const TopsideView = () => {
             }
             setTopside(newTopside)
         }
-    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency,
-        facilitiesAvailability, artificialLift])
+    }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
+        cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
+        cO2OnMaxWaterInjectionProfile, facilitiesAvailability, artificialLift])
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Topside</Typography>
+            <Wrapper>
+                <Typography variant="h2">Topside</Typography>
+                <Save
+                    name={topsideName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setTopside}
+                    setProject={setProject}
+                    asset={topside!}
+                    assetService={GetTopsideService()}
+                    assetType={AssetTypeEnum.topsides}
+                />
+                <Typography variant="h6">
+                    {topside?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${topside?.LastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
+            </Wrapper>
             <AssetName
                 setName={setTopsideName}
                 name={topsideName}
@@ -145,6 +184,12 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Typography>
+                {`Prosp version: ${topside?.ProspVersion ? topside?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+            </Typography>
+            <Typography>
+                {`Source: ${topside?.source === 0 || topside?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
             <Wrapper>
                 <WrapperColumn>
                     <ArtificialLiftInherited
@@ -152,6 +197,13 @@ const TopsideView = () => {
                         setArtificialLift={setArtificialLift}
                         setHasChanges={setHasChanges}
                         caseArtificialLift={caseItem?.artificialLift}
+                    />
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
                     />
                 </WrapperColumn>
             </Wrapper>
@@ -187,6 +239,52 @@ const TopsideView = () => {
                     caseValue={caseItem?.facilitiesAvailability}
                 />
             </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareOilProfile}
+                    value={cO2ShareOilProfile ?? 0}
+                    integer
+                    label="CO2 Share Oil Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareGasProfile}
+                    value={cO2ShareGasProfile ?? 0}
+                    integer
+                    label="CO2 Share Gas Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareWaterInjectionProfile}
+                    value={cO2ShareWaterInjectionProfile ?? 0}
+                    integer
+                    label="CO2 Share Water Injection Profile (%)"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxOilProfile}
+                    value={cO2OnMaxOilProfile ?? 0}
+                    integer
+                    label="CO2 On Max Oil Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxGasProfile}
+                    value={cO2OnMaxGasProfile ?? 0}
+                    integer
+                    label="CO2 On Max Gas Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxWaterInjectionProfile}
+                    value={cO2OnMaxWaterInjectionProfile ?? 0}
+                    integer
+                    label="CO2 On Max Water Injection Profile (%)"
+                />
+            </Wrapper>
             <Maturity
                 setMaturity={setMaturity}
                 currentValue={maturity}
@@ -213,16 +311,6 @@ const TopsideView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={topsideName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setTopside}
-                setProject={setProject}
-                asset={topside!}
-                assetService={GetTopsideService()}
-                assetType={AssetTypeEnum.topsides}
             />
         </AssetViewDiv>
     )
