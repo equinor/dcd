@@ -7,8 +7,8 @@ import {
 import styled from "styled-components"
 
 const ConceptDropdown = styled(NativeSelect)`
-width: 20rem;
-padding-bottom: 2em;
+    width: 20rem;
+    padding-bottom: 2em;
 `
 
 interface Props {
