@@ -17,6 +17,7 @@ namespace api.Dtos
         public DateTimeOffset? ProspVersion { get; set; }
         public Source Source { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
+        public Concept Concept { get; set; }
      }
 
     public class SubstructureCostProfileDto : TimeSeriesCostDto

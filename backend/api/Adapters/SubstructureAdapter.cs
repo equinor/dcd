@@ -19,7 +19,8 @@ namespace api.Adapters
                 CostYear = substructureDto.CostYear,
                 ProspVersion = substructureDto.ProspVersion,
                 Source = substructureDto.Source,
-                LastChangedDate = substructureDto.LastChangedDate
+                LastChangedDate = substructureDto.LastChangedDate,
+                Concept = substructureDto.Concept
             };
 
             substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
@@ -41,6 +42,7 @@ namespace api.Adapters
             existing.ProspVersion = substructureDto.ProspVersion;
             existing.Source = substructureDto.Source;
             existing.LastChangedDate = substructureDto.LastChangedDate;
+            existing.Concept = substructureDto.Concept;
 
             existing.CostProfile = Convert(substructureDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(substructureDto.CessationCostProfile, existing);

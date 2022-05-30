@@ -21,7 +21,8 @@ namespace api.Adapters
                 CessationCostProfile = Convert(substructure.CessationCostProfile),
                 ProspVersion = substructure.ProspVersion,
                 Source = substructure.Source,
-                LastChangedDate = substructure.LastChangedDate
+                LastChangedDate = substructure.LastChangedDate,
+                Concept = substructure.Concept
             };
             return substructureDto;
         }

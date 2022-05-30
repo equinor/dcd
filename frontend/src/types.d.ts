@@ -67,6 +67,7 @@ declare namespace Components {
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
         }
+        export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export type Currency = 0 | 1; // int32
         export interface DrainageStrategyDto {
             id?: string; // uuid
@@ -251,6 +252,7 @@ declare namespace Components {
             prospVersion?: string | null; // date-time
             source?: Source /* int32 */;
             lastChangedDate?: string | null; // date-time
+            concept?: Concept /* int32 */;
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid

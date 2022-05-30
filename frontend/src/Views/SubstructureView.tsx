@@ -25,6 +25,7 @@ import { SubstructureCostProfile } from "../models/assets/substructure/Substruct
 import { SubstructureCessationCostProfile } from "../models/assets/substructure/SubstructureCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import ApprovedBy from "../Components/ApprovedBy"
+import Concept from "../Components/Concept"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -43,6 +44,7 @@ const SubstructureView = () => {
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [approvedBy, setApprovedBy] = useState<string>("")
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [concept, setConcept] = useState<Components.Schemas.Concept | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -76,6 +78,7 @@ const SubstructureView = () => {
                 setCurrency(newSubstructure.currency ?? 0)
                 setApprovedBy(newSubstructure?.approvedBy!)
                 setCostYear(newSubstructure?.costYear)
+                setConcept(newSubstructure.concept)
 
                 setCostProfile(newSubstructure.costProfile)
                 setCessationCostProfile(newSubstructure.cessationCostProfile)
@@ -102,6 +105,7 @@ const SubstructureView = () => {
             newSubstructure.currency = currency
             newSubstructure.approvedBy = approvedBy
             newSubstructure.costYear = costYear
+            newSubstructure.concept = concept
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -113,7 +117,7 @@ const SubstructureView = () => {
             }
             setSubstructure(newSubstructure)
         }
-    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency, approvedBy, costYear])
+    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency, approvedBy, costYear, concept])
 
     return (
         <AssetViewDiv>
@@ -191,6 +195,11 @@ const SubstructureView = () => {
                 setMaturity={setMaturity}
                 currentValue={maturity}
                 setHasChanges={setHasChanges}
+            />
+            <Concept
+                setHasChanges={setHasChanges}
+                currentValue={concept}
+                setConcept={setConcept}
             />
 
             <TimeSeries
