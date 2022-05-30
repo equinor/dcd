@@ -13,6 +13,7 @@ namespace api.Dtos
         public Maturity Maturity { get; set; }
         public Currency Currency { get; set; }
         public string ApprovedBy { get; set; } = string.Empty;
+        public int CostYear { get; set; }
      }
 
     public class SubstructureCostProfileDto : TimeSeriesCostDto

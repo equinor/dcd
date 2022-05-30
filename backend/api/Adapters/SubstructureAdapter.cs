@@ -15,7 +15,8 @@ namespace api.Adapters
                 DryWeight = substructureDto.DryWeight,
                 Maturity = substructureDto.Maturity,
                 Currency = substructureDto.Currency,
-                ApprovedBy = substructureDto.ApprovedBy
+                ApprovedBy = substructureDto.ApprovedBy,
+                CostYear = substructureDto.CostYear
             };
 
             substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);

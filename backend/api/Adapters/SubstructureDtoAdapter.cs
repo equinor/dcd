@@ -16,6 +16,7 @@ namespace api.Adapters
                 Maturity = substructure.Maturity,
                 Currency = substructure.Currency,
                 ApprovedBy = substructure.ApprovedBy,
+                CostYear = substructure.CostYear,
                 CostProfile = Convert(substructure.CostProfile),
                 CessationCostProfile = Convert(substructure.CessationCostProfile)
             };

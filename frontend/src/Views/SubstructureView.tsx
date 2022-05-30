@@ -25,6 +25,7 @@ import { SubstructureCostProfile } from "../models/assets/substructure/Substruct
 import { SubstructureCessationCostProfile } from "../models/assets/substructure/SubstructureCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import ApprovedBy from "../Components/ApprovedBy"
+import CostYear from "../Components/CostYear"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -42,6 +43,7 @@ const SubstructureView = () => {
     const [cessationCostProfile, setCessationCostProfile] = useState<SubstructureCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [approvedBy, setApprovedBy] = useState<string>("")
+    const [costYear, setCostYear] = useState<number>()
 
     useEffect(() => {
         (async () => {
@@ -74,6 +76,7 @@ const SubstructureView = () => {
                 setDryWeight(newSubstructure.dryweight)
                 setCurrency(newSubstructure.currency ?? 0)
                 setApprovedBy(newSubstructure?.approvedBy!)
+                setCostYear(newSubstructure?.costYear)
 
                 setCostProfile(newSubstructure.costProfile)
                 setCessationCostProfile(newSubstructure.cessationCostProfile)
@@ -99,6 +102,7 @@ const SubstructureView = () => {
             newSubstructure.cessationCostProfile = cessationCostProfile
             newSubstructure.currency = currency
             newSubstructure.approvedBy = approvedBy
+            newSubstructure.costYear = costYear
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -110,7 +114,7 @@ const SubstructureView = () => {
             }
             setSubstructure(newSubstructure)
         }
-    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency, approvedBy])
+    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency, approvedBy, costYear])
 
     return (
         <AssetViewDiv>
@@ -135,6 +139,11 @@ const SubstructureView = () => {
             <ApprovedBy
                 setApprovedBy={setApprovedBy}
                 approvedBy={approvedBy}
+                setHasChanges={setHasChanges}
+            />
+            <CostYear
+                setCostYear={setCostYear}
+                costYear={costYear}
                 setHasChanges={setHasChanges}
             />
             <Wrapper>

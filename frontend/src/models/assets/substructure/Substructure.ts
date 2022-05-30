@@ -13,6 +13,7 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
     maturity?: Components.Schemas.Maturity | undefined
     currency?: Components.Schemas.Currency
     approvedBy?: string | null | undefined
+    costYear?: number | undefined
 
     constructor(data?: Components.Schemas.SubstructureDto) {
         if (data !== undefined) {
@@ -26,6 +27,7 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
             this.maturity = data.maturity
             this.currency = data.currency ?? 0
             this.approvedBy = data.approvedBy ?? ""
+            this.costYear = data.costYear
         } else {
             this.id = EMPTY_GUID
             this.name = ""

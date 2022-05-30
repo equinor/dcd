@@ -246,6 +246,7 @@ declare namespace Components {
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;
             approvedBy?: string | null;
+            costYear?: number; // int32
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
