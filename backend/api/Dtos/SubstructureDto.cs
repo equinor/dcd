@@ -18,7 +18,7 @@ namespace api.Dtos
         public Source Source { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
         public Concept Concept { get; set; }
-     }
+    }
 
     public class SubstructureCostProfileDto : TimeSeriesCostDto
     {
