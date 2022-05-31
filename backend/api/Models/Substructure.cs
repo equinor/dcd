@@ -21,7 +21,8 @@ namespace api.Models
         public Concept Concept { get; set;}
     }
 
-    public enum Concept {
+    public enum Concept
+    {
         NO_CONCEPT,
         TIE_BACK,
         JACKET,
