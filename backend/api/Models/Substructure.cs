@@ -18,10 +18,11 @@ namespace api.Models
         public DateTimeOffset? ProspVersion { get; set; }
         public Source Source { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
-        public Concept Concept { get; set;}
+        public Concept Concept { get; set; }
     }
 
-    public enum Concept {
+    public enum Concept
+    {
         NO_CONCEPT,
         TIE_BACK,
         JACKET,

@@ -144,17 +144,6 @@ const SubstructureView = () => {
                 approvedBy={approvedBy}
                 setHasChanges={setHasChanges}
             />
-            <Wrapper>
-                <WrapperColumn>
-                    <NumberInput
-                        setHasChanges={setHasChanges}
-                        setValue={setCostYear}
-                        value={costYear ?? 0}
-                        integer
-                        label="Cost year"
-                    />
-                </WrapperColumn>
-            </Wrapper>
 
             <Typography>
                 {`Prosp version: ${substructure?.ProspVersion
@@ -182,6 +171,17 @@ const SubstructureView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Wrapper>
+                <WrapperColumn>
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
+                    />
+                </WrapperColumn>
+            </Wrapper>
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
