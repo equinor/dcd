@@ -44,7 +44,8 @@ namespace api.Services
 
         public ProjectDto CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
         {
-            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);
+            var unit = _projectService.GetProject(drainageStrategyDto.ProjectId).PhysicalUnit;
+            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit);
             var project = _projectService.GetProject(drainageStrategy.ProjectId);
             drainageStrategy.Project = project;
             _context.DrainageStrategies!.Add(drainageStrategy);
@@ -87,7 +88,9 @@ namespace api.Services
         public ProjectDto UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
         {
             var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
-            DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto);
+            var unit = _projectService.GetProject(existing.ProjectId).PhysicalUnit;
+
+            DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit);
 
             if (updatedDrainageStrategyDto.ProductionProfileOil == null && existing.ProductionProfileOil != null)
             {
