@@ -124,6 +124,26 @@ const ProjectView = () => {
         y: project?.cases.map((c) => c.capex ?? 0),
     } : { x: [], y: [] }), [project])
 
+    const facilitiesAvailabilityChartData = useMemo(() => (project ? {
+        x: project?.cases.map((c) => c.name ?? ""),
+        y: project?.cases.map((c) => c.facilitiesAvailability ?? 0),
+    } : { x: [], y: [] }), [project])
+
+    const gasInjectorChartData = useMemo(() => (project ? {
+        x: project?.cases.map((c) => c.name ?? ""),
+        y: project?.cases.map((c) => c.gasInjectorCount ?? 0),
+    } : { x: [], y: [] }), [project])
+
+    const producerCountChartData = useMemo(() => (project ? {
+        x: project?.cases.map((c) => c.name ?? ""),
+        y: project?.cases.map((c) => c.producerCount ?? 0),
+    } : { x: [], y: [] }), [project])
+
+    const waterInjectorChartData = useMemo(() => (project ? {
+        x: project?.cases.map((c) => c.name ?? ""),
+        y: project?.cases.map((c) => c.waterInjectorCount ?? 0),
+    } : { x: [], y: [] }), [project])
+
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
     const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -229,8 +249,15 @@ const ProjectView = () => {
             />
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
+                <BarChart data={facilitiesAvailabilityChartData!} title="Facilities Availability / case" />
             </ChartsContainer>
-
+            <ChartsContainer>
+                <BarChart data={gasInjectorChartData!} title="Gas Injector Count / case" />
+                <BarChart data={producerCountChartData!} title="Producer Count / case" />
+            </ChartsContainer>
+            <ChartsContainer>
+                <BarChart data={waterInjectorChartData!} title="Water Injector Count / case" />
+            </ChartsContainer>
             <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
                 <CreateCaseForm>
                     <TextField
