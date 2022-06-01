@@ -29,6 +29,7 @@ namespace api.Dtos
         public DateTimeOffset? ProspVersion { get; set; }
         public DateTimeOffset LastChangedDate { get; set; }
         public Source Source { get; set; }
+        public string ApprovedBy { get; set; } = string.Empty;
     }
 
     public class TopsideCostProfileDto : TimeSeriesCostDto

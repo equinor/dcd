@@ -24,6 +24,7 @@ import ProductionFlowline from "../Components/ProductionFlowline"
 import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
 import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import ApprovedBy from "../Components/ApprovedBy"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -47,6 +48,7 @@ const SurfView = () => {
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [approvedBy, setApprovedBy] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -89,6 +91,7 @@ const SurfView = () => {
                 setMaturity(newSurf.maturity ?? undefined)
                 setProductionFlowline(newSurf.productionFlowline ?? 0)
                 setCurrency(newSurf.currency ?? 0)
+                setApprovedBy(newSurf?.approvedBy!)
 
                 setCostProfile(newSurf.costProfile)
                 setCessationCostProfile(newSurf.cessationCostProfile)
@@ -119,6 +122,7 @@ const SurfView = () => {
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
+            newSurf.approvedBy = approvedBy
 
             newSurf.costProfile = costProfile
             newSurf.cessationCostProfile = cessationCostProfile
@@ -136,7 +140,7 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency, costYear])
+        costProfile, cessationCostProfile, currency, costYear, approvedBy])
 
     return (
         <AssetViewDiv>
@@ -160,6 +164,11 @@ const SurfView = () => {
             <AssetName
                 setName={setSurfName}
                 name={surfName}
+                setHasChanges={setHasChanges}
+            />
+            <ApprovedBy
+                setApprovedBy={setApprovedBy}
+                approvedBy={approvedBy}
                 setHasChanges={setHasChanges}
             />
             <Wrapper>

@@ -24,6 +24,7 @@ import NumberInput from "../Components/NumberInput"
 import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import ApprovedBy from "../Components/ApprovedBy"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -48,6 +49,7 @@ const TopsideView = () => {
     const [cO2OnMaxGasProfile, setCO2OnMaxGasProfile] = useState<number | undefined>()
     const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [approvedBy, setApprovedBy] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -88,7 +90,7 @@ const TopsideView = () => {
                 setCO2OnMaxOilProfile(newTopside?.cO2OnMaxOilProfile)
                 setCO2OnMaxGasProfile(newTopside?.cO2OnMaxGasProfile)
                 setCO2OnMaxWaterInjectionProfile(newTopside?.cO2OnMaxWaterInjectionProfile)
-
+                setApprovedBy(newTopside?.approvedBy!)
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
 
@@ -121,6 +123,7 @@ const TopsideView = () => {
             newTopside.cO2OnMaxOilProfile = cO2OnMaxOilProfile
             newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
             newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
+            newTopside.approvedBy = approvedBy
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -134,7 +137,7 @@ const TopsideView = () => {
         }
     }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
         cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
-        cO2OnMaxWaterInjectionProfile])
+        cO2OnMaxWaterInjectionProfile, approvedBy])
 
     return (
         <AssetViewDiv>
@@ -158,6 +161,11 @@ const TopsideView = () => {
             <AssetName
                 setName={setTopsideName}
                 name={topsideName}
+                setHasChanges={setHasChanges}
+            />
+            <ApprovedBy
+                setApprovedBy={setApprovedBy}
+                approvedBy={approvedBy}
                 setHasChanges={setHasChanges}
             />
             <Wrapper>

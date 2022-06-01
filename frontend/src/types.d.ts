@@ -291,6 +291,7 @@ declare namespace Components {
             costYear?: number; // int32
             source?: Source /* int32 */;
             prospVersion?: string | null; // date-time
+            approvedBy?: string | null;
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
@@ -333,6 +334,7 @@ declare namespace Components {
             prospVersion?: string | null; // date-time
             lastChangedDate?: string; // date-time
             source?: Source /* int32 */;
+            approvedBy?: string | null;
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid

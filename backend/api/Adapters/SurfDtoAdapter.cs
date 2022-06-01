@@ -28,7 +28,8 @@ namespace api.Adapters
                 LastChangedDate = surf.LastChangedDate,
                 CostYear = surf.CostYear,
                 Source = surf.Source,
-                ProspVersion = surf.ProspVersion
+                ProspVersion = surf.ProspVersion,
+                ApprovedBy = surf.ApprovedBy
             };
 
             if (surf.CostProfile != null)

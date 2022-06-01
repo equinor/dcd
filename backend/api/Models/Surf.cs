@@ -27,6 +27,7 @@ namespace api.Models
         public int CostYear { get; set; }
         public Source Source { get; set; }
         public DateTimeOffset? ProspVersion { get; set; }
+        public string ApprovedBy { get; set; } = string.Empty;
     }
 
     public class SurfCostProfile : TimeSeriesCost
