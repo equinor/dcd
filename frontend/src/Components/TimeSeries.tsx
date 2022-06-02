@@ -37,40 +37,40 @@ const TimeSeries = ({
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
 
-    // // function getUnit(title: string) {
-    // //     if (title.includes("GSm³/yr") || title.includes("Bscf/yr")) {
-    // //         return "billion"
-    // //     } if (title.includes("MTPA")
-    // //         || title.includes("MSm³/yr") || title.includes("mill bbls/yr")) {
-    // //         return "million"
-    // //     } return "unspecified"
-    // // }
+    function getUnit(title: string) {
+        if (title.includes("GSm³/yr") || title.includes("Bscf/yr")) {
+            return "billion"
+        } if (title.includes("MTPA")
+            || title.includes("MSm³/yr") || title.includes("mill bbls/yr")) {
+            return "million"
+        } return "unspecified"
+    }
 
-    // // function trimMillsAndBills(values: number[] | undefined, unit: string): number[] | undefined {
-    // //     if (unit === "million") {
-    // //         // eslint-disable-next-line array-callback-return
-    // //         const newValues: number[] | undefined = values?.map((value) => {
-    // //             if (value.toString().length > 6) {
-    // //             // eslint-disable-next-line no-param-reassign
-    // //                 value /= 1E6
-    // //             }
-    // //             return value
-    // //         })
-    // //         return newValues
-    // //     }
-    // //     if (unit === "billion") {
-    // //         // eslint-disable-next-line array-callback-return
-    // //         const newValues: number[] | undefined = values?.map((value) => {
-    // //             if (value.toString().length > 9) {
-    // //                 // eslint-disable-next-line no-param-reassign
-    // //                 value /= 1E9
-    // //             }
-    // //             return value
-    // //         })
-    // //         return newValues
-    // //     }
-    // //     return values
-    // // }
+    function trimMillsAndBills(values: number[] | undefined, unit: string): number[] | undefined {
+        if (unit === "million") {
+            // eslint-disable-next-line array-callback-return
+            const newValues: number[] | undefined = values?.map((value) => {
+                if (value.toString().length > 6) {
+                // eslint-disable-next-line no-param-reassign
+                    value /= 1E6
+                }
+                return value
+            })
+            return newValues
+        }
+        if (unit === "billion") {
+            // eslint-disable-next-line array-callback-return
+            const newValues: number[] | undefined = values?.map((value) => {
+                if (value.toString().length > 9) {
+                    // eslint-disable-next-line no-param-reassign
+                    value /= 1E9
+                }
+                return value
+            })
+            return newValues
+        }
+        return values
+    }
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (updatedTimeSeries !== undefined && timeSeries !== undefined) {
@@ -96,9 +96,9 @@ const TimeSeries = ({
 
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
-            // const unit = getUnit(timeSeriesTitle)
-            // const timeSeriesCopy = timeSeries
-            // timeSeriesCopy.values = trimMillsAndBills(timeSeriesCopy.values, unit)
+            const unit = getUnit(timeSeriesTitle)
+            // eslint-disable-next-line no-param-reassign
+            timeSeries.values = trimMillsAndBills(timeSeries.values, unit)
             const newGridData = buildGridData(timeSeries)
 
             const alignedAssetGridData = new Array(

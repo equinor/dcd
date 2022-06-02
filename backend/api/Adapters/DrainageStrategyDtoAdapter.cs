@@ -13,6 +13,7 @@ namespace api.Adapters
                 Name = drainageStrategy.Name,
                 Description = drainageStrategy.Description,
                 ProjectId = drainageStrategy.ProjectId,
+                ProjectUnit = drainageStrategy.ProjectUnit,
                 NGLYield = drainageStrategy.NGLYield,
                 ArtificialLift = drainageStrategy.ArtificialLift,
                 ProducerCount = drainageStrategy.ProducerCount,

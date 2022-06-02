@@ -71,6 +71,7 @@ declare namespace Components {
         export interface DrainageStrategyDto {
             id?: string; // uuid
             projectId?: string; // uuid
+            projectUnit?: PhysUnit /* int32 */;
             name?: string | null;
             description?: string | null;
             nglYield?: number; // double

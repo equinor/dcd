@@ -9,6 +9,7 @@ namespace api.Models
         public Guid Id { get; set; }
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
+        public PhysUnit ProjectUnit { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
         public double NGLYield { get; set; }
