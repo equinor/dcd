@@ -27,7 +27,7 @@ namespace api.Dtos
         public double CO2OnMaxWaterInjectionProfile { get; set; }
         public int CostYear { get; set; }
         public DateTimeOffset? ProspVersion { get; set; }
-        public DateTimeOffset LastChangedDate { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
         public Source Source { get; set; }
         public string ApprovedBy { get; set; } = string.Empty;
     }
