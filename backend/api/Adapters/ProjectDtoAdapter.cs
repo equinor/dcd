@@ -99,8 +99,93 @@ namespace api.Adapters
             };
         }
 
+        public static (double[], int) getLowestStartYearFromTimeCost(CapexYear CapexYear, TimeSeries TimeSeries) {
+            TimeSeries.
+
+        }
+
+         public static void AddCapexToCasesYear(ProjectDto p)
+        {
+            int minYear = int.MaxValue;
+            
+
+            
+            foreach (CaseDto c in p.Cases!) {
+                if (c.WellProjectLink != Guid.Empty)
+                {
+                    var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
+                    if (wellProject.CostProfile != null)
+                    {
+                        if (well.CostProfile.startYear > minYear) {
+                            minYear = wellProject.CostProfile.StartYear;
+                        }
+                    }
+                }
+                if (c.SubstructureLink != Guid.Empty)
+                {
+
+                     if (c.CostProfile.startYear > minYear) {
+                            minYear = wellProject.CostProfile.StartYear;
+                        }
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CessationCostProfile?.Sum ?? 0;
+                }
+                if (c.SurfLink != Guid.Empty)
+                {
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CessationCostProfile?.Sum ?? 0;
+                }
+                if (c.TopsideLink != Guid.Empty)
+                {
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CessationCostProfile?.Sum ?? 0;
+                }
+                if (c.TransportLink != Guid.Empty)
+                {
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CessationCostProfile?.Sum ?? 0;
+                }
+            }
+
+
+            foreach (CaseDto c in p.Cases!)
+            {
+                int minYear = int.MinValue;
+                c.Capex = 0;
+                if (c.WellProjectLink != Guid.Empty)
+                {
+                    var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
+                    if (wellProject.CostProfile != null)
+                    {
+                        c.Capex += wellProject.CostProfile?.Sum ?? 0;
+                    }
+                }
+                if (c.SubstructureLink != Guid.Empty)
+                {
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CessationCostProfile?.Sum ?? 0;
+                }
+                if (c.SurfLink != Guid.Empty)
+                {
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CessationCostProfile?.Sum ?? 0;
+                }
+                if (c.TopsideLink != Guid.Empty)
+                {
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CessationCostProfile?.Sum ?? 0;
+                }
+                if (c.TransportLink != Guid.Empty)
+                {
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CostProfile?.Sum ?? 0;
+                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CessationCostProfile?.Sum ?? 0;
+                }
+            }
+        }
+
         public static void AddCapexToCases(ProjectDto p)
         {
+
             foreach (CaseDto c in p.Cases!)
             {
                 c.Capex = 0;

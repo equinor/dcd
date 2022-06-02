@@ -2,6 +2,7 @@
 import { add, archive } from "@equinor/eds-icons"
 import {
     Button,
+    Checkbox,
     EdsProvider,
     Icon,
     TextField,
@@ -18,6 +19,16 @@ import {
 import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip as ChartTooltip,
+    Legend,
+} from "chart.js"
 import BarChart from "../Components/BarChart"
 
 import { Project } from "../models/Project"
@@ -32,12 +43,19 @@ import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
+import ManniDataTable from "../Components/ManniDataTable"
 
 const Wrapper = styled.div`
     margin: 2rem;
     display: flex;
     flex-direction: column;
 `
+
+const UnstyledList = styled.ul`
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  `
 
 const Header = styled.header`
     display: flex;
@@ -119,6 +137,8 @@ const ProjectView = () => {
         })()
     }, [physicalUnit, currency])
 
+    const drainValues: number [] | undefined = project?.drainageStrategies[0].co2Emissions?.values
+
     const chartData = useMemo(() => (project ? {
         x: project?.cases.map((c) => c.name ?? ""),
         y: project?.cases.map((c) => c.capex ?? 0),
@@ -192,7 +212,6 @@ const ProjectView = () => {
         <Wrapper>
             <Header>
                 <Typography variant="h2">{project.name}</Typography>
-
                 <EdsProvider density="compact">
                     <ActionsContainer>
                         <Tooltip title="Export to STEA">
@@ -212,7 +231,6 @@ const ProjectView = () => {
                     </ActionsContainer>
                 </EdsProvider>
             </Header>
-
             <WrapperColumn>
                 <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
                 <Typography variant="h3">{project.description}</Typography>
@@ -241,12 +259,35 @@ const ProjectView = () => {
                 setProject={setProject}
                 project={project}
             />
+
             <Currency
                 currentValue={currency}
                 setCurrency={setCurrency}
                 setProject={setProject}
                 project={project}
             />
+
+            <fieldset>
+                <legend>
+                    We are in this together!
+                    <span role="img" aria-label="raising hands emoji">
+                        🙌
+                    </span>
+                </legend>
+                <UnstyledList>
+                    <li>
+                        <Checkbox label="Check me first" name="multiple" value="first" />
+                    </li>
+                    <li>
+                        <Checkbox label="Check me second" name="multiple" value="second" />
+                    </li>
+                    <li>
+                        <Checkbox label="Check me third" name="multiple" value="third" />
+                    </li>
+                </UnstyledList>
+            </fieldset>
+            <ManniDataTable x={chartData.x} y={chartData.y} />
+
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
                 <BarChart data={facilitiesAvailabilityChartData!} title="Facilities Availability / case" />
