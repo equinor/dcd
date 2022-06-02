@@ -87,6 +87,7 @@ declare namespace Components {
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
             productionProfileNGL?: ProductionProfileNGLDto;
+            facilitiesAvailability?: number; // double
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid

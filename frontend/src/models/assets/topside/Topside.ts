@@ -13,7 +13,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     oilCapacity?: number | undefined
     gasCapacity?: number | undefined
     facilitiesAvailability?: number | undefined
-    artificialLift?: Components.Schemas.ArtificialLift | undefined
+    artificialLift?: Components.Schemas.ArtificialLift
     maturity?: Components.Schemas.Maturity | undefined
     currency?: Components.Schemas.Currency
     fuelConsumption?: number | undefined
@@ -44,6 +44,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.oilCapacity = data.oilCapacity
             this.gasCapacity = data.gasCapacity
             this.currency = data.currency ?? 0
+            this.facilitiesAvailability = data.facilitiesAvailability
             this.fuelConsumption = data.fuelConsumption
             this.flaredGas = data.flaredGas
             this.cO2ShareOilProfile = data.cO2ShareOilProfile

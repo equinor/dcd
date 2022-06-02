@@ -1,5 +1,5 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,7 +14,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -23,6 +23,7 @@ import NumberInput from "../Components/NumberInput"
 import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -39,6 +40,7 @@ function WellProjectView() {
     const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -76,6 +78,7 @@ function WellProjectView() {
 
                 setCostProfile(newWellProject.costProfile)
                 setDrillingSchedule(newWellProject.drillingSchedule)
+                setArtificialLift(newWellProject.artificialLift)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -97,6 +100,7 @@ function WellProjectView() {
         newWellProject.costProfile = costProfile
         newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
+        newWellProject.artificialLift = artificialLift
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
@@ -106,7 +110,8 @@ function WellProjectView() {
             )
         }
         setWellProject(newWellProject)
-    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency])
+    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
+        artificialLift])
 
     return (
         <AssetViewDiv>
@@ -145,11 +150,11 @@ function WellProjectView() {
             />
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(wellProject?.artificialLift)}
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
                     />
                 </WrapperColumn>
             </Wrapper>
