@@ -12,11 +12,13 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<SubstructureService> _logger;
 
-        public SubstructureService(DcdDbContext context, ProjectService projectService)
+        public SubstructureService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<SubstructureService>();
         }
 
         public IEnumerable<Substructure> GetSubstructures(Guid projectId)
@@ -38,6 +40,8 @@ namespace api.Services
         {
             var project = _projectService.GetProject(substructure.ProjectId);
             substructure.Project = project;
+            substructure.ProspVersion = null;
+            substructure.LastChangedDate = DateTimeOffset.Now;
             _context.Substructures!.Add(substructure);
             _context.SaveChanges();
             SetCaseLink(substructure, sourceCaseId, project);
@@ -90,7 +94,7 @@ namespace api.Services
             {
                 _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
             }
-
+            existing.LastChangedDate = DateTimeOffset.Now;
             _context.Substructures!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(existing.ProjectId);
