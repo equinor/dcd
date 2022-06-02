@@ -67,6 +67,7 @@ declare namespace Components {
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
         }
+        export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export type Currency = 0 | 1; // int32
         export interface DrainageStrategyDto {
             id?: string; // uuid
@@ -185,8 +186,7 @@ declare namespace Components {
             sum?: number; // double
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
-        export type ProjectCategory =
-            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
@@ -248,6 +248,12 @@ declare namespace Components {
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;
+            approvedBy?: string | null;
+            costYear?: number; // int32
+            prospVersion?: string | null; // date-time
+            source?: Source /* int32 */;
+            lastChangedDate?: string | null; // date-time
+            concept?: Concept /* int32 */;
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
@@ -286,6 +292,7 @@ declare namespace Components {
             costYear?: number; // int32
             source?: Source /* int32 */;
             prospVersion?: string | null; // date-time
+            approvedBy?: string | null;
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
@@ -328,6 +335,7 @@ declare namespace Components {
             prospVersion?: string | null; // date-time
             lastChangedDate?: string; // date-time
             source?: Source /* int32 */;
+            approvedBy?: string | null;
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid

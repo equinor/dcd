@@ -24,6 +24,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
     costYear?: number | undefined
     source?: Components.Schemas.Source
     ProspVersion?: Date | null
+    approvedBy?: string | null | undefined
 
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {
@@ -47,9 +48,11 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
             this.costYear = data.costYear
             this.source = data.source
             this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
+            this.approvedBy = data.approvedBy ?? ""
         } else {
             this.id = EMPTY_GUID
             this.name = ""
+            this.approvedBy = ""
         }
     }
 

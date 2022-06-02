@@ -26,6 +26,7 @@ import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCos
 import AssetCurrency from "../Components/AssetCurrency"
 import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
+import ApprovedBy from "../Components/ApprovedBy"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -50,6 +51,7 @@ const SurfView = () => {
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [approvedBy, setApprovedBy] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -93,6 +95,7 @@ const SurfView = () => {
                 setProductionFlowline(newSurf.productionFlowline ?? 0)
                 setCurrency(newSurf.currency ?? 0)
                 setArtificialLift(newSurf.artificialLift)
+                setApprovedBy(newSurf?.approvedBy!)
 
                 setCostProfile(newSurf.costProfile)
                 setCessationCostProfile(newSurf.cessationCostProfile)
@@ -124,6 +127,7 @@ const SurfView = () => {
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
             newSurf.artificialLift = artificialLift
+            newSurf.approvedBy = approvedBy
 
             newSurf.costProfile = costProfile
             newSurf.cessationCostProfile = cessationCostProfile
@@ -141,7 +145,7 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency, costYear, artificialLift])
+        costProfile, cessationCostProfile, currency, costYear, approvedBy, artificialLift])
 
     return (
         <AssetViewDiv>
@@ -165,6 +169,11 @@ const SurfView = () => {
             <AssetName
                 setName={setSurfName}
                 name={surfName}
+                setHasChanges={setHasChanges}
+            />
+            <ApprovedBy
+                setApprovedBy={setApprovedBy}
+                approvedBy={approvedBy}
                 setHasChanges={setHasChanges}
             />
             <Wrapper>

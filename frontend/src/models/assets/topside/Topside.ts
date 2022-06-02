@@ -28,6 +28,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     ProspVersion?: Date | null
     LastChangedDate?: Date | null
     source?: Components.Schemas.Source
+    approvedBy?: string | null | undefined
 
     constructor(data?: Components.Schemas.TopsideDto) {
         if (data !== undefined) {
@@ -56,9 +57,11 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
             this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
             this.source = data.source
+            this.approvedBy = data.approvedBy ?? ""
         } else {
             this.id = EMPTY_GUID
             this.name = ""
+            this.approvedBy = ""
         }
     }
 
