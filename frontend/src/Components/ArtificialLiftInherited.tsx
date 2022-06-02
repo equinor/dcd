@@ -17,7 +17,7 @@ const ArtificialLiftDropdown = styled(NativeSelect)`
 width: 20rem;
 padding-bottom: 2em;
 > *:not(:last-child) {
-    color: blue;
+    font-weight: bold;
 }
 `
 

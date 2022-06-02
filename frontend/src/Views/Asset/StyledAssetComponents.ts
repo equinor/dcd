@@ -25,7 +25,7 @@ export const WrapperInherited = styled.div`
     display: flex;
     flex-direction: row;
     > *:not(:last-child) {
-        color: blue;
+        font-weight: bold;
     }
 `
 
