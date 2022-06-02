@@ -11,10 +11,12 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
-        public SurfService(DcdDbContext context, ProjectService projectService)
+        private readonly ILogger<SurfService> _logger;
+        public SurfService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<SurfService>();
 
         }
 
@@ -47,6 +49,7 @@ namespace api.Services
             {
                 _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
             }
+            existing.LastChangedDate = DateTimeOffset.Now;
             _context.Surfs!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(existing.ProjectId);
@@ -69,6 +72,8 @@ namespace api.Services
             var surf = SurfAdapter.Convert(surfDto);
             var project = _projectService.GetProject(surf.ProjectId);
             surf.Project = project;
+            surf.ProspVersion = null;
+            surf.LastChangedDate = DateTimeOffset.Now;
             _context.Surfs!.Add(surf);
             _context.SaveChanges();
             SetCaseLink(surf, sourceCaseId, project);
