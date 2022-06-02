@@ -31,11 +31,11 @@ namespace api.Dtos
         public Guid TransportLink { get; set; }
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
-        public CapexYear CapexYear { get; set; }
+        public CapexYear? CapexYear { get; set; }
     }
 
     public class CapexYear {
-        public int[] values { get; set; }
-        public int startYear { get; set; }
+        public double[] values { get; set; }
+        public int? startYear { get; set; }
     }
 }

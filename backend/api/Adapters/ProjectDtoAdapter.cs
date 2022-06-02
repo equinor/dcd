@@ -76,6 +76,7 @@ namespace api.Adapters
             if (projectDto.Cases != null)
             {
                 AddCapexToCases(projectDto);
+                AddCapexToCasesYear(projectDto);
             }
             return projectDto;
         }
@@ -99,87 +100,66 @@ namespace api.Adapters
             };
         }
 
-        public static (double[], int) getLowestStartYearFromTimeCost(CapexYear CapexYear, TimeSeries TimeSeries) {
-            TimeSeries.
 
-        }
 
-         public static void AddCapexToCasesYear(ProjectDto p)
+        public static void AddCapexToCasesYear(ProjectDto p)
         {
-            int minYear = int.MaxValue;
-            
-
-            
-            foreach (CaseDto c in p.Cases!) {
-                if (c.WellProjectLink != Guid.Empty)
-                {
-                    var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
-                    if (wellProject.CostProfile != null)
-                    {
-                        if (well.CostProfile.startYear > minYear) {
-                            minYear = wellProject.CostProfile.StartYear;
-                        }
-                    }
-                }
-                if (c.SubstructureLink != Guid.Empty)
-                {
-
-                     if (c.CostProfile.startYear > minYear) {
-                            minYear = wellProject.CostProfile.StartYear;
-                        }
-                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
-                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CessationCostProfile?.Sum ?? 0;
-                }
-                if (c.SurfLink != Guid.Empty)
-                {
-                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CostProfile?.Sum ?? 0;
-                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CessationCostProfile?.Sum ?? 0;
-                }
-                if (c.TopsideLink != Guid.Empty)
-                {
-                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CostProfile?.Sum ?? 0;
-                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CessationCostProfile?.Sum ?? 0;
-                }
-                if (c.TransportLink != Guid.Empty)
-                {
-                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CostProfile?.Sum ?? 0;
-                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CessationCostProfile?.Sum ?? 0;
-                }
-            }
-
-
             foreach (CaseDto c in p.Cases!)
             {
-                int minYear = int.MinValue;
-                c.Capex = 0;
-                if (c.WellProjectLink != Guid.Empty)
+                int? minYear = null;
+                var valuesDict = new SortedDictionary<int, double>();
+
+                void CalculateCapexYear(TimeSeriesDto<double> timeSeries)
                 {
-                    var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
-                    if (wellProject.CostProfile != null)
+                    if (timeSeries == null)
                     {
-                        c.Capex += wellProject.CostProfile?.Sum ?? 0;
+                        return;
+                    }
+                    if (minYear == null ? timeSeries.StartYear < int.MaxValue : timeSeries.StartYear < minYear)
+                    {
+                        minYear = timeSeries.StartYear;
+                    }
+
+                    for (var i = 0; i < timeSeries.Values.Length; i++)
+                    {
+                        if (valuesDict.ContainsKey(timeSeries.StartYear + i))
+                        {
+                            valuesDict[timeSeries.StartYear + i] += timeSeries.Values[i];
+                        }
+                        else
+                        {
+                            valuesDict.Add(timeSeries.StartYear + i, timeSeries.Values[i]);
+                        }
+
                     }
                 }
-                if (c.SubstructureLink != Guid.Empty)
+
+                CalculateCapexYear(p.WellProjects!.FirstOrDefault(l => l.Id == c.WellProjectLink)?.CostProfile);
+                CalculateCapexYear(p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)?.CostProfile);
+                CalculateCapexYear(p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)?.CessationCostProfile);
+                CalculateCapexYear(p.Surfs!.FirstOrDefault(l => l.Id == c.SurfLink)?.CostProfile);
+                CalculateCapexYear(p.Surfs!.FirstOrDefault(l => l.Id == c.SurfLink)?.CessationCostProfile);
+                CalculateCapexYear(p.Topsides!.FirstOrDefault(l => l.Id == c.TopsideLink)?.CostProfile);
+                CalculateCapexYear(p.Topsides!.FirstOrDefault(l => l.Id == c.TopsideLink)?.CessationCostProfile);
+                CalculateCapexYear(p.Transports!.FirstOrDefault(l => l.Id == c.TransportLink)?.CostProfile);
+                CalculateCapexYear(p.Transports!.FirstOrDefault(l => l.Id == c.TransportLink)?.CessationCostProfile);
+                CalculateCapexYear(p.Explorations!.FirstOrDefault(l => l.Id == c.ExplorationLink)?.CostProfile);
+
+                var lastYear = valuesDict.Keys.Count > 0 ? valuesDict.Keys.Max() : int.MinValue;
+
+                for (var i = minYear ?? 0; i <= lastYear; i++)
                 {
-                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
-                    c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CessationCostProfile?.Sum ?? 0;
+                    if (!valuesDict.ContainsKey(i))
+                    {
+                        valuesDict.Add(i, 0);
+                    }
                 }
-                if (c.SurfLink != Guid.Empty)
+
+                c.CapexYear = new CapexYear()
                 {
-                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CostProfile?.Sum ?? 0;
-                    c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CessationCostProfile?.Sum ?? 0;
-                }
-                if (c.TopsideLink != Guid.Empty)
-                {
-                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CostProfile?.Sum ?? 0;
-                    c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CessationCostProfile?.Sum ?? 0;
-                }
-                if (c.TransportLink != Guid.Empty)
-                {
-                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CostProfile?.Sum ?? 0;
-                    c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CessationCostProfile?.Sum ?? 0;
-                }
+                    startYear = minYear,
+                    values = valuesDict.Values.ToArray(),
+                };
             }
         }
 
