@@ -40,6 +40,7 @@ const TransportView = () => {
     const [costProfile, setCostProfile] = useState<TransportCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TransportCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [costYear, setCostYear] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -69,6 +70,7 @@ const TransportView = () => {
                 setTransportName(newTransport?.name!)
                 setGasExportPipelineLength(newTransport?.gasExportPipelineLength)
                 setOilExportPipelineLength(newTransport?.oilExportPipelineLength)
+                setCostYear(newTransport?.costYear)
                 setMaturity(newTransport?.maturity ?? undefined)
                 setCurrency(newTransport.currency ?? 0)
 
@@ -92,6 +94,7 @@ const TransportView = () => {
             const newTransport: Transport = { ...transport }
             newTransport.gasExportPipelineLength = gasExportPipelineLength
             newTransport.oilExportPipelineLength = oilExportPipelineLength
+            newTransport.costYear = costYear
             newTransport.maturity = maturity
             newTransport.costProfile = costProfile
             newTransport.cessationCostProfile = cessationCostProfile
@@ -107,11 +110,28 @@ const TransportView = () => {
             }
             setTransport(newTransport)
         }
-    }, [gasExportPipelineLength, oilExportPipelineLength, maturity, costProfile, cessationCostProfile, currency])
+    }, [gasExportPipelineLength, oilExportPipelineLength, maturity,
+        costProfile, cessationCostProfile, currency, costYear])
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Transport</Typography>
+            <Wrapper>
+                <Typography variant="h2">Transport</Typography>
+                <Save
+                    name={transportName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setTransport}
+                    setProject={setProject}
+                    asset={transport!}
+                    assetService={GetTransportService()}
+                    assetType={AssetTypeEnum.transports}
+                />
+                <Typography variant="h6">
+                    {transport?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${transport?.LastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
+            </Wrapper>
             <AssetName
                 setName={setTransportName}
                 name={transportName}
@@ -132,6 +152,22 @@ const TransportView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Typography>
+                {`Prosp version: ${transport?.ProspVersion
+                    ? transport?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+            </Typography>
+            <Typography>
+                {`Source: ${transport?.source === 0 || transport?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCostYear}
+                    value={costYear ?? 0}
+                    integer
+                    label="Cost year"
+                />
+            </Wrapper>
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -174,16 +210,6 @@ const TransportView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={transportName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setTransport}
-                setProject={setProject}
-                asset={transport!}
-                assetService={GetTransportService()}
-                assetType={AssetTypeEnum.transports}
             />
         </AssetViewDiv>
     )

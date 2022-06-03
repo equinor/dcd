@@ -15,8 +15,14 @@ namespace api.Adapters
                 DryWeight = substructure.DryWeight,
                 Maturity = substructure.Maturity,
                 Currency = substructure.Currency,
+                ApprovedBy = substructure.ApprovedBy,
+                CostYear = substructure.CostYear,
                 CostProfile = Convert(substructure.CostProfile),
-                CessationCostProfile = Convert(substructure.CessationCostProfile)
+                CessationCostProfile = Convert(substructure.CessationCostProfile),
+                ProspVersion = substructure.ProspVersion,
+                Source = substructure.Source,
+                LastChangedDate = substructure.LastChangedDate,
+                Concept = substructure.Concept
             };
             return substructureDto;
         }

@@ -97,7 +97,8 @@ namespace api.Adapters
                     ArtificialLift = drainageStrategyDto.ArtificialLift,
                     ProducerCount = drainageStrategyDto.ProducerCount,
                     GasInjectorCount = drainageStrategyDto.GasInjectorCount,
-                    WaterInjectorCount = drainageStrategyDto.WaterInjectorCount
+                    WaterInjectorCount = drainageStrategyDto.WaterInjectorCount,
+                    FacilitiesAvailability = drainageStrategyDto.FacilitiesAvailability
                 };
             }
             existing.Id = drainageStrategyDto.Id;
@@ -109,6 +110,7 @@ namespace api.Adapters
             existing.ProducerCount = drainageStrategyDto.ProducerCount;
             existing.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
             existing.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;
+            existing.FacilitiesAvailability = drainageStrategyDto.FacilitiesAvailability;
 
             return existing;
         }

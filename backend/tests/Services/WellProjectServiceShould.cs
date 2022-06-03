@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 
 using api.Adapters;
+using api.Dtos;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -30,8 +31,9 @@ namespace tests
         public void GetWellProjects()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var expectedWellProjects = fixture.context.WellProjects.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -52,8 +54,9 @@ namespace tests
         public void CreateNewWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedWellProject = CreateTestWellProject(project);
@@ -73,8 +76,9 @@ namespace tests
         public void ThrowNotInDatabaseExceptionWhenCreatingWellProjectWithBadProjectId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedWellProject = CreateTestWellProject(new Project { Id = new Guid() });
@@ -87,8 +91,9 @@ namespace tests
         public void ThrowNotFoundInDatabaseExceptionWhenCreatingWellProjectWithBadCaseId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var expectedWellProject = CreateTestWellProject(project);
 
@@ -100,8 +105,9 @@ namespace tests
         public void DeleteWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var wellProjectToDelete = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(wellProjectToDelete);
@@ -126,23 +132,28 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToDeleteNonExistentWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var wellProjectToDelete = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(wellProjectToDelete);
             fixture.context.SaveChanges();
 
+            // Act
+            wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
+
             // Act, assert
-            Assert.Throws<ArgumentException>(() => wellProjectService.DeleteWellProject(new Guid()));
+            Assert.Throws<ArgumentException>(() => wellProjectService.DeleteWellProject(wellProjectToDelete.Id));
         }
 
         [Fact]
         public void UpdateWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldWellProject = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(oldWellProject);
@@ -151,7 +162,7 @@ namespace tests
             updatedWellProject.Id = oldWellProject.Id;
 
             // Act
-            var projectResult = wellProjectService.UpdateWellProject(WellProjectDtoAdapter.Convert(updatedWellProject));
+            var projectResult = wellProjectService.UpdateWellProject(updatedWellProject);
 
             // Assert
             var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == updatedWellProject.Name);
@@ -163,8 +174,9 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToUpdateNonExistentWellProject()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var wellProjectService = new WellProjectService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldWellProject = CreateTestWellProject(project);
             fixture.context.WellProjects.Add(oldWellProject);
@@ -172,7 +184,7 @@ namespace tests
             var updatedWellProject = CreateUpdatedWellProject(project);
 
             // Act, assert
-            // Assert.Throws<ArgumentException>(() => wellProjectService.UpdateWellProject(updatedWellProject));
+            Assert.Throws<ArgumentException>(() => wellProjectService.UpdateWellProject(updatedWellProject));
         }
 
         private static WellProject CreateTestWellProject(Project project)
@@ -203,9 +215,9 @@ namespace tests
                 );
         }
 
-        private static WellProject CreateUpdatedWellProject(Project project)
+        private static WellProjectDto CreateUpdatedWellProject(Project project)
         {
-            return new WellProjectBuilder
+            return WellProjectDtoAdapter.Convert(new WellProjectBuilder
             {
                 Name = "updated name",
                 ArtificialLift = ArtificialLift.GasLift,
@@ -230,7 +242,8 @@ namespace tests
                     StartYear = 2030,
                     Values = new int[] { 13, 18, 34 }
                 }
-                );
+                )
+            );
         }
     }
 }

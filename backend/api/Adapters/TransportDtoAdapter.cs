@@ -18,6 +18,10 @@ namespace api.Adapters
                 GasExportPipelineLength = transport.GasExportPipelineLength,
                 OilExportPipelineLength = transport.OilExportPipelineLength,
                 Currency = transport.Currency,
+                LastChangedDate = transport.LastChangedDate,
+                CostYear = transport.CostYear,
+                Source = transport.Source,
+                ProspVersion = transport.ProspVersion,
                 CostProfile = Convert(transport.CostProfile),
                 CessationCostProfile = Convert(transport.CessationCostProfile)
             };

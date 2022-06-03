@@ -20,6 +20,11 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
     waterInjectorCount?: number | undefined
     productionFlowline?: Components.Schemas.ProductionFlowline | undefined
     currency?: Components.Schemas.Currency
+    LastChangedDate?: Date | null
+    costYear?: number | undefined
+    source?: Components.Schemas.Source
+    ProspVersion?: Date | null
+    approvedBy?: string | null | undefined
 
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {
@@ -39,9 +44,23 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
             this.waterInjectorCount = data.waterInjectorCount
             this.productionFlowline = data.productionFlowline
             this.currency = data.currency ?? 0
+            this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
+            this.costYear = data.costYear
+            this.source = data.source
+            this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
+            this.approvedBy = data.approvedBy ?? ""
         } else {
             this.id = EMPTY_GUID
             this.name = ""
+            this.approvedBy = ""
+        }
+    }
+
+    static Copy(data: Surf) {
+        const surfCopy: Surf = new Surf(data)
+        return {
+            ...surfCopy,
+            ProspVersion: data.ProspVersion,
         }
     }
 
