@@ -275,14 +275,14 @@ const TopsideView = () => {
                     setValue={setFuelConsumption}
                     value={fuelConsumption ?? 0}
                     integer
-                    label={`Fuel consumption ${project?.physUnit === 0 ? "(MSm³ gas/sd)" : "(Oilfield)"}`}
+                    label="Fuel consumption (MSm³ gas/sd)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setFlaredGas}
                     value={flaredGas ?? 0}
                     integer={false}
-                    label={`Flared gas ${project?.physUnit === 0 ? "(MSm³ gas/sd)" : "(Oilfield)"}`}
+                    label="Flared gas (MSm³ gas/sd)"
                 />
             </Wrapper>
             <Wrapper>
@@ -291,21 +291,21 @@ const TopsideView = () => {
                     setValue={setDryweight}
                     value={dryweight ?? 0}
                     integer
-                    label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
+                    label="Topside dry weight (tonnes)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setOilCapacity}
                     value={oilCapacity ?? 0}
                     integer={false}
-                    label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
+                    label="Capacity oil (Sm³/sd)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setGasCapacity}
                     value={gasCapacity ?? 0}
                     integer={false}
-                    label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
+                    label="Capacity gas (MSm³/sd)"
                 />
             </Wrapper>
             <Wrapper>
