@@ -333,7 +333,7 @@ declare namespace Components {
             cO2OnMaxWaterInjectionProfile?: number; // double
             costYear?: number; // int32
             prospVersion?: string | null; // date-time
-            lastChangedDate?: string; // date-time
+            lastChangedDate?: string | null; // date-time
             source?: Source /* int32 */;
             approvedBy?: string | null;
         }
