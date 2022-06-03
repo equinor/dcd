@@ -54,6 +54,11 @@ const TopsideView = () => {
     const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
     const [approvedBy, setApprovedBy] = useState<string>("")
+    const [producerCount, setProducerCount] = useState<number | undefined>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number | undefined>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number | undefined>()
+    const [fuelConsumption, setFuelConsumption] = useState<number | undefined>()
+    const [flaredGas, setFlaredGas] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -80,6 +85,9 @@ const TopsideView = () => {
                     newTopside.artificialLift = caseResult?.artificialLift
                     newTopside.currency = project.currency
                     newTopside.facilitiesAvailability = caseResult?.facilitiesAvailability
+                    newTopside.producerCount = caseResult?.producerCount
+                    newTopside.gasInjectorCount = caseResult?.gasInjectorCount
+                    newTopside.waterInjectorCount = caseResult?.waterInjectorCount
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
@@ -100,6 +108,11 @@ const TopsideView = () => {
                 setApprovedBy(newTopside?.approvedBy!)
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
+                setProducerCount(newTopside?.producerCount)
+                setGasInjectorCount(newTopside?.gasInjectorCount)
+                setWaterInjectorCount(newTopside?.waterInjectorCount)
+                setFuelConsumption(newTopside?.fuelConsumption)
+                setFlaredGas(newTopside?.flaredGas)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -133,6 +146,11 @@ const TopsideView = () => {
             newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
             newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
             newTopside.approvedBy = approvedBy
+            newTopside.producerCount = producerCount
+            newTopside.gasInjectorCount = gasInjectorCount
+            newTopside.waterInjectorCount = waterInjectorCount
+            newTopside.fuelConsumption = fuelConsumption
+            newTopside.flaredGas = flaredGas
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -146,7 +164,8 @@ const TopsideView = () => {
         }
     }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
         cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
-        cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift])
+        cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift,
+        producerCount, gasInjectorCount, waterInjectorCount, fuelConsumption, flaredGas])
 
     return (
         <AssetViewDiv>
@@ -216,6 +235,57 @@ const TopsideView = () => {
                 </WrapperColumn>
             </Wrapper>
             <Wrapper>
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setProducerCount}
+                    value={producerCount ?? 0}
+                    integer
+                    label="Producer count"
+                    caseValue={caseItem?.producerCount}
+                />
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setGasInjectorCount}
+                    value={gasInjectorCount ?? 0}
+                    integer
+                    label="Gas injector count"
+                    caseValue={caseItem?.gasInjectorCount}
+                />
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setWaterInjectorCount}
+                    value={waterInjectorCount ?? 0}
+                    integer
+                    label="Water injector count"
+                    caseValue={caseItem?.waterInjectorCount}
+                />
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setFacilitiesAvailability}
+                    value={facilitiesAvailability ?? 0}
+                    integer
+                    disabled={false}
+                    label="Facilities availability (%)"
+                    caseValue={caseItem?.facilitiesAvailability}
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setFuelConsumption}
+                    value={fuelConsumption ?? 0}
+                    integer
+                    label={`Fuel consumption ${project?.physUnit === 0 ? "(MSm³ gas/sd)" : "(Oilfield)"}`}
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setFlaredGas}
+                    value={flaredGas ?? 0}
+                    integer={false}
+                    label={`Flared gas ${project?.physUnit === 0 ? "(MSm³ gas/sd)" : "(Oilfield)"}`}
+                />
+            </Wrapper>
+            <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setDryweight}
@@ -236,15 +306,6 @@ const TopsideView = () => {
                     value={gasCapacity ?? 0}
                     integer={false}
                     label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
-                />
-                <NumberInputInherited
-                    setHasChanges={setHasChanges}
-                    setValue={setFacilitiesAvailability}
-                    value={facilitiesAvailability ?? 0}
-                    integer
-                    disabled={false}
-                    label="Facilities availability (%)"
-                    caseValue={caseItem?.facilitiesAvailability}
                 />
             </Wrapper>
             <Wrapper>

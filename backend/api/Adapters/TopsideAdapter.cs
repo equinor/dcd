@@ -21,6 +21,9 @@ namespace api.Adapters
                 Currency = topsideDto.Currency,
                 FuelConsumption = topsideDto.FuelConsumption,
                 FlaredGas = topsideDto.FlaredGas,
+                ProducerCount = topsideDto.ProducerCount,
+                GasInjectorCount = topsideDto.GasInjectorCount,
+                WaterInjectorCount = topsideDto.WaterInjectorCount,
                 CO2ShareOilProfile = topsideDto.CO2ShareOilProfile,
                 CO2ShareGasProfile = topsideDto.CO2ShareGasProfile,
                 CO2ShareWaterInjectionProfile = topsideDto.CO2ShareWaterInjectionProfile,
@@ -63,6 +66,9 @@ namespace api.Adapters
             existing.CessationCostProfile = Convert(topsideDto.CessationCostProfile, existing);
             existing.FuelConsumption = topsideDto.FuelConsumption;
             existing.FlaredGas = topsideDto.FlaredGas;
+            existing.ProducerCount = topsideDto.ProducerCount;
+            existing.GasInjectorCount = topsideDto.GasInjectorCount;
+            existing.WaterInjectorCount = topsideDto.WaterInjectorCount;
             existing.CO2ShareOilProfile = topsideDto.CO2ShareOilProfile;
             existing.CO2ShareGasProfile = topsideDto.CO2ShareGasProfile;
             existing.CO2ShareWaterInjectionProfile = topsideDto.CO2ShareWaterInjectionProfile;
