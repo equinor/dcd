@@ -31,7 +31,7 @@ namespace api.Services
             _surfService = surfService;
         }
 
-        public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId)
+        public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId)
         {
             using var ms = new MemoryStream();
             file.CopyTo(ms);
@@ -64,6 +64,7 @@ namespace api.Services
                 {
                     Name = "ImportedSurf",
                     CostProfile = profileCost,
+                    ProjectId = projectId,
 
                 };
                 var dto = SurfDtoAdapter.Convert(newSurf);

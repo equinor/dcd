@@ -1,9 +1,12 @@
 import { Button } from "@equinor/eds-core-react"
 import { useState } from "react"
+import { useParams } from "react-router"
+import { GetUploadService } from "../Services/UploadService"
 
 const ExcelUpload = () => {
     const [selectedFile, setSelectedFile] = useState<any>()
     const [isFilePicked, setIsFilePicked] = useState(false)
+    const params = useParams()
     const changeHandler = (event: any) => {
         setSelectedFile(event.target.files[0])
         setIsFilePicked(true)
@@ -13,21 +16,22 @@ const ExcelUpload = () => {
         const formData = new FormData()
 
         formData.append("File", selectedFile)
-
-        fetch(
-            "http://localhost:5000/api/Upload",
-            {
-                method: "POST",
-                body: formData,
-            },
-        )
-            .then((response) => response.json())
-            .then((result) => {
-                console.log("Success:", result)
-            })
-            .catch((error) => {
-                console.error("Error:", error)
-            })
+        const uploadService = GetUploadService()
+        uploadService.create(params.caseId!, params.projectId!, formData)
+        // fetch(
+        //     "http://localhost:5000/api/Upload",
+        //     {
+        //         method: "POST",
+        //         body: formData,
+        //     },
+        // )
+        //     .then((response) => response.json())
+        //     .then((result) => {
+        //         console.log("Success:", result)
+        //     })
+        //     .catch((error) => {
+        //         console.error("Error:", error)
+        //     })
     }
     return (
         <label htmlFor="file-upload">

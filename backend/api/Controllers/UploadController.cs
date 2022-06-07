@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 
 namespace api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UploadController : ControllerBase
     {
@@ -16,8 +16,8 @@ namespace api.Controllers
             _prospService = prospService;
         }
 
-        [HttpPost, DisableRequestSizeLimit]
-        public async Task<ProjectDto> Upload([FromQuery] Guid sourceCaseId)
+        [HttpPost(Name = "Upload"), DisableRequestSizeLimit]
+        public async Task<ProjectDto> Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace api.Controllers
                 var file = formCollection.Files.First();
                 if (file.Length > 0)
                 {
-                    var dto = _prospService.ImportProsp(file, sourceCaseId);
+                    var dto = _prospService.ImportProsp(file, sourceCaseId, projectId);
                     return dto;
                 }
                 return null;
