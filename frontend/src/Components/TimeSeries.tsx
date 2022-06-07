@@ -35,6 +35,7 @@ const TimeSeries = ({
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
+    const [gridDataFakeView, setGridDataFakeView] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
 
     function getUnit(title: string) {
@@ -46,12 +47,34 @@ const TimeSeries = ({
         } return "unspecified"
     }
 
+    function convertUnitValues(values: number[] | undefined, title: string): number[] | undefined {
+        if (title.includes("scf/yr")) {
+            // eslint-disable-next-line array-callback-return
+            const newValues: number[] | undefined = values?.map((value) => {
+                // eslint-disable-next-line no-param-reassign
+                value *= 35.315
+                return value
+            })
+            return newValues
+        }
+        if (title.includes("bbls/yr")) {
+            // eslint-disable-next-line array-callback-return
+            const newValues: number[] | undefined = values?.map((value) => {
+                // eslint-disable-next-line no-param-reassign
+                value *= 6.29
+                return value
+            })
+            return newValues
+        }
+        return values
+    }
+
     function trimMillsAndBills(values: number[] | undefined, unit: string): number[] | undefined {
         if (unit === "million") {
             // eslint-disable-next-line array-callback-return
             const newValues: number[] | undefined = values?.map((value) => {
                 if (value.toString().length > 6) {
-                // eslint-disable-next-line no-param-reassign
+                    // eslint-disable-next-line no-param-reassign
                     value /= 1E6
                 }
                 return value
@@ -97,8 +120,13 @@ const TimeSeries = ({
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
             const unit = getUnit(timeSeriesTitle)
+            const timeseriesCopy = timeSeries
+            timeseriesCopy.values = trimMillsAndBills(timeseriesCopy.values, unit)
             // eslint-disable-next-line no-param-reassign
-            timeSeries.values = trimMillsAndBills(timeSeries.values, unit)
+            timeseriesCopy.values = convertUnitValues(timeseriesCopy.values, timeSeriesTitle)
+            const newGridDataFakeView = buildGridData(timeseriesCopy)
+            setGridDataFakeView(newGridDataFakeView)
+
             const newGridData = buildGridData(timeSeries)
 
             const alignedAssetGridData = new Array(
@@ -147,6 +175,7 @@ const TimeSeries = ({
         setColumns([])
         setGridData([[]])
         setTimeSeries(undefined)
+        setGridDataFakeView([[]])
     }
 
     return (
@@ -169,7 +198,7 @@ const TimeSeries = ({
             <WrapperColumn>
                 <DataTable
                     columns={columns}
-                    gridData={gridData}
+                    gridData={gridDataFakeView}
                     onCellsChanged={onCellsChanged}
                     dG4Year={dG4Year?.toString()!}
                 />
