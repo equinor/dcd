@@ -1,3 +1,6 @@
+using api.Dtos;
+using api.Services;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 
@@ -7,8 +10,14 @@ namespace api.Controllers
     [ApiController]
     public class UploadController : ControllerBase
     {
+        private readonly ImportProspService _prospService;
+        public UploadController(ImportProspService prospService)
+        {
+            _prospService = prospService;
+        }
+
         [HttpPost, DisableRequestSizeLimit]
-        public async Task<IActionResult> Upload()
+        public async Task<ProjectDto> Upload([FromQuery] Guid sourceCaseId)
         {
             try
             {
@@ -16,16 +25,14 @@ namespace api.Controllers
                 var file = formCollection.Files.First();
                 if (file.Length > 0)
                 {
-                    return Ok("File uploaded");
+                    var dto = _prospService.ImportProsp(file, sourceCaseId);
+                    return dto;
                 }
-                else
-                {
-                    return BadRequest();
-                }
+                return null;
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex}");
+                return null;
             }
         }
     }
