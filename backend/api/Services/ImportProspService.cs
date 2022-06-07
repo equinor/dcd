@@ -16,13 +16,6 @@ namespace api.Services
         private readonly ILogger<ImportProspService> _logger;
         private readonly SurfService _surfService;
         private const string SHEETNAME = "main";
-        private const string SURFPRODUCTIONLINE = "K35";
-        private const string SURFUMBILICALLINE = "K37";
-        private const string SURFRISERCOUNT = "K36";
-        private const string SURFCESSATIONCOST = "K88";
-        private readonly List<string> CostProfileMain = new() {"J112", "K112", "M112", "N112", "O112", "P112"};
-
-
 
         public ImportProspService(ProjectService projectService, ILoggerFactory loggerFactory, SurfService surfService)
         {
@@ -31,7 +24,147 @@ namespace api.Services
             _surfService = surfService;
         }
 
-        public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId)
+        public double ReadDoubleValue(IEnumerable<Cell> cellData, string coordinate)
+        {
+            if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText, out var value))
+            {
+                return value;
+            }
+            return 0;
+        }
+
+        public int ReadIntValue(IEnumerable<Cell> cellData, string coordinate)
+        {
+            if (int.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText, out var value))
+            {
+                return value;
+            }
+            return -1;
+        }
+
+        public double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
+        {
+            var values = new List<double>();
+            foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
+            {
+                if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
+                {
+                    values.Add(value);
+                }
+            }
+
+            return values.ToArray();
+        }
+
+        public DateTime ReadDateValue(IEnumerable<Cell> cellData, string coordinate)
+        {
+            if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText, out var value))
+            {
+                return DateTime.FromOADate(value);
+            }
+            return new DateTime(1900, 1, 1);
+        }
+
+        public void ImportSurf(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId)
+        {
+            List<string> costProfileCoords = new() { "J112", "K112", "L112", "M112", "N112", "O112", "P112" };
+
+            var costProfileStartYear = ReadIntValue(cellData, "J103");
+
+            var dG4Date = ReadDateValue(cellData, "F112");
+
+            var dG3Date = ReadDateValue(cellData, "G112");
+
+            var lengthProductionLine = ReadDoubleValue(cellData, "K35");
+
+            var lengthUmbilicalSystem = ReadDoubleValue(cellData, "K37");
+
+            var productionFlowlineInt = ReadIntValue(cellData, "E50");
+            var productionFlowline = MapProductionFlowLine(productionFlowlineInt);
+
+            var artificialLiftInt = ReadIntValue(cellData, "E48");
+            var artificialLift = MapArtificialLift(artificialLiftInt);
+
+            var riserCount = ReadIntValue(cellData, "K36");
+
+            var templateCount = ReadIntValue(cellData, "K32");
+
+            var cessationCost = ReadDoubleValue(cellData, "K88");
+
+
+            var costProfile = new SurfCostProfile
+            {
+                Values = ReadDoubleValues(cellData, costProfileCoords),
+                StartYear = dG4Date.Year - costProfileStartYear
+            };
+
+            var newSurf = new Surf
+            {
+                Name = "ImportedSurf",
+                CostProfile = costProfile,
+                ProjectId = projectId,
+                ProductionFlowline = productionFlowline,
+                UmbilicalSystemLength = lengthUmbilicalSystem,
+                InfieldPipelineSystemLength = lengthProductionLine,
+                RiserCount = riserCount,
+                TemplateCount = templateCount,
+                ArtificialLift = artificialLift,
+            };
+            var dto = SurfDtoAdapter.Convert(newSurf);
+
+            _surfService.CreateSurf(dto, sourceCaseId);
+        }
+
+        public void ImportTopside(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId) {
+            List<string> costProfileCoords = new() { "J104", "K104", "L104", "M104", "N104", "O104", "P104" };
+
+            var costProfileStartYear = ReadIntValue(cellData, "J103");
+
+            var dG4Date = ReadDateValue(cellData, "F104");
+
+            var dG3Date = ReadDateValue(cellData, "G104");
+
+            var lengthProductionLine = ReadDoubleValue(cellData, "K35");
+
+            var lengthUmbilicalSystem = ReadDoubleValue(cellData, "K37");
+
+            var productionFlowlineInt = ReadIntValue(cellData, "E50");
+            var productionFlowline = MapProductionFlowLine(productionFlowlineInt);
+
+            var artificialLiftInt = ReadIntValue(cellData, "E48");
+            var artificialLift = MapArtificialLift(artificialLiftInt);
+
+            var riserCount = ReadIntValue(cellData, "K36");
+
+            var templateCount = ReadIntValue(cellData, "K32");
+
+            var cessationCost = ReadDoubleValue(cellData, "K88");
+
+
+            var costProfile = new SurfCostProfile
+            {
+                Values = ReadDoubleValues(cellData, costProfileCoords),
+                StartYear = dG4Date.Year - costProfileStartYear
+            };
+
+            var newSurf = new Surf
+            {
+                Name = "ImportedSurf",
+                CostProfile = costProfile,
+                ProjectId = projectId,
+                ProductionFlowline = productionFlowline,
+                UmbilicalSystemLength = lengthUmbilicalSystem,
+                InfieldPipelineSystemLength = lengthProductionLine,
+                RiserCount = riserCount,
+                TemplateCount = templateCount,
+                ArtificialLift = artificialLift,
+            };
+            var dto = SurfDtoAdapter.Convert(newSurf);
+
+            _surfService.CreateSurf(dto, sourceCaseId);
+        }
+
+        public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
         {
             using var ms = new MemoryStream();
             file.CopyTo(ms);
@@ -40,47 +173,61 @@ namespace api.Services
             var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
                                                   .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SHEETNAME);
 
-            foreach(var child in workbookPart?.Workbook?.Descendants<Sheet>()?.Where(x => x.Name?.ToString()?.ToLower() == SHEETNAME)){
-                Console.WriteLine(child.Name?.ToString()?.ToLower());
-                var wsPart = (WorksheetPart)workbookPart.GetPartById(child?.Id);
+            var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet?.Id);
 
-                var cellData = wsPart.Worksheet.Descendants<Cell>();
-                var surfValues = new List<double>();
+            var cellData = wsPart.Worksheet.Descendants<Cell>();
 
-                foreach(var cell in cellData.Where(c => CostProfileMain.Contains(c?.CellReference))){
-                    Console.WriteLine(cell.CellValue);
-                    var data = Double.TryParse(cell.CellValue?.InnerText, out var numb);
-                    surfValues.Add(numb);
-                }
-                var timeSeriesCost = new TimeSeriesCost{
-                    Values = surfValues.ToArray(),
-                };
-                var profileCost = new SurfCostProfile
-                {
-                    Values = timeSeriesCost.Values
-                };
-
-                var newSurf = new Surf
-                {
-                    Name = "ImportedSurf",
-                    CostProfile = profileCost,
-                    ProjectId = projectId,
-
-                };
-                var dto = SurfDtoAdapter.Convert(newSurf);
-                
-                var project = _surfService.CreateSurf(dto, sourceCaseId);
-
-                return project;
-            }
-
-            if (mainSheet == null)
+            if (assets["Surf"])
             {
-                throw new ArgumentException("sheetname is not found in workbook");
+                ImportSurf(cellData, sourceCaseId, projectId);
             }
-             return null;
-            // GetCellValue(workbookPart, mainSheet);
-            // var topdsideDG3FromSheet = mainSheet?.Descendants<Cell>().FirstOrDefault(x => x.CellReference == "G103")?.CellValue;
+            if (assets["Topside"])
+            {
+                // ImportTopside(cellData, sourceCaseId, projectId);
+            }
+            if (assets["Substructure"])
+            {
+                // ImportSurf(cellData, sourceCaseId, projectId);
+            }
+            if (assets["Transport"])
+            {
+                // ImportSurf(cellData, sourceCaseId, projectId);
+            }
+
+            return _projectService.GetProjectDto(projectId);
+        }
+
+        public ArtificialLift MapArtificialLift(int importValue)
+        {
+            return importValue switch
+            {
+                0 => ArtificialLift.NoArtificialLift,
+                1 => ArtificialLift.GasLift,
+                2 => ArtificialLift.ElectricalSubmergedPumps,
+                3 => ArtificialLift.SubseaBoosterPumps,
+                _ => ArtificialLift.NoArtificialLift,
+            };
+        }
+
+        public ProductionFlowline MapProductionFlowLine(int importValue)
+        {
+            return importValue switch
+            {
+                1 => ProductionFlowline.Carbon,
+                2 => ProductionFlowline.SSClad,
+                3 => ProductionFlowline.Cr13,
+                11 => ProductionFlowline.Carbon_Insulation,
+                12 => ProductionFlowline.SSClad_Insulation,
+                13 => ProductionFlowline.Cr13_Insulation,
+                21 => ProductionFlowline.Carbon_Insulation_DEH,
+                22 => ProductionFlowline.SSClad_Insulation_DEH,
+                23 => ProductionFlowline.Cr13_Insulation_DEH,
+                31 => ProductionFlowline.Carbon_PIP,
+                32 => ProductionFlowline.SSClad_PIP,
+                33 => ProductionFlowline.Cr13_PIP,
+                41 => ProductionFlowline.HDPELinedCS,
+                _ => ProductionFlowline.No_production_flowline,
+            };
         }
 
         public string GetCellValue(WorkbookPart? workbookPart, Sheet? mainSheet)

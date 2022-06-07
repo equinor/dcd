@@ -10,6 +10,7 @@ const ExcelUpload = () => {
     const [surf, setSurf] = useState<boolean>(false)
     const [topside, setTopside] = useState<boolean>(false)
     const [substructure, setSubstructure] = useState<boolean>(false)
+    const [transport, setTransport] = useState<boolean>(false)
     const changeHandler = (event: any) => {
         setSelectedFile(event.target.files[0])
         setIsFilePicked(true)
@@ -22,22 +23,9 @@ const ExcelUpload = () => {
         formData.append("Surf", surf.toString())
         formData.append("Topside", topside.toString())
         formData.append("Substructure", substructure.toString())
+        formData.append("Transport", transport.toString())
         const uploadService = GetUploadService()
         uploadService.create(params.caseId!, params.projectId!, formData)
-        // fetch(
-        //     "http://localhost:5000/api/Upload",
-        //     {
-        //         method: "POST",
-        //         body: formData,
-        //     },
-        // )
-        //     .then((response) => response.json())
-        //     .then((result) => {
-        //         console.log("Success:", result)
-        //     })
-        //     .catch((error) => {
-        //         console.error("Error:", error)
-        //     })
     }
 
     const disabled = () => {
@@ -74,6 +62,7 @@ const ExcelUpload = () => {
             <Checkbox label="Surf" onChange={() => { setSurf(!surf) }} checked={surf} />
             <Checkbox label="Substructure" onChange={() => { setSubstructure(!substructure) }} checked={substructure} />
             <Checkbox label="Topside" onChange={() => { setTopside(!topside) }} checked={topside} />
+            <Checkbox label="Transport" onChange={() => { setTransport(!transport) }} checked={transport} />
             <Button onClick={handleSubmission} as="span">Upload file</Button>
         </label>
     )
