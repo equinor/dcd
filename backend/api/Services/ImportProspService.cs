@@ -20,7 +20,10 @@ namespace api.Services
         private const string SURFUMBILICALLINE = "K37";
         private const string SURFRISERCOUNT = "K36";
         private const string SURFCESSATIONCOST = "K88";
+        private const string SURFARTIFICIALLIFT = "E48";
+        private const string SURFTEMPLATECOUNT = "K32";
         private readonly List<string> CostProfileMain = new() {"J112", "K112", "M112", "N112", "O112", "P112"};
+        private readonly List<string> CostProfileYearMain = new() {"J102", "K102", "M102", "N102", "O102", "P102"};
 
 
 
@@ -52,6 +55,10 @@ namespace api.Services
                     var data = Double.TryParse(cell.CellValue?.InnerText, out var numb);
                     surfValues.Add(numb);
                 }
+
+                // add list of metadata 
+                // var metadataCoordinates = new() {SURFCESSATIONCOST};
+
                 var timeSeriesCost = new TimeSeriesCost{
                     Values = surfValues.ToArray(),
                 };
@@ -65,8 +72,8 @@ namespace api.Services
                     Name = "ImportedSurf",
                     CostProfile = profileCost,
                     ProjectId = projectId,
-
                 };
+
                 var dto = SurfDtoAdapter.Convert(newSurf);
                 
                 var project = _surfService.CreateSurf(dto, sourceCaseId);
