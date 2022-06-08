@@ -16,13 +16,14 @@ import {
     SetStateAction,
 } from "react"
 import styled from "styled-components"
-// import DGEnum from "../models/DGEnum"
 import { WrapperInherited } from "../Views/Asset/StyledAssetComponents"
 
 const DgField = styled.div`
-    margin-bottom: 2.5rem;
-    width: 12rem;
-    display: flex;
+margin-right: 1rem;
+margin-left: 1rem;
+margin-bottom: 2rem;
+width: 10rem;
+display: flex;
 `
 
 const ActionsContainer = styled.div`
@@ -32,7 +33,6 @@ interface Props {
     setHasChanges?: Dispatch<SetStateAction<boolean>>
     setValue?: Dispatch<SetStateAction<Date | undefined>>
     value: Date | undefined
-    // dGType: DGEnum,
     dGName: string,
     caseValue: Date | null | undefined
 }
@@ -41,7 +41,6 @@ const DGDateInherited = ({
     setHasChanges,
     setValue,
     value,
-    // dGType,
     dGName,
     caseValue,
 }: Props) => {
@@ -71,27 +70,9 @@ const DGDateInherited = ({
 
     const dgReturnDate = () => value?.toLocaleDateString("en-CA")
 
-    // const limitDateToNextDGDate = () => {
-    //     if (dGType === DGEnum.DG3) {
-    //         return DG4Date?.toLocaleDateString("en-CA")
-    //     }
-    //     return undefined
-    // }
-
     return (
         <>
-            <Typography variant="h6">{dGName}</Typography>
-            <DgField>
-                <Input
-                    defaultValue={dgReturnDate()}
-                    key={dgReturnDate()}
-                    id="dgDate"
-                    type="date"
-                    name="dgDate"
-                    onChange={onChange}
-                    // max={limitDateToNextDGDate()}
-                />
-            </DgField>
+            <Typography variant="h4">{dGName}</Typography>
             <WrapperInherited>
                 <EdsProvider density="compact">
                     <ActionsContainer hidden={!isMismatchedToCase}>
@@ -110,6 +91,16 @@ const DGDateInherited = ({
                     </ActionsContainer>
                 </EdsProvider>
             </WrapperInherited>
+            <DgField>
+                <Input
+                    defaultValue={dgReturnDate()}
+                    key={dgReturnDate()}
+                    id="dgDate"
+                    type="date"
+                    name="dgDate"
+                    onChange={onChange}
+                />
+            </DgField>
         </>
     )
 }
