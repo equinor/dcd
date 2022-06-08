@@ -49,7 +49,7 @@ const DGDateInherited = ({
 
     useEffect(() => {
         (async () => {
-            if (caseValue !== null && caseValue !== undefined && caseValue !== value) {
+            if (caseValue?.toLocaleDateString("en-CA") !== value?.toLocaleDateString("en-CA")) {
                 return setIsMismatchedToCase(true)
             }
             return setIsMismatchedToCase(false)
