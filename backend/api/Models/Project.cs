@@ -32,7 +32,7 @@ namespace api.Models
     {
         NOK = 1,
         USD = 2,
-        
+
     }
     public enum ProjectPhase
     {

@@ -266,7 +266,7 @@ namespace api.Services
                 StartYear = dG4Date.Year - costProfileStartYear
             };
 
-             // Prosp meta data
+            // Prosp meta data
             var versionDate = ReadDateValue(cellData, "I4");
             var costYear = ReadIntValue(cellData, "K4");
             var importedCurrency = ReadIntValue(cellData, "E8");
