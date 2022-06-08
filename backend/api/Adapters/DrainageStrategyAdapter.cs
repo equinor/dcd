@@ -142,7 +142,7 @@ namespace api.Adapters
         private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
         {
             // Per now - the timeseriestypes which use millions are the same in both SI and Oilfield
-            if (type.Equals("NetSalesGas") || type.Equals("FuelFlaringAndLosses") || type.Equals("ProfileGas"))
+            if (type.Equals(nameof(NetSalesGas)) || type.Equals(nameof(FuelFlaringAndLosses)) || type.Equals(nameof(ProductionProfileGas)))
             {
                 // These types should be saved in billions
                 values = Array.ConvertAll(values, x => x * 1E9);
@@ -155,14 +155,14 @@ namespace api.Adapters
 
 
             // If values were inserted in Oilfield, convert to baseunit
-            if (unit == PhysUnit.OilField && type != "Co2Emissions" && type != "ProfileNGL")
+            if (unit == PhysUnit.OilField && !type.Equals(nameof(Co2Emissions)) && !type.Equals(nameof(ProductionProfileNGL)))
             {
-                if (type == "ProfileOil" || type == "ProfileWaterInjection")
+                if (type.Equals(nameof(ProductionProfileOil)) || type.Equals(nameof(ProductionProfileWaterInjection)))
                 {
                     // Unit: From BBL to baseunit Sm3
-                    values = Array.ConvertAll(values, x => x / 6.29);
+                    values = Array.ConvertAll(values, x => x / 6.290);
                 }
-                else if (type == "ProfileGas" || type == "FuelFaringAndLosses" || type == "NetSalesGas")
+                else if (type.Equals(nameof(ProductionProfileGas))|| type.Equals(nameof(FuelFlaringAndLosses))|| type.Equals(nameof(NetSalesGas)))
                 {
                     // Unit: From SCF to baseunit Sm3
                     values = Array.ConvertAll(values, x => x / 35.315);
@@ -184,7 +184,7 @@ namespace api.Adapters
                 Id = productionProfileOilDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileOilDto.StartYear,
-                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileOilDto.Values, unit, "ProfileOil") : productionProfileOilDto.Values,
+                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileOilDto.Values, unit, nameof(ProductionProfileOil)) : productionProfileOilDto.Values,
             };
 
             return convertedTimeSeries;
@@ -202,7 +202,7 @@ namespace api.Adapters
                 Id = productionProfileGasDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileGasDto.StartYear,
-                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileGasDto.Values, unit, "ProfileGas") : productionProfileGasDto.Values,
+                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileGasDto.Values, unit, nameof(ProductionProfileGas)) : productionProfileGasDto.Values,
             };
             return convertedTimeSeries;
         }
@@ -219,7 +219,7 @@ namespace api.Adapters
                 Id = productionProfileWaterDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileWaterDto.StartYear,
-                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileWaterDto.Values, unit, "ProfileWater") : productionProfileWaterDto.Values,
+                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileWaterDto.Values, unit, nameof(ProductionProfileWater)) : productionProfileWaterDto.Values,
             };
             return convertedTimeSeries;
         }
@@ -236,7 +236,7 @@ namespace api.Adapters
                 Id = productionProfileWaterInjectionDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileWaterInjectionDto.StartYear,
-                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileWaterInjectionDto.Values, unit, "ProfileWaterInjection") : productionProfileWaterInjectionDto.Values,
+                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileWaterInjectionDto.Values, unit, nameof(ProductionProfileWaterInjection)) : productionProfileWaterInjectionDto.Values,
             };
             return convertedTimeSeries;
         }
@@ -253,7 +253,7 @@ namespace api.Adapters
                 Id = fuelFlaringAndLossesDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = fuelFlaringAndLossesDto.StartYear,
-                Values = needToConvertValues || initialCreate ? ConvertUnitValues(fuelFlaringAndLossesDto.Values, unit, "FuelFlaringAndLosses") : fuelFlaringAndLossesDto.Values,
+                Values = needToConvertValues || initialCreate ? ConvertUnitValues(fuelFlaringAndLossesDto.Values, unit, nameof(FuelFlaringAndLosses)) : fuelFlaringAndLossesDto.Values,
             };
             return convertedTimeSeries;
         }
@@ -270,7 +270,7 @@ namespace api.Adapters
                 Id = netSalesGasDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = netSalesGasDto.StartYear,
-                Values = needToConvertValues || initialCreate ? ConvertUnitValues(netSalesGasDto.Values, unit, "NetSalesGas") : netSalesGasDto.Values,
+                Values = needToConvertValues || initialCreate ? ConvertUnitValues(netSalesGasDto.Values, unit, nameof(NetSalesGas)) : netSalesGasDto.Values,
             };
             return convertedTimeSeries;
         }
@@ -287,7 +287,7 @@ namespace api.Adapters
                 Id = co2EmissionsDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = co2EmissionsDto.StartYear,
-                Values = needToConvertValues || initialCreate ? ConvertUnitValues(co2EmissionsDto.Values, unit, "Co2Emissions") : co2EmissionsDto.Values,
+                Values = needToConvertValues || initialCreate ? ConvertUnitValues(co2EmissionsDto.Values, unit, nameof(Co2Emissions)) : co2EmissionsDto.Values,
             };
             return convertedTimeSeries;
         }
@@ -304,7 +304,7 @@ namespace api.Adapters
                 Id = productionProfileNGLDto.Id,
                 DrainageStrategy = drainageStrategy,
                 StartYear = productionProfileNGLDto.StartYear,
-                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileNGLDto.Values, unit, "ProfileNGL") : productionProfileNGLDto.Values,
+                Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileNGLDto.Values, unit, nameof(ProductionProfileNGL)) : productionProfileNGLDto.Values,
             };
             return convertedTimeSeries;
         }

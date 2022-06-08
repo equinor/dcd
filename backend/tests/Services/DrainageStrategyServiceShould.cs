@@ -61,7 +61,7 @@ namespace tests
             var expectedStrategy = CreateTestDrainageStrategy(project);
 
             // Act
-            var projectResult = drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), caseId);
+            var projectResult = drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), caseId);
 
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
@@ -84,7 +84,7 @@ namespace tests
 
             // Act, assert
             Assert.Throws<NotFoundInDBException>(() =>
-            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), caseId));
+            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), caseId));
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace tests
 
             // Act, assert
             Assert.Throws<NotFoundInDBException>(() =>
-            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), new Guid()));
+            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), new Guid()));
         }
 
         [Fact]
@@ -159,7 +159,7 @@ namespace tests
             var updatedStrategy = CreateUpdatedDrainageStrategy(project, oldStrategy);
 
             // Act
-            var projectResult = drainageStrategyService.UpdateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(updatedStrategy));
+            var projectResult = drainageStrategyService.UpdateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(updatedStrategy, project.PhysicalUnit));
 
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == updatedStrategy.Name);

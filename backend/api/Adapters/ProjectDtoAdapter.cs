@@ -29,7 +29,7 @@ namespace api.Adapters
                 projectDto.DrainageStrategies = new List<DrainageStrategyDto>();
                 foreach (DrainageStrategy d in project.DrainageStrategies)
                 {
-                    projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d));
+                    projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d, project.PhysicalUnit));
                 }
             }
             if (project.WellProjects != null)

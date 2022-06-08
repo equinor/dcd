@@ -35,65 +35,7 @@ const TimeSeries = ({
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
-    const [gridDataFakeView, setGridDataFakeView] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
-
-    function getUnit(title: string) {
-        if (title.includes("GSm³/yr") || title.includes("Bscf/yr")) {
-            return "billion"
-        } if (title.includes("MTPA")
-            || title.includes("MSm³/yr") || title.includes("mill bbls/yr")) {
-            return "million"
-        } return "unspecified"
-    }
-
-    function convertUnitValues(values: number[] | undefined, title: string): number[] | undefined {
-        if (title.includes("scf/yr")) {
-            // eslint-disable-next-line array-callback-return
-            const newValues: number[] | undefined = values?.map((value) => {
-                // eslint-disable-next-line no-param-reassign
-                value *= 35.315
-                return value
-            })
-            return newValues
-        }
-        if (title.includes("bbls/yr")) {
-            // eslint-disable-next-line array-callback-return
-            const newValues: number[] | undefined = values?.map((value) => {
-                // eslint-disable-next-line no-param-reassign
-                value *= 6.29
-                return value
-            })
-            return newValues
-        }
-        return values
-    }
-
-    function trimMillsAndBills(values: number[] | undefined, unit: string): number[] | undefined {
-        if (unit === "million") {
-            // eslint-disable-next-line array-callback-return
-            const newValues: number[] | undefined = values?.map((value) => {
-                if (value.toString().length > 6) {
-                    // eslint-disable-next-line no-param-reassign
-                    value /= 1E6
-                }
-                return value
-            })
-            return newValues
-        }
-        if (unit === "billion") {
-            // eslint-disable-next-line array-callback-return
-            const newValues: number[] | undefined = values?.map((value) => {
-                if (value.toString().length > 9) {
-                    // eslint-disable-next-line no-param-reassign
-                    value /= 1E9
-                }
-                return value
-            })
-            return newValues
-        }
-        return values
-    }
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (updatedTimeSeries !== undefined && timeSeries !== undefined) {
@@ -107,25 +49,18 @@ const TimeSeries = ({
 
             const zeroesAtStart: Number[] = Array.from({
                 length: Number(timeSeries!.startYear!)
-                + Number(dG4Year) - Number(firstYear),
+                    + Number(dG4Year) - Number(firstYear),
             }, (() => 0))
 
             const zeroesAtEnd: Number[] = Array.from({
                 length: Number(lastYear)
-                - (Number(timeSeries!.startYear!)
-                + Number(dG4Year)
-                + Number(timeSeries!.values!.length!)),
+                    - (Number(timeSeries?.startYear!)
+                        + Number(dG4Year)
+                        + Number(timeSeries!.values!.length!)),
             }, (() => 0))
 
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
-            const unit = getUnit(timeSeriesTitle)
-            const timeseriesCopy = timeSeries
-            timeseriesCopy.values = trimMillsAndBills(timeseriesCopy.values, unit)
-            // eslint-disable-next-line no-param-reassign
-            timeseriesCopy.values = convertUnitValues(timeseriesCopy.values, timeSeriesTitle)
-            const newGridDataFakeView = buildGridData(timeseriesCopy)
-            setGridDataFakeView(newGridDataFakeView)
 
             const newGridData = buildGridData(timeSeries)
 
@@ -156,14 +91,14 @@ const TimeSeries = ({
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setTimeSeries(newTimeSeries)
         if ((Number(year)
-        + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
+            + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
             setFirstYear((Number(year) + Number(dG4Year!)))
         }
         if ((Number(year)
-        + Number(dG4Year!)
-        + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
+            + Number(dG4Year!)
+            + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
             setLastYear(Number(year)
-            + Number(dG4Year!) + Number(newTimeSeries.values!.length))
+                + Number(dG4Year!) + Number(newTimeSeries.values!.length))
         }
         buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
@@ -175,7 +110,6 @@ const TimeSeries = ({
         setColumns([])
         setGridData([[]])
         setTimeSeries(undefined)
-        setGridDataFakeView([[]])
     }
 
     return (
@@ -198,7 +132,7 @@ const TimeSeries = ({
             <WrapperColumn>
                 <DataTable
                     columns={columns}
-                    gridData={gridDataFakeView}
+                    gridData={gridData}
                     onCellsChanged={onCellsChanged}
                     dG4Year={dG4Year?.toString()!}
                 />
