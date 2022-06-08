@@ -151,8 +151,14 @@ namespace api.Services
 
             var flaredGas = ReadDoubleValue(cellData, "K93");
 
-            var cO2ShareOilProfile = ReadDoubleValue(cellData, "J99");
+            var oilCapacity = ReadDoubleValue(cellData, "E27");
+            var gasCapacity = ReadDoubleValue(cellData, "E29");
 
+            var producerCount = ReadIntValue(cellData, "E38");
+            var gasInjectorCount = ReadIntValue(cellData, "E40");
+            var waterInjectorCount = ReadIntValue(cellData, "E39");
+
+            var cO2ShareOilProfile = ReadDoubleValue(cellData, "J99");
             var cO2ShareGasProfile = ReadDoubleValue(cellData, "J100");
             var cO2ShareWaterInjectionProfile = ReadDoubleValue(cellData, "J101");
             var cO2OnMaxOilProfile = ReadDoubleValue(cellData, "L99");
@@ -179,12 +185,12 @@ namespace api.Services
                 DG3Date = dG3Date,
                 DG4Date = dG4Date,
                 DryWeight = dryWeight,
-                OilCapacity = 0,
-                GasCapacity = 0,
+                OilCapacity = oilCapacity,
+                GasCapacity = gasCapacity,
                 ArtificialLift = artificialLift,
-                // ProdcerCount = 0
-                // WaterInjectorCount = 0
-                // GasInjectorCount = 0
+                ProducerCount = producerCount,
+                WaterInjectorCount = waterInjectorCount,
+                GasInjectorCount = gasInjectorCount,
                 FuelConsumption = fuelConsumption,
                 FlaredGas = flaredGas,
                 CO2ShareOilProfile = cO2ShareOilProfile,
