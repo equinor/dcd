@@ -1,5 +1,5 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,7 +14,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -24,6 +24,9 @@ import NumberInput from "../Components/NumberInput"
 import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import NumberInputInherited from "../Components/NumberInputInherited"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
+import ApprovedBy from "../Components/ApprovedBy"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -41,6 +44,8 @@ const TopsideView = () => {
     const [costProfile, setCostProfile] = useState<TopsideCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [cO2ShareOilProfile, setCO2ShareOilProfile] = useState<number | undefined>()
     const [cO2ShareGasProfile, setCO2ShareGasProfile] = useState<number | undefined>()
     const [cO2ShareWaterInjectionProfile, setCO2ShareWaterInjectionProfile] = useState<number | undefined>()
@@ -48,6 +53,7 @@ const TopsideView = () => {
     const [cO2OnMaxGasProfile, setCO2OnMaxGasProfile] = useState<number | undefined>()
     const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [approvedBy, setApprovedBy] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -73,6 +79,7 @@ const TopsideView = () => {
                     newTopside = new Topside()
                     newTopside.artificialLift = caseResult?.artificialLift
                     newTopside.currency = project.currency
+                    newTopside.facilitiesAvailability = caseResult?.facilitiesAvailability
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
@@ -81,6 +88,8 @@ const TopsideView = () => {
                 setGasCapacity(newTopside?.gasCapacity)
                 setMaturity(newTopside?.maturity ?? undefined)
                 setCurrency(newTopside.currency ?? 0)
+                setFacilitiesAvailability(newTopside?.facilitiesAvailability)
+                setArtificialLift(newTopside.artificialLift)
                 setCostYear(newTopside?.costYear)
                 setCO2ShareOilProfile(newTopside?.cO2ShareOilProfile)
                 setCO2ShareGasProfile(newTopside?.cO2ShareGasProfile)
@@ -88,7 +97,7 @@ const TopsideView = () => {
                 setCO2OnMaxOilProfile(newTopside?.cO2OnMaxOilProfile)
                 setCO2OnMaxGasProfile(newTopside?.cO2OnMaxGasProfile)
                 setCO2OnMaxWaterInjectionProfile(newTopside?.cO2OnMaxWaterInjectionProfile)
-
+                setApprovedBy(newTopside?.approvedBy!)
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
 
@@ -114,6 +123,8 @@ const TopsideView = () => {
             newTopside.costProfile = costProfile
             newTopside.cessationCostProfile = cessationCostProfile
             newTopside.currency = currency
+            newTopside.facilitiesAvailability = facilitiesAvailability
+            newTopside.artificialLift = artificialLift
             newTopside.costYear = costYear
             newTopside.cO2ShareOilProfile = cO2ShareOilProfile
             newTopside.cO2ShareGasProfile = cO2ShareGasProfile
@@ -121,6 +132,7 @@ const TopsideView = () => {
             newTopside.cO2OnMaxOilProfile = cO2OnMaxOilProfile
             newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
             newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
+            newTopside.approvedBy = approvedBy
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -134,7 +146,7 @@ const TopsideView = () => {
         }
     }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
         cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
-        cO2OnMaxWaterInjectionProfile])
+        cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift])
 
     return (
         <AssetViewDiv>
@@ -160,6 +172,11 @@ const TopsideView = () => {
                 name={topsideName}
                 setHasChanges={setHasChanges}
             />
+            <ApprovedBy
+                setApprovedBy={setApprovedBy}
+                approvedBy={approvedBy}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG3</Typography>
                 <Dg4Field>
@@ -183,11 +200,11 @@ const TopsideView = () => {
             </Typography>
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(topside?.artificialLift)}
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
                     />
                     <NumberInput
                         setHasChanges={setHasChanges}
@@ -220,11 +237,14 @@ const TopsideView = () => {
                     integer={false}
                     label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
                 />
-                <NumberInput
-                    value={caseItem?.facilitiesAvailability ?? 0}
-                    integer={false}
-                    disabled
-                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setFacilitiesAvailability}
+                    value={facilitiesAvailability ?? 0}
+                    integer
+                    disabled={false}
+                    label="Facilities availability (%)"
+                    caseValue={caseItem?.facilitiesAvailability}
                 />
             </Wrapper>
             <Wrapper>

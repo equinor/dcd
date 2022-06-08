@@ -25,6 +25,7 @@ namespace api.Models
         public NetSalesGas? NetSalesGas { get; set; }
         public Co2Emissions? Co2Emissions { get; set; }
         public ProductionProfileNGL? ProductionProfileNGL { get; set; }
+        public double FacilitiesAvailability { get; set; }
     }
     public class ProductionProfileOil : TimeSeriesVolume
     {

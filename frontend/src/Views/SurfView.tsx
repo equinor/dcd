@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 
 import { useParams } from "react-router"
@@ -17,13 +17,16 @@ import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import Maturity from "../Components/Maturity"
 import ProductionFlowline from "../Components/ProductionFlowline"
 import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
 import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import NumberInputInherited from "../Components/NumberInputInherited"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
+import ApprovedBy from "../Components/ApprovedBy"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -46,7 +49,9 @@ const SurfView = () => {
     const [costProfile, setCostProfile] = useState<SurfCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [approvedBy, setApprovedBy] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -89,6 +94,8 @@ const SurfView = () => {
                 setMaturity(newSurf.maturity ?? undefined)
                 setProductionFlowline(newSurf.productionFlowline ?? 0)
                 setCurrency(newSurf.currency ?? 0)
+                setArtificialLift(newSurf.artificialLift)
+                setApprovedBy(newSurf?.approvedBy!)
 
                 setCostProfile(newSurf.costProfile)
                 setCessationCostProfile(newSurf.cessationCostProfile)
@@ -119,6 +126,8 @@ const SurfView = () => {
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
+            newSurf.artificialLift = artificialLift
+            newSurf.approvedBy = approvedBy
 
             newSurf.costProfile = costProfile
             newSurf.cessationCostProfile = cessationCostProfile
@@ -136,7 +145,7 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency, costYear])
+        costProfile, cessationCostProfile, currency, costYear, approvedBy, artificialLift])
 
     return (
         <AssetViewDiv>
@@ -162,6 +171,11 @@ const SurfView = () => {
                 name={surfName}
                 setHasChanges={setHasChanges}
             />
+            <ApprovedBy
+                setApprovedBy={setApprovedBy}
+                approvedBy={approvedBy}
+                setHasChanges={setHasChanges}
+            />
             <Wrapper>
                 <Typography variant="h4">DG3</Typography>
                 <Dg4Field>
@@ -185,11 +199,11 @@ const SurfView = () => {
             </Typography>
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(surf?.artificialLift)}
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
                     />
                     <NumberInput
                         setHasChanges={setHasChanges}
@@ -202,29 +216,29 @@ const SurfView = () => {
             </Wrapper>
 
             <Wrapper>
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setProducerCount}
                     value={producerCount ?? 0}
                     integer
-                    disabled
                     label="Producer count"
+                    caseValue={caseItem?.producerCount}
                 />
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setGasInjectorCount}
                     value={gasInjectorCount ?? 0}
                     integer
-                    disabled
                     label="Gas injector count"
+                    caseValue={caseItem?.gasInjectorCount}
                 />
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setWaterInjectorCount}
                     value={waterInjectorCount ?? 0}
                     integer
-                    disabled
                     label="Water injector count"
+                    caseValue={caseItem?.waterInjectorCount}
                 />
             </Wrapper>
             <Wrapper>

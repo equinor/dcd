@@ -30,7 +30,8 @@ namespace api.Adapters
                 CostYear = topsideDto.CostYear,
                 ProspVersion = topsideDto.ProspVersion,
                 LastChangedDate = topsideDto.LastChangedDate,
-                Source = topsideDto.Source
+                Source = topsideDto.Source,
+                ApprovedBy = topsideDto.ApprovedBy
             };
 
             if (topsideDto.CostProfile != null)
@@ -72,6 +73,7 @@ namespace api.Adapters
             existing.ProspVersion = topsideDto.ProspVersion;
             existing.LastChangedDate = topsideDto.LastChangedDate;
             existing.Source = topsideDto.Source;
+            existing.ApprovedBy = topsideDto.ApprovedBy;
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {

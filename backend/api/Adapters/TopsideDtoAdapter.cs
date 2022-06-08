@@ -32,7 +32,8 @@ namespace api.Adapters
                 CostYear = topside.CostYear,
                 ProspVersion = topside.ProspVersion,
                 LastChangedDate = topside.LastChangedDate,
-                Source = topside.Source
+                Source = topside.Source,
+                ApprovedBy = topside.ApprovedBy
             };
             return topsideDto;
         }
