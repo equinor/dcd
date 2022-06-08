@@ -254,6 +254,8 @@ declare namespace Components {
             source?: Source /* int32 */;
             lastChangedDate?: string | null; // date-time
             concept?: Concept /* int32 */;
+            dG3Date?: string; // date-time
+            dG4Date?: string; // date-time
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
@@ -659,6 +661,19 @@ declare namespace Paths {
     }
     namespace UpdateWellProject {
         export type RequestBody = Components.Schemas.WellProjectDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace Upload {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+            export type SourceCaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            projectId?: Parameters.ProjectId /* uuid */;
+            sourceCaseId?: Parameters.SourceCaseId /* uuid */;
+        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

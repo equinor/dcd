@@ -16,14 +16,16 @@ namespace api.Services
         private readonly ILogger<ImportProspService> _logger;
         private readonly SurfService _surfService;
         private readonly SubstructureService _substructureService;
+        private readonly TopsideService _topsideService;
         private const string SHEETNAME = "main";
 
-        public ImportProspService(ProjectService projectService, ILoggerFactory loggerFactory, SurfService surfService, SubstructureService substructureService)
+        public ImportProspService(ProjectService projectService, ILoggerFactory loggerFactory, SurfService surfService, SubstructureService substructureService, TopsideService topsideService)
         {
             _projectService = projectService;
             _logger = loggerFactory.CreateLogger<ImportProspService>();
             _surfService = surfService;
             _substructureService = substructureService;
+            _topsideService = topsideService;
         }
 
         public double ReadDoubleValue(IEnumerable<Cell> cellData, string coordinate)
@@ -119,52 +121,64 @@ namespace api.Services
 
         public void ImportTopside(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId)
         {
-            // List<string> costProfileCoords = new() { "J104", "K104", "L104", "M104", "N104", "O104", "P104" };
+            List<string> costProfileCoords = new() { "J104", "K104", "L104", "M104", "N104", "O104", "P104" };
 
-            // var costProfileStartYear = ReadIntValue(cellData, "J103");
+            var costProfileStartYear = ReadIntValue(cellData, "J103");
 
-            // var dG4Date = ReadDateValue(cellData, "F104");
+            var dG4Date = ReadDateValue(cellData, "F104");
 
-            // var dG3Date = ReadDateValue(cellData, "G104");
+            var dG3Date = ReadDateValue(cellData, "G104");
 
-            // var lengthProductionLine = ReadDoubleValue(cellData, "K35");
+            var artificialLiftInt = ReadIntValue(cellData, "E42");
+            var artificialLift = MapArtificialLift(artificialLiftInt);
 
-            // var lengthUmbilicalSystem = ReadDoubleValue(cellData, "K37");
+            var dryWeight = ReadDoubleValue(cellData, "J10");
 
-            // var productionFlowlineInt = ReadIntValue(cellData, "E50");
-            // var productionFlowline = MapProductionFlowLine(productionFlowlineInt);
+            var fuelConsumption = ReadDoubleValue(cellData, "K92");
 
-            // var artificialLiftInt = ReadIntValue(cellData, "E48");
-            // var artificialLift = MapArtificialLift(artificialLiftInt);
+            var flaredGas = ReadDoubleValue(cellData, "K93");
 
-            // var riserCount = ReadIntValue(cellData, "K36");
+            var cO2ShareOilProfile = ReadDoubleValue(cellData, "J99");
 
-            // var templateCount = ReadIntValue(cellData, "K32");
+            var cO2ShareGasProfile = ReadDoubleValue(cellData, "J100");
+            var cO2ShareWaterInjectionProfile = ReadDoubleValue(cellData, "J101");
+            var cO2OnMaxOilProfile = ReadDoubleValue(cellData, "L99");
+            var cO2OnMaxGasProfile = ReadDoubleValue(cellData, "L100");
+            var cO2OnMaxWaterInjectionProfile = ReadDoubleValue(cellData, "L101");
 
-            // var cessationCost = ReadDoubleValue(cellData, "K88");
+            var costProfile = new TopsideCostProfile
+            {
+                Values = ReadDoubleValues(cellData, costProfileCoords),
+                StartYear = dG4Date.Year - costProfileStartYear
+            };
 
+            var newTopside = new Topside
+            {
+                Name = "ImportedTopside",
+                CostProfile = costProfile,
+                ProjectId = projectId,
+                DG3Date = dG3Date,
+                DG4Date = dG4Date,
+                DryWeight = dryWeight,
+                OilCapacity = 0,
+                GasCapacity = 0,
+                ArtificialLift = artificialLift,
+                // ProdcerCount = 0
+                // WaterInjectorCount = 0
+                // GasInjectorCount = 0
+                FuelConsumption = fuelConsumption,
+                FlaredGas = flaredGas,
+                CO2ShareOilProfile = cO2ShareOilProfile,
+                CO2ShareGasProfile = cO2ShareGasProfile,
+                CO2ShareWaterInjectionProfile = cO2ShareWaterInjectionProfile,
+                CO2OnMaxOilProfile = cO2OnMaxOilProfile,
+                CO2OnMaxGasProfile = cO2OnMaxGasProfile,
+                CO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile,
+            };
 
-            // var costProfile = new SurfCostProfile
-            // {
-            //     Values = ReadDoubleValues(cellData, costProfileCoords),
-            //     StartYear = dG4Date.Year - costProfileStartYear
-            // };
+            var dto = TopsideDtoAdapter.Convert(newTopside);
 
-            // var newSurf = new Surf
-            // {
-            //     Name = "ImportedSurf",
-            //     CostProfile = costProfile,
-            //     ProjectId = projectId,
-            //     ProductionFlowline = productionFlowline,
-            //     UmbilicalSystemLength = lengthUmbilicalSystem,
-            //     InfieldPipelineSystemLength = lengthProductionLine,
-            //     RiserCount = riserCount,
-            //     TemplateCount = templateCount,
-            //     ArtificialLift = artificialLift,
-            // };
-            // var dto = SurfDtoAdapter.Convert(newSurf);
-
-            // _surfService.CreateSurf(dto, sourceCaseId);
+            _topsideService.CreateTopside(dto, sourceCaseId);
         }
 
         private void ImportSubstructure(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -200,8 +214,9 @@ namespace api.Services
             };
 
             _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
-
         }
+
+        
 
         public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
         {
@@ -222,7 +237,7 @@ namespace api.Services
             }
             if (assets["Topside"])
             {
-                // ImportTopside(cellData, sourceCaseId, projectId);
+                ImportTopside(cellData, sourceCaseId, projectId);
             }
             if (assets["Substructure"])
             {

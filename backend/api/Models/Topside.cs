@@ -30,6 +30,8 @@ namespace api.Models
         public DateTimeOffset? LastChangedDate { get; set; }
         public Source Source { get; set; }
         public string ApprovedBy { get; set; } = string.Empty;
+        public DateTimeOffset DG3Date { get; set; }
+        public DateTimeOffset DG4Date { get; set; }
     }
 
     public class TopsideCostProfile : TimeSeriesCost
