@@ -1,9 +1,9 @@
+using System.Net.Http.Headers;
+
 using api.Dtos;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
-
-using System.Net.Http.Headers;
 
 namespace api.Controllers
 {
@@ -18,7 +18,7 @@ namespace api.Controllers
         }
 
         [HttpPost(Name = "Upload"), DisableRequestSizeLimit]
-        public async Task<ProjectDto> Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
+        public async Task<ProjectDto?> Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace api.Controllers
                 }
                 return null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
