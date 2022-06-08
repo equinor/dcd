@@ -24,6 +24,8 @@ namespace api.Services
             var transport = TransportAdapter.Convert(transportDto);
             var project = _projectService.GetProject(transport.ProjectId);
             transport.Project = project;
+            transport.ProspVersion = null;
+            transport.LastChangedDate = DateTimeOffset.Now;
             _context.Transports!.Add(transport);
             _context.SaveChanges();
             SetCaseLink(transport, sourceCaseId, project);
@@ -53,9 +55,9 @@ namespace api.Services
         public Transport GetTransport(Guid transportId)
         {
             var transport = _context.Transports!
-                    .Include(c => c.CostProfile)
-                    .Include(c => c.CessationCostProfile)
-                .Where(c => c.Id == transportId).First();
+                .Include(c => c.CostProfile)
+                .Include(c => c.CessationCostProfile)
+                .FirstOrDefault(c => c.Id == transportId);
             if (transport == null)
             {
                 throw new ArgumentException(string.Format("Transport {0} not found.", transportId));
@@ -104,9 +106,10 @@ namespace api.Services
                 _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
             }
 
+            existing.LastChangedDate = DateTimeOffset.Now;
             _context.Transports!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(existing.ProjectId);
+            return _projectService.GetProjectDto(updatedTransportDto.ProjectId);
         }
     }
 }
