@@ -164,7 +164,7 @@ namespace api.Adapters
                     // Unit: From BBL to baseunit Sm3
                     values = Array.ConvertAll(values, x => x / 6.290);
                 }
-                else if (type.Equals(nameof(ProductionProfileGas))|| type.Equals(nameof(FuelFlaringAndLosses))|| type.Equals(nameof(NetSalesGas)))
+                else if (type.Equals(nameof(ProductionProfileGas)) || type.Equals(nameof(FuelFlaringAndLosses)) || type.Equals(nameof(NetSalesGas)))
                 {
                     // Unit: From SCF to baseunit Sm3
                     values = Array.ConvertAll(values, x => x / 35.315);

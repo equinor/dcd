@@ -88,7 +88,7 @@ namespace api.Adapters
                     Id = productionProfileGas.Id,
                     StartYear = productionProfileGas.StartYear,
                     Values = ConvertUnitValues(productionProfileGas.Values, unit, nameof(ProductionProfileGas))
-            };
+                };
             }
             return null;
         }
