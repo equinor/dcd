@@ -49,19 +49,18 @@ const TimeSeries = ({
 
             const zeroesAtStart: Number[] = Array.from({
                 length: Number(timeSeries!.startYear!)
-                    + Number(dG4Year) - Number(firstYear),
+                + Number(dG4Year) - Number(firstYear),
             }, (() => 0))
 
             const zeroesAtEnd: Number[] = Array.from({
                 length: Number(lastYear)
-                    - (Number(timeSeries?.startYear!)
-                        + Number(dG4Year)
-                        + Number(timeSeries!.values!.length!)),
+                - (Number(timeSeries?.startYear!)
+                + Number(dG4Year)
+                + Number(timeSeries!.values!.length!)),
             }, (() => 0))
 
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
-
             const newGridData = buildGridData(timeSeries)
 
             const alignedAssetGridData = new Array(
@@ -95,10 +94,10 @@ const TimeSeries = ({
             setFirstYear((Number(year) + Number(dG4Year!)))
         }
         if ((Number(year)
-            + Number(dG4Year!)
-            + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
+        + Number(dG4Year!)
+        + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
             setLastYear(Number(year)
-                + Number(dG4Year!) + Number(newTimeSeries.values!.length))
+            + Number(dG4Year!) + Number(newTimeSeries.values!.length))
         }
         buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
