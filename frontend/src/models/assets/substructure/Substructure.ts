@@ -12,6 +12,12 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
     dryweight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
     currency?: Components.Schemas.Currency
+    approvedBy?: string | null | undefined
+    costYear?: number | undefined
+    ProspVersion?: Date | null
+    source?: Components.Schemas.Source
+    LastChangedDate?: Date | null
+    concept?: Components.Schemas.Concept | undefined
 
     constructor(data?: Components.Schemas.SubstructureDto) {
         if (data !== undefined) {
@@ -24,9 +30,24 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
             this.dryweight = data.dryWeight
             this.maturity = data.maturity
             this.currency = data.currency ?? 0
+            this.approvedBy = data.approvedBy ?? ""
+            this.costYear = data.costYear
+            this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
+            this.source = data.source
+            this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
+            this.concept = data.concept
         } else {
             this.id = EMPTY_GUID
             this.name = ""
+            this.approvedBy = ""
+        }
+    }
+
+    static Copy(data: Substructure) {
+        const substructureCopy: Substructure = new Substructure(data)
+        return {
+            ...substructureCopy,
+            ProspVersion: data.ProspVersion,
         }
     }
 

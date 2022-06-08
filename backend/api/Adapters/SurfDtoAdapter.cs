@@ -1,6 +1,5 @@
 using api.Dtos;
 using api.Models;
-using api.Services;
 
 namespace api.Adapters
 {
@@ -25,7 +24,12 @@ namespace api.Adapters
                 GasInjectorCount = surf.GasInjectorCount,
                 WaterInjectorCount = surf.WaterInjectorCount,
                 Currency = surf.Currency,
-                CostProfile = Convert(surf.CostProfile)
+                CostProfile = Convert(surf.CostProfile),
+                LastChangedDate = surf.LastChangedDate,
+                CostYear = surf.CostYear,
+                Source = surf.Source,
+                ProspVersion = surf.ProspVersion,
+                ApprovedBy = surf.ApprovedBy
             };
 
             if (surf.CostProfile != null)
