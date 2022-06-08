@@ -17,15 +17,17 @@ namespace api.Services
         private readonly SurfService _surfService;
         private readonly SubstructureService _substructureService;
         private readonly TopsideService _topsideService;
+        private readonly TransportService _transportService;
         private const string SHEETNAME = "main";
 
-        public ImportProspService(ProjectService projectService, ILoggerFactory loggerFactory, SurfService surfService, SubstructureService substructureService, TopsideService topsideService)
+        public ImportProspService(ProjectService projectService, ILoggerFactory loggerFactory, SurfService surfService, SubstructureService substructureService, TopsideService topsideService, TransportService transportService)
         {
             _projectService = projectService;
             _logger = loggerFactory.CreateLogger<ImportProspService>();
             _surfService = surfService;
             _substructureService = substructureService;
             _topsideService = topsideService;
+            _transportService = transportService;
         }
 
         public double ReadDoubleValue(IEnumerable<Cell> cellData, string coordinate)
@@ -94,7 +96,6 @@ namespace api.Services
             var templateCount = ReadIntValue(cellData, "K32");
 
             var cessationCost = ReadDoubleValue(cellData, "K88");
-
 
             var costProfile = new SurfCostProfile
             {
@@ -216,7 +217,34 @@ namespace api.Services
             _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
         }
 
-        
+        private void ImportTransport(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId)
+        {
+            List<string> costProfileCoords = new() { "J113", "K113", "L113", "M113", "N113", "O113", "P113" };
+            var costProfileStartYear = ReadIntValue(cellData, "J103");
+
+            var dG4Date = ReadDateValue(cellData, "F113");
+
+            var dG3Date = ReadDateValue(cellData, "G113");
+
+            var costProfile = new TransportCostProfile
+            {
+                Values = ReadDoubleValues(cellData, costProfileCoords),
+                StartYear = dG4Date.Year - costProfileStartYear
+            };
+
+            var newTransport = new Transport
+            {
+                Name = "ImportedTransport",
+                CostProfile = costProfile,
+                ProjectId = projectId,
+                DG3Date = dG3Date,
+                DG4Date = dG4Date,
+            };
+
+            var dto = TransportDtoAdapter.Convert(newTransport);
+
+            _transportService.CreateTransport(dto, sourceCaseId);
+        }
 
         public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
         {
@@ -245,7 +273,7 @@ namespace api.Services
             }
             if (assets["Transport"])
             {
-                // ImportSurf(cellData, sourceCaseId, projectId);
+                ImportTransport(cellData, sourceCaseId, projectId);
             }
 
             return _projectService.GetProjectDto(projectId);
