@@ -30,8 +30,9 @@ namespace api.Models
     }
     public enum Currency
     {
-        USD,
-        NOK
+        NOK = 1,
+        USD = 2,
+        
     }
     public enum ProjectPhase
     {

@@ -103,6 +103,13 @@ namespace api.Services
                 StartYear = dG4Date.Year - costProfileStartYear
             };
 
+            // Prosp meta data
+            var versionDate = ReadDateValue(cellData, "I4");
+            var costYear = ReadIntValue(cellData, "K4");
+            var importedCurrency = ReadIntValue(cellData, "E8");
+            var currency = importedCurrency == 1 ? Currency.NOK : importedCurrency == 2 ? Currency.USD : 0;
+
+
             var newSurf = new Surf
             {
                 Name = "ImportedSurf",
@@ -114,6 +121,11 @@ namespace api.Services
                 RiserCount = riserCount,
                 TemplateCount = templateCount,
                 ArtificialLift = artificialLift,
+                Source = Source.Prosp,
+                ProspVersion = versionDate,
+                Currency = currency,
+                CostYear = costYear,
+                Maturity = Maturity.A,
             };
             var dto = SurfDtoAdapter.Convert(newSurf);
 
@@ -153,6 +165,12 @@ namespace api.Services
                 StartYear = dG4Date.Year - costProfileStartYear
             };
 
+            // Prosp meta data
+            var versionDate = ReadDateValue(cellData, "I4");
+            var costYear = ReadIntValue(cellData, "K4");
+            var importedCurrency = ReadIntValue(cellData, "E8");
+            var currency = importedCurrency == 1 ? Currency.NOK : importedCurrency == 2 ? Currency.USD : 0;
+
             var newTopside = new Topside
             {
                 Name = "ImportedTopside",
@@ -175,6 +193,11 @@ namespace api.Services
                 CO2OnMaxOilProfile = cO2OnMaxOilProfile,
                 CO2OnMaxGasProfile = cO2OnMaxGasProfile,
                 CO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile,
+                Source = Source.Prosp,
+                ProspVersion = versionDate,
+                Currency = currency,
+                CostYear = costYear,
+                Maturity = Maturity.A,
             };
 
             var dto = TopsideDtoAdapter.Convert(newTopside);
@@ -203,6 +226,12 @@ namespace api.Services
                 StartYear = dG4Date.Year - costProfileStartYear
             };
 
+            // Prosp meta data
+            var versionDate = ReadDateValue(cellData, "I4");
+            var costYear = ReadIntValue(cellData, "K4");
+            var importedCurrency = ReadIntValue(cellData, "E8");
+            var currency = importedCurrency == 1 ? Currency.NOK : importedCurrency == 2 ? Currency.USD : 0;
+
             var newSubstructure = new Substructure
             {
                 Name = "ImportedSubstructure",
@@ -212,6 +241,11 @@ namespace api.Services
                 Concept = concept,
                 DG3Date = dG3Date,
                 DG4Date = dG4Date,
+                Source = Source.Prosp,
+                ProspVersion = versionDate,
+                Currency = currency,
+                CostYear = costYear,
+                Maturity = Maturity.A,
             };
 
             _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
@@ -232,6 +266,12 @@ namespace api.Services
                 StartYear = dG4Date.Year - costProfileStartYear
             };
 
+             // Prosp meta data
+            var versionDate = ReadDateValue(cellData, "I4");
+            var costYear = ReadIntValue(cellData, "K4");
+            var importedCurrency = ReadIntValue(cellData, "E8");
+            var currency = importedCurrency == 1 ? Currency.NOK : importedCurrency == 2 ? Currency.USD : 0;
+
             var newTransport = new Transport
             {
                 Name = "ImportedTransport",
@@ -239,6 +279,11 @@ namespace api.Services
                 ProjectId = projectId,
                 DG3Date = dG3Date,
                 DG4Date = dG4Date,
+                Source = Source.Prosp,
+                ProspVersion = versionDate,
+                Currency = currency,
+                CostYear = costYear,
+                Maturity = Maturity.A,
             };
 
             var dto = TransportDtoAdapter.Convert(newTransport);
