@@ -47,18 +47,19 @@ const Main = styled.div`
 interface Props {
     onClose: () => void
     onImport: (input: string, year: number) => void
+    dG4Year: number | undefined
 }
 
-function Import({ onClose, onImport }: Props) {
+function Import({ onClose, onImport, dG4Year }: Props) {
     const [dataInput, setDataInput] = useState<string>("")
     const [startYear, setStartYear] = useState(0)
     const [, setProject] = useState<Project>()
     const params = useParams()
-    const [caseItem, setCase] = useState<Case>()
+    const [, setCase] = useState<Case>()
 
     const example = "value1\tvalue2\tvalue3\tvalue4"
 
-    const dG4Date: number = caseItem?.DG4Date?.getFullYear()!
+    const dG4Date: number = dG4Year!
     const startYearImport: number = Number(dG4Date) + Number(startYear)
 
     useEffect(() => {

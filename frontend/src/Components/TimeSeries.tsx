@@ -49,14 +49,14 @@ const TimeSeries = ({
 
             const zeroesAtStart: Number[] = Array.from({
                 length: Number(timeSeries!.startYear!)
-                + Number(dG4Year) - Number(firstYear),
+                    + Number(dG4Year) - Number(firstYear),
             }, (() => 0))
 
             const zeroesAtEnd: Number[] = Array.from({
                 length: Number(lastYear)
-                - (Number(timeSeries!.startYear!)
-                + Number(dG4Year)
-                + Number(timeSeries!.values!.length!)),
+                    - (Number(timeSeries!.startYear!)
+                        + Number(dG4Year)
+                        + Number(timeSeries!.values!.length!)),
             }, (() => 0))
 
             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
@@ -90,14 +90,14 @@ const TimeSeries = ({
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setTimeSeries(newTimeSeries)
         if ((Number(year)
-        + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
+            + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
             setFirstYear((Number(year) + Number(dG4Year!)))
         }
         if ((Number(year)
-        + Number(dG4Year!)
-        + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
+            + Number(dG4Year!)
+            + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
             setLastYear(Number(year)
-            + Number(dG4Year!) + Number(newTimeSeries.values.length))
+                + Number(dG4Year!) + Number(newTimeSeries.values.length))
         }
         buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
@@ -137,7 +137,13 @@ const TimeSeries = ({
                 />
             </WrapperColumn>
             {!dialogOpen ? null
-                : <Import onClose={() => { setDialogOpen(!dialogOpen) }} onImport={onImport} />}
+                : (
+                    <Import
+                        onClose={() => { setDialogOpen(!dialogOpen) }}
+                        onImport={onImport}
+                        dG4Year={dG4Year}
+                    />
+                )}
         </>
     )
 }

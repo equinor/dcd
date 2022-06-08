@@ -90,9 +90,9 @@ const TransportView = () => {
                 setCostProfile(newTransport.costProfile)
                 setCessationCostProfile(newTransport.cessationCostProfile)
 
-                if (caseResult?.DG4Date) {
+                if (dG4Date) {
                     initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
+                        dG4Date?.getFullYear(),
                         [newTransport.costProfile, newTransport.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -115,9 +115,9 @@ const TransportView = () => {
             newTransport.DG3Date = dG3Date
             newTransport.DG4Date = dG4Date
 
-            if (caseItem?.DG4Date) {
+            if (dG4Date) {
                 initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
+                    dG4Date?.getFullYear(),
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -211,7 +211,7 @@ const TransportView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={dG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
@@ -222,7 +222,7 @@ const TransportView = () => {
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={dG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
