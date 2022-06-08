@@ -34,7 +34,7 @@ namespace api.Services
         {
             if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText, out var value))
             {
-                return value;
+                return Math.Round(value, 3);
             }
             return 0;
         }
@@ -100,7 +100,7 @@ namespace api.Services
             var costProfile = new SurfCostProfile
             {
                 Values = ReadDoubleValues(cellData, costProfileCoords),
-                StartYear = dG4Date.Year - costProfileStartYear
+                StartYear = costProfileStartYear - dG4Date.Year,
             };
 
             // Prosp meta data
@@ -168,7 +168,7 @@ namespace api.Services
             var costProfile = new TopsideCostProfile
             {
                 Values = ReadDoubleValues(cellData, costProfileCoords),
-                StartYear = dG4Date.Year - costProfileStartYear
+                StartYear = costProfileStartYear - dG4Date.Year,
             };
 
             // Prosp meta data
@@ -229,7 +229,7 @@ namespace api.Services
             var costProfile = new SubstructureCostProfile
             {
                 Values = ReadDoubleValues(cellData, costProfileCoords),
-                StartYear = dG4Date.Year - costProfileStartYear
+                StartYear = costProfileStartYear - dG4Date.Year,
             };
 
             // Prosp meta data
@@ -269,7 +269,7 @@ namespace api.Services
             var costProfile = new TransportCostProfile
             {
                 Values = ReadDoubleValues(cellData, costProfileCoords),
-                StartYear = dG4Date.Year - costProfileStartYear
+                StartYear = costProfileStartYear - dG4Date.Year,
             };
 
             // Prosp meta data
