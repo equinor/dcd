@@ -24,21 +24,34 @@ namespace api.Controllers
             {
                 var formCollection = await Request.ReadFormAsync();
                 var file = formCollection.Files.First();
+                var assets = new Dictionary<string, bool>()
+                {
+                    {"Surf", false},
+                    {"Topside", false},
+                    {"Substructure", false},
+                    {"Transport", false},
+
+                };
+
                 if (file.Length > 0)
                 {
                     if (formCollection.TryGetValue("Surf", out var surf) && surf == "true")
                     {
-                        // Import surf
+                        assets["Surf"] = true;
                     }
-                    if (formCollection.TryGetValue("Topside", out var topside) && surf == "true")
+                    if (formCollection.TryGetValue("Topside", out var topside) && topside == "true")
                     {
-                        // Import topside
+                        assets["Topside"] = true;
                     }
-                    if (formCollection.TryGetValue("Surf", out var substructure) && surf == "true")
+                    if (formCollection.TryGetValue("Substructure", out var substructure) && substructure == "true")
                     {
-                        // Import substructure
+                        assets["Substructure"] = true;
                     }
-                    var dto = _prospService.ImportProsp(file, sourceCaseId, projectId);
+                    if (formCollection.TryGetValue("Transport", out var transport) && transport == "true")
+                    {
+                        assets["Transport"] = true;
+                    }
+                    var dto = _prospService.ImportProsp(file, sourceCaseId, projectId, assets);
                     return dto;
                 }
                 return null;
