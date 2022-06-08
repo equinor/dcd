@@ -22,7 +22,9 @@ namespace api.Adapters
                 ProspVersion = substructure.ProspVersion,
                 Source = substructure.Source,
                 LastChangedDate = substructure.LastChangedDate,
-                Concept = substructure.Concept
+                Concept = substructure.Concept,
+                DG3Date = substructure.DG3Date,
+                DG4Date = substructure.DG4Date,
             };
             return substructureDto;
         }

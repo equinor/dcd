@@ -173,9 +173,11 @@ namespace api.Services
 
             var costProfileStartYear = ReadIntValue(cellData, "J103");
 
-            var dG4Date = ReadDateValue(cellData, "F112");
+            var dG4Date = ReadDateValue(cellData, "F105");
 
-            var dG3Date = ReadDateValue(cellData, "G112");
+            var dG3Date = ReadDateValue(cellData, "G105");
+
+            var dryWeight = ReadDoubleValue(cellData, "J19");
 
             var conceptInt = ReadIntValue(cellData, "E62");
             var concept = MapSubstructureConcept(conceptInt);
@@ -191,8 +193,10 @@ namespace api.Services
                 Name = "ImportedSubstructure",
                 CostProfile = costProfile,
                 ProjectId = projectId,
-                DryWeight = 0,
-                Concept = concept
+                DryWeight = dryWeight,
+                Concept = concept,
+                DG3Date = dG3Date,
+                DG4Date = dG4Date,
             };
 
             _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
@@ -283,41 +287,6 @@ namespace api.Services
                 41 => ProductionFlowline.HDPELinedCS,
                 _ => ProductionFlowline.No_production_flowline,
             };
-        }
-
-        public string GetCellValue(WorkbookPart? workbookPart, Sheet? mainSheet)
-        {
-            string value = null;
-            var theCell = mainSheet?.Descendants<Cell>().FirstOrDefault(x => x.CellReference == "A1") ?? new Cell();
-
-            if (theCell.InnerText.Length > 0)
-            {
-
-                value = theCell.InnerText;
-                switch (theCell.DataType?.Value)
-                {
-                    case CellValues.SharedString:
-
-                        var stringTable = workbookPart?.GetPartsOfType<SharedStringTablePart>()
-                                                       .FirstOrDefault();
-
-                        if (stringTable != null)
-                        {
-                            value = stringTable.SharedStringTable.ElementAt(int.Parse(value)).InnerText;
-                        }
-                        break;
-
-                    case CellValues.Boolean:
-                        value = value switch
-                        {
-                            "0" => "False",
-                            _ => "True",
-                        };
-                        break;
-                }
-            }
-
-            return value;
         }
     }
 }
