@@ -143,8 +143,12 @@ namespace api.Adapters
 
         private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
         {
+            string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
+            string[] BBL_Units = { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
+            string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
+
             // Per now - the timeseriestypes which use millions are the same in both SI and Oilfield
-            if (type.Equals(nameof(NetSalesGas)) || type.Equals(nameof(FuelFlaringAndLosses)) || type.Equals(nameof(ProductionProfileGas)))
+            if (SCF_Units.Contains(type))
             {
                 // These types should be saved in billions
                 values = Array.ConvertAll(values, x => x * 1E9);
@@ -154,10 +158,7 @@ namespace api.Adapters
                 // These types should be saved in millions
                 values = Array.ConvertAll(values, x => x * 1E6);
             }
-
-            string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
-            string[] BBL_Units = { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
-            string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
+            
             // If values were inserted in Oilfield, convert to baseunit
             if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
             {
