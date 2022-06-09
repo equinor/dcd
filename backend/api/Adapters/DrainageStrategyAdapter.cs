@@ -172,7 +172,6 @@ namespace api.Adapters
                     values = Array.ConvertAll(values, x => x / 35.315);
                 }
             }
-
             return values;
         }
 
