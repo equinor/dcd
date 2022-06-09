@@ -117,7 +117,7 @@ function CaseView() {
                 setProject={setProject}
                 setCase={setCase}
             />
-            <ExcelUpload />
+            <ExcelUpload setProject={setProject} setCase={setCase} />
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
                 <CaseDescription
                     caseItem={caseItem}

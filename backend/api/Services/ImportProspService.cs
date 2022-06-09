@@ -304,27 +304,29 @@ namespace api.Services
             using SpreadsheetDocument document = SpreadsheetDocument.Open(ms, false);
             var workbookPart = document.WorkbookPart;
             var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
-                                                  .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SHEETNAME);
+                                               .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SHEETNAME);
 
-            var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet?.Id);
+            if (mainSheet?.Id != null)
+            {
+                var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id);
+                var cellData = wsPart.Worksheet.Descendants<Cell>();
 
-            var cellData = wsPart.Worksheet.Descendants<Cell>();
-
-            if (assets["Surf"])
-            {
-                ImportSurf(cellData, sourceCaseId, projectId);
-            }
-            if (assets["Topside"])
-            {
-                ImportTopside(cellData, sourceCaseId, projectId);
-            }
-            if (assets["Substructure"])
-            {
-                ImportSubstructure(cellData, sourceCaseId, projectId);
-            }
-            if (assets["Transport"])
-            {
-                ImportTransport(cellData, sourceCaseId, projectId);
+                if (assets["Surf"])
+                {
+                    ImportSurf(cellData, sourceCaseId, projectId);
+                }
+                if (assets["Topside"])
+                {
+                    ImportTopside(cellData, sourceCaseId, projectId);
+                }
+                if (assets["Substructure"])
+                {
+                    ImportSubstructure(cellData, sourceCaseId, projectId);
+                }
+                if (assets["Transport"])
+                {
+                    ImportTransport(cellData, sourceCaseId, projectId);
+                }
             }
 
             return _projectService.GetProjectDto(projectId);

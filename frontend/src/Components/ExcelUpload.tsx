@@ -1,48 +1,76 @@
 import { Button, Checkbox } from "@equinor/eds-core-react"
-import { useState } from "react"
+import {
+ Dispatch, SetStateAction, useRef, useState,
+} from "react"
 import { useParams } from "react-router"
+import { Case } from "../models/Case"
+import { Project } from "../models/Project"
 import { GetUploadService } from "../Services/UploadService"
+import { unwrapCase } from "../Utils/common"
 
-const ExcelUpload = () => {
-    const [selectedFile, setSelectedFile] = useState<any>()
-    const [isFilePicked, setIsFilePicked] = useState(false)
+interface Props {
+    setProject: Dispatch<SetStateAction<Project | undefined>>
+    setCase: Dispatch<SetStateAction<Case | undefined>>
+}
+
+const ExcelUpload = ({
+    setProject,
+    setCase,
+}: Props) => {
     const params = useParams()
     const [surf, setSurf] = useState<boolean>(false)
     const [topside, setTopside] = useState<boolean>(false)
     const [substructure, setSubstructure] = useState<boolean>(false)
     const [transport, setTransport] = useState<boolean>(false)
-    const changeHandler = (event: any) => {
-        setSelectedFile(event.target.files[0])
-        setIsFilePicked(true)
+    const fileInputRef = useRef(document.createElement("input"))
+
+    const generateFormData = (file: File): FormData => {
+        const data = new FormData()
+        data.append("File", file)
+        data.append("Surf", surf.toString())
+        data.append("Topside", topside.toString())
+        data.append("Substructure", substructure.toString())
+        data.append("Transport", transport.toString())
+        return data
     }
 
-    const handleSubmission = () => {
-        const formData = new FormData()
+    const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+        const currentFiles = event.currentTarget.files
+        if (!currentFiles) return
 
-        formData.append("File", selectedFile)
-        formData.append("Surf", surf.toString())
-        formData.append("Topside", topside.toString())
-        formData.append("Substructure", substructure.toString())
-        formData.append("Transport", transport.toString())
-        const uploadService = GetUploadService()
-        uploadService.create(params.caseId!, params.projectId!, formData)
+        const data = generateFormData(currentFiles[0])
+
+        try {
+            const uploadService = GetUploadService()
+            const response = await uploadService.create(params.caseId!, params.projectId!, data)
+            setProject(response)
+            const caseResult: Case = unwrapCase(response.cases.find((o) => o.id === params.caseId))
+            setCase(caseResult)
+        } catch {
+            console.error("Error uploading Excel document: ")
+        }
+
+        fileInputRef.current.files = null
     }
 
-    const disabled = () => {
-        console.log("Surf: ", surf)
-        console.log("Substructure: ", substructure)
-        console.log("Topside: ", topside)
-        return !(surf || substructure || topside)
-    }
+    const disabled = () => !(surf || substructure || topside || transport)
     return (
-        <label htmlFor="file-upload">
-            <input type="file" id="file-upload" style={{ display: "none" }} multiple onChange={changeHandler} />
+        <>
             <Checkbox label="Surf" onChange={() => { setSurf(!surf) }} checked={surf} />
             <Checkbox label="Substructure" onChange={() => { setSubstructure(!substructure) }} checked={substructure} />
             <Checkbox label="Topside" onChange={() => { setTopside(!topside) }} checked={topside} />
             <Checkbox label="Transport" onChange={() => { setTransport(!transport) }} checked={transport} />
-            <Button onClick={handleSubmission} as="span">Upload file</Button>
-        </label>
+            <label htmlFor="file-upload">
+                <Button disabled={disabled()} onClick={(): void => fileInputRef.current.click()}>Upload file</Button>
+                <input
+                    type="file"
+                    id="file-upload"
+                    style={{ display: "none" }}
+                    ref={fileInputRef}
+                    onChange={onFileUpload}
+                />
+            </label>
+        </>
     )
 }
 
