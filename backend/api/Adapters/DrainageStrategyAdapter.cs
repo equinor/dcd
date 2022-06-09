@@ -155,16 +155,18 @@ namespace api.Adapters
                 values = Array.ConvertAll(values, x => x * 1E6);
             }
 
-
+            string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
+            string[] BBL_Units = { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
+            string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
             // If values were inserted in Oilfield, convert to baseunit
-            if (unit == PhysUnit.OilField && !type.Equals(nameof(Co2Emissions)) && !type.Equals(nameof(ProductionProfileNGL)))
+            if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
             {
-                if (type.Equals(nameof(ProductionProfileOil)) || type.Equals(nameof(ProductionProfileWaterInjection)))
+                if (BBL_Units.Contains(type))
                 {
                     // Unit: From BBL to baseunit Sm3
                     values = Array.ConvertAll(values, x => x / 6.290);
                 }
-                else if (type.Equals(nameof(ProductionProfileGas)) || type.Equals(nameof(FuelFlaringAndLosses)) || type.Equals(nameof(NetSalesGas)))
+                else if (SCF_Units.Contains(type))
                 {
                     // Unit: From SCF to baseunit Sm3
                     values = Array.ConvertAll(values, x => x / 35.315);
@@ -279,7 +281,7 @@ namespace api.Adapters
 
         private static Co2Emissions? Convert(Co2EmissionsDto? co2EmissionsDto, DrainageStrategy drainageStrategy, PhysUnit unit, bool initialCreate)
         {
-            var needToConvertValues = drainageStrategy?.Co2Emissions?.Values != null;
+            var needToConvertValues = drainageStrategy?.Co2Emissions?.Values == null;
             if (co2EmissionsDto != null && drainageStrategy?.Co2Emissions?.Values != null && !drainageStrategy.Co2Emissions.Values.SequenceEqual(co2EmissionsDto.Values))
             {
                 needToConvertValues = true;
@@ -296,7 +298,7 @@ namespace api.Adapters
 
         private static ProductionProfileNGL? Convert(ProductionProfileNGLDto? productionProfileNGLDto, DrainageStrategy drainageStrategy, PhysUnit unit, bool initialCreate)
         {
-            var needToConvertValues = drainageStrategy?.ProductionProfileNGL?.Values != null;
+            var needToConvertValues = drainageStrategy?.ProductionProfileNGL?.Values == null;
             if (productionProfileNGLDto != null && drainageStrategy?.ProductionProfileNGL?.Values != null && !drainageStrategy.ProductionProfileNGL.Values.SequenceEqual(productionProfileNGLDto.Values))
             {
                 needToConvertValues = true;

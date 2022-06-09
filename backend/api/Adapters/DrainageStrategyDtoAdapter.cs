@@ -46,16 +46,18 @@ namespace api.Adapters
                 values = Array.ConvertAll(values, x => x / 1E6);
             }
 
-
+            string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
+            string[] BBL_Units = { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
+            string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
             // If Oilfield is selected, convert to respective values 
-            if (unit == PhysUnit.OilField && !type.Equals(nameof(Co2Emissions)) && !type.Equals(nameof(ProductionProfileNGL)))
+            if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
             {
-                if (type.Equals(nameof(ProductionProfileOil)) || type.Equals(nameof(ProductionProfileWater)))
+                if (BBL_Units.Contains(type))
                 {
                     // Unit: From baseunit Sm3 to BBL
                     values = Array.ConvertAll(values, x => x * 6.290);
                 }
-                else if (type.Equals(nameof(ProductionProfileGas)) || type.Equals(nameof(FuelFlaringAndLosses)) || type.Equals(nameof(NetSalesGas)))
+                else if (SCF_Units.Contains(type))
                 {
                     // Unit: From baseunit Sm3 to SCF
                     values = Array.ConvertAll(values, x => x * 35.315);
