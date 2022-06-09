@@ -199,6 +199,7 @@ const TopsideView = () => {
                     dGName="DG3"
                     value={dG3Date}
                     caseValue={caseItem?.DG3Date}
+                    disabled={topside?.source === 1}
                 />
                 <DGDateInherited
                     setHasChanges={setHasChanges}
@@ -206,6 +207,7 @@ const TopsideView = () => {
                     dGName="DG4"
                     value={dG4Date}
                     caseValue={caseItem?.DG4Date}
+                    disabled={topside?.source === 1}
                 />
             </Wrapper>
             <AssetCurrency

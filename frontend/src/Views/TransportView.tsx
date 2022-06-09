@@ -90,9 +90,9 @@ const TransportView = () => {
                 setCostProfile(newTransport.costProfile)
                 setCessationCostProfile(newTransport.cessationCostProfile)
 
-                if (dG4Date) {
+                if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
-                        dG4Date?.getFullYear(),
+                        caseResult?.DG4Date?.getFullYear(),
                         [newTransport.costProfile, newTransport.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -115,9 +115,9 @@ const TransportView = () => {
             newTransport.DG3Date = dG3Date
             newTransport.DG4Date = dG4Date
 
-            if (dG4Date) {
+            if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
-                    dG4Date?.getFullYear(),
+                    caseItem?.DG4Date?.getFullYear(),
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -159,6 +159,7 @@ const TransportView = () => {
                     dGName="DG3"
                     value={dG3Date}
                     caseValue={caseItem?.DG3Date}
+                    disabled={transport?.source === 1}
                 />
                 <DGDateInherited
                     setHasChanges={setHasChanges}
@@ -166,6 +167,7 @@ const TransportView = () => {
                     dGName="DG4"
                     value={dG4Date}
                     caseValue={caseItem?.DG4Date}
+                    disabled={transport?.source === 1}
                 />
             </Wrapper>
             <AssetCurrency
@@ -211,7 +213,7 @@ const TransportView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={dG4Date?.getFullYear()}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
@@ -222,7 +224,7 @@ const TransportView = () => {
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={dG4Date?.getFullYear()}
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}

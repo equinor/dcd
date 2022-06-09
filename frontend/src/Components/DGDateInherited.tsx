@@ -35,6 +35,7 @@ interface Props {
     value: Date | undefined
     dGName: string,
     caseValue: Date | null | undefined
+    disabled?: boolean
 }
 
 const DGDateInherited = ({
@@ -43,6 +44,7 @@ const DGDateInherited = ({
     value,
     dGName,
     caseValue,
+    disabled,
 }: Props) => {
     const [isMismatchedToCase, setIsMismatchedToCase] = useState<boolean | undefined>()
 
@@ -99,6 +101,7 @@ const DGDateInherited = ({
                     type="date"
                     name="dgDate"
                     onChange={onChange}
+                    disabled={disabled}
                 />
             </DgField>
         </>

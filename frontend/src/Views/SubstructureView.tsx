@@ -190,6 +190,7 @@ const SubstructureView = () => {
                     dGName="DG3"
                     value={dG3Date}
                     caseValue={caseItem?.DG3Date}
+                    disabled={substructure?.source === 1}
                 />
                 <DGDateInherited
                     setHasChanges={setHasChanges}
@@ -197,6 +198,7 @@ const SubstructureView = () => {
                     dGName="DG4"
                     value={dG4Date}
                     caseValue={caseItem?.DG4Date}
+                    disabled={substructure?.source === 1}
                 />
             </Wrapper>
             <AssetCurrency

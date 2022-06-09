@@ -199,6 +199,7 @@ const SurfView = () => {
                     dGName="DG3"
                     value={dG3Date}
                     caseValue={caseItem?.DG3Date}
+                    disabled={surf?.source === 1}
                 />
                 <DGDateInherited
                     setHasChanges={setHasChanges}
@@ -206,6 +207,7 @@ const SurfView = () => {
                     dGName="DG4"
                     value={dG4Date}
                     caseValue={caseItem?.DG4Date}
+                    disabled={surf?.source === 1}
                 />
             </Wrapper>
             <AssetCurrency
