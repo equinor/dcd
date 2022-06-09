@@ -55,23 +55,22 @@ const ExcelUpload = ({
 
     const disabled = () => !(surf || substructure || topside || transport)
     return (
-        <>
+        <label htmlFor="file-upload">
             <Checkbox label="Surf" onChange={() => { setSurf(!surf) }} checked={surf} />
             <Checkbox label="Substructure" onChange={() => { setSubstructure(!substructure) }} checked={substructure} />
             <Checkbox label="Topside" onChange={() => { setTopside(!topside) }} checked={topside} />
             <Checkbox label="Transport" onChange={() => { setTransport(!transport) }} checked={transport} />
-            <label htmlFor="file-upload">
-                <Button disabled={disabled()} onClick={(): void => fileInputRef.current.click()}>Upload file</Button>
-                <input
-                    type="file"
-                    id="file-upload"
-                    style={{ display: "none" }}
-                    ref={fileInputRef}
-                    onChange={onFileUpload}
-                    value=""
-                />
-            </label>
-        </>
+            <br />
+            <Button disabled={disabled()} onClick={(): void => fileInputRef.current.click()}>Upload file</Button>
+            <input
+                type="file"
+                id="file-upload"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={onFileUpload}
+                value=""
+            />
+        </label>
     )
 }
 
