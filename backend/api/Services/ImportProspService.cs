@@ -77,9 +77,8 @@ namespace api.Services
 
             var costProfileStartYear = ReadIntValue(cellData, "J103");
 
-            var dG4Date = ReadDateValue(cellData, "F112");
-
-            var dG3Date = ReadDateValue(cellData, "G112");
+            var dG3Date = ReadDateValue(cellData, "F112");
+            var dG4Date = ReadDateValue(cellData, "G112");
 
             var lengthProductionLine = ReadDoubleValue(cellData, "K35");
 
@@ -138,9 +137,8 @@ namespace api.Services
 
             var costProfileStartYear = ReadIntValue(cellData, "J103");
 
-            var dG4Date = ReadDateValue(cellData, "F104");
-
-            var dG3Date = ReadDateValue(cellData, "G104");
+            var dG3Date = ReadDateValue(cellData, "F104");
+            var dG4Date = ReadDateValue(cellData, "G104");
 
             var artificialLiftInt = ReadIntValue(cellData, "E42");
             var artificialLift = MapArtificialLift(artificialLiftInt);
@@ -217,9 +215,8 @@ namespace api.Services
 
             var costProfileStartYear = ReadIntValue(cellData, "J103");
 
-            var dG4Date = ReadDateValue(cellData, "F105");
-
-            var dG3Date = ReadDateValue(cellData, "G105");
+            var dG3Date = ReadDateValue(cellData, "F105");
+            var dG4Date = ReadDateValue(cellData, "G105");
 
             var dryWeight = ReadDoubleValue(cellData, "J19");
 
@@ -262,9 +259,8 @@ namespace api.Services
             List<string> costProfileCoords = new() { "J113", "K113", "L113", "M113", "N113", "O113", "P113" };
             var costProfileStartYear = ReadIntValue(cellData, "J103");
 
-            var dG4Date = ReadDateValue(cellData, "F113");
-
-            var dG3Date = ReadDateValue(cellData, "G113");
+            var dG3Date = ReadDateValue(cellData, "F113");
+            var dG4Date = ReadDateValue(cellData, "G113");
 
             var costProfile = new TransportCostProfile
             {
