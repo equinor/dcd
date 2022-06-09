@@ -68,6 +68,7 @@ const ExcelUpload = ({
                     style={{ display: "none" }}
                     ref={fileInputRef}
                     onChange={onFileUpload}
+                    value=""
                 />
             </label>
         </>
