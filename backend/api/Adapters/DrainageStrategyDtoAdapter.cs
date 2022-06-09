@@ -49,7 +49,6 @@ namespace api.Adapters
                 // Trim zeroes for BBL when sending back to frontend
                 values = Array.ConvertAll(values, x => x / 1E6);
             }
-            
             // If Oilfield is selected, convert to respective values 
             if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
             {

@@ -158,7 +158,6 @@ namespace api.Adapters
                 // These types should be saved in millions
                 values = Array.ConvertAll(values, x => x * 1E6);
             }
-            
             // If values were inserted in Oilfield, convert to baseunit
             if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
             {
