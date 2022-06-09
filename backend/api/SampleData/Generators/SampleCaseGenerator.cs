@@ -45,7 +45,6 @@ public static class SampleCaseGenerator
             ReferenceCase = true,
             DG4Date = DateTimeOffset.Now.AddYears(5)
         }
-            .WithDrainageStrategy(project1DrainageStrategyName1, projectsBuilder.ForProject(project1))
             .WithWellProject(wellProjectName, projectsBuilder.ForProject(project1))
             .WithSurf(project1SurfName, projectsBuilder.ForProject(project1))
             .WithTopside(project1TopsideName, projectsBuilder.ForProject(project1))
@@ -59,7 +58,6 @@ public static class SampleCaseGenerator
             Description = "Description 2 in Case 2 in P1",
             DG4Date = DateTimeOffset.Now
         }
-            .WithDrainageStrategy(project1DrainageStrategyName1, projectsBuilder.ForProject(project1))
             .WithSubstructure(project1SubstructureName, projectsBuilder.ForProject(project1))
             .WithTransport(project1TransportName, projectsBuilder.ForProject(project1))
         )
