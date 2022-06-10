@@ -18,7 +18,25 @@ namespace api.Adapters
                 FacilitiesAvailability = topsideDto.FacilitiesAvailability,
                 ArtificialLift = topsideDto.ArtificialLift,
                 Maturity = topsideDto.Maturity,
-                Currency = topsideDto.Currency
+                Currency = topsideDto.Currency,
+                FuelConsumption = topsideDto.FuelConsumption,
+                FlaredGas = topsideDto.FlaredGas,
+                ProducerCount = topsideDto.ProducerCount,
+                GasInjectorCount = topsideDto.GasInjectorCount,
+                WaterInjectorCount = topsideDto.WaterInjectorCount,
+                CO2ShareOilProfile = topsideDto.CO2ShareOilProfile,
+                CO2ShareGasProfile = topsideDto.CO2ShareGasProfile,
+                CO2ShareWaterInjectionProfile = topsideDto.CO2ShareWaterInjectionProfile,
+                CO2OnMaxOilProfile = topsideDto.CO2OnMaxOilProfile,
+                CO2OnMaxGasProfile = topsideDto.CO2OnMaxGasProfile,
+                CO2OnMaxWaterInjectionProfile = topsideDto.CO2OnMaxWaterInjectionProfile,
+                CostYear = topsideDto.CostYear,
+                ProspVersion = topsideDto.ProspVersion,
+                LastChangedDate = topsideDto.LastChangedDate,
+                Source = topsideDto.Source,
+                ApprovedBy = topsideDto.ApprovedBy,
+                DG3Date = topsideDto.DG3Date,
+                DG4Date = topsideDto.DG4Date
             };
 
             if (topsideDto.CostProfile != null)
@@ -48,6 +66,24 @@ namespace api.Adapters
             existing.Currency = topsideDto.Currency;
             existing.CostProfile = Convert(topsideDto.CostProfile, existing);
             existing.CessationCostProfile = Convert(topsideDto.CessationCostProfile, existing);
+            existing.FuelConsumption = topsideDto.FuelConsumption;
+            existing.FlaredGas = topsideDto.FlaredGas;
+            existing.ProducerCount = topsideDto.ProducerCount;
+            existing.GasInjectorCount = topsideDto.GasInjectorCount;
+            existing.WaterInjectorCount = topsideDto.WaterInjectorCount;
+            existing.CO2ShareOilProfile = topsideDto.CO2ShareOilProfile;
+            existing.CO2ShareGasProfile = topsideDto.CO2ShareGasProfile;
+            existing.CO2ShareWaterInjectionProfile = topsideDto.CO2ShareWaterInjectionProfile;
+            existing.CO2OnMaxOilProfile = topsideDto.CO2OnMaxOilProfile;
+            existing.CO2OnMaxGasProfile = topsideDto.CO2OnMaxGasProfile;
+            existing.CO2OnMaxWaterInjectionProfile = topsideDto.CO2OnMaxWaterInjectionProfile;
+            existing.CostYear = topsideDto.CostYear;
+            existing.ProspVersion = topsideDto.ProspVersion;
+            existing.LastChangedDate = topsideDto.LastChangedDate;
+            existing.Source = topsideDto.Source;
+            existing.ApprovedBy = topsideDto.ApprovedBy;
+            existing.DG3Date = topsideDto.DG3Date;
+            existing.DG4Date = topsideDto.DG4Date;
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {

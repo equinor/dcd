@@ -14,6 +14,12 @@ namespace api.Models
         public double OilExportPipelineLength { get; set; }
         public Maturity Maturity { get; set; }
         public Currency Currency { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
+        public int CostYear { get; set; }
+        public Source Source { get; set; }
+        public DateTimeOffset? ProspVersion { get; set; }
+        public DateTimeOffset DG3Date { get; set; }
+        public DateTimeOffset DG4Date { get; set; }
     }
 
     public class TransportCostProfile : TimeSeriesCost

@@ -12,11 +12,13 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<DrainageStrategyService> _logger;
 
-        public DrainageStrategyService(DcdDbContext context, ProjectService projectService)
+        public DrainageStrategyService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
         }
 
         public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
