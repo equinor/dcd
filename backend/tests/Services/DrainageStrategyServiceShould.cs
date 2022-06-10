@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 
 using api.Adapters;
+using api.Dtos;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -59,6 +60,7 @@ namespace tests
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedStrategy = CreateTestDrainageStrategy(project);
+            var expectedStrategyCopy = expectedStrategy;
 
             // Act
             var projectResult = drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), caseId);
@@ -66,7 +68,7 @@ namespace tests
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
             Assert.NotNull(actualStrategy);
-            TestHelper.CompareDrainageStrategies(expectedStrategy, actualStrategy);
+            TestHelper.CompareDrainageStrategies(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), actualStrategy);
             var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
             Assert.Equal(actualStrategy.Id, case_.DrainageStrategyLink);
         }
@@ -164,7 +166,7 @@ namespace tests
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == updatedStrategy.Name);
             Assert.NotNull(actualStrategy);
-            TestHelper.CompareDrainageStrategies(updatedStrategy, actualStrategy);
+            TestHelper.CompareDrainageStrategies(DrainageStrategyDtoAdapter.Convert(updatedStrategy, project.PhysicalUnit), actualStrategy);
         }
 
         [Fact]
@@ -182,6 +184,40 @@ namespace tests
 
             //     // Act, assert
             //     Assert.Throws<ArgumentException>(() => drainageStrategyService.UpdateDrainageStrategy(updatedStrategy));
+        }
+
+        private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
+        {
+            string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
+            string[] BBL_Units = { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
+            string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
+
+            // Per now - the timeseriestypes which use millions are the same in both SI and Oilfield
+            if (SCF_Units.Contains(type))
+            {
+                // These types should be saved in billions
+                values = Array.ConvertAll(values, x => x * 1E9);
+            }
+            else
+            {
+                // These types should be saved in millions
+                values = Array.ConvertAll(values, x => x * 1E6);
+            }
+            // If values were inserted in Oilfield, convert to baseunit
+            if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
+            {
+                if (BBL_Units.Contains(type))
+                {
+                    // Unit: From BBL to baseunit Sm3
+                    values = Array.ConvertAll(values, x => x / 6.290);
+                }
+                else if (SCF_Units.Contains(type))
+                {
+                    // Unit: From SCF to baseunit Sm3
+                    values = Array.ConvertAll(values, x => x / 35.315);
+                }
+            }
+            return values;
         }
 
         private static DrainageStrategy CreateTestDrainageStrategy(Project project)
