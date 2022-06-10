@@ -45,7 +45,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
             this.gasInjectorCount = data.gasInjectorCount
             this.waterInjectorCount = data.waterInjectorCount
             this.productionFlowline = data.productionFlowline
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
             this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
             this.costYear = data.costYear
             this.source = data.source

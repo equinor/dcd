@@ -25,7 +25,7 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
             this.drillingSchedule = ExplorationDrillingSchedule.fromJSON(data.drillingSchedule)
             this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)
             this.rigMobDemob = data.rigMobDemob
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
         } else {
             this.id = EMPTY_GUID
             this.name = ""

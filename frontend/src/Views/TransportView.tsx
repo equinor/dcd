@@ -40,7 +40,7 @@ const TransportView = () => {
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
     const [costProfile, setCostProfile] = useState<TransportCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TransportCessationCostProfile>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [costYear, setCostYear] = useState<number | undefined>()
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
@@ -83,7 +83,7 @@ const TransportView = () => {
                 setOilExportPipelineLength(newTransport?.oilExportPipelineLength)
                 setCostYear(newTransport?.costYear)
                 setMaturity(newTransport?.maturity ?? undefined)
-                setCurrency(newTransport.currency ?? 0)
+                setCurrency(newTransport.currency ?? 1)
                 setDG3Date(newTransport.DG3Date ?? undefined)
                 setDG4Date(newTransport.DG4Date ?? undefined)
 
@@ -217,7 +217,7 @@ const TransportView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -228,7 +228,7 @@ const TransportView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cessation cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

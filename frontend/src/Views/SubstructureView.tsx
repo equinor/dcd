@@ -42,7 +42,7 @@ const SubstructureView = () => {
     const [dryWeight, setDryWeight] = useState<number | undefined>()
     const [costProfile, setCostProfile] = useState<SubstructureCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SubstructureCessationCostProfile>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [approvedBy, setApprovedBy] = useState<string>("")
     const [costYear, setCostYear] = useState<number | undefined>()
     const [concept, setConcept] = useState<Components.Schemas.Concept | undefined>()
@@ -86,7 +86,7 @@ const SubstructureView = () => {
                 setSubstructureName(newSubstructure?.name!)
                 setMaturity(newSubstructure.maturity)
                 setDryWeight(newSubstructure.dryweight)
-                setCurrency(newSubstructure.currency ?? 0)
+                setCurrency(newSubstructure.currency ?? 1)
                 setApprovedBy(newSubstructure?.approvedBy!)
                 setCostYear(newSubstructure?.costYear)
                 setConcept(newSubstructure.concept)
@@ -242,7 +242,7 @@ const SubstructureView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -253,7 +253,7 @@ const SubstructureView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cessation cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
