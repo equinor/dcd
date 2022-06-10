@@ -69,10 +69,10 @@ const SubstructureView = () => {
                 // eslint-disable-next-line max-len
                 let newSubstructure: Substructure | undefined = project.substructures.find((s) => s.id === params.substructureId)
                 if (newSubstructure !== undefined) {
-                    if (newSubstructure.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                    if (newSubstructure.DG3Date === null) {
                         newSubstructure.DG3Date = caseResult?.DG3Date
                     }
-                    if (newSubstructure.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                    if (newSubstructure.DG4Date === null) {
                         newSubstructure.DG4Date = caseResult?.DG4Date
                     }
                     setSubstructure(newSubstructure)
