@@ -1,6 +1,5 @@
 using api.Dtos;
 using api.Models;
-using api.Services;
 
 namespace api.Adapters
 {
@@ -29,7 +28,10 @@ namespace api.Adapters
                 LastChangedDate = surf.LastChangedDate,
                 CostYear = surf.CostYear,
                 Source = surf.Source,
-                ProspVersion = surf.ProspVersion
+                ProspVersion = surf.ProspVersion,
+                ApprovedBy = surf.ApprovedBy,
+                DG3Date = surf.DG3Date,
+                DG4Date = surf.DG4Date
             };
 
             if (surf.CostProfile != null)

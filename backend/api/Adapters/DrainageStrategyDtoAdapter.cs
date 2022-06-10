@@ -18,6 +18,7 @@ namespace api.Adapters
                 ProducerCount = drainageStrategy.ProducerCount,
                 GasInjectorCount = drainageStrategy.GasInjectorCount,
                 WaterInjectorCount = drainageStrategy.WaterInjectorCount,
+                FacilitiesAvailability = drainageStrategy.FacilitiesAvailability,
                 ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil)!,
                 ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas)!,
                 ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater)!,
