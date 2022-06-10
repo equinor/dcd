@@ -24,7 +24,7 @@ namespace api.Adapters
                 LastChangedDate = substructure.LastChangedDate,
                 Concept = substructure.Concept,
                 DG3Date = substructure.DG3Date,
-                DG4Date = substructure.DG4Date,
+                DG4Date = substructure.DG4Date
             };
             return substructureDto;
         }

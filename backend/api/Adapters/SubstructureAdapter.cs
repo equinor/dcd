@@ -22,7 +22,7 @@ namespace api.Adapters
                 LastChangedDate = substructureDto.LastChangedDate,
                 Concept = substructureDto.Concept,
                 DG3Date = substructureDto.DG3Date,
-                DG4Date = substructureDto.DG4Date,
+                DG4Date = substructureDto.DG4Date
             };
 
             substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
