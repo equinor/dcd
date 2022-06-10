@@ -43,7 +43,7 @@ namespace api.Adapters
                 // Trim zeroes for SCF when sending back to frontend
                 values = Array.ConvertAll(values, x => x / 1E9);
             }
-            else if(MTPA_Units.Contains(type) || SCF_Units.Contains(type))
+            else if (MTPA_Units.Contains(type) || SCF_Units.Contains(type))
             {
                 // Trim zeroes for BBL when sending back to frontend
                 values = Array.ConvertAll(values, x => x / 1E6);
