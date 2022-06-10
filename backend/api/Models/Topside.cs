@@ -19,6 +19,9 @@ namespace api.Models
         public Currency Currency { get; set; }
         public double FuelConsumption { get; set; }
         public double FlaredGas { get; set; }
+        public int ProducerCount { get; set; }
+        public int GasInjectorCount { get; set; }
+        public int WaterInjectorCount { get; set; }
         public double CO2ShareOilProfile { get; set; }
         public double CO2ShareGasProfile { get; set; }
         public double CO2ShareWaterInjectionProfile { get; set; }
@@ -30,6 +33,8 @@ namespace api.Models
         public DateTimeOffset? LastChangedDate { get; set; }
         public Source Source { get; set; }
         public string ApprovedBy { get; set; } = string.Empty;
+        public DateTimeOffset DG3Date { get; set; }
+        public DateTimeOffset DG4Date { get; set; }
     }
 
     public class TopsideCostProfile : TimeSeriesCost
