@@ -26,7 +26,7 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.rigMobDemob = data.rigMobDemob ?? 0
             this.annualWellInterventionCost = data.annualWellInterventionCost ?? 0
             this.pluggingAndAbandonment = data.pluggingAndAbandonment ?? 0
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
         } else {
             this.id = EMPTY_GUID
             this.name = ""

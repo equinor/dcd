@@ -39,7 +39,7 @@ function WellProjectView() {
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
 
     useEffect(() => {
@@ -74,7 +74,7 @@ function WellProjectView() {
                 setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
                 setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
                 setRigMobDemob(newWellProject.rigMobDemob)
-                setCurrency(newWellProject.currency ?? 0)
+                setCurrency(newWellProject.currency ?? 1)
 
                 setCostProfile(newWellProject.costProfile)
                 setDrillingSchedule(newWellProject.drillingSchedule)
@@ -186,7 +186,7 @@ function WellProjectView() {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

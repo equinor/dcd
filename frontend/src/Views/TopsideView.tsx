@@ -44,7 +44,7 @@ const TopsideView = () => {
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
     const [costProfile, setCostProfile] = useState<TopsideCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [cO2ShareOilProfile, setCO2ShareOilProfile] = useState<number | undefined>()
@@ -82,10 +82,10 @@ const TopsideView = () => {
                 setCase(caseResult)
                 let newTopside: Topside | undefined = project.topsides.find((s) => s.id === params.topsideId)
                 if (newTopside !== undefined) {
-                    if (newTopside.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                    if (newTopside.DG3Date === null) {
                         newTopside.DG3Date = caseResult?.DG3Date
                     }
-                    if (newTopside.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                    if (newTopside.DG4Date === null) {
                         newTopside.DG4Date = caseResult?.DG4Date
                     }
                     setTopside(newTopside)
@@ -106,7 +106,7 @@ const TopsideView = () => {
                 setOilCapacity(newTopside?.oilCapacity)
                 setGasCapacity(newTopside?.gasCapacity)
                 setMaturity(newTopside?.maturity ?? undefined)
-                setCurrency(newTopside.currency ?? 0)
+                setCurrency(newTopside.currency ?? 1)
                 setFacilitiesAvailability(newTopside?.facilitiesAvailability)
                 setArtificialLift(newTopside.artificialLift)
                 setCostYear(newTopside?.costYear)
@@ -387,7 +387,7 @@ const TopsideView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -398,7 +398,7 @@ const TopsideView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cessation cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

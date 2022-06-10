@@ -48,7 +48,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.maturity = data.maturity
             this.oilCapacity = data.oilCapacity
             this.gasCapacity = data.gasCapacity
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
             this.facilitiesAvailability = data.facilitiesAvailability
             this.fuelConsumption = data.fuelConsumption
             this.flaredGas = data.flaredGas

@@ -49,7 +49,7 @@ const SurfView = () => {
     const [productionFlowline, setProductionFlowline] = useState<Components.Schemas.ProductionFlowline | undefined>()
     const [costProfile, setCostProfile] = useState<SurfCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
     const [approvedBy, setApprovedBy] = useState<string>("")
@@ -75,10 +75,10 @@ const SurfView = () => {
                 setCase(caseResult)
                 let newSurf: Surf | undefined = project.surfs.find((s) => s.id === params.surfId)
                 if (newSurf !== undefined) {
-                    if (newSurf.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                    if (newSurf.DG3Date === null) {
                         newSurf.DG3Date = caseResult?.DG3Date
                     }
-                    if (newSurf.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                    if (newSurf.DG4Date === null) {
                         newSurf.DG4Date = caseResult?.DG4Date
                     }
                     setSurf(newSurf)
@@ -104,7 +104,7 @@ const SurfView = () => {
                 setUmbilicalSystemLength(newSurf?.umbilicalSystemLength)
                 setMaturity(newSurf.maturity ?? undefined)
                 setProductionFlowline(newSurf.productionFlowline ?? 0)
-                setCurrency(newSurf.currency ?? 0)
+                setCurrency(newSurf.currency ?? 1)
                 setArtificialLift(newSurf.artificialLift)
                 setApprovedBy(newSurf?.approvedBy!)
                 setDG3Date(newSurf.DG3Date ?? undefined)
@@ -310,7 +310,7 @@ const SurfView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -321,7 +321,7 @@ const SurfView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cessation cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
