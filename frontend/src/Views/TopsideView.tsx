@@ -82,10 +82,12 @@ const TopsideView = () => {
                 setCase(caseResult)
                 let newTopside: Topside | undefined = project.topsides.find((s) => s.id === params.topsideId)
                 if (newTopside !== undefined) {
-                    if (newTopside.DG3Date === null) {
+                    if (newTopside.DG3Date === null
+                        || newTopside.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
                         newTopside.DG3Date = caseResult?.DG3Date
                     }
-                    if (newTopside.DG4Date === null) {
+                    if (newTopside.DG4Date === null
+                        || newTopside.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
                         newTopside.DG4Date = caseResult?.DG4Date
                     }
                     setTopside(newTopside)

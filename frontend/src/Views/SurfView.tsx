@@ -75,10 +75,12 @@ const SurfView = () => {
                 setCase(caseResult)
                 let newSurf: Surf | undefined = project.surfs.find((s) => s.id === params.surfId)
                 if (newSurf !== undefined) {
-                    if (newSurf.DG3Date === null) {
+                    if (newSurf.DG3Date === null
+                        || newSurf.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
                         newSurf.DG3Date = caseResult?.DG3Date
                     }
-                    if (newSurf.DG4Date === null) {
+                    if (newSurf.DG4Date === null
+                        || newSurf.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
                         newSurf.DG4Date = caseResult?.DG4Date
                     }
                     setSurf(newSurf)
