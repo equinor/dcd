@@ -36,7 +36,9 @@ namespace api.Adapters
                 ProspVersion = topside.ProspVersion,
                 LastChangedDate = topside.LastChangedDate,
                 Source = topside.Source,
-                ApprovedBy = topside.ApprovedBy
+                ApprovedBy = topside.ApprovedBy,
+                DG3Date = topside.DG3Date,
+                DG4Date = topside.DG4Date
             };
             return topsideDto;
         }
