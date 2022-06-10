@@ -13,6 +13,12 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
     gasExportPipelineLength?: number | undefined
     oilExportPipelineLength?: number | undefined
     currency?: Components.Schemas.Currency
+    LastChangedDate?: Date | null
+    costYear?: number | undefined
+    source?: Components.Schemas.Source | undefined
+    ProspVersion?: Date | null
+    DG3Date?: Date | null
+    DG4Date?: Date | null
 
     constructor(data?: Components.Schemas.TransportDto) {
         if (data !== undefined) {
@@ -26,9 +32,25 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
             this.gasExportPipelineLength = data.gasExportPipelineLength
             this.oilExportPipelineLength = data.oilExportPipelineLength
             this.currency = data.currency ?? 0
+            this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
+            this.costYear = data.costYear
+            this.source = data.source
+            this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
+            this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : null
+            this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : null
         } else {
             this.id = EMPTY_GUID
             this.name = ""
+        }
+    }
+
+    static Copy(data: Transport) {
+        const transportCopy: Transport = new Transport(data)
+        return {
+            ...transportCopy,
+            ProspVersion: data.ProspVersion,
+            DG3Date: data.DG3Date,
+            DG4Date: data.DG4Date,
         }
     }
 
