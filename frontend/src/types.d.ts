@@ -67,7 +67,8 @@ declare namespace Components {
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
         }
-        export type Currency = 0 | 1; // int32
+        export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
+        export type Currency = 1 | 2; // int32
         export interface DrainageStrategyDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -86,6 +87,7 @@ declare namespace Components {
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
             productionProfileNGL?: ProductionProfileNGLDto;
+            facilitiesAvailability?: number; // double
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid
@@ -220,6 +222,7 @@ declare namespace Components {
             startYear?: number; // int32
             steaCases?: STEACaseDto[] | null;
         }
+        export type Source = 0 | 1; // int32
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -245,6 +248,14 @@ declare namespace Components {
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;
+            approvedBy?: string | null;
+            costYear?: number; // int32
+            prospVersion?: string | null; // date-time
+            source?: Source /* int32 */;
+            lastChangedDate?: string | null; // date-time
+            concept?: Concept /* int32 */;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
@@ -279,6 +290,13 @@ declare namespace Components {
             waterInjectorCount?: number; // int32
             productionFlowline?: ProductionFlowline /* int32 */;
             currency?: Currency /* int32 */;
+            lastChangedDate?: string | null; // date-time
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            prospVersion?: string | null; // date-time
+            approvedBy?: string | null;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
@@ -309,6 +327,24 @@ declare namespace Components {
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;
+            fuelConsumption?: number; // double
+            flaredGas?: number; // double
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            cO2ShareOilProfile?: number; // double
+            cO2ShareGasProfile?: number; // double
+            cO2ShareWaterInjectionProfile?: number; // double
+            cO2OnMaxOilProfile?: number; // double
+            cO2OnMaxGasProfile?: number; // double
+            cO2OnMaxWaterInjectionProfile?: number; // double
+            costYear?: number; // int32
+            prospVersion?: string | null; // date-time
+            lastChangedDate?: string | null; // date-time
+            source?: Source /* int32 */;
+            approvedBy?: string | null;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
@@ -336,6 +372,12 @@ declare namespace Components {
             gasExportPipelineLength?: number; // double
             oilExportPipelineLength?: number; // double
             currency?: Currency /* int32 */;
+            lastChangedDate?: string | null; // date-time
+            costYear?: number; // int32
+            source?: Source /* int32 */;
+            prospVersion?: string | null; // date-time
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid
@@ -628,6 +670,19 @@ declare namespace Paths {
     }
     namespace UpdateWellProject {
         export type RequestBody = Components.Schemas.WellProjectDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace Upload {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+            export type SourceCaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            projectId?: Parameters.ProjectId /* uuid */;
+            sourceCaseId?: Parameters.SourceCaseId /* uuid */;
+        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

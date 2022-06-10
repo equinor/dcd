@@ -146,6 +146,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("FacilitiesAvailability")
+                        .HasColumnType("float");
+
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
 
@@ -530,11 +533,30 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Concept")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CostYear")
+                        .HasColumnType("int");
+
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
+                    b.Property<DateTimeOffset>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DG4Date")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -545,6 +567,12 @@ namespace api.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -621,17 +649,33 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ArtificialLift")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CostYear")
                         .HasColumnType("int");
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DG4Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
 
                     b.Property<double>("InfieldPipelineSystemLength")
                         .HasColumnType("float");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -649,7 +693,13 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<int>("RiserCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Source")
                         .HasColumnType("int");
 
                     b.Property<int>("TemplateCount")
@@ -736,11 +786,42 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ArtificialLift")
+                        .HasColumnType("int");
+
+                    b.Property<double>("CO2OnMaxGasProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2OnMaxOilProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2OnMaxWaterInjectionProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2ShareGasProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2ShareOilProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2ShareWaterInjectionProfile")
+                        .HasColumnType("float");
+
+                    b.Property<int>("CostYear")
                         .HasColumnType("int");
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DG4Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
@@ -748,8 +829,20 @@ namespace api.Migrations
                     b.Property<double>("FacilitiesAvailability")
                         .HasColumnType("float");
 
+                    b.Property<double>("FlaredGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FuelConsumption")
+                        .HasColumnType("float");
+
                     b.Property<double>("GasCapacity")
                         .HasColumnType("float");
+
+                    b.Property<int>("GasInjectorCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -761,8 +854,20 @@ namespace api.Migrations
                     b.Property<double>("OilCapacity")
                         .HasColumnType("float");
 
+                    b.Property<int>("ProducerCount")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WaterInjectorCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -839,11 +944,23 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("CostYear")
+                        .HasColumnType("int");
+
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
+                    b.Property<DateTimeOffset>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("DG4Date")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<double>("GasExportPipelineLength")
                         .HasColumnType("float");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -857,6 +974,12 @@ namespace api.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
