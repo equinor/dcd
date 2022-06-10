@@ -1,6 +1,6 @@
 import { Button, Checkbox } from "@equinor/eds-core-react"
 import {
- Dispatch, SetStateAction, useRef, useState,
+    Dispatch, SetStateAction, useRef, useState,
 } from "react"
 import { useParams } from "react-router"
 import { Case } from "../models/Case"
