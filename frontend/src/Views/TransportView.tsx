@@ -64,10 +64,10 @@ const TransportView = () => {
                 setCase(caseResult)
                 let newTransport: Transport | undefined = project.transports.find((s) => s.id === params.transportId)
                 if (newTransport !== undefined) {
-                    if (newTransport.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                    if (newTransport.DG3Date === null) {
                         newTransport.DG3Date = caseResult?.DG3Date
                     }
-                    if (newTransport.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                    if (newTransport.DG4Date === null) {
                         newTransport.DG4Date = caseResult?.DG4Date
                     }
                     setTransport(newTransport)
