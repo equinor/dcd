@@ -54,7 +54,7 @@ const TimeSeries = ({
 
             const zeroesAtEnd: Number[] = Array.from({
                 length: Number(lastYear)
-                - (Number(timeSeries?.startYear!)
+                - (Number(timeSeries!.startYear!)
                 + Number(dG4Year)
                 + Number(timeSeries!.values!.length!)),
             }, (() => 0))
@@ -90,14 +90,14 @@ const TimeSeries = ({
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setTimeSeries(newTimeSeries)
         if ((Number(year)
-            + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
+        + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
             setFirstYear((Number(year) + Number(dG4Year!)))
         }
         if ((Number(year)
         + Number(dG4Year!)
         + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
             setLastYear(Number(year)
-            + Number(dG4Year!) + Number(newTimeSeries.values!.length))
+            + Number(dG4Year!) + Number(newTimeSeries.values.length))
         }
         buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)

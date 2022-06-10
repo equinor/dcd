@@ -13,7 +13,6 @@ namespace api.Adapters
                 Name = drainageStrategy.Name,
                 Description = drainageStrategy.Description,
                 ProjectId = drainageStrategy.ProjectId,
-                ProjectUnit = drainageStrategy.ProjectUnit,
                 NGLYield = drainageStrategy.NGLYield,
                 ArtificialLift = drainageStrategy.ArtificialLift,
                 ProducerCount = drainageStrategy.ProducerCount,
@@ -44,7 +43,7 @@ namespace api.Adapters
                 // Trim zeroes for SCF when sending back to frontend
                 values = Array.ConvertAll(values, x => x / 1E9);
             }
-            else
+            else if(MTPA_Units.Contains(type) || SCF_Units.Contains(type))
             {
                 // Trim zeroes for BBL when sending back to frontend
                 values = Array.ConvertAll(values, x => x / 1E6);

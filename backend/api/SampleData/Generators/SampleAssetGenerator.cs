@@ -120,43 +120,43 @@ public static class SampleAssetGenerator
                 .WithProductionProfileGas(new ProductionProfileGas
                 {
                     StartYear = 9,
-                    Values = new[] { 2.3, 3.3, 4.4 }
+                    Values = new[] { 2.3e9, 3.3e9, 4.4e9 }
                 }
                 )
                 .WithProductionProfileOil(new ProductionProfileOil
                 {
                     StartYear = 11,
-                    Values = new[] { 10.3, 13.3, 24.4, 1.2 }
+                    Values = new[] { 10.3e6, 13.3e6, 24.4e6, 1.2e6 }
                 }
                 )
                 .WithProductionProfileWater(new ProductionProfileWater
                 {
                     StartYear = 12,
-                    Values = new[] { 12.34, 13.45, 14.56 }
+                    Values = new[] { 12.34e6, 13.45e6, 14.56e6 }
                 }
                 )
                 .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection
                 {
                     StartYear = 8,
-                    Values = new[] { 7.89, 8.91, 9.01 }
+                    Values = new[] { 7.89e6, 8.91e6, 9.01e6 }
                 }
                 )
                 .WithFuelFlaringAndLosses(new FuelFlaringAndLosses
                 {
                     StartYear = 12,
-                    Values = new[] { 8.45, 4.78, 8, 74 }
+                    Values = new[] { 8.45e9, 4.78e9, 8, 74e9 }
                 }
                 )
                 .WithNetSalesGas(new NetSalesGas
                 {
                     StartYear = 13,
-                    Values = new[] { 3.4, 8.9, 2.3 }
+                    Values = new[] { 3.4e9, 8.9e9, 2.3e9 }
                 }
                 )
                 .WithCo2Emissions(new Co2Emissions
                 {
                     StartYear = 8,
-                    Values = new[] { 33.4, 18.9, 62.3 }
+                    Values = new[] { 33.4e6, 18.9e6, 62.3e6 }
                 }
                 )
             )

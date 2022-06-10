@@ -48,61 +48,45 @@ namespace api.Adapters
         {
             DrainagestrategyDtoToDrainagestrategy(existing, drainageStrategyDto);
 
-            if (drainageStrategyDto.ProductionProfileOil != null)
+            if (drainageStrategyDto.ProductionProfileOil != null
+                && (existing.ProductionProfileOil == null || !existing.ProductionProfileOil.Values.SequenceEqual(drainageStrategyDto.ProductionProfileOil.Values)))
             {
-                if (existing.ProductionProfileOil == null || !existing.ProductionProfileOil.Values.SequenceEqual(drainageStrategyDto.ProductionProfileOil.Values))
-                {
-                    existing.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, existing, unit, initialCreate);
-                }
+                existing.ProductionProfileOil = Convert(drainageStrategyDto.ProductionProfileOil, existing, unit, initialCreate);
             }
-            if (drainageStrategyDto.ProductionProfileGas != null)
+            if (drainageStrategyDto.ProductionProfileGas != null
+                && (existing.ProductionProfileGas == null || !existing.ProductionProfileGas.Values.SequenceEqual(drainageStrategyDto.ProductionProfileGas.Values)))
             {
-                if (existing.ProductionProfileGas == null || !existing.ProductionProfileGas.Values.SequenceEqual(drainageStrategyDto.ProductionProfileGas.Values))
-                {
-                    existing.ProductionProfileGas = Convert(drainageStrategyDto.ProductionProfileGas, existing, unit, initialCreate);
-                }
+                existing.ProductionProfileGas = Convert(drainageStrategyDto.ProductionProfileGas, existing, unit, initialCreate);
             }
-            if (drainageStrategyDto.ProductionProfileWater != null)
+            if (drainageStrategyDto.ProductionProfileWater != null
+                && (existing.ProductionProfileWater == null || !existing.ProductionProfileWater.Values.SequenceEqual(drainageStrategyDto.ProductionProfileWater.Values)))
             {
-                if (existing.ProductionProfileWater == null || !existing.ProductionProfileWater.Values.SequenceEqual(drainageStrategyDto.ProductionProfileWater.Values))
-                {
-                    existing.ProductionProfileWater = Convert(drainageStrategyDto.ProductionProfileWater, existing, unit, initialCreate);
-                }
+                existing.ProductionProfileWater = Convert(drainageStrategyDto.ProductionProfileWater, existing, unit, initialCreate);
             }
-            if (drainageStrategyDto.ProductionProfileWaterInjection != null)
+            if (drainageStrategyDto.ProductionProfileWaterInjection != null
+                && (existing.ProductionProfileWaterInjection == null || !existing.ProductionProfileWaterInjection.Values.SequenceEqual(drainageStrategyDto.ProductionProfileWaterInjection.Values)))
             {
-                if (existing.ProductionProfileWaterInjection == null || !existing.ProductionProfileWaterInjection.Values.SequenceEqual(drainageStrategyDto.ProductionProfileWaterInjection.Values))
-                {
-                    existing.ProductionProfileWaterInjection = Convert(drainageStrategyDto.ProductionProfileWaterInjection, existing, unit, initialCreate);
-                }
+                existing.ProductionProfileWaterInjection = Convert(drainageStrategyDto.ProductionProfileWaterInjection, existing, unit, initialCreate);
             }
-            if (drainageStrategyDto.FuelFlaringAndLosses != null)
+            if (drainageStrategyDto.FuelFlaringAndLosses != null
+                && (existing.FuelFlaringAndLosses == null || !existing.FuelFlaringAndLosses.Values.SequenceEqual(drainageStrategyDto.FuelFlaringAndLosses.Values)))
             {
-                if (existing.FuelFlaringAndLosses == null || !existing.FuelFlaringAndLosses.Values.SequenceEqual(drainageStrategyDto.FuelFlaringAndLosses.Values))
-                {
-                    existing.FuelFlaringAndLosses = Convert(drainageStrategyDto.FuelFlaringAndLosses, existing, unit, initialCreate);
-                }
+                existing.FuelFlaringAndLosses = Convert(drainageStrategyDto.FuelFlaringAndLosses, existing, unit, initialCreate);
             }
-            if (drainageStrategyDto.NetSalesGas != null)
+            if (drainageStrategyDto.NetSalesGas != null
+                && (existing.NetSalesGas == null || !existing.NetSalesGas.Values.SequenceEqual(drainageStrategyDto.NetSalesGas.Values)))
             {
-                if (existing.NetSalesGas == null || !existing.NetSalesGas.Values.SequenceEqual(drainageStrategyDto.NetSalesGas.Values))
-                {
-                    existing.NetSalesGas = Convert(drainageStrategyDto.NetSalesGas, existing, unit, initialCreate);
-                }
+                existing.NetSalesGas = Convert(drainageStrategyDto.NetSalesGas, existing, unit, initialCreate);
             }
-            if (drainageStrategyDto.Co2Emissions != null)
+            if (drainageStrategyDto.Co2Emissions != null
+                && (existing.Co2Emissions == null || !existing.Co2Emissions.Values.SequenceEqual(drainageStrategyDto.Co2Emissions.Values)))
             {
-                if (existing.Co2Emissions == null || !existing.Co2Emissions.Values.SequenceEqual(drainageStrategyDto.Co2Emissions.Values))
-                {
-                    existing.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, existing, unit, initialCreate);
-                }
+                existing.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, existing, unit, initialCreate);
             }
-            if (drainageStrategyDto.ProductionProfileNGL != null)
+            if (drainageStrategyDto.ProductionProfileNGL != null
+              && (existing.ProductionProfileNGL == null || !existing.ProductionProfileNGL.Values.SequenceEqual(drainageStrategyDto.ProductionProfileNGL.Values)))
             {
-                if (existing.ProductionProfileNGL == null || !existing.ProductionProfileNGL.Values.SequenceEqual(drainageStrategyDto.ProductionProfileNGL.Values))
-                {
-                    existing.ProductionProfileNGL = Convert(drainageStrategyDto.ProductionProfileNGL, existing, unit, initialCreate);
-                }
+                existing.ProductionProfileNGL = Convert(drainageStrategyDto.ProductionProfileNGL, existing, unit, initialCreate);
             }
             return existing;
         }
@@ -117,7 +101,6 @@ namespace api.Adapters
                     Name = drainageStrategyDto.Name,
                     Description = drainageStrategyDto.Description,
                     ProjectId = drainageStrategyDto.ProjectId,
-                    ProjectUnit = drainageStrategyDto.ProjectUnit,
                     NGLYield = drainageStrategyDto.NGLYield,
                     ArtificialLift = drainageStrategyDto.ArtificialLift,
                     ProducerCount = drainageStrategyDto.ProducerCount,
@@ -130,7 +113,6 @@ namespace api.Adapters
             existing.Name = drainageStrategyDto.Name;
             existing.Description = drainageStrategyDto.Description;
             existing.ProjectId = drainageStrategyDto.ProjectId;
-            existing.ProjectUnit = drainageStrategyDto.ProjectUnit;
             existing.NGLYield = drainageStrategyDto.NGLYield;
             existing.ArtificialLift = drainageStrategyDto.ArtificialLift;
             existing.ProducerCount = drainageStrategyDto.ProducerCount;
@@ -153,7 +135,7 @@ namespace api.Adapters
                 // These types should be saved in billions
                 values = Array.ConvertAll(values, x => x * 1E9);
             }
-            else
+            else if (MTPA_Units.Contains(type) || BBL_Units.Contains(type))
             {
                 // These types should be saved in millions
                 values = Array.ConvertAll(values, x => x * 1E6);
@@ -189,7 +171,6 @@ namespace api.Adapters
                 StartYear = productionProfileOilDto.StartYear,
                 Values = needToConvertValues || initialCreate ? ConvertUnitValues(productionProfileOilDto.Values, unit, nameof(ProductionProfileOil)) : productionProfileOilDto.Values,
             };
-
             return convertedTimeSeries;
         }
 

@@ -12,7 +12,6 @@ import { EMPTY_GUID } from "../../../Utils/constants"
 export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
     id?: string
     projectId?: string
-    projectUnit?: Components.Schemas.PhysUnit | undefined
     name?: string | undefined
     description?: string | null
     waterInjectorCount?: number
@@ -34,7 +33,6 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
         if (data !== undefined) {
             this.id = data.id
             this.projectId = data.projectId
-            this.projectUnit = data.projectUnit
             this.name = data.name ?? ""
             this.description = data.description
             this.waterInjectorCount = data.waterInjectorCount

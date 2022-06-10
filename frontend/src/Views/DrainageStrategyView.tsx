@@ -78,11 +78,9 @@ const DrainageStrategyView = () => {
                 // eslint-disable-next-line max-len
                 let newDrainage: DrainageStrategy | undefined = project.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
                 if (newDrainage !== undefined) {
-                    newDrainage.projectUnit = project.physUnit
                     setDrainageStrategy(newDrainage)
                 } else {
                     newDrainage = new DrainageStrategy()
-                    newDrainage.projectUnit = project.physUnit
                     newDrainage.producerCount = caseResult?.producerCount
                     newDrainage.gasInjectorCount = caseResult?.gasInjectorCount
                     newDrainage.waterInjectorCount = caseResult?.waterInjectorCount
