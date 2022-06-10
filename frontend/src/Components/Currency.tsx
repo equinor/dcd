@@ -33,7 +33,7 @@ const Currency = ({
             pu = 2
             break
         default:
-            setCurrency(1) 
+            setCurrency(1)
             pu = 1
             break
         }
