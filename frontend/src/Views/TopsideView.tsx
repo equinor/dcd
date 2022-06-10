@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -16,7 +16,7 @@ import { GetTopsideService } from "../Services/TopsideService"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import Maturity from "../Components/Maturity"
@@ -27,6 +27,7 @@ import AssetCurrency from "../Components/AssetCurrency"
 import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 import ApprovedBy from "../Components/ApprovedBy"
+import DGDateInherited from "../Components/DGDateInherited"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -54,6 +55,8 @@ const TopsideView = () => {
     const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
     const [approvedBy, setApprovedBy] = useState<string>("")
+    const [dG3Date, setDG3Date] = useState<Date>()
+    const [dG4Date, setDG4Date] = useState<Date>()
 
     useEffect(() => {
         (async () => {
@@ -74,12 +77,20 @@ const TopsideView = () => {
                 setCase(caseResult)
                 let newTopside: Topside | undefined = project.topsides.find((s) => s.id === params.topsideId)
                 if (newTopside !== undefined) {
+                    if (newTopside.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newTopside.DG3Date = caseResult?.DG3Date
+                    }
+                    if (newTopside.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newTopside.DG4Date = caseResult?.DG4Date
+                    }
                     setTopside(newTopside)
                 } else {
                     newTopside = new Topside()
                     newTopside.artificialLift = caseResult?.artificialLift
                     newTopside.currency = project.currency
                     newTopside.facilitiesAvailability = caseResult?.facilitiesAvailability
+                    newTopside.DG3Date = caseResult?.DG3Date
+                    newTopside.DG4Date = caseResult?.DG4Date
                     setTopside(newTopside)
                 }
                 setTopsideName(newTopside?.name!)
@@ -100,6 +111,8 @@ const TopsideView = () => {
                 setApprovedBy(newTopside?.approvedBy!)
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
+                setDG3Date(newTopside.DG3Date ?? undefined)
+                setDG4Date(newTopside.DG4Date ?? undefined)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -133,6 +146,8 @@ const TopsideView = () => {
             newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
             newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
             newTopside.approvedBy = approvedBy
+            newTopside.DG3Date = dG3Date
+            newTopside.DG4Date = dG4Date
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -146,7 +161,7 @@ const TopsideView = () => {
         }
     }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
         cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
-        cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift])
+        cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift, dG3Date, dG4Date])
 
     return (
         <AssetViewDiv>
@@ -178,14 +193,22 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG3Date}
+                    dGName="DG3"
+                    value={dG3Date}
+                    caseValue={caseItem?.DG3Date}
+                    disabled={topside?.source === 1}
+                />
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG4Date}
+                    dGName="DG4"
+                    value={dG4Date}
+                    caseValue={caseItem?.DG4Date}
+                    disabled={topside?.source === 1}
+                />
             </Wrapper>
             <AssetCurrency
                 setCurrency={setCurrency}
