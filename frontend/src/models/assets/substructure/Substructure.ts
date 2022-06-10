@@ -31,7 +31,7 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
                 .fromJSON(data.cessationCostProfile)
             this.dryweight = data.dryWeight
             this.maturity = data.maturity
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
             this.approvedBy = data.approvedBy ?? ""
             this.costYear = data.costYear
             this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
