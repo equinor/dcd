@@ -55,6 +55,11 @@ const TopsideView = () => {
     const [cO2OnMaxWaterInjectionProfile, setCO2OnMaxWaterInjectionProfile] = useState<number | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
     const [approvedBy, setApprovedBy] = useState<string>("")
+    const [producerCount, setProducerCount] = useState<number | undefined>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number | undefined>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number | undefined>()
+    const [fuelConsumption, setFuelConsumption] = useState<number | undefined>()
+    const [flaredGas, setFlaredGas] = useState<number | undefined>()
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
 
@@ -89,6 +94,9 @@ const TopsideView = () => {
                     newTopside.artificialLift = caseResult?.artificialLift
                     newTopside.currency = project.currency
                     newTopside.facilitiesAvailability = caseResult?.facilitiesAvailability
+                    newTopside.producerCount = caseResult?.producerCount
+                    newTopside.gasInjectorCount = caseResult?.gasInjectorCount
+                    newTopside.waterInjectorCount = caseResult?.waterInjectorCount
                     newTopside.DG3Date = caseResult?.DG3Date
                     newTopside.DG4Date = caseResult?.DG4Date
                     setTopside(newTopside)
@@ -111,6 +119,11 @@ const TopsideView = () => {
                 setApprovedBy(newTopside?.approvedBy!)
                 setCostProfile(newTopside.costProfile)
                 setCessationCostProfile(newTopside.cessationCostProfile)
+                setProducerCount(newTopside?.producerCount)
+                setGasInjectorCount(newTopside?.gasInjectorCount)
+                setWaterInjectorCount(newTopside?.waterInjectorCount)
+                setFuelConsumption(newTopside?.fuelConsumption)
+                setFlaredGas(newTopside?.flaredGas)
                 setDG3Date(newTopside.DG3Date ?? undefined)
                 setDG4Date(newTopside.DG4Date ?? undefined)
 
@@ -146,6 +159,11 @@ const TopsideView = () => {
             newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
             newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
             newTopside.approvedBy = approvedBy
+            newTopside.producerCount = producerCount
+            newTopside.gasInjectorCount = gasInjectorCount
+            newTopside.waterInjectorCount = waterInjectorCount
+            newTopside.fuelConsumption = fuelConsumption
+            newTopside.flaredGas = flaredGas
             newTopside.DG3Date = dG3Date
             newTopside.DG4Date = dG4Date
 
@@ -161,7 +179,8 @@ const TopsideView = () => {
         }
     }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
         cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
-        cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift, dG3Date, dG4Date])
+        cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift,
+        producerCount, gasInjectorCount, waterInjectorCount, fuelConsumption, flaredGas, dG3Date, dG4Date])
 
     return (
         <AssetViewDiv>
@@ -239,26 +258,29 @@ const TopsideView = () => {
                 </WrapperColumn>
             </Wrapper>
             <Wrapper>
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
-                    setValue={setDryweight}
-                    value={dryweight ?? 0}
+                    setValue={setProducerCount}
+                    value={producerCount ?? 0}
                     integer
-                    label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
+                    label="Producer count"
+                    caseValue={caseItem?.producerCount}
                 />
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
-                    setValue={setOilCapacity}
-                    value={oilCapacity ?? 0}
-                    integer={false}
-                    label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
+                    setValue={setGasInjectorCount}
+                    value={gasInjectorCount ?? 0}
+                    integer
+                    label="Gas injector count"
+                    caseValue={caseItem?.gasInjectorCount}
                 />
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
-                    setValue={setGasCapacity}
-                    value={gasCapacity ?? 0}
-                    integer={false}
-                    label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
+                    setValue={setWaterInjectorCount}
+                    value={waterInjectorCount ?? 0}
+                    integer
+                    label="Water injector count"
+                    caseValue={caseItem?.waterInjectorCount}
                 />
                 <NumberInputInherited
                     setHasChanges={setHasChanges}
@@ -268,6 +290,45 @@ const TopsideView = () => {
                     disabled={false}
                     label="Facilities availability (%)"
                     caseValue={caseItem?.facilitiesAvailability}
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setFuelConsumption}
+                    value={fuelConsumption ?? 0}
+                    integer
+                    label="Fuel consumption (MSm³ gas/sd)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setFlaredGas}
+                    value={flaredGas ?? 0}
+                    integer={false}
+                    label="Flared gas (MSm³ gas/sd)"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setDryweight}
+                    value={dryweight ?? 0}
+                    integer
+                    label="Topside dry weight (tonnes)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setOilCapacity}
+                    value={oilCapacity ?? 0}
+                    integer={false}
+                    label="Capacity oil (Sm³/sd)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setGasCapacity}
+                    value={gasCapacity ?? 0}
+                    integer={false}
+                    label="Capacity gas (MSm³/sd)"
                 />
             </Wrapper>
             <Wrapper>

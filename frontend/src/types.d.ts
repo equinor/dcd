@@ -329,6 +329,9 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             fuelConsumption?: number; // double
             flaredGas?: number; // double
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
             cO2ShareOilProfile?: number; // double
             cO2ShareGasProfile?: number; // double
             cO2ShareWaterInjectionProfile?: number; // double
