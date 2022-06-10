@@ -295,6 +295,8 @@ declare namespace Components {
             source?: Source /* int32 */;
             prospVersion?: string | null; // date-time
             approvedBy?: string | null;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
@@ -327,6 +329,9 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             fuelConsumption?: number; // double
             flaredGas?: number; // double
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
             cO2ShareOilProfile?: number; // double
             cO2ShareGasProfile?: number; // double
             cO2ShareWaterInjectionProfile?: number; // double
@@ -338,6 +343,8 @@ declare namespace Components {
             lastChangedDate?: string | null; // date-time
             source?: Source /* int32 */;
             approvedBy?: string | null;
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
@@ -369,6 +376,8 @@ declare namespace Components {
             costYear?: number; // int32
             source?: Source /* int32 */;
             prospVersion?: string | null; // date-time
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid

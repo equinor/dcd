@@ -196,7 +196,7 @@ const DrainageStrategyView = () => {
                     value={nGLYield ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    label={`NGL yield ${project?.physUnit === 0 ? "(tonnes/MSm³)" : "(Oilfield)"}`}
+                    label={`NGL yield ${project?.physUnit === 0 ? "(Sm³/MSm³)" : "(bbls/mill scf)"}`}
                 />
                 <NumberInputInherited
                     value={drainageStrategy?.producerCount ?? 0}
