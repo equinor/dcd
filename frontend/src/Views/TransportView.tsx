@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -16,7 +16,7 @@ import { GetTransportService } from "../Services/TransportService"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
@@ -24,6 +24,7 @@ import Maturity from "../Components/Maturity"
 import { TransportCostProfile } from "../models/assets/transport/TransportCostProfile"
 import { TransportCessationCostProfile } from "../models/assets/transport/TransportCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import DGDateInherited from "../Components/DGDateInherited"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -41,6 +42,8 @@ const TransportView = () => {
     const [cessationCostProfile, setCessationCostProfile] = useState<TransportCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [dG3Date, setDG3Date] = useState<Date>()
+    const [dG4Date, setDG4Date] = useState<Date>()
 
     useEffect(() => {
         (async () => {
@@ -61,10 +64,18 @@ const TransportView = () => {
                 setCase(caseResult)
                 let newTransport: Transport | undefined = project.transports.find((s) => s.id === params.transportId)
                 if (newTransport !== undefined) {
+                    if (newTransport.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newTransport.DG3Date = caseResult?.DG3Date
+                    }
+                    if (newTransport.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newTransport.DG4Date = caseResult?.DG4Date
+                    }
                     setTransport(newTransport)
                 } else {
                     newTransport = new Transport()
                     newTransport.currency = project.currency
+                    newTransport.DG3Date = caseResult?.DG3Date
+                    newTransport.DG4Date = caseResult?.DG4Date
                     setTransport(newTransport)
                 }
                 setTransportName(newTransport?.name!)
@@ -73,6 +84,8 @@ const TransportView = () => {
                 setCostYear(newTransport?.costYear)
                 setMaturity(newTransport?.maturity ?? undefined)
                 setCurrency(newTransport.currency ?? 0)
+                setDG3Date(newTransport.DG3Date ?? undefined)
+                setDG4Date(newTransport.DG4Date ?? undefined)
 
                 setCostProfile(newTransport.costProfile)
                 setCessationCostProfile(newTransport.cessationCostProfile)
@@ -99,6 +112,8 @@ const TransportView = () => {
             newTransport.costProfile = costProfile
             newTransport.cessationCostProfile = cessationCostProfile
             newTransport.currency = currency
+            newTransport.DG3Date = dG3Date
+            newTransport.DG4Date = dG4Date
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -111,7 +126,7 @@ const TransportView = () => {
             setTransport(newTransport)
         }
     }, [gasExportPipelineLength, oilExportPipelineLength, maturity,
-        costProfile, cessationCostProfile, currency, costYear])
+        costProfile, cessationCostProfile, currency, costYear, dG3Date, dG4Date])
 
     return (
         <AssetViewDiv>
@@ -138,14 +153,22 @@ const TransportView = () => {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG3Date}
+                    dGName="DG3"
+                    value={dG3Date}
+                    caseValue={caseItem?.DG3Date}
+                    disabled={transport?.source === 1}
+                />
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG4Date}
+                    dGName="DG4"
+                    value={dG4Date}
+                    caseValue={caseItem?.DG4Date}
+                    disabled={transport?.source === 1}
+                />
             </Wrapper>
             <AssetCurrency
                 setCurrency={setCurrency}

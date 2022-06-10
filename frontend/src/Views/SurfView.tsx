@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {
-    Input, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
 
 import { useParams } from "react-router"
@@ -11,7 +11,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetSurfService } from "../Services/SurfService"
 import TimeSeries from "../Components/TimeSeries"
 import {
-    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
@@ -27,6 +27,7 @@ import AssetCurrency from "../Components/AssetCurrency"
 import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 import ApprovedBy from "../Components/ApprovedBy"
+import DGDateInherited from "../Components/DGDateInherited"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -52,6 +53,8 @@ const SurfView = () => {
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
     const [approvedBy, setApprovedBy] = useState<string>("")
+    const [dG3Date, setDG3Date] = useState<Date>()
+    const [dG4Date, setDG4Date] = useState<Date>()
 
     useEffect(() => {
         (async () => {
@@ -72,6 +75,12 @@ const SurfView = () => {
                 setCase(caseResult)
                 let newSurf: Surf | undefined = project.surfs.find((s) => s.id === params.surfId)
                 if (newSurf !== undefined) {
+                    if (newSurf.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newSurf.DG3Date = caseResult?.DG3Date
+                    }
+                    if (newSurf.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newSurf.DG4Date = caseResult?.DG4Date
+                    }
                     setSurf(newSurf)
                 } else {
                     newSurf = new Surf()
@@ -80,6 +89,8 @@ const SurfView = () => {
                     newSurf.gasInjectorCount = caseResult?.gasInjectorCount
                     newSurf.waterInjectorCount = caseResult?.waterInjectorCount
                     newSurf.currency = project.currency
+                    newSurf.DG3Date = caseResult?.DG3Date
+                    newSurf.DG4Date = caseResult?.DG4Date
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
@@ -96,6 +107,8 @@ const SurfView = () => {
                 setCurrency(newSurf.currency ?? 0)
                 setArtificialLift(newSurf.artificialLift)
                 setApprovedBy(newSurf?.approvedBy!)
+                setDG3Date(newSurf.DG3Date ?? undefined)
+                setDG4Date(newSurf.DG4Date ?? undefined)
 
                 setCostProfile(newSurf.costProfile)
                 setCessationCostProfile(newSurf.cessationCostProfile)
@@ -128,6 +141,8 @@ const SurfView = () => {
             newSurf.currency = currency
             newSurf.artificialLift = artificialLift
             newSurf.approvedBy = approvedBy
+            newSurf.DG3Date = dG3Date
+            newSurf.DG4Date = dG4Date
 
             newSurf.costProfile = costProfile
             newSurf.cessationCostProfile = cessationCostProfile
@@ -145,7 +160,8 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency, costYear, approvedBy, artificialLift])
+        costProfile, cessationCostProfile, currency, costYear, approvedBy, artificialLift,
+        dG3Date, dG4Date])
 
     return (
         <AssetViewDiv>
@@ -177,14 +193,22 @@ const SurfView = () => {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG3Date}
+                    dGName="DG3"
+                    value={dG3Date}
+                    caseValue={caseItem?.DG3Date}
+                    disabled={surf?.source === 1}
+                />
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG4Date}
+                    dGName="DG4"
+                    value={dG4Date}
+                    caseValue={caseItem?.DG4Date}
+                    disabled={surf?.source === 1}
+                />
             </Wrapper>
             <AssetCurrency
                 setCurrency={setCurrency}
@@ -261,14 +285,14 @@ const SurfView = () => {
                     setValue={setInfieldPipelineSystemLength}
                     value={infieldPipelineSystemLength ?? 0}
                     integer
-                    label={`Length of production lines ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
+                    label="Length of production lines (km)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setUmbilicalSystemLength}
                     value={umbilicalSystemLength ?? 0}
                     integer
-                    label={`Length of umbilical system ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
+                    label="Length of umbilical system (km)"
                 />
             </Wrapper>
             <Maturity

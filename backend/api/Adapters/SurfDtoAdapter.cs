@@ -29,7 +29,9 @@ namespace api.Adapters
                 CostYear = surf.CostYear,
                 Source = surf.Source,
                 ProspVersion = surf.ProspVersion,
-                ApprovedBy = surf.ApprovedBy
+                ApprovedBy = surf.ApprovedBy,
+                DG3Date = surf.DG3Date,
+                DG4Date = surf.DG4Date
             };
 
             if (surf.CostProfile != null)

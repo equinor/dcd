@@ -21,7 +21,9 @@ namespace api.Adapters
                 LastChangedDate = transportDto.LastChangedDate,
                 CostYear = transportDto.CostYear,
                 Source = transportDto.Source,
-                ProspVersion = transportDto.ProspVersion
+                ProspVersion = transportDto.ProspVersion,
+                DG3Date = transportDto.DG3Date,
+                DG4Date = transportDto.DG4Date
             };
 
             if (transportDto.CostProfile != null)
@@ -51,6 +53,8 @@ namespace api.Adapters
             existing.CostYear = transportDto.CostYear;
             existing.Source = transportDto.Source;
             existing.ProspVersion = transportDto.ProspVersion;
+            existing.DG3Date = transportDto.DG3Date;
+            existing.DG4Date = transportDto.DG4Date;
         }
 
         private static TransportCostProfile? Convert(TransportCostProfileDto? costprofile, Transport transport)
