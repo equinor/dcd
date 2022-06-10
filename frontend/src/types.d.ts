@@ -254,8 +254,8 @@ declare namespace Components {
             source?: Source /* int32 */;
             lastChangedDate?: string | null; // date-time
             concept?: Concept /* int32 */;
-            dG3Date?: string; // date-time
-            dG4Date?: string; // date-time
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
@@ -295,8 +295,8 @@ declare namespace Components {
             source?: Source /* int32 */;
             prospVersion?: string | null; // date-time
             approvedBy?: string | null;
-            dG3Date?: string; // date-time
-            dG4Date?: string; // date-time
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
@@ -343,8 +343,8 @@ declare namespace Components {
             lastChangedDate?: string | null; // date-time
             source?: Source /* int32 */;
             approvedBy?: string | null;
-            dG3Date?: string; // date-time
-            dG4Date?: string; // date-time
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
@@ -376,8 +376,8 @@ declare namespace Components {
             costYear?: number; // int32
             source?: Source /* int32 */;
             prospVersion?: string | null; // date-time
-            dG3Date?: string; // date-time
-            dG4Date?: string; // date-time
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid
