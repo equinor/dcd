@@ -40,7 +40,6 @@ namespace api.Services
         {
             var project = _projectService.GetProject(substructure.ProjectId);
             substructure.Project = project;
-            substructure.ProspVersion = substructure.ProspVersion;
             substructure.LastChangedDate = DateTimeOffset.Now;
             _context.Substructures!.Add(substructure);
             _context.SaveChanges();
