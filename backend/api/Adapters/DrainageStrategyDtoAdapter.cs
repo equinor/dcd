@@ -5,7 +5,7 @@ namespace api.Adapters
 {
     public static class DrainageStrategyDtoAdapter
     {
-        public static DrainageStrategyDto Convert(DrainageStrategy drainageStrategy)
+        public static DrainageStrategyDto Convert(DrainageStrategy drainageStrategy, PhysUnit unit)
         {
             var drainageStrategyDto = new DrainageStrategyDto
             {
@@ -19,19 +19,53 @@ namespace api.Adapters
                 GasInjectorCount = drainageStrategy.GasInjectorCount,
                 WaterInjectorCount = drainageStrategy.WaterInjectorCount,
                 FacilitiesAvailability = drainageStrategy.FacilitiesAvailability,
-                ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil)!,
-                ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas)!,
-                ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater)!,
-                ProductionProfileWaterInjection = Convert(drainageStrategy.ProductionProfileWaterInjection)!,
-                FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses)!,
-                NetSalesGas = Convert(drainageStrategy.NetSalesGas)!,
-                Co2Emissions = Convert(drainageStrategy.Co2Emissions)!,
-                ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL)!
+                ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil, unit),
+                ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas, unit),
+                ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater, unit),
+                ProductionProfileWaterInjection = Convert(drainageStrategy.ProductionProfileWaterInjection, unit),
+                FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses, unit),
+                NetSalesGas = Convert(drainageStrategy.NetSalesGas, unit),
+                Co2Emissions = Convert(drainageStrategy.Co2Emissions, unit),
+                ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit)
             };
             return drainageStrategyDto;
         }
 
-        private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil)
+        private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
+        {
+            string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
+            string[] BBL_Units = { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
+            string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
+
+            // Per now - the timeseriestypes which use millions are the same in both SI and Oilfield
+            if (SCF_Units.Contains(type))
+            {
+                // Trim zeroes for SCF when sending back to frontend
+                values = Array.ConvertAll(values, x => x / 1E9);
+            }
+            else if (MTPA_Units.Contains(type) || BBL_Units.Contains(type))
+            {
+                // Trim zeroes for BBL when sending back to frontend
+                values = Array.ConvertAll(values, x => x / 1E6);
+            }
+            // If Oilfield is selected, convert to respective values 
+            if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
+            {
+                if (BBL_Units.Contains(type))
+                {
+                    // Unit: From baseunit Sm3 to BBL
+                    values = Array.ConvertAll(values, x => x * 6.290);
+                }
+                else if (SCF_Units.Contains(type))
+                {
+                    // Unit: From baseunit Sm3 to SCF
+                    values = Array.ConvertAll(values, x => x * 35.315);
+                }
+            }
+            return values;
+        }
+
+        private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
         {
             if (productionProfileOil != null)
             {
@@ -39,13 +73,13 @@ namespace api.Adapters
                 {
                     Id = productionProfileOil.Id,
                     StartYear = productionProfileOil.StartYear,
-                    Values = productionProfileOil.Values
+                    Values = ConvertUnitValues(productionProfileOil.Values, unit, nameof(ProductionProfileOil))
                 };
             }
             return null;
         }
 
-        private static ProductionProfileGasDto? Convert(ProductionProfileGas? productionProfileGas)
+        private static ProductionProfileGasDto? Convert(ProductionProfileGas? productionProfileGas, PhysUnit unit)
         {
             if (productionProfileGas != null)
             {
@@ -53,13 +87,13 @@ namespace api.Adapters
                 {
                     Id = productionProfileGas.Id,
                     StartYear = productionProfileGas.StartYear,
-                    Values = productionProfileGas.Values
+                    Values = ConvertUnitValues(productionProfileGas.Values, unit, nameof(ProductionProfileGas))
                 };
             }
             return null;
         }
 
-        private static ProductionProfileWaterDto? Convert(ProductionProfileWater? productionProfileWater)
+        private static ProductionProfileWaterDto? Convert(ProductionProfileWater? productionProfileWater, PhysUnit unit)
         {
             if (productionProfileWater != null)
             {
@@ -67,13 +101,13 @@ namespace api.Adapters
                 {
                     Id = productionProfileWater.Id,
                     StartYear = productionProfileWater.StartYear,
-                    Values = productionProfileWater.Values
+                    Values = ConvertUnitValues(productionProfileWater.Values, unit, nameof(ProductionProfileWater))
                 };
             }
             return null;
         }
 
-        private static ProductionProfileWaterInjectionDto? Convert(ProductionProfileWaterInjection? productionProfileWaterInjection)
+        private static ProductionProfileWaterInjectionDto? Convert(ProductionProfileWaterInjection? productionProfileWaterInjection, PhysUnit unit)
         {
             if (productionProfileWaterInjection != null)
             {
@@ -81,13 +115,13 @@ namespace api.Adapters
                 {
                     Id = productionProfileWaterInjection.Id,
                     StartYear = productionProfileWaterInjection.StartYear,
-                    Values = productionProfileWaterInjection.Values
+                    Values = ConvertUnitValues(productionProfileWaterInjection.Values, unit, nameof(ProductionProfileWaterInjection))
                 };
             }
             return null;
         }
 
-        private static FuelFlaringAndLossesDto? Convert(FuelFlaringAndLosses? fuelFlaringAndLosses)
+        private static FuelFlaringAndLossesDto? Convert(FuelFlaringAndLosses? fuelFlaringAndLosses, PhysUnit unit)
         {
             if (fuelFlaringAndLosses != null)
             {
@@ -95,13 +129,13 @@ namespace api.Adapters
                 {
                     Id = fuelFlaringAndLosses.Id,
                     StartYear = fuelFlaringAndLosses.StartYear,
-                    Values = fuelFlaringAndLosses.Values
+                    Values = ConvertUnitValues(fuelFlaringAndLosses.Values, unit, nameof(FuelFlaringAndLosses))
                 };
             }
             return null;
         }
 
-        private static NetSalesGasDto? Convert(NetSalesGas? netSalesGas)
+        private static NetSalesGasDto? Convert(NetSalesGas? netSalesGas, PhysUnit unit)
         {
             if (netSalesGas != null)
             {
@@ -109,13 +143,13 @@ namespace api.Adapters
                 {
                     Id = netSalesGas.Id,
                     StartYear = netSalesGas.StartYear,
-                    Values = netSalesGas.Values
+                    Values = ConvertUnitValues(netSalesGas.Values, unit, nameof(NetSalesGas))
                 };
             }
             return null;
         }
 
-        private static Co2EmissionsDto? Convert(Co2Emissions? co2Emissions)
+        private static Co2EmissionsDto? Convert(Co2Emissions? co2Emissions, PhysUnit unit)
         {
             if (co2Emissions != null)
             {
@@ -123,13 +157,13 @@ namespace api.Adapters
                 {
                     Id = co2Emissions.Id,
                     StartYear = co2Emissions.StartYear,
-                    Values = co2Emissions.Values
+                    Values = ConvertUnitValues(co2Emissions.Values, unit, nameof(Co2Emissions))
                 };
             }
             return null;
         }
 
-        private static ProductionProfileNGLDto? Convert(ProductionProfileNGL? productionProfileNGL)
+        private static ProductionProfileNGLDto? Convert(ProductionProfileNGL? productionProfileNGL, PhysUnit unit)
         {
             if (productionProfileNGL != null)
             {
@@ -137,7 +171,7 @@ namespace api.Adapters
                 {
                     Id = productionProfileNGL.Id,
                     StartYear = productionProfileNGL.StartYear,
-                    Values = productionProfileNGL.Values
+                    Values = ConvertUnitValues(productionProfileNGL.Values, unit, nameof(ProductionProfileNGL))
                 };
             }
             return null;

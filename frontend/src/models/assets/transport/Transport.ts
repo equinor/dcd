@@ -31,7 +31,7 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
             this.maturity = data.maturity
             this.gasExportPipelineLength = data.gasExportPipelineLength
             this.oilExportPipelineLength = data.oilExportPipelineLength
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
             this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
             this.costYear = data.costYear
             this.source = data.source
