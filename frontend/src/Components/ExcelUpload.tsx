@@ -1,18 +1,15 @@
-/* eslint-disable max-len */
 import { Button, Checkbox } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useRef, useState,
 } from "react"
 import { useParams } from "react-router"
-import styled from "styled-components"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetUploadService } from "../Services/UploadService"
 import { unwrapCase } from "../Utils/common"
-
-const ActionsContainer = styled.div`
-    display: flex;
-`
+import {
+    Wrapper,
+} from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>
@@ -62,12 +59,18 @@ const ExcelUpload = ({
     const disabled = () => !(surf || substructure || topside || transport)
     return (
         <>
-            <label htmlFor="file-upload">
+            <Wrapper>
                 <Checkbox label="Surf" onChange={() => { setSurf(!surf) }} checked={surf} />
-                <Checkbox label="Substructure" onChange={() => { setSubstructure(!substructure) }} checked={substructure} />
+                <Checkbox
+                    label="Substructure"
+                    onChange={() => { setSubstructure(!substructure) }}
+                    checked={substructure}
+                />
                 <Checkbox label="Topside" onChange={() => { setTopside(!topside) }} checked={topside} />
                 <Checkbox label="Transport" onChange={() => { setTransport(!transport) }} checked={transport} />
-                <br />
+            </Wrapper>
+            <Wrapper>
+                <Button disabled={disabled()} onClick={(): void => fileInputRef.current.click()}>Upload file</Button>
                 <input
                     type="file"
                     id="file-upload"
@@ -76,10 +79,7 @@ const ExcelUpload = ({
                     onChange={onFileUpload}
                     value=""
                 />
-            </label>
-            <ActionsContainer>
-                <Button disabled={disabled()} onClick={(): void => fileInputRef.current.click()}>Upload file</Button>
-            </ActionsContainer>
+            </Wrapper>
         </>
     )
 }
