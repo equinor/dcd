@@ -96,7 +96,6 @@ const DGDateInherited = ({
             <DgField>
                 <Input
                     defaultValue={dgReturnDate()}
-                    key={dgReturnDate()}
                     id="dgDate"
                     type="date"
                     name="dgDate"
