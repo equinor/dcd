@@ -125,6 +125,8 @@ namespace api.Services
                 Currency = currency,
                 CostYear = costYear,
                 Maturity = Maturity.A,
+                DG3Date = dG3Date,
+                DG4Date = dG4Date,
             };
             var dto = SurfDtoAdapter.Convert(newSurf);
 

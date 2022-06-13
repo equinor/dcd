@@ -180,7 +180,7 @@ const SubstructureView = () => {
 
             <Typography>
                 {`Prosp version: ${substructure?.ProspVersion
-                    ? substructure?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+                    ? substructure?.ProspVersion.toLocaleDateString() : "N/A"}`}
             </Typography>
             <Typography>
                 {`Source: ${substructure?.source === 0 || substructure?.source === undefined ? "ConceptApp" : "Prosp"}`}

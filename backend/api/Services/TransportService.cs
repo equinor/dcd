@@ -24,7 +24,7 @@ namespace api.Services
             var transport = TransportAdapter.Convert(transportDto);
             var project = _projectService.GetProject(transport.ProjectId);
             transport.Project = project;
-            transport.ProspVersion = null;
+            transport.ProspVersion = transportDto.ProspVersion;
             transport.LastChangedDate = DateTimeOffset.Now;
             _context.Transports!.Add(transport);
             _context.SaveChanges();

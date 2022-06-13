@@ -218,7 +218,7 @@ const SurfView = () => {
                 currentValue={currency}
             />
             <Typography>
-                {`Prosp version: ${surf?.ProspVersion ? surf?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+                {`Prosp version: ${surf?.ProspVersion ? surf?.ProspVersion.toLocaleDateString() : "N/A"}`}
             </Typography>
             <Typography>
                 {`Source: ${surf?.source === 0 || surf?.source === undefined ? "ConceptApp" : "Prosp"}`}
