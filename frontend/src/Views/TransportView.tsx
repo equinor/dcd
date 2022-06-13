@@ -179,7 +179,7 @@ const TransportView = () => {
             />
             <Typography>
                 {`Prosp version: ${transport?.ProspVersion
-                    ? transport?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+                    ? transport?.ProspVersion.toLocaleDateString() : "N/A"}`}
             </Typography>
             <Typography>
                 {`Source: ${transport?.source === 0 || transport?.source === undefined ? "ConceptApp" : "Prosp"}`}

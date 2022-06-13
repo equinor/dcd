@@ -7,6 +7,9 @@ import { Case } from "../models/Case"
 import { Project } from "../models/Project"
 import { GetUploadService } from "../Services/UploadService"
 import { unwrapCase } from "../Utils/common"
+import {
+    Wrapper,
+} from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>
@@ -55,22 +58,29 @@ const ExcelUpload = ({
 
     const disabled = () => !(surf || substructure || topside || transport)
     return (
-        <label htmlFor="file-upload">
-            <Checkbox label="Surf" onChange={() => { setSurf(!surf) }} checked={surf} />
-            <Checkbox label="Substructure" onChange={() => { setSubstructure(!substructure) }} checked={substructure} />
-            <Checkbox label="Topside" onChange={() => { setTopside(!topside) }} checked={topside} />
-            <Checkbox label="Transport" onChange={() => { setTransport(!transport) }} checked={transport} />
-            <br />
-            <Button disabled={disabled()} onClick={(): void => fileInputRef.current.click()}>Upload file</Button>
-            <input
-                type="file"
-                id="file-upload"
-                style={{ display: "none" }}
-                ref={fileInputRef}
-                onChange={onFileUpload}
-                value=""
-            />
-        </label>
+        <>
+            <Wrapper>
+                <Checkbox label="Surf" onChange={() => { setSurf(!surf) }} checked={surf} />
+                <Checkbox
+                    label="Substructure"
+                    onChange={() => { setSubstructure(!substructure) }}
+                    checked={substructure}
+                />
+                <Checkbox label="Topside" onChange={() => { setTopside(!topside) }} checked={topside} />
+                <Checkbox label="Transport" onChange={() => { setTransport(!transport) }} checked={transport} />
+            </Wrapper>
+            <Wrapper>
+                <Button disabled={disabled()} onClick={(): void => fileInputRef.current.click()}>Upload file</Button>
+                <input
+                    type="file"
+                    id="file-upload"
+                    style={{ display: "none" }}
+                    ref={fileInputRef}
+                    onChange={onFileUpload}
+                    value=""
+                />
+            </Wrapper>
+        </>
     )
 }
 
