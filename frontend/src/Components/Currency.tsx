@@ -53,8 +53,8 @@ const Currency = ({
             value={currentValue}
             disabled={false}
         >
-            <option key="0" value={0}>USD</option>
             <option key="1" value={1}>NOK</option>
+            <option key="2" value={2}>USD</option>
         </CurrencyDropdown>
     )
 }
