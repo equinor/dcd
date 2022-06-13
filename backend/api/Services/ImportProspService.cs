@@ -253,8 +253,6 @@ namespace api.Services
                 Maturity = Maturity.A,
             };
 
-            var dto = SubstructureDtoAdapter.Convert(newSubstructure);
-
             _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
         }
 
