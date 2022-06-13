@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -16,7 +16,7 @@ import { GetTransportService } from "../Services/TransportService"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, Wrapper,
+    AssetViewDiv, Wrapper,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
@@ -24,6 +24,7 @@ import Maturity from "../Components/Maturity"
 import { TransportCostProfile } from "../models/assets/transport/TransportCostProfile"
 import { TransportCessationCostProfile } from "../models/assets/transport/TransportCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import DGDateInherited from "../Components/DGDateInherited"
 
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
@@ -39,7 +40,10 @@ const TransportView = () => {
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
     const [costProfile, setCostProfile] = useState<TransportCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TransportCessationCostProfile>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const [costYear, setCostYear] = useState<number | undefined>()
+    const [dG3Date, setDG3Date] = useState<Date>()
+    const [dG4Date, setDG4Date] = useState<Date>()
 
     useEffect(() => {
         (async () => {
@@ -60,17 +64,30 @@ const TransportView = () => {
                 setCase(caseResult)
                 let newTransport: Transport | undefined = project.transports.find((s) => s.id === params.transportId)
                 if (newTransport !== undefined) {
+                    if (newTransport.DG3Date === null
+                        || newTransport.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newTransport.DG3Date = caseResult?.DG3Date
+                    }
+                    if (newTransport.DG4Date === null
+                        || newTransport.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newTransport.DG4Date = caseResult?.DG4Date
+                    }
                     setTransport(newTransport)
                 } else {
                     newTransport = new Transport()
                     newTransport.currency = project.currency
+                    newTransport.DG3Date = caseResult?.DG3Date
+                    newTransport.DG4Date = caseResult?.DG4Date
                     setTransport(newTransport)
                 }
                 setTransportName(newTransport?.name!)
                 setGasExportPipelineLength(newTransport?.gasExportPipelineLength)
                 setOilExportPipelineLength(newTransport?.oilExportPipelineLength)
+                setCostYear(newTransport?.costYear)
                 setMaturity(newTransport?.maturity ?? undefined)
-                setCurrency(newTransport.currency ?? 0)
+                setCurrency(newTransport.currency ?? 1)
+                setDG3Date(newTransport.DG3Date ?? undefined)
+                setDG4Date(newTransport.DG4Date ?? undefined)
 
                 setCostProfile(newTransport.costProfile)
                 setCessationCostProfile(newTransport.cessationCostProfile)
@@ -92,10 +109,13 @@ const TransportView = () => {
             const newTransport: Transport = { ...transport }
             newTransport.gasExportPipelineLength = gasExportPipelineLength
             newTransport.oilExportPipelineLength = oilExportPipelineLength
+            newTransport.costYear = costYear
             newTransport.maturity = maturity
             newTransport.costProfile = costProfile
             newTransport.cessationCostProfile = cessationCostProfile
             newTransport.currency = currency
+            newTransport.DG3Date = dG3Date
+            newTransport.DG4Date = dG4Date
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -107,31 +127,72 @@ const TransportView = () => {
             }
             setTransport(newTransport)
         }
-    }, [gasExportPipelineLength, oilExportPipelineLength, maturity, costProfile, cessationCostProfile, currency])
+    }, [gasExportPipelineLength, oilExportPipelineLength, maturity,
+        costProfile, cessationCostProfile, currency, costYear, dG3Date, dG4Date])
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Transport</Typography>
+            <Wrapper>
+                <Typography variant="h2">Transport</Typography>
+                <Save
+                    name={transportName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setTransport}
+                    setProject={setProject}
+                    asset={transport!}
+                    assetService={GetTransportService()}
+                    assetType={AssetTypeEnum.transports}
+                />
+                <Typography variant="h6">
+                    {transport?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${transport?.LastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
+            </Wrapper>
             <AssetName
                 setName={setTransportName}
                 name={transportName}
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG3Date}
+                    dGName="DG3"
+                    value={dG3Date}
+                    caseValue={caseItem?.DG3Date}
+                    disabled={transport?.source === 1}
+                />
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG4Date}
+                    dGName="DG4"
+                    value={dG4Date}
+                    caseValue={caseItem?.DG4Date}
+                    disabled={transport?.source === 1}
+                />
             </Wrapper>
             <AssetCurrency
                 setCurrency={setCurrency}
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Typography>
+                {`Prosp version: ${transport?.ProspVersion
+                    ? transport?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+            </Typography>
+            <Typography>
+                {`Source: ${transport?.source === 0 || transport?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCostYear}
+                    value={costYear ?? 0}
+                    integer
+                    label="Cost year"
+                />
+            </Wrapper>
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
@@ -158,7 +219,7 @@ const TransportView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -169,21 +230,11 @@ const TransportView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cessation cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={transportName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setTransport}
-                setProject={setProject}
-                asset={transport!}
-                assetService={GetTransportService()}
-                assetType={AssetTypeEnum.transports}
             />
         </AssetViewDiv>
     )
