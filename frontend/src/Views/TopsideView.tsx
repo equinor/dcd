@@ -237,7 +237,7 @@ const TopsideView = () => {
                 currentValue={currency}
             />
             <Typography>
-                {`Prosp version: ${topside?.ProspVersion ? topside?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+                {`Prosp version: ${topside?.ProspVersion ? topside?.ProspVersion.toLocaleDateString() : "N/A"}`}
             </Typography>
             <Typography>
                 {`Source: ${topside?.source === 0 || topside?.source === undefined ? "ConceptApp" : "Prosp"}`}
