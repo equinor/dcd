@@ -41,7 +41,7 @@ namespace api.Services
             var project = _projectService.GetProject(topsideDto.ProjectId);
             topside.Project = project;
             topside.LastChangedDate = DateTimeOffset.Now;
-            topside.ProspVersion = null;
+            topside.ProspVersion = topsideDto.ProspVersion;
             _context.Topsides!.Add(topside);
             _context.SaveChanges();
             SetCaseLink(topside, sourceCaseId, project);

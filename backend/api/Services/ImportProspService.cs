@@ -125,6 +125,8 @@ namespace api.Services
                 Currency = currency,
                 CostYear = costYear,
                 Maturity = Maturity.A,
+                DG3Date = dG3Date,
+                DG4Date = dG4Date,
             };
             var dto = SurfDtoAdapter.Convert(newSurf);
 
@@ -250,6 +252,8 @@ namespace api.Services
                 CostYear = costYear,
                 Maturity = Maturity.A,
             };
+
+            var dto = SubstructureDtoAdapter.Convert(newSubstructure);
 
             _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
         }
