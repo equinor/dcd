@@ -42,7 +42,7 @@ const SubstructureView = () => {
     const [dryWeight, setDryWeight] = useState<number | undefined>()
     const [costProfile, setCostProfile] = useState<SubstructureCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SubstructureCessationCostProfile>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [approvedBy, setApprovedBy] = useState<string>("")
     const [costYear, setCostYear] = useState<number | undefined>()
     const [concept, setConcept] = useState<Components.Schemas.Concept | undefined>()
@@ -69,10 +69,12 @@ const SubstructureView = () => {
                 // eslint-disable-next-line max-len
                 let newSubstructure: Substructure | undefined = project.substructures.find((s) => s.id === params.substructureId)
                 if (newSubstructure !== undefined) {
-                    if (newSubstructure.DG3Date === null) {
+                    if (newSubstructure.DG3Date === null
+                        || newSubstructure.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
                         newSubstructure.DG3Date = caseResult?.DG3Date
                     }
-                    if (newSubstructure.DG4Date === null) {
+                    if (newSubstructure.DG4Date === null
+                        || newSubstructure.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
                         newSubstructure.DG4Date = caseResult?.DG4Date
                     }
                     setSubstructure(newSubstructure)
@@ -86,7 +88,7 @@ const SubstructureView = () => {
                 setSubstructureName(newSubstructure?.name!)
                 setMaturity(newSubstructure.maturity)
                 setDryWeight(newSubstructure.dryweight)
-                setCurrency(newSubstructure.currency ?? 0)
+                setCurrency(newSubstructure.currency ?? 1)
                 setApprovedBy(newSubstructure?.approvedBy!)
                 setCostYear(newSubstructure?.costYear)
                 setConcept(newSubstructure.concept)
@@ -242,7 +244,7 @@ const SubstructureView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -253,7 +255,7 @@ const SubstructureView = () => {
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cessation cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

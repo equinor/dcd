@@ -68,7 +68,7 @@ declare namespace Components {
             projectCategory?: ProjectCategory /* int32 */;
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
-        export type Currency = 0 | 1; // int32
+        export type Currency = 1 | 2; // int32
         export interface DrainageStrategyDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -670,6 +670,19 @@ declare namespace Paths {
     }
     namespace UpdateWellProject {
         export type RequestBody = Components.Schemas.WellProjectDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace Upload {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+            export type SourceCaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            projectId?: Parameters.ProjectId /* uuid */;
+            sourceCaseId?: Parameters.SourceCaseId /* uuid */;
+        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
