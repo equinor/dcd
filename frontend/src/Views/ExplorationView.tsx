@@ -144,7 +144,7 @@ const ExplorationView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -166,7 +166,7 @@ const ExplorationView = () => {
                 setTimeSeries={setGAndGAdminCost}
                 setHasChanges={setHasChanges}
                 timeSeries={gAndGAdminCost}
-                timeSeriesTitle={`G and g admin cost ${currency === 1 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`G and g admin cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
