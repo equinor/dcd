@@ -15,8 +15,8 @@ export class Currency {
 
     toString(): string | undefined {
         return {
-            0: "USD",
             1: "NOK",
+            2: "USD",
         }[this.phase]
     }
 }
