@@ -301,7 +301,7 @@ namespace api.Services
 
             if (mainSheet?.Id != null)
             {
-                var wsPart = (WorksheetPart)workbookPart?.GetPartById(mainSheet.Id);
+                var wsPart = (WorksheetPart)workbookPart?.GetPartById(mainSheet.Id)!;
                 var cellData = wsPart?.Worksheet.Descendants<Cell>();
 
                 if (cellData != null)
