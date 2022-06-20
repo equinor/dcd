@@ -99,8 +99,10 @@ const SubstructureView = () => {
                 setCessationCostProfile(newSubstructure.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
+                    const dg4 = newSubstructure?.source === 1 ? newSubstructure.DG4Date?.getFullYear()
+                        : caseResult.DG4Date.getFullYear()
                     initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
+                        dg4!,
                         [newSubstructure.costProfile, newSubstructure.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -125,8 +127,10 @@ const SubstructureView = () => {
             newSubstructure.DG4Date = dG4Date
 
             if (caseItem?.DG4Date) {
+                const dg4 = newSubstructure?.source === 1 ? newSubstructure.DG4Date?.getFullYear()
+                    : caseItem.DG4Date.getFullYear()
                 initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
+                    dg4!,
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -240,7 +244,8 @@ const SubstructureView = () => {
             />
 
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={substructure?.source === 1 ? substructure.DG4Date?.getFullYear()
+                    : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
@@ -251,7 +256,8 @@ const SubstructureView = () => {
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={substructure?.source === 1 ? substructure.DG4Date?.getFullYear()
+                    : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
