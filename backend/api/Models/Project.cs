@@ -5,6 +5,7 @@ namespace api.Models
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public Guid CommonLibraryId { get; set; }
+        public Guid FusionProjectId { get; set; }
         public string CommonLibraryName { get; set; } = null!;
         public string Description { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
@@ -30,8 +31,9 @@ namespace api.Models
     }
     public enum Currency
     {
-        USD,
-        NOK
+        NOK = 1,
+        USD = 2,
+
     }
     public enum ProjectPhase
     {

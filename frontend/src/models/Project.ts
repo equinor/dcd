@@ -49,7 +49,7 @@ export class Project implements Components.Schemas.ProjectDto {
         this.topsides = data.topsides?.map(Topside.fromJSON) ?? []
         this.transports = data.transports?.map(Transport.fromJSON) ?? []
         this.wellProjects = data.wellProjects?.map(WellProject.fromJSON) ?? []
-        this.currency = data.currency ?? 0
+        this.currency = data.currency ?? 1
         this.physUnit = data.physUnit ?? 0
     }
 
