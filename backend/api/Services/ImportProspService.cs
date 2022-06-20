@@ -165,6 +165,8 @@ namespace api.Services
             var cO2OnMaxGasProfile = ReadDoubleValue(cellData, "L100");
             var cO2OnMaxWaterInjectionProfile = ReadDoubleValue(cellData, "L101");
 
+            var facilityOpex = ReadDoubleValue(cellData, "L80");
+
             var costProfile = new TopsideCostProfile
             {
                 Values = ReadDoubleValues(cellData, costProfileCoords),
@@ -204,6 +206,7 @@ namespace api.Services
                 Currency = currency,
                 CostYear = costYear,
                 Maturity = Maturity.A,
+                FacilityOpex = facilityOpex
             };
 
             var dto = TopsideDtoAdapter.Convert(newTopside);

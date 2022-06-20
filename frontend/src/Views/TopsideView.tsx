@@ -62,6 +62,7 @@ const TopsideView = () => {
     const [flaredGas, setFlaredGas] = useState<number | undefined>()
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
+    const [facilityOpex, setFacilityOpex] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -128,6 +129,7 @@ const TopsideView = () => {
                 setFlaredGas(newTopside?.flaredGas)
                 setDG3Date(newTopside.DG3Date ?? undefined)
                 setDG4Date(newTopside.DG4Date ?? undefined)
+                setFacilityOpex(newTopside?.facilityOpex)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -168,6 +170,7 @@ const TopsideView = () => {
             newTopside.flaredGas = flaredGas
             newTopside.DG3Date = dG3Date
             newTopside.DG4Date = dG4Date
+            newTopside.facilityOpex = facilityOpex
 
             if (caseItem?.DG4Date) {
                 initializeFirstAndLastYear(
@@ -182,7 +185,8 @@ const TopsideView = () => {
     }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
         cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
         cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift,
-        producerCount, gasInjectorCount, waterInjectorCount, fuelConsumption, flaredGas, dG3Date, dG4Date])
+        producerCount, gasInjectorCount, waterInjectorCount, fuelConsumption, flaredGas, dG3Date, dG4Date,
+        facilityOpex])
 
     return (
         <AssetViewDiv>
@@ -292,6 +296,15 @@ const TopsideView = () => {
                     disabled={false}
                     label="Facilities availability (%)"
                     caseValue={caseItem?.facilitiesAvailability}
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setFacilityOpex}
+                    value={facilityOpex ?? 0}
+                    integer
+                    label="Facility opex"
                 />
             </Wrapper>
             <Wrapper>

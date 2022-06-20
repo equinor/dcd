@@ -34,6 +34,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     approvedBy?: string | null | undefined
     DG3Date?: Date | null
     DG4Date?: Date | null
+    facilityOpex?: number | undefined
 
     constructor(data?: Components.Schemas.TopsideDto) {
         if (data !== undefined) {
@@ -68,6 +69,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.approvedBy = data.approvedBy ?? ""
             this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : null
             this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : null
+            this.facilityOpex = data.facilityOpex
         } else {
             this.id = EMPTY_GUID
             this.name = ""
