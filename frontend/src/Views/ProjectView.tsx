@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line camelcase
 import { add, archive } from "@equinor/eds-icons"
 import {
@@ -29,6 +30,8 @@ import {
     Tooltip as ChartTooltip,
     Legend,
 } from "chart.js"
+import { min, maxBy } from "lodash"
+import { start } from "repl"
 import BarChart from "../Components/BarChart"
 
 import { Project } from "../models/Project"
@@ -143,6 +146,11 @@ const ProjectView = () => {
         x: project?.cases.map((c) => c.name ?? ""),
         y: project?.cases.map((c) => c.capex ?? 0),
     } : { x: [], y: [] }), [project])
+
+    const chartDataManni = useMemo(() => (project ? {
+        x: project?.cases.map((c) => c.capexYear?.startYear ?? 0),
+        y: project?.cases.map((c) => c.capexYear?.values),
+    } : { x: [], y: [][0] }), [project])
 
     const facilitiesAvailabilityChartData = useMemo(() => (project ? {
         x: project?.cases.map((c) => c.name ?? ""),
@@ -286,7 +294,7 @@ const ProjectView = () => {
                     </li>
                 </UnstyledList>
             </fieldset>
-            <ManniDataTable x={chartData.x} y={chartData.y} />
+            <ManniDataTable x={chartDataManni.x} />
 
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
