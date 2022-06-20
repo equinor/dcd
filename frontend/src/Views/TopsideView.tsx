@@ -130,8 +130,10 @@ const TopsideView = () => {
                 setDG4Date(newTopside.DG4Date ?? undefined)
 
                 if (caseResult?.DG4Date) {
+                    const dg4 = newTopside?.source === 1 ? newTopside.DG4Date?.getFullYear()
+                        : caseResult.DG4Date.getFullYear()
                     initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
+                        dg4!,
                         [newTopside.costProfile, newTopside.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -170,8 +172,10 @@ const TopsideView = () => {
             newTopside.DG4Date = dG4Date
 
             if (caseItem?.DG4Date) {
+                const dg4 = newTopside?.source === 1 ? newTopside.DG4Date?.getFullYear()
+                    : caseItem.DG4Date.getFullYear()
                 initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
+                    dg4!,
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -385,7 +389,7 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={topside?.source === 1 ? topside.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
@@ -396,7 +400,7 @@ const TopsideView = () => {
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={topside?.source === 1 ? topside.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
