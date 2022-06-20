@@ -164,9 +164,7 @@ namespace api.Services
             var cO2OnMaxOilProfile = ReadDoubleValue(cellData, "L99");
             var cO2OnMaxGasProfile = ReadDoubleValue(cellData, "L100");
             var cO2OnMaxWaterInjectionProfile = ReadDoubleValue(cellData, "L101");
-
             var facilityOpex = ReadDoubleValue(cellData, "L80");
-
             var costProfile = new TopsideCostProfile
             {
                 Values = ReadDoubleValues(cellData, costProfileCoords),
