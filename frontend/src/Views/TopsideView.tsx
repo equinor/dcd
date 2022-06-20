@@ -303,7 +303,7 @@ const TopsideView = () => {
                     setHasChanges={setHasChanges}
                     setValue={setFacilityOpex}
                     value={facilityOpex ?? 0}
-                    integer
+                    integer={false}
                     label="Facility opex"
                 />
             </Wrapper>
