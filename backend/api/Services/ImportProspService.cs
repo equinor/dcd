@@ -30,14 +30,22 @@ namespace api.Services
         private static double ReadDoubleValue(IEnumerable<Cell> cellData, string coordinate)
         {
             if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
-                    out var value)) return Math.Round(value, 3);
+                    out var value))
+            {
+                return Math.Round(value, 3);
+            }
+
             return 0;
         }
 
         private static int ReadIntValue(IEnumerable<Cell> cellData, string coordinate)
         {
             if (int.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
-                    out var value)) return value;
+                    out var value))
+            {
+                return value;
+            }
+
             return -1;
         }
 
@@ -46,7 +54,9 @@ namespace api.Services
             var values = new List<double>();
             foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
                 if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
+                {
                     values.Add(value);
+                }
 
             return values.ToArray();
         }
@@ -54,7 +64,11 @@ namespace api.Services
         private static DateTime ReadDateValue(IEnumerable<Cell> cellData, string coordinate)
         {
             if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
-                    out var value)) return DateTime.FromOADate(value);
+                    out var value))
+            {
+                return DateTime.FromOADate(value);
+            }
+
             return new DateTime(1900, 1, 1);
         }
 
@@ -307,10 +321,25 @@ namespace api.Services
                 if (cellData != null)
                 {
                     var parsedData = cellData.ToList();
-                    if (assets["Surf"]) ImportSurf(parsedData, sourceCaseId, projectId);
-                    if (assets["Topside"]) ImportTopside(parsedData, sourceCaseId, projectId);
-                    if (assets["Substructure"]) ImportSubstructure(parsedData, sourceCaseId, projectId);
-                    if (assets["Transport"]) ImportTransport(parsedData, sourceCaseId, projectId);
+                    if (assets["Surf"])
+                    {
+                        ImportSurf(parsedData, sourceCaseId, projectId);
+                    }
+
+                    if (assets["Topside"])
+                    {
+                        ImportTopside(parsedData, sourceCaseId, projectId);
+                    }
+
+                    if (assets["Substructure"])
+                    {
+                        ImportSubstructure(parsedData, sourceCaseId, projectId);
+                    }
+
+                    if (assets["Transport"])
+                    {
+                        ImportTransport(parsedData, sourceCaseId, projectId);
+                    }
                 }
             }
 
