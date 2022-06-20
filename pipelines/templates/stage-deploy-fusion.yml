@@ -143,6 +143,11 @@ stages:
           - job: AddDbMigrations_${{ parameters.envshortname }}
             dependsOn: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             steps:
+                - task: FileTransform@1
+                  inputs:
+                    folderPath: '$(Build.SourcesDirectory)/backend/api/appsettings.json' 
+                    fileType: json
+                    #targetFiles: # Optional
                 - task: DotNetCoreCLI@2
                   displayName: Install dotnet-ef
                   inputs:
@@ -157,3 +162,5 @@ stages:
                       custom: "ef"
                       arguments: "database update --connection \"${{ parameters.DBContext }}\" --verbose"
                       workingDirectory: "$(Build.SourcesDirectory)/backend/api"
+
+
