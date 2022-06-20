@@ -299,7 +299,7 @@ namespace api.Services
             _transportService.CreateTransport(dto, sourceCaseId);
         }
 
-        public virtual ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
+        public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
         {
             using var ms = new MemoryStream();
             file.CopyTo(ms);
