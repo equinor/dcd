@@ -102,6 +102,8 @@ const ProjectView = () => {
     const [caseDescription, setCaseDescription] = useState<string>("")
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.PhysUnit>(0)
+    const [x, setX] = useState<number[]>()
+    const [y, setY] = useState<number[][]>()
 
     useEffect(() => {
         (async () => {
@@ -131,7 +133,7 @@ const ProjectView = () => {
                     const cases: Case[] = []
                     project.cases.forEach((c) => cases.push(Case.Copy(c)))
                     projectDto.cases = cases
-                    const res = await GetProjectService().updateProject(projectDto)
+                    const res: Project = await GetProjectService().updateProject(projectDto)
                     setProject(res)
                 }
             } catch (error) {
@@ -140,6 +142,24 @@ const ProjectView = () => {
         })()
     }, [physicalUnit, currency])
 
+    const generateChartData = useMemo(() => {
+        const xx: number[] = []
+        const yy: number[][] = []
+        project?.cases.forEach((casee) => {
+            if (casee.capexYear?.startYear !== null) {
+                xx.push(casee.capexYear?.startYear!)
+            }
+            if (casee.capexYear?.values?.length !== 0) {
+                yy.push(casee.capexYear?.values!)
+            }
+        })
+
+        setX(xx)
+        setY(yy)
+        console.log(x)
+        console.log(y)
+    }, [project])
+
     const drainValues: number [] | undefined = project?.drainageStrategies[0].co2Emissions?.values
 
     const chartData = useMemo(() => (project ? {
@@ -147,9 +167,10 @@ const ProjectView = () => {
         y: project?.cases.map((c) => c.capex ?? 0),
     } : { x: [], y: [] }), [project])
 
+    // Data for grafen
     const chartDataManni = useMemo(() => (project ? {
-        x: project?.cases.map((c) => c.capexYear?.startYear ?? 0),
-        y: project?.cases.map((c) => c.capexYear?.values),
+        x: project?.cases.map((c) => c.capexYear?.startYear ?? undefined),
+        y: project?.cases.map((c) => c.capexYear?.values ?? undefined),
     } : { x: [], y: [][0] }), [project])
 
     const facilitiesAvailabilityChartData = useMemo(() => (project ? {
@@ -294,7 +315,7 @@ const ProjectView = () => {
                     </li>
                 </UnstyledList>
             </fieldset>
-            <ManniDataTable x={chartDataManni.x} />
+            <ManniDataTable x={x!} y={y!} />
 
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />

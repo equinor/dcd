@@ -14,6 +14,7 @@ ChartJS.register(...registerables)
 
 interface Props {
     x: number[]
+    y: number[][]
 }
 
 const yearLabels = (x:number[], y:number[][]) :string[] => {
@@ -26,24 +27,39 @@ const yearLabels = (x:number[], y:number[][]) :string[] => {
     const yearArr = range(start, end)
     return yearArr.map((yy) => yy.toString())
 }
-const yrArr = yearLabels([8, 11, 15, 20], [[1, 2, 3, 4], [10, 20, 30, 40, 50]])
-console.log(yrArr)
+
+console.log("hehe")
 
 const chartData: ChartData = {
     datasets: [
-        {
-            data: [1, 2, 3],
-        },
-        {
-            data: [2, 3, 4],
-        },
+
     ],
 }
 
+const myFirstDataset = {
+    label: "My Second dataset",
+    fillColor: "rgba(187,205,151,0.5)",
+    strokeColor: "rgba(187,205,151,0.8)",
+    highlightFill: "rgba(187,205,151,0.75)",
+    highlightStroke: "rgba(187,205,151,1)",
+    data: [48, 40, 19, 86, 27, 90, 28],
+}
+
+const mySecondDataset = {
+    label: "My Second dataset",
+    fillColor: "rgba(187,205,151,0.5)",
+    strokeColor: "rgba(187,205,151,0.8)",
+    highlightFill: "rgba(187,205,151,0.75)",
+    highlightStroke: "rgba(187,205,151,1)",
+    data: [148, 240, 319, 486, 527, 690, 728],
+}
+
 const ManniDataTable = ({
-    x,
+    x, y,
 }: Props) => {
-    chartData.labels = yearLabels(x, [][2])
+    chartData.labels = yearLabels(x!, [[2, 3, 4, 5]])
+    chartData.datasets.push(myFirstDataset)
+    chartData.datasets.push(mySecondDataset)
 
     return (
         <ReactChart
