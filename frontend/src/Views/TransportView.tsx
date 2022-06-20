@@ -93,8 +93,10 @@ const TransportView = () => {
                 setCessationCostProfile(newTransport.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
+                    const dg4 = newTransport?.source === 1 ? newTransport.DG4Date?.getFullYear()
+                        : caseResult.DG4Date.getFullYear()
                     initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
+                        dg4!,
                         [newTransport.costProfile, newTransport.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -118,8 +120,10 @@ const TransportView = () => {
             newTransport.DG4Date = dG4Date
 
             if (caseItem?.DG4Date) {
+                const dg4 = newTransport?.source === 1 ? newTransport.DG4Date?.getFullYear()
+                    : caseItem.DG4Date.getFullYear()
                 initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
+                    dg4!,
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -215,7 +219,7 @@ const TransportView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={transport?.source === 1 ? transport.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
@@ -226,7 +230,7 @@ const TransportView = () => {
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={transport?.source === 1 ? transport.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
