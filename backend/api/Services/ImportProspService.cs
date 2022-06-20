@@ -72,7 +72,7 @@ namespace api.Services
             return new DateTime(1900, 1, 1);
         }
 
-        private void ImportSurf(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId)
+        private void ImportSurf(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
         {
             List<string> costProfileCoords = new()
             {
@@ -84,31 +84,30 @@ namespace api.Services
                 "O112",
                 "P112"
             };
-            var parsedData = cellData.ToList();
-            var costProfileStartYear = ReadIntValue(parsedData, "J103");
-            var dG3Date = ReadDateValue(parsedData, "F112");
-            var dG4Date = ReadDateValue(parsedData, "G112");
-            var lengthProductionLine = ReadDoubleValue(parsedData, "K35");
-            var lengthUmbilicalSystem = ReadDoubleValue(parsedData, "K37");
-            var productionFlowLineInt = ReadIntValue(parsedData, "E50");
+            var costProfileStartYear = ReadIntValue(cellData, "J103");
+            var dG3Date = ReadDateValue(cellData, "F112");
+            var dG4Date = ReadDateValue(cellData, "G112");
+            var lengthProductionLine = ReadDoubleValue(cellData, "K35");
+            var lengthUmbilicalSystem = ReadDoubleValue(cellData, "K37");
+            var productionFlowLineInt = ReadIntValue(cellData, "E50");
             var productionFlowLine = MapProductionFlowLine(productionFlowLineInt);
-            var artificialLiftInt = ReadIntValue(parsedData, "E48");
+            var artificialLiftInt = ReadIntValue(cellData, "E48");
             var artificialLift = MapArtificialLift(artificialLiftInt);
-            var riserCount = ReadIntValue(parsedData, "K36");
-            var templateCount = ReadIntValue(parsedData, "K32");
+            var riserCount = ReadIntValue(cellData, "K36");
+            var templateCount = ReadIntValue(cellData, "K32");
 
             //TODO: Add cessation cost from PROSP after feedback from PO
             // var cessationCost = ReadDoubleValue(parsedData, "K88");
             var costProfile = new SurfCostProfile
             {
-                Values = ReadDoubleValues(parsedData, costProfileCoords),
+                Values = ReadDoubleValues(cellData, costProfileCoords),
                 StartYear = costProfileStartYear - dG4Date.Year
             };
 
             // Prosp meta data
-            var versionDate = ReadDateValue(parsedData, "I4");
-            var costYear = ReadIntValue(parsedData, "K4");
-            var importedCurrency = ReadIntValue(parsedData, "E8");
+            var versionDate = ReadDateValue(cellData, "I4");
+            var costYear = ReadIntValue(cellData, "K4");
+            var importedCurrency = ReadIntValue(cellData, "E8");
             var currency = importedCurrency == 1 ? Currency.NOK :
                 importedCurrency == 2 ? Currency.USD : 0;
             var newSurf = new Surf
@@ -134,7 +133,7 @@ namespace api.Services
             _surfService.CreateSurf(dto, sourceCaseId);
         }
 
-        private void ImportTopside(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId)
+        private void ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
         {
             List<string> costProfileCoords = new()
             {
@@ -146,36 +145,35 @@ namespace api.Services
                 "O104",
                 "P104"
             };
-            var parsedData = cellData.ToList();
-            var costProfileStartYear = ReadIntValue(parsedData, "J103");
-            var dG3Date = ReadDateValue(parsedData, "F104");
-            var dG4Date = ReadDateValue(parsedData, "G104");
-            var artificialLiftInt = ReadIntValue(parsedData, "E42");
+            var costProfileStartYear = ReadIntValue(cellData, "J103");
+            var dG3Date = ReadDateValue(cellData, "F104");
+            var dG4Date = ReadDateValue(cellData, "G104");
+            var artificialLiftInt = ReadIntValue(cellData, "E42");
             var artificialLift = MapArtificialLift(artificialLiftInt);
-            var dryWeight = ReadDoubleValue(parsedData, "J10");
-            var fuelConsumption = ReadDoubleValue(parsedData, "K92");
-            var flaredGas = ReadDoubleValue(parsedData, "K93");
-            var oilCapacity = ReadDoubleValue(parsedData, "E27");
-            var gasCapacity = ReadDoubleValue(parsedData, "E29");
-            var producerCount = ReadIntValue(parsedData, "E38");
-            var gasInjectorCount = ReadIntValue(parsedData, "E40");
-            var waterInjectorCount = ReadIntValue(parsedData, "E39");
-            var cO2ShareOilProfile = ReadDoubleValue(parsedData, "J99");
-            var cO2ShareGasProfile = ReadDoubleValue(parsedData, "J100");
-            var cO2ShareWaterInjectionProfile = ReadDoubleValue(parsedData, "J101");
-            var cO2OnMaxOilProfile = ReadDoubleValue(parsedData, "L99");
-            var cO2OnMaxGasProfile = ReadDoubleValue(parsedData, "L100");
-            var cO2OnMaxWaterInjectionProfile = ReadDoubleValue(parsedData, "L101");
+            var dryWeight = ReadDoubleValue(cellData, "J10");
+            var fuelConsumption = ReadDoubleValue(cellData, "K92");
+            var flaredGas = ReadDoubleValue(cellData, "K93");
+            var oilCapacity = ReadDoubleValue(cellData, "E27");
+            var gasCapacity = ReadDoubleValue(cellData, "E29");
+            var producerCount = ReadIntValue(cellData, "E38");
+            var gasInjectorCount = ReadIntValue(cellData, "E40");
+            var waterInjectorCount = ReadIntValue(cellData, "E39");
+            var cO2ShareOilProfile = ReadDoubleValue(cellData, "J99");
+            var cO2ShareGasProfile = ReadDoubleValue(cellData, "J100");
+            var cO2ShareWaterInjectionProfile = ReadDoubleValue(cellData, "J101");
+            var cO2OnMaxOilProfile = ReadDoubleValue(cellData, "L99");
+            var cO2OnMaxGasProfile = ReadDoubleValue(cellData, "L100");
+            var cO2OnMaxWaterInjectionProfile = ReadDoubleValue(cellData, "L101");
             var costProfile = new TopsideCostProfile
             {
-                Values = ReadDoubleValues(parsedData, costProfileCoords),
+                Values = ReadDoubleValues(cellData, costProfileCoords),
                 StartYear = costProfileStartYear - dG4Date.Year
             };
 
             // Prosp meta data
-            var versionDate = ReadDateValue(parsedData, "I4");
-            var costYear = ReadIntValue(parsedData, "K4");
-            var importedCurrency = ReadIntValue(parsedData, "E8");
+            var versionDate = ReadDateValue(cellData, "I4");
+            var costYear = ReadIntValue(cellData, "K4");
+            var importedCurrency = ReadIntValue(cellData, "E8");
             var currency = importedCurrency == 1 ? Currency.NOK :
                 importedCurrency == 2 ? Currency.USD : 0;
             var newTopside = new Topside
@@ -210,7 +208,7 @@ namespace api.Services
             _topsideService.CreateTopside(dto, sourceCaseId);
         }
 
-        private void ImportSubstructure(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId)
+        private void ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
         {
             List<string> costProfileCoords = new()
             {
@@ -222,23 +220,22 @@ namespace api.Services
                 "O105",
                 "P105"
             };
-            var parsedData = cellData.ToList();
-            var costProfileStartYear = ReadIntValue(parsedData, "J103");
-            var dG3Date = ReadDateValue(parsedData, "F105");
-            var dG4Date = ReadDateValue(parsedData, "G105");
-            var dryWeight = ReadDoubleValue(parsedData, "J19");
-            var conceptInt = ReadIntValue(parsedData, "E62");
+            var costProfileStartYear = ReadIntValue(cellData, "J103");
+            var dG3Date = ReadDateValue(cellData, "F105");
+            var dG4Date = ReadDateValue(cellData, "G105");
+            var dryWeight = ReadDoubleValue(cellData, "J19");
+            var conceptInt = ReadIntValue(cellData, "E62");
             var concept = MapSubstructureConcept(conceptInt);
             var costProfile = new SubstructureCostProfile
             {
-                Values = ReadDoubleValues(parsedData, costProfileCoords),
+                Values = ReadDoubleValues(cellData, costProfileCoords),
                 StartYear = costProfileStartYear - dG4Date.Year
             };
 
             // Prosp meta data
-            var versionDate = ReadDateValue(parsedData, "I4");
-            var costYear = ReadIntValue(parsedData, "K4");
-            var importedCurrency = ReadIntValue(parsedData, "E8");
+            var versionDate = ReadDateValue(cellData, "I4");
+            var costYear = ReadIntValue(cellData, "K4");
+            var importedCurrency = ReadIntValue(cellData, "E8");
             var currency = importedCurrency == 1 ? Currency.NOK :
                 importedCurrency == 2 ? Currency.USD : 0;
             var newSubstructure = new Substructure
@@ -259,7 +256,7 @@ namespace api.Services
             _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
         }
 
-        private void ImportTransport(IEnumerable<Cell> cellData, Guid sourceCaseId, Guid projectId)
+        private void ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
         {
             List<string> costProfileCoords = new()
             {
@@ -271,20 +268,19 @@ namespace api.Services
                 "O113",
                 "P113"
             };
-            var parsedData = cellData.ToList();
-            var costProfileStartYear = ReadIntValue(parsedData, "J103");
-            var dG3Date = ReadDateValue(parsedData, "F113");
-            var dG4Date = ReadDateValue(parsedData, "G113");
+            var costProfileStartYear = ReadIntValue(cellData, "J103");
+            var dG3Date = ReadDateValue(cellData, "F113");
+            var dG4Date = ReadDateValue(cellData, "G113");
             var costProfile = new TransportCostProfile
             {
-                Values = ReadDoubleValues(parsedData, costProfileCoords),
+                Values = ReadDoubleValues(cellData, costProfileCoords),
                 StartYear = costProfileStartYear - dG4Date.Year
             };
 
             // Prosp meta data
-            var versionDate = ReadDateValue(parsedData, "I4");
-            var costYear = ReadIntValue(parsedData, "K4");
-            var importedCurrency = ReadIntValue(parsedData, "E8");
+            var versionDate = ReadDateValue(cellData, "I4");
+            var costYear = ReadIntValue(cellData, "K4");
+            var importedCurrency = ReadIntValue(cellData, "E8");
             var currency = importedCurrency == 1 ? Currency.NOK :
                 importedCurrency == 2 ? Currency.USD : 0;
             var newTransport = new Transport
