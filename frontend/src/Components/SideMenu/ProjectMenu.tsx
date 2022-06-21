@@ -39,11 +39,13 @@ const MenuItems = styled.ul`
 export enum ProjectMenuItemType {
     OVERVIEW = "Overview",
     CASES = "Cases",
+    WELLS = "Wells",
 }
 
 const projectMenuItems = [
     { name: ProjectMenuItemType.OVERVIEW, icon: dashboard },
     { name: ProjectMenuItemType.CASES, icon: file },
+    { name: ProjectMenuItemType.WELLS, icon: file },
 ]
 
 interface Props {
@@ -82,6 +84,13 @@ function ProjectMenu({ project }: Props) {
                                 </nav>
                             )}
                             {projectMenuItem.name === ProjectMenuItemType.CASES && (
+                                <ProjectMenuItemComponent
+                                    item={projectMenuItem}
+                                    projectId={project.id}
+                                    subItems={project.cases}
+                                />
+                            )}
+                            {projectMenuItem.name === ProjectMenuItemType.WELLS && (
                                 <ProjectMenuItemComponent
                                     item={projectMenuItem}
                                     projectId={project.id}
