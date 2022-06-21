@@ -14,6 +14,7 @@ namespace api.Context
         public DbSet<Project>? Projects { get; set; }
 
         public DbSet<Case>? Cases { get; set; }
+        public DbSet<Well>? Wells { get; set; }
 
         public DbSet<Surf>? Surfs { get; set; }
         public DbSet<SurfCostProfile>? SurfCostProfile { get; set; }
