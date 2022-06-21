@@ -44,4 +44,7 @@ export const config = Object.freeze({
     UploadService: {
         BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/Upload`,
     },
+    WellService: {
+        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/wells`,
+    },
 })
