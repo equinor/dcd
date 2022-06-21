@@ -1,0 +1,159 @@
+parameters:
+    - name: appName
+    - name: envshortname
+    - name: envfullname
+    - name: fusionToken
+    - name: portalUrl
+    - name: buildId
+    - name: radixToken
+    - name: branch
+    - name: DBContext
+
+stages:
+    - stage: ${{ parameters.appName }}
+      displayName: "Deploy  ${{ parameters.envshortname }}"
+      jobs:
+          - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
+            environment: ${{ parameters.envfullname }}
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                            - task: DownloadPipelineArtifact@2
+                              inputs:
+                                  artifact: ConceptAppPack
+                            - task: PowerShell@2
+                              displayName: "Fusion Publish and Deploy"
+                              inputs:
+                                  targetType: "inline"
+                                  script: |
+                                      $TokenUrl = "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/oauth2/v2.0/token"
+                                      $URL = "${{ parameters.portalUrl }}/api/apps/dcd/versions?api-version=1.0"
+                                      $publishUrl = "${{ parameters.portalUrl }}/api/apps/dcd/publish"
+                                      $tokenbody = @{
+                                          grant_type = "client_credentials"
+                                          client_id="$(appRegistrationClientId)"
+                                          client_secret="$(AzureAdClientSecret)"
+                                          scope="${{ parameters.fusionToken }}/.default"
+                                      }
+
+                                      $Result = Invoke-RestMethod -Uri $TokenUrl -Method Post  -Body $tokenbody
+                                      $jwtToken = $Result.access_token
+
+                                      $requestdata = @{
+                                          Headers = @{
+                                              "Authorization" = "Bearer $jwtToken"
+                                          }
+                                      }
+                                      $deployResult = Invoke-RestMethod -Uri $URL -Headers $requestdata.Headers -Method Post -Infile "$(Agent.BuildDirectory)/dcd.zip" -ContentType "application/zip"
+                                      $publishResult = Invoke-RestMethod -Uri $publishUrl -Headers $requestdata.Headers -Method Post
+          - deployment: "Update_${{ parameters.envshortname }}_Tags"
+            environment: ${{ parameters.envfullname }}
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                            - task: Docker@2
+                              inputs:
+                                  containerRegistry: "DCD Registry"
+                                  command: "login"
+
+                            - template: step-tag-dockerimage.yml
+                              parameters:
+                                  buildid: ${{ parameters.buildid }}
+                                  envshortname: ${{ parameters.envshortname }}
+                                  registry: "crdcd.azurecr.io"
+                                  repository: "frontend"
+
+                            - template: step-tag-dockerimage.yml
+                              parameters:
+                                  buildid: ${{ parameters.buildid }}
+                                  envshortname: ${{ parameters.envshortname }}
+                                  registry: "crdcd.azurecr.io"
+                                  repository: "backend"
+
+          - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
+            dependsOn:
+                - Deploy_${{ parameters.envshortname }}_Frontend
+                - Update_${{ parameters.envshortname }}_Tags
+            displayName: Trigger Radix Deploy
+            cancelTimeoutInMinutes: 60
+            timeoutInMinutes: 60
+            steps:
+                - task: PowerShell@2
+                  displayName: "Trigger Radix Build-Deploy"
+                  inputs:
+                      targetType: "inline"
+                      script: |
+                          $url = "https://api.radix.equinor.com/api/v1/applications/dcd/pipelines/build-deploy"
+
+                          $Headers = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
+
+                          $body = @'
+                          {"branch":"${{ parameters.branch }}",
+                          "triggeredBy":"${{ parameters.buildId }}-${{ parameters.branch }}"
+                          }
+                          '@
+
+                          $result = Invoke-RestMethod -Uri $url -Headers $Headers -Body $body -Method Post                          
+                          $pipelineName = $result.name
+                          Write-Host $pipelineName
+                          Write-Host "##vso[task.setvariable variable=radixJobName;]$pipelineName"
+                          Write-Host "Done. JobName:" $(radixJobName)
+                - task: PowerShell@2
+                  displayName: "Wait for Radix Build-Deploy job"
+                  inputs:
+                      targetType: "inline"
+                      script: |
+                          $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'
+
+                          $Headers = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
+
+                          $TimeoutAfter = New-TimeSpan -Minutes 60
+                          $WaitBetweenPolling = New-TimeSpan -Seconds 10
+
+                          $Timeout = (Get-Date).Add($TimeoutAfter)
+                          $stepCounter = 0
+                          do
+                          {
+                              $result = Invoke-RestMethod -Uri $url -Headers $Headers
+                              $steps = $result.steps |  where { $_.status -eq "Succeeded" }
+                              if ($stepCounter -eq $steps.Length) {
+
+                              } else {
+                                  $stepCounter = $steps.Length
+                                  Write-Host "Steps:" $steps.Length "of" $result.steps.length
+                              }
+                              Start-Sleep -Seconds $WaitBetweenPolling.Seconds
+
+                          }
+                          while ((($result.status -eq "Running") -or ($result.status -eq "Waiting")) -and ((Get-Date) -lt $Timeout))
+
+                          if ($result.status -eq "Succeeded")
+                          {
+                              Write-Host "Build-deploy Success"
+                              Write-Host $result
+                              [Environment]::Exit(0)
+                          } else {
+                              Write-Host "Build-deploy Non-success"
+                              Write-Host $result
+                              [Environment]::Exit(1)
+
+                          }
+          - job: AddDbMigrations_${{ parameters.envshortname }}
+            dependsOn: Trigger_Radix_Deploy_${{ parameters.envshortname }}
+            steps:
+                - task: DotNetCoreCLI@2
+                  displayName: Install dotnet-ef
+                  inputs:
+                      command: "custom"
+                      custom: "tool"
+                      arguments: "install --global dotnet-ef"
+
+                - task: DotNetCoreCLI@2
+                  displayName: "Apply DB migrations"
+                  inputs:
+                      command: "custom"
+                      custom: "ef"
+                      arguments: "database update --connection \"${{ parameters.DBContext }}\" --verbose"
+                      workingDirectory: "$(Build.SourcesDirectory)/backend/api"
