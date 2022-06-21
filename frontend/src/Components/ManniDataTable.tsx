@@ -12,19 +12,22 @@ import { min, maxBy, range } from "lodash"
 
 ChartJS.register(...registerables)
 
+const COLORS = ["#087CB8", "#9b59b6", "#e74c3c", "#e74c3c", "#e74c3c", "#e74c3c", "#e74c3c"]
+
 interface Props {
     x: number[]
     y: number[][]
+    caseTitles: string[]
 }
 
 const yearLabels = (x:number[], y:number[][]) :string[] => {
     const start = new Date().getFullYear()
-    const start2 = min(x.filter((n) => n !== 0)) as number
+    const start2 = min(x.filter((n) => n !== null || n !== 0)) as number
     const totalstart = start + start2
     const add = maxBy(y, (xx) => xx.length)
     const end = totalstart + add!.length
 
-    const yearArr = range(start, end)
+    const yearArr = range(totalstart, end)
     return yearArr.map((yy) => yy.toString())
 }
 
@@ -54,13 +57,32 @@ const mySecondDataset = {
     data: [148, 240, 319, 486, 527, 690, 728],
 }
 
-const ManniDataTable = ({
-    x, y,
-}: Props) => {
-    chartData.labels = yearLabels(x!, [[2, 3, 4, 5]])
-    chartData.datasets.push(myFirstDataset)
-    chartData.datasets.push(mySecondDataset)
+const generateChartDatas = (values: number[][], caseTitles: string[]) => {
+    const allObjects: any[] = []
 
+    for (let index = 0; index < values.length; index++) {
+        const element = {
+            label: caseTitles[index],
+            fillColor: COLORS[index],
+            strokeColor: COLORS[index],
+            highlightFill: COLORS[index],
+            highlightStroke: COLORS[index],
+            backgroundColor: COLORS[index],
+            borderColor: COLORS[index],
+            color: COLORS[index],
+            data: values[index],
+        }
+        allObjects.push(element)
+    }
+    return allObjects
+}
+
+const ManniDataTable = ({
+    x, y, caseTitles,
+}: Props) => {
+    chartData.labels = yearLabels(x!, y)
+    const asd = generateChartDatas(y, caseTitles)
+    chartData.datasets = asd
     return (
         <ReactChart
             type="line"
@@ -108,12 +130,15 @@ export const chartoptions = (title?: string): ChartOptions => ({
             type: "linear",
             title: {
                 display: true,
-                text: "# of SWCRs",
+                text: "CapEx",
             },
         },
-
         xAxis: {
             offset: true,
+            title: {
+                display: true,
+                text: "Year",
+            },
         },
     },
 })

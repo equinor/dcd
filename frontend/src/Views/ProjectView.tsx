@@ -104,6 +104,7 @@ const ProjectView = () => {
     const [currency, setCurrency] = useState<Components.Schemas.PhysUnit>(0)
     const [x, setX] = useState<number[]>()
     const [y, setY] = useState<number[][]>()
+    const [caseTitles, setCaseTitles] = useState<string[]>()
 
     useEffect(() => {
         (async () => {
@@ -145,19 +146,20 @@ const ProjectView = () => {
     const generateChartData = useMemo(() => {
         const xx: number[] = []
         const yy: number[][] = []
+        const caseeTitles: string[] = []
         project?.cases.forEach((casee) => {
             if (casee.capexYear?.startYear !== null) {
                 xx.push(casee.capexYear?.startYear!)
             }
             if (casee.capexYear?.values?.length !== 0) {
                 yy.push(casee.capexYear?.values!)
+                caseeTitles?.push(casee.name!)
             }
         })
 
         setX(xx)
         setY(yy)
-        console.log(x)
-        console.log(y)
+        setCaseTitles(caseeTitles)
     }, [project])
 
     const drainValues: number [] | undefined = project?.drainageStrategies[0].co2Emissions?.values
@@ -315,7 +317,7 @@ const ProjectView = () => {
                     </li>
                 </UnstyledList>
             </fieldset>
-            <ManniDataTable x={x!} y={y!} />
+            <ManniDataTable x={x!} y={y!} caseTitles={caseTitles!} />
 
             <ChartsContainer>
                 <BarChart data={chartData!} title="Capex / case" />
