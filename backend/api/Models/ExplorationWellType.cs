@@ -1,16 +1,16 @@
 namespace api.Models
 {
-    public class WellTypeNew
+    public class ExplorationWellType
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
-        public WellTypeCategory Category { get; set; }
+        public ExplorationWellTypeCategory Category { get; set; }
         public double WellCost { get; set; }
         public double DrillingDays { get; set; }
         public string? Description { get; set; }
     }
 
-    public enum WellTypeCategory
+    public enum ExplorationWellTypeCategory
     {
         Oil_Producer,
         Gas_Producer,
