@@ -34,8 +34,9 @@ namespace api.Dtos
         public CapexYear? CapexYear { get; set; }
     }
 
-    public class CapexYear {
-        public double[] values { get; set; }
+    public class CapexYear
+    {
+        public double[]? values { get; set; }
         public int? startYear { get; set; }
     }
 }
