@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -12,7 +12,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSubstructureService } from "../Services/SubstructureService"
 import {
-    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
@@ -26,6 +26,7 @@ import { SubstructureCessationCostProfile } from "../models/assets/substructure/
 import AssetCurrency from "../Components/AssetCurrency"
 import ApprovedBy from "../Components/ApprovedBy"
 import Concept from "../Components/Concept"
+import DGDateInherited from "../Components/DGDateInherited"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -41,10 +42,12 @@ const SubstructureView = () => {
     const [dryWeight, setDryWeight] = useState<number | undefined>()
     const [costProfile, setCostProfile] = useState<SubstructureCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SubstructureCessationCostProfile>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [approvedBy, setApprovedBy] = useState<string>("")
     const [costYear, setCostYear] = useState<number | undefined>()
     const [concept, setConcept] = useState<Components.Schemas.Concept | undefined>()
+    const [dG3Date, setDG3Date] = useState<Date>()
+    const [dG4Date, setDG4Date] = useState<Date>()
 
     useEffect(() => {
         (async () => {
@@ -66,26 +69,40 @@ const SubstructureView = () => {
                 // eslint-disable-next-line max-len
                 let newSubstructure: Substructure | undefined = project.substructures.find((s) => s.id === params.substructureId)
                 if (newSubstructure !== undefined) {
+                    if (newSubstructure.DG3Date === null
+                        || newSubstructure.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newSubstructure.DG3Date = caseResult?.DG3Date
+                    }
+                    if (newSubstructure.DG4Date === null
+                        || newSubstructure.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newSubstructure.DG4Date = caseResult?.DG4Date
+                    }
                     setSubstructure(newSubstructure)
                 } else {
                     newSubstructure = new Substructure()
                     newSubstructure.currency = project.currency
+                    newSubstructure.DG3Date = caseResult?.DG3Date
+                    newSubstructure.DG4Date = caseResult?.DG4Date
                     setSubstructure(newSubstructure)
                 }
                 setSubstructureName(newSubstructure?.name!)
                 setMaturity(newSubstructure.maturity)
                 setDryWeight(newSubstructure.dryweight)
-                setCurrency(newSubstructure.currency ?? 0)
+                setCurrency(newSubstructure.currency ?? 1)
                 setApprovedBy(newSubstructure?.approvedBy!)
                 setCostYear(newSubstructure?.costYear)
                 setConcept(newSubstructure.concept)
+                setDG3Date(newSubstructure.DG3Date ?? undefined)
+                setDG4Date(newSubstructure.DG4Date ?? undefined)
 
                 setCostProfile(newSubstructure.costProfile)
                 setCessationCostProfile(newSubstructure.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
+                    const dg4 = newSubstructure?.source === 1 ? newSubstructure.DG4Date?.getFullYear()
+                        : caseResult.DG4Date.getFullYear()
                     initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
+                        dg4!,
                         [newSubstructure.costProfile, newSubstructure.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -106,10 +123,14 @@ const SubstructureView = () => {
             newSubstructure.approvedBy = approvedBy
             newSubstructure.costYear = costYear
             newSubstructure.concept = concept
+            newSubstructure.DG3Date = dG3Date
+            newSubstructure.DG4Date = dG4Date
 
             if (caseItem?.DG4Date) {
+                const dg4 = newSubstructure?.source === 1 ? newSubstructure.DG4Date?.getFullYear()
+                    : caseItem.DG4Date.getFullYear()
                 initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
+                    dg4!,
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -117,7 +138,8 @@ const SubstructureView = () => {
             }
             setSubstructure(newSubstructure)
         }
-    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency, approvedBy, costYear, concept])
+    }, [maturity, dryWeight, costProfile, cessationCostProfile, currency, approvedBy, costYear, concept,
+        dG3Date, dG4Date])
 
     return (
         <AssetViewDiv>
@@ -133,6 +155,10 @@ const SubstructureView = () => {
                     assetService={GetSubstructureService()}
                     assetType={AssetTypeEnum.substructures}
                 />
+                <Typography variant="h6">
+                    {substructure?.LastChangedDate?.toLocaleString()
+                        ? `Last changed: ${substructure?.LastChangedDate?.toLocaleString()}` : ""}
+                </Typography>
             </Wrapper>
             <AssetName
                 setName={setSubstructureName}
@@ -158,24 +184,28 @@ const SubstructureView = () => {
 
             <Typography>
                 {`Prosp version: ${substructure?.ProspVersion
-                    ? substructure?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+                    ? substructure?.ProspVersion.toLocaleDateString() : "N/A"}`}
             </Typography>
             <Typography>
                 {`Source: ${substructure?.source === 0 || substructure?.source === undefined ? "ConceptApp" : "Prosp"}`}
             </Typography>
-            <Typography variant="h6">
-                {substructure?.LastChangedDate?.toLocaleString()
-                    ? `Last changed: ${substructure?.LastChangedDate?.toLocaleString()}` : ""}
-            </Typography>
             <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG3Date}
+                    dGName="DG3"
+                    value={dG3Date}
+                    caseValue={caseItem?.DG3Date}
+                    disabled={substructure?.source === 1}
+                />
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG4Date}
+                    dGName="DG4"
+                    value={dG4Date}
+                    caseValue={caseItem?.DG4Date}
+                    disabled={substructure?.source === 1}
+                />
             </Wrapper>
             <AssetCurrency
                 setCurrency={setCurrency}
@@ -199,7 +229,7 @@ const SubstructureView = () => {
                     setValue={setDryWeight}
                     value={dryWeight ?? 0}
                     integer={false}
-                    label={`Substructure dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
+                    label="Substructure dry weight (tonnes)"
                 />
             </Wrapper>
             <Maturity
@@ -214,22 +244,24 @@ const SubstructureView = () => {
             />
 
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={substructure?.source === 1 ? substructure.DG4Date?.getFullYear()
+                    : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={substructure?.source === 1 ? substructure.DG4Date?.getFullYear()
+                    : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

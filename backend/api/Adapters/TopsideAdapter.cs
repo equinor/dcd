@@ -21,6 +21,9 @@ namespace api.Adapters
                 Currency = topsideDto.Currency,
                 FuelConsumption = topsideDto.FuelConsumption,
                 FlaredGas = topsideDto.FlaredGas,
+                ProducerCount = topsideDto.ProducerCount,
+                GasInjectorCount = topsideDto.GasInjectorCount,
+                WaterInjectorCount = topsideDto.WaterInjectorCount,
                 CO2ShareOilProfile = topsideDto.CO2ShareOilProfile,
                 CO2ShareGasProfile = topsideDto.CO2ShareGasProfile,
                 CO2ShareWaterInjectionProfile = topsideDto.CO2ShareWaterInjectionProfile,
@@ -31,7 +34,10 @@ namespace api.Adapters
                 ProspVersion = topsideDto.ProspVersion,
                 LastChangedDate = topsideDto.LastChangedDate,
                 Source = topsideDto.Source,
-                ApprovedBy = topsideDto.ApprovedBy
+                ApprovedBy = topsideDto.ApprovedBy,
+                DG3Date = topsideDto.DG3Date,
+                DG4Date = topsideDto.DG4Date,
+                FacilityOpex = topsideDto.FacilityOpex
             };
 
             if (topsideDto.CostProfile != null)
@@ -63,6 +69,9 @@ namespace api.Adapters
             existing.CessationCostProfile = Convert(topsideDto.CessationCostProfile, existing);
             existing.FuelConsumption = topsideDto.FuelConsumption;
             existing.FlaredGas = topsideDto.FlaredGas;
+            existing.ProducerCount = topsideDto.ProducerCount;
+            existing.GasInjectorCount = topsideDto.GasInjectorCount;
+            existing.WaterInjectorCount = topsideDto.WaterInjectorCount;
             existing.CO2ShareOilProfile = topsideDto.CO2ShareOilProfile;
             existing.CO2ShareGasProfile = topsideDto.CO2ShareGasProfile;
             existing.CO2ShareWaterInjectionProfile = topsideDto.CO2ShareWaterInjectionProfile;
@@ -74,6 +83,9 @@ namespace api.Adapters
             existing.LastChangedDate = topsideDto.LastChangedDate;
             existing.Source = topsideDto.Source;
             existing.ApprovedBy = topsideDto.ApprovedBy;
+            existing.DG3Date = topsideDto.DG3Date;
+            existing.DG4Date = topsideDto.DG4Date;
+            existing.FacilityOpex = topsideDto.FacilityOpex;
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {

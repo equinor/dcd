@@ -13,11 +13,14 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     oilCapacity?: number | undefined
     gasCapacity?: number | undefined
     facilitiesAvailability?: number | undefined
-    artificialLift?: Components.Schemas.ArtificialLift | undefined
+    artificialLift?: Components.Schemas.ArtificialLift
     maturity?: Components.Schemas.Maturity | undefined
     currency?: Components.Schemas.Currency
     fuelConsumption?: number | undefined
     flaredGas?: number | undefined
+    producerCount?: number | undefined
+    gasInjectorCount?: number | undefined
+    waterInjectorCount?: number | undefined
     cO2ShareOilProfile?: number | undefined
     cO2ShareGasProfile?: number | undefined
     cO2ShareWaterInjectionProfile?: number | undefined
@@ -29,6 +32,9 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     LastChangedDate?: Date | null
     source?: Components.Schemas.Source
     approvedBy?: string | null | undefined
+    DG3Date?: Date | null
+    DG4Date?: Date | null
+    facilityOpex?: number | undefined
 
     constructor(data?: Components.Schemas.TopsideDto) {
         if (data !== undefined) {
@@ -43,9 +49,13 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.maturity = data.maturity
             this.oilCapacity = data.oilCapacity
             this.gasCapacity = data.gasCapacity
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
+            this.facilitiesAvailability = data.facilitiesAvailability
             this.fuelConsumption = data.fuelConsumption
             this.flaredGas = data.flaredGas
+            this.producerCount = data.producerCount
+            this.gasInjectorCount = data.gasInjectorCount
+            this.waterInjectorCount = data.waterInjectorCount
             this.cO2ShareOilProfile = data.cO2ShareOilProfile
             this.cO2ShareGasProfile = data.cO2ShareGasProfile
             this.cO2ShareWaterInjectionProfile = data.cO2ShareWaterInjectionProfile
@@ -57,6 +67,9 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
             this.source = data.source
             this.approvedBy = data.approvedBy ?? ""
+            this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : null
+            this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : null
+            this.facilityOpex = data.facilityOpex
         } else {
             this.id = EMPTY_GUID
             this.name = ""
@@ -69,6 +82,8 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
         return {
             ...topsideCopy,
             ProspVersion: data.ProspVersion,
+            DG3Date: data.DG3Date,
+            DG4Date: data.DG4Date,
         }
     }
 

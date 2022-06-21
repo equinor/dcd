@@ -23,6 +23,9 @@ namespace api.Adapters
                 CessationCostProfile = Convert(topside.CessationCostProfile),
                 FuelConsumption = topside.FuelConsumption,
                 FlaredGas = topside.FlaredGas,
+                ProducerCount = topside.ProducerCount,
+                GasInjectorCount = topside.GasInjectorCount,
+                WaterInjectorCount = topside.WaterInjectorCount,
                 CO2ShareOilProfile = topside.CO2ShareOilProfile,
                 CO2ShareGasProfile = topside.CO2ShareGasProfile,
                 CO2ShareWaterInjectionProfile = topside.CO2ShareWaterInjectionProfile,
@@ -33,7 +36,10 @@ namespace api.Adapters
                 ProspVersion = topside.ProspVersion,
                 LastChangedDate = topside.LastChangedDate,
                 Source = topside.Source,
-                ApprovedBy = topside.ApprovedBy
+                ApprovedBy = topside.ApprovedBy,
+                DG3Date = topside.DG3Date,
+                DG4Date = topside.DG4Date,
+                FacilityOpex = topside.FacilityOpex
             };
             return topsideDto;
         }

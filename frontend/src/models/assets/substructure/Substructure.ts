@@ -18,6 +18,8 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
     source?: Components.Schemas.Source
     LastChangedDate?: Date | null
     concept?: Components.Schemas.Concept | undefined
+    DG3Date?: Date | null
+    DG4Date?: Date | null
 
     constructor(data?: Components.Schemas.SubstructureDto) {
         if (data !== undefined) {
@@ -29,13 +31,15 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
                 .fromJSON(data.cessationCostProfile)
             this.dryweight = data.dryWeight
             this.maturity = data.maturity
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
             this.approvedBy = data.approvedBy ?? ""
             this.costYear = data.costYear
             this.ProspVersion = data.prospVersion ? new Date(data.prospVersion) : null
             this.source = data.source
             this.LastChangedDate = data.lastChangedDate ? new Date(data.lastChangedDate) : null
             this.concept = data.concept
+            this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : null
+            this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : null
         } else {
             this.id = EMPTY_GUID
             this.name = ""
@@ -48,6 +52,8 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
         return {
             ...substructureCopy,
             ProspVersion: data.ProspVersion,
+            DG3Date: data.DG3Date,
+            DG4Date: data.DG4Date,
         }
     }
 

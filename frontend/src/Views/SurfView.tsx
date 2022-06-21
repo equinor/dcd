@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {
-    Input, Label, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
 
 import { useParams } from "react-router"
@@ -11,20 +11,23 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetSurfService } from "../Services/SurfService"
 import TimeSeries from "../Components/TimeSeries"
 import {
-    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import Maturity from "../Components/Maturity"
 import ProductionFlowline from "../Components/ProductionFlowline"
 import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
 import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import NumberInputInherited from "../Components/NumberInputInherited"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 import ApprovedBy from "../Components/ApprovedBy"
+import DGDateInherited from "../Components/DGDateInherited"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -46,9 +49,12 @@ const SurfView = () => {
     const [productionFlowline, setProductionFlowline] = useState<Components.Schemas.ProductionFlowline | undefined>()
     const [costProfile, setCostProfile] = useState<SurfCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
     const [approvedBy, setApprovedBy] = useState<string>("")
+    const [dG3Date, setDG3Date] = useState<Date>()
+    const [dG4Date, setDG4Date] = useState<Date>()
 
     useEffect(() => {
         (async () => {
@@ -69,6 +75,14 @@ const SurfView = () => {
                 setCase(caseResult)
                 let newSurf: Surf | undefined = project.surfs.find((s) => s.id === params.surfId)
                 if (newSurf !== undefined) {
+                    if (newSurf.DG3Date === null
+                        || newSurf.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newSurf.DG3Date = caseResult?.DG3Date
+                    }
+                    if (newSurf.DG4Date === null
+                        || newSurf.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        newSurf.DG4Date = caseResult?.DG4Date
+                    }
                     setSurf(newSurf)
                 } else {
                     newSurf = new Surf()
@@ -77,6 +91,8 @@ const SurfView = () => {
                     newSurf.gasInjectorCount = caseResult?.gasInjectorCount
                     newSurf.waterInjectorCount = caseResult?.waterInjectorCount
                     newSurf.currency = project.currency
+                    newSurf.DG3Date = caseResult?.DG3Date
+                    newSurf.DG4Date = caseResult?.DG4Date
                     setSurf(newSurf)
                 }
                 setSurfName(newSurf?.name!)
@@ -90,15 +106,20 @@ const SurfView = () => {
                 setUmbilicalSystemLength(newSurf?.umbilicalSystemLength)
                 setMaturity(newSurf.maturity ?? undefined)
                 setProductionFlowline(newSurf.productionFlowline ?? 0)
-                setCurrency(newSurf.currency ?? 0)
+                setCurrency(newSurf.currency ?? 1)
+                setArtificialLift(newSurf.artificialLift)
                 setApprovedBy(newSurf?.approvedBy!)
+                setDG3Date(newSurf.DG3Date ?? undefined)
+                setDG4Date(newSurf.DG4Date ?? undefined)
 
                 setCostProfile(newSurf.costProfile)
                 setCessationCostProfile(newSurf.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
+                    const dg4 = newSurf?.source === 1 ? newSurf.DG4Date?.getFullYear()
+                        : caseResult.DG4Date.getFullYear()
                     initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
+                        dg4!,
                         [newSurf.costProfile, newSurf.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -122,14 +143,19 @@ const SurfView = () => {
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
+            newSurf.artificialLift = artificialLift
             newSurf.approvedBy = approvedBy
+            newSurf.DG3Date = dG3Date
+            newSurf.DG4Date = dG4Date
 
             newSurf.costProfile = costProfile
             newSurf.cessationCostProfile = cessationCostProfile
 
             if (caseItem?.DG4Date) {
+                const dg4 = newSurf?.source === 1 ? newSurf.DG4Date?.getFullYear()
+                    : caseItem.DG4Date.getFullYear()
                 initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
+                    dg4!,
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -140,7 +166,8 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency, costYear, approvedBy])
+        costProfile, cessationCostProfile, currency, costYear, approvedBy, artificialLift,
+        dG3Date, dG4Date])
 
     return (
         <AssetViewDiv>
@@ -172,14 +199,22 @@ const SurfView = () => {
                 setHasChanges={setHasChanges}
             />
             <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG3Date}
+                    dGName="DG3"
+                    value={dG3Date}
+                    caseValue={caseItem?.DG3Date}
+                    disabled={surf?.source === 1}
+                />
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG4Date}
+                    dGName="DG4"
+                    value={dG4Date}
+                    caseValue={caseItem?.DG4Date}
+                    disabled={surf?.source === 1}
+                />
             </Wrapper>
             <AssetCurrency
                 setCurrency={setCurrency}
@@ -187,18 +222,18 @@ const SurfView = () => {
                 currentValue={currency}
             />
             <Typography>
-                {`Prosp version: ${surf?.ProspVersion ? surf?.ProspVersion.toLocaleDateString("en-CA") : "N/A"}`}
+                {`Prosp version: ${surf?.ProspVersion ? surf?.ProspVersion.toLocaleDateString() : "N/A"}`}
             </Typography>
             <Typography>
                 {`Source: ${surf?.source === 0 || surf?.source === undefined ? "ConceptApp" : "Prosp"}`}
             </Typography>
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(surf?.artificialLift)}
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
                     />
                     <NumberInput
                         setHasChanges={setHasChanges}
@@ -211,29 +246,29 @@ const SurfView = () => {
             </Wrapper>
 
             <Wrapper>
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setProducerCount}
                     value={producerCount ?? 0}
                     integer
-                    disabled
                     label="Producer count"
+                    caseValue={caseItem?.producerCount}
                 />
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setGasInjectorCount}
                     value={gasInjectorCount ?? 0}
                     integer
-                    disabled
                     label="Gas injector count"
+                    caseValue={caseItem?.gasInjectorCount}
                 />
-                <NumberInput
+                <NumberInputInherited
                     setHasChanges={setHasChanges}
                     setValue={setWaterInjectorCount}
                     value={waterInjectorCount ?? 0}
                     integer
-                    disabled
                     label="Water injector count"
+                    caseValue={caseItem?.waterInjectorCount}
                 />
             </Wrapper>
             <Wrapper>
@@ -256,14 +291,14 @@ const SurfView = () => {
                     setValue={setInfieldPipelineSystemLength}
                     value={infieldPipelineSystemLength ?? 0}
                     integer
-                    label={`Length of production lines ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
+                    label="Length of production lines (km)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setUmbilicalSystemLength}
                     value={umbilicalSystemLength ?? 0}
                     integer
-                    label={`Length of umbilical system ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
+                    label="Length of umbilical system (km)"
                 />
             </Wrapper>
             <Maturity
@@ -277,22 +312,22 @@ const SurfView = () => {
                 setProductionFlowline={setProductionFlowline}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

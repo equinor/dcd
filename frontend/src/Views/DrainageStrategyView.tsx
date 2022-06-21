@@ -1,5 +1,5 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -16,7 +16,7 @@ import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
@@ -29,6 +29,8 @@ import { ProductionProfileOil } from "../models/assets/drainagestrategy/Producti
 import { ProductionProfileWater } from "../models/assets/drainagestrategy/ProductionProfileWater"
 import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
+import NumberInputInherited from "../Components/NumberInputInherited"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -47,6 +49,11 @@ const DrainageStrategyView = () => {
     // eslint-disable-next-line max-len
     const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjection>()
     const [nGLYield, setNGLYield] = useState<number>()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
+    const [producerCount, setProducerCount] = useState<number>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
     const params = useParams()
@@ -92,6 +99,11 @@ const DrainageStrategyView = () => {
                 setProductionProfileWater(newDrainage.productionProfileWater)
                 setProductionProfileWaterInjection(newDrainage.productionProfileWaterInjection)
                 setProductionProfileNGL(newDrainage.productionProfileNGL)
+                setArtificialLift(newDrainage.artificialLift)
+                setGasInjectorCount(newDrainage?.gasInjectorCount)
+                setWaterInjectorCount(newDrainage?.waterInjectorCount)
+                setProducerCount(newDrainage?.producerCount)
+                setFacilitiesAvailability(newDrainage?.facilitiesAvailability)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -119,6 +131,11 @@ const DrainageStrategyView = () => {
         newDrainage.productionProfileWater = productionProfileWater
         newDrainage.productionProfileWaterInjection = productionProfileWaterInjection
         newDrainage.productionProfileNGL = productionProfileNGL
+        newDrainage.artificialLift = artificialLift
+        newDrainage.producerCount = producerCount
+        newDrainage.gasInjectorCount = gasInjectorCount
+        newDrainage.waterInjectorCount = waterInjectorCount
+        newDrainage.facilitiesAvailability = facilitiesAvailability
         setDrainageStrategy(newDrainage)
 
         if (caseItem?.DG4Date) {
@@ -134,7 +151,8 @@ const DrainageStrategyView = () => {
         }
     }, [nGLYield, co2Emissions, netSalesGas, fuelFlaringAndLosses,
         productionProfileGas, productionProfileOil, productionProfileWater, productionProfileWaterInjection,
-        productionProfileNGL])
+        productionProfileNGL, artificialLift, producerCount, gasInjectorCount, waterInjectorCount,
+        facilitiesAvailability])
 
     return (
         <AssetViewDiv>
@@ -164,11 +182,11 @@ const DrainageStrategyView = () => {
             </Wrapper>
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(drainageStrategy?.artificialLift)}
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
                     />
                 </WrapperColumn>
             </Wrapper>
@@ -178,31 +196,39 @@ const DrainageStrategyView = () => {
                     value={nGLYield ?? 0}
                     setHasChanges={setHasChanges}
                     integer={false}
-                    label={`NGL yield ${project?.physUnit === 0 ? "(tonnes/MSm³)" : "(Oilfield)"}`}
+                    label={`NGL yield ${project?.physUnit === 0 ? "(Sm³/MSm³)" : "(bbls/mill scf)"}`}
                 />
-                <NumberInput
+                <NumberInputInherited
                     value={drainageStrategy?.producerCount ?? 0}
+                    setValue={setProducerCount}
+                    setHasChanges={setHasChanges}
                     integer
-                    disabled
                     label="Producer count"
+                    caseValue={caseItem?.producerCount}
                 />
-                <NumberInput
+                <NumberInputInherited
                     value={drainageStrategy?.gasInjectorCount ?? 0}
+                    setValue={setGasInjectorCount}
+                    setHasChanges={setHasChanges}
                     integer
-                    disabled
                     label="Gas injector count"
+                    caseValue={caseItem?.gasInjectorCount}
                 />
-                <NumberInput
+                <NumberInputInherited
                     value={drainageStrategy?.waterInjectorCount ?? 0}
+                    setValue={setWaterInjectorCount}
+                    setHasChanges={setHasChanges}
                     integer
-                    disabled
                     label="Water injector count"
+                    caseValue={caseItem?.waterInjectorCount}
                 />
-                <NumberInput
-                    value={caseItem?.facilitiesAvailability ?? 0}
+                <NumberInputInherited
+                    value={drainageStrategy?.facilitiesAvailability ?? 0}
+                    setValue={setFacilitiesAvailability}
+                    setHasChanges={setHasChanges}
                     integer={false}
-                    disabled
                     label="Facilities availability (%)"
+                    caseValue={caseItem?.facilitiesAvailability}
                 />
             </Wrapper>
             <TimeSeries

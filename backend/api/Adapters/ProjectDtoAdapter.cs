@@ -29,7 +29,7 @@ namespace api.Adapters
                 projectDto.DrainageStrategies = new List<DrainageStrategyDto>();
                 foreach (DrainageStrategy d in project.DrainageStrategies)
                 {
-                    projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d));
+                    projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d, project.PhysicalUnit));
                 }
             }
             if (project.WellProjects != null)
@@ -89,6 +89,7 @@ namespace api.Adapters
                 Name = project.Name,
                 CommonLibraryId = project.CommonLibraryId,
                 CommonLibraryName = project.CommonLibraryName,
+                FusionProjectId = project.FusionProjectId,
                 Description = project.Description,
                 Country = project.Country,
                 CreateDate = project.CreateDate,

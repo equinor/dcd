@@ -38,7 +38,7 @@ const ExplorationView = () => {
     const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingSchedule>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
 
     useEffect(() => {
         (async () => {
@@ -66,7 +66,7 @@ const ExplorationView = () => {
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
-                setCurrency(newExploration.currency ?? 0)
+                setCurrency(newExploration.currency ?? 1)
                 setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
@@ -144,7 +144,7 @@ const ExplorationView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -166,7 +166,7 @@ const ExplorationView = () => {
                 setTimeSeries={setGAndGAdminCost}
                 setHasChanges={setHasChanges}
                 timeSeries={gAndGAdminCost}
-                timeSeriesTitle={`G and g admin cost ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`G and g admin cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

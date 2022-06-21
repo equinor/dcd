@@ -78,7 +78,7 @@ const ProjectView = () => {
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
-    const [currency, setCurrency] = useState<Components.Schemas.PhysUnit>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
 
     const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
