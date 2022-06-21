@@ -88,6 +88,7 @@ namespace api.Adapters
                 Name = project.Name,
                 CommonLibraryId = project.CommonLibraryId,
                 CommonLibraryName = project.CommonLibraryName,
+                FusionProjectId = project.FusionProjectId,
                 Description = project.Description,
                 Country = project.Country,
                 CreateDate = project.CreateDate,

@@ -62,6 +62,7 @@ const TopsideView = () => {
     const [flaredGas, setFlaredGas] = useState<number | undefined>()
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
+    const [facilityOpex, setFacilityOpex] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -128,10 +129,13 @@ const TopsideView = () => {
                 setFlaredGas(newTopside?.flaredGas)
                 setDG3Date(newTopside.DG3Date ?? undefined)
                 setDG4Date(newTopside.DG4Date ?? undefined)
+                setFacilityOpex(newTopside?.facilityOpex)
 
                 if (caseResult?.DG4Date) {
+                    const dg4 = newTopside?.source === 1 ? newTopside.DG4Date?.getFullYear()
+                        : caseResult.DG4Date.getFullYear()
                     initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
+                        dg4!,
                         [newTopside.costProfile, newTopside.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -168,10 +172,13 @@ const TopsideView = () => {
             newTopside.flaredGas = flaredGas
             newTopside.DG3Date = dG3Date
             newTopside.DG4Date = dG4Date
+            newTopside.facilityOpex = facilityOpex
 
             if (caseItem?.DG4Date) {
+                const dg4 = newTopside?.source === 1 ? newTopside.DG4Date?.getFullYear()
+                    : caseItem.DG4Date.getFullYear()
                 initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
+                    dg4!,
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -182,7 +189,8 @@ const TopsideView = () => {
     }, [dryweight, oilCapacity, gasCapacity, maturity, costProfile, cessationCostProfile, currency, costYear,
         cO2ShareOilProfile, cO2ShareGasProfile, cO2ShareWaterInjectionProfile, cO2OnMaxOilProfile, cO2OnMaxGasProfile,
         cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift,
-        producerCount, gasInjectorCount, waterInjectorCount, fuelConsumption, flaredGas, dG3Date, dG4Date])
+        producerCount, gasInjectorCount, waterInjectorCount, fuelConsumption, flaredGas, dG3Date, dG4Date,
+        facilityOpex])
 
     return (
         <AssetViewDiv>
@@ -297,6 +305,15 @@ const TopsideView = () => {
             <Wrapper>
                 <NumberInput
                     setHasChanges={setHasChanges}
+                    setValue={setFacilityOpex}
+                    value={facilityOpex ?? 0}
+                    integer={false}
+                    label="Facility opex"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
                     setValue={setFuelConsumption}
                     value={fuelConsumption ?? 0}
                     integer
@@ -385,7 +402,7 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={topside?.source === 1 ? topside.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
@@ -396,7 +413,7 @@ const TopsideView = () => {
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={topside?.source === 1 ? topside.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}
