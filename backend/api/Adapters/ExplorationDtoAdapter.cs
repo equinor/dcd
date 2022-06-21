@@ -17,7 +17,8 @@ namespace api.Adapters
                 Currency = exploration.Currency,
                 CostProfile = Convert(exploration.CostProfile),
                 DrillingSchedule = Convert(exploration.DrillingSchedule),
-                GAndGAdminCost = Convert(exploration.GAndGAdminCost)
+                GAndGAdminCost = Convert(exploration.GAndGAdminCost),
+                ExplorationWellType = exploration.ExplorationWellType
             };
             return explorationDto;
         }
