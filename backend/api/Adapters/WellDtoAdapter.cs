@@ -12,6 +12,7 @@ namespace api.Adapters
                 Id = well.Id,
                 ProjectId = well.ProjectId,
                 WellType = Convert(well.WellType),
+                ExplorationWellType = Convert(well.ExplorationWellType),
                 PlugingAndAbandonmentCost = well.PlugingAndAbandonmentCost,
                 WellInterventionCost = well.WellInterventionCost,
             };
@@ -29,6 +30,20 @@ namespace api.Adapters
                 Name = wellType.Name,
                 DrillingDays = wellType.DrillingDays,
                 WellCost = wellType.WellCost,
+            };
+        }
+
+        public static ExplorationWellType? Convert(ExplorationWellType? explorationWellType)
+        {
+            if (explorationWellType == null)
+            {
+                return null!;
+            }
+            return new ExplorationWellType
+            {
+                Name = explorationWellType.Name,
+                DrillingDays = explorationWellType.DrillingDays,
+                WellCost = explorationWellType.WellCost,
             };
         }
     }
