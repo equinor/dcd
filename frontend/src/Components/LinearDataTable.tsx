@@ -1,10 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable no-plusplus */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-empty-pattern */
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable react/no-unused-prop-types */
 import { Chart as ReactChart } from "react-chartjs-2"
 import {
     Chart as ChartJS, ChartData, ChartOptions, registerables,
@@ -13,9 +6,11 @@ import { min, maxBy, range } from "lodash"
 
 ChartJS.register(...registerables)
 
-const COLORS: string[] = ["#005500", "#000000", "#FF00FF", "#0000FF", "#00FFFF", "#00FF00", "#FFFF00", "#FF0000", "#808080", "#FF0080", "#FF80FF", "#800080", "#8000FF",
-    "#8080FF", "#000080", "#0080FF", "#80FFFF", "#008080", "#00FF80", "#80FF00", "#FFFF80", "#808000", "#FF8000", "#FF8080", "#800000", "#AA0055", "#AA5555",
-    "#550000", "#555500"]
+const COLORS: string[] = [
+    "#005500", "#000000", "#FF00FF", "#0000FF", "#00FFFF", "#00FF00", "#FFFF00", "#FF0000",
+    "#808080", "#FF0080", "#FF80FF", "#800080", "#8000FF", "#8080FF", "#000080", "#0080FF",
+    "#80FFFF", "#008080", "#00FF80", "#80FF00", "#FFFF80", "#808000", "#FF8000", "#FF8080",
+    "#800000", "#AA0055", "#AA5555", "#550000", "#555500"]
 
 interface Props {
     capexYearX: number[]
@@ -40,7 +35,7 @@ const yearLabels = (minimumStartYears: number[], arrayOfValues: number[][]) :str
 const generateChartDatas = (arrayOfValues: number[][], caseTitles: string[]) => {
     const allObjects: any[] = []
 
-    for (let index = 0; index < arrayOfValues.length; index++) {
+    for (let index = 0; index < arrayOfValues.length; index += 1) {
         const element = {
             label: caseTitles[index],
             fillColor: COLORS[index],
@@ -57,28 +52,7 @@ const generateChartDatas = (arrayOfValues: number[][], caseTitles: string[]) => 
     return allObjects
 }
 
-const LinearDataTable = ({
-    capexYearX, capexYearY, caseTitles,
-}: Props) => {
-    const chartData: ChartData = {
-        datasets: [
-
-        ],
-    }
-    chartData.labels = yearLabels(capexYearX, capexYearY)
-    chartData.datasets = generateChartDatas(capexYearY, caseTitles)
-    return (
-        <ReactChart
-            type="line"
-            options={chartoptions()}
-            data={chartData}
-        />
-    )
-}
-
-export default LinearDataTable
-
-export const chartoptions = (): ChartOptions => ({
+const chartoptions = (): ChartOptions => ({
     maintainAspectRatio: true,
     responsive: true,
     plugins: {
@@ -135,3 +109,24 @@ export const chartoptions = (): ChartOptions => ({
         },
     },
 })
+
+const LinearDataTable = ({
+    capexYearX, capexYearY, caseTitles,
+}: Props) => {
+    const chartData: ChartData = {
+        datasets: [
+
+        ],
+    }
+    chartData.labels = yearLabels(capexYearX, capexYearY)
+    chartData.datasets = generateChartDatas(capexYearY, caseTitles)
+    return (
+        <ReactChart
+            type="line"
+            options={chartoptions()}
+            data={chartData}
+        />
+    )
+}
+
+export default LinearDataTable
