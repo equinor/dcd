@@ -31,7 +31,7 @@ namespace api.Models
         public Guid TopsideLink { get; set; } = Guid.Empty;
         public Guid TransportLink { get; set; } = Guid.Empty;
         public Guid ExplorationLink { get; set; } = Guid.Empty;
-        public Well Well { get; set; } = null!;
+        public Well? Well { get; set; }
     }
 
     public enum ArtificialLift

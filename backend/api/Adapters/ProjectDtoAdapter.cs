@@ -96,7 +96,8 @@ namespace api.Adapters
                 ProjectPhase = project.ProjectPhase,
                 Currency = project.Currency,
                 PhysUnit = project.PhysicalUnit,
-                Cases = new List<CaseDto>()
+                Cases = new List<CaseDto>(),
+                Wells = new List<WellDto>(),
             };
         }
 

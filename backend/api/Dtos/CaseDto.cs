@@ -31,6 +31,6 @@ namespace api.Dtos
         public Guid TransportLink { get; set; }
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
-        public Well Well { get; set; } = null!;
+        public Well? Well { get; set; }
     }
 }
