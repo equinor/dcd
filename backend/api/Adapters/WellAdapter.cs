@@ -10,6 +10,7 @@ namespace api.Adapters
             var well = new Well
             {
                 Id = wellDto.Id,
+                Name = wellDto.Name,
                 ProjectId = wellDto.ProjectId,
                 WellType = wellDto.WellType,
                 ExplorationWellType = wellDto.ExplorationWellType,
@@ -23,6 +24,7 @@ namespace api.Adapters
         public static void ConvertExisting(Well existing, WellDto wellDto)
         {
             existing.Id = wellDto.Id;
+            existing.Name = wellDto.Name;
             existing.ProjectId = wellDto.ProjectId;
             existing.WellInterventionCost = wellDto.WellInterventionCost;
             existing.PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost;

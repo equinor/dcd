@@ -8,6 +8,7 @@ import MenuItem from "./MenuItem"
 import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
 
 import { ProjectPath } from "../../Utils/common"
+import ProjectMenuItemWellComponent from "./ProjectMenuItemWellComponent"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -91,10 +92,10 @@ function ProjectMenu({ project }: Props) {
                                 />
                             )}
                             {projectMenuItem.name === ProjectMenuItemType.WELLS && (
-                                <ProjectMenuItemComponent
+                                <ProjectMenuItemWellComponent
                                     item={projectMenuItem}
                                     projectId={project.id}
-                                    subItems={project.cases}
+                                    subItems={project.wells}
                                 />
                             )}
                         </Item>
