@@ -1,4 +1,3 @@
-// eslint-disable-next-line camelcase
 import { add, archive } from "@equinor/eds-icons"
 import {
     Button,
@@ -18,8 +17,6 @@ import {
 import { useParams, useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
-import BarChart from "../Components/BarChart"
-
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
@@ -32,6 +29,7 @@ import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
+import LinearDataTable from "../Components/LinearDataTable"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -82,6 +80,10 @@ const ProjectView = () => {
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
 
+    const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
+    const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
+    const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
+
     useEffect(() => {
         (async () => {
             try {
@@ -110,7 +112,7 @@ const ProjectView = () => {
                     const cases: Case[] = []
                     project.cases.forEach((c) => cases.push(Case.Copy(c)))
                     projectDto.cases = cases
-                    const res = await GetProjectService().updateProject(projectDto)
+                    const res: Project = await GetProjectService().updateProject(projectDto)
                     setProject(res)
                 }
             } catch (error) {
@@ -119,10 +121,25 @@ const ProjectView = () => {
         })()
     }, [physicalUnit, currency])
 
-    const chartData = useMemo(() => (project ? {
-        x: project?.cases.map((c) => c.name ?? ""),
-        y: project?.cases.map((c) => c.capex ?? 0),
-    } : { x: [], y: [] }), [project])
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const generateChartDataForCapexYear = useMemo(() => {
+        const years: number[] = []
+        const values: number[][] = []
+        const caseTitles: string[] = []
+        project?.cases.forEach((casee) => {
+            if (casee.capexYear?.startYear !== null) {
+                years.push(casee.capexYear?.startYear!)
+            }
+            if (casee.capexYear?.values?.length !== 0) {
+                values.push(casee.capexYear?.values!)
+                caseTitles?.push(casee.name!)
+            }
+        })
+
+        setCapexYearXLabels(years)
+        setCapexYearYDatas(values)
+        setCapexYearCaseTitles(caseTitles)
+    }, [project])
 
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
@@ -172,7 +189,6 @@ const ProjectView = () => {
         <Wrapper>
             <Header>
                 <Typography variant="h2">{project.name}</Typography>
-
                 <EdsProvider density="compact">
                     <ActionsContainer>
                         <Tooltip title="Export to STEA">
@@ -192,7 +208,6 @@ const ProjectView = () => {
                     </ActionsContainer>
                 </EdsProvider>
             </Header>
-
             <WrapperColumn>
                 <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
                 <Typography variant="h3">{project.description}</Typography>
@@ -221,6 +236,7 @@ const ProjectView = () => {
                 setProject={setProject}
                 project={project}
             />
+
             <Currency
                 currentValue={currency}
                 setCurrency={setCurrency}
@@ -228,7 +244,15 @@ const ProjectView = () => {
                 project={project}
             />
             <ChartsContainer>
-                <BarChart data={chartData!} title="Capex / case" />
+                {capexYearXLabels.length !== 0
+                    ? (
+                        <LinearDataTable
+                            capexYearX={capexYearXLabels}
+                            capexYearY={capexYearYDatas}
+                            caseTitles={capexYearCaseTitles}
+                        />
+                    )
+                    : <Typography> No cases containing CapEx to display data for</Typography> }
             </ChartsContainer>
 
             <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>

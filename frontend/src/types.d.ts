@@ -12,6 +12,10 @@ declare namespace Components {
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationOffshoreFacilities?: CessationOffshoreFacilities;
         }
+        export interface CapexYear {
+            values?: number /* double */[] | null;
+            startYear?: number | null; // int32
+        }
         export interface CaseDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -39,6 +43,7 @@ declare namespace Components {
             transportLink?: string; // uuid
             explorationLink?: string; // uuid
             capex?: number; // double
+            capexYear?: CapexYear;
         }
         export interface CessationOffshoreFacilities {
             id?: string; // uuid
