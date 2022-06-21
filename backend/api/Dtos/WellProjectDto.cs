@@ -14,6 +14,7 @@ namespace api.Dtos
         public double AnnualWellInterventionCost { get; set; }
         public double PluggingAndAbandonment { get; set; }
         public Currency Currency { get; set; }
+        public WellTypeNew? WellType { get; set; }
     }
 
     public class WellProjectCostProfileDto : TimeSeriesCostDto
