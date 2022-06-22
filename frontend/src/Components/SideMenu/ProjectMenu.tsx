@@ -1,7 +1,9 @@
 import { useState } from "react"
 import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
-import { file, folder, dashboard } from "@equinor/eds-icons"
+import {
+    file, folder, dashboard, well,
+} from "@equinor/eds-icons"
 
 import { Project } from "../../models/Project"
 import MenuItem from "./MenuItem"
@@ -46,7 +48,7 @@ export enum ProjectMenuItemType {
 const projectMenuItems = [
     { name: ProjectMenuItemType.OVERVIEW, icon: dashboard },
     { name: ProjectMenuItemType.CASES, icon: file },
-    { name: ProjectMenuItemType.WELLS, icon: file },
+    { name: ProjectMenuItemType.WELLS, icon: well },
 ]
 
 interface Props {
@@ -92,11 +94,14 @@ function ProjectMenu({ project }: Props) {
                                 />
                             )}
                             {projectMenuItem.name === ProjectMenuItemType.WELLS && (
-                                <ProjectMenuItemWellComponent
-                                    item={projectMenuItem}
-                                    projectId={project.id}
-                                    subItems={project.wells}
-                                />
+                                <nav>
+                                    <LinkWithoutStyle to={`/project/${project.id}/wells/`}>
+                                        <ProjectMenuItemWellComponent
+                                            item={projectMenuItem}
+                                            projectId={project.id}
+                                        />
+                                    </LinkWithoutStyle>
+                                </nav>
                             )}
                         </Item>
                     ))}
