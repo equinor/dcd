@@ -26,6 +26,7 @@ export class Case implements Components.Schemas.CaseDto {
     waterInjectorCount?: number
     facilitiesAvailability?: number
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
+    well?: Components.Schemas.Well | undefined
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -55,6 +56,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.waterInjectorCount = data.waterInjectorCount
         this.facilitiesAvailability = data.facilitiesAvailability
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
+        this.well = data.well
     }
 
     static Copy(data: Case) {

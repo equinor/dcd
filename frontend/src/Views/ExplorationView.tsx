@@ -39,6 +39,7 @@ const ExplorationView = () => {
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const [explWellType, setExplWellType] = useState<Components.Schemas.ExplorationWellType>()
 
     useEffect(() => {
         (async () => {
@@ -59,6 +60,9 @@ const ExplorationView = () => {
                 // eslint-disable-next-line max-len
                 let newExploration: Exploration | undefined = project.explorations.find((s) => s.id === params.explorationId)
                 if (newExploration !== undefined) {
+                    if (newExploration.explorationWellType === null) {
+                        newExploration.explorationWellType = caseResult.well?.explorationWellType
+                    }
                     setExploration(newExploration)
                 } else {
                     newExploration = new Exploration()
@@ -72,6 +76,8 @@ const ExplorationView = () => {
                 setCostProfile(newExploration.costProfile)
                 setDrillingSchedule(newExploration.drillingSchedule)
                 setGAndGAdminCost(newExploration.gAndGAdminCost)
+
+                setExplWellType(newExploration.explorationWellType)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -92,6 +98,7 @@ const ExplorationView = () => {
         newExploration.drillingSchedule = drillingSchedule
         newExploration.gAndGAdminCost = gAndGAdminCost
         newExploration.currency = currency
+        newExploration.explorationWellType = explWellType
         setExploration(newExploration)
 
         if (caseItem?.DG4Date) {
@@ -102,7 +109,7 @@ const ExplorationView = () => {
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost, currency])
+    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost, currency, explWellType])
 
     return (
         <AssetViewDiv>

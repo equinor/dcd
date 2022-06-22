@@ -41,6 +41,7 @@ function WellProjectView() {
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
+    const [wellType, setWellType] = useState<Components.Schemas.WellTypeNew>()
 
     useEffect(() => {
         (async () => {
@@ -62,6 +63,9 @@ function WellProjectView() {
                 // eslint-disable-next-line max-len
                 let newWellProject: WellProject | undefined = project?.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
+                    if (newWellProject.wellType === null) {
+                        newWellProject.wellType = caseResult.well?.wellType
+                    }
                     setWellProject(newWellProject)
                 } else {
                     newWellProject = new WellProject()
@@ -79,6 +83,8 @@ function WellProjectView() {
                 setCostProfile(newWellProject.costProfile)
                 setDrillingSchedule(newWellProject.drillingSchedule)
                 setArtificialLift(newWellProject.artificialLift)
+
+                setWellType(newWellProject.wellType)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -101,6 +107,7 @@ function WellProjectView() {
         newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
         newWellProject.artificialLift = artificialLift
+        newWellProject.wellType = wellType
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
@@ -111,7 +118,7 @@ function WellProjectView() {
         }
         setWellProject(newWellProject)
     }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
-        artificialLift])
+        artificialLift, wellType])
 
     return (
         <AssetViewDiv>
