@@ -41,6 +41,10 @@ declare namespace Components {
             explorationLink?: string; // uuid
             well?: Well;
         }
+        export interface CapexYear {
+            values?: number /* double */[] | null;
+            startYear?: number | null; // int32
+        }
         export interface CaseDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -69,6 +73,7 @@ declare namespace Components {
             explorationLink?: string; // uuid
             capex?: number; // double
             well?: Well;
+            capexYear?: CapexYear;
         }
         export interface CessationOffshoreFacilities {
             id?: string; // uuid
