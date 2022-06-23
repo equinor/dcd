@@ -147,7 +147,7 @@ namespace api.Services
             }
         }
 
-        public Project? GetProject(Guid projectId)
+        public Project GetProject(Guid projectId)
         {
             if (_context.Projects != null)
             {

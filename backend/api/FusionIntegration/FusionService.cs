@@ -3,43 +3,26 @@ namespace Api.Services.FusionIntegration
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Net;
     using System.Threading.Tasks;
 
     using Api.Services.FusionIntegration.Models;
-    using Api.Services.Models;
-
-    using Fusion;
-    using Fusion.ApiClients.Org;
     using Fusion.Integration;
-    using Fusion.Integration.Org;
 
     using Microsoft.Extensions.Logging;
 
     using Newtonsoft.Json;
 
-    using PersonIdentifier = Fusion.Integration.Profile.PersonIdentifier;
-
     public class FusionService : IFusionService
     {
         private readonly IFusionContextResolver fusionContextResolver;
-        private readonly IProjectOrgResolver projectOrgResolver;
         private readonly ILogger<FusionService> logger;
-        private readonly IOrgApiClientFactory orgApiClientFactory;
-        private readonly IFusionProfileResolver profileResolver;
 
         public FusionService(
             IFusionContextResolver fusionContextResolver,
-            ILogger<FusionService> logger,
-            IProjectOrgResolver projectOrgResolver,
-            IOrgApiClientFactory orgApiClientFactory,
-            IFusionProfileResolver profileResolver)
+            ILogger<FusionService> logger)
         {
             this.fusionContextResolver = fusionContextResolver;
             this.logger = logger;
-            this.projectOrgResolver = projectOrgResolver;
-            this.orgApiClientFactory = orgApiClientFactory;
-            this.profileResolver = profileResolver;
         }
 
         public async Task<FusionProjectMaster> ProjectMasterAsync(Guid contextId)
@@ -100,78 +83,6 @@ namespace Api.Services.FusionIntegration
             }
 
             return projectMasterContext;
-        }
-
-        private async Task<FusionProject?> ResolveFusionProjectAsync(FusionContext fusionContext)
-        {
-            try
-            {
-                ApiProjectV2? project = await ResolveProjectAsync(fusionContext, ApiClientMode.Delegate);
-
-                if (project == null)
-                    return null;
-
-                return new FusionProject(
-                    new FusionDecisionGateDates(project.Dates.Gates),
-                    project.Director?.LatestPositionInstance(DateTime.Now)?.AssignedPerson?.AzureUniqueId);
-            }
-            catch (OrgApiError apiError) when (apiError.HttpStatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
-            {
-                logger.LogWarning("An attempt was made to obtain Project data from Fusion using a DELEGATED token, " +
-                                  "which failed. Doing a fallback using APPLICATION token, but where DG-dates are " +
-                                  "being replaced with mock data, as we are not sure if the user actually is " +
-                                  "permitted to see this");
-                ApiProjectV2? project = await ResolveProjectAsync(fusionContext, ApiClientMode.Application);
-
-                if (project == null)
-                    return null;
-
-                return new FusionProject(
-                    FusionDecisionGateDates.MockDates(),
-                    project.Director.LatestPositionInstance(DateTime.Now)?.AssignedPerson?.AzureUniqueId);
-            }
-        }
-
-        private async Task<ApiProjectV2?> ResolveProjectAsync(FusionContext projectMasterFusionContext, ApiClientMode clientMode)
-        {
-
-            var orgChartContext = await ResolveOrgChart(projectMasterFusionContext);
-            if (orgChartContext == null)
-                return null;
-
-            IOrgApiClient orgApiClient = orgApiClientFactory.CreateClient(clientMode);
-            return await orgApiClient.GetProjectOrDefaultV2Async(orgChartContext.ExternalId);
-        }
-
-        private async Task<FusionContext?> ResolveOrgChart(FusionContext projectMasterContext)
-        {
-            IEnumerable<FusionContext> projectMasterRelations = await FusionContextRelationsAsync(projectMasterContext);
-            return projectMasterRelations.FirstOrDefault(relationContext => relationContext.Type == FusionContextType.OrgChart);
-        }
-
-        private async Task<IEnumerable<FusionContext>> FusionContextRelationsAsync(FusionContext fusionContext)
-        {
-            return await fusionContextResolver.GetContextRelationsAsync(fusionContext);
-        }
-
-        public Task<IDictionary<Guid, Guid?>> ResolvePersonIdsFromPositionIdsAsync(IEnumerable<Guid> positionIds)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Guid?> ResolvePersonIdFromPositionIdAsync(Guid positionId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string?> ResolveUserEmailFromPersonId(Guid azureUniqueId)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ProjectMaster> IFusionService.ProjectMasterAsync(Guid contextId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

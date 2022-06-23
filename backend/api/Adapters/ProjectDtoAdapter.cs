@@ -110,7 +110,7 @@ namespace api.Adapters
                 int? minYear = null;
                 var valuesDict = new SortedDictionary<int, double>();
 
-                void CalculateCapexYear(TimeSeriesDto<double> timeSeries)
+                void CalculateCapexYear(TimeSeriesDto<double>? timeSeries)
                 {
                     if (timeSeries == null)
                     {

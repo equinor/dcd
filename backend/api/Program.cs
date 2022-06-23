@@ -8,8 +8,6 @@ using Azure.Identity;
 
 using Equinor.TI.CommonLibrary.Client;
 
-using Fusion.Integration.Configuration;
-
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -28,10 +26,7 @@ Console.WriteLine("Loading config for: " + environment);
 configBuilder.AddAzureAppConfiguration(options =>
     options
     .Connect(azureAppConfigConnectionString)
-    .ConfigureKeyVault(x =>
-    {
-        x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true }));
-    })
+    .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true })))
     .Select(KeyFilter.Any, LabelFilter.Null)
     .Select(KeyFilter.Any, environment)
 );
@@ -50,35 +45,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Setup in memory DB SQL lite for test purposes
 string _sqlConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
 
-
 if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnectionString))
 {
-    if (environment == "dev")
+    if (environment == "localdev")
     {
-        DbContextOptionsBuilder<DcdDbContext> dBbuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        DbContextOptionsBuilder<DcdDbContext> dBbuilder = new();
         _sqlConnectionString = new SqliteConnectionStringBuilder { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }.ToString();
 
-        SqliteConnection _connectionToInMemorySqlite = new SqliteConnection(_sqlConnectionString);
+        SqliteConnection _connectionToInMemorySqlite = new(_sqlConnectionString);
         _connectionToInMemorySqlite.Open();
         dBbuilder.UseSqlite(_connectionToInMemorySqlite);
 
-        using (DcdDbContext context = new DcdDbContext(dBbuilder.Options))
-        {
-            context.Database.EnsureCreated();
-            SaveSampleDataToDB.PopulateDb(context);
-        }
-
+        using DcdDbContext context = new(dBbuilder.Options);
+        context.Database.EnsureCreated();
+        SaveSampleDataToDB.PopulateDb(context);
     }
     else
     {
-        DbContextOptionsBuilder<DcdDbContext> dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        DbContextOptionsBuilder<DcdDbContext> dbBuilder = new();
         dbBuilder.UseSqlServer(sqlConnectionString);
-        using (DcdDbContext context = new DcdDbContext(dbBuilder.Options))
-        {
-            context.Database.EnsureCreated();
-        }
+        using DcdDbContext context = new(dbBuilder.Options);
+        context.Database.EnsureCreated();
     }
-
 }
 // Set up CORS
 var _accessControlPolicyName = "AllowSpecificOrigins";
@@ -104,7 +92,7 @@ var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
     InstrumentationKey = config["ApplicationInsightInstrumentationKey"]
 };
 
-if (environment == "dev")
+if (environment == "localdev")
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 }
@@ -119,9 +107,6 @@ builder.Services.AddFusionIntegration(options =>
     options.UseServiceInformation("ConceptApp", "CI");
 
     options.AddFusionAuthorization();
-    // options.AddFusionRoles();
-    // options.AddMeetings();
-    // options.AddOrgIntegration();
 
     options.UseDefaultEndpointResolver("CI");
     options.UseDefaultTokenProvider(opts =>
@@ -135,7 +120,6 @@ builder.Services.AddFusionIntegration(options =>
     options.ApplicationMode = true;
 });
 
-// builder.Services.AddSingleton<IFusionTokenProvider, ConceptAppFusionTokenProvider>();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
@@ -151,10 +135,7 @@ builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryCli
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ImportProspService>();
-builder.Services.AddControllers(options =>
-{
-    options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()));
-}
+builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 
 );
 builder.Services.AddScoped<SurfService>();
@@ -162,7 +143,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();

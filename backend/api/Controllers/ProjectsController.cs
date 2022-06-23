@@ -27,7 +27,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{projectId}", Name = "GetProject")]
-        public ProjectDto Get(Guid projectId)
+        public async Task<ProjectDto> GetAsync(Guid projectId)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace api.Controllers
             }
             catch (NotFoundInDBException)
             {
-                var projectMaster = _fusionService.ProjectMasterAsync(projectId).GetAwaiter().GetResult();
+                var projectMaster = await _fusionService.ProjectMasterAsync(projectId);
                 if (projectMaster != null)
                 {
                     DateTimeOffset createDate = DateTimeOffset.UtcNow;
@@ -56,7 +56,7 @@ namespace api.Controllers
                     var project = ProjectAdapter.Convert(projectDto);
                     return _projectService.CreateProject(project);
                 }
-                throw new NotFoundInDBException(string.Format("Project {0} not found", projectId)); 
+                throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
             }
         }
 
