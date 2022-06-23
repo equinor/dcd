@@ -22,6 +22,18 @@ namespace api.Controllers
             _wellService = wellService;
         }
 
+        [HttpGet("{wellId}", Name = "GetWell")]
+        public WellDto GetWell(Guid wellId)
+        {
+            return _wellService.GetWellDto(wellId);
+        }
+
+        [HttpGet(Name = "GetWells")]
+        public IEnumerable<WellDto>? GetWells()
+        {
+            return _wellService.GetAllDtos();
+        }
+
         [HttpPost(Name = "CreateWell")]
         public ProjectDto CreateWell([FromBody] WellDto wellDto)
         {

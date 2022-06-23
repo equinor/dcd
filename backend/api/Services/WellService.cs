@@ -50,6 +50,38 @@ namespace api.Services
             return well;
         }
 
+        public WellDto GetWellDto(Guid wellId)
+        {
+            var well = GetWell(wellId);
+            var wellDto = WellDtoAdapter.Convert(well);
+
+            return wellDto;
+        }
+
+        public IEnumerable<Well> GetAll()
+        {
+            if (_context.Wells != null)
+            {
+                return _context.Wells;
+            }
+            else
+            {
+                _logger.LogInformation("No Wells existing");
+                return new List<Well>();
+            }
+        }
+
+        public IEnumerable<WellDto> GetDtosForProject(Guid projectId)
+        {
+            var wells = GetWells(projectId);
+            var wellsDtos = new List<WellDto>();
+            foreach(Well well in wells)
+            {
+                wellsDtos.Add(WellDtoAdapter.Convert(well));
+            }
+            return wellsDtos;
+        }
+
         public IEnumerable<Well> GetWells(Guid projectId)
         {
             if (_context.Wells != null)
@@ -60,6 +92,26 @@ namespace api.Services
             else
             {
                 return new List<Well>();
+            }
+        }
+
+        public IEnumerable<WellDto> GetAllDtos()
+        {
+            if (GetAll().Any())
+            {
+                var wells = GetAll();
+                var wellDtos = new List<WellDto>();
+                foreach (Well well in wells)
+                {
+                    var wellDto = WellDtoAdapter.Convert(well);
+                    wellDtos.Add(wellDto);
+                }
+
+                return wellDtos;
+            }
+            else
+            {
+                return new List<WellDto>();
             }
         }
     }
