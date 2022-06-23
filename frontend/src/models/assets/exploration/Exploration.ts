@@ -8,7 +8,6 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     id?: string | undefined
     projectId?: string | undefined
     name?: string | undefined
-    wellType?: Components.Schemas.WellType | undefined
     costProfile?: ExplorationCostProfile | undefined
     drillingSchedule?: ExplorationDrillingSchedule | undefined
     gAndGAdminCost?: GAndGAdminCost | undefined
@@ -21,7 +20,6 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
             this.id = data.id
             this.projectId = data.projectId
             this.name = data.name ?? ""
-            this.wellType = data.wellType
             this.costProfile = ExplorationCostProfile.fromJSON(data.costProfile)
             this.drillingSchedule = ExplorationDrillingSchedule.fromJSON(data.drillingSchedule)
             this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)

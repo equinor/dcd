@@ -126,7 +126,6 @@ public class ExplorationServiceShould : IDisposable
             Name = "Test-exploration-23",
             Project = project,
             ProjectId = project.Id,
-            WellType = WellType.Gas,
             RigMobDemob = 32.7
         }
               .WithExplorationCostProfile(new ExplorationCostProfile()
@@ -160,7 +159,6 @@ public class ExplorationServiceShould : IDisposable
             Name = "Test-exploration-23",
             Project = project,
             ProjectId = project.Id,
-            WellType = WellType.Gas,
             RigMobDemob = 32.7
         }
                  .WithExplorationCostProfile(new ExplorationCostProfile()

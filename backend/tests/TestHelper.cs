@@ -355,7 +355,6 @@ namespace tests
             else
             {
                 Assert.Equal(expected.Name, actual.Name);
-                Assert.Equal(expected.WellType, actual.WellType);
 
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
                 Assert.Equal(expected.CostProfile.Exploration.Name,

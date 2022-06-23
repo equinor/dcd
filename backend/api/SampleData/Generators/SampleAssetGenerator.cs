@@ -261,7 +261,6 @@ public static class SampleAssetGenerator
             .WithExploration(new ExplorationBuilder
             {
                 Name = "Exploration",
-                WellType = WellType.Oil,
                 RigMobDemob = 122.4
             }
                 .WithExplorationCostProfile(new ExplorationCostProfile

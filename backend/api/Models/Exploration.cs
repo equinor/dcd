@@ -8,7 +8,6 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public WellType WellType { get; set; } // to be replaced by exploration well type
         public ExplorationCostProfile? CostProfile { get; set; }
         public ExplorationDrillingSchedule? DrillingSchedule { get; set; }
         public GAndGAdminCost? GAndGAdminCost { get; set; }

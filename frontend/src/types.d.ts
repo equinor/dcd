@@ -12,6 +12,10 @@ declare namespace Components {
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationOffshoreFacilities?: CessationOffshoreFacilities;
         }
+        export interface CapexYear {
+            values?: number /* double */[] | null;
+            startYear?: number | null; // int32
+        }
         export interface Case {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -40,10 +44,6 @@ declare namespace Components {
             transportLink?: string; // uuid
             explorationLink?: string; // uuid
             well?: Well;
-        }
-        export interface CapexYear {
-            values?: number /* double */[] | null;
-            startYear?: number | null; // int32
         }
         export interface CaseDto {
             id?: string; // uuid
@@ -169,7 +169,6 @@ declare namespace Components {
             project?: Project;
             projectId?: string; // uuid
             name?: string | null;
-            wellType?: WellType /* int32 */;
             costProfile?: ExplorationCostProfile;
             drillingSchedule?: ExplorationDrillingSchedule;
             gAndGAdminCost?: GAndGAdminCost;
@@ -210,7 +209,6 @@ declare namespace Components {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
-            wellType?: WellType /* int32 */;
             costProfile?: ExplorationCostProfileDto;
             drillingSchedule?: ExplorationDrillingScheduleDto;
             gAndGAdminCost?: GAndGAdminCostDto;
@@ -746,7 +744,7 @@ declare namespace Components {
             projectId?: string; // uuid
             name?: string | null;
             project?: Project;
-            wellType?: WellTypeNew;
+            wellType?: WellType;
             explorationWellType?: ExplorationWellType;
             wellInterventionCost?: number; // double
             plugingAndAbandonmentCost?: number; // double
@@ -756,7 +754,7 @@ declare namespace Components {
             projectId?: string; // uuid
             name?: string | null;
             project?: Project;
-            wellType?: WellTypeNew;
+            wellType?: WellType;
             explorationWellType?: ExplorationWellType;
             wellInterventionCost?: number; // double
             plugingAndAbandonmentCost?: number; // double
@@ -773,7 +771,7 @@ declare namespace Components {
             annualWellInterventionCost?: number; // double
             pluggingAndAbandonment?: number; // double
             currency?: Currency /* int32 */;
-            wellType?: WellTypeNew;
+            wellType?: WellType;
         }
         export interface WellProjectCostProfile {
             id?: string; // uuid
@@ -803,11 +801,9 @@ declare namespace Components {
             annualWellInterventionCost?: number; // double
             pluggingAndAbandonment?: number; // double
             currency?: Currency /* int32 */;
-            wellType?: WellTypeNew;
+            wellType?: WellType;
         }
-        export type WellType = 0 | 1; // int32
-        export type WellTypeCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
-        export interface WellTypeNew {
+        export interface WellType {
             id?: string; // uuid
             name?: string | null;
             category?: WellTypeCategory /* int32 */;
@@ -815,6 +811,7 @@ declare namespace Components {
             drillingDays?: number; // double
             description?: string | null;
         }
+        export type WellTypeCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
     }
 }
 declare namespace Paths {

@@ -32,13 +32,13 @@ namespace api.Adapters
             existing.ExplorationWellType = Convert(wellDto.ExplorationWellType);
         }
 
-        private static WellTypeNew Convert(WellTypeNew? wellType)
+        private static WellType Convert(WellType? wellType)
         {
             if (wellType == null)
             {
                 return null!;
             }
-            return new WellTypeNew
+            return new WellType
             {
                 Name = wellType.Name,
                 DrillingDays = wellType.DrillingDays,

@@ -6,7 +6,7 @@ export class Well implements Components.Schemas.WellDto {
     projectId?: string | undefined
     wellInterventionCost?: number | undefined
     plugingAndAbandonmentCost?: number | undefined
-    wellType?: Components.Schemas.WellTypeNew | undefined
+    wellType?: Components.Schemas.WellType | undefined
     explorationWellType?: Components.Schemas.ExplorationWellType | undefined
 
     constructor(data?: Components.Schemas.WellDto) {

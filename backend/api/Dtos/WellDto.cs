@@ -8,7 +8,7 @@ namespace api.Dtos
         public Guid ProjectId { get; set; }
         public string? Name { get; set; }
         public Project Project { get; set; } = null!;
-        public WellTypeNew? WellType { get; set; }
+        public WellType? WellType { get; set; }
         public ExplorationWellType? ExplorationWellType { get; set; }
         public double WellInterventionCost { get; set; }
         public double PlugingAndAbandonmentCost { get; set; }

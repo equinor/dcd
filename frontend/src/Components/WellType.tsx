@@ -10,7 +10,7 @@ const WrapperColumn = styled.div`
 `
 
 interface Props {
-    wellType: Components.Schemas.WellTypeNew | Components.Schemas.ExplorationWellType | undefined
+    wellType: Components.Schemas.WellType | Components.Schemas.ExplorationWellType | undefined
 }
 
 const WellType = ({

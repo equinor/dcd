@@ -14,7 +14,7 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     annualWellInterventionCost?: number | undefined
     pluggingAndAbandonment?: number | undefined
     currency?: Components.Schemas.Currency
-    wellType?: Components.Schemas.WellTypeNew | undefined
+    wellType?: Components.Schemas.WellType | undefined
 
     constructor(data?: Components.Schemas.WellProjectDto) {
         if (data !== undefined) {

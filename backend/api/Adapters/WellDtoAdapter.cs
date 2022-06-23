@@ -20,13 +20,13 @@ namespace api.Adapters
             return wellDto;
         }
 
-        public static WellTypeNew? Convert(WellTypeNew? wellType)
+        public static WellType? Convert(WellType? wellType)
         {
             if (wellType == null)
             {
                 return null!;
             }
-            return new WellTypeNew
+            return new WellType
             {
                 Name = wellType.Name,
                 DrillingDays = wellType.DrillingDays,
