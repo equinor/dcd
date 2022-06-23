@@ -412,7 +412,6 @@ namespace tests
             {
                 Assert.Equal(expected.ProjectId, actual.ProjectId);
                 Assert.Equal(expected.Name, actual.Name);
-                Assert.Equal(expected.WellType, actual.WellType);
 
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
                 TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
