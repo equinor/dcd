@@ -1,6 +1,9 @@
 using api.Adapters;
 using api.Context;
 using api.Dtos;
+using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
@@ -29,10 +32,35 @@ namespace api.Services
 
         public ProjectDto UpdateWell(WellDto updatedWellDto)
         {
-            var updatedWell = WellAdapter.Convert(updatedWellDto);
-            _context.Wells!.Update(updatedWell);
+            var existing = GetWell(updatedWellDto.Id);
+            WellAdapter.ConvertExisting(existing, updatedWellDto);
+            _context.Wells!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(updatedWell.ProjectId);
+            return _projectService.GetProjectDto(existing.ProjectId);
+        }
+
+        public Well GetWell(Guid wellId)
+        {
+            var well = _context.Wells!
+                        .FirstOrDefault(w => w.Id == wellId);
+            if (well == null)
+            {
+                throw new ArgumentException(string.Format("Well {0} not found.", wellId));
+            }
+            return well;
+        }
+
+        public IEnumerable<Well> GetWells(Guid projectId)
+        {
+            if (_context.Wells != null)
+            {
+                return _context.Wells
+                    .Where(d => d.Project.Id.Equals(projectId));
+            }
+            else
+            {
+                return new List<Well>();
+            }
         }
     }
 }
