@@ -38,6 +38,14 @@ const Wrapper = styled.div`
     flex-direction: row;
 `
 
+const DividerLine = styled.div`
+    background: gray;
+    height: 0.05rem;
+    width: 50rem;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+`
+
 function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -111,6 +119,7 @@ function CaseView() {
     if (!project) return null
 
     return (
+
         <CaseViewDiv>
             <CaseName
                 caseItem={caseItem}
@@ -150,7 +159,7 @@ function CaseView() {
                         dGName="DG3"
                     />
                 </Wrapper>
-                <Wrapper>
+                <Wrapper style={{ marginBottom: -35 }}>
                     <CaseDGDate
                         caseItem={caseItem}
                         setProject={setProject}
@@ -166,19 +175,23 @@ function CaseView() {
                         dGName="DG4"
                     />
                 </Wrapper>
-                <CaseArtificialLift
-                    currentValue={artificialLift}
-                    setArtificialLift={setArtificialLift}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                />
-                <ProductionStrategyOverview
-                    currentValue={prodStratOverview}
-                    setProductionStrategyOverview={setProdStratOverview}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                />
-                <Wrapper>
+                <DividerLine />
+                <Wrapper style={{ marginBottom: -15 }}>
+                    <CaseArtificialLift
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setProject={setProject}
+                        caseItem={caseItem}
+                    />
+                    <ProductionStrategyOverview
+                        currentValue={prodStratOverview}
+                        setProductionStrategyOverview={setProdStratOverview}
+                        setProject={setProject}
+                        caseItem={caseItem}
+                    />
+                </Wrapper>
+                <DividerLine />
+                <Wrapper style={{ marginBottom: 45 }}>
                     <NumberInput
                         setValue={setProducerCount}
                         value={producerCount ?? 0}
@@ -208,6 +221,7 @@ function CaseView() {
                         label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                     />
                 </Wrapper>
+                <DividerLine />
                 <CaseAsset
                     caseItem={caseItem}
                     project={project}
