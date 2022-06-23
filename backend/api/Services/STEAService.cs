@@ -13,9 +13,9 @@ namespace api.Services
         private readonly ProjectService _projectService;
         private readonly ILogger<STEAService> _logger;
 
-        public STEAService(DcdDbContext context, ILoggerFactory loggerFactory, FusionService fusionService)
+        public STEAService(DcdDbContext context, ILoggerFactory loggerFactory)
         {
-            _projectService = new ProjectService(context, loggerFactory, fusionService);
+            _projectService = new ProjectService(context, loggerFactory);
             _logger = loggerFactory.CreateLogger<STEAService>();
         }
 

@@ -27,9 +27,7 @@ namespace api.Services
         private readonly CaseService _caseService;
         private readonly ILogger<ProjectService> _logger;
 
-        private readonly FusionService _fusionService;
-
-        public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, FusionService fusionService)
+        public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger<ProjectService>();
@@ -41,7 +39,6 @@ namespace api.Services
             _caseService = new CaseService(_context, this, loggerFactory);
             _explorationService = new ExplorationService(_context, this, loggerFactory);
             _transportService = new TransportService(_context, this, loggerFactory);
-            _fusionService = fusionService;
         }
 
         public ProjectDto UpdateProject(ProjectDto projectDto)
@@ -152,57 +149,34 @@ namespace api.Services
 
         public Project? GetProject(Guid projectId)
         {
-            try
+            if (_context.Projects != null)
             {
-                if (_context.Projects != null)
-                {
-                    var project = _context.Projects
-                        .Include(c => c.Cases)
-                        .FirstOrDefault(p => p.Id.Equals(projectId));
+                var project = _context.Projects
+                    .Include(c => c.Cases)
+                    .FirstOrDefault(p => p.Id.Equals(projectId));
 
-                    if (project == null)
-                    {
-                        var projectByFusionId = _context.Projects
-                        .Include(c => c.Cases)
-                        .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
-                        if (projectByFusionId == null)
-                        {
-                            throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
-                        }
-                    }
-                    Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
-                        new JsonSerializerSettings()
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        }));
-                    AddAssetsToProject(project);
-                    _logger.LogInformation("Add assets to project", project.ToString());
-                    return project;
-                }
-            }
-            catch (NotFoundInDBException)
-            {
-                // _logger.LogError(new NotFoundInDBException($"The database contains no projects"), "no projects");
-                // throw new NotFoundInDBException($"The database contains no projects");
-                DateTimeOffset createDate = DateTimeOffset.UtcNow;
-                var fusionProjectMaster = _fusionService.ProjectMasterAsync(projectId).GetAwaiter().GetResult();
-                var newProject = new Project
+                if (project == null)
                 {
-                    Name = fusionProjectMaster.Description,
-                    Description = fusionProjectMaster.Description,
-                    CreateDate = createDate,
-                    FusionProjectId = projectId,
-                    Id = projectId,
-                    Country = fusionProjectMaster.Country,
-                    Currency = Currency.NOK,
-                    PhysicalUnit = PhysUnit.SI,
-                    CommonLibraryName = fusionProjectMaster.Description,
-                };
-                var project = CreateProject(newProject);
-                var projectDto = ProjectAdapter.Convert(project);
-                return projectDto;
+                    var projectByFusionId = _context.Projects
+                    .Include(c => c.Cases)
+                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                    if (projectByFusionId == null)
+                    {
+                        throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+                    }
+                    project = projectByFusionId;
+                }
+                Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    }));
+                AddAssetsToProject(project);
+                _logger.LogInformation("Add assets to project", project.ToString());
+                return project;
             }
-            return null;
+            _logger.LogError(new NotFoundInDBException($"The database contains no projects"), "no projects");
+            throw new NotFoundInDBException($"The database contains no projects");
         }
 
         public Project CreateFusionProject(Project project)
@@ -249,40 +223,9 @@ namespace api.Services
             return GetProject(project.Id);
         }
 
-        // public Project CreateProjectFromFusion(Guid fusionProjectId)
-        // {
-        //     DateTimeOffset createDate = DateTimeOffset.UtcNow;
-
-        //     Project newProject = new Project
-        //     {
-        //         Id = fusionProjectId,
-        //         CreateDate = createDate
-        //     };
-
-        //     _context.Projects.Add(newProject);
-
-        //     _context.SaveChanges();
-        //     return newProject;
-        // }
-
         public ProjectDto GetProjectDto(Guid projectId)
         {
             var project = GetProject(projectId);
-            var projectDto = ProjectDtoAdapter.Convert(project);
-
-            Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
-            new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            }));
-
-            _logger.LogInformation(nameof(projectDto));
-            return projectDto;
-        }
-
-        public ProjectDto GetProjectDtoByFusionProjectId(Guid fusionProjectId)
-        {
-            var project = GetProject(fusionProjectId);
             var projectDto = ProjectDtoAdapter.Convert(project);
 
             Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
