@@ -103,19 +103,17 @@ else
 
 builder.Services.AddFusionIntegration(options =>
 {
-    var fusionEnvironment = config["Fusion:Environment"];
-    options.UseServiceInformation("ConceptApp", "CI");
+    var fusionEnvironment = "CI"; //config["Fusion:Environment"];
+    options.UseServiceInformation("ConceptApp", fusionEnvironment);
 
     options.AddFusionAuthorization();
 
-    options.UseDefaultEndpointResolver("CI");
+    options.UseDefaultEndpointResolver(fusionEnvironment);
     options.UseDefaultTokenProvider(opts =>
     {
         opts.ClientId = config["AzureAd:ClientId"];
         opts.ClientSecret = config["AzureAd:ClientSecret"];
     });
-
-    Console.WriteLine(config["AzureAd:ClientId"]);
 
     options.ApplicationMode = true;
 });

@@ -146,8 +146,8 @@ namespace api.Services
                 if (project == null)
                 {
                     var projectByFusionId = _context.Projects
-                    .Include(c => c.Cases)
-                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                        .Include(c => c.Cases)
+                        .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
                     if (projectByFusionId == null)
                     {
                         throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
