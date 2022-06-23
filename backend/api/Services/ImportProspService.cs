@@ -95,6 +95,9 @@ namespace api.Services
             var artificialLift = MapArtificialLift(artificialLiftInt);
             var riserCount = ReadIntValue(cellData, "K36");
             var templateCount = ReadIntValue(cellData, "K32");
+            var producerCount = ReadIntValue(cellData, "E38");
+            var waterInjectorCount = ReadIntValue(cellData, "E39");
+            var gasInjectorCount = ReadIntValue(cellData, "E40");
 
             //TODO: Add cessation cost from PROSP after feedback from PO
             // var cessationCost = ReadDoubleValue(parsedData, "K88");
@@ -127,7 +130,10 @@ namespace api.Services
                 CostYear = costYear,
                 Maturity = Maturity.A,
                 DG3Date = dG3Date,
-                DG4Date = dG4Date
+                DG4Date = dG4Date,
+                ProducerCount = producerCount,
+                GasInjectorCount = gasInjectorCount,
+                WaterInjectorCount = waterInjectorCount
             };
             var dto = SurfDtoAdapter.Convert(newSurf);
             _surfService.CreateSurf(dto, sourceCaseId);
