@@ -2,9 +2,13 @@ using api.Context;
 using api.SampleData.Generators;
 using api.Services;
 
+using Api.Services.FusionIntegration;
+
 using Azure.Identity;
 
 using Equinor.TI.CommonLibrary.Client;
+
+using Fusion.Integration.Configuration;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -49,7 +53,7 @@ string _sqlConnectionString = builder.Configuration.GetSection("Database").GetVa
 
 if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnectionString))
 {
-    if (environment == "localdev")
+    if (environment == "dev")
     {
         DbContextOptionsBuilder<DcdDbContext> dBbuilder = new DbContextOptionsBuilder<DcdDbContext>();
         _sqlConnectionString = new SqliteConnectionStringBuilder { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }.ToString();
@@ -100,7 +104,7 @@ var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
     InstrumentationKey = config["ApplicationInsightInstrumentationKey"]
 };
 
-if (environment == "localdev")
+if (environment == "dev")
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 }
@@ -108,8 +112,33 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
+
+builder.Services.AddFusionIntegration(options =>
+{
+    var fusionEnvironment = config["Fusion:Environment"];
+    options.UseServiceInformation("ConceptApp", "CI");
+
+    options.AddFusionAuthorization();
+    // options.AddFusionRoles();
+    // options.AddMeetings();
+    // options.AddOrgIntegration();
+
+    options.UseDefaultEndpointResolver("CI");
+    options.UseDefaultTokenProvider(opts =>
+    {
+        opts.ClientId = config["AzureAd:ClientId"];
+        opts.ClientSecret = config["AzureAd:ClientSecret"];
+    });
+
+    Console.WriteLine(config["AzureAd:ClientId"]);
+
+    options.ApplicationMode = true;
+});
+
+// builder.Services.AddSingleton<IFusionTokenProvider, ConceptAppFusionTokenProvider>();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<FusionService>();
 builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();
 builder.Services.AddScoped<ExplorationService>();

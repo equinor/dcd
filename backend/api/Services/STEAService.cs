@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Api.Services.FusionIntegration;
+
 namespace api.Services
 {
     public class STEAService
@@ -11,9 +13,9 @@ namespace api.Services
         private readonly ProjectService _projectService;
         private readonly ILogger<STEAService> _logger;
 
-        public STEAService(DcdDbContext context, ILoggerFactory loggerFactory)
+        public STEAService(DcdDbContext context, ILoggerFactory loggerFactory, FusionService fusionService)
         {
-            _projectService = new ProjectService(context, loggerFactory);
+            _projectService = new ProjectService(context, loggerFactory, fusionService);
             _logger = loggerFactory.CreateLogger<STEAService>();
         }
 
