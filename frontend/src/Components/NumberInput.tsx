@@ -35,7 +35,7 @@ const NumberInput = ({
     }
 
     return (
-        <WrapperColumn style={{ paddingLeft: 10 }}>
+        <WrapperColumn>
             <Label htmlFor="NumberInput" label={label} />
             <Input
                 id="NumberInput"
