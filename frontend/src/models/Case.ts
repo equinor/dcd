@@ -1,5 +1,6 @@
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
+    capexYear?: Components.Schemas.CapexYear
     createdAt?: Date | null
     description?: string
     DG0Date?: Date | null
@@ -28,6 +29,7 @@ export class Case implements Components.Schemas.CaseDto {
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
+        this.capexYear = data.capexYear
         this.createdAt = data.createTime ? new Date(data.createTime) : null
         this.description = data.description ?? ""
         this.DG0Date = data.dG0Date ? new Date(data.dG0Date) : null

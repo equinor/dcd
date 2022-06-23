@@ -38,7 +38,8 @@ namespace api.Adapters
                 Source = topside.Source,
                 ApprovedBy = topside.ApprovedBy,
                 DG3Date = topside.DG3Date,
-                DG4Date = topside.DG4Date
+                DG4Date = topside.DG4Date,
+                FacilityOpex = topside.FacilityOpex
             };
             return topsideDto;
         }

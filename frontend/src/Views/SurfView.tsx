@@ -116,8 +116,10 @@ const SurfView = () => {
                 setCessationCostProfile(newSurf.cessationCostProfile)
 
                 if (caseResult?.DG4Date) {
+                    const dg4 = newSurf?.source === 1 ? newSurf.DG4Date?.getFullYear()
+                        : caseResult.DG4Date.getFullYear()
                     initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
+                        dg4!,
                         [newSurf.costProfile, newSurf.cessationCostProfile],
                         setFirstTSYear,
                         setLastTSYear,
@@ -150,8 +152,10 @@ const SurfView = () => {
             newSurf.cessationCostProfile = cessationCostProfile
 
             if (caseItem?.DG4Date) {
+                const dg4 = newSurf?.source === 1 ? newSurf.DG4Date?.getFullYear()
+                    : caseItem.DG4Date.getFullYear()
                 initializeFirstAndLastYear(
-                    caseItem?.DG4Date?.getFullYear(),
+                    dg4!,
                     [costProfile, cessationCostProfile],
                     setFirstTSYear,
                     setLastTSYear,
@@ -308,7 +312,7 @@ const SurfView = () => {
                 setProductionFlowline={setProductionFlowline}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
@@ -319,7 +323,7 @@ const SurfView = () => {
                 setLastYear={setLastTSYear}
             />
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCessationCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={cessationCostProfile}

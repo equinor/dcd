@@ -8,7 +8,9 @@ import {
 } from "./DataTable/helpers"
 import Import from "./Import/Import"
 import { ITimeSeries } from "../models/ITimeSeries"
-import { ImportButton, Wrapper, WrapperColumn } from "../Views/Asset/StyledAssetComponents"
+import {
+    DeleteButton, ImportButton, Wrapper, WrapperColumn,
+} from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
     dG4Year: number | undefined
@@ -115,19 +117,22 @@ const TimeSeries = ({
         <>
             <Wrapper>
                 <Typography variant="h4">{timeSeriesTitle}</Typography>
+            </Wrapper>
+            <Wrapper>
                 <ImportButton
                     onClick={() => { setDialogOpen(true) }}
                 >
                     {timeSeries !== undefined ? "Edit" : "Import"}
                 </ImportButton>
-                <ImportButton
+                <DeleteButton
                     disabled={timeSeries === undefined}
                     color="danger"
                     onClick={deleteTimeseries}
                 >
                     Delete
-                </ImportButton>
+                </DeleteButton>
             </Wrapper>
+
             <WrapperColumn>
                 <DataTable
                     columns={columns}
