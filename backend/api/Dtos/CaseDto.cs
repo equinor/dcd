@@ -31,7 +31,7 @@ namespace api.Dtos
         public Guid TransportLink { get; set; }
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
-        public Well? Well { get; set; }
+        public ICollection<Well>? Wells { get; set; }
         public CapexYear? CapexYear { get; set; }
     }
 

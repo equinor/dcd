@@ -35,7 +35,7 @@ namespace api.Adapters
                 GasInjectorCount = case_.GasInjectorCount,
                 WaterInjectorCount = case_.WaterInjectorCount,
                 FacilitiesAvailability = case_.FacilitiesAvailability,
-                Well = case_.Well
+                Wells = case_.Wells
             };
 
             return caseDto;
