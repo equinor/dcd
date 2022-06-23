@@ -60,7 +60,7 @@ const NumberInputInherited = ({
     }
 
     return (
-        <WrapperColumn style={{ paddingLeft: 10 }}>
+        <WrapperColumn>
             <WrapperInherited>
                 <Label htmlFor="NumberInput" label={label} />
                 <EdsProvider density="compact">
