@@ -6,6 +6,7 @@ namespace Api.Services.FusionIntegration
     using System.Threading.Tasks;
 
     using Api.Services.FusionIntegration.Models;
+
     using Fusion.Integration;
 
     using Microsoft.Extensions.Logging;
@@ -40,11 +41,6 @@ namespace Api.Services.FusionIntegration
                 throw new Exception();
             }
 
-            // A note on the serializer/deserialize here:
-            // First of all, this is the suggested way of getting a strongly typed object from Fusion, as both described
-            // in the Fusion examples and when introspecting the .getValue()-method on fusionContext.
-            // As Fusion seems to be using Newtonsoft internally we have discovered by trial and error that this also
-            // works best here.
             var serializedProjectMaster = JsonConvert.SerializeObject(projectMasterContext.Value);
             FusionProjectMaster? fusionProjectMaster = JsonConvert.DeserializeObject<FusionProjectMaster>(serializedProjectMaster);
 
@@ -56,10 +52,6 @@ namespace Api.Services.FusionIntegration
                     contextId);
                 throw new Exception();
             }
-
-            // var fusionProject = await ResolveFusionProjectAsync(projectMasterContext);
-
-            // var orgChart = await ResolveOrgChart(projectMasterContext);
 
             return fusionProjectMaster;
         }

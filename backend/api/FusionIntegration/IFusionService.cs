@@ -4,7 +4,6 @@ namespace Api.Services.FusionIntegration
     using System.Threading.Tasks;
 
     using Api.Services.FusionIntegration.Models;
-    using Api.Services.Models;
 
     public interface IFusionService
     {
