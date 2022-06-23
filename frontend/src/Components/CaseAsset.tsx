@@ -11,6 +11,7 @@ import { unwrapCase } from "../Utils/common"
 
 const Wrapper = styled.div`
     margin-top: 1rem;
+    margin-bottom: -1rem;
     display: flex;
     flex-direction: row;
 `
