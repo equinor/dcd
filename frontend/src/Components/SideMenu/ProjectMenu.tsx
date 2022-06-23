@@ -95,7 +95,7 @@ function ProjectMenu({ project }: Props) {
                             )}
                             {projectMenuItem.name === ProjectMenuItemType.WELLS && (
                                 <nav>
-                                    <LinkWithoutStyle to={`/project/${project.id}/wells/`}>
+                                    <LinkWithoutStyle to={`/project/${project.id}/wells`}>
                                         <ProjectMenuItemWellComponent
                                             item={projectMenuItem}
                                             projectId={project.id}
