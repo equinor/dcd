@@ -5,8 +5,6 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
-using Api.Services.FusionIntegration;
-
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
@@ -24,7 +22,6 @@ namespace api.Services
         private readonly TransportService _transportService;
         private readonly ExplorationService _explorationService;
 
-        private readonly CaseService _caseService;
         private readonly ILogger<ProjectService> _logger;
 
         public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory)
@@ -36,14 +33,12 @@ namespace api.Services
             _surfService = new SurfService(_context, this, loggerFactory);
             _substructureService = new SubstructureService(_context, this, loggerFactory);
             _topsideService = new TopsideService(_context, this, loggerFactory);
-            _caseService = new CaseService(_context, this, loggerFactory);
             _explorationService = new ExplorationService(_context, this, loggerFactory);
             _transportService = new TransportService(_context, this, loggerFactory);
         }
 
         public ProjectDto UpdateProject(ProjectDto projectDto)
         {
-
             var updatedProject = ProjectAdapter.Convert(projectDto);
             _context.Projects!.Update(updatedProject);
             _context.SaveChanges();
@@ -67,17 +62,6 @@ namespace api.Services
                         {
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         }));
-
-            if (_context.Projects != null)
-            {
-                var existingProjectLibIds = _context.Projects.Select(p => p.CommonLibraryId).ToList();
-                // if (existingProjectLibIds.Contains(project.CommonLibraryId))
-                // {
-                //     // Project already exists, navigate to project
-                //     _logger.LogInformation(nameof(project));
-                //     return await GetProjectDtoAsync(_context.Projects.Where(p => p.CommonLibraryId == project.CommonLibraryId).First().Id);
-                // }
-            }
 
             if (_context.Projects == null)
             {
@@ -122,7 +106,6 @@ namespace api.Services
 
         public IEnumerable<ProjectDto> GetAllDtos()
         {
-
             if (GetAll() != null)
             {
                 var projects = GetAll();
@@ -151,6 +134,11 @@ namespace api.Services
         {
             if (_context.Projects != null)
             {
+                if (projectId == Guid.Empty)
+                {
+                    throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+                }
+
                 var project = _context.Projects
                     .Include(c => c.Cases)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
@@ -175,52 +163,8 @@ namespace api.Services
                 _logger.LogInformation("Add assets to project", project.ToString());
                 return project;
             }
-            _logger.LogError(new NotFoundInDBException($"The database contains no projects"), "no projects");
-            throw new NotFoundInDBException($"The database contains no projects");
-        }
-
-        public Project CreateFusionProject(Project project)
-        {
-            project.CreateDate = DateTimeOffset.UtcNow.Date;
-            project.Cases = new List<Case>();
-            project.DrainageStrategies = new List<DrainageStrategy>();
-            project.Substructures = new List<Substructure>();
-            project.Surfs = new List<Surf>();
-            project.Topsides = new List<Topside>();
-            project.Transports = new List<Transport>();
-            project.WellProjects = new List<WellProject>();
-            project.Explorations = new List<Exploration>();
-
-            Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
-                        new JsonSerializerSettings()
-                        {
-                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                        }));
-
-            if (_context.Projects != null)
-            {
-                var existingProjectLibIds = _context.Projects.Select(p => p.CommonLibraryId).ToList();
-                if (existingProjectLibIds.Contains(project.CommonLibraryId))
-                {
-                    // Project already exists, navigate to project
-                    _logger.LogInformation(nameof(project));
-                    return GetProject(_context.Projects.Where(p => p.CommonLibraryId == project.CommonLibraryId).First().Id);
-                }
-            }
-
-            if (_context.Projects == null)
-            {
-                _logger.LogInformation("Empty projects: ", nameof(project));
-                var projects = new List<Project>();
-                projects.Add(project);
-                _context.AddRange(projects);
-            }
-            else
-            {
-                _context.Projects.Add(project);
-            }
-            _context.SaveChanges();
-            return GetProject(project.Id);
+            _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+            throw new NotFoundInDBException("The database contains no projects");
         }
 
         public ProjectDto GetProjectDto(Guid projectId)
