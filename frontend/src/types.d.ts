@@ -43,7 +43,7 @@ declare namespace Components {
             topsideLink?: string; // uuid
             transportLink?: string; // uuid
             explorationLink?: string; // uuid
-            well?: Well;
+            wells?: Well[] | null;
         }
         export interface CaseDto {
             id?: string; // uuid
@@ -72,7 +72,7 @@ declare namespace Components {
             transportLink?: string; // uuid
             explorationLink?: string; // uuid
             capex?: number; // double
-            well?: Well;
+            wells?: Well[] | null;
             capexYear?: CapexYear;
         }
         export interface CessationOffshoreFacilities {
