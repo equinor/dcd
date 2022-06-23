@@ -41,6 +41,8 @@ namespace api.Controllers
                 {
                     DateTimeOffset createDate = DateTimeOffset.UtcNow;
 
+                    var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory);
+                    var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase);
                     ProjectDto projectDto = new()
                     {
                         Name = projectMaster.Description ?? "",
@@ -52,6 +54,8 @@ namespace api.Controllers
                         Currency = Currency.NOK,
                         PhysUnit = PhysUnit.SI,
                         ProjectId = projectId,
+                        ProjectCategory = category,
+                        ProjectPhase = phase,
                     };
                     var project = ProjectAdapter.Convert(projectDto);
                     return _projectService.CreateProject(project);
