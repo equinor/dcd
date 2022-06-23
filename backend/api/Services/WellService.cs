@@ -75,7 +75,7 @@ namespace api.Services
         {
             var wells = GetWells(projectId);
             var wellsDtos = new List<WellDto>();
-            foreach(Well well in wells)
+            foreach (Well well in wells)
             {
                 wellsDtos.Add(WellDtoAdapter.Convert(well));
             }
