@@ -53,10 +53,12 @@ namespace api.Services
         {
             var values = new List<double>();
             foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
+            {
                 if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
                 {
                     values.Add(value);
                 }
+            }
 
             return values.ToArray();
         }
@@ -317,9 +319,9 @@ namespace api.Services
             var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
                 .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
-            if (mainSheet?.Id != null)
+            if (mainSheet?.Id != null && workbookPart != null)
             {
-                var wsPart = (WorksheetPart)workbookPart?.GetPartById(mainSheet.Id)!;
+                var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
                 var cellData = wsPart?.Worksheet.Descendants<Cell>();
 
                 if (cellData != null)
