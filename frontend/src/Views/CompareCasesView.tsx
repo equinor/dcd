@@ -1,5 +1,8 @@
 import styled from "styled-components"
 import React from "react"
+import {
+    Typography,
+} from "@equinor/eds-core-react"
 import LinearDataTable from "../Components/LinearDataTable"
 
 interface Props {
@@ -24,13 +27,18 @@ const CompareCasesView = ({
 }: Props) => (
     <Wrapper>
         <ChartsContainer>
-            <LinearDataTable
-                capexYearX={capexYearX}
-                capexYearY={capexYearY}
-                caseTitles={caseTitles}
-            />
+            {capexYearX.length !== 0
+                ? (
+                    <LinearDataTable
+                        capexYearX={capexYearX}
+                        capexYearY={capexYearY}
+                        caseTitles={caseTitles}
+                    />
+                )
+                : <Typography> No cases containing CapEx to display data for</Typography> }
         </ChartsContainer>
     </Wrapper>
+
 )
 
 export default CompareCasesView
