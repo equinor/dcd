@@ -116,6 +116,7 @@ builder.Services.AddScoped<ExplorationService>();
 builder.Services.AddScoped<SurfService>();
 builder.Services.AddScoped<SubstructureService>();
 builder.Services.AddScoped<TopsideService>();
+builder.Services.AddScoped<WellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryClientOptions { TokenProviderConnectionString = commonLibTokenConnection });

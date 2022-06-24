@@ -29,7 +29,7 @@ namespace api.Controllers
         }
 
         [HttpGet(Name = "GetWells")]
-        public IEnumerable<WellDto>? GetWells()
+        public IEnumerable<WellDto> GetWells()
         {
             return _wellService.GetAllDtos();
         }
