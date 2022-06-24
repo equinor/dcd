@@ -30,6 +30,7 @@ import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
 import LinearDataTable from "../Components/LinearDataTable"
+import CaseTabs from "./CaseTabs"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -187,6 +188,7 @@ const ProjectView = () => {
 
     return (
         <Wrapper>
+            <CaseTabs project={project} />
             <Header>
                 <Typography variant="h2">{project.name}</Typography>
                 <EdsProvider density="compact">
