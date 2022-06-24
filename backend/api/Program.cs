@@ -103,7 +103,7 @@ else
 
 builder.Services.AddFusionIntegration(options =>
 {
-    var fusionEnvironment = "CI"; //config["Fusion:Environment"];
+    var fusionEnvironment = config["Fusion:Environment"] ?? "CI";
     options.UseServiceInformation("ConceptApp", fusionEnvironment);
 
     options.AddFusionAuthorization();
