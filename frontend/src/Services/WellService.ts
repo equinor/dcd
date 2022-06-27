@@ -12,6 +12,12 @@ class __WellService extends __BaseService {
         return wells.map(Well.fromJSON)
     }
 
+    public async getWellsByProjectId(projectId: string) {
+        // eslint-disable-next-line max-len
+        const wells: Components.Schemas.WellDto[] = await this.getWithParams("", { params: { projectId } })
+        return wells.map(Well.fromJSON)
+    }
+
     async getWellById(id: string) {
         const well: Components.Schemas.WellDto = await this.get<Components.Schemas.WellDto>(`/${id}`)
         return Well.fromJSON(well)

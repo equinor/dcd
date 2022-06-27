@@ -29,8 +29,12 @@ namespace api.Controllers
         }
 
         [HttpGet(Name = "GetWells")]
-        public IEnumerable<WellDto> GetWells()
+        public IEnumerable<WellDto> GetWells([FromQuery] Guid projectId)
         {
+            if (projectId != Guid.Empty)
+            {
+                return _wellService.GetDtosForProject(projectId);
+            }
             return _wellService.GetAllDtos();
         }
 

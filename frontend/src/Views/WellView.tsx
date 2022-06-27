@@ -35,6 +35,7 @@ function WellView() {
     const [createWellModalIsOpen, setCreateWellModalIsOpen] = useState<boolean>(false)
     const [wellName, setWellName] = useState<string>("")
     const [wells, setWells] = useState<Well[]>()
+    const [hasChanges, setHasChanges] = useState<boolean>()
     const params = useParams()
 
     useEffect(() => {
@@ -43,13 +44,22 @@ function WellView() {
                 const projectId: string = unwrapProjectId(params.projectId)
                 const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
-                const allWells = await GetWellService().getWells()
+            } catch (error) {
+                console.error(`[WellView] Error while fetching project ${params.projectId}`, error)
+            }
+        })()
+    }, [params.projectId])
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const allWells = await GetWellService().getWellsByProjectId(params?.projectId!)
                 setWells(allWells)
             } catch (error) {
                 console.error(`[WellView] Error while fetching project ${params.projectId}`, error)
             }
         })()
-    }, [params.projectId, wells])
+    }, [hasChanges === true])
 
     const handleWellNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const { value } = e.target
@@ -73,7 +83,9 @@ function WellView() {
                 plugingAndAbandonmentCost: 0,
                 project: currentProject,
             })
+            setHasChanges(true)
             toggleCreateWellModal()
+            setHasChanges(false)
             navigate(`/project/${projectResult.id}/wells/`)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
