@@ -40,7 +40,6 @@ public class ProjectBuilder : Project
 
     public ProjectBuilder WithWells(WellBuilder d)
     {
-        d.Project = this;
         Wells!.Add(d);
         return this;
     }

@@ -150,7 +150,8 @@ namespace api.Services
             if (_context.Projects != null)
             {
                 var project = _context.Projects
-                    .Include(c => c.Cases)
+                    .Include(p => p.Cases)
+                    .Include(p => p.Wells)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
 
                 if (project == null)

@@ -13,6 +13,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { Modal } from "../Components/Modal"
 import { GetWellService } from "../Services/WellService"
 import { Well } from "../models/Well"
+// import NumberInput from "../Components/NumberInput"
 // import { Well } from "../models/Well"
 // import { GetWellService } from "../Services/WellService"
 
@@ -34,6 +35,8 @@ function WellView() {
     const [currentProject, setProject] = useState<Project>()
     const [createWellModalIsOpen, setCreateWellModalIsOpen] = useState<boolean>(false)
     const [wellName, setWellName] = useState<string>("")
+    // const [wellInterventionCost, setWellInterventionCost] = useState<number | undefined>()
+    // const [plugingAndAbandonmentCost, setPlugingAndAbandonmentCost] = useState<number | undefined>()
     const [wells, setWells] = useState<Well[]>()
     const [hasChanges, setHasChanges] = useState<boolean>()
     const params = useParams()
@@ -66,6 +69,10 @@ function WellView() {
         setWellName(value)
     }
 
+    // // const onChangeWellInterventionCost: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    // //     setWellInterventionCost(Number(e.target.value))
+    // // }
+
     const toggleCreateWellModal = () => setCreateWellModalIsOpen(!createWellModalIsOpen)
 
     const submitCreateWellForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -81,7 +88,6 @@ function WellView() {
                 explorationWellType: undefined,
                 wellInterventionCost: 0,
                 plugingAndAbandonmentCost: 0,
-                project: currentProject,
             })
             setHasChanges(true)
             toggleCreateWellModal()
@@ -102,10 +108,9 @@ function WellView() {
             <Typography variant="h3">Implementation of Wellview in progress</Typography>
             <Typography variant="h3">{currentProject?.id}</Typography>
             <Typography variant="h3">List of Wells:</Typography>
-            {wells?.map((well) => (
-                <Typography>
-                    {well.name}
-                </Typography>
+            {wells?.map((well, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <li key={index}>{well.name}</li>
             ))}
             <Modal isOpen={createWellModalIsOpen} title="Create a well" shards={[]}>
                 <CreateWellForm>
@@ -117,6 +122,26 @@ function WellView() {
                         onChange={handleWellNameChange}
                     />
 
+                    {/* <Input
+                        id="NumberInput"
+                        onChange={onChangeWellInterventionCost}
+                        // onKeyPress={(event) => {
+                        //     if (integer && !/\d/.test(event.key)) {
+                        //         event.preventDefault()
+                        //     }
+                        // }}
+                        // setValue={setWellInterventionCost}
+                        value={wellInterventionCost ?? 0}
+                        integer
+                        label="Well intervention cost"
+                    />
+                    <Input
+                        // setHasChanges={false}
+                        setValue={setPlugingAndAbandonmentCost}
+                        value={plugingAndAbandonmentCost ?? 0}
+                        integer
+                        label="Pluging and abandonment cost"
+                    /> */}
                     <div>
                         <Button
                             type="submit"

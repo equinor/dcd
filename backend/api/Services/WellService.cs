@@ -24,7 +24,6 @@ namespace api.Services
         {
             var _well = WellAdapter.Convert(wellDto);
             var project = _projectService.GetProject(_well.ProjectId);
-            _well.Project = project;
             _context.Wells!.Add(_well);
             _context.SaveChanges();
             return _projectService.GetProjectDto(project.Id);
@@ -87,7 +86,7 @@ namespace api.Services
             if (_context.Wells != null)
             {
                 return _context.Wells
-                    .Where(d => d.Project.Id.Equals(projectId));
+                    .Where(d => d.ProjectId.Equals(projectId));
             }
             else
             {
