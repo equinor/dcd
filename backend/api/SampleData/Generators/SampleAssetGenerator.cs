@@ -108,6 +108,30 @@ public static class SampleAssetGenerator
             ProjectCategory = ProjectCategory.OffshoreWind,
             ProjectPhase = ProjectPhase.BusinessPlanning
         }
+            .WithWells(new WellBuilder
+            {
+                Name = "Well1",
+                WellInterventionCost = 53,
+                PlugingAndAbandonmentCost = 24,
+                ExplorationWellType = (new ExplorationWellTypeBuilder
+                {
+                    Name = "Exploration Well Type 1",
+                    Description = "Description for exploration well type 1",
+                    Category = 0,
+                    WellCost = 54,
+                    DrillingDays = 82,
+                }),
+                WellType = (new WellTypeBuilder
+                {
+                    Name = "Well Type 1",
+                    Description = "Description for well type 1",
+                    Category = 0,
+                    WellCost = 5,
+                    DrillingDays = 8,
+                }
+                )
+            }
+            )
             .WithDrainageStrategy(new DrainageStrategyBuilder
             {
                 Name = "DrainStrat 1",

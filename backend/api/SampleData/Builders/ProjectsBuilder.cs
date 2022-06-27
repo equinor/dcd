@@ -35,6 +35,14 @@ public class ProjectBuilder : Project
         Topsides = new List<Topside>();
         Transports = new List<Transport>();
         Explorations = new List<Exploration>();
+        Wells = new List<Well>();
+    }
+
+    public ProjectBuilder WithWells(WellBuilder d)
+    {
+        d.Project = this;
+        Wells!.Add(d);
+        return this;
     }
 
     public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)

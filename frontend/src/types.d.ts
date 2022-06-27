@@ -44,6 +44,7 @@ declare namespace Components {
             transportLink?: string; // uuid
             explorationLink?: string; // uuid
             wells?: Well[] | null;
+            wellsLink?: string; // uuid
         }
         export interface CaseDto {
             id?: string; // uuid
@@ -73,6 +74,7 @@ declare namespace Components {
             explorationLink?: string; // uuid
             capex?: number; // double
             wells?: Well[] | null;
+            wellsLink?: string; // uuid
             capexYear?: CapexYear;
         }
         export interface CessationOffshoreFacilities {
@@ -1036,6 +1038,28 @@ declare namespace Paths {
     namespace GetProjectsFromCommonLibrary {
         namespace Responses {
             export type $200 = Components.Schemas.CommonLibraryProjectDto[];
+        }
+    }
+    namespace GetWell {
+        namespace Parameters {
+            export type WellId = string; // uuid
+        }
+        export interface PathParameters {
+            wellId: Parameters.WellId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.WellDto;
+        }
+    }
+    namespace GetWells {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface QueryParameters {
+            projectId?: Parameters.ProjectId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.WellDto[];
         }
     }
     namespace UpdateCase {

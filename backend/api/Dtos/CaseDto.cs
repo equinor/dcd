@@ -32,6 +32,7 @@ namespace api.Dtos
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
         public ICollection<Well>? Wells { get; set; }
+        public Guid WellsLink { get; set; } = Guid.Empty;
         public CapexYear? CapexYear { get; set; }
     }
 

@@ -28,6 +28,7 @@ namespace api.Adapters
             }
             return new WellType
             {
+                Id = wellType.Id,
                 Name = wellType.Name,
                 DrillingDays = wellType.DrillingDays,
                 WellCost = wellType.WellCost,
@@ -42,6 +43,7 @@ namespace api.Adapters
             }
             return new ExplorationWellType
             {
+                Id = explorationWellType.Id,
                 Name = explorationWellType.Name,
                 DrillingDays = explorationWellType.DrillingDays,
                 WellCost = explorationWellType.WellCost,
