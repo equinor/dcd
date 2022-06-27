@@ -24,6 +24,9 @@ import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import ExcelUpload from "../Components/ExcelUpload"
 
+const { Panel } = Tabs
+const { List, Tab, Panels } = Tabs
+
 const CaseViewDiv = styled.div`
     margin: 2rem;
     display: flex;
@@ -44,6 +47,11 @@ const DividerLine = styled.div`
     width: 50rem;
     margin-bottom: 2rem;
     margin-top: 2rem;
+`
+
+const StyledTabPanel = styled(Panel)`
+    padding-top: 0px;
+    border-top: 1px solid LightGray;
 `
 
 function CaseView() {
@@ -121,6 +129,33 @@ function CaseView() {
     return (
 
         <CaseViewDiv>
+            <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                <List>
+                    <Tab>Definition </Tab>
+                    <Tab>Facilities </Tab>
+                    <Tab>Drainage Strategy</Tab>
+                    <Tab>Exploration</Tab>
+                    <Tab>Well</Tab>
+                </List>
+                <Panels>
+                    <StyledTabPanel>
+                        <p>Definition</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Facilities</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Drainage Strategy</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Exploration</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Well</p>
+                    </StyledTabPanel>
+                </Panels>
+            </Tabs>
+
             <CaseName
                 caseItem={caseItem}
                 setProject={setProject}
