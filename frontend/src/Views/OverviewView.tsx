@@ -45,10 +45,6 @@ const ProjectDataFieldLabel = styled(Typography)`
     white-space: pre-wrap;
 `
 
-const ChartsContainer = styled.div`
-    display: flex;
-`
-
 const CreateCaseForm = styled.form`
     width: 30rem;
 
