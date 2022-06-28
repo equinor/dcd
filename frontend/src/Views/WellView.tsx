@@ -1,10 +1,11 @@
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable react/no-array-index-key */
 import {
     ChangeEventHandler, MouseEventHandler, useEffect, useState,
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Icon, Input, TextField, Tooltip, Typography,
+    Button, EdsProvider, Icon, Input, TextField, Tooltip, Typography,
 } from "@equinor/eds-core-react"
 import { useNavigate, useParams } from "react-router"
 import { add } from "@equinor/eds-icons"
@@ -32,6 +33,27 @@ const CreateWellForm = styled.form`
     }
 `
 
+const Header = styled.header`
+    display: flex;
+    align-items: center;
+
+    > *:first-child {
+        margin-right: 2rem;
+    }
+`
+
+export const WellsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+`
+
+export const WellWrapper = styled.div`
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+`
+
 function WellView() {
     const navigate = useNavigate()
     const [currentProject, setProject] = useState<Project>()
@@ -53,6 +75,7 @@ function WellView() {
                 const projectId: string = unwrapProjectId(params.projectId)
                 const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
+                console.log(currentProject)
             } catch (error) {
                 console.error(`[WellView] Error while fetching project ${params.projectId}`, error)
             }
@@ -129,28 +152,34 @@ function WellView() {
 
     return (
         <Wrapper>
-            <Tooltip title="Add a well">
-                <Button variant="ghost_icon" aria-label="Add a well" onClick={toggleCreateWellModal}>
-                    <Icon data={add} />
-                </Button>
-            </Tooltip>
-            <Typography variant="h3">Implementation of Wellview in progress</Typography>
-            <Typography variant="h3">{currentProject?.id}</Typography>
-            <Typography variant="h3">List of Wells:</Typography>
-            {wells?.map((well, index) => (
-                // eslint-disable-next-line react/jsx-no-comment-textnodes
-                <>
-                    <li key={index}>{well.name}</li>
-                    <Wrapper>
-                        <Typography>{`Well intervention cost: ${well.wellInterventionCost}`}</Typography>
-                        <Typography>{`Pluging and abandonment cost: ${well.plugingAndAbandonmentCost}`}</Typography>
-                        <Typography variant="h4">Well type:</Typography>
-                        <Typography>{`Well type name: ${well.wellType?.name}`}</Typography>
-                        <Typography>{`Well type cost: ${well.wellType?.wellCost}`}</Typography>
-                        <Typography>{`Well type drilling days: ${well.wellType?.drillingDays}`}</Typography>
-                    </Wrapper>
-                </>
-            ))}
+            <Header>
+                <Typography variant="h2">List of wells</Typography>
+                <EdsProvider density="compact">
+                    <Tooltip title="Add a well">
+                        <Button variant="ghost_icon" aria-label="Add a well" onClick={toggleCreateWellModal}>
+                            <Icon data={add} />
+                        </Button>
+                    </Tooltip>
+                </EdsProvider>
+            </Header>
+            <WellsWrapper>
+                {wells?.map((well) => (
+                    // eslint-disable-next-line react/jsx-no-comment-textnodes
+                    <>
+                        {/* <li key={index}>{well.name}</li> */}
+                        <WellWrapper>
+                            <Typography variant="h4">{`Name: ${well.name}`}</Typography>
+                            <Typography>{`Well intervention cost: ${well.wellInterventionCost}`}</Typography>
+                            <Typography>{`Pluging and abandonment cost: ${well.plugingAndAbandonmentCost}`}</Typography>
+                            <Typography variant="h4">Well type:</Typography>
+                            <Typography>{`Well type name: ${well.wellType?.name}`}</Typography>
+                            <Typography>{`Well type cost: ${well.wellType?.wellCost}`}</Typography>
+                            <Typography>{`Well type drilling days: ${well.wellType?.drillingDays}`}</Typography>
+                        </WellWrapper>
+                    </>
+                ))}
+            </WellsWrapper>
+
             <Modal isOpen={createWellModalIsOpen} title="Create a well" shards={[]}>
                 <CreateWellForm>
                     <TextField
