@@ -1,19 +1,9 @@
 /* eslint-disable max-len */
-// import {
-//     useEffect,
-// } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { WellProject } from "../models/assets/wellproject/WellProject"
-// import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import { Case } from "../models/Case"
-// import { Well } from "../models/Well"
-// import { Well } from "../models/Well"
-// import { GetWellService } from "../Services/WellService"
-import { unwrapCase } from "../Utils/common"
-// import { EMPTY_GUID } from "../Utils/constants"
-// import { Wrapper } from "../Views/Asset/StyledAssetComponents"
 import LinkWellType from "./LinkWellType"
 
 const WrapperColumn = styled.div`
@@ -21,12 +11,6 @@ const WrapperColumn = styled.div`
     flex-direction: column;
     margin-bottom: 2rem;
 `
-
-// const WellTypeDropdown = styled(NativeSelect)`
-// width: 20rem;
-// margin-top: -0.5rem;
-// margin-left: 1rem;
-// `
 
 interface Props {
     caseItem: Case | undefined,
@@ -37,51 +21,37 @@ const WellType = ({
     caseItem,
     wellProject,
 }: Props) => {
-    const [selectedWellType] = useState<Components.Schemas.WellType>()
-    // const wellTypeCollection = async () => {
-    //     // if (caseItem?.wells !== (null || undefined)) {
-    //     //     const wellsCollection = caseItem?.wells
-    //     //     const wellTypes = wellsCollection?.filter((obj) => obj.wellType === true)
-    //     // }
-    //     if (caseItem?.wellsLink !== (null || undefined)) {
-    //         // const wellTypes = allWells.find((o) => o.wellType)
-    //         // console.log(wellTypes)
-    //         // console.log(allWells)
-    //         // if (allWells.find((o) => o.wellType) === (null || undefined)) {
-    //         //     allWells[0].wellType = {
-    //         //         name: "Well Type 1",
-    //         //         description: "Description for well type 1",
-    //         //         category: 0,
-    //         //         wellCost: 5,
-    //         //         drillingDays: 8,
-    //         //     }
-    //         // }
-    //     }
-    // }
+    const [selectedWellType, setSelectedWellType] = useState<Components.Schemas.WellType>()
 
-    // useEffect(() => {
-    //     wellTypeCollection()
-    // }, [])
-
-    // enum WellTypeLink {
-    //     wellTypeLink = "wellTypeLink",
-    //     explorationWellTypeLink = "explorationWellTypeLink"
-    //   }
-
-    const onSelectWellType = async (event: React.ChangeEvent<HTMLSelectElement>, link: "wellsLink") => {
+    const onSelectWellType = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         try {
-            const unwrappedCase: Case = unwrapCase(caseItem)
-            const caseDto = Case.Copy(unwrappedCase)
-
-            caseDto[link] = event.currentTarget.selectedOptions[0].value
-
-            // const newProject: Project = await GetCaseService().updateCase(caseDto)
-            // setProject(newProject)
-            // const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === caseId))
-            // setCase(caseResult)
+            const selectWell = wellProject?.wellTypes?.filter((w) => w.id === event.target.value).at(0)
+            setSelectedWellType(selectWell)
         } catch (error) {
             console.error("[CaseView] error while submitting form data", error)
         }
+    }
+
+    useEffect(() => {
+        (async () => {
+            try {
+                if (selectedWellType === (null || undefined)) {
+                    setSelectedWellType(wellProject?.wellTypes?.find((w) => w.id))
+                }
+            } catch (error) {
+                console.error("[WellProjectView] Error while fetching well type", error)
+            }
+        })()
+    })
+
+    enum wellTypeCategory {
+        "Oil producer" = 0,
+        "Gas producer" = 1,
+        "Water injector" = 2,
+        "Gas injector" = 3,
+        "Exploration well" = 4,
+        "Appraisal well" = 5,
+        "Sidetrack" = 6
     }
 
     return (
@@ -92,7 +62,6 @@ const WellType = ({
                 link="wellsLink"
                 currentValue={selectedWellType?.id}
                 values={wellProject?.wellTypes?.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                // values={caseItem?.wells?.filter((o) => o.wellType).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             />
             <Typography>
                 Description:
@@ -100,7 +69,7 @@ const WellType = ({
             </Typography>
             <Typography>
                 Category:
-                {selectedWellType?.category}
+                {wellTypeCategory[selectedWellType?.category!]}
             </Typography>
             <Typography>
                 Drilling days:
