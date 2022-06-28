@@ -84,8 +84,11 @@ function WellProjectView() {
 
                 console.log(caseResult.wells?.filter((o) => o.wellType))
                 console.log(caseResult.wells)
-                newWellProject.wellTypes = caseResult.wells?.filter((o) => o.wellType)
-                setWellTypes(caseResult.wells?.filter((o) => o.wellType))
+                const wells = caseResult.wells?.filter((o) => o.wellType?.name)
+                wells?.forEach(((well) => {
+                    newWellProject?.wellTypes?.push(well.wellType!)
+                }))
+                setWellTypes(newWellProject?.wellTypes)
                 console.log(newWellProject.wellTypes)
 
                 if (caseResult?.DG4Date) {

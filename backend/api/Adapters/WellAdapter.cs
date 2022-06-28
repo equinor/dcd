@@ -45,7 +45,6 @@ namespace api.Adapters
                 Name = wellType.Name,
                 DrillingDays = wellType.DrillingDays,
                 WellCost = wellType.WellCost,
-                Well = well,
             };
         }
 

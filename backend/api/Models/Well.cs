@@ -16,8 +16,6 @@ namespace api.Models
 
     public class WellType
     {
-        [ForeignKey("Well.Id")]
-        public Well Well { get; set; } = null!;
         public Guid Id { get; set; }
         public string? Name { get; set; }
         public WellTypeCategory Category { get; set; }
