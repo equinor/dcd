@@ -30,6 +30,7 @@ namespace api.Adapters
             {
                 Id = wellType.Id,
                 Name = wellType.Name,
+                Description = wellType.Description,
                 DrillingDays = wellType.DrillingDays,
                 WellCost = wellType.WellCost,
                 Category = (WellTypeCategoryDto)wellType.Category
@@ -46,6 +47,7 @@ namespace api.Adapters
             {
                 Id = explorationWellType.Id,
                 Name = explorationWellType.Name,
+                Description = explorationWellType.Description,
                 DrillingDays = explorationWellType.DrillingDays,
                 WellCost = explorationWellType.WellCost,
                 Category = (ExplorationWellTypeCategoryDto)explorationWellType.Category

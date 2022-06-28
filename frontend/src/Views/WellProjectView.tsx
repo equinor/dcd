@@ -42,7 +42,7 @@ function WellProjectView() {
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
-    const [wellType, setWellType] = useState<Components.Schemas.WellType | undefined>()
+    const [wellTypes, setWellTypes] = useState<Components.Schemas.WellType[] | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -82,7 +82,11 @@ function WellProjectView() {
                 setDrillingSchedule(newWellProject.drillingSchedule)
                 setArtificialLift(newWellProject.artificialLift)
 
-                setWellType(newWellProject.wellType)
+                console.log(caseResult.wells?.filter((o) => o.wellType))
+                console.log(caseResult.wells)
+                newWellProject.wellTypes = caseResult.wells?.filter((o) => o.wellType)
+                setWellTypes(caseResult.wells?.filter((o) => o.wellType))
+                console.log(newWellProject.wellTypes)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -105,7 +109,7 @@ function WellProjectView() {
         newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
         newWellProject.artificialLift = artificialLift
-        newWellProject.wellType = wellType
+        newWellProject.wellTypes = wellTypes
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
@@ -116,7 +120,7 @@ function WellProjectView() {
         }
         setWellProject(newWellProject)
     }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
-        artificialLift, wellType])
+        artificialLift, wellTypes])
 
     // const wellTypeCollection = () => {
     //     if (caseItem?.wells !== null) {
@@ -180,10 +184,8 @@ function WellProjectView() {
                     currentValue={wellType}
                 /> */}
                 <WellType
-                    setProject={setProject}
                     caseItem={caseItem}
-                    setCase={setCase}
-                    caseId={params.caseId}
+                    wellProject={wellProject}
                 />
             </Wrapper>
             <Wrapper>

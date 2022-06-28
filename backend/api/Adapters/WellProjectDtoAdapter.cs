@@ -17,7 +17,7 @@ namespace api.Adapters
                 AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
                 PluggingAndAbandonment = wellProject.PluggingAndAbandonment,
                 Currency = wellProject.Currency,
-                WellType = wellProject.WellType
+                WellTypes = wellProject.WellTypes
             };
             if (wellProject.CostProfile != null)
             {

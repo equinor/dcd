@@ -43,5 +43,14 @@ public class WellBuilder : Well
 
 public class ExplorationWellTypeBuilder : ExplorationWellType
 {
+    public ExplorationWellTypeBuilder()
+    {
+
+    }
+
+    public ExplorationWellTypeBuilder WithExplorationWellType(ExplorationWellTypeBuilder d)
+    {
+        return this;
+    }
 }
 

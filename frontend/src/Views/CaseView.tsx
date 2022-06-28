@@ -23,6 +23,7 @@ import ProductionStrategyOverview from "../Components/ProductionStrategyOverview
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import ExcelUpload from "../Components/ExcelUpload"
+import { Well } from "../models/Well"
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -50,6 +51,7 @@ function CaseView() {
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
     const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
+    const [wells, setWells] = useState<Well[]>()
 
     useEffect(() => {
         (async () => {
@@ -73,6 +75,8 @@ function CaseView() {
                 setProdStratOverview(caseResult.productionStrategyOverview)
                 setFacilitiesAvailability(caseResult?.facilitiesAvailability)
                 setIsReferenceCase(caseResult?.referenceCase ?? false)
+                caseResult.wells = project.wells
+                setWells(project.wells)
             }
             setCase(caseResult)
             setProducerCount(caseResult?.producerCount)
@@ -91,12 +95,13 @@ function CaseView() {
                 caseDto.waterInjectorCount = waterInjectorCount
                 caseDto.facilitiesAvailability = facilitiesAvailability
                 caseDto.referenceCase = isReferenceCase ?? false
+                caseDto.wells = wells
 
                 const newProject = await GetCaseService().updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase, wells])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)

@@ -76,6 +76,22 @@ const LinkWellType = ({
                     {values}
                     <option key={EMPTY_GUID} value={EMPTY_GUID}> </option>
                 </WellTypeDropdown>
+                {/* <Typography>
+                    Description:
+                    {values?.description}
+                </Typography>
+                <Typography>
+                    Category:
+                    {currentValue?.category}
+                </Typography>
+                <Typography>
+                    Drilling days:
+                    {currentValue?.drillingDays}
+                </Typography>
+                <Typography>
+                    Well cost:
+                    {currentValue?.wellCost}
+                </Typography> */}
             </Wrapper>
         </WrapperColumn>
     )
