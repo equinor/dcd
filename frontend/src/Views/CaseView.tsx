@@ -1,8 +1,10 @@
 import {
+    NativeSelect,
     Switch,
     Tabs,
 } from "@equinor/eds-core-react"
 import {
+    ChangeEvent,
     MouseEventHandler,
     useEffect,
     useState,
@@ -39,6 +41,12 @@ const Wrapper = styled.div`
     flex-direction: row;
 `
 
+const WellDropDown = styled(NativeSelect)`
+width: 20rem;
+margin-top: -0.5rem;
+margin-left: 1rem;
+`
+
 function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -52,6 +60,7 @@ function CaseView() {
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
     const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
     const [wells, setWells] = useState<Well[]>()
+    const [currentWell, setCurrentWell] = useState<Well | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -105,6 +114,12 @@ function CaseView() {
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
+    }
+
+    const onSelectWell = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const well = wells?.filter((w) => w.id === event.target.value).at(0)
+        setCurrentWell(well)
+        console.log(event.target.value)
     }
 
     const switchReferance: MouseEventHandler<HTMLInputElement> = () => {
@@ -171,6 +186,23 @@ function CaseView() {
                         dGName="DG4"
                     />
                 </Wrapper>
+                <WellDropDown
+                    label=""
+                    id="wells"
+                    placeholder="Choose well"
+                    onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelectWell(event)}
+                    value={currentWell?.name}
+                    disabled={false}
+                >
+                    {wells?.map((well) => (
+                        <option
+                            value={well.id}
+                            key={well.id}
+                        >
+                            {well.name}
+                        </option>
+                    ))}
+                </WellDropDown>
                 <CaseArtificialLift
                     currentValue={artificialLift}
                     setArtificialLift={setArtificialLift}
