@@ -2,10 +2,13 @@
 // import {
 //     useEffect,
 // } from "react"
+import { Typography } from "@equinor/eds-core-react"
+import { useState } from "react"
 import styled from "styled-components"
 import { WellProject } from "../models/assets/wellproject/WellProject"
 // import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import { Case } from "../models/Case"
+// import { Well } from "../models/Well"
 // import { Well } from "../models/Well"
 // import { GetWellService } from "../Services/WellService"
 import { unwrapCase } from "../Utils/common"
@@ -34,7 +37,7 @@ const WellType = ({
     caseItem,
     wellProject,
 }: Props) => {
-    // const [wellTypes, setWellTypes] = useState<Well[]>()
+    const [selectedWellType] = useState<Components.Schemas.WellType>()
     // const wellTypeCollection = async () => {
     //     // if (caseItem?.wells !== (null || undefined)) {
     //     //     const wellsCollection = caseItem?.wells
@@ -87,26 +90,26 @@ const WellType = ({
                 caseItem={caseItem}
                 linkWellType={onSelectWellType}
                 link="wellsLink"
-                currentValue={caseItem?.wellsLink}
+                currentValue={selectedWellType?.id}
                 values={wellProject?.wellTypes?.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                 // values={caseItem?.wells?.filter((o) => o.wellType).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             />
-            {/* <Typography>
+            <Typography>
                 Description:
-                {currentValue?.description}
+                {selectedWellType?.description}
             </Typography>
             <Typography>
                 Category:
-                {currentValue?.category}
+                {selectedWellType?.category}
             </Typography>
             <Typography>
                 Drilling days:
-                {currentValue?.drillingDays}
+                {selectedWellType?.drillingDays}
             </Typography>
             <Typography>
                 Well cost:
-                {currentValue?.wellCost}
-            </Typography> */}
+                {selectedWellType?.wellCost}
+            </Typography>
         </WrapperColumn>
     )
 }
