@@ -1,14 +1,13 @@
 /* eslint-disable max-len */
-import {
-    Dispatch, SetStateAction, useEffect, useState,
-} from "react"
+// import {
+//     useEffect,
+// } from "react"
 import styled from "styled-components"
+import { WellProject } from "../models/assets/wellproject/WellProject"
 // import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import { Case } from "../models/Case"
-import { Project } from "../models/Project"
-import { Well } from "../models/Well"
-import { GetCaseService } from "../Services/CaseService"
-import { GetWellService } from "../Services/WellService"
+// import { Well } from "../models/Well"
+// import { GetWellService } from "../Services/WellService"
 import { unwrapCase } from "../Utils/common"
 // import { EMPTY_GUID } from "../Utils/constants"
 // import { Wrapper } from "../Views/Asset/StyledAssetComponents"
@@ -27,33 +26,39 @@ const WrapperColumn = styled.div`
 // `
 
 interface Props {
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case | undefined,
-    setCase: Dispatch<SetStateAction<Case | undefined>>
-    caseId: string | undefined,
+    wellProject: WellProject | undefined,
 }
 
 const WellType = ({
-    setProject,
     caseItem,
-    setCase,
-    caseId,
+    wellProject,
 }: Props) => {
-    const [wells, setWells] = useState<Well[]>()
-    const wellTypeCollection = async () => {
-        // if (caseItem?.wells !== (null || undefined)) {
-        //     const wellsCollection = caseItem?.wells
-        //     const wellTypes = wellsCollection?.filter((obj) => obj.wellType === true)
-        // }
-        if (caseItem?.wellsLink !== (null || undefined)) {
-            const allWells = await (await GetWellService().getWellsByProjectId(caseItem.projectId!)).filter((obj) => obj.id === caseItem.wellsLink)
-            setWells(allWells)
-        }
-    }
+    // const [wellTypes, setWellTypes] = useState<Well[]>()
+    // const wellTypeCollection = async () => {
+    //     // if (caseItem?.wells !== (null || undefined)) {
+    //     //     const wellsCollection = caseItem?.wells
+    //     //     const wellTypes = wellsCollection?.filter((obj) => obj.wellType === true)
+    //     // }
+    //     if (caseItem?.wellsLink !== (null || undefined)) {
+    //         // const wellTypes = allWells.find((o) => o.wellType)
+    //         // console.log(wellTypes)
+    //         // console.log(allWells)
+    //         // if (allWells.find((o) => o.wellType) === (null || undefined)) {
+    //         //     allWells[0].wellType = {
+    //         //         name: "Well Type 1",
+    //         //         description: "Description for well type 1",
+    //         //         category: 0,
+    //         //         wellCost: 5,
+    //         //         drillingDays: 8,
+    //         //     }
+    //         // }
+    //     }
+    // }
 
-    useEffect(() => {
-        wellTypeCollection()
-    })
+    // useEffect(() => {
+    //     wellTypeCollection()
+    // }, [])
 
     // enum WellTypeLink {
     //     wellTypeLink = "wellTypeLink",
@@ -67,10 +72,10 @@ const WellType = ({
 
             caseDto[link] = event.currentTarget.selectedOptions[0].value
 
-            const newProject: Project = await GetCaseService().updateCase(caseDto)
-            setProject(newProject)
-            const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === caseId))
-            setCase(caseResult)
+            // const newProject: Project = await GetCaseService().updateCase(caseDto)
+            // setProject(newProject)
+            // const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === caseId))
+            // setCase(caseResult)
         } catch (error) {
             console.error("[CaseView] error while submitting form data", error)
         }
@@ -83,7 +88,8 @@ const WellType = ({
                 linkWellType={onSelectWellType}
                 link="wellsLink"
                 currentValue={caseItem?.wellsLink}
-                values={wells?.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                values={wellProject?.wellTypes?.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                // values={caseItem?.wells?.filter((o) => o.wellType).map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             />
             {/* <Typography>
                 Description:

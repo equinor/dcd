@@ -1,4 +1,5 @@
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { Well } from "../../Well"
 import { IAsset } from "../IAsset"
 import { DrillingSchedule } from "./DrillingSchedule"
 import { WellProjectCostProfile } from "./WellProjectCostProfile"
@@ -14,7 +15,7 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     annualWellInterventionCost?: number | undefined
     pluggingAndAbandonment?: number | undefined
     currency?: Components.Schemas.Currency
-    wellType?: Components.Schemas.WellType | undefined
+    wellTypes?: Components.Schemas.WellType[] | undefined
 
     constructor(data?: Components.Schemas.WellProjectDto) {
         if (data !== undefined) {
@@ -28,7 +29,7 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.annualWellInterventionCost = data.annualWellInterventionCost ?? 0
             this.pluggingAndAbandonment = data.pluggingAndAbandonment ?? 0
             this.currency = data.currency ?? 1
-            this.wellType = data.wellType
+            this.wellTypes = data.wellTypes?.map(Well.fromJSON) ?? []
         } else {
             this.id = EMPTY_GUID
             this.name = ""

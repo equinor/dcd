@@ -47,7 +47,7 @@ namespace api.Adapters
                     AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost,
                     PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment,
                     Currency = wellProjectDto.Currency,
-                    WellType = wellProjectDto.WellType
+                    WellTypes = wellProjectDto.WellTypes
                 };
             }
             existing.Id = wellProjectDto.Id;
@@ -58,7 +58,7 @@ namespace api.Adapters
             existing.AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost;
             existing.PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment;
             existing.Currency = wellProjectDto.Currency;
-            existing.WellType = wellProjectDto.WellType;
+            existing.WellTypes = wellProjectDto.WellTypes;
 
             return existing;
         }
