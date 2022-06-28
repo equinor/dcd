@@ -134,6 +134,15 @@ declare namespace Components {
             description?: string | null;
         }
         export type ExplorationWellTypeCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
+        export type ExplorationWellTypeCategoryDto = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
+        export interface ExplorationWellTypeDto {
+            id?: string; // uuid
+            name?: string | null;
+            category?: ExplorationWellTypeCategoryDto /* int32 */;
+            wellCost?: number; // double
+            drillingDays?: number; // double
+            description?: string | null;
+        }
         export interface FuelFlaringAndLossesDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -412,8 +421,8 @@ declare namespace Components {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
-            wellType?: WellType;
-            explorationWellType?: ExplorationWellType;
+            wellType?: WellTypeDto;
+            explorationWellType?: ExplorationWellTypeDto;
             wellInterventionCost?: number; // double
             plugingAndAbandonmentCost?: number; // double
         }
@@ -439,6 +448,7 @@ declare namespace Components {
             wellType?: WellType;
         }
         export interface WellType {
+            well?: Well;
             id?: string; // uuid
             name?: string | null;
             category?: WellTypeCategory /* int32 */;
@@ -447,6 +457,15 @@ declare namespace Components {
             description?: string | null;
         }
         export type WellTypeCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
+        export type WellTypeCategoryDto = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
+        export interface WellTypeDto {
+            id?: string; // uuid
+            name?: string | null;
+            category?: WellTypeCategoryDto /* int32 */;
+            wellCost?: number; // double
+            drillingDays?: number; // double
+            description?: string | null;
+        }
     }
 }
 declare namespace Paths {

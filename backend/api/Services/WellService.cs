@@ -23,10 +23,9 @@ namespace api.Services
         public ProjectDto CreateWell(WellDto wellDto)
         {
             var _well = WellAdapter.Convert(wellDto);
-            var project = _projectService.GetProject(_well.ProjectId);
             _context.Wells!.Add(_well);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(project.Id);
+            return _projectService.GetProjectDto(wellDto.ProjectId);
         }
 
         public ProjectDto UpdateWell(WellDto updatedWellDto)
@@ -41,6 +40,7 @@ namespace api.Services
         public Well GetWell(Guid wellId)
         {
             var well = _context.Wells!
+                        .Include(w => w.WellType)
                         .FirstOrDefault(w => w.Id == wellId);
             if (well == null)
             {
@@ -86,6 +86,7 @@ namespace api.Services
             if (_context.Wells != null)
             {
                 return _context.Wells
+                    .Include(w => w.WellType)
                     .Where(d => d.ProjectId.Equals(projectId));
             }
             else

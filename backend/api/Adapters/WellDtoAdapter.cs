@@ -20,33 +20,35 @@ namespace api.Adapters
             return wellDto;
         }
 
-        public static WellType? Convert(WellType? wellType)
+        public static WellTypeDto? Convert(WellType? wellType)
         {
             if (wellType == null)
             {
                 return null!;
             }
-            return new WellType
+            return new WellTypeDto
             {
                 Id = wellType.Id,
                 Name = wellType.Name,
                 DrillingDays = wellType.DrillingDays,
                 WellCost = wellType.WellCost,
+                Category = (WellTypeCategoryDto)wellType.Category
             };
         }
 
-        public static ExplorationWellType? Convert(ExplorationWellType? explorationWellType)
+        public static ExplorationWellTypeDto? Convert(ExplorationWellType? explorationWellType)
         {
             if (explorationWellType == null)
             {
                 return null!;
             }
-            return new ExplorationWellType
+            return new ExplorationWellTypeDto
             {
                 Id = explorationWellType.Id,
                 Name = explorationWellType.Name,
                 DrillingDays = explorationWellType.DrillingDays,
                 WellCost = explorationWellType.WellCost,
+                Category = (ExplorationWellTypeCategoryDto)explorationWellType.Category
             };
         }
     }

@@ -12,12 +12,11 @@ namespace api.Adapters
                 Id = wellDto.Id,
                 Name = wellDto.Name,
                 ProjectId = wellDto.ProjectId,
-                WellType = wellDto.WellType,
-                ExplorationWellType = wellDto.ExplorationWellType,
                 WellInterventionCost = wellDto.WellInterventionCost,
                 PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost,
             };
-            well.WellType = Convert(wellDto.WellType);
+            well.WellType = Convert(wellDto.WellType, well);
+            well.ExplorationWellType = Convert(wellDto.ExplorationWellType);
             return well;
         }
 
@@ -28,11 +27,11 @@ namespace api.Adapters
             existing.ProjectId = wellDto.ProjectId;
             existing.WellInterventionCost = wellDto.WellInterventionCost;
             existing.PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost;
-            existing.WellType = Convert(wellDto.WellType);
+            existing.WellType = Convert(wellDto.WellType, existing);
             existing.ExplorationWellType = Convert(wellDto.ExplorationWellType);
         }
 
-        private static WellType Convert(WellType? wellType)
+        private static WellType Convert(WellTypeDto? wellType, Well well)
         {
             if (wellType == null)
             {
@@ -41,13 +40,16 @@ namespace api.Adapters
             return new WellType
             {
                 Id = wellType.Id,
+                Description = wellType.Description,
+                Category = (WellTypeCategory)wellType.Category,
                 Name = wellType.Name,
                 DrillingDays = wellType.DrillingDays,
                 WellCost = wellType.WellCost,
+                Well = well,
             };
         }
 
-        private static ExplorationWellType Convert(ExplorationWellType? explorationWellType)
+        private static ExplorationWellType Convert(ExplorationWellTypeDto? explorationWellType)
         {
             if (explorationWellType == null)
             {
@@ -56,9 +58,11 @@ namespace api.Adapters
             return new ExplorationWellType
             {
                 Id = explorationWellType.Id,
+                Description = explorationWellType.Description,
                 Name = explorationWellType.Name,
                 DrillingDays = explorationWellType.DrillingDays,
                 WellCost = explorationWellType.WellCost,
+                Category = (ExplorationWellTypeCategory)explorationWellType.Category,
             };
         }
     }
