@@ -27,7 +27,6 @@ interface Props {
     caseItem: Case | undefined,
     linkWellType: (event: React.ChangeEvent<HTMLSelectElement>, link: any) => void,
     link: string,
-    // currentValue: Components.Schemas.WellType | Components.Schemas.ExplorationWellType | undefined,
     values: JSX.Element[] | undefined
     currentValue: string | undefined,
 }
@@ -63,35 +62,12 @@ const LinkWellType = ({
                     id="WellType"
                     placeholder="Choose a well type"
                     onChange={(event: ChangeEvent<HTMLSelectElement>) => linkWellType(event, link)}
-                    // onChange={(event: ChangeEvent<HTMLSelectElement>) => onChange(event)}
                     value={currentValue}
                     disabled={false}
                 >
-                    {/* {wellTypeCollection} */}
-                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                    {/* <option value={currentValue?.name ?? ""}>{currentValue?.name ?? ""}</option>
-                    {wellTypeCollection().map((wellType) => (
-                        <option value={wellType.id} key={wellType.id}>{wellType.name}</option>
-                    ))} */}
                     {values}
                     <option key={EMPTY_GUID} value={EMPTY_GUID}> </option>
                 </WellTypeDropdown>
-                {/* <Typography>
-                    Description:
-                    {values?.description}
-                </Typography>
-                <Typography>
-                    Category:
-                    {currentValue?.category}
-                </Typography>
-                <Typography>
-                    Drilling days:
-                    {currentValue?.drillingDays}
-                </Typography>
-                <Typography>
-                    Well cost:
-                    {currentValue?.wellCost}
-                </Typography> */}
             </Wrapper>
         </WrapperColumn>
     )

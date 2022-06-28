@@ -1,4 +1,5 @@
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { Well } from "../../Well"
 import { IAsset } from "../IAsset"
 import { ExplorationCostProfile } from "./ExplorationCostProfile"
 import { ExplorationDrillingSchedule } from "./ExplorationDrillingSchedule"
@@ -13,7 +14,7 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     gAndGAdminCost?: GAndGAdminCost | undefined
     rigMobDemob?: number | undefined
     currency?: Components.Schemas.Currency
-    explorationWellType?: Components.Schemas.ExplorationWellType | undefined
+    explorationWellTypes?: Components.Schemas.ExplorationWellType[] | undefined
 
     constructor(data?: Components.Schemas.ExplorationDto) {
         if (data !== undefined) {
@@ -25,7 +26,7 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
             this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)
             this.rigMobDemob = data.rigMobDemob
             this.currency = data.currency ?? 1
-            this.explorationWellType = data.explorationWellType
+            this.explorationWellTypes = data.explorationWellTypes?.map(Well.fromJSON) ?? []
         } else {
             this.id = EMPTY_GUID
             this.name = ""

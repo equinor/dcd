@@ -13,7 +13,7 @@ namespace api.Models
         public GAndGAdminCost? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
         public Currency Currency { get; set; }
-        public ExplorationWellType? ExplorationWellType { get; set; }
+        public ICollection<ExplorationWellType>? ExplorationWellTypes { get; set; }
     }
 
     public class ExplorationCostProfile : TimeSeriesCost

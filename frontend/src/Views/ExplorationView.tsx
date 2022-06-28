@@ -24,7 +24,7 @@ import { ExplorationDrillingSchedule } from "../models/assets/exploration/Explor
 import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
-// import WellType from "../Components/WellType"
+import ExplorationWellType from "../Components/ExplorationWellType"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -130,9 +130,12 @@ const ExplorationView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
-            {/* <Wrapper>
-                <WellType wellType={caseItem?.wells![0].explorationWellType} />
-            </Wrapper> */}
+            <Wrapper>
+                <ExplorationWellType
+                    caseItem={caseItem}
+                    exploration={exploration}
+                />
+            </Wrapper>
             <Wrapper>
                 <NumberInput
                     setValue={setRigMobDemob}
