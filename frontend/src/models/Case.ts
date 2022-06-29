@@ -1,5 +1,8 @@
+import { Well } from "./Well"
+
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
+    capexYear?: Components.Schemas.CapexYear
     createdAt?: Date | null
     description?: string
     DG0Date?: Date | null
@@ -25,9 +28,12 @@ export class Case implements Components.Schemas.CaseDto {
     waterInjectorCount?: number
     facilitiesAvailability?: number
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
+    wells?: Well[]
+    wellsLink?: string | undefined
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
+        this.capexYear = data.capexYear
         this.createdAt = data.createTime ? new Date(data.createTime) : null
         this.description = data.description ?? ""
         this.DG0Date = data.dG0Date ? new Date(data.dG0Date) : null
@@ -53,6 +59,8 @@ export class Case implements Components.Schemas.CaseDto {
         this.waterInjectorCount = data.waterInjectorCount
         this.facilitiesAvailability = data.facilitiesAvailability
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
+        this.wells = data.wells?.map(Well.fromJSON) ?? []
+        this.wellsLink = data.wellsLink ?? ""
     }
 
     static Copy(data: Case) {

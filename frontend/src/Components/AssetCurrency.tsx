@@ -27,14 +27,11 @@ const AssetCurrency = ({
             setHasChanges(true)
         }
         switch (event.currentTarget.selectedOptions[0].value) {
-        case "0":
-            setCurrency(0)
-            break
-        case "1":
-            setCurrency(1)
+        case "2":
+            setCurrency(2)
             break
         default:
-            setCurrency(0)
+            setCurrency(1)
             break
         }
     }
@@ -48,8 +45,8 @@ const AssetCurrency = ({
             value={currentValue}
             disabled={false}
         >
-            <option key="0" value={0}>USD</option>
             <option key="1" value={1}>NOK</option>
+            <option key="2" value={2}>USD</option>
         </CurrencyDropdown>
     )
 }

@@ -27,6 +27,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     productionProfileWater?: ProductionProfileWater | undefined
     productionProfileWaterInjection?: ProductionProfileWaterInjection | undefined
     productionProfileNGL?: ProductionProfileNGL | undefined
+    facilitiesAvailability?: number
 
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
         if (data !== undefined) {
@@ -48,6 +49,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.productionProfileNGL = ProductionProfileNGL.fromJson(data.productionProfileNGL)
             this.productionProfileWaterInjection = ProductionProfileWaterInjection
                 .fromJson(data.productionProfileWaterInjection)
+            this.facilitiesAvailability = data.facilitiesAvailability
         } else {
             this.id = EMPTY_GUID
             this.name = ""

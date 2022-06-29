@@ -34,7 +34,9 @@ namespace api.Adapters
                 ProducerCount = caseDto.ProducerCount,
                 GasInjectorCount = caseDto.GasInjectorCount,
                 WaterInjectorCount = caseDto.WaterInjectorCount,
-                FacilitiesAvailability = caseDto.FacilitiesAvailability
+                FacilitiesAvailability = caseDto.FacilitiesAvailability,
+                Wells = caseDto.Wells,
+                WellsLink = caseDto.WellsLink
             };
         }
     }
