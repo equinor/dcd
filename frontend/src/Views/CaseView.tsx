@@ -1,7 +1,9 @@
 import {
+    Button,
     NativeSelect,
     Switch,
     Tabs,
+    Typography,
 } from "@equinor/eds-core-react"
 import {
     ChangeEvent,
@@ -44,9 +46,23 @@ const Wrapper = styled.div`
     flex-direction: row;
 `
 
+const WellsWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+`
+
+const WrapperColumn = styled.div`
+    display: flex;
+    > *:not(:last-child) {
+        margin-right: 1rem;
+    }
+    flex-direction: row;
+`
+
 const WellDropDown = styled(NativeSelect)`
 width: 20rem;
-margin-top: -0.5rem;
 margin-left: 1rem;
 `
 
@@ -76,7 +92,7 @@ function CaseView() {
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
     const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
     const [wells, setWells] = useState<Well[]>()
-    const [currentWell, setCurrentWell] = useState<Well | undefined>()
+    const [wellLink, setWellLink] = useState<string | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -100,8 +116,8 @@ function CaseView() {
                 setProdStratOverview(caseResult.productionStrategyOverview)
                 setFacilitiesAvailability(caseResult?.facilitiesAvailability)
                 setIsReferenceCase(caseResult?.referenceCase ?? false)
-                caseResult.wells = project.wells
-                setWells(project.wells)
+                setWellLink(caseResult?.wellsLink ?? undefined)
+                setWells(caseResult.wells ?? undefined)
             }
             setCase(caseResult)
             setProducerCount(caseResult?.producerCount)
@@ -121,24 +137,37 @@ function CaseView() {
                 caseDto.facilitiesAvailability = facilitiesAvailability
                 caseDto.referenceCase = isReferenceCase ?? false
                 caseDto.wells = wells
+                caseDto.wellsLink = wellLink
 
                 const newProject = await GetCaseService().updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase, wells])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase, wells, wellLink])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
     }
 
     const onSelectWell = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const well = wells?.filter((w) => w.id === event.target.value).at(0)
-        setCurrentWell(well)
-        console.log(event.target.value)
+        event.preventDefault()
+        setWellLink(event.target.value)
     }
 
-    const switchReferance: MouseEventHandler<HTMLInputElement> = () => {
+    function onLinkWell(id: string | undefined) {
+        if (caseItem?.wells !== null && id !== undefined) {
+            if (!caseItem?.wells?.find((w) => w.id === id)) {
+                const wellsList: Well[] | undefined = caseItem?.wells
+                const selectedWell = project?.wells?.find((well) => well.id === id)
+                if (selectedWell !== undefined) {
+                    wellsList?.push(selectedWell)
+                    setWells(wellsList)
+                }
+            }
+        }
+    }
+
+    const switchReference: MouseEventHandler<HTMLInputElement> = () => {
         if (!isReferenceCase || isReferenceCase === undefined) {
             setIsReferenceCase(true)
         } else setIsReferenceCase(false)
@@ -188,7 +217,7 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
-                <Switch onClick={switchReferance} label="Reference case" readOnly checked={isReferenceCase ?? false} />
+                <Switch onClick={switchReference} label="Reference case" readOnly checked={isReferenceCase ?? false} />
                 <Wrapper>
                     <CaseDGDate
                         caseItem={caseItem}
@@ -230,23 +259,36 @@ function CaseView() {
                         dGName="DG4"
                     />
                 </Wrapper>
-                <WellDropDown
-                    label=""
-                    id="wells"
-                    placeholder="Choose well"
-                    onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelectWell(event)}
-                    value={currentWell?.name}
-                    disabled={false}
-                >
-                    {wells?.map((well) => (
-                        <option
-                            value={well.id}
-                            key={well.id}
+                <WellsWrapper>
+                    <Typography variant="h3">Wells</Typography>
+                    <WrapperColumn>
+                        <WellDropDown
+                            label=""
+                            id="wells"
+                            placeholder="Choose well"
+                            defaultValue="empty"
+                            onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelectWell(event)}
+                            disabled={false}
                         >
-                            {well.name}
-                        </option>
-                    ))}
-                </WellDropDown>
+                            <option value="empty" disabled> </option>
+                            {project.wells?.map((well) => (
+                                <option
+                                    value={well.id}
+                                    key={well.id}
+                                >
+                                    {well.name}
+                                </option>
+                            ))}
+                        </WellDropDown>
+                        <Button
+                            disabled={wellLink === undefined}
+                            // eslint-disable-next-line max-len
+                            onClick={() => onLinkWell(wellLink)}
+                        >
+                            Link well to case
+                        </Button>
+                    </WrapperColumn>
+                </WellsWrapper>
                 <CaseArtificialLift
                     currentValue={artificialLift}
                     setArtificialLift={setArtificialLift}
