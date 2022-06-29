@@ -26,6 +26,8 @@ namespace api.Services
             transport.Project = project;
             transport.ProspVersion = transportDto.ProspVersion;
             transport.LastChangedDate = DateTimeOffset.Now;
+            transport.GasExportPipelineLength = transportDto.GasExportPipelineLength;
+            transport.OilExportPipelineLength = transportDto.OilExportPipelineLength;
             _context.Transports!.Add(transport);
             _context.SaveChanges();
             SetCaseLink(transport, sourceCaseId, project);

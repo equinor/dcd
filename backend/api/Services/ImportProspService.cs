@@ -290,6 +290,8 @@ namespace api.Services
             // Prosp meta data
             var versionDate = ReadDateValue(cellData, "I4");
             var costYear = ReadIntValue(cellData, "K4");
+            var oilExportPipelineLength = ReadIntValue(cellData, "E59");
+            var gasExportPipelineLength = ReadIntValue(cellData, "E60");
             var importedCurrency = ReadIntValue(cellData, "E8");
             var currency = importedCurrency == 1 ? Currency.NOK :
                 importedCurrency == 2 ? Currency.USD : 0;
@@ -304,7 +306,9 @@ namespace api.Services
                 ProspVersion = versionDate,
                 Currency = currency,
                 CostYear = costYear,
-                Maturity = Maturity.A
+                Maturity = Maturity.A,
+                OilExportPipelineLength = oilExportPipelineLength,
+                GasExportPipelineLength = gasExportPipelineLength
             };
             var dto = TransportDtoAdapter.Convert(newTransport);
             _transportService.CreateTransport(dto, sourceCaseId);
