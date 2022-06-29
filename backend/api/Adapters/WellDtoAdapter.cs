@@ -10,7 +10,6 @@ namespace api.Adapters
             var wellDto = new WellDto
             {
                 Id = well.Id,
-                Name = well.Name,
                 ProjectId = well.ProjectId,
                 WellType = Convert(well.WellType),
                 ExplorationWellType = Convert(well.ExplorationWellType),
