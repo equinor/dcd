@@ -1,8 +1,10 @@
 import {
+    NativeSelect,
     Switch,
     Tabs,
 } from "@equinor/eds-core-react"
 import {
+    ChangeEvent,
     MouseEventHandler,
     useEffect,
     useState,
@@ -22,6 +24,11 @@ import DGEnum from "../models/DGEnum"
 import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
+import ExcelUpload from "../Components/ExcelUpload"
+import { Well } from "../models/Well"
+
+const { Panel } = Tabs
+const { List, Tab, Panels } = Tabs
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -37,6 +44,25 @@ const Wrapper = styled.div`
     flex-direction: row;
 `
 
+const WellDropDown = styled(NativeSelect)`
+width: 20rem;
+margin-top: -0.5rem;
+margin-left: 1rem;
+`
+
+const DividerLine = styled.div`
+    background: gray;
+    height: 0.05rem;
+    width: 50rem;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+`
+
+const StyledTabPanel = styled(Panel)`
+    padding-top: 0px;
+    border-top: 1px solid LightGray;
+`
+
 function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -49,6 +75,8 @@ function CaseView() {
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
     const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
+    const [wells, setWells] = useState<Well[]>()
+    const [currentWell, setCurrentWell] = useState<Well | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -72,6 +100,8 @@ function CaseView() {
                 setProdStratOverview(caseResult.productionStrategyOverview)
                 setFacilitiesAvailability(caseResult?.facilitiesAvailability)
                 setIsReferenceCase(caseResult?.referenceCase ?? false)
+                caseResult.wells = project.wells
+                setWells(project.wells)
             }
             setCase(caseResult)
             setProducerCount(caseResult?.producerCount)
@@ -90,15 +120,22 @@ function CaseView() {
                 caseDto.waterInjectorCount = waterInjectorCount
                 caseDto.facilitiesAvailability = facilitiesAvailability
                 caseDto.referenceCase = isReferenceCase ?? false
+                caseDto.wells = wells
 
                 const newProject = await GetCaseService().updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
-    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase])
+    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase, wells])
 
     const handleTabChange = (index: number) => {
         setActiveTab(index)
+    }
+
+    const onSelectWell = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const well = wells?.filter((w) => w.id === event.target.value).at(0)
+        setCurrentWell(well)
+        console.log(event.target.value)
     }
 
     const switchReferance: MouseEventHandler<HTMLInputElement> = () => {
@@ -110,12 +147,41 @@ function CaseView() {
     if (!project) return null
 
     return (
+
         <CaseViewDiv>
+            <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                <List>
+                    <Tab>Definition </Tab>
+                    <Tab>Facilities </Tab>
+                    <Tab>Drainage Strategy</Tab>
+                    <Tab>Exploration</Tab>
+                    <Tab>Well</Tab>
+                </List>
+                <Panels>
+                    <StyledTabPanel>
+                        <p>Definition</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Facilities</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Drainage Strategy</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Exploration</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Well</p>
+                    </StyledTabPanel>
+                </Panels>
+            </Tabs>
+
             <CaseName
                 caseItem={caseItem}
                 setProject={setProject}
                 setCase={setCase}
             />
+            <ExcelUpload setProject={setProject} setCase={setCase} />
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
                 <CaseDescription
                     caseItem={caseItem}
@@ -148,7 +214,7 @@ function CaseView() {
                         dGName="DG3"
                     />
                 </Wrapper>
-                <Wrapper>
+                <Wrapper style={{ marginBottom: -35 }}>
                     <CaseDGDate
                         caseItem={caseItem}
                         setProject={setProject}
@@ -164,6 +230,23 @@ function CaseView() {
                         dGName="DG4"
                     />
                 </Wrapper>
+                <WellDropDown
+                    label=""
+                    id="wells"
+                    placeholder="Choose well"
+                    onChange={(event: ChangeEvent<HTMLSelectElement>) => onSelectWell(event)}
+                    value={currentWell?.name}
+                    disabled={false}
+                >
+                    {wells?.map((well) => (
+                        <option
+                            value={well.id}
+                            key={well.id}
+                        >
+                            {well.name}
+                        </option>
+                    ))}
+                </WellDropDown>
                 <CaseArtificialLift
                     currentValue={artificialLift}
                     setArtificialLift={setArtificialLift}
@@ -176,7 +259,24 @@ function CaseView() {
                     setProject={setProject}
                     caseItem={caseItem}
                 />
-                <Wrapper>
+                <DividerLine />
+                <Wrapper style={{ marginBottom: -15 }}>
+                    <CaseArtificialLift
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setProject={setProject}
+                        caseItem={caseItem}
+                    />
+                    <ProductionStrategyOverview
+                        currentValue={prodStratOverview}
+                        setProductionStrategyOverview={setProdStratOverview}
+                        setProject={setProject}
+                        caseItem={caseItem}
+                    />
+                </Wrapper>
+                <DividerLine />
+
+                <Wrapper style={{ marginBottom: 45 }}>
                     <NumberInput
                         setValue={setProducerCount}
                         value={producerCount ?? 0}
@@ -206,6 +306,7 @@ function CaseView() {
                         label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                     />
                 </Wrapper>
+                <DividerLine />
                 <CaseAsset
                     caseItem={caseItem}
                     project={project}

@@ -21,17 +21,24 @@ export const Wrapper = styled.div`
     flex-direction: row;
 `
 
+export const WrapperInherited = styled.div`
+    display: flex;
+    flex-direction: row;
+    > *:not(:last-child) {
+        font-weight: bold;
+    }
+`
+
 export const WrapperColumn = styled.div`
     display: flex;
     flex-direction: column;
 `
 
 export const SaveButton = styled(Button)`
-    margin-top: 5rem;
-    margin-left: 2rem;
+    margin-left: 3rem;
+    width: 5rem;
     &:disabled {
-        margin-left: 2rem;
-        margin-top: 5rem;
+        margin-left: 3rem;
     }
 `
 
@@ -44,7 +51,15 @@ export const Dg4Field = styled.div`
 `
 
 export const ImportButton = styled(Button)`
+    width: 10rem;
+    &:disabled {
+        margin-left: 2rem;
+    }
+`
+
+export const DeleteButton = styled(Button)`
     margin-left: 2rem;
+    width: 10rem;
     &:disabled {
         margin-left: 2rem;
     }

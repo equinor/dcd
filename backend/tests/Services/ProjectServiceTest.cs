@@ -30,8 +30,9 @@ namespace tests
         [Fact]
         public void GetAll()
         {
+            var loggerFactory = new LoggerFactory();
             var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.Name);
-            ProjectService projectService = new ProjectService(fixture.context);
+            ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
             var projectsFromService = projectService.GetAll().OrderBy(p => p.Name);
             var projectsExpectedActual = projectFromSampleDataGenerator.Zip(projectsFromService);
             Assert.Equal(projectFromSampleDataGenerator.Count(), projectsFromService.Count());
@@ -44,7 +45,8 @@ namespace tests
         [Fact]
         public void GetProject()
         {
-            ProjectService projectService = new ProjectService(fixture.context);
+            var loggerFactory = new LoggerFactory();
+            ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
             IEnumerable<Project> projectsFromGetAllService = projectService.GetAll();
             var projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects;
             Assert.Equal(projectsFromSampleDataGenerator.Count(), projectsFromGetAllService.Count());
@@ -59,7 +61,8 @@ namespace tests
         [Fact]
         public void GetDoesNotExist()
         {
-            ProjectService projectService = new ProjectService(fixture.context);
+            var loggerFactory = new LoggerFactory();
+            ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
             Assert.Throws<NotFoundInDBException>(() => projectService.GetProject(new Guid()));
         }
     }

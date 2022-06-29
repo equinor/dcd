@@ -24,6 +24,7 @@ import { ExplorationDrillingSchedule } from "../models/assets/exploration/Explor
 import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
+import ExplorationWellType from "../Components/ExplorationWellType"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -38,7 +39,8 @@ const ExplorationView = () => {
     const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingSchedule>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const [wellTypes, setWellTypes] = useState<Components.Schemas.ExplorationWellType[] | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -66,12 +68,18 @@ const ExplorationView = () => {
                     setExploration(newExploration)
                 }
                 setName(newExploration?.name!)
-                setCurrency(newExploration.currency ?? 0)
+                setCurrency(newExploration.currency ?? 1)
                 setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
                 setDrillingSchedule(newExploration.drillingSchedule)
                 setGAndGAdminCost(newExploration.gAndGAdminCost)
+
+                const wells = caseResult.wells?.filter((o) => o.explorationWellType?.name)
+                wells?.forEach(((well) => {
+                    newExploration?.explorationWellTypes?.push(well.explorationWellType!)
+                }))
+                setWellTypes(newExploration?.explorationWellTypes)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -92,6 +100,7 @@ const ExplorationView = () => {
         newExploration.drillingSchedule = drillingSchedule
         newExploration.gAndGAdminCost = gAndGAdminCost
         newExploration.currency = currency
+        newExploration.explorationWellTypes = wellTypes
         setExploration(newExploration)
 
         if (caseItem?.DG4Date) {
@@ -102,11 +111,23 @@ const ExplorationView = () => {
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost, currency])
+    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost, currency, wellTypes])
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">Exploration</Typography>
+            <Wrapper>
+                <Typography variant="h2">Exploration</Typography>
+                <Save
+                    name={name}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setExploration}
+                    setProject={setProject}
+                    asset={exploration!}
+                    assetService={GetExplorationService()}
+                    assetType={AssetTypeEnum.explorations}
+                />
+            </Wrapper>
             <AssetName
                 setName={setName}
                 name={name}
@@ -117,6 +138,12 @@ const ExplorationView = () => {
                 setHasChanges={setHasChanges}
                 currentValue={currency}
             />
+            <Wrapper>
+                <ExplorationWellType
+                    caseItem={caseItem}
+                    exploration={exploration}
+                />
+            </Wrapper>
             <Wrapper>
                 <NumberInput
                     setValue={setRigMobDemob}
@@ -132,7 +159,7 @@ const ExplorationView = () => {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -154,21 +181,11 @@ const ExplorationView = () => {
                 setTimeSeries={setGAndGAdminCost}
                 setHasChanges={setHasChanges}
                 timeSeries={gAndGAdminCost}
-                timeSeriesTitle={`G and g admin cost ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`G and g admin cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={name}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setExploration}
-                setProject={setProject}
-                asset={exploration!}
-                assetService={GetExplorationService()}
-                assetType={AssetTypeEnum.explorations}
             />
         </AssetViewDiv>
     )

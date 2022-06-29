@@ -1,5 +1,5 @@
 import {
-    Input, Label, Typography,
+    Input, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -14,7 +14,7 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
@@ -23,6 +23,8 @@ import NumberInput from "../Components/NumberInput"
 import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
+import WellType from "../Components/WellType"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -38,7 +40,9 @@ function WellProjectView() {
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
+    const [wellTypes, setWellTypes] = useState<Components.Schemas.WellType[] | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -72,10 +76,17 @@ function WellProjectView() {
                 setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
                 setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
                 setRigMobDemob(newWellProject.rigMobDemob)
-                setCurrency(newWellProject.currency ?? 0)
+                setCurrency(newWellProject.currency ?? 1)
 
                 setCostProfile(newWellProject.costProfile)
                 setDrillingSchedule(newWellProject.drillingSchedule)
+                setArtificialLift(newWellProject.artificialLift)
+
+                const wells = caseResult.wells?.filter((o) => o.wellType?.name)
+                wells?.forEach(((well) => {
+                    newWellProject?.wellTypes?.push(well.wellType!)
+                }))
+                setWellTypes(newWellProject?.wellTypes)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -97,6 +108,8 @@ function WellProjectView() {
         newWellProject.costProfile = costProfile
         newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
+        newWellProject.artificialLift = artificialLift
+        newWellProject.wellTypes = wellTypes
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
@@ -106,11 +119,24 @@ function WellProjectView() {
             )
         }
         setWellProject(newWellProject)
-    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency])
+    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
+        artificialLift, wellTypes])
 
     return (
         <AssetViewDiv>
-            <Typography variant="h2">WellProject</Typography>
+            <Wrapper>
+                <Typography variant="h2">WellProject</Typography>
+                <Save
+                    name={wellProjectName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setWellProject}
+                    setProject={setProject}
+                    asset={wellProject!}
+                    assetService={GetWellProjectService()}
+                    assetType={AssetTypeEnum.wellProjects}
+                />
+            </Wrapper>
             <AssetName
                 setName={setWellProjectName}
                 name={wellProjectName}
@@ -133,13 +159,19 @@ function WellProjectView() {
             />
             <Wrapper>
                 <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(wellProject?.artificialLift)}
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
                     />
                 </WrapperColumn>
+            </Wrapper>
+            <Wrapper>
+                <WellType
+                    caseItem={caseItem}
+                    wellProject={wellProject}
+                />
             </Wrapper>
             <Wrapper>
                 <NumberInput
@@ -169,7 +201,7 @@ function WellProjectView() {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
@@ -185,16 +217,6 @@ function WellProjectView() {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <Save
-                name={wellProjectName}
-                setHasChanges={setHasChanges}
-                hasChanges={hasChanges}
-                setAsset={setWellProject}
-                setProject={setProject}
-                asset={wellProject!}
-                assetService={GetWellProjectService()}
-                assetType={AssetTypeEnum.wellProjects}
             />
         </AssetViewDiv>
     )

@@ -9,6 +9,7 @@ namespace api.Dtos
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = null!;
         public Guid CommonLibraryId { get; set; }
+        public Guid FusionProjectId { get; set; }
         public string CommonLibraryName { get; set; } = null!;
         public string Description { get; set; } = null!;
         public string Country { get; set; } = null!;
@@ -18,6 +19,7 @@ namespace api.Dtos
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
         public ICollection<CaseDto>? Cases { get; set; }
+        public ICollection<WellDto>? Wells { get; set; }
         public ICollection<ExplorationDto>? Explorations { get; set; }
         public ICollection<SurfDto>? Surfs { get; set; }
         public ICollection<SubstructureDto>? Substructures { get; set; }
