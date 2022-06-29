@@ -30,11 +30,6 @@ public class WellsBuilder
 }
 public class WellBuilder : Well
 {
-    public WellBuilder()
-    {
-        // WellType = new List<WellType>();
-    }
-
     public WellBuilder WithWellType(WellTypeBuilder d)
     {
         return this;
@@ -43,11 +38,6 @@ public class WellBuilder : Well
 
 public class ExplorationWellTypeBuilder : ExplorationWellType
 {
-    public ExplorationWellTypeBuilder()
-    {
-
-    }
-
     public ExplorationWellTypeBuilder WithExplorationWellType(ExplorationWellTypeBuilder d)
     {
         return this;

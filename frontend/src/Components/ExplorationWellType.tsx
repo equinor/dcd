@@ -28,7 +28,7 @@ const ExplorationWellType = ({
             const selectWell = exploration?.explorationWellTypes?.filter((w) => w.id === event.target.value).at(0)
             setSelectedWellType(selectWell)
         } catch (error) {
-            console.error("[CaseView] error while submitting form data", error)
+            console.error("[ExplorationView] error while fetching well type", error)
         }
     }
 
@@ -39,7 +39,7 @@ const ExplorationWellType = ({
                     setSelectedWellType(exploration?.explorationWellTypes?.find((w) => w.id))
                 }
             } catch (error) {
-                console.error("[WellProjectView] Error while fetching well type", error)
+                console.error("[ExplorationView] Error while fetching well type", error)
             }
         })()
     })

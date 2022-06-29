@@ -54,7 +54,7 @@ export const WellWrapper = styled.div`
 
 function WellView() {
     const navigate = useNavigate()
-    const [currentProject, setProject] = useState<Project>()
+    const [, setProject] = useState<Project>()
     const [createWellModalIsOpen, setCreateWellModalIsOpen] = useState<boolean>(false)
     const [wellName, setWellName] = useState<string>("")
     const [wellTypeName, setWellTypeName] = useState<string>("")
@@ -73,7 +73,6 @@ function WellView() {
                 const projectId: string = unwrapProjectId(params.projectId)
                 const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
-                console.log(currentProject)
             } catch (error) {
                 console.error(`[WellView] Error while fetching project ${params.projectId}`, error)
             }
@@ -144,7 +143,7 @@ function WellView() {
             setHasChanges(false)
             navigate(`/project/${projectResult.id}/wells/`)
         } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
+            console.error("[WellView] error while submitting form data", error)
         }
     }
 

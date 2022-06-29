@@ -28,7 +28,7 @@ const WellType = ({
             const selectWell = wellProject?.wellTypes?.filter((w) => w.id === event.target.value).at(0)
             setSelectedWellType(selectWell)
         } catch (error) {
-            console.error("[CaseView] error while submitting form data", error)
+            console.error("[WellProjectView] Error while fetching well type", error)
         }
     }
 
