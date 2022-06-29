@@ -14,13 +14,13 @@ import { Wrapper } from "../Views/Asset/StyledAssetComponents"
 const WrapperColumn = styled.div`
     display: flex;
     flex-direction: column;
-    margin-bottom: 2rem;
 `
 
 const WellTypeDropdown = styled(NativeSelect)`
 width: 20rem;
 margin-top: -0.5rem;
 margin-left: 1rem;
+margin-bottom: 0.5rem;
 `
 
 interface Props {
