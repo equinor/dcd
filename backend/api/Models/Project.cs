@@ -13,6 +13,7 @@ namespace api.Models
         public PhysUnit PhysicalUnit { get; set; }
         public DateTimeOffset CreateDate { get; set; }
         public ICollection<Case>? Cases { get; set; }
+        public ICollection<Well>? Wells { get; set; }
         public ICollection<Surf>? Surfs { get; set; }
         public ICollection<Substructure>? Substructures { get; set; }
         public ICollection<Topside>? Topsides { get; set; }

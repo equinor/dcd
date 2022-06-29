@@ -8,7 +8,6 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
-
         public WellProjectCostProfile? CostProfile { get; set; }
         public DrillingSchedule? DrillingSchedule { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
@@ -16,6 +15,7 @@ namespace api.Models
         public double AnnualWellInterventionCost { get; set; }
         public double PluggingAndAbandonment { get; set; }
         public Currency Currency { get; set; }
+        public ICollection<WellType>? WellTypes { get; set; }
     }
 
     public class WellProjectCostProfile : TimeSeriesCost

@@ -28,6 +28,7 @@ import TransportView from "./Views/TransportView"
 import DrainageStrategyView from "./Views/DrainageStrategyView"
 import WellProjectView from "./Views/WellProjectView"
 import ExplorationView from "./Views/ExplorationView"
+import WellView from "./Views/WellView"
 
 const browserHistory = createBrowserHistory()
 
@@ -87,6 +88,7 @@ const App: VoidFunctionComponent = () => {
                         <Route path="/" element={<ViewsContainer />}>
                             <Route index element={<DashboardView />} />
                             <Route path="project/:projectId" element={<ProjectView />} />
+                            <Route path="project/:projectId/wells" element={<WellView />} />
                             <Route path="project/:projectId/case/:caseId" element={<CaseView />} />
                             <Route path="project/:projectId/case/:caseId/surf/:surfId" element={<SurfView />} />
                             <Route

@@ -1,13 +1,16 @@
 import { useState } from "react"
 import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
-import { file, folder, dashboard } from "@equinor/eds-icons"
+import {
+    file, folder, dashboard, well,
+} from "@equinor/eds-icons"
 
 import { Project } from "../../models/Project"
 import MenuItem from "./MenuItem"
 import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
 
 import { ProjectPath } from "../../Utils/common"
+import ProjectMenuItemWellComponent from "./ProjectMenuItemWellComponent"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -39,11 +42,13 @@ const MenuItems = styled.ul`
 export enum ProjectMenuItemType {
     OVERVIEW = "Overview",
     CASES = "Cases",
+    WELLS = "Wells",
 }
 
 const projectMenuItems = [
     { name: ProjectMenuItemType.OVERVIEW, icon: dashboard },
     { name: ProjectMenuItemType.CASES, icon: file },
+    { name: ProjectMenuItemType.WELLS, icon: well },
 ]
 
 interface Props {
@@ -87,6 +92,16 @@ function ProjectMenu({ project }: Props) {
                                     projectId={project.id}
                                     subItems={project.cases}
                                 />
+                            )}
+                            {projectMenuItem.name === ProjectMenuItemType.WELLS && (
+                                <nav>
+                                    <LinkWithoutStyle to={`/project/${project.id}/wells`}>
+                                        <ProjectMenuItemWellComponent
+                                            item={projectMenuItem}
+                                            projectId={project.id}
+                                        />
+                                    </LinkWithoutStyle>
+                                </nav>
                             )}
                         </Item>
                     ))}

@@ -21,6 +21,7 @@ namespace api.Services
         private readonly TopsideService _topsideService;
         private readonly TransportService _transportService;
         private readonly ExplorationService _explorationService;
+        private readonly WellService _wellService;
 
         private readonly ILogger<ProjectService> _logger;
 
@@ -35,6 +36,7 @@ namespace api.Services
             _topsideService = new TopsideService(_context, this, loggerFactory);
             _explorationService = new ExplorationService(_context, this, loggerFactory);
             _transportService = new TransportService(_context, this, loggerFactory);
+            _wellService = new WellService(_context, this, loggerFactory);
         }
 
         public ProjectDto UpdateProject(ProjectDto projectDto)
@@ -140,7 +142,8 @@ namespace api.Services
                 }
 
                 var project = _context.Projects
-                    .Include(c => c.Cases)
+                    .Include(p => p.Cases)
+                    .Include(p => p.Wells)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
 
                 if (project == null)
@@ -191,6 +194,7 @@ namespace api.Services
             project.Topsides = _topsideService.GetTopsides(project.Id).ToList();
             project.Transports = _transportService.GetTransports(project.Id).ToList();
             project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
+            project.Wells = _wellService.GetWells(project.Id).ToList();
             return project;
         }
     }
