@@ -181,9 +181,16 @@ function WellView() {
                             <Typography>{`Pluging and abandonment cost: ${well.plugingAndAbandonmentCost}`}</Typography>
                             <Typography variant="h4">Well type:</Typography>
                             <Typography>{`Well type name: ${well.wellType?.name}`}</Typography>
+                            <Typography>{`Well type description: ${well.wellType?.description}`}</Typography>
                             <Typography>{`Well type category: ${wellTypeCategoryEnum[well.wellType?.category!]}`}</Typography>
                             <Typography>{`Well type cost: ${well.wellType?.wellCost}`}</Typography>
                             <Typography>{`Well type drilling days: ${well.wellType?.drillingDays}`}</Typography>
+                            <Typography variant="h4">Exploration well type:</Typography>
+                            <Typography>{`Exploration well type name: ${well.explorationWellType?.name}`}</Typography>
+                            <Typography>{`Exploration well type description: ${well.explorationWellType?.description}`}</Typography>
+                            <Typography>{`Exploration well type category: ${wellTypeCategoryEnum[well.explorationWellType?.category!]}`}</Typography>
+                            <Typography>{`Exploration well type cost: ${well.explorationWellType?.wellCost}`}</Typography>
+                            <Typography>{`Exploration well type drilling days: ${well.explorationWellType?.drillingDays}`}</Typography>
                         </WellWrapper>
                     </>
                 ))}
