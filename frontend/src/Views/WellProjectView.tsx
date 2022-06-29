@@ -122,15 +122,6 @@ function WellProjectView() {
     }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
         artificialLift, wellTypes])
 
-    // const wellTypeCollection = () => {
-    //     if (caseItem?.wells !== null) {
-    //         const wellsCollection = caseItem?.wells
-    //         const wellTypes = wellsCollection?.filter((obj) => obj.wellType === true)
-    //         return wellTypes
-    //     }
-    //     return undefined
-    // }
-
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -177,12 +168,6 @@ function WellProjectView() {
                 </WrapperColumn>
             </Wrapper>
             <Wrapper>
-                {/* <WellType
-                    caseItem={caseItem}
-                    setWellType={setWellType}
-                    setHasChanges={setHasChanges}
-                    currentValue={wellType}
-                /> */}
                 <WellType
                     caseItem={caseItem}
                     wellProject={wellProject}

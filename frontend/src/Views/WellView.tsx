@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable react/no-array-index-key */
 import {
@@ -16,9 +17,6 @@ import { Modal } from "../Components/Modal"
 import { GetWellService } from "../Services/WellService"
 import { Well } from "../models/Well"
 import WellTypeCategory from "../Components/WellTypeCategory"
-// import NumberInput from "../Components/NumberInput"
-// import { Well } from "../models/Well"
-// import { GetWellService } from "../Services/WellService"
 
 const Wrapper = styled.div`
     display: flex;
@@ -150,6 +148,16 @@ function WellView() {
         }
     }
 
+    enum wellTypeCategoryEnum {
+        "Oil producer" = 0,
+        "Gas producer" = 1,
+        "Water injector" = 2,
+        "Gas injector" = 3,
+        "Exploration well" = 4,
+        "Appraisal well" = 5,
+        "Sidetrack" = 6
+    }
+
     return (
         <Wrapper>
             <Header>
@@ -173,6 +181,7 @@ function WellView() {
                             <Typography>{`Pluging and abandonment cost: ${well.plugingAndAbandonmentCost}`}</Typography>
                             <Typography variant="h4">Well type:</Typography>
                             <Typography>{`Well type name: ${well.wellType?.name}`}</Typography>
+                            <Typography>{`Well type category: ${wellTypeCategoryEnum[well.wellType?.category!]}`}</Typography>
                             <Typography>{`Well type cost: ${well.wellType?.wellCost}`}</Typography>
                             <Typography>{`Well type drilling days: ${well.wellType?.drillingDays}`}</Typography>
                         </WellWrapper>
@@ -207,10 +216,6 @@ function WellView() {
                     </div>
                     <Typography variant="h3">Well type</Typography>
                     <WellTypeCategory
-                        // label="Welltype category"
-                        // id="welltypecategory"
-                        // placeholder="pick a category"
-                        // onChange
                         currentValue={wellTypeCategory}
                         setWellCategory={setWellTypeCategory}
                     />
