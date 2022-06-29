@@ -6,7 +6,6 @@ import React, {
 import styled from "styled-components"
 import {
     Button, EdsProvider, Icon, TextField, Tooltip, Typography,
-    Table,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
