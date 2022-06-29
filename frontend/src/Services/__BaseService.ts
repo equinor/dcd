@@ -65,6 +65,15 @@ export class __BaseService {
         return data
     }
 
+    protected async getWithParams(
+        path: string,
+        requestQuery?: AxiosRequestConfig,
+    ): Promise<any> {
+        const { data } = await this.client.get(path, requestQuery)
+
+        return data
+    }
+
     protected postExcel<T = any>(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<T> {
         return this.requestExcel(path, responseType, { ...options, method: "POST" })
     }

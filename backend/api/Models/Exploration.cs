@@ -8,12 +8,12 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public WellType WellType { get; set; }
         public ExplorationCostProfile? CostProfile { get; set; }
         public ExplorationDrillingSchedule? DrillingSchedule { get; set; }
         public GAndGAdminCost? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
         public Currency Currency { get; set; }
+        public ICollection<ExplorationWellType>? ExplorationWellTypes { get; set; }
     }
 
     public class ExplorationCostProfile : TimeSeriesCost
