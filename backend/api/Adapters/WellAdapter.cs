@@ -15,7 +15,7 @@ namespace api.Adapters
                 WellInterventionCost = wellDto.WellInterventionCost,
                 PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost,
             };
-            well.WellType = Convert(wellDto.WellType, well);
+            well.WellType = Convert(wellDto.WellType);
             well.ExplorationWellType = Convert(wellDto.ExplorationWellType);
             return well;
         }
@@ -27,11 +27,11 @@ namespace api.Adapters
             existing.ProjectId = wellDto.ProjectId;
             existing.WellInterventionCost = wellDto.WellInterventionCost;
             existing.PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost;
-            existing.WellType = Convert(wellDto.WellType, existing);
+            existing.WellType = Convert(wellDto.WellType);
             existing.ExplorationWellType = Convert(wellDto.ExplorationWellType);
         }
 
-        private static WellType Convert(WellTypeDto? wellType, Well well)
+        private static WellType Convert(WellTypeDto? wellType)
         {
             if (wellType == null)
             {

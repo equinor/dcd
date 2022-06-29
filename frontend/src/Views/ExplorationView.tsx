@@ -40,6 +40,7 @@ const ExplorationView = () => {
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const [wellTypes, setWellTypes] = useState<Components.Schemas.ExplorationWellType[] | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -74,6 +75,12 @@ const ExplorationView = () => {
                 setDrillingSchedule(newExploration.drillingSchedule)
                 setGAndGAdminCost(newExploration.gAndGAdminCost)
 
+                const wells = caseResult.wells?.filter((o) => o.explorationWellType?.name)
+                wells?.forEach(((well) => {
+                    newExploration?.explorationWellTypes?.push(well.explorationWellType!)
+                }))
+                setWellTypes(newExploration?.explorationWellTypes)
+
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
@@ -93,6 +100,7 @@ const ExplorationView = () => {
         newExploration.drillingSchedule = drillingSchedule
         newExploration.gAndGAdminCost = gAndGAdminCost
         newExploration.currency = currency
+        newExploration.explorationWellTypes = wellTypes
         setExploration(newExploration)
 
         if (caseItem?.DG4Date) {
@@ -103,7 +111,7 @@ const ExplorationView = () => {
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost, currency])
+    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost, currency, wellTypes])
 
     return (
         <AssetViewDiv>

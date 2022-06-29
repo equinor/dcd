@@ -82,14 +82,11 @@ function WellProjectView() {
                 setDrillingSchedule(newWellProject.drillingSchedule)
                 setArtificialLift(newWellProject.artificialLift)
 
-                console.log(caseResult.wells?.filter((o) => o.wellType))
-                console.log(caseResult.wells)
                 const wells = caseResult.wells?.filter((o) => o.wellType?.name)
                 wells?.forEach(((well) => {
                     newWellProject?.wellTypes?.push(well.wellType!)
                 }))
                 setWellTypes(newWellProject?.wellTypes)
-                console.log(newWellProject.wellTypes)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
