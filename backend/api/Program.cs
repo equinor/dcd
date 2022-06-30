@@ -108,6 +108,7 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<DrainageStrategyService>();
@@ -122,6 +123,8 @@ builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryCli
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ImportProspService>();
+builder.Services.AddScoped<GraphRestService>();
+builder.Services.AddSingleton<IHttpContextService, HttpContextService>();
 builder.Services.AddControllers(options =>
 {
     options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()));

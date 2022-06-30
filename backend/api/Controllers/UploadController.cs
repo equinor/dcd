@@ -3,18 +3,30 @@ using System.Net.Http.Headers;
 using api.Dtos;
 using api.Services;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class UploadController : ControllerBase
     {
         private readonly ImportProspService _prospService;
-        public UploadController(ImportProspService prospService)
+        private readonly GraphRestService _graphRestService;
+
+        public UploadController(ImportProspService prospService, GraphRestService graphRestService)
         {
             _prospService = prospService;
+            _graphRestService = graphRestService;
+        }
+
+        [HttpGet(Name = "GetFilesFromSharePoint")]
+        public List<Stream> GetFilesFromSharePoint()
+        {
+            var graph = _graphRestService.GetAllFilesFromSite();
+            return graph;
         }
 
         [HttpPost(Name = "Upload"), DisableRequestSizeLimit]
