@@ -36,7 +36,8 @@ namespace api.Adapters
                 Source = topsideDto.Source,
                 ApprovedBy = topsideDto.ApprovedBy,
                 DG3Date = topsideDto.DG3Date,
-                DG4Date = topsideDto.DG4Date
+                DG4Date = topsideDto.DG4Date,
+                FacilityOpex = topsideDto.FacilityOpex
             };
 
             if (topsideDto.CostProfile != null)
@@ -84,6 +85,7 @@ namespace api.Adapters
             existing.ApprovedBy = topsideDto.ApprovedBy;
             existing.DG3Date = topsideDto.DG3Date;
             existing.DG4Date = topsideDto.DG4Date;
+            existing.FacilityOpex = topsideDto.FacilityOpex;
         }
         private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
         {

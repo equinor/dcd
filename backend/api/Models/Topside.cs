@@ -35,6 +35,7 @@ namespace api.Models
         public string ApprovedBy { get; set; } = string.Empty;
         public DateTimeOffset? DG3Date { get; set; }
         public DateTimeOffset? DG4Date { get; set; }
+        public double FacilityOpex { get; set; }
     }
 
     public class TopsideCostProfile : TimeSeriesCost

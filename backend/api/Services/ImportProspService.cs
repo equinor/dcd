@@ -53,10 +53,12 @@ namespace api.Services
         {
             var values = new List<double>();
             foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
+            {
                 if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
                 {
                     values.Add(value);
                 }
+            }
 
             return values.ToArray();
         }
@@ -95,6 +97,9 @@ namespace api.Services
             var artificialLift = MapArtificialLift(artificialLiftInt);
             var riserCount = ReadIntValue(cellData, "K36");
             var templateCount = ReadIntValue(cellData, "K32");
+            var producerCount = ReadIntValue(cellData, "E38");
+            var waterInjectorCount = ReadIntValue(cellData, "E39");
+            var gasInjectorCount = ReadIntValue(cellData, "E40");
 
             //TODO: Add cessation cost from PROSP after feedback from PO
             // var cessationCost = ReadDoubleValue(parsedData, "K88");
@@ -127,7 +132,10 @@ namespace api.Services
                 CostYear = costYear,
                 Maturity = Maturity.A,
                 DG3Date = dG3Date,
-                DG4Date = dG4Date
+                DG4Date = dG4Date,
+                ProducerCount = producerCount,
+                GasInjectorCount = gasInjectorCount,
+                WaterInjectorCount = waterInjectorCount
             };
             var dto = SurfDtoAdapter.Convert(newSurf);
             _surfService.CreateSurf(dto, sourceCaseId);
@@ -164,6 +172,7 @@ namespace api.Services
             var cO2OnMaxOilProfile = ReadDoubleValue(cellData, "L99");
             var cO2OnMaxGasProfile = ReadDoubleValue(cellData, "L100");
             var cO2OnMaxWaterInjectionProfile = ReadDoubleValue(cellData, "L101");
+            var facilityOpex = ReadDoubleValue(cellData, "L80");
             var costProfile = new TopsideCostProfile
             {
                 Values = ReadDoubleValues(cellData, costProfileCoords),
@@ -202,7 +211,8 @@ namespace api.Services
                 ProspVersion = versionDate,
                 Currency = currency,
                 CostYear = costYear,
-                Maturity = Maturity.A
+                Maturity = Maturity.A,
+                FacilityOpex = facilityOpex
             };
             var dto = TopsideDtoAdapter.Convert(newTopside);
             _topsideService.CreateTopside(dto, sourceCaseId);
@@ -309,9 +319,9 @@ namespace api.Services
             var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
                 .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
-            if (mainSheet?.Id != null)
+            if (mainSheet?.Id != null && workbookPart != null)
             {
-                var wsPart = (WorksheetPart)workbookPart?.GetPartById(mainSheet.Id)!;
+                var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
                 var cellData = wsPart?.Worksheet.Descendants<Cell>();
 
                 if (cellData != null)

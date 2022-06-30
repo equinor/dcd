@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Api.Services.FusionIntegration;
+
 namespace api.Services
 {
     public class STEAService

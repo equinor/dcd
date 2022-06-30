@@ -12,6 +12,10 @@ declare namespace Components {
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationOffshoreFacilities?: CessationOffshoreFacilities;
         }
+        export interface CapexYear {
+            values?: number /* double */[] | null;
+            startYear?: number | null; // int32
+        }
         export interface CaseDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -39,6 +43,7 @@ declare namespace Components {
             transportLink?: string; // uuid
             explorationLink?: string; // uuid
             capex?: number; // double
+            capexYear?: CapexYear;
         }
         export interface CessationOffshoreFacilities {
             id?: string; // uuid
@@ -186,12 +191,12 @@ declare namespace Components {
             sum?: number; // double
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
-        export type ProjectCategory =
-            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
             commonLibraryId?: string; // uuid
+            fusionProjectId?: string; // uuid
             commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
@@ -346,6 +351,7 @@ declare namespace Components {
             approvedBy?: string | null;
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
+            facilityOpex?: number; // double
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid

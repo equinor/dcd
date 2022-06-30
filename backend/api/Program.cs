@@ -2,6 +2,8 @@ using api.Context;
 using api.SampleData.Generators;
 using api.Services;
 
+using Api.Services.FusionIntegration;
+
 using Azure.Identity;
 
 using Equinor.TI.CommonLibrary.Client;
@@ -24,10 +26,7 @@ Console.WriteLine("Loading config for: " + environment);
 configBuilder.AddAzureAppConfiguration(options =>
     options
     .Connect(azureAppConfigConnectionString)
-    .ConfigureKeyVault(x =>
-    {
-        x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true }));
-    })
+    .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true })))
     .Select(KeyFilter.Any, LabelFilter.Null)
     .Select(KeyFilter.Any, environment)
 );
@@ -46,35 +45,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Setup in memory DB SQL lite for test purposes
 string _sqlConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
 
-
 if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnectionString))
 {
     if (environment == "localdev")
     {
-        DbContextOptionsBuilder<DcdDbContext> dBbuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        DbContextOptionsBuilder<DcdDbContext> dBbuilder = new();
         _sqlConnectionString = new SqliteConnectionStringBuilder { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }.ToString();
 
-        SqliteConnection _connectionToInMemorySqlite = new SqliteConnection(_sqlConnectionString);
+        SqliteConnection _connectionToInMemorySqlite = new(_sqlConnectionString);
         _connectionToInMemorySqlite.Open();
         dBbuilder.UseSqlite(_connectionToInMemorySqlite);
 
-        using (DcdDbContext context = new DcdDbContext(dBbuilder.Options))
-        {
-            context.Database.EnsureCreated();
-            SaveSampleDataToDB.PopulateDb(context);
-        }
-
+        using DcdDbContext context = new(dBbuilder.Options);
+        context.Database.EnsureCreated();
+        SaveSampleDataToDB.PopulateDb(context);
     }
     else
     {
-        DbContextOptionsBuilder<DcdDbContext> dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        DbContextOptionsBuilder<DcdDbContext> dbBuilder = new();
         dbBuilder.UseSqlServer(sqlConnectionString);
-        using (DcdDbContext context = new DcdDbContext(dbBuilder.Options))
-        {
-            context.Database.EnsureCreated();
-        }
+        using DcdDbContext context = new(dbBuilder.Options);
+        context.Database.EnsureCreated();
     }
-
 }
 // Set up CORS
 var _accessControlPolicyName = "AllowSpecificOrigins";
@@ -109,8 +101,27 @@ else
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddFusionIntegration(options =>
+{
+    var fusionEnvironment = config["Fusion:Environment"] ?? "CI";
+    options.UseServiceInformation("ConceptApp", fusionEnvironment);
+
+    options.AddFusionAuthorization();
+
+    options.UseDefaultEndpointResolver(fusionEnvironment);
+    options.UseDefaultTokenProvider(opts =>
+    {
+        opts.ClientId = config["AzureAd:ClientId"];
+        opts.ClientSecret = config["AzureAd:ClientSecret"];
+    });
+
+    options.ApplicationMode = true;
+});
+
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<FusionService>();
 builder.Services.AddScoped<DrainageStrategyService>();
 builder.Services.AddScoped<WellProjectService>();
 builder.Services.AddScoped<ExplorationService>();
@@ -136,7 +147,6 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
