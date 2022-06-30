@@ -14,7 +14,6 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class CasesController : ControllerBase
     {
-
         private readonly CaseService _caseService;
 
         public CasesController(CaseService caseService)

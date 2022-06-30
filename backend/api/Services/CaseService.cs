@@ -61,7 +61,6 @@ namespace api.Services
         {
             var caseItem = GetCase(caseId);
             _context.Cases!.Remove(caseItem);
-            // DeleteCaseLinks(caseId);
             _context.SaveChanges();
             return _projectService.GetProjectDto(caseItem.ProjectId);
         }
