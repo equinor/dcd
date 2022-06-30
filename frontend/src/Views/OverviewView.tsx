@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, {
     Dispatch, SetStateAction, MouseEventHandler, useState,
     ChangeEventHandler,
@@ -5,6 +6,7 @@ import React, {
 import styled from "styled-components"
 import {
     Button, EdsProvider, Icon, TextField, Tooltip, Typography,
+    Table,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
@@ -191,7 +193,6 @@ function OverviewView({
                         placeholder="Enter a description"
                         onChange={handleDescriptionChange}
                     />
-
                     <div>
                         <Button
                             type="submit"
@@ -211,6 +212,28 @@ function OverviewView({
                     </div>
                 </CreateCaseForm>
             </Modal>
+            <Table>
+                <Table.Head>
+                    <Table.Cell>Name</Table.Cell>
+                    <Table.Cell>Description</Table.Cell>
+                    <Table.Cell>Production Strategy Overview</Table.Cell>
+                    <Table.Cell>Producers</Table.Cell>
+                    <Table.Cell>Gas Injectors</Table.Cell>
+                    <Table.Cell>Water Injectors</Table.Cell>
+                    <Table.Cell>Created</Table.Cell>
+                </Table.Head>
+                { project.cases && project.cases.map((casee) => (
+                    <Table.Row key={casee.id}>
+                        <Table.Cell>{casee.name}</Table.Cell>
+                        <Table.Cell>{casee.description}</Table.Cell>
+                        <Table.Cell>{casee.productionStrategyOverview}</Table.Cell>
+                        <Table.Cell>{casee.producerCount}</Table.Cell>
+                        <Table.Cell>{casee.gasInjectorCount}</Table.Cell>
+                        <Table.Cell>{casee.waterInjectorCount}</Table.Cell>
+                        <Table.Cell>{casee.createdAt?.toLocaleDateString()}</Table.Cell>
+                    </Table.Row>
+                ))}
+            </Table>
         </Wrapper>
     )
 }

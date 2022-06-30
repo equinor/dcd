@@ -16,6 +16,13 @@ namespace api.Adapters
                     projectDto.Cases!.Add(CaseDtoAdapter.Convert(c));
                 }
             }
+            if (project.Wells != null)
+            {
+                foreach (Well well in project.Wells)
+                {
+                    projectDto.Wells!.Add(WellDtoAdapter.Convert(well));
+                }
+            }
             if (project.Explorations != null)
             {
                 projectDto.Explorations = new List<ExplorationDto>();
@@ -97,7 +104,8 @@ namespace api.Adapters
                 ProjectPhase = project.ProjectPhase,
                 Currency = project.Currency,
                 PhysUnit = project.PhysicalUnit,
-                Cases = new List<CaseDto>()
+                Cases = new List<CaseDto>(),
+                Wells = new List<WellDto>(),
             };
         }
 
