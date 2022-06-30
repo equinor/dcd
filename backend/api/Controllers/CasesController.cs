@@ -28,10 +28,22 @@ namespace api.Controllers
             return _caseService.CreateCase(caseDto);
         }
 
+        [HttpPost(Name = "DuplicateCase"), Route("copy")]
+        public ProjectDto DuplicateCase([FromQuery] Guid copyCaseId)
+        {
+            return _caseService.DuplicateCase(copyCaseId);
+        }
+
         [HttpPut(Name = "UpdateCase")]
         public ProjectDto UpdateCase([FromBody] CaseDto caseDto)
         {
             return _caseService.UpdateCase(caseDto);
+        }
+
+        [HttpDelete("{caseId}", Name = "DeleteCase")]
+        public ProjectDto DeleteTransport(Guid caseId)
+        {
+            return _caseService.DeleteCase(caseId);
         }
     }
 }
