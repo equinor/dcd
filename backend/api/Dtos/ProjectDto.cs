@@ -19,7 +19,7 @@ namespace api.Dtos
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
         public ICollection<CaseDto>? Cases { get; set; }
-        public WellDto? Well { get; set; }
+        public WellDto Well { get; set; } = null!;
         public ICollection<ExplorationDto>? Explorations { get; set; }
         public ICollection<SurfDto>? Surfs { get; set; }
         public ICollection<SubstructureDto>? Substructures { get; set; }

@@ -17,6 +17,7 @@ import { Modal } from "../Components/Modal"
 import { GetWellService } from "../Services/WellService"
 import { Well } from "../models/Well"
 import WellTypeCategory from "../Components/WellTypeCategory"
+import { WellType } from "../models/WellType"
 
 const Wrapper = styled.div`
     display: flex;
@@ -62,7 +63,7 @@ function WellView() {
     const [wellTypeCost, setWellTypeCost] = useState<number | undefined>()
     const [wellTypeDrillingDays, setWellTypeDrillingDays] = useState<number | undefined>()
     const [plugingAndAbandonmentCost, setPlugingAndAbandonmentCost] = useState<number | undefined>()
-    const [wells, setWells] = useState<Well[]>()
+    const [well, setWell] = useState<Well>()
     const [hasChanges, setHasChanges] = useState<boolean>()
     const [wellTypeCategory, setWellTypeCategory] = useState<Components.Schemas.WellTypeCategory | undefined>()
     const params = useParams()
@@ -82,8 +83,8 @@ function WellView() {
     useEffect(() => {
         (async () => {
             try {
-                const allWells = await GetWellService().getWellsByProjectId(params?.projectId!)
-                setWells(allWells)
+                const projectWell = await GetWellService().getWellByProjectId(params?.projectId!)
+                setWell(projectWell)
             } catch (error) {
                 console.error(`[WellView] Error while fetching project ${params.projectId}`, error)
             }
@@ -122,10 +123,18 @@ function WellView() {
         e.preventDefault()
 
         try {
-            // eslint-disable-next-line no-underscore-dangle
             const _wellService = GetWellService()
-            const projectResult: Project = await _wellService.createWell({
-                name: wellName,
+            const currentWell = well
+            // The thought here is to create new welltype from the modal, and call .updateWell with the new welltype
+            const newWellType = new WellType{
+                name: wellTypeName,
+                
+            }
+            currentWell.wellTypes?.push(well
+            {
+
+            })
+            const projectResult: Project = await _wellService.updateWell({
                 projectId: params.projectId,
                 wellType: {
                     name: wellTypeName,
@@ -170,26 +179,17 @@ function WellView() {
                 </EdsProvider>
             </Header>
             <WellsWrapper>
-                {wells?.map((well) => (
+                {well?.wellTypes?.map((wellType) => (
                     // eslint-disable-next-line react/jsx-no-comment-textnodes
                     <>
                         {/* <li key={index}>{well.name}</li> */}
                         <WellWrapper>
-                            <Typography variant="h4">{`Name: ${well.name}`}</Typography>
-                            <Typography>{`Well intervention cost: ${well.wellInterventionCost}`}</Typography>
-                            <Typography>{`Pluging and abandonment cost: ${well.plugingAndAbandonmentCost}`}</Typography>
                             <Typography variant="h4">Well type:</Typography>
-                            <Typography>{`Well type name: ${well.wellType?.name}`}</Typography>
-                            <Typography>{`Well type description: ${well.wellType?.description}`}</Typography>
-                            <Typography>{`Well type category: ${wellTypeCategoryEnum[well.wellType?.category!]}`}</Typography>
-                            <Typography>{`Well type cost: ${well.wellType?.wellCost}`}</Typography>
-                            <Typography>{`Well type drilling days: ${well.wellType?.drillingDays}`}</Typography>
-                            <Typography variant="h4">Exploration well type:</Typography>
-                            <Typography>{`Exploration well type name: ${well.explorationWellType?.name}`}</Typography>
-                            <Typography>{`Exploration well type description: ${well.explorationWellType?.description}`}</Typography>
-                            <Typography>{`Exploration well type category: ${wellTypeCategoryEnum[well.explorationWellType?.category!]}`}</Typography>
-                            <Typography>{`Exploration well type cost: ${well.explorationWellType?.wellCost}`}</Typography>
-                            <Typography>{`Exploration well type drilling days: ${well.explorationWellType?.drillingDays}`}</Typography>
+                            <Typography>{`Well type name: ${wellType?.name}`}</Typography>
+                            <Typography>{`Well type description: ${wellType?.description}`}</Typography>
+                            <Typography>{`Well type category: ${wellTypeCategoryEnum[wellType?.category!]}`}</Typography>
+                            <Typography>{`Well type cost: ${wellType?.wellCost}`}</Typography>
+                            <Typography>{`Well type drilling days: ${wellType?.drillingDays}`}</Typography>
                         </WellWrapper>
                     </>
                 ))}

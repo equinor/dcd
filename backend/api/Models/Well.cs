@@ -6,8 +6,8 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
-        public ICollection<WellType>? WellTypes { get; set; }
-        public ICollection<ExplorationWellType>? ExplorationWellTypes { get; set; }
+        public ICollection<WellType> WellTypes { get; set; } = null!;
+        public ICollection<ExplorationWellType> ExplorationWellTypes { get; set; } = null!;
         public double WellInterventionCost { get; set; }
         public double PlugingAndAbandonmentCost { get; set; }
     }

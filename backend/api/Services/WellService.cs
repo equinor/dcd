@@ -23,7 +23,7 @@ namespace api.Services
         public ProjectDto CreateWell(WellDto wellDto)
         {
             var _well = WellAdapter.Convert(wellDto);
-            _context.Wells!.Add(_well);
+            _context.Well!.Add(_well);
             _context.SaveChanges();
             return _projectService.GetProjectDto(wellDto.ProjectId);
         }
@@ -32,16 +32,16 @@ namespace api.Services
         {
             var existing = GetWell(updatedWellDto.Id);
             WellAdapter.ConvertExisting(existing, updatedWellDto);
-            _context.Wells!.Update(existing);
+            _context.Well!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(existing.ProjectId);
         }
 
         public Well GetWell(Guid wellId)
         {
-            var well = _context.Wells!
-                        .Include(w => w.WellType)
-                        .Include(e => e.ExplorationWellType)
+            var well = _context.Well!
+                        .Include(w => w.WellTypes)
+                        .Include(e => e.ExplorationWellTypes)
                         .FirstOrDefault(w => w.Id == wellId);
             if (well == null)
             {
@@ -60,9 +60,9 @@ namespace api.Services
 
         public IEnumerable<Well> GetAll()
         {
-            if (_context.Wells != null)
+            if (_context.Well != null)
             {
-                return _context.Wells;
+                return _context.Well;
             }
             else
             {
@@ -84,11 +84,11 @@ namespace api.Services
 
         public IEnumerable<Well> GetWells(Guid projectId)
         {
-            if (_context.Wells != null)
+            if (_context.Well != null)
             {
-                return _context.Wells
-                    .Include(w => w.WellType)
-                    .Include(e => e.ExplorationWellType)
+                return _context.Well
+                    .Include(w => w.WellTypes)
+                    .Include(e => e.ExplorationWellTypes)
                     .Where(d => d.ProjectId.Equals(projectId));
             }
             else

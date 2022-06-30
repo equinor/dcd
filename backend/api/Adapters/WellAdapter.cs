@@ -13,9 +13,9 @@ namespace api.Adapters
                 ProjectId = wellDto.ProjectId,
                 WellInterventionCost = wellDto.WellInterventionCost,
                 PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost,
+                WellTypes = Convert(wellDto.WellTypes),
+                ExplorationWellTypes = Convert(wellDto.ExplorationWellTypes)
             };
-            well.WellTypes = Convert(wellDto.WellTypes);
-            well.ExplorationWellTypes = Convert(wellDto.ExplorationWellTypes);
             return well;
         }
 
@@ -29,38 +29,49 @@ namespace api.Adapters
             existing.ExplorationWellTypes = Convert(wellDto.ExplorationWellTypes);
         }
 
-        private static WellType Convert(WellTypeDto? wellType)
+        private static ICollection<WellType> Convert(ICollection<WellTypeDto> wellTypes)
         {
-            if (wellType == null)
+            if (wellTypes == null)
             {
                 return null!;
             }
-            return new WellType
+            var wellTypeList = new List<WellType>();
+            foreach (var w in wellTypes)
             {
-                Id = wellType.Id,
-                Description = wellType.Description,
-                Category = (WellTypeCategory)wellType.Category,
-                Name = wellType.Name,
-                DrillingDays = wellType.DrillingDays,
-                WellCost = wellType.WellCost,
-            };
+                wellTypeList.Add(new WellType
+                {
+                    Category = (WellTypeCategory)w.Category,
+                    Description = w.Description,
+                    DrillingDays = w.DrillingDays,
+                    Id = w.Id,
+                    Name = w.Name,
+                    WellCost = w.WellCost,
+                });
+            }
+            return wellTypeList;
         }
 
-        private static ExplorationWellType Convert(ExplorationWellTypeDto? explorationWellType)
+        private static ICollection<ExplorationWellType> Convert(ICollection<ExplorationWellTypeDto> explorationWellTypes)
         {
-            if (explorationWellType == null)
+            if (explorationWellTypes == null)
             {
                 return null!;
             }
-            return new ExplorationWellType
+
+            var explorationWellTypeList = new List<ExplorationWellType>();
+            foreach (var e in explorationWellTypes)
             {
-                Id = explorationWellType.Id,
-                Description = explorationWellType.Description,
-                Name = explorationWellType.Name,
-                DrillingDays = explorationWellType.DrillingDays,
-                WellCost = explorationWellType.WellCost,
-                Category = (ExplorationWellTypeCategory)explorationWellType.Category,
-            };
+                explorationWellTypeList.Add(new ExplorationWellType
+                {
+                    Category = (ExplorationWellTypeCategory)e.Category,
+                    Description = e.Description,
+                    DrillingDays = e.DrillingDays,
+                    Id = e.Id,
+                    Name = e.Name,
+                    WellCost = e.WellCost
+                });
+            }
+            return explorationWellTypeList;
         }
     }
 }

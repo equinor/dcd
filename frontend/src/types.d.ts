@@ -43,8 +43,8 @@ declare namespace Components {
             transportLink?: string; // uuid
             explorationLink?: string; // uuid
             capex?: number; // double
-            wells?: Well[] | null;
-            wellsLink?: string; // uuid
+            wellTypes?: WellType[] | null;
+            wellTypesLink?: string; // uuid
             capexYear?: CapexYear;
         }
         export interface CessationOffshoreFacilities {
@@ -211,7 +211,8 @@ declare namespace Components {
             sum?: number; // double
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
-        export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
+        export type ProjectCategory =
+            0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
             projectId?: string; // uuid
             name?: string | null;
@@ -226,7 +227,7 @@ declare namespace Components {
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
             cases?: CaseDto[] | null;
-            wells?: WellDto[] | null;
+            well?: WellDto;
             explorations?: ExplorationDto[] | null;
             surfs?: SurfDto[] | null;
             substructures?: SubstructureDto[] | null;
@@ -407,21 +408,11 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
-        export interface Well {
-            id?: string; // uuid
-            projectId?: string; // uuid
-            name?: string | null;
-            wellType?: WellType;
-            explorationWellType?: ExplorationWellType;
-            wellInterventionCost?: number; // double
-            plugingAndAbandonmentCost?: number; // double
-        }
         export interface WellDto {
             id?: string; // uuid
             projectId?: string; // uuid
-            name?: string | null;
-            wellType?: WellTypeDto;
-            explorationWellType?: ExplorationWellTypeDto;
+            wellTypes?: WellTypeDto[] | null;
+            explorationWellTypes?: ExplorationWellTypeDto[] | null;
             wellInterventionCost?: number; // double
             plugingAndAbandonmentCost?: number; // double
         }

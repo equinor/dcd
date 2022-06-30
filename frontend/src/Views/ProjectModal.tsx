@@ -14,6 +14,8 @@ import { Modal } from "../Components/Modal"
 import { ProjectCategory } from "../models/ProjectCategory"
 import { ProjectPhase } from "../models/ProjectPhase"
 import { GetProjectService } from "../Services/ProjectService"
+import { GetWellService } from "../Services/WellService"
+import { Project } from "../models/Project"
 
 const ProjectSelect = styled.div`
     margin-top: 1.5rem;
@@ -122,7 +124,12 @@ const ProjectModal = ({
         if (pressedOkButton === true) {
             try {
                 project = convertCommonLibProjectToProject(selectedProject)
-                await GetProjectService().createProject(project).then((createdProject) => {
+                await GetProjectService().createProject(project).then((createdProject: Project) => {
+                    GetWellService().createWell({
+                        projectId: createdProject.id,
+                        wellInterventionCost: 0,
+                        plugingAndAbandonmentCost: 0,
+                    })
                     closeModal()
                     navigate(`/project/${createdProject.projectId}`)
                 })
