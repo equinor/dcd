@@ -5,6 +5,8 @@ using api.Models;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using Microsoft.Extensions.Options;
+
 namespace api.Services
 {
     public class ImportProspService
@@ -15,9 +17,10 @@ namespace api.Services
         private readonly SurfService _surfService;
         private readonly TopsideService _topsideService;
         private readonly TransportService _transportService;
+        private IConfiguration _prospConfig;
 
         public ImportProspService(ProjectService projectService, ILoggerFactory loggerFactory, SurfService surfService,
-            SubstructureService substructureService, TopsideService topsideService, TransportService transportService)
+            SubstructureService substructureService, TopsideService topsideService, TransportService transportService, IOptions<FileImportConfig> prospConfig)
         {
             _projectService = projectService;
             loggerFactory.CreateLogger<ImportProspService>();
@@ -25,6 +28,7 @@ namespace api.Services
             _substructureService = substructureService;
             _topsideService = topsideService;
             _transportService = transportService;
+            _prospConfig = prospConfig.Value.ConfigSection;
         }
 
         private static double ReadDoubleValue(IEnumerable<Cell> cellData, string coordinate)
@@ -76,6 +80,8 @@ namespace api.Services
 
         private void ImportSurf(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
         {
+            var surfConfig = _prospConfig.GetSection("Surf");
+            Console.WriteLine(surfConfig["costProfileStartYear"]);
             List<string> costProfileCoords = new()
             {
                 "J112",
@@ -86,7 +92,7 @@ namespace api.Services
                 "O112",
                 "P112"
             };
-            var costProfileStartYear = ReadIntValue(cellData, "J103");
+            var costProfileStartYear = ReadIntValue(cellData, surfConfig["costProfileStartYear"]);
             var dG3Date = ReadDateValue(cellData, "F112");
             var dG4Date = ReadDateValue(cellData, "G112");
             var lengthProductionLine = ReadDoubleValue(cellData, "K35");
