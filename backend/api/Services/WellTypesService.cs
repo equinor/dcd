@@ -67,7 +67,6 @@ namespace api.Services
             }
             else
             {
-                _logger.LogInformation("No Wells existing");
                 return new List<WellType>();
             }
         }
