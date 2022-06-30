@@ -128,24 +128,14 @@ function WellView() {
             // The thought here is to create new welltype from the modal, and call .updateWell with the new welltype
             const newWellType = new WellType{
                 name: wellTypeName,
-                
+                wellCost: wellCost,
             }
             currentWell.wellTypes?.push(well
             {
 
             })
             const projectResult: Project = await _wellService.updateWell({
-                projectId: params.projectId,
-                wellType: {
-                    name: wellTypeName,
-                    category: wellTypeCategory,
-                    drillingDays: wellTypeDrillingDays,
-                    wellCost: wellTypeCost,
-                    description: undefined,
-                },
-                explorationWellType: undefined,
-                wellInterventionCost: wellInterventionCost ?? 0,
-                plugingAndAbandonmentCost: plugingAndAbandonmentCost ?? 0,
+
             })
             setHasChanges(true)
             toggleCreateWellModal()

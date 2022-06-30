@@ -11,13 +11,11 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
-        private readonly ILogger<CaseService> _logger;
 
-        public WellService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+        public WellService(DcdDbContext context, ProjectService projectService)
         {
             _context = context;
             _projectService = projectService;
-            _logger = loggerFactory.CreateLogger<CaseService>();
         }
 
         public ProjectDto CreateWell(WellDto wellDto)
@@ -66,7 +64,6 @@ namespace api.Services
             }
             else
             {
-                _logger.LogInformation("No Wells existing");
                 return new List<Well>();
             }
         }
