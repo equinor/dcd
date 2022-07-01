@@ -25,6 +25,7 @@ import ProductionStrategyOverview from "../Components/ProductionStrategyOverview
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import ExcelUpload from "../Components/ExcelUpload"
+import WellList from "../Components/Well/WellList"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -137,6 +138,7 @@ function CaseView() {
     return (
 
         <CaseViewDiv>
+            <WellList project={project!} />
             <Tabs activeTab={activeTab} onChange={setActiveTab}>
                 <List>
                     <Tab>Definition </Tab>
