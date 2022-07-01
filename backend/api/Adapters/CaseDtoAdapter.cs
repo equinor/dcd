@@ -35,7 +35,7 @@ namespace api.Adapters
                 GasInjectorCount = case_.GasInjectorCount,
                 WaterInjectorCount = case_.WaterInjectorCount,
                 FacilitiesAvailability = case_.FacilitiesAvailability,
-                WellCases = case_.WellCases
+                WellCases = case_.WellCases?.Select(wc => WellCaseDtoAdapter.Convert(wc)).ToList()
             };
 
             return caseDto;
