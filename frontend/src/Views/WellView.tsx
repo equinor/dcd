@@ -127,14 +127,6 @@ function WellView() {
             const projectResult: Project = await _wellService.createWell({
                 name: wellName,
                 projectId: params.projectId,
-                wellType: {
-                    name: wellTypeName,
-                    category: wellTypeCategory,
-                    drillingDays: wellTypeDrillingDays,
-                    wellCost: wellTypeCost,
-                    description: undefined,
-                },
-                explorationWellType: undefined,
                 wellInterventionCost: wellInterventionCost ?? 0,
                 plugingAndAbandonmentCost: plugingAndAbandonmentCost ?? 0,
             })
@@ -175,7 +167,7 @@ function WellView() {
                     <>
                         {/* <li key={index}>{well.name}</li> */}
                         <WellWrapper>
-                            <Typography variant="h4">{`Name: ${well.name}`}</Typography>
+                            {/* <Typography variant="h4">{`Name: ${well.name}`}</Typography>
                             <Typography>{`Well intervention cost: ${well.wellInterventionCost}`}</Typography>
                             <Typography>{`Pluging and abandonment cost: ${well.plugingAndAbandonmentCost}`}</Typography>
                             <Typography variant="h4">Well type:</Typography>
@@ -189,7 +181,7 @@ function WellView() {
                             <Typography>{`Exploration well type description: ${well.explorationWellType?.description}`}</Typography>
                             <Typography>{`Exploration well type category: ${wellTypeCategoryEnum[well.explorationWellType?.category!]}`}</Typography>
                             <Typography>{`Exploration well type cost: ${well.explorationWellType?.wellCost}`}</Typography>
-                            <Typography>{`Exploration well type drilling days: ${well.explorationWellType?.drillingDays}`}</Typography>
+                            <Typography>{`Exploration well type drilling days: ${well.explorationWellType?.drillingDays}`}</Typography> */}
                         </WellWrapper>
                     </>
                 ))}

@@ -28,8 +28,6 @@ export class Case implements Components.Schemas.CaseDto {
     waterInjectorCount?: number
     facilitiesAvailability?: number
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
-    wells?: Well[]
-    wellsLink?: string | undefined
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -59,8 +57,6 @@ export class Case implements Components.Schemas.CaseDto {
         this.waterInjectorCount = data.waterInjectorCount
         this.facilitiesAvailability = data.facilitiesAvailability
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
-        this.wells = data.wells?.map(Well.fromJSON) ?? []
-        this.wellsLink = data.wellsLink ?? ""
     }
 
     static Copy(data: Case) {

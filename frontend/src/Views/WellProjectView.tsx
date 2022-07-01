@@ -24,7 +24,6 @@ import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
-import WellType from "../Components/WellType"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -42,7 +41,6 @@ function WellProjectView() {
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
-    const [wellTypes, setWellTypes] = useState<Components.Schemas.WellType[] | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -82,12 +80,6 @@ function WellProjectView() {
                 setDrillingSchedule(newWellProject.drillingSchedule)
                 setArtificialLift(newWellProject.artificialLift)
 
-                const wells = caseResult.wells?.filter((o) => o.wellType?.name)
-                wells?.forEach(((well) => {
-                    newWellProject?.wellTypes?.push(well.wellType!)
-                }))
-                setWellTypes(newWellProject?.wellTypes)
-
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
@@ -109,7 +101,6 @@ function WellProjectView() {
         newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
         newWellProject.artificialLift = artificialLift
-        newWellProject.wellTypes = wellTypes
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
@@ -120,7 +111,7 @@ function WellProjectView() {
         }
         setWellProject(newWellProject)
     }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
-        artificialLift, wellTypes])
+        artificialLift])
 
     return (
         <AssetViewDiv>
@@ -166,12 +157,6 @@ function WellProjectView() {
                         caseArtificialLift={caseItem?.artificialLift}
                     />
                 </WrapperColumn>
-            </Wrapper>
-            <Wrapper>
-                <WellType
-                    caseItem={caseItem}
-                    wellProject={wellProject}
-                />
             </Wrapper>
             <Wrapper>
                 <NumberInput

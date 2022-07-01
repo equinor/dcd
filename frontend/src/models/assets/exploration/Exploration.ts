@@ -14,7 +14,6 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     gAndGAdminCost?: GAndGAdminCost | undefined
     rigMobDemob?: number | undefined
     currency?: Components.Schemas.Currency
-    explorationWellTypes?: Components.Schemas.ExplorationWellType[] | undefined
 
     constructor(data?: Components.Schemas.ExplorationDto) {
         if (data !== undefined) {
@@ -26,7 +25,6 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
             this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)
             this.rigMobDemob = data.rigMobDemob
             this.currency = data.currency ?? 1
-            this.explorationWellTypes = data.explorationWellTypes?.map(Well.fromJSON) ?? []
         } else {
             this.id = EMPTY_GUID
             this.name = ""
