@@ -28,7 +28,7 @@ namespace api.Services
             return _projectService.GetProjectDto(wellDto.ProjectId);
         }
 
-        public ProjectDto UpdateWell(WellDto updatedWellDto)
+        public ProjectDto? UpdateWell(WellDto updatedWellDto)
         {
             return null;
             // var existing = GetWell(updatedWellDto.Id);
@@ -40,16 +40,14 @@ namespace api.Services
 
         public Well GetWell(Guid wellId)
         {
-            return null;
-            // var well = _context.Wells!
-            //             .Include(w => w.WellType)
-            //             .Include(e => e.ExplorationWellType)
-            //             .FirstOrDefault(w => w.Id == wellId);
-            // if (well == null)
-            // {
-            //     throw new ArgumentException(string.Format("Well {0} not found.", wellId));
-            // }
-            // return well;
+            var well = _context.Wells!
+                        .Include(e => e.WellCases)
+                        .FirstOrDefault(w => w.Id == wellId);
+            if (well == null)
+            {
+                throw new ArgumentException(string.Format("Well {0} not found.", wellId));
+            }
+            return well;
         }
 
         public WellDto GetWellDto(Guid wellId)
@@ -86,18 +84,15 @@ namespace api.Services
 
         public IEnumerable<Well> GetWells(Guid projectId)
         {
-            return null;
-            // if (_context.Wells != null)
-            // {
-            //     return _context.Wells
-            //         .Include(w => w.WellType)
-            //         .Include(e => e.ExplorationWellType)
-            //         .Where(d => d.ProjectId.Equals(projectId));
-            // }
-            // else
-            // {
-            //     return new List<Well>();
-            // }
+            if (_context.Wells != null)
+            {
+                return _context.Wells
+                    .Where(d => d.ProjectId.Equals(projectId));
+            }
+            else
+            {
+                return new List<Well>();
+            }
         }
 
         public IEnumerable<WellDto> GetAllDtos()

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using api.Context;
 using api.SampleData.Generators;
 using api.Services;
@@ -128,6 +130,7 @@ builder.Services.AddScoped<SurfService>();
 builder.Services.AddScoped<SubstructureService>();
 builder.Services.AddScoped<TopsideService>();
 builder.Services.AddScoped<WellService>();
+builder.Services.AddScoped<WellCaseService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryClientOptions { TokenProviderConnectionString = commonLibTokenConnection });
@@ -138,7 +141,7 @@ builder.Services.AddControllers(options => options.Conventions.Add(new RouteToke
 
 );
 builder.Services.AddScoped<SurfService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

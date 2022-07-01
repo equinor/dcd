@@ -53,5 +53,10 @@ namespace api.Context
         public DbSet<ExplorationCostProfile>? ExplorationCostProfile { get; set; }
         public DbSet<ExplorationDrillingSchedule>? ExplorationDrillingSchedule { get; set; }
         public DbSet<GAndGAdminCost>? GAndGAdminCost { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WellCase>().HasKey(wc => new { wc.CaseId, wc.WellId });
+        }
     }
 }

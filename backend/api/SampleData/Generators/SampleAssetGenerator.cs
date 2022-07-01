@@ -291,7 +291,8 @@ public static class SampleAssetGenerator
             Name = "P2",
             CommonLibraryId = new Guid(),
             CommonLibraryName = "P2 from common lib",
-            CreateDate = DateTimeOffset.UtcNow.Date
+            CreateDate = DateTimeOffset.UtcNow.Date,
+            Id = new Guid("5a74a716-92e5-4ec8-8b5b-281381509ae3"),
         }
             .WithDrainageStrategy(new DrainageStrategyBuilder
             {

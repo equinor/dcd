@@ -1,13 +1,13 @@
 
-namespace api.Models
+using api.Models;
+
+namespace api.Dtos
 {
-    public class WellCase
+    public class WellCaseDto
     {
         public int Count { get; set; }
         public DrillingSchedule? DrillingSchedule { get; set; }
-        public Case Case { get; set; } = null!;
         public Guid CaseId { get; set; } = Guid.Empty!;
-        public Well Well { get; set; } = null!;
         public Guid WellId { get; set; } = Guid.Empty!;
     }
 }
