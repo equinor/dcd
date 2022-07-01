@@ -8,6 +8,7 @@ namespace api.Dtos
         public Guid ProjectId { get; set; }
         public SurfCostProfileDto? CostProfile { get; set; }
         public SurfCessationCostProfileDto? CessationCostProfile { get; set; }
+        public double CessationCost { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }

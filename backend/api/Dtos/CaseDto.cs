@@ -34,6 +34,7 @@ namespace api.Dtos
         public ICollection<Well>? Wells { get; set; }
         public Guid WellsLink { get; set; } = Guid.Empty;
         public CapexYear? CapexYear { get; set; }
+        public CessationCost? CessationCost { get; set; }
     }
 
     public class CapexYear
