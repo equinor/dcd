@@ -134,11 +134,12 @@ function CaseView() {
     }
 
     if (!project) return null
+    if (!caseItem) return null
 
     return (
 
         <CaseViewDiv>
-            <WellList project={project!} />
+            <WellList project={project!} caseItem={caseItem!} />
             <Tabs activeTab={activeTab} onChange={setActiveTab}>
                 <List>
                     <Tab>Definition </Tab>

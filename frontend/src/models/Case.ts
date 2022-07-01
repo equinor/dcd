@@ -1,4 +1,5 @@
 import { Well } from "./Well"
+import { WellCase } from "./WellCase"
 
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
@@ -28,6 +29,7 @@ export class Case implements Components.Schemas.CaseDto {
     waterInjectorCount?: number
     facilitiesAvailability?: number
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
+    wellCases?: WellCase[] | null
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -57,6 +59,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.waterInjectorCount = data.waterInjectorCount
         this.facilitiesAvailability = data.facilitiesAvailability
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
+        this.wellCases = data.wellCases?.map((wc) => new WellCase(wc))
     }
 
     static Copy(data: Case) {

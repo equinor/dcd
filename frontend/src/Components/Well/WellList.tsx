@@ -1,25 +1,28 @@
-import React from "react"
-import Plot from "react-plotly.js"
 import { tokens } from "@equinor/eds-tokens"
 import { Table, Typography } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import WellTableRow from "./WellTableRow"
 import { Well } from "../../models/Well"
 import { WellCase } from "../../models/WellCase"
+import { Case } from "../../models/Case"
 
 interface Props {
     project: Project
+    caseItem: Case
 }
 
-function WellList({ project }: Props) {
-    const color = tokens.colors.infographic.primary__moss_green_34.rgba
-    const well = new Well()
-    well.name = "Oil producer"
-    well.category = 2
-    well.drillingDays = 30
-    well.wellCost = 299
-    const wellCase = new WellCase()
-    wellCase.count = 10
+function WellList({ project, caseItem }: Props) {
+    const { wells } = project
+    const { wellCases } = caseItem
+
+    const GenerateWellTableRows = () => {
+        const tableRows: JSX.Element[] = []
+        wells?.forEach((w) => {
+            const wc = wellCases?.find((x) => x.wellId === w.id)
+            tableRows.push((<WellTableRow key={w.id} well={w} wellCase={wc} />))
+        })
+        return tableRows
+    }
 
     return (
         <Table>
@@ -48,9 +51,7 @@ function WellList({ project }: Props) {
                 </Table.Row>
             </Table.Head>
             <Table.Body>
-
-                <WellTableRow well={well} wellCase={wellCase} />
-                <WellTableRow well={well} wellCase={wellCase} />
+                {GenerateWellTableRows()}
             </Table.Body>
         </Table>
     )

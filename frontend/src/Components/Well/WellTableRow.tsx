@@ -1,14 +1,11 @@
-import React from "react"
-import Plot from "react-plotly.js"
 import { tokens } from "@equinor/eds-tokens"
-import { Table, Typography } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
+import { Table } from "@equinor/eds-core-react"
 import { Well } from "../../models/Well"
 import { WellCase } from "../../models/WellCase"
 
 interface Props {
     well: Well
-    wellCase: WellCase
+    wellCase: WellCase | undefined
 }
 
 function WellTableRow({ well, wellCase }: Props) {
@@ -18,7 +15,7 @@ function WellTableRow({ well, wellCase }: Props) {
 
         <Table.Row>
             <Table.Cell>
-                {wellCase.count}
+                {wellCase?.count ?? 0}
             </Table.Cell>
             <Table.Cell>
                 {well.name}
