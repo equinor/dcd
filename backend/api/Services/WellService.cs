@@ -30,24 +30,26 @@ namespace api.Services
 
         public ProjectDto UpdateWell(WellDto updatedWellDto)
         {
-            var existing = GetWell(updatedWellDto.Id);
-            WellAdapter.ConvertExisting(existing, updatedWellDto);
-            _context.Wells!.Update(existing);
-            _context.SaveChanges();
-            return _projectService.GetProjectDto(existing.ProjectId);
+            return null;
+            // var existing = GetWell(updatedWellDto.Id);
+            // WellAdapter.ConvertExisting(existing, updatedWellDto);
+            // _context.Wells!.Update(existing);
+            // _context.SaveChanges();
+            // return _projectService.GetProjectDto(existing.ProjectId);
         }
 
         public Well GetWell(Guid wellId)
         {
-            var well = _context.Wells!
-                        .Include(w => w.WellType)
-                        .Include(e => e.ExplorationWellType)
-                        .FirstOrDefault(w => w.Id == wellId);
-            if (well == null)
-            {
-                throw new ArgumentException(string.Format("Well {0} not found.", wellId));
-            }
-            return well;
+            return null;
+            // var well = _context.Wells!
+            //             .Include(w => w.WellType)
+            //             .Include(e => e.ExplorationWellType)
+            //             .FirstOrDefault(w => w.Id == wellId);
+            // if (well == null)
+            // {
+            //     throw new ArgumentException(string.Format("Well {0} not found.", wellId));
+            // }
+            // return well;
         }
 
         public WellDto GetWellDto(Guid wellId)
@@ -84,17 +86,18 @@ namespace api.Services
 
         public IEnumerable<Well> GetWells(Guid projectId)
         {
-            if (_context.Wells != null)
-            {
-                return _context.Wells
-                    .Include(w => w.WellType)
-                    .Include(e => e.ExplorationWellType)
-                    .Where(d => d.ProjectId.Equals(projectId));
-            }
-            else
-            {
-                return new List<Well>();
-            }
+            return null;
+            // if (_context.Wells != null)
+            // {
+            //     return _context.Wells
+            //         .Include(w => w.WellType)
+            //         .Include(e => e.ExplorationWellType)
+            //         .Where(d => d.ProjectId.Equals(projectId));
+            // }
+            // else
+            // {
+            //     return new List<Well>();
+            // }
         }
 
         public IEnumerable<WellDto> GetAllDtos()

@@ -15,7 +15,6 @@ namespace api.Models
         public double AnnualWellInterventionCost { get; set; }
         public double PluggingAndAbandonment { get; set; }
         public Currency Currency { get; set; }
-        public ICollection<WellType>? WellTypes { get; set; }
     }
 
     public class WellProjectCostProfile : TimeSeriesCost

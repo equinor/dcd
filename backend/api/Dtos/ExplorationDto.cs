@@ -13,7 +13,6 @@ namespace api.Dtos
         public GAndGAdminCostDto? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
         public Currency Currency { get; set; }
-        public ICollection<ExplorationWellType>? ExplorationWellTypes { get; set; }
     }
 
     public class ExplorationCostProfileDto : TimeSeriesCostDto { }

@@ -15,8 +15,7 @@ namespace api.Context
 
         public DbSet<Case>? Cases { get; set; }
         public DbSet<Well>? Wells { get; set; }
-        public DbSet<WellType>? WellTypes { get; set; }
-        public DbSet<ExplorationWellType>? ExplorationWellTypes { get; set; }
+        public DbSet<WellCase>? WellCase { get; set; }
 
         public DbSet<Surf>? Surfs { get; set; }
         public DbSet<SurfCostProfile>? SurfCostProfile { get; set; }
@@ -49,7 +48,6 @@ namespace api.Context
         public DbSet<WellProjectCostProfile>? WellProjectCostProfile { get; set; }
 
         public DbSet<DrillingSchedule>? DrillingSchedule { get; set; }
-
 
         public DbSet<Exploration>? Explorations { get; set; }
         public DbSet<ExplorationCostProfile>? ExplorationCostProfile { get; set; }
