@@ -1,5 +1,7 @@
 import { tokens } from "@equinor/eds-tokens"
-import { Table, Typography } from "@equinor/eds-core-react"
+import { Button, Table, Typography } from "@equinor/eds-core-react"
+import { well } from "@equinor/eds-icons"
+import { useState } from "react"
 import { Project } from "../../models/Project"
 import WellTableRow from "./WellTableRow"
 import { Well } from "../../models/Well"
@@ -12,48 +14,55 @@ interface Props {
 }
 
 function WellList({ project, caseItem }: Props) {
-    const { wells } = project
-    const { wellCases } = caseItem
+    const [wells, setWells] = useState<Well[]>(project.wells ?? [])
+    const [wellCases, setWellCases] = useState<WellCase[]>(caseItem.wellCases ?? [])
 
-    const GenerateWellTableRows = () => {
-        const tableRows: JSX.Element[] = []
-        wells?.forEach((w) => {
-            const wc = wellCases?.find((x) => x.wellId === w.id)
-            tableRows.push((<WellTableRow key={w.id} well={w} wellCase={wc} />))
-        })
-        return tableRows
+    const CreateWell = () => {
+        const newWell = new Well()
+        newWell.category = 0
+        newWell.name = "New well"
+        const existingWells = [...wells]
+        if (existingWells !== undefined && existingWells !== null) {
+            existingWells.push(newWell)
+            setWells(existingWells)
+        }
+
+        console.log(wells?.length)
     }
 
     return (
-        <Table>
-            <Table.Caption>
-                <Typography variant="h2">
-                    Wells
-                </Typography>
-            </Table.Caption>
-            <Table.Head>
-                <Table.Row>
-                    <Table.Cell>
-                        Count
-                    </Table.Cell>
-                    <Table.Cell>
-                        Well name
-                    </Table.Cell>
-                    <Table.Cell>
-                        Well type
-                    </Table.Cell>
-                    <Table.Cell>
-                        Drilling days
-                    </Table.Cell>
-                    <Table.Cell>
-                        Well cost
-                    </Table.Cell>
-                </Table.Row>
-            </Table.Head>
-            <Table.Body>
-                {GenerateWellTableRows()}
-            </Table.Body>
-        </Table>
+        <>
+            <Button onClick={CreateWell} variant="outlined">Add new well</Button>
+            <Table>
+                <Table.Caption>
+                    <Typography variant="h2">
+                        Wells
+                    </Typography>
+                </Table.Caption>
+                <Table.Head>
+                    <Table.Row>
+                        <Table.Cell>
+                            Count
+                        </Table.Cell>
+                        <Table.Cell>
+                            Well name
+                        </Table.Cell>
+                        <Table.Cell>
+                            Well type
+                        </Table.Cell>
+                        <Table.Cell>
+                            Drilling days
+                        </Table.Cell>
+                        <Table.Cell>
+                            Well cost
+                        </Table.Cell>
+                    </Table.Row>
+                </Table.Head>
+                <Table.Body>
+                    <WellTableRow wellCases={wellCases} wells={wells!} />
+                </Table.Body>
+            </Table>
+        </>
     )
 }
 
