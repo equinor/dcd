@@ -6,7 +6,6 @@ import React, {
 import styled from "styled-components"
 import {
     Button, EdsProvider, Icon, TextField, Tooltip, Typography,
-    Table,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
@@ -19,6 +18,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetSTEAService } from "../Services/STEAService"
 import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
+import CasesTableView from "./CasesTableView"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -212,28 +212,7 @@ function OverviewView({
                     </div>
                 </CreateCaseForm>
             </Modal>
-            <Table>
-                <Table.Head>
-                    <Table.Cell>Name</Table.Cell>
-                    <Table.Cell>Description</Table.Cell>
-                    <Table.Cell>Production Strategy Overview</Table.Cell>
-                    <Table.Cell>Producers</Table.Cell>
-                    <Table.Cell>Gas Injectors</Table.Cell>
-                    <Table.Cell>Water Injectors</Table.Cell>
-                    <Table.Cell>Created</Table.Cell>
-                </Table.Head>
-                { project.cases && project.cases.map((casee) => (
-                    <Table.Row key={casee.id}>
-                        <Table.Cell>{casee.name}</Table.Cell>
-                        <Table.Cell>{casee.description}</Table.Cell>
-                        <Table.Cell>{casee.productionStrategyOverview}</Table.Cell>
-                        <Table.Cell>{casee.producerCount}</Table.Cell>
-                        <Table.Cell>{casee.gasInjectorCount}</Table.Cell>
-                        <Table.Cell>{casee.waterInjectorCount}</Table.Cell>
-                        <Table.Cell>{casee.createdAt?.toLocaleDateString()}</Table.Cell>
-                    </Table.Row>
-                ))}
-            </Table>
+            <CasesTableView project={project} />
         </Wrapper>
     )
 }
