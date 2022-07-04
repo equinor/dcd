@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from "react"
 import { Well } from "../../models/Well"
-import { WellCase } from "../../models/WellCase"
+import { WellProjectWell } from "../../models/WellProjectWell"
 import DrillingScheduleTable from "./DrillingScheduleTable"
 
 interface Props {
-    wellCases: WellCase[] | null | undefined
-    setWellCases: Dispatch<SetStateAction<WellCase[] | null | undefined>>,
+    wellCases: WellProjectWell[] | null | undefined
+    setWellCases: Dispatch<SetStateAction<WellProjectWell[] | null | undefined>>,
 }
 
 const DrillingSchedules = ({
@@ -18,7 +18,7 @@ const DrillingSchedules = ({
             if (wc.count && wc.count > 0) {
                 drillingSchedules.push((
                     <DrillingScheduleTable
-                        key={`${wc.caseId}${wc.wellId}`}
+                        key={`${wc.wellProjectId}${wc.wellId}`}
                         wellCase1={wc}
                         setWellCases={setWellCases}
                         wellCases={wellCases}

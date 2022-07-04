@@ -20,14 +20,13 @@ import {
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
-import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
-import DrillingScheduleTable from "../Components/Well/DrillingScheduleTable"
-import { WellCase } from "../models/WellCase"
+import { WellProjectWell } from "../models/WellProjectWell"
 import { Well } from "../models/Well"
 import DrillingSchedules from "../Components/Well/DrillingSchedules"
+import WellList from "../Components/Well/WellList"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -42,17 +41,16 @@ function WellProjectView() {
     const [pluggingAndAbandonment, setPluggingAndAbandonment] = useState<number>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
-    const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
-    const [wellCases, setWellCases] = useState<WellCase[] | null | undefined>()
+    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[] | null | undefined>()
     const [wells, setWells] = useState<Well[]>()
 
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(params.projectId)
+                const projectResult = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -65,12 +63,12 @@ function WellProjectView() {
             if (project !== undefined) {
                 const caseResult = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
-                setWellCases(caseResult.wellCases)
                 setWells(project.wells)
                 // eslint-disable-next-line max-len
-                let newWellProject: WellProject | undefined = project?.wellProjects.find((s) => s.id === params.wellProjectId)
+                let newWellProject = project?.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
+                    setWellProjectWells(newWellProject.wellProjectWells)
                 } else {
                     newWellProject = new WellProject()
                     newWellProject.artificialLift = caseResult?.artificialLift
@@ -85,13 +83,12 @@ function WellProjectView() {
                 setCurrency(newWellProject.currency ?? 1)
 
                 setCostProfile(newWellProject.costProfile)
-                setDrillingSchedule(newWellProject.drillingSchedule)
                 setArtificialLift(newWellProject.artificialLift)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newWellProject.costProfile, newWellProject.drillingSchedule],
+                        [newWellProject.costProfile],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -106,23 +103,27 @@ function WellProjectView() {
         newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
         newWellProject.rigMobDemob = rigMobDemob
         newWellProject.costProfile = costProfile
-        newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
         newWellProject.artificialLift = artificialLift
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [costProfile, drillingSchedule],
+                [costProfile],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
         setWellProject(newWellProject)
-    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
+    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, currency,
         artificialLift])
+
+    if (!project) return null
+    if (!wellProject) return null
 
     return (
         <AssetViewDiv>
+            <WellList project={project} wellProject={wellProject} />
+
             <Wrapper>
                 <Typography variant="h2">WellProject</Typography>
                 <Save
@@ -200,19 +201,8 @@ function WellProjectView() {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
-            {/* <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setDrillingSchedule}
-                setHasChanges={setHasChanges}
-                timeSeries={drillingSchedule}
-                timeSeriesTitle="Drilling schedule"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            /> */}
-            {console.log("Well cases: ", wellCases)}
-            <DrillingSchedules setWellCases={setWellCases} wellCases={wellCases} />
+            {console.log("Well cases: ", wellProjectWells)}
+            <DrillingSchedules setWellCases={setWellProjectWells} wellCases={wellProjectWells} />
         </AssetViewDiv>
     )
 }

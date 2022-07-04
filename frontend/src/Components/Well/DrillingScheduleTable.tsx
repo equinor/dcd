@@ -11,13 +11,13 @@ import { ITimeSeries } from "../../models/ITimeSeries"
 import {
     DeleteButton, ImportButton, Wrapper, WrapperColumn,
 } from "../../Views/Asset/StyledAssetComponents"
-import { WellCase } from "../../models/WellCase"
+import { WellProjectWell } from "../../models/WellProjectWell"
 
 interface Props {
     title: string,
-    wellCase1: WellCase,
-    setWellCases: Dispatch<SetStateAction<WellCase[] | null | undefined>>,
-    wellCases: WellCase[] | null | undefined
+    wellCase1: WellProjectWell,
+    setWellCases: Dispatch<SetStateAction<WellProjectWell[] | null | undefined>>,
+    wellCases: WellProjectWell[] | null | undefined
 }
 
 const DrillingScheduleTable = ({
@@ -30,7 +30,7 @@ const DrillingScheduleTable = ({
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
-    const [wellCase, setWellCase] = useState<WellCase>(wellCase1)
+    const [wellCase, setWellCase] = useState<WellProjectWell>(wellCase1)
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (updatedTimeSeries !== undefined) {

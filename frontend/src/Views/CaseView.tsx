@@ -139,7 +139,6 @@ function CaseView() {
     return (
 
         <CaseViewDiv>
-            <WellList project={project!} caseItem={caseItem!} />
             <Tabs activeTab={activeTab} onChange={setActiveTab}>
                 <List>
                     <Tab>Definition </Tab>

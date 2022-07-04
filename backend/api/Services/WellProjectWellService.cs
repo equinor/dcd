@@ -27,7 +27,7 @@ namespace api.Services
             var wellProjectWell = WellProjectWellAdapter.Convert(wellProjectWellDto);
             _context.WellProjectWell!.Add(wellProjectWell);
             _context.SaveChanges();
-            var projectId = _context.Cases!.FirstOrDefault(c => c.Id == wellProjectWellDto.WellProjectId)?.ProjectId;
+            var projectId = _context.WellProjects!.FirstOrDefault(c => c.Id == wellProjectWellDto.WellProjectId)?.ProjectId;
             if (projectId != null)
             {
                 return _projectService.GetProjectDto((Guid)projectId);
@@ -40,7 +40,7 @@ namespace api.Services
             WellProjectWellAdapter.ConvertExisting(existing, updatedWellProjectWellDto);
             _context.WellProjectWell!.Update(existing);
             _context.SaveChanges();
-            var projectId = _context.Cases!.FirstOrDefault(c => c.Id == updatedWellProjectWellDto.WellProjectId)?.ProjectId;
+            var projectId = _context.WellProjects!.FirstOrDefault(c => c.Id == updatedWellProjectWellDto.WellProjectId)?.ProjectId;
             if (projectId != null)
             {
                 return _projectService.GetProjectDto((Guid)projectId);

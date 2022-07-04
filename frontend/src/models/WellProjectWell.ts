@@ -1,22 +1,22 @@
 import { EMPTY_GUID } from "../Utils/constants"
 import { DrillingSchedule } from "./assets/wellproject/DrillingSchedule"
 
-export class WellCase implements Components.Schemas.WellCaseDto {
+export class WellProjectWell implements Components.Schemas.WellProjectWellDto {
     count?: number
     drillingSchedule?: DrillingSchedule
-    caseId?: string
+    wellProjectId?: string
     wellId?: string
 
-    constructor(data?: Components.Schemas.WellCaseDto) {
+    constructor(data?: Components.Schemas.WellProjectWellDto) {
         if (data !== undefined) {
             this.count = data.count
             this.drillingSchedule = DrillingSchedule.fromJSON(data.drillingSchedule)
-            this.caseId = data.caseId
+            this.wellProjectId = data.wellProjectId
             this.wellId = data.wellId
         }
     }
 
-    static fromJSON(data: Components.Schemas.WellCaseDto): WellCase {
-        return new WellCase(data)
+    static fromJSON(data: Components.Schemas.WellProjectWellDto): WellProjectWell {
+        return new WellProjectWell(data)
     }
 }

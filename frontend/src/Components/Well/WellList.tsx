@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { tokens } from "@equinor/eds-tokens"
 import { Button, Table, Typography } from "@equinor/eds-core-react"
 import { well } from "@equinor/eds-icons"
@@ -5,18 +6,21 @@ import { useState } from "react"
 import { Project } from "../../models/Project"
 import WellTableRow from "./WellTableRow"
 import { Well } from "../../models/Well"
-import { WellCase } from "../../models/WellCase"
+import { WellProjectWell } from "../../models/WellProjectWell"
 import { Case } from "../../models/Case"
 import { GetWellService } from "../../Services/WellService"
+import { WellProject } from "../../models/assets/wellproject/WellProject"
 
 interface Props {
     project: Project
-    caseItem: Case
+    wellProject: WellProject
 }
 
-function WellList({ project, caseItem }: Props) {
-    const [wells, setWells] = useState<Well[]>(project.wells ?? [])
-    const [wellCases, setWellCases] = useState<WellCase[]>(caseItem.wellCases ?? [])
+function WellList({ project, wellProject }: Props) {
+    const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
+    const [wellProjectWells, setWellCases] = useState<WellProjectWell[]>(wellProject?.wellProjectWells ?? [])
+
+    console.log("WellList WellProject: ", wellProject.wellProjectWells)
 
     const CreateWell = () => {
         const newWell = new Well()
@@ -32,6 +36,8 @@ function WellList({ project, caseItem }: Props) {
 
         console.log(wells?.length)
     }
+
+    if (!wellProjectWells) return null
 
     return (
         <>
@@ -62,7 +68,7 @@ function WellList({ project, caseItem }: Props) {
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>
-                    <WellTableRow wellCases={wellCases} wells={wells!} caseItem={caseItem} />
+                    <WellTableRow wellProjectWells={wellProject?.wellProjectWells ?? []} wells={wells!} wellProject={wellProject} />
                 </Table.Body>
             </Table>
         </>
