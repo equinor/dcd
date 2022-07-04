@@ -15,7 +15,7 @@ namespace api.Context
 
         public DbSet<Case>? Cases { get; set; }
         public DbSet<Well>? Wells { get; set; }
-        public DbSet<WellCase>? WellCase { get; set; }
+        public DbSet<WellProjectWell>? WellProjectWell { get; set; }
 
         public DbSet<Surf>? Surfs { get; set; }
         public DbSet<SurfCostProfile>? SurfCostProfile { get; set; }
@@ -56,7 +56,7 @@ namespace api.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<WellCase>().HasKey(wc => new { wc.CaseId, wc.WellId });
+            modelBuilder.Entity<WellProjectWell>().HasKey(wc => new { wc.WellProjectId, wc.WellId });
         }
     }
 }

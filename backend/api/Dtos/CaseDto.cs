@@ -31,7 +31,6 @@ namespace api.Dtos
         public Guid TransportLink { get; set; }
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
-        public List<WellCaseDto>? WellCases { get; set; }
         public CapexYear? CapexYear { get; set; }
     }
 

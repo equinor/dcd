@@ -3,21 +3,21 @@ using api.Models;
 
 namespace api.Adapters
 {
-    public static class WellCaseAdapter
+    public static class WellProjectWellAdapter
     {
-        public static WellCase Convert(WellCaseDto wellDto)
+        public static WellProjectWell Convert(WellProjectWellDto wellDto)
         {
-            var well = new WellCase
+            var well = new WellProjectWell
             {
                 Count = wellDto.Count,
                 DrillingSchedule = wellDto.DrillingSchedule,
-                CaseId = wellDto.CaseId,
+                WellProjectId = wellDto.WellProjectId,
                 WellId = wellDto.WellId,
             };
             return well;
         }
 
-        public static void ConvertExisting(WellCase existing, WellCaseDto wellDto)
+        public static void ConvertExisting(WellProjectWell existing, WellProjectWellDto wellDto)
         {
             existing.Count = wellDto.Count;
             existing.DrillingSchedule = wellDto.DrillingSchedule;

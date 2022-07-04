@@ -13,7 +13,7 @@ namespace api.Models
         public double PlugingAndAbandonmentCost { get; set; }
         public double RigMobDemob { get; set; }
         public double WellInterventionCost { get; set; }
-        public ICollection<WellCase>? WellCases { get; set; }
+        public ICollection<WellProjectWell>? WellProjectWell { get; set; }
     }
 
     public enum WellTypeCategory

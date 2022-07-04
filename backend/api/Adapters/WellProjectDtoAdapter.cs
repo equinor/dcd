@@ -17,6 +17,7 @@ namespace api.Adapters
                 AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
                 PluggingAndAbandonment = wellProject.PluggingAndAbandonment,
                 Currency = wellProject.Currency,
+                WellProjectWells = wellProject.WellProjectWells?.Select(wc => WellProjectWellDtoAdapter.Convert(wc)).ToList()
             };
             if (wellProject.CostProfile != null)
             {

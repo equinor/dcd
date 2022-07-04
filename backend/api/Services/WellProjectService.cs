@@ -29,7 +29,7 @@ namespace api.Services
 
                 return _context.WellProjects
                         .Include(c => c.CostProfile)
-                        .Include(c => c.DrillingSchedule)
+                        .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
             else
