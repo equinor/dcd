@@ -1,5 +1,5 @@
 import {
-    Tabs,
+    Tabs, Typography,
 } from "@equinor/eds-core-react"
 import React, {
     useEffect,
@@ -103,42 +103,47 @@ const ProjectView = () => {
     if (!project) return null
 
     return (
-        <Wrapper>
-            <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                <List>
-                    <Tab>Overview </Tab>
-                    <Tab>Compare cases</Tab>
-                    <Tab>Workflow</Tab>
-                    <Tab>Settings</Tab>
-                </List>
-                <Panels>
-                    <StyledTabPanel>
-                        <OverviewView
-                            project={project}
-                            setProject={setProject}
-                            physicalUnit={physicalUnit}
-                            setPhysicalUnit={setPhysicalUnit}
-                            currency={currency}
-                            setCurrency={setCurrency}
-                        />
-                    </StyledTabPanel>
-                    <StyledTabPanel>
+        <div>
+            <Wrapper>
+                <Typography variant="h4">{project.name}</Typography>
+            </Wrapper>
+            <Wrapper>
+                <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                    <List>
+                        <Tab>Overview </Tab>
+                        <Tab>Compare cases</Tab>
+                        <Tab>Workflow</Tab>
+                        <Tab>Settings</Tab>
+                    </List>
+                    <Panels>
+                        <StyledTabPanel>
+                            <OverviewView
+                                project={project}
+                                setProject={setProject}
+                                physicalUnit={physicalUnit}
+                                setPhysicalUnit={setPhysicalUnit}
+                                currency={currency}
+                                setCurrency={setCurrency}
+                            />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
 
-                        <CompareCasesView
-                            capexYearX={capexYearXLabels}
-                            capexYearY={capexYearYDatas}
-                            caseTitles={capexYearCaseTitles}
-                        />
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Workflow</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Setting</p>
-                    </StyledTabPanel>
-                </Panels>
-            </Tabs>
-        </Wrapper>
+                            <CompareCasesView
+                                capexYearX={capexYearXLabels}
+                                capexYearY={capexYearYDatas}
+                                caseTitles={capexYearCaseTitles}
+                            />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Workflow</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Setting</p>
+                        </StyledTabPanel>
+                    </Panels>
+                </Tabs>
+            </Wrapper>
+        </div>
     )
 }
 
