@@ -82,7 +82,7 @@ namespace api.Adapters
             var drillingSchedule = new DrillingSchedule
             {
                 Id = drillingScheduleDto.Id,
-                WellProject = wellProject,
+                // WellProject = wellProject,
                 StartYear = drillingScheduleDto.StartYear,
                 Values = drillingScheduleDto.Values
             };

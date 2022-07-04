@@ -142,7 +142,7 @@ namespace api.Services
                 }
 
                 var project = _context.Projects!
-                    .Include(p => p.Cases).ThenInclude(c => c.WellCases)
+                    .Include(p => p.Cases).ThenInclude(c => c.WellCases).ThenInclude(wc => wc.DrillingSchedule)
                     .Include(p => p.Wells)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
 

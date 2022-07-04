@@ -24,6 +24,10 @@ import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
+import DrillingScheduleTable from "../Components/Well/DrillingScheduleTable"
+import { WellCase } from "../models/WellCase"
+import { Well } from "../models/Well"
+import DrillingSchedules from "../Components/Well/DrillingSchedules"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -41,6 +45,8 @@ function WellProjectView() {
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
+    const [wellCases, setWellCases] = useState<WellCase[] | null | undefined>()
+    const [wells, setWells] = useState<Well[]>()
 
     useEffect(() => {
         (async () => {
@@ -57,8 +63,10 @@ function WellProjectView() {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
+                setWellCases(caseResult.wellCases)
+                setWells(project.wells)
                 // eslint-disable-next-line max-len
                 let newWellProject: WellProject | undefined = project?.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
@@ -192,7 +200,7 @@ function WellProjectView() {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
-            <TimeSeries
+            {/* <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setDrillingSchedule}
                 setHasChanges={setHasChanges}
@@ -202,7 +210,9 @@ function WellProjectView() {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
+            /> */}
+            {console.log("Well cases: ", wellCases)}
+            <DrillingSchedules setWellCases={setWellCases} wellCases={wellCases} />
         </AssetViewDiv>
     )
 }

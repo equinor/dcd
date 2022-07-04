@@ -54,6 +54,7 @@ function WellTableRow({ wells, wellCases, caseItem }: Props) {
                         {wc?.count ?? 0}
                         <Button onClick={() => IncreaseWellCase(w, wc)}>Increase</Button>
                         <Button onClick={() => DecreaseWellCase(w, wc)}>Decrease</Button>
+                        {wc?.wellId}
                     </Table.Cell>
                     <Table.Cell>
                         {w.name}

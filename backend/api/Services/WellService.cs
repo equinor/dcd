@@ -30,12 +30,11 @@ namespace api.Services
 
         public ProjectDto? UpdateWell(WellDto updatedWellDto)
         {
-            return null;
-            // var existing = GetWell(updatedWellDto.Id);
-            // WellAdapter.ConvertExisting(existing, updatedWellDto);
-            // _context.Wells!.Update(existing);
-            // _context.SaveChanges();
-            // return _projectService.GetProjectDto(existing.ProjectId);
+            var existing = GetWell(updatedWellDto.Id);
+            WellAdapter.ConvertExisting(existing, updatedWellDto);
+            _context.Wells!.Update(existing);
+            _context.SaveChanges();
+            return _projectService.GetProjectDto(existing.ProjectId);
         }
 
         public Well GetWell(Guid wellId)

@@ -7,6 +7,7 @@ import WellTableRow from "./WellTableRow"
 import { Well } from "../../models/Well"
 import { WellCase } from "../../models/WellCase"
 import { Case } from "../../models/Case"
+import { GetWellService } from "../../Services/WellService"
 
 interface Props {
     project: Project
@@ -21,6 +22,8 @@ function WellList({ project, caseItem }: Props) {
         const newWell = new Well()
         newWell.category = 0
         newWell.name = "New well"
+        newWell.projectId = project.projectId
+        GetWellService().createWell(newWell)
         const existingWells = [...wells]
         if (existingWells !== undefined && existingWells !== null) {
             existingWells.push(newWell)

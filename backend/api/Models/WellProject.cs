@@ -24,7 +24,7 @@ namespace api.Models
     }
     public class DrillingSchedule : TimeSeriesSchedule
     {
-        [ForeignKey("WellProject.Id")]
-        public WellProject WellProject { get; set; } = null!;
+        // [ForeignKey("WellProject.Id")]
+        // public WellProject WellProject { get; set; } = null!;
     }
 }
