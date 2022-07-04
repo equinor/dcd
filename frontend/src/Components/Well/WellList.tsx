@@ -59,7 +59,7 @@ function WellList({ project, caseItem }: Props) {
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>
-                    <WellTableRow wellCases={wellCases} wells={wells!} />
+                    <WellTableRow wellCases={wellCases} wells={wells!} caseItem={caseItem} />
                 </Table.Body>
             </Table>
         </>

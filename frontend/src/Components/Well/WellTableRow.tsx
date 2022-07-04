@@ -3,22 +3,43 @@ import { Button, Table } from "@equinor/eds-core-react"
 import { MouseEventHandler, ReactElement } from "react"
 import { Well } from "../../models/Well"
 import { WellCase } from "../../models/WellCase"
+import { GetWellCaseService } from "../../Services/WellCaseService"
+import { Case } from "../../models/Case"
 
 interface Props {
     wells: Well[]
     wellCases: WellCase[] | undefined | null
+    caseItem: Case
 }
 
-function WellTableRow({ wells, wellCases }: Props) {
+function WellTableRow({ wells, wellCases, caseItem }: Props) {
     const color = tokens.colors.infographic.primary__moss_green_34.rgba
 
-    const AddWell = (well: Well, wellCase: WellCase | undefined) => {
+    const IncreaseWellCase = (well: Well, wellCase: WellCase | undefined) => {
         if (!wellCase) {
-            // Create wellCase
+            const newWellCase = new WellCase()
+            newWellCase.wellId = well.id
+            newWellCase.caseId = caseItem.id
+            newWellCase.count = 1
+            const newProject = GetWellCaseService().createWellCase(newWellCase)
         } else {
             const newWellCase = { ...wellCase }
             newWellCase.count! += 1
-            // setWellCases
+            const newProject = GetWellCaseService().updateWellCase(newWellCase)
+        }
+    }
+
+    const DecreaseWellCase = (well: Well, wellCase: WellCase | undefined) => {
+        if (!wellCase) {
+            const newWellCase = new WellCase()
+            newWellCase.wellId = well.id
+            newWellCase.caseId = caseItem.id
+            newWellCase.count = 1
+            const newProject = GetWellCaseService().createWellCase(newWellCase)
+        } else {
+            const newWellCase = { ...wellCase }
+            newWellCase.count! -= 1
+            const newProject = GetWellCaseService().updateWellCase(newWellCase)
         }
     }
 
@@ -31,8 +52,8 @@ function WellTableRow({ wells, wellCases }: Props) {
                 <Table.Row key={w.id}>
                     <Table.Cell>
                         {wc?.count ?? 0}
-                        <Button onClick={() => AddWell(w, wc)}>Add well</Button>
-                        <Button>Remove well</Button>
+                        <Button onClick={() => IncreaseWellCase(w, wc)}>Increase</Button>
+                        <Button onClick={() => DecreaseWellCase(w, wc)}>Decrease</Button>
                     </Table.Cell>
                     <Table.Cell>
                         {w.name}
