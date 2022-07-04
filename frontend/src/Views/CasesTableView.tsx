@@ -12,10 +12,6 @@ import {
 } from "@equinor/eds-icons"
 import { Project } from "../models/Project"
 
-interface Props {
-    project: Project
-}
-
 const columnsForTable = [
     { label: "Name", accessor: "name", sortable: true },
     { label: "Description", accessor: "description", sortable: true },
