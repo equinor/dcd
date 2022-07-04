@@ -1,24 +1,29 @@
 using api.Context;
+using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
+
 using Api.Services.FusionIntegration;
+
 using Azure.Identity;
+
 using Equinor.TI.CommonLibrary.Client;
+
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
 var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
-var prospImportConfig = builder.Configuration.GetSection("FileImportConfig").GetSection("Prosp");
+
 Console.WriteLine("Loading config for: " + environment);
-Console.WriteLine(builder.Configuration.GetSection("FileImportConfig").GetSection("Prosp").GetSection("Surf").GetValue<string>("costProfileStartYear"));
 configBuilder.AddAzureAppConfiguration(options =>
     options
     .Connect(azureAppConfigConnectionString)
@@ -114,6 +119,7 @@ builder.Services.AddFusionIntegration(options =>
     options.ApplicationMode = true;
 });
 
+
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
@@ -130,7 +136,7 @@ builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryCli
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ImportProspService>();
-builder.Services.Configure<FileImportConfig>(prospImportConfig);
+builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 
 );
