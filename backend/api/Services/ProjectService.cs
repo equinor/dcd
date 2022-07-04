@@ -141,8 +141,8 @@ namespace api.Services
                     throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
                 }
 
-                var project = _context.Projects
-                    .Include(p => p.Cases)
+                var project = _context.Projects!
+                    .Include(p => p.Cases).ThenInclude(c => c.WellCases)
                     .Include(p => p.Wells)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
 

@@ -31,8 +31,12 @@ namespace api.Services
             // wellCase.Well = well;
             _context.WellCase!.Add(wellCase);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(new Guid("5a74a716-92e5-4ec8-8b5b-281381509ae3"));
-        }
+            var projectId = _context.Cases!.FirstOrDefault(c => c.Id == wellCaseDto.CaseId)?.ProjectId;
+            if (projectId != null)
+            {
+                return _projectService.GetProjectDto((Guid)projectId);
+            }
+            throw new NotFoundInDBException();        }
 
         public ProjectDto? UpdateWellCase(WellCaseDto updatedWellCaseDto)
         {
@@ -40,7 +44,12 @@ namespace api.Services
             WellCaseAdapter.ConvertExisting(existing, updatedWellCaseDto);
             _context.WellCase!.Update(existing);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(new Guid("5a74a716-92e5-4ec8-8b5b-281381509ae3"));
+            var projectId = _context.Cases!.FirstOrDefault(c => c.Id == updatedWellCaseDto.CaseId)?.ProjectId;
+            if (projectId != null)
+            {
+                return _projectService.GetProjectDto((Guid)projectId);
+            }
+            throw new NotFoundInDBException();
         }
 
         public WellCase GetWellCase(Guid wellId, Guid caseId)
