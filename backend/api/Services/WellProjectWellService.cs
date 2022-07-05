@@ -32,9 +32,10 @@ namespace api.Services
             {
                 return _projectService.GetProjectDto((Guid)projectId);
             }
-            throw new NotFoundInDBException();        }
+            throw new NotFoundInDBException();
+        }
 
-        public ProjectDto? UpdateWellProjectWell(WellProjectWellDto updatedWellProjectWellDto)
+        public ProjectDto UpdateWellProjectWell(WellProjectWellDto updatedWellProjectWellDto)
         {
             var existing = GetWellProjectWell(updatedWellProjectWellDto.WellId, updatedWellProjectWellDto.WellProjectId);
             WellProjectWellAdapter.ConvertExisting(existing, updatedWellProjectWellDto);

@@ -7,16 +7,15 @@ namespace api.Models
         public Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }
         public string? Name { get; set; }
-        public WellTypeCategory WellTypeCategory { get; set; }
+        public WellCategory WellCategory { get; set; }
         public double WellCost { get; set; }
         public double DrillingDays { get; set; }
         public double PlugingAndAbandonmentCost { get; set; }
-        public double RigMobDemob { get; set; }
         public double WellInterventionCost { get; set; }
         public ICollection<WellProjectWell>? WellProjectWell { get; set; }
     }
 
-    public enum WellTypeCategory
+    public enum WellCategory
     {
         Oil_Producer,
         Gas_Producer,

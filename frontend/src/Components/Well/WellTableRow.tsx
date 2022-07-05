@@ -1,5 +1,5 @@
 import { tokens } from "@equinor/eds-tokens"
-import { Button, Table } from "@equinor/eds-core-react"
+import { Button, NativeSelect, Table } from "@equinor/eds-core-react"
 import { MouseEventHandler, ReactElement } from "react"
 import { Well } from "../../models/Well"
 import { WellProjectWell } from "../../models/WellProjectWell"
@@ -60,7 +60,17 @@ function WellTableRow({ wells, wellProjectWells, wellProject }: Props) {
                         {w.name}
                     </Table.Cell>
                     <Table.Cell>
-                        {w.category}
+                        {w.wellCategory}
+                        <NativeSelect id="wellCategory" label="Well category" value={w.wellCategory}>
+                            <option key="0" value={0}>Oil producer</option>
+                            <option key="1" value={1}>Gas producer</option>
+                            <option key="2" value={2}>Water injector</option>
+                            <option key="3" value={3}>Gas Injector</option>
+                            <option key="4" value={4}>Exploration well</option>
+                            <option key="5" value={5}>Appraisal well</option>
+                            <option key="6" value={6}>Sidetrack</option>
+                            <option key="7" value={7}>Rig mob/demob</option>
+                        </NativeSelect>
                     </Table.Cell>
                     <Table.Cell>
                         {w.drillingDays}

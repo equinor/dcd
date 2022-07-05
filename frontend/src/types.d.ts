@@ -392,16 +392,16 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
+        export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
         export interface WellDto {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
             wellInterventionCost?: number; // double
             plugingAndAbandonmentCost?: number; // double
-            category?: WellTypeCategoryDto /* int32 */;
+            wellCategory?: WellCategory /* int32 */;
             wellCost?: number; // double
             drillingDays?: number; // double
-            description?: string | null;
         }
         export interface WellProjectCostProfileDto {
             id?: string; // uuid
@@ -430,7 +430,6 @@ declare namespace Components {
             wellProjectId?: string; // uuid
             wellId?: string; // uuid
         }
-        export type WellTypeCategoryDto = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
     }
 }
 declare namespace Paths {

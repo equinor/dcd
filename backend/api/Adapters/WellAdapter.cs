@@ -13,7 +13,10 @@ namespace api.Adapters
                 Name = wellDto.Name,
                 WellInterventionCost = wellDto.WellInterventionCost,
                 PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost,
-                ProjectId = wellDto.ProjectId
+                ProjectId = wellDto.ProjectId,
+                WellCategory = wellDto.WellCategory,
+                WellCost = wellDto.WellCost,
+                DrillingDays = wellDto.DrillingDays
             };
             return well;
         }
@@ -25,6 +28,9 @@ namespace api.Adapters
             existing.WellInterventionCost = wellDto.WellInterventionCost;
             existing.PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost;
             existing.ProjectId = wellDto.ProjectId;
+            existing.WellCategory = wellDto.WellCategory;
+            existing.WellCost = wellDto.WellCost;
+            existing.DrillingDays = wellDto.DrillingDays;
         }
     }
 }

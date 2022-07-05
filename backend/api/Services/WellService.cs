@@ -28,7 +28,7 @@ namespace api.Services
             return _projectService.GetProjectDto(wellDto.ProjectId);
         }
 
-        public ProjectDto? UpdateWell(WellDto updatedWellDto)
+        public ProjectDto UpdateWell(WellDto updatedWellDto)
         {
             var existing = GetWell(updatedWellDto.Id);
             WellAdapter.ConvertExisting(existing, updatedWellDto);

@@ -2,7 +2,7 @@
 import { tokens } from "@equinor/eds-tokens"
 import { Button, Table, Typography } from "@equinor/eds-core-react"
 import { well } from "@equinor/eds-icons"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Project } from "../../models/Project"
 import WellTableRow from "./WellTableRow"
 import { Well } from "../../models/Well"
@@ -18,13 +18,19 @@ interface Props {
 
 function WellList({ project, wellProject }: Props) {
     const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
-    const [wellProjectWells, setWellCases] = useState<WellProjectWell[]>(wellProject?.wellProjectWells ?? [])
+    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>(wellProject?.wellProjectWells ?? [])
 
     console.log("WellList WellProject: ", wellProject.wellProjectWells)
 
+    useEffect(() => {
+        if (wellProject.wellProjectWells) {
+            setWellProjectWells(wellProject.wellProjectWells)
+        }
+    }, [wellProject.wellProjectWells])
+
     const CreateWell = () => {
         const newWell = new Well()
-        newWell.category = 0
+        newWell.wellCategory = 0
         newWell.name = "New well"
         newWell.projectId = project.projectId
         GetWellService().createWell(newWell)
@@ -36,8 +42,6 @@ function WellList({ project, wellProject }: Props) {
 
         console.log(wells?.length)
     }
-
-    if (!wellProjectWells) return null
 
     return (
         <>
@@ -68,7 +72,7 @@ function WellList({ project, wellProject }: Props) {
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>
-                    <WellTableRow wellProjectWells={wellProject?.wellProjectWells ?? []} wells={wells!} wellProject={wellProject} />
+                    <WellTableRow wellProjectWells={wellProjectWells} wells={wells!} wellProject={wellProject} />
                 </Table.Body>
             </Table>
         </>

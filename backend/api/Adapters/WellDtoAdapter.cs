@@ -11,8 +11,11 @@ namespace api.Adapters
             {
                 Id = well.Id,
                 Name = well.Name,
-                PlugingAndAbandonmentCost = well.PlugingAndAbandonmentCost,
                 WellInterventionCost = well.WellInterventionCost,
+                PlugingAndAbandonmentCost = well.PlugingAndAbandonmentCost,
+                WellCategory = well.WellCategory,
+                WellCost = well.WellCost,
+                DrillingDays = well.DrillingDays,
             };
             return wellDto;
         }
