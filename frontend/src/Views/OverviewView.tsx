@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import React, {
-    Dispatch, SetStateAction, MouseEventHandler, useState,
+    MouseEventHandler, useState,
     ChangeEventHandler,
 } from "react"
 import styled from "styled-components"
@@ -9,8 +9,6 @@ import {
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
-import Currency from "../Components/Currency"
-import PhysicalUnit from "../Components/PhysicalUnit"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
 import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
 import { Project } from "../models/Project"
@@ -76,21 +74,10 @@ const CreateCaseForm = styled.form`
 
 interface Props {
     project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    physicalUnit: Components.Schemas.PhysUnit,
-    setPhysicalUnit: Dispatch<SetStateAction<Components.Schemas.PhysUnit>>,
-    currency: Components.Schemas.Currency,
-    setCurrency: Dispatch<SetStateAction<Components.Schemas.Currency>>
 }
 
 function OverviewView({
     project,
-    setProject,
-    physicalUnit,
-    setPhysicalUnit,
-    currency,
-    setCurrency,
-
 }: Props) {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
@@ -173,19 +160,6 @@ function OverviewView({
                             {project.country ?? "Not defined in Common Library"}
                         </Typography>
                     </WrapperRow>
-                    <PhysicalUnit
-                        currentValue={physicalUnit}
-                        setPhysicalUnit={setPhysicalUnit}
-                        setProject={setProject}
-                        project={project}
-                    />
-
-                    <Currency
-                        currentValue={currency}
-                        setCurrency={setCurrency}
-                        setProject={setProject}
-                        project={project}
-                    />
                 </DataDiv>
             </RowWrapper>
             <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
