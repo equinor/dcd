@@ -25,6 +25,7 @@ import { unwrapProjectId } from "../Utils/common"
 import { Case } from "../models/Case"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
+import SettingsView from "./SettingsView"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -205,11 +206,6 @@ const ProjectView = () => {
                         <StyledTabPanel>
                             <OverviewView
                                 project={project}
-                                setProject={setProject}
-                                physicalUnit={physicalUnit}
-                                setPhysicalUnit={setPhysicalUnit}
-                                currency={currency}
-                                setCurrency={setCurrency}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
@@ -224,7 +220,14 @@ const ProjectView = () => {
                             <p>Workflow</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Setting</p>
+                            <SettingsView
+                                project={project}
+                                setProject={setProject}
+                                physicalUnit={physicalUnit}
+                                setPhysicalUnit={setPhysicalUnit}
+                                currency={currency}
+                                setCurrency={setCurrency}
+                            />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
