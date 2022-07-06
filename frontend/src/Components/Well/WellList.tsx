@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
 import { Button, Table, Typography } from "@equinor/eds-core-react"
 import {
- Dispatch, SetStateAction, useEffect, useState,
+    Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import { Project } from "../../models/Project"
-import WellTableRow from "./WellTableRow"
+import WellTableRows from "./WellTableRows"
 import { Well } from "../../models/Well"
 import { WellProjectWell } from "../../models/WellProjectWell"
 import { GetWellService } from "../../Services/WellService"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
+import WellTableRow from "./WellTableRow"
 
 interface Props {
     project: Project
@@ -34,6 +35,17 @@ function WellList({ project, wellProject, setProject }: Props) {
         const newProject = await GetWellService().createWell(newWell)
         setProject(newProject)
         setWells(newProject?.wells ?? [])
+    }
+
+    const GenerateWellTableRows = () => {
+        const tableRows: JSX.Element[] = []
+        wells?.forEach((w) => {
+            const wpw = wellProjectWells?.find((x) => x.wellId === w.id && x.wellProjectId === wellProject.id)
+            tableRows.push((
+                <WellTableRow setProject={setProject} well={w} wellProject={wellProject} wellProjectWell={wpw} />
+            ))
+        })
+        return tableRows
     }
 
     return (
@@ -65,7 +77,8 @@ function WellList({ project, wellProject, setProject }: Props) {
                     </Table.Row>
                 </Table.Head>
                 <Table.Body>
-                    <WellTableRow wellProjectWells={wellProjectWells} wells={wells!} wellProject={wellProject} setProject={setProject} />
+                    {GenerateWellTableRows()}
+                    {/* <WellTableRows wellProjectWells={wellProjectWells} wells={wells!} wellProject={wellProject} setProject={setProject} /> */}
                 </Table.Body>
             </Table>
         </>

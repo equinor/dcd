@@ -16,6 +16,7 @@ namespace api.Adapters
                 WellCategory = well.WellCategory,
                 WellCost = well.WellCost,
                 DrillingDays = well.DrillingDays,
+                ProjectId = well.ProjectId,
             };
             return wellDto;
         }
