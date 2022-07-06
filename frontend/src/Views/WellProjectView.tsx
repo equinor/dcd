@@ -122,7 +122,7 @@ function WellProjectView() {
 
     return (
         <AssetViewDiv>
-            <WellList project={project} wellProject={wellProject} />
+            <WellList project={project} wellProject={wellProject} setProject={setProject} />
 
             <Wrapper>
                 <Typography variant="h2">WellProject</Typography>
