@@ -13,30 +13,37 @@ import { Project } from "../../models/Project"
 import { GetWellService } from "../../Services/WellService"
 
 interface Props {
-    well: Well
+    wellId: string
+    project: Project
     wellProjectWell: WellProjectWell | undefined
     wellProject: WellProject
     setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
 function WellTableRow({
-    well, wellProjectWell, wellProject, setProject,
+    wellId, project, wellProjectWell, wellProject, setProject,
 }: Props) {
-    const [wellName, setWellName] = useState<string>(well.name ?? "")
-    const [drillingDays, setDrillingDays] = useState<number>(well.drillingDays ?? 0)
-    const [wellCost, setWellCost] = useState<number>(well.wellCost ?? 0)
-    const [wellCategory, setWellCategory] = useState<Components.Schemas.WellCategory>(well.wellCategory ?? 0)
+    const [well, setWell] = useState<Well | undefined>(project.wells?.find((w) => w.id === wellId))
+    const [wellName, setWellName] = useState<string>(well?.name ?? "")
+    const [drillingDays, setDrillingDays] = useState<number>(well?.drillingDays ?? 0)
+    const [wellCost, setWellCost] = useState<number>(well?.wellCost ?? 0)
+    const [wellCategory, setWellCategory] = useState<Components.Schemas.WellCategory>(well?.wellCategory ?? 0)
 
     const updateWell = async () => {
-        const newWell = { ...well }
-        newWell.name = wellName
-        newWell.drillingDays = drillingDays
-        newWell.wellCost = wellCost
-        newWell.wellCategory = wellCategory
-        const newProject = await GetWellService().updateWell(newWell)
-        setProject(newProject)
-
-        console.log("Yeet")
+        if (well && (wellName !== well.name || drillingDays !== well.drillingDays
+            || wellCost !== well.wellCost || wellCategory !== well.wellCategory)) {
+            const newWell = { ...well }
+            newWell.name = wellName
+            newWell.drillingDays = drillingDays
+            newWell.wellCost = wellCost
+            newWell.wellCategory = wellCategory
+            const newProject = await GetWellService().updateWell(newWell)
+            setProject(newProject)
+            const updatedWell = newProject.wells?.find((w) => w.id === wellId)
+            if (updatedWell) {
+                setWell(updatedWell)
+            }
+        }
     }
 
     const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -102,6 +109,8 @@ function WellTableRow({
             setProject(newProject)
         }
     }
+
+    if (!well) return null
 
     return (
 

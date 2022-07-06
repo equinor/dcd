@@ -43,7 +43,7 @@ function WellList({ project, wellProject, setProject }: Props) {
         wells?.forEach((w) => {
             const wpw = wellProjectWells?.find((x) => x.wellId === w.id && x.wellProjectId === wellProject.id)
             tableRows.push((
-                <WellTableRow key={w.id} setProject={setProject} well={w} wellProject={wellProject} wellProjectWell={wpw} />
+                <WellTableRow key={w.id} setProject={setProject} wellId={w.id!} project={project} wellProject={wellProject} wellProjectWell={wpw} />
             ))
         })
         return tableRows
@@ -79,7 +79,6 @@ function WellList({ project, wellProject, setProject }: Props) {
                 </Table.Head>
                 <Table.Body>
                     {GenerateWellTableRows()}
-                    {/* <WellTableRows wellProjectWells={wellProjectWells} wells={wells!} wellProject={wellProject} setProject={setProject} /> */}
                 </Table.Body>
             </Table>
         </>
