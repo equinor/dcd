@@ -1,28 +1,36 @@
 import { Dispatch, SetStateAction } from "react"
+import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { WellProjectWell } from "../../models/WellProjectWell"
 import DrillingScheduleTable from "./DrillingScheduleTable"
 
 interface Props {
-    wellCases: WellProjectWell[] | null | undefined
+    wellProjectWells: WellProjectWell[] | null | undefined
     setWellCases: Dispatch<SetStateAction<WellProjectWell[] | null | undefined>>,
+    setProject: Dispatch<SetStateAction<Project | undefined>>
+    project: Project
 }
 
 const DrillingSchedules = ({
-    wellCases,
+    wellProjectWells,
     setWellCases,
+    setProject,
+    project,
 }: Props) => {
     const GenerateDrillingSchedules = () => {
         const drillingSchedules: JSX.Element[] = []
-        wellCases?.forEach((wc) => {
-            if (wc.count && wc.count > 0) {
+        wellProjectWells?.forEach((wpw) => {
+            const well = project.wells?.find((w) => w.id === wpw.wellId)
+            if (well && wpw.count && wpw.count > 0) {
                 drillingSchedules.push((
                     <DrillingScheduleTable
-                        key={`${wc.wellProjectId}${wc.wellId}`}
-                        wellCase1={wc}
+                        key={`${wpw.wellProjectId}${wpw.wellId}`}
+                        wellCase1={wpw}
                         setWellCases={setWellCases}
-                        wellCases={wellCases}
-                        title="Test"
+                        wellCases={wellProjectWells}
+                        setProject={setProject}
+                        project={project}
+                        well={well}
                     />
                 ))
             }

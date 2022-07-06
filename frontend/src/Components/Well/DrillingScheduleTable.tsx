@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
@@ -12,20 +13,25 @@ import {
     DeleteButton, ImportButton, Wrapper, WrapperColumn,
 } from "../../Views/Asset/StyledAssetComponents"
 import { WellProjectWell } from "../../models/WellProjectWell"
+import { Project } from "../../models/Project"
+import { Well } from "../../models/Well"
 
 interface Props {
-    title: string,
     wellCase1: WellProjectWell,
     setWellCases: Dispatch<SetStateAction<WellProjectWell[] | null | undefined>>,
     wellCases: WellProjectWell[] | null | undefined
+    setProject: Dispatch<SetStateAction<Project | undefined>>
+    project: Project
+    well: Well
 }
 
 const DrillingScheduleTable = ({
     wellCase1,
-    title,
     setWellCases,
     wellCases,
-
+    setProject,
+    project,
+    well,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -59,19 +65,19 @@ const DrillingScheduleTable = ({
     }
 
     const onImport = (input: string, year: number) => {
-        const newTimeSeries: ITimeSeries = { ...wellCase.drillingSchedule }
-        newTimeSeries.startYear = year
-        newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
-        buildAlignedGrid(newTimeSeries)
+        const newDrillingSchedule: ITimeSeries = { ...wellCase.drillingSchedule }
+        newDrillingSchedule.startYear = year
+        newDrillingSchedule.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i)) // parseInt
+        buildAlignedGrid(newDrillingSchedule)
         setDialogOpen(!dialogOpen)
         const newWellCase = { ...wellCase }
-        newWellCase.drillingSchedule = newTimeSeries
+        newWellCase.drillingSchedule = newDrillingSchedule
         console.log("newWellCase: ", newWellCase)
         setWellCase(newWellCase)
         if (Array.isArray(wellCases)) {
             // const newWellCases = [...wellCases]
             const newWellCases = wellCases.map((wc) => (wc.wellId === wellCase.wellId
-                ? { ...wc, drillingSchedule: newTimeSeries }
+                ? { ...wc, drillingSchedule: newDrillingSchedule }
                 : wc))
                 setWellCases(newWellCases)
         }
@@ -86,8 +92,7 @@ const DrillingScheduleTable = ({
         <>
             <Wrapper>
                 <Typography variant="h4">
-                    Drilling schedule for well:
-                    {wellCase.wellId}
+                    {well.name}
                 </Typography>
             </Wrapper>
             <Wrapper>

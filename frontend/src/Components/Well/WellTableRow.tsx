@@ -133,7 +133,6 @@ function WellTableRow({
                 />
             </Table.Cell>
             <Table.Cell>
-                {well.wellCategory}
                 <NativeSelect
                     id="wellCategory"
                     label="Well category"

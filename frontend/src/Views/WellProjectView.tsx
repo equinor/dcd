@@ -201,8 +201,13 @@ function WellProjectView() {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
-            {console.log("Well cases: ", wellProjectWells)}
-            <DrillingSchedules setWellCases={setWellProjectWells} wellCases={wellProjectWells} />
+            <Typography>Drilling schedules:</Typography>
+            <DrillingSchedules
+                setWellCases={setWellProjectWells}
+                setProject={setProject}
+                wellProjectWells={wellProjectWells}
+                project={project}
+            />
         </AssetViewDiv>
     )
 }
