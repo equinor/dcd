@@ -3,6 +3,7 @@ import { Button, Table, Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
+import { well } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
 import WellTableRows from "./WellTableRows"
 import { Well } from "../../models/Well"
@@ -42,7 +43,7 @@ function WellList({ project, wellProject, setProject }: Props) {
         wells?.forEach((w) => {
             const wpw = wellProjectWells?.find((x) => x.wellId === w.id && x.wellProjectId === wellProject.id)
             tableRows.push((
-                <WellTableRow setProject={setProject} well={w} wellProject={wellProject} wellProjectWell={wpw} />
+                <WellTableRow key={w.id} setProject={setProject} well={w} wellProject={wellProject} wellProjectWell={wpw} />
             ))
         })
         return tableRows

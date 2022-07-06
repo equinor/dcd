@@ -23,6 +23,7 @@ namespace api.Models
         Gas_Injector,
         Exploration_Well,
         Appraisal_Well,
-        Sidetrack
+        Sidetrack,
+        RigMobDemob,
     }
 }

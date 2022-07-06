@@ -392,7 +392,7 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
-        export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6; // int32
+        export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
         export interface WellDto {
             id?: string; // uuid
             projectId?: string; // uuid
