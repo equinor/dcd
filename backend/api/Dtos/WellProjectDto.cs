@@ -8,7 +8,6 @@ namespace api.Dtos
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
         public WellProjectCostProfileDto? CostProfile { get; set; }
-        public DrillingScheduleDto? DrillingSchedule { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public double RigMobDemob { get; set; }
         public double AnnualWellInterventionCost { get; set; }
@@ -19,8 +18,6 @@ namespace api.Dtos
 
     public class WellProjectCostProfileDto : TimeSeriesCostDto
     {
-    }
-    public class DrillingScheduleDto : TimeSeriesScheduleDto
-    {
+        public bool Override { get; set; }
     }
 }

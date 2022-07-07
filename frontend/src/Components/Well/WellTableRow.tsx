@@ -144,8 +144,8 @@ function WellTableRow({
                     <option key="1" value={1}>Gas producer</option>
                     <option key="2" value={2}>Water injector</option>
                     <option key="3" value={3}>Gas Injector</option>
-                    <option key="4" value={4}>Exploration well</option>
-                    <option key="5" value={5}>Appraisal well</option>
+                    {/* <option key="4" value={4}>Exploration well</option>
+                    <option key="5" value={5}>Appraisal well</option> */}
                     <option key="6" value={6}>Sidetrack</option>
                     <option key="7" value={7}>Rig mob/demob</option>
                 </NativeSelect>

@@ -404,13 +404,13 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+            override?: boolean;
         }
         export interface WellProjectDto {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
             costProfile?: WellProjectCostProfileDto;
-            drillingSchedule?: DrillingScheduleDto;
             artificialLift?: ArtificialLift /* int32 */;
             rigMobDemob?: number; // double
             annualWellInterventionCost?: number; // double

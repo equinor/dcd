@@ -10,4 +10,7 @@ namespace api.Models
         public Well Well { get; set; } = null!;
         public Guid WellId { get; set; } = Guid.Empty!;
     }
+    public class DrillingSchedule : TimeSeriesSchedule
+    {
+    }
 }

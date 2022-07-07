@@ -9,9 +9,4 @@ public class WellProjectBuilder : WellProject
         this.CostProfile = w;
         return this;
     }
-    public WellProjectBuilder WithDrillingSchedule(DrillingSchedule d)
-    {
-        this.DrillingSchedule = d;
-        return this;
-    }
 }

@@ -23,10 +23,6 @@ namespace api.Adapters
             {
                 wellProject.CostProfile = Convert(wellProjectDto.CostProfile, wellProject);
             }
-            if (wellProjectDto.DrillingSchedule != null)
-            {
-                wellProject.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, wellProject);
-            }
             return wellProject;
         }
         public static void ConvertExisting(WellProject existing, WellProjectDto wellProjectDto)
@@ -44,10 +40,6 @@ namespace api.Adapters
             {
                 existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
             }
-            if (wellProjectDto.DrillingSchedule != null)
-            {
-                existing.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, existing);
-            }
         }
 
         private static WellProjectCostProfile? Convert(WellProjectCostProfileDto? costProfile, WellProject wellProject)
@@ -60,21 +52,10 @@ namespace api.Adapters
                 EPAVersion = costProfile.EPAVersion,
                 Currency = costProfile.Currency,
                 StartYear = costProfile.StartYear,
-                Values = costProfile.Values
+                Values = costProfile.Values,
+                Override = costProfile.Override
             };
             return wellProjectCostProfile;
-        }
-
-        private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto, WellProject wellProject)
-        {
-            if (drillingScheduleDto == null) return null;
-            var drillingSchedule = new DrillingSchedule
-            {
-                Id = drillingScheduleDto.Id,
-                StartYear = drillingScheduleDto.StartYear,
-                Values = drillingScheduleDto.Values
-            };
-            return drillingSchedule;
         }
     }
 }

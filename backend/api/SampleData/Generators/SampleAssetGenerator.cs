@@ -187,12 +187,6 @@ public static class SampleAssetGenerator
                     Values = new[] { 33.4, 18.9, 62.3 }
                 }
                 )
-                .WithDrillingSchedule(new DrillingSchedule
-                {
-                    StartYear = 9,
-                    Values = new int[] { 33, 3, 62 }
-                }
-                )
             )
             .WithSurf(new SurfBuilder
             {

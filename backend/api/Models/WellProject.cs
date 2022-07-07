@@ -9,7 +9,6 @@ namespace api.Models
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
         public WellProjectCostProfile? CostProfile { get; set; }
-        public DrillingSchedule? DrillingSchedule { get; set; }
         public ArtificialLift ArtificialLift { get; set; }
         public double RigMobDemob { get; set; }
         public double AnnualWellInterventionCost { get; set; }
@@ -22,10 +21,6 @@ namespace api.Models
     {
         [ForeignKey("WellProject.Id")]
         public WellProject WellProject { get; set; } = null!;
-    }
-    public class DrillingSchedule : TimeSeriesSchedule
-    {
-        // [ForeignKey("WellProject.Id")]
-        // public WellProject WellProject { get; set; } = null!;
+        public bool Override { get; set; }
     }
 }
