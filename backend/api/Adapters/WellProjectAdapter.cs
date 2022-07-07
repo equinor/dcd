@@ -7,7 +7,17 @@ namespace api.Adapters
     {
         public WellProject Convert(WellProjectDto wellProjectDto)
         {
-            var wellProject = WellprojectDtoToWellproject(null, wellProjectDto);
+            var wellProject = new WellProject
+            {
+                Id = wellProjectDto.Id,
+                ProjectId = wellProjectDto.ProjectId,
+                Name = wellProjectDto.Name,
+                ArtificialLift = wellProjectDto.ArtificialLift,
+                RigMobDemob = wellProjectDto.RigMobDemob,
+                AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost,
+                PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment,
+                Currency = wellProjectDto.Currency,
+            };
 
             if (wellProjectDto.CostProfile != null)
             {
@@ -21,34 +31,6 @@ namespace api.Adapters
         }
         public static void ConvertExisting(WellProject existing, WellProjectDto wellProjectDto)
         {
-            WellprojectDtoToWellproject(existing, wellProjectDto);
-
-            if (wellProjectDto.CostProfile != null)
-            {
-                existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
-            }
-            if (wellProjectDto.DrillingSchedule != null)
-            {
-                existing.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, existing);
-            }
-        }
-
-        private static WellProject WellprojectDtoToWellproject(WellProject? existing, WellProjectDto wellProjectDto)
-        {
-            if (existing == null)
-            {
-                return new WellProject
-                {
-                    Id = wellProjectDto.Id,
-                    ProjectId = wellProjectDto.ProjectId,
-                    Name = wellProjectDto.Name,
-                    ArtificialLift = wellProjectDto.ArtificialLift,
-                    RigMobDemob = wellProjectDto.RigMobDemob,
-                    AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost,
-                    PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment,
-                    Currency = wellProjectDto.Currency,
-                };
-            }
             existing.Id = wellProjectDto.Id;
             existing.ProjectId = wellProjectDto.ProjectId;
             existing.Name = wellProjectDto.Name;
@@ -58,7 +40,14 @@ namespace api.Adapters
             existing.PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment;
             existing.Currency = wellProjectDto.Currency;
 
-            return existing;
+            if (wellProjectDto.CostProfile != null)
+            {
+                existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
+            }
+            if (wellProjectDto.DrillingSchedule != null)
+            {
+                existing.DrillingSchedule = Convert(wellProjectDto.DrillingSchedule, existing);
+            }
         }
 
         private static WellProjectCostProfile? Convert(WellProjectCostProfileDto? costProfile, WellProject wellProject)
@@ -82,7 +71,6 @@ namespace api.Adapters
             var drillingSchedule = new DrillingSchedule
             {
                 Id = drillingScheduleDto.Id,
-                // WellProject = wellProject,
                 StartYear = drillingScheduleDto.StartYear,
                 Values = drillingScheduleDto.Values
             };

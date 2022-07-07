@@ -94,12 +94,6 @@ declare namespace Components {
             productionProfileNGL?: ProductionProfileNGLDto;
             facilitiesAvailability?: number; // double
         }
-        export interface DrillingSchedule {
-            id?: string; // uuid
-            startYear?: number; // int32
-            internalData?: string | null;
-            values?: number /* int32 */[] | null;
-        }
         export interface DrillingScheduleDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -426,7 +420,7 @@ declare namespace Components {
         }
         export interface WellProjectWellDto {
             count?: number; // int32
-            drillingSchedule?: DrillingSchedule;
+            drillingSchedule?: DrillingScheduleDto;
             wellProjectId?: string; // uuid
             wellId?: string; // uuid
         }

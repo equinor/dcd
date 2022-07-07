@@ -5,22 +5,40 @@ namespace api.Adapters
 {
     public static class WellProjectWellAdapter
     {
-        public static WellProjectWell Convert(WellProjectWellDto wellDto)
+        public static WellProjectWell Convert(WellProjectWellDto wellProjectWellDto)
         {
-            var well = new WellProjectWell
+            var wellProjectWell = new WellProjectWell
             {
-                Count = wellDto.Count,
-                DrillingSchedule = wellDto.DrillingSchedule,
-                WellProjectId = wellDto.WellProjectId,
-                WellId = wellDto.WellId,
+                Count = wellProjectWellDto.Count,
+                WellProjectId = wellProjectWellDto.WellProjectId,
+                WellId = wellProjectWellDto.WellId,
             };
-            return well;
+            if (wellProjectWellDto.DrillingSchedule != null)
+            {
+                wellProjectWell.DrillingSchedule = Convert(wellProjectWellDto.DrillingSchedule, wellProjectWell);
+            }
+            return wellProjectWell;
         }
 
-        public static void ConvertExisting(WellProjectWell existing, WellProjectWellDto wellDto)
+        public static void ConvertExisting(WellProjectWell existing, WellProjectWellDto wellProjectWellDto)
         {
-            existing.Count = wellDto.Count;
-            existing.DrillingSchedule = wellDto.DrillingSchedule;
+            existing.Count = wellProjectWellDto.Count;
+            if (wellProjectWellDto.DrillingSchedule != null)
+            {
+                existing.DrillingSchedule = Convert(wellProjectWellDto.DrillingSchedule, existing);
+            }
+        }
+
+        private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto, WellProjectWell wellProject)
+        {
+            if (drillingScheduleDto == null) return null;
+            var drillingSchedule = new DrillingSchedule
+            {
+                Id = drillingScheduleDto.Id,
+                StartYear = drillingScheduleDto.StartYear,
+                Values = drillingScheduleDto.Values
+            };
+            return drillingSchedule;
         }
     }
 }

@@ -39,6 +39,10 @@ namespace api.Services
         {
             var existing = GetWellProjectWell(updatedWellProjectWellDto.WellId, updatedWellProjectWellDto.WellProjectId);
             WellProjectWellAdapter.ConvertExisting(existing, updatedWellProjectWellDto);
+            if (updatedWellProjectWellDto.DrillingSchedule == null && existing.DrillingSchedule != null)
+            {
+                _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
+            }
             _context.WellProjectWell!.Update(existing);
             _context.SaveChanges();
             var projectId = _context.WellProjects!.FirstOrDefault(c => c.Id == updatedWellProjectWellDto.WellProjectId)?.ProjectId;
@@ -52,8 +56,7 @@ namespace api.Services
         public WellProjectWell GetWellProjectWell(Guid wellId, Guid caseId)
         {
             var wellProjectWell = _context.WellProjectWell!
-                        // .Include(w => w.Well)
-                        // .Include(w => w.Case)
+                        .Include(wpw => wpw.DrillingSchedule)
                         .FirstOrDefault(w => w.WellId == wellId && w.WellProjectId == caseId);
             if (wellProjectWell == null)
             {

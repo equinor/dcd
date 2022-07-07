@@ -15,6 +15,7 @@ import {
 import { WellProjectWell } from "../../models/WellProjectWell"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
+import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
 
 interface Props {
     wellCase1: WellProjectWell,
@@ -36,7 +37,7 @@ const DrillingScheduleTable = ({
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
-    const [wellCase, setWellCase] = useState<WellProjectWell>(wellCase1)
+    const [wellProjectWell, setWellCase] = useState<WellProjectWell>(wellCase1)
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (updatedTimeSeries !== undefined) {
@@ -47,7 +48,7 @@ const DrillingScheduleTable = ({
             //         columnTitles.push(i.toString())
             // }
             setColumns(columnTitles)
-            const newGridData = buildGridData(wellCase.drillingSchedule)
+            const newGridData = buildGridData(wellProjectWell.drillingSchedule)
             setGridData(newGridData)
         } else {
             setColumns([])
@@ -56,34 +57,39 @@ const DrillingScheduleTable = ({
     }
 
     useEffect(() => {
-        buildAlignedGrid(wellCase!.drillingSchedule!)
-    }, [wellCase, wellCases])
+        buildAlignedGrid(wellProjectWell!.drillingSchedule!)
+    }, [wellProjectWell, wellCases])
 
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
         const newGridData: CellValue[][] = replaceOldData(gridData, changes)
         setGridData(newGridData)
     }
 
-    const onImport = (input: string, year: number) => {
-        const newDrillingSchedule: ITimeSeries = { ...wellCase.drillingSchedule }
+    const onImport = async (input: string, year: number) => {
+        const newDrillingSchedule: ITimeSeries = { ...wellProjectWell.drillingSchedule }
         newDrillingSchedule.startYear = year
         newDrillingSchedule.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i)) // parseInt
         buildAlignedGrid(newDrillingSchedule)
         setDialogOpen(!dialogOpen)
-        const newWellCase = { ...wellCase }
-        newWellCase.drillingSchedule = newDrillingSchedule
-        console.log("newWellCase: ", newWellCase)
-        setWellCase(newWellCase)
-        if (Array.isArray(wellCases)) {
-            // const newWellCases = [...wellCases]
-            const newWellCases = wellCases.map((wc) => (wc.wellId === wellCase.wellId
-                ? { ...wc, drillingSchedule: newDrillingSchedule }
-                : wc))
-                setWellCases(newWellCases)
-        }
+        const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
+        newWellProjectWell.drillingSchedule = newDrillingSchedule
+        console.log("newWellCase: ", newWellProjectWell)
+        setWellCase(newWellProjectWell)
+        const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellProjectWell)
+        setProject(newProject)
+        // if (Array.isArray(wellCases)) {
+        //     // const newWellCases = [...wellCases]
+        //     const newWellCases = wellCases.map((wc) => (wc.wellId === wellCase.wellId
+        //         ? { ...wc, drillingSchedule: newDrillingSchedule }
+        //         : wc))
+        //         setWellCases(newWellCases)
+        // }
     }
 
-    const deleteTimeseries = () => {
+    const deleteTimeseries = async () => {
+        const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
+        newWellProjectWell.drillingSchedule = undefined
+        const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellProjectWell)
         setColumns([])
         setGridData([[]])
     }
@@ -99,10 +105,10 @@ const DrillingScheduleTable = ({
                 <ImportButton
                     onClick={() => { setDialogOpen(true) }}
                 >
-                    {wellCase !== undefined ? "Edit" : "Import"}
+                    {wellProjectWell !== undefined ? "Edit" : "Import"}
                 </ImportButton>
                 <DeleteButton
-                    disabled={wellCase === undefined}
+                    disabled={wellProjectWell === undefined}
                     color="danger"
                     onClick={deleteTimeseries}
                 >

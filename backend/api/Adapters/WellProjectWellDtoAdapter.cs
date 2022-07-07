@@ -12,9 +12,28 @@ namespace api.Adapters
                 WellProjectId = wellProjectWell.WellProjectId,
                 WellId = wellProjectWell.WellId,
                 Count = wellProjectWell.Count,
-                DrillingSchedule = wellProjectWell.DrillingSchedule,
             };
+
+            if (wellProjectWell.DrillingSchedule != null)
+            {
+                wellProjectWellDto.DrillingSchedule = Convert(wellProjectWell.DrillingSchedule);
+            }
             return wellProjectWellDto;
+        }
+
+        private static DrillingScheduleDto? Convert(DrillingSchedule? drillingSchedule)
+        {
+            if (drillingSchedule == null)
+            {
+                return null!;
+            }
+            var drillingScheduleDto = new DrillingScheduleDto
+            {
+                Id = drillingSchedule.Id,
+                StartYear = drillingSchedule.StartYear,
+                Values = drillingSchedule.Values
+            };
+            return drillingScheduleDto;
         }
     }
 }
