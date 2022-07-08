@@ -217,10 +217,14 @@ function WellProjectView() {
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules
-                setWellCases={setWellProjectWells}
                 setProject={setProject}
                 wellProjectWells={wellProjectWells}
                 project={project}
+                caseItem={caseItem!}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
     )

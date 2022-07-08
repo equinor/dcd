@@ -2,16 +2,18 @@ import { Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
-import DataTable, { CellValue } from "./DataTable/DataTable"
+import DataTable, { CellValue } from "../DataTable/DataTable"
 import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
-} from "./DataTable/helpers"
-import Import from "./Import/Import"
-import { ITimeSeries } from "../models/ITimeSeries"
+} from "../DataTable/helpers"
+import Import from "../Import/Import"
+import { ITimeSeries } from "../../models/ITimeSeries"
 import {
     DeleteButton, ImportButton, Wrapper, WrapperColumn,
-} from "../Views/Asset/StyledAssetComponents"
-import { WellProjectWell } from "../models/WellProjectWell"
+} from "../../Views/Asset/StyledAssetComponents"
+import { WellProjectWell } from "../../models/WellProjectWell"
+import { Project } from "../../models/Project"
+import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
 
 interface Props {
     dG4Year: number | undefined
@@ -21,6 +23,7 @@ interface Props {
     setFirstYear: Dispatch<SetStateAction<number | undefined>>,
     setLastYear: Dispatch<SetStateAction<number | undefined>>,
     wellProjectWell: WellProjectWell | undefined
+    setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
 const DrillingScheduleRow = ({
@@ -31,6 +34,7 @@ const DrillingScheduleRow = ({
     setFirstYear,
     setLastYear,
     wellProjectWell,
+    setProject,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -83,7 +87,7 @@ const DrillingScheduleRow = ({
         setColumns(getColumnAbsoluteYears(dG4Year, drillingSchedule))
     }
 
-    const onImport = (input: string, year: number) => {
+    const onImport = async (input: string, year: number) => {
         const newTimeSeries: ITimeSeries = { ...drillingSchedule }
         newTimeSeries.startYear = year
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
@@ -100,9 +104,19 @@ const DrillingScheduleRow = ({
         }
         buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
+
+        const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
+        newWellProjectWell.drillingSchedule = newTimeSeries
+        console.log("newWellCase: ", newWellProjectWell)
+        // setWellCase(newWellProjectWell)
+        const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellProjectWell)
+        setProject(newProject)
     }
 
-    const deleteTimeseries = () => {
+    const deleteTimeseries = async () => {
+        const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
+        newWellProjectWell.drillingSchedule = undefined
+        const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellProjectWell)
         setColumns([])
         setGridData([[]])
         setDrillingSchedule(undefined)
