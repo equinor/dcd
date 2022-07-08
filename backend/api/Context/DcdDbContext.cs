@@ -57,6 +57,7 @@ namespace api.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<WellProjectWell>().HasKey(wc => new { wc.WellProjectId, wc.WellId });
+            modelBuilder.Entity<WellProjectWell>().HasOne(w => w.Well).WithMany(w => w.WellProjectWell).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
