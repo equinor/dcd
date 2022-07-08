@@ -22,9 +22,9 @@ export const CaseService = new __CaseService({
     accessToken: window.sessionStorage.getItem("loginAccessToken")!,
 })
 
-export function GetCaseService() {
+export async function GetCaseService() {
     return new __CaseService({
         ...config.CaseService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

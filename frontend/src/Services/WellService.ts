@@ -39,9 +39,9 @@ export const WellService = new __WellService({
     accessToken: window.sessionStorage.getItem("loginAccessToken")!,
 })
 
-export function GetWellService() {
+export async function GetWellService() {
     return new __WellService({
         ...config.WellService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

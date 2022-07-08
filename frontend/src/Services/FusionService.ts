@@ -8,9 +8,9 @@ export class __FusionService extends __BaseService {
     }
 }
 
-export function GetFusionService() {
+export async function GetFusionService() {
     return new __FusionService({
         ...config.FusionService,
-        accessToken: GetToken(FusionAccessTokenKey)!,
+        accessToken: await GetToken(FusionAccessTokenKey)!,
     })
 }

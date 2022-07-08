@@ -4,50 +4,69 @@ export type ServiceConfig = {
     headers?: Record<string, string>
 }
 
-export const config = Object.freeze({
+const configuration = {
     CaseService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/cases`,
+        BASE_URL: "",
     },
     CommonLibraryService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/common-library`,
+        BASE_URL: "",
     },
     FusionService: {
         BASE_URL: "https://pro-s-context-fprd.azurewebsites.net",
     },
     ProjectService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/projects`,
+        BASE_URL: "",
     },
     DrainageStrategyService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/drainage-strategies`,
+        BASE_URL: "",
     },
     ExplorationService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/explorations`,
+        BASE_URL: "",
     },
     WellProjectService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/well-projects`,
+        BASE_URL: "",
     },
     SurfService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/surfs`,
+        BASE_URL: "",
     },
     TopsideService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/topsides`,
+        BASE_URL: "",
     },
     SubstructureService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/substructures`,
+        BASE_URL: "",
     },
     TransportService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/transports`,
+        BASE_URL: "",
     },
     STEAService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/stea`,
+        BASE_URL: "",
     },
     UploadService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/Upload`,
+        BASE_URL: "",
     },
     WellService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/wells`,
+        BASE_URL: "",
     },
     WellProjectWellService: {
-        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/well-project-wells`,
+        BASE_URL: "",
     },
-})
+}
+
+export const buildConfig = (baseUrl: string) => {
+    configuration.CaseService.BASE_URL = `${baseUrl}/cases`
+    configuration.CommonLibraryService.BASE_URL = `${baseUrl}/common-library`
+    configuration.ProjectService.BASE_URL = `${baseUrl}/projects`
+    configuration.DrainageStrategyService.BASE_URL = `${baseUrl}/drainage-strategies`
+    configuration.ExplorationService.BASE_URL = `${baseUrl}/explorations`
+    configuration.WellProjectService.BASE_URL = `${baseUrl}/well-projects`
+    configuration.SurfService.BASE_URL = `${baseUrl}/surfs`
+    configuration.TopsideService.BASE_URL = `${baseUrl}/topsides`
+    configuration.SubstructureService.BASE_URL = `${baseUrl}/substructures`
+    configuration.TransportService.BASE_URL = `${baseUrl}/transports`
+    configuration.STEAService.BASE_URL = `${baseUrl}/stea`
+    configuration.UploadService.BASE_URL = `${baseUrl}/Upload`
+    configuration.WellService.BASE_URL = `${baseUrl}/wells`
+    configuration.WellProjectWellService.BASE_URL = `${baseUrl}/well-project-wells`
+}
+
+export const config = Object.freeze(configuration)

@@ -24,6 +24,7 @@ import { ExplorationDrillingSchedule } from "../models/assets/exploration/Explor
 import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
+import { IAssetService } from "../Services/IAssetService"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -31,7 +32,7 @@ const ExplorationView = () => {
     const [exploration, setExploration] = useState<Exploration>()
     const [hasChanges, setHasChanges] = useState(false)
     const [name, setName] = useState<string>("")
-    const params = useParams()
+    const { fusionProjectId, caseId, explorationId } = useParams<Record<string, string | undefined>>()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
@@ -40,13 +41,17 @@ const ExplorationView = () => {
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
 
+    const [explorationService, setExplorationService] = useState<IAssetService>()
+
     useEffect(() => {
         (async () => {
             try {
-                const projectResult: Project = await GetProjectService().getProjectByID(params.projectId!)
+                const projectResult = await (await GetProjectService()).getProjectByID(fusionProjectId!)
                 setProject(projectResult)
+                const service = await GetExplorationService()
+                setExplorationService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [])
@@ -54,10 +59,10 @@ const ExplorationView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
                 // eslint-disable-next-line max-len
-                let newExploration: Exploration | undefined = project.explorations.find((s) => s.id === params.explorationId)
+                let newExploration = project.explorations.find((s) => s.id === explorationId)
                 if (newExploration !== undefined) {
                     setExploration(newExploration)
                 } else {
@@ -115,7 +120,7 @@ const ExplorationView = () => {
                     setAsset={setExploration}
                     setProject={setProject}
                     asset={exploration!}
-                    assetService={GetExplorationService()}
+                    assetService={explorationService!}
                     assetType={AssetTypeEnum.explorations}
                 />
             </Wrapper>

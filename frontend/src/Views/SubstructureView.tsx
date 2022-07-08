@@ -27,6 +27,7 @@ import AssetCurrency from "../Components/AssetCurrency"
 import ApprovedBy from "../Components/ApprovedBy"
 import Concept from "../Components/Concept"
 import DGDateInherited from "../Components/DGDateInherited"
+import { IAssetService } from "../Services/IAssetService"
 
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
@@ -35,7 +36,7 @@ const SubstructureView = () => {
 
     const [hasChanges, setHasChanges] = useState(false)
     const [substructureName, setSubstructureName] = useState<string>("")
-    const params = useParams()
+    const { fusionProjectId, caseId, substructureId } = useParams<Record<string, string | undefined>>()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
@@ -49,14 +50,16 @@ const SubstructureView = () => {
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
 
+    const [substructureService, setSubstructureService] = useState<IAssetService>()
+
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [])
@@ -64,10 +67,10 @@ const SubstructureView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
                 // eslint-disable-next-line max-len
-                let newSubstructure: Substructure | undefined = project.substructures.find((s) => s.id === params.substructureId)
+                let newSubstructure = project.substructures.find((s) => s.id === substructureId)
                 if (newSubstructure !== undefined) {
                     if (newSubstructure.DG3Date === null
                         || newSubstructure.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
@@ -108,6 +111,8 @@ const SubstructureView = () => {
                         setLastTSYear,
                     )
                 }
+                const service = await GetSubstructureService()
+                setSubstructureService(service)
             }
         })()
     }, [project])
@@ -152,7 +157,7 @@ const SubstructureView = () => {
                     setAsset={setSubstructure}
                     setProject={setProject}
                     asset={substructure!}
-                    assetService={GetSubstructureService()}
+                    assetService={substructureService!}
                     assetType={AssetTypeEnum.substructures}
                 />
                 <Typography variant="h6">
@@ -181,7 +186,6 @@ const SubstructureView = () => {
                     />
                 </WrapperColumn>
             </Wrapper>
-
             <Typography>
                 {`Prosp version: ${substructure?.ProspVersion
                     ? substructure?.ProspVersion.toLocaleDateString() : "N/A"}`}
@@ -242,7 +246,6 @@ const SubstructureView = () => {
                 currentValue={concept}
                 setConcept={setConcept}
             />
-
             <TimeSeries
                 dG4Year={substructure?.source === 1 ? substructure.DG4Date?.getFullYear()
                     : caseItem?.DG4Date?.getFullYear()}

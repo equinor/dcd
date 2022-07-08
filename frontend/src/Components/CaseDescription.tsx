@@ -55,12 +55,17 @@ interface Props {
     caseItem: Case | undefined,
     setCase: Dispatch<SetStateAction<Case | undefined>>
 }
+
+interface CaseDescriptionParams {
+    _caseId: string;
+}
+
 const CaseDescription = ({
     setProject,
     caseItem,
     setCase,
 }: Props) => {
-    const params = useParams()
+    const { _caseId }: CaseDescriptionParams = useParams()
     const [caseDescriptionModalIsOpen, setCaseDescriptionModalIsOpen] = useState<boolean>(false)
     const [caseDescription, setCaseDescription] = useState<string>("")
     const toggleEditCaseDescriptionModal = () => setCaseDescriptionModalIsOpen(!caseDescriptionModalIsOpen)
@@ -68,12 +73,12 @@ const CaseDescription = ({
         setCaseDescription(e.target.value)
     }
     const submitUpdateDescription = async () => {
-        const unwrappedCase: Case = unwrapCase(caseItem)
+        const unwrappedCase = unwrapCase(caseItem)
         const caseDto = Case.Copy(unwrappedCase)
         caseDto.description = caseDescription
-        const newProject: Project = await GetCaseService().updateCase(caseDto)
+        const newProject = await (await GetCaseService()).updateCase(caseDto)
         setProject(newProject)
-        const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === params.caseId))
+        const caseResult = unwrapCase(newProject.cases.find((o) => o.id === _caseId))
         setCase(caseResult)
     }
     const submitDescriptionForm: MouseEventHandler<HTMLButtonElement> = async (e) => {

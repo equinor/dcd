@@ -58,7 +58,7 @@ const ProductionStrategyOverview = ({
         if (caseItem !== undefined) {
             const newCase = Case.Copy(caseItem)
             newCase.productionStrategyOverview = pso
-            const newProject = await GetCaseService().updateCase(newCase)
+            const newProject = await (await GetCaseService()).updateCase(newCase)
             setProject(newProject)
         }
     }

@@ -50,10 +50,10 @@ interface Props {
 }
 
 function Import({ onClose, onImport }: Props) {
+    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
     const [dataInput, setDataInput] = useState<string>("")
     const [startYear, setStartYear] = useState(0)
     const [, setProject] = useState<Project>()
-    const params = useParams()
     const [caseItem, setCase] = useState<Case>()
 
     const example = "value1\tvalue2\tvalue3\tvalue4"
@@ -64,17 +64,18 @@ function Import({ onClose, onImport }: Props) {
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const caseId: string = unwrapCaseId(params.caseId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                // eslint-disable-next-line no-underscore-dangle
+                const _caseId = unwrapCaseId(caseId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
-                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === caseId))
+                const caseResult = unwrapCase(projectResult.cases.find((o) => o.id === _caseId))
                 setCase(caseResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
-    }, [params.projectId, params.caseId])
+    }, [])
 
     const onChangeStartYear = (event: any) => {
         setStartYear(event.currentTarget.value)
