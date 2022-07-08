@@ -37,24 +37,6 @@ namespace api.Services
             throw new NotFoundInDBException();
         }
 
-        // public ProjectDto UpdateWellProjectWell(WellProjectWellDto updatedWellProjectWellDto)
-        // {
-        //     var existing = GetWellProjectWell(updatedWellProjectWellDto.WellId, updatedWellProjectWellDto.WellProjectId);
-        //     WellProjectWellAdapter.ConvertExisting(existing, updatedWellProjectWellDto);
-        //     if (updatedWellProjectWellDto.DrillingSchedule == null && existing.DrillingSchedule != null)
-        //     {
-        //         _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
-        //     }
-        //     _context.WellProjectWell!.Update(existing);
-        //     _context.SaveChanges();
-        //     var projectId = _context.WellProjects!.FirstOrDefault(c => c.Id == updatedWellProjectWellDto.WellProjectId)?.ProjectId;
-        //     if (projectId != null)
-        //     {
-        //         return _projectService.GetProjectDto((Guid)projectId);
-        //     }
-        //     throw new NotFoundInDBException();
-        // }
-
         public ProjectDto UpdateWellProjectWell(WellProjectWellDto updatedWellProjectWellDto)
         {
             var existing = GetWellProjectWell(updatedWellProjectWellDto.WellId, updatedWellProjectWellDto.WellProjectId);
@@ -65,7 +47,7 @@ namespace api.Services
             }
 
             // Generate wellproject costprofile
-            var wellProject = _context.WellProjects!.Include(wp => wp.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.WellProjectId);
+            var wellProject = _context.WellProjects!.Include(wp => wp.CostProfile).Include(wp => wp.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.WellProjectId);
             if (wellProject?.CostProfile?.Override != true)
             {
                 var project = _context.Projects!.Include(p => p.Wells).FirstOrDefault(p => p.Id == wellProject.ProjectId);
@@ -76,7 +58,12 @@ namespace api.Services
                     GenerateCostProfileFromDrillingSchedules(wellProject, wellProject.WellProjectWells.ToList(), project.Wells.ToList());
                     var wellProjectDto = WellProjectDtoAdapter.Convert(wellProject);
                     _wellProjectService.UpdateWellProject(wellProjectDto);
-                    // _context.WellProjects!.Update(wellProject);
+                }
+                else if (wellProject.WellProjectWells != null && project?.Wells != null)
+                {
+                    wellProject.CostProfile = null;
+                    var wellProjectDto = WellProjectDtoAdapter.Convert(wellProject);
+                    _wellProjectService.UpdateWellProject(wellProjectDto);
                 }
             }
 
@@ -115,14 +102,10 @@ namespace api.Services
             if (t1Year < t2Year)
             {
                 values = MergeTimeSeries(t1Values.ToList(), t2Values.ToList(), offset);
-                // values.AddRange(t1Values);
-                // values.InsertRange(offset, t2Values);
             }
             else
             {
                 values = MergeTimeSeries(t2Values.ToList(), t1Values.ToList(), offset);
-                // values.AddRange(t2Values);
-                // values.InsertRange(offset, t1Values);
             }
 
             var timeSeries = new WellProjectCostProfile();
@@ -133,30 +116,39 @@ namespace api.Services
 
         private static List<double> MergeTimeSeries(List<double> t1, List<double> t2, int offset)
         {
-            if (t1.Count - offset >= t2.Count)
+            var doubleList = new List<double>();
+            if (offset > t1.Count)
             {
-                for (var i = 0; i < t2.Count; i++)
-                {
-                    t1[i + offset] += t2[i];
-                }
+                doubleList.AddRange(t1);
+                var zeros = offset - t1.Count;
+                var zeroList = Enumerable.Repeat(0.0, zeros);
+                doubleList.AddRange(zeroList);
+                doubleList.AddRange(t2);
+                return doubleList;
+            }
+            doubleList.AddRange(t1.Take(offset));
+            if (t1.Count - offset == t2.Count)
+            {
+                doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+            }
+            else if (t1.Count - offset > t2.Count)
+            {
+                doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+                var remaining = t1.Count - offset - t2.Count;
+                doubleList.AddRange(t1.TakeLast(remaining));
             }
             else
             {
-                for (var i = 0; i < t1.Count - offset; i++)
-                {
-                    t1[i + offset] += t2[i];
-                }
-                t1.AddRange(t2.TakeLast(t2.Count - t1.Count - offset));
+                doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+                var remaining = t2.Count - (t1.Count - offset);
+                doubleList.AddRange(t2.TakeLast(remaining));
             }
-            return t1;
+            return doubleList;
         }
-
-
 
         public void GenerateCostProfileFromDrillingSchedules(WellProject wellProject, List<WellProjectWell> wellProjectWells, List<Well> wells)
         {
             var costProfile = new WellProjectCostProfile();
-            // 1. Drilling schedules => Cost profiles
             var costProfiles = new List<WellProjectCostProfile>();
             foreach (var wellProjectWell in wellProjectWells)
             {
@@ -175,7 +167,6 @@ namespace api.Services
                 wellCostProfile.Values = values.ToArray();
                 costProfiles.Add(wellCostProfile);
             }
-            // 2. Merge cost profiles
 
             var tempCostProfile = new WellProjectCostProfile();
             foreach (var profile in costProfiles)
@@ -184,8 +175,6 @@ namespace api.Services
             }
 
             costProfile = tempCostProfile;
-
-            // 3.
             wellProject.CostProfile = costProfile;
         }
 

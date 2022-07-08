@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Input, Switch, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -117,6 +117,15 @@ function WellProjectView() {
     }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, currency,
         artificialLift])
 
+    const overrideCostProfile = () => {
+        if (costProfile) {
+            const newCostProfile = { ...costProfile }
+            newCostProfile.override = !costProfile?.override
+            setCostProfile(newCostProfile)
+            setHasChanges(true)
+        }
+    }
+
     if (!project) return null
     if (!wellProject) return null
 
@@ -190,6 +199,11 @@ function WellProjectView() {
                     label="Plugging and abandonment"
                 />
             </Wrapper>
+            <Switch
+                label="Override generated cost profile"
+                onClick={overrideCostProfile}
+                checked={costProfile?.override ?? false}
+            />
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
