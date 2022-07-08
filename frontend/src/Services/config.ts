@@ -47,4 +47,7 @@ export const config = Object.freeze({
     WellService: {
         BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/wells`,
     },
+    WellProjectWellService: {
+        BASE_URL: `${process.env.REACT_APP_API_BASE_URL}/well-project-wells`,
+    },
 })

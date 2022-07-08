@@ -38,12 +38,6 @@ public class ProjectBuilder : Project
         Wells = new List<Well>();
     }
 
-    public ProjectBuilder WithWells(WellBuilder d)
-    {
-        Wells!.Add(d);
-        return this;
-    }
-
     public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)
     {
         d.Project = this;
