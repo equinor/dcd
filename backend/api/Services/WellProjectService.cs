@@ -29,7 +29,7 @@ namespace api.Services
 
                 return _context.WellProjects
                         .Include(c => c.CostProfile)
-                        .Include(c => c.DrillingSchedule)
+                        .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
             else
@@ -93,11 +93,6 @@ namespace api.Services
                 _context.WellProjectCostProfile!.Remove(existing.CostProfile);
             }
 
-            if (updatedWellProject.DrillingSchedule == null && existing.DrillingSchedule != null)
-            {
-                _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
-            }
-
             _context.WellProjects!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedWellProject.ProjectId);
@@ -107,7 +102,7 @@ namespace api.Services
         {
             var wellProject = _context.WellProjects!
                 .Include(c => c.CostProfile)
-                .Include(c => c.DrillingSchedule)
+                .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
                 .FirstOrDefault(o => o.Id == wellProjectId);
             if (wellProject == null)
             {

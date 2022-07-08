@@ -11,12 +11,13 @@ namespace api.Adapters
             {
                 Id = wellDto.Id,
                 Name = wellDto.Name,
-                ProjectId = wellDto.ProjectId,
                 WellInterventionCost = wellDto.WellInterventionCost,
                 PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost,
+                ProjectId = wellDto.ProjectId,
+                WellCategory = wellDto.WellCategory,
+                WellCost = wellDto.WellCost,
+                DrillingDays = wellDto.DrillingDays
             };
-            well.WellType = Convert(wellDto.WellType);
-            well.ExplorationWellType = Convert(wellDto.ExplorationWellType);
             return well;
         }
 
@@ -24,45 +25,12 @@ namespace api.Adapters
         {
             existing.Id = wellDto.Id;
             existing.Name = wellDto.Name;
-            existing.ProjectId = wellDto.ProjectId;
             existing.WellInterventionCost = wellDto.WellInterventionCost;
             existing.PlugingAndAbandonmentCost = wellDto.PlugingAndAbandonmentCost;
-            existing.WellType = Convert(wellDto.WellType);
-            existing.ExplorationWellType = Convert(wellDto.ExplorationWellType);
-        }
-
-        private static WellType Convert(WellTypeDto? wellType)
-        {
-            if (wellType == null)
-            {
-                return null!;
-            }
-            return new WellType
-            {
-                Id = wellType.Id,
-                Description = wellType.Description,
-                Category = (WellTypeCategory)wellType.Category,
-                Name = wellType.Name,
-                DrillingDays = wellType.DrillingDays,
-                WellCost = wellType.WellCost,
-            };
-        }
-
-        private static ExplorationWellType Convert(ExplorationWellTypeDto? explorationWellType)
-        {
-            if (explorationWellType == null)
-            {
-                return null!;
-            }
-            return new ExplorationWellType
-            {
-                Id = explorationWellType.Id,
-                Description = explorationWellType.Description,
-                Name = explorationWellType.Name,
-                DrillingDays = explorationWellType.DrillingDays,
-                WellCost = explorationWellType.WellCost,
-                Category = (ExplorationWellTypeCategory)explorationWellType.Category,
-            };
+            existing.ProjectId = wellDto.ProjectId;
+            existing.WellCategory = wellDto.WellCategory;
+            existing.WellCost = wellDto.WellCost;
+            existing.DrillingDays = wellDto.DrillingDays;
         }
     }
 }

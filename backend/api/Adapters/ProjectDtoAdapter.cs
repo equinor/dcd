@@ -166,8 +166,8 @@ namespace api.Adapters
 
                 c.CapexYear = new CapexYear()
                 {
-                    startYear = minYear,
-                    values = valuesDict.Values.ToArray(),
+                    StartYear = minYear,
+                    Values = valuesDict.Values.ToArray(),
                 };
             }
         }

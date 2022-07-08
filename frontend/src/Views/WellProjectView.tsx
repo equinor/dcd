@@ -1,5 +1,5 @@
 import {
-    Input, Typography,
+    Input, Switch, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -20,11 +20,13 @@ import {
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
-import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
-import WellType from "../Components/WellType"
+import { WellProjectWell } from "../models/WellProjectWell"
+import { Well } from "../models/Well"
+import DrillingSchedules from "../Components/Well/DrillingSchedules"
+import WellList from "../Components/Well/WellList"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -39,16 +41,16 @@ function WellProjectView() {
     const [pluggingAndAbandonment, setPluggingAndAbandonment] = useState<number>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
-    const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
-    const [wellTypes, setWellTypes] = useState<Components.Schemas.WellType[] | undefined>()
+    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[] | null | undefined>()
+    const [, setWells] = useState<Well[]>()
 
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(params.projectId)
+                const projectResult = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
@@ -59,12 +61,14 @@ function WellProjectView() {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === params.caseId))
                 setCase(caseResult)
+                setWells(project.wells)
                 // eslint-disable-next-line max-len
-                let newWellProject: WellProject | undefined = project?.wellProjects.find((s) => s.id === params.wellProjectId)
+                let newWellProject = project?.wellProjects.find((s) => s.id === params.wellProjectId)
                 if (newWellProject !== undefined) {
                     setWellProject(newWellProject)
+                    setWellProjectWells(newWellProject.wellProjectWells)
                 } else {
                     newWellProject = new WellProject()
                     newWellProject.artificialLift = caseResult?.artificialLift
@@ -79,19 +83,12 @@ function WellProjectView() {
                 setCurrency(newWellProject.currency ?? 1)
 
                 setCostProfile(newWellProject.costProfile)
-                setDrillingSchedule(newWellProject.drillingSchedule)
                 setArtificialLift(newWellProject.artificialLift)
-
-                const wells = caseResult.wells?.filter((o) => o.wellType?.name)
-                wells?.forEach(((well) => {
-                    newWellProject?.wellTypes?.push(well.wellType!)
-                }))
-                setWellTypes(newWellProject?.wellTypes)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newWellProject.costProfile, newWellProject.drillingSchedule],
+                        [newWellProject.costProfile],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -106,24 +103,36 @@ function WellProjectView() {
         newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
         newWellProject.rigMobDemob = rigMobDemob
         newWellProject.costProfile = costProfile
-        newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
         newWellProject.artificialLift = artificialLift
-        newWellProject.wellTypes = wellTypes
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [costProfile, drillingSchedule],
+                [costProfile],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
         setWellProject(newWellProject)
-    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
-        artificialLift, wellTypes])
+    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, currency,
+        artificialLift])
+
+    const overrideCostProfile = () => {
+        if (costProfile) {
+            const newCostProfile = { ...costProfile }
+            newCostProfile.override = !costProfile?.override
+            setCostProfile(newCostProfile)
+            setHasChanges(true)
+        }
+    }
+
+    if (!project) return null
+    if (!wellProject) return null
 
     return (
         <AssetViewDiv>
+            <WellList project={project} wellProject={wellProject} setProject={setProject} />
+
             <Wrapper>
                 <Typography variant="h2">WellProject</Typography>
                 <Save
@@ -168,12 +177,6 @@ function WellProjectView() {
                 </WrapperColumn>
             </Wrapper>
             <Wrapper>
-                <WellType
-                    caseItem={caseItem}
-                    wellProject={wellProject}
-                />
-            </Wrapper>
-            <Wrapper>
                 <NumberInput
                     setValue={setRigMobDemob}
                     value={rigMobDemob ?? 0}
@@ -196,6 +199,11 @@ function WellProjectView() {
                     label="Plugging and abandonment"
                 />
             </Wrapper>
+            <Switch
+                label="Override generated cost profile"
+                onClick={overrideCostProfile}
+                checked={costProfile?.override ?? false}
+            />
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
@@ -207,15 +215,15 @@ function WellProjectView() {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setDrillingSchedule}
-                setHasChanges={setHasChanges}
-                timeSeries={drillingSchedule}
-                timeSeriesTitle="Drilling schedule"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
+            <Typography>Drilling schedules:</Typography>
+            <DrillingSchedules
+                setProject={setProject}
+                wellProjectWells={wellProjectWells}
+                project={project}
+                caseItem={caseItem!}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
                 setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
