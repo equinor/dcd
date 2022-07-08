@@ -16,12 +16,9 @@ namespace api.Adapters
                     projectDto.Cases!.Add(CaseDtoAdapter.Convert(c));
                 }
             }
-            if (project.Wells != null)
+            if (project.Well != null && project.Well.WellTypes != null)
             {
-                foreach (Well well in project.Wells)
-                {
-                    projectDto.Wells!.Add(WellDtoAdapter.Convert(well));
-                }
+                projectDto.Well = WellDtoAdapter.Convert(project.Well);
             }
             if (project.Explorations != null)
             {
@@ -105,7 +102,15 @@ namespace api.Adapters
                 Currency = project.Currency,
                 PhysUnit = project.PhysicalUnit,
                 Cases = new List<CaseDto>(),
-                Wells = new List<WellDto>(),
+                Well = new WellDto
+                {
+                    Id = project.Well.Id,
+                    ProjectId = project.Id,
+                    WellInterventionCost = project.Well.WellInterventionCost,
+                    PlugingAndAbandonmentCost = project.Well.PlugingAndAbandonmentCost,
+                    WellTypes = new List<WellTypeDto>(),
+                    ExplorationWellTypes = new List<ExplorationWellTypeDto>(),
+                },
             };
         }
 

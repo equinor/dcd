@@ -6,18 +6,17 @@ export class Well implements Components.Schemas.WellDto {
     projectId?: string | undefined
     wellInterventionCost?: number | undefined
     plugingAndAbandonmentCost?: number | undefined
-    wellType?: Components.Schemas.WellType | undefined
-    explorationWellType?: Components.Schemas.ExplorationWellType | undefined
+    wellTypes?: Components.Schemas.WellTypeDto[] | null | undefined
+    explorationWellTypes?: Components.Schemas.ExplorationWellTypeDto[] | null | undefined
 
     constructor(data?: Components.Schemas.WellDto) {
         if (data !== undefined) {
             this.id = data.id
-            this.name = data.name ?? ""
             this.projectId = data.projectId ?? ""
             this.wellInterventionCost = data.wellInterventionCost ?? 0
             this.plugingAndAbandonmentCost = data.plugingAndAbandonmentCost ?? 0
-            this.wellType = data.wellType ?? undefined
-            this.explorationWellType = data.explorationWellType ?? undefined
+            this.wellTypes = data.wellTypes ?? undefined
+            this.explorationWellTypes = data.explorationWellTypes ?? undefined
         } else {
             this.id = EMPTY_GUID
             this.name = ""

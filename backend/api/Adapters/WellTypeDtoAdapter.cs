@@ -3,20 +3,21 @@ using api.Models;
 
 namespace api.Adapters
 {
-    public static class WellDtoAdapter
+    public static class WellTypeDtoAdapter
     {
-        public static WellDto Convert(Well well)
+        public static WellTypeDto Convert(WellType wellType)
         {
-            var wellDto = new WellDto
+            var wellTypeDto = new WellTypeDto
             {
-                Id = well.Id,
-                ProjectId = well.ProjectId,
-                WellTypes = Convert(well.WellTypes),
-                ExplorationWellTypes = Convert(well.ExplorationWellTypes),
-                PlugingAndAbandonmentCost = well.PlugingAndAbandonmentCost,
-                WellInterventionCost = well.WellInterventionCost,
+                Id = wellType.Id,
+                // ProjectId = well.ProjectId,
+                Category = (WellTypeCategoryDto)wellType.Category,
+                Description = wellType.Description,
+                DrillingDays = wellType.DrillingDays,
+                Name = wellType.Name,
+                WellCost = wellType.WellCost,
             };
-            return wellDto;
+            return wellTypeDto;
         }
 
         public static ICollection<WellTypeDto> Convert(ICollection<WellType> wellTypes)

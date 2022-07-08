@@ -6,9 +6,8 @@ namespace api.Dtos
     {
         public Guid Id { get; set; }
         public Guid ProjectId { get; set; }
-        public string? Name { get; set; }
-        public WellTypeDto? WellType { get; set; }
-        public ExplorationWellTypeDto? ExplorationWellType { get; set; }
+        public ICollection<WellTypeDto> WellTypes { get; set; } = null!;
+        public ICollection<ExplorationWellTypeDto> ExplorationWellTypes { get; set; } = null!;
         public double WellInterventionCost { get; set; }
         public double PlugingAndAbandonmentCost { get; set; }
     }

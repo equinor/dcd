@@ -31,8 +31,10 @@ namespace api.Models
         public Guid TopsideLink { get; set; } = Guid.Empty;
         public Guid TransportLink { get; set; } = Guid.Empty;
         public Guid ExplorationLink { get; set; } = Guid.Empty;
-        public ICollection<Well>? Wells { get; set; }
-        public Guid WellsLink { get; set; } = Guid.Empty;
+        public ICollection<WellType> WellTypes { get; set; } = null!;
+
+        // Only used for linking welltype to case
+        public Guid WellTypesLink { get; set; } = Guid.Empty;
     }
 
     public enum ArtificialLift

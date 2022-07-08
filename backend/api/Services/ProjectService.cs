@@ -143,7 +143,8 @@ namespace api.Services
 
                 var project = _context.Projects
                     .Include(p => p.Cases)
-                    .Include(p => p.Wells)
+                    .Include(p => p.Well)
+                    .Include(p => p.Well.WellTypes)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
 
                 if (project == null)
@@ -194,7 +195,7 @@ namespace api.Services
             project.Topsides = _topsideService.GetTopsides(project.Id).ToList();
             project.Transports = _transportService.GetTransports(project.Id).ToList();
             project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
-            project.Wells = _wellService.GetWells(project.Id).ToList();
+            // project.Wells = _wellService.GetWells(project.Id).ToList();
             return project;
         }
     }
