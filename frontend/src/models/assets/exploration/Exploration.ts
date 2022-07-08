@@ -1,5 +1,4 @@
 import { EMPTY_GUID } from "../../../Utils/constants"
-import { Well } from "../../Well"
 import { IAsset } from "../IAsset"
 import { ExplorationCostProfile } from "./ExplorationCostProfile"
 import { ExplorationDrillingSchedule } from "./ExplorationDrillingSchedule"

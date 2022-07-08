@@ -44,7 +44,7 @@ function WellProjectView() {
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[] | null | undefined>()
-    const [wells, setWells] = useState<Well[]>()
+    const [, setWells] = useState<Well[]>()
 
     useEffect(() => {
         (async () => {

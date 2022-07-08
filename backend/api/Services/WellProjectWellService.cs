@@ -152,10 +152,10 @@ namespace api.Services
             var costProfiles = new List<WellProjectCostProfile>();
             foreach (var wellProjectWell in wellProjectWells)
             {
-                if (wellProjectWell.DrillingSchedule == null) continue;
+                if (wellProjectWell.DrillingSchedule == null) { continue; }
 
                 var well = wells.Find(w => w.Id == wellProjectWell.WellId);
-                if (well == null) continue;
+                if (well == null) { continue; }
 
                 var wellCostProfile = new WellProjectCostProfile();
                 wellCostProfile.StartYear = wellProjectWell.DrillingSchedule.StartYear;

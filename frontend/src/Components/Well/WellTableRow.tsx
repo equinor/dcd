@@ -1,9 +1,9 @@
 import {
-    Button, Input, Label, NativeSelect, Table,
+    Button, Input, NativeSelect, Table,
 } from "@equinor/eds-core-react"
 import {
     ChangeEvent,
-    Dispatch, ReactElement, SetStateAction, useState,
+    Dispatch, SetStateAction, useState,
 } from "react"
 import { Well } from "../../models/Well"
 import { WellProjectWell } from "../../models/WellProjectWell"
@@ -53,44 +53,34 @@ function WellTableRow({
     }
 
     const onWellCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        let category: Components.Schemas.WellCategory
         switch (event.currentTarget.selectedOptions[0].value) {
-            case "0":
-                setWellCategory(0)
-                category = 0
-                break
-            case "1":
-                setWellCategory(1)
-                category = 1
-                break
-            case "2":
-                setWellCategory(2)
-                category = 2
-                break
-            case "3":
-                setWellCategory(3)
-                category = 3
-                break
-            case "4":
-                setWellCategory(4)
-                category = 4
-                break
-            case "5":
-                setWellCategory(5)
-                category = 5
-                break
-            case "6":
-                setWellCategory(6)
-                category = 6
-                break
-            case "7":
-                setWellCategory(7)
-                category = 7
-                break
-            default:
-                setWellCategory(0)
-                category = 0
-                break
+        case "0":
+            setWellCategory(0)
+            break
+        case "1":
+            setWellCategory(1)
+            break
+        case "2":
+            setWellCategory(2)
+            break
+        case "3":
+            setWellCategory(3)
+            break
+        case "4":
+            setWellCategory(4)
+            break
+        case "5":
+            setWellCategory(5)
+            break
+        case "6":
+            setWellCategory(6)
+            break
+        case "7":
+            setWellCategory(7)
+            break
+        default:
+            setWellCategory(0)
+            break
         }
     }
 
@@ -119,8 +109,6 @@ function WellTableRow({
                 {wellProjectWell?.count ?? 0}
                 <Button onClick={() => changeWellCase(well, wellProjectWell, true)}>Increase</Button>
                 <Button onClick={() => changeWellCase(well, wellProjectWell, false)}>Decrease</Button>
-                {console.log("WellProjectWell.WellId: ", wellProjectWell?.wellId)}
-                {wellProjectWell?.wellId}
             </Table.Cell>
             <Table.Cell>
                 <Input

@@ -1,10 +1,8 @@
 import {
-    NativeSelect,
     Switch,
     Tabs,
 } from "@equinor/eds-core-react"
 import {
-    ChangeEvent,
     MouseEventHandler,
     useEffect,
     useState,
@@ -25,7 +23,6 @@ import ProductionStrategyOverview from "../Components/ProductionStrategyOverview
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import ExcelUpload from "../Components/ExcelUpload"
-import WellList from "../Components/Well/WellList"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -42,12 +39,6 @@ const Wrapper = styled.div`
         margin-right: 1rem;
     }
     flex-direction: row;
-`
-
-const WellDropDown = styled(NativeSelect)`
-width: 20rem;
-margin-top: -0.5rem;
-margin-left: 1rem;
 `
 
 const DividerLine = styled.div`

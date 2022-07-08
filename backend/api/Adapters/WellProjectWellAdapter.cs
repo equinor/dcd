@@ -31,7 +31,7 @@ namespace api.Adapters
 
         private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto, WellProjectWell wellProject)
         {
-            if (drillingScheduleDto == null) return null;
+            if (drillingScheduleDto == null) { return null; }
             var drillingSchedule = new DrillingSchedule
             {
                 Id = drillingScheduleDto.Id,

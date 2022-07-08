@@ -3,9 +3,7 @@ import { Button, Table, Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
-import { well } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
-import WellTableRows from "./WellTableRows"
 import { Well } from "../../models/Well"
 import { WellProjectWell } from "../../models/WellProjectWell"
 import { GetWellService } from "../../Services/WellService"

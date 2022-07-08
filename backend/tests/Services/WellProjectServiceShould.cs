@@ -206,12 +206,6 @@ namespace tests
                     StartYear = 2030,
                     Values = new double[] { 13.4, 18.9, 34.3 }
                 }
-                )
-                .WithDrillingSchedule(new DrillingSchedule()
-                {
-                    StartYear = 2030,
-                    Values = new int[] { 13, 18, 34 }
-                }
                 );
         }
 
@@ -231,16 +225,8 @@ namespace tests
                 {
                     Currency = Currency.NOK,
                     EPAVersion = "Updated EPA",
-
-
                     StartYear = 2030,
                     Values = new double[] { 13.4, 18.9, 34.3 }
-                }
-                )
-                .WithDrillingSchedule(new DrillingSchedule()
-                {
-                    StartYear = 2030,
-                    Values = new int[] { 13, 18, 34 }
                 }
                 )
             );

@@ -107,8 +107,6 @@ const DrillingScheduleRow = ({
 
         const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
         newWellProjectWell.drillingSchedule = newTimeSeries
-        console.log("newWellCase: ", newWellProjectWell)
-        // setWellCase(newWellProjectWell)
         const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellProjectWell)
         setProject(newProject)
     }
@@ -117,6 +115,7 @@ const DrillingScheduleRow = ({
         const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
         newWellProjectWell.drillingSchedule = undefined
         const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellProjectWell)
+        setProject(newProject)
         setColumns([])
         setGridData([[]])
         setDrillingSchedule(undefined)

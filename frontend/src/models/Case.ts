@@ -1,4 +1,3 @@
-
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
     capexYear?: Components.Schemas.CapexYear

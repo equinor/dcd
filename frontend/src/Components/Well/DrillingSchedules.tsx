@@ -1,10 +1,8 @@
 import { Dispatch, SetStateAction } from "react"
 import { Case } from "../../models/Case"
 import { Project } from "../../models/Project"
-import { Well } from "../../models/Well"
 import { WellProjectWell } from "../../models/WellProjectWell"
 import DrillingScheduleRow from "./DrillingScheduleRow"
-import DrillingScheduleTable from "./DrillingScheduleTable"
 
 interface Props {
     wellProjectWells: WellProjectWell[] | null | undefined

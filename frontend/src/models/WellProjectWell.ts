@@ -1,4 +1,3 @@
-import { EMPTY_GUID } from "../Utils/constants"
 import { DrillingSchedule } from "./assets/wellproject/DrillingSchedule"
 
 export class WellProjectWell implements Components.Schemas.WellProjectWellDto {
