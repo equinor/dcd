@@ -1,6 +1,11 @@
+/* eslint-disable max-len */
+/* eslint-disable camelcase */
 import {
-    Switch,
+    Button,
+    Icon,
+    Menu,
     Tabs,
+    Typography,
 } from "@equinor/eds-core-react"
 import {
     MouseEventHandler,
@@ -9,20 +14,19 @@ import {
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
+import {
+    add, delete_to_trash, edit, library_add, more_vertical,
+} from "@equinor/eds-icons"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/CaseAsset"
-import CaseDescription from "../Components/CaseDescription"
-import CaseName from "../Components/CaseName"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import CaseDGDate from "../Components/CaseDGDate"
 import CaseArtificialLift from "../Components/CaseArtificialLift"
-import DGEnum from "../models/DGEnum"
 import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
-import ExcelUpload from "../Components/ExcelUpload"
+import DefinitionView from "./DefinitionView"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -39,6 +43,26 @@ const Wrapper = styled.div`
         margin-right: 1rem;
     }
     flex-direction: row;
+`
+
+const ManniWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: 1.5rem 2rem;
+`
+
+const PageTitle = styled(Typography)`
+    flex-grow: 1;
+`
+
+const InvisibleButton = styled(Button)`
+    border: 1px solid #007079;
+`
+
+const TransparentButton = styled(Button)`
+    color: #007079;
+    background-color: white;
+    border: 1px solid #007079;
 `
 
 const DividerLine = styled.div`
@@ -66,6 +90,9 @@ function CaseView() {
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
     const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
+
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [element, setElement] = useState<HTMLButtonElement>()
 
     useEffect(() => {
         (async () => {
@@ -114,6 +141,11 @@ function CaseView() {
         })()
     }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase])
 
+    const onMoreClick = (target: any) => {
+        setElement(target)
+        setIsMenuOpen(!isMenuOpen)
+    }
+
     const handleTabChange = (index: number) => {
         setActiveTab(index)
     }
@@ -128,116 +160,101 @@ function CaseView() {
     if (!caseItem) return null
 
     return (
+        <div>
+            <ManniWrapper>
+                <PageTitle variant="h4">{caseItem.name}</PageTitle>
+                <TransparentButton
+                    onClick={() => console.log("Edit Case input clicked")}
+                >
+                    Edit Case input
+                </TransparentButton>
+                <InvisibleButton
+                    onClick={(e) => onMoreClick(e.target)}
+                >
+                    <Icon data={more_vertical} />
+                </InvisibleButton>
+            </ManniWrapper>
+            <Menu
+                id="menu-complex"
+                open={isMenuOpen}
+                anchorEl={element}
+                onClose={() => setIsMenuOpen(false)}
+                placement="bottom"
+            >
+                <Menu.Item
+                    onClick={() => console.log("Add new case clicked")}
+                >
+                    <Icon data={add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Add New Case
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Duplicate clicked")}
+                >
+                    <Icon data={library_add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Duplicate
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Rename clicked")}
+                >
+                    <Icon data={edit} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Rename
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Delete clicked")}
+                >
+                    <Icon data={delete_to_trash} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Delete
+                    </Typography>
+                </Menu.Item>
+            </Menu>
+            <CaseViewDiv>
+                <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                    <List>
+                        <Tab>Definition </Tab>
+                        <Tab>Facilities </Tab>
+                        <Tab>Drainage Strategy</Tab>
+                        <Tab>Exploration</Tab>
+                        <Tab>Well</Tab>
+                    </List>
+                    <Panels>
+                        <StyledTabPanel>
+                            <DefinitionView
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                                artificialLift={artificialLift}
+                                setArtificialLift={setArtificialLift}
+                                productionStrategyOverview={prodStratOverview}
+                                setProductionStrategyOverview={setProdStratOverview}
+                                switchReference={switchReference}
+                                isReferenceCase={isReferenceCase}
+                                facilitiesAvailability={facilitiesAvailability}
+                                setFacilitiesAvailability={setFacilitiesAvailability}
+                            />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Facilities</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Drainage Strategy</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Exploration</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Well</p>
+                        </StyledTabPanel>
+                    </Panels>
+                </Tabs>
 
-        <CaseViewDiv>
-            <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                <List>
-                    <Tab>Definition </Tab>
-                    <Tab>Facilities </Tab>
-                    <Tab>Drainage Strategy</Tab>
-                    <Tab>Exploration</Tab>
-                    <Tab>Well</Tab>
-                </List>
-                <Panels>
-                    <StyledTabPanel>
-                        <p>Definition</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Facilities</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Drainage Strategy</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Exploration</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Well</p>
-                    </StyledTabPanel>
-                </Panels>
-            </Tabs>
-
-            <CaseName
-                caseItem={caseItem}
-                setProject={setProject}
-                setCase={setCase}
-            />
-            <ExcelUpload setProject={setProject} setCase={setCase} />
-            <Tabs activeTab={activeTab} onChange={handleTabChange}>
-                <CaseDescription
-                    caseItem={caseItem}
-                    setProject={setProject}
-                    setCase={setCase}
-                />
-                <Switch onClick={switchReference} label="Reference case" readOnly checked={isReferenceCase ?? false} />
-                <Wrapper>
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG0}
-                        dGName="DG0"
-                    />
-                </Wrapper>
-                <Wrapper>
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG1}
-                        dGName="DG1"
-                    />
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG3}
-                        dGName="DG3"
-                    />
-                </Wrapper>
-                <Wrapper style={{ marginBottom: -35 }}>
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG2}
-                        dGName="DG2"
-                    />
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG4}
-                        dGName="DG4"
-                    />
-                </Wrapper>
-                <CaseArtificialLift
-                    currentValue={artificialLift}
-                    setArtificialLift={setArtificialLift}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                />
-                <ProductionStrategyOverview
-                    currentValue={prodStratOverview}
-                    setProductionStrategyOverview={setProdStratOverview}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                />
-                <DividerLine />
-                <Wrapper style={{ marginBottom: -15 }}>
-                    <CaseArtificialLift
-                        currentValue={artificialLift}
-                        setArtificialLift={setArtificialLift}
-                        setProject={setProject}
-                        caseItem={caseItem}
-                    />
-                    <ProductionStrategyOverview
-                        currentValue={prodStratOverview}
-                        setProductionStrategyOverview={setProdStratOverview}
-                        setProject={setProject}
-                        caseItem={caseItem}
-                    />
-                </Wrapper>
                 <DividerLine />
 
                 <Wrapper style={{ marginBottom: 45 }}>
@@ -262,13 +279,6 @@ function CaseView() {
                         disabled={false}
                         label="Water injector count"
                     />
-                    <NumberInput
-                        setValue={setFacilitiesAvailability}
-                        value={facilitiesAvailability ?? 0}
-                        integer
-                        disabled={false}
-                        label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
-                    />
                 </Wrapper>
                 <DividerLine />
                 <CaseAsset
@@ -278,8 +288,9 @@ function CaseView() {
                     setCase={setCase}
                     caseId={params.caseId}
                 />
-            </Tabs>
-        </CaseViewDiv>
+
+            </CaseViewDiv>
+        </div>
     )
 }
 
