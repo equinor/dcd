@@ -1,3 +1,4 @@
+import apiConfig from "../api/apiConfig"
 import { Case } from "../models/Case"
 
 export const LoginAccessTokenKey = "loginAccessToken"
@@ -21,7 +22,8 @@ export function StoreToken(keyName: string, token: string) {
 }
 
 export function GetToken(keyName: string) {
-    const scopes = ["api://9b125a0c-4907-43b9-8db2-ff405d6b0524/.default"]
+    const config = apiConfig()
+    const scopes = [config.scopes[0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 

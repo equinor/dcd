@@ -35,8 +35,6 @@ export function FusionRouterBootstrap({ children }: Props): JSX.Element {
         return createBrowserHistory({ basename })
     }, [env])
 
-    console.log("History: ", history)
-
     return (
         // eslint-disable-next-line react/jsx-no-constructed-context-values
         <HistoryContext.Provider value={{ history }}>
