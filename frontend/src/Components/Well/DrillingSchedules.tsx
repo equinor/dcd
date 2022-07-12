@@ -40,6 +40,7 @@ const DrillingSchedules = ({
                         setProject={setProject}
                         timeSeriesTitle={well.name ?? ""}
                         wellProjectWell={wpw}
+                        key={well.id}
                     />
                 ))
             }
