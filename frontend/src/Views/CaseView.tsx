@@ -22,11 +22,11 @@ import { Case } from "../models/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/CaseAsset"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import CaseArtificialLift from "../Components/CaseArtificialLift"
-import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import DefinitionView from "./DefinitionView"
+import ExplorationView from "./ExplorationView"
+import ExplorationViewTab from "./ManniExplorationView"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -146,10 +146,6 @@ function CaseView() {
         setIsMenuOpen(!isMenuOpen)
     }
 
-    const handleTabChange = (index: number) => {
-        setActiveTab(index)
-    }
-
     const switchReference: MouseEventHandler<HTMLInputElement> = () => {
         if (!isReferenceCase || isReferenceCase === undefined) {
             setIsReferenceCase(true)
@@ -244,10 +240,15 @@ function CaseView() {
                             <p>Facilities</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
+                            <p>Case with name: </p>
+                            {caseItem.name}
                             <p>Drainage Strategy</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Exploration</p>
+                            <ExplorationViewTab
+                                _case={caseItem}
+                                _project={project}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Well</p>

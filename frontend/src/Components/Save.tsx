@@ -43,6 +43,7 @@ const Save = ({
             const newAsset = newProject[assetType].at(-1)
             const newUrl = location.pathname.replace(EMPTY_GUID, newAsset!.id!)
             navigate(`${newUrl}`)
+            setProject(newProject)
             setAsset(newAsset)
         } else {
             const newProject = await assetService.update(assetDto!)
