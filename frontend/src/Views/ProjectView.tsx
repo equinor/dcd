@@ -46,38 +46,6 @@ const StyledTabPanel = styled(Panel)`
     border-top: 1px solid LightGray;
 `
 
-const Header = styled.header`
-    display: flex;
-    align-items: center;
-
-    > *:first-child {
-        margin-right: 2rem;
-    }
-`
-
-const ProjectDataFieldLabel = styled(Typography)`
-    margin-top: 1rem;
-    font-weight: bold;
-    white-space: pre-wrap;
-`
-
-const ActionsContainer = styled.div`
-    > *:not(:last-child) {
-        margin-right: 0.5rem;
-    }
-`
-
-const ChartsContainer = styled.div`
-    display: flex;
-`
-
-const CreateCaseForm = styled.form`
-    width: 30rem;
-
-    > * {
-        margin-bottom: 1.5rem;
-    }
-`
 const ManniWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -178,48 +146,6 @@ const ProjectView = () => {
         setCapexYearYDatas(values)
         setCapexYearCaseTitles(caseTitles)
     }, [project])
-
-    const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
-
-    const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const { value } = e.target
-        setCaseName(value)
-    }
-
-    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const { value } = e.target
-        setCaseDescription(value)
-    }
-
-    const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
-        e.preventDefault()
-
-        try {
-            const projectId: string = unwrapProjectId(fusionProjectId)
-            const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId);
-            (await GetSTEAService()).excelToSTEA(projectResult)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
-        e.preventDefault()
-
-        try {
-            const projectResult: Project = await (await GetCaseService()).createCase({
-                description: caseDescription,
-                name: caseName,
-                projectId: fusionProjectId,
-            })
-            toggleCreateCaseModal()
-            history.push(`/${projectResult.id}/case/${projectResult.cases.find((o) => (
-                o.name === caseName
-            ))?.id}`)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
 
     if (!project) return null
 
