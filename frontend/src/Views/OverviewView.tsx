@@ -8,7 +8,7 @@ import {
     Button, Icon, TextField, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
-import { useNavigate } from "react-router-dom"
+import { useHistory } from "react-router"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
 import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
 import { Project } from "../models/Project"
@@ -82,7 +82,8 @@ function OverviewView({
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
+    const history = useHistory()
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
     const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -99,8 +100,8 @@ function OverviewView({
 
         try {
             const projectId: string = unwrapProjectId(project.projectId)
-            const projectResult: Project = await GetProjectService().getProjectByID(projectId)
-            GetSTEAService().excelToSTEA(projectResult)
+            const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
+            const result = (await GetSTEAService()).excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -110,13 +111,13 @@ function OverviewView({
         e.preventDefault()
 
         try {
-            const projectResult: Project = await GetCaseService().createCase({
+            const projectResult: Project = await (await GetCaseService()).createCase({
                 description: caseDescription,
                 name: caseName,
                 projectId: project.projectId,
             })
             toggleCreateCaseModal()
-            navigate(`/project/${projectResult.id}/case/${projectResult.cases.find((o) => (
+            history.push(`/project/${projectResult.id}/case/${projectResult.cases.find((o) => (
                 o.name === caseName
             ))?.id}`)
         } catch (error) {

@@ -1,28 +1,39 @@
 /* eslint-disable camelcase */
 import {
     Button,
+    EdsProvider,
     Icon,
+    TextField,
+    Tooltip,
     Menu,
     Tabs, Typography,
 } from "@equinor/eds-core-react"
 import React, {
+    ChangeEventHandler,
+    MouseEventHandler,
     useEffect,
     useMemo,
     useState,
 } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import styled from "styled-components"
-
 import {
     add,
-    delete_to_trash, edit, library_add, more_vertical,
+    delete_to_trash, edit, library_add, more_vertical, archive,
 } from "@equinor/eds-icons"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
-import { unwrapProjectId } from "../Utils/common"
+import { Modal } from "../Components/Modal"
+import { GetCaseService } from "../Services/CaseService"
 
+import { GetSTEAService } from "../Services/STEAService"
+import { unwrapProjectId, GetProjectCategoryName, GetProjectPhaseName } from "../Utils/common"
+import { WrapperColumn } from "./Asset/StyledAssetComponents"
+import PhysicalUnit from "../Components/PhysicalUnit"
+import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
+import LinearDataTable from "../Components/LinearDataTable"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
@@ -63,14 +74,18 @@ const Wrapper = styled.div`
 
 const ProjectView = () => {
     const [activeTab, setActiveTab] = React.useState(0)
-    const params = useParams()
+
+    const history = useHistory()
+    const { fusionProjectId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
+    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
+    const [caseName, setCaseName] = useState<string>("")
+    const [caseDescription, setCaseDescription] = useState<string>("")
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
-
     const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
@@ -78,8 +93,8 @@ const ProjectView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const res: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const res = await (await GetProjectService()).getProjectByID(projectId)
                 if (res !== undefined) {
                     setPhysicalUnit(res?.physUnit)
                     setCurrency(res?.currency)
@@ -87,10 +102,10 @@ const ProjectView = () => {
                 console.log("[ProjectView]", res)
                 setProject(res)
             } catch (error) {
-                console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
-    }, [params.projectId])
+    }, [fusionProjectId])
 
     useEffect(() => {
         (async () => {
@@ -99,15 +114,15 @@ const ProjectView = () => {
                     const projectDto = Project.Copy(project)
                     projectDto.physUnit = physicalUnit
                     projectDto.currency = currency
-                    projectDto.projectId = params.projectId!
+                    projectDto.projectId = fusionProjectId!
                     const cases: Case[] = []
                     project.cases.forEach((c) => cases.push(Case.Copy(c)))
                     projectDto.cases = cases
-                    const res: Project = await GetProjectService().updateProject(projectDto)
+                    const res = await (await GetProjectService()).updateProject(projectDto)
                     setProject(res)
                 }
             } catch (error) {
-                console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [physicalUnit, currency])
@@ -140,7 +155,7 @@ const ProjectView = () => {
     }
 
     return (
-        <div>
+        <>
             <ManniWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
                 <TransparentButton
@@ -232,7 +247,7 @@ const ProjectView = () => {
                     </Panels>
                 </Tabs>
             </Wrapper>
-        </div>
+        </>
     )
 }
 

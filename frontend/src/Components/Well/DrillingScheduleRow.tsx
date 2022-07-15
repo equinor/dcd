@@ -107,14 +107,14 @@ const DrillingScheduleRow = ({
 
         const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
         newWellProjectWell.drillingSchedule = newTimeSeries
-        const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellProjectWell)
+        const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newWellProjectWell)
         setProject(newProject)
     }
 
     const deleteTimeseries = async () => {
         const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
         newWellProjectWell.drillingSchedule = undefined
-        const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellProjectWell)
+        const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newWellProjectWell)
         setProject(newProject)
         setColumns([])
         setGridData([[]])

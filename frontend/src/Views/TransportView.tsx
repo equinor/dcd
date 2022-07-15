@@ -26,13 +26,15 @@ import { TransportCessationCostProfile } from "../models/assets/transport/Transp
 import AssetCurrency from "../Components/AssetCurrency"
 import DGDateInherited from "../Components/DGDateInherited"
 
+import { IAssetService } from "../Services/IAssetService"
+
 const TransportView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [transport, setTransport] = useState<Transport>()
     const [hasChanges, setHasChanges] = useState(false)
     const [transportName, setTransportName] = useState<string>("")
-    const params = useParams()
+    const { fusionProjectId, caseId, transportId } = useParams<Record<string, string | undefined>>()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [gasExportPipelineLength, setGasExportPipelineLength] = useState<number | undefined>()
@@ -44,15 +46,18 @@ const TransportView = () => {
     const [costYear, setCostYear] = useState<number | undefined>()
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
+    const [transportService, setTransportService] = useState<IAssetService>()
 
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetTransportService()
+                setTransportService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [])
@@ -60,9 +65,9 @@ const TransportView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
-                let newTransport: Transport | undefined = project.transports.find((s) => s.id === params.transportId)
+                let newTransport = project.transports.find((s) => s.id === transportId)
                 if (newTransport !== undefined) {
                     if (newTransport.DG3Date === null
                         || newTransport.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
@@ -145,7 +150,7 @@ const TransportView = () => {
                     setAsset={setTransport}
                     setProject={setProject}
                     asset={transport!}
-                    assetService={GetTransportService()}
+                    assetService={transportService!}
                     assetType={AssetTypeEnum.transports}
                 />
                 <Typography variant="h6">

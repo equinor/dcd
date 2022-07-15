@@ -58,7 +58,7 @@ function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
-    const params = useParams()
+    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
     const [prodStratOverview, setProdStratOverview] = useState<Components.Schemas.ProductionStrategyOverview>(0)
     const [producerCount, setProducerCount] = useState<number>()
@@ -70,20 +70,20 @@ function CaseView() {
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
-                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === params.caseId))
+                const caseResult = projectResult.cases.find((o) => o.id === caseId)
                 setCase(caseResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
-    }, [params.projectId, params.caseId])
+    }, [fusionProjectId, caseId])
 
     useEffect(() => {
         if (project !== undefined) {
-            const caseResult: Case | undefined = project.cases.find((o) => o.id === params.caseId)
+            const caseResult = project.cases.find((o) => o.id === caseId)
             if (caseResult !== undefined) {
                 setArtificialLift(caseResult.artificialLift)
                 setProdStratOverview(caseResult.productionStrategyOverview)
@@ -108,7 +108,7 @@ function CaseView() {
                 caseDto.facilitiesAvailability = facilitiesAvailability
                 caseDto.referenceCase = isReferenceCase ?? false
 
-                const newProject = await GetCaseService().updateCase(caseDto)
+                const newProject = await (await GetCaseService()).updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
@@ -128,7 +128,6 @@ function CaseView() {
     if (!caseItem) return null
 
     return (
-
         <CaseViewDiv>
             <Tabs activeTab={activeTab} onChange={setActiveTab}>
                 <List>
@@ -169,7 +168,12 @@ function CaseView() {
                     setProject={setProject}
                     setCase={setCase}
                 />
-                <Switch onClick={switchReference} label="Reference case" readOnly checked={isReferenceCase ?? false} />
+                <Switch
+                    onClick={switchReference}
+                    label="Reference case"
+                    readOnly
+                    checked={isReferenceCase ?? false}
+                />
                 <Wrapper>
                     <CaseDGDate
                         caseItem={caseItem}
@@ -239,7 +243,6 @@ function CaseView() {
                     />
                 </Wrapper>
                 <DividerLine />
-
                 <Wrapper style={{ marginBottom: 45 }}>
                     <NumberInput
                         setValue={setProducerCount}
@@ -276,7 +279,7 @@ function CaseView() {
                     project={project}
                     setProject={setProject}
                     setCase={setCase}
-                    caseId={params.caseId}
+                    caseId={caseId}
                 />
             </Tabs>
         </CaseViewDiv>

@@ -37,7 +37,7 @@ function WellTableRow({
             newWell.drillingDays = drillingDays
             newWell.wellCost = wellCost
             newWell.wellCategory = wellCategory
-            const newProject = await GetWellService().updateWell(newWell)
+            const newProject = await (await GetWellService()).updateWell(newWell)
             setProject(newProject)
             const updatedWell = newProject.wells?.find((w) => w.id === wellId)
             if (updatedWell) {
@@ -90,12 +90,12 @@ function WellTableRow({
             newWellCase.wellId = w.id
             newWellCase.wellProjectId = wellProject.id
             newWellCase.count = 1
-            const newProject = await GetWellProjectWellService().createWellProjectWell(newWellCase)
+            const newProject = await (await GetWellProjectWellService()).createWellProjectWell(newWellCase)
             setProject(newProject)
         } else {
             const newWellCase = { ...wpw }
             newWellCase.count! = increase ? wpw.count! + 1 : wpw.count! - 1
-            const newProject = await GetWellProjectWellService().updateWellProjectWell(newWellCase)
+            const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newWellCase)
             setProject(newProject)
         }
     }

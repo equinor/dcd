@@ -29,24 +29,39 @@ stages:
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
+        appName: Deploy_CI
+        envshortname: ci
+        envfullname: CI
+        portalUrl: "https://pro-s-portal-ci.azurewebsites.net/"
+        buildId: $(Build.BuildId)
+        radixToken: $(RadixToken)
+        branch: main
+        DBContext: $(DbConnectionStringDev)
+        FusionEnvId: $(FusionAppIdCi)
+        FusionServiceConnection: 'conceptapp-preprod'
+
+  - template: templates/stage-deploy-fusion.yml
+    parameters:
         appName: Deploy_QA
         envshortname: qa
         envfullname: QA
-        fusionToken: $(fusionClientIdDev)
         portalUrl: "https://pro-s-portal-fqa.azurewebsites.net/"
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
-        branch: qa
-        DBContext: " "
+        branch: main
+        DBContext: $(DbConnectionStringQa)
+        FusionEnvId: $(FusionAppIdQA)
+        FusionServiceConnection: 'conceptapp-preprod'
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
         appName: Deploy_Prod
         envshortname: prod
         envfullname: Production
-        fusionToken: $(fusionClientIdProd)
         portalUrl: "https://pro-s-portal-fprd.azurewebsites.net"
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
-        branch: prod
-        DBContext: " "
+        branch: main
+        DBContext: $(DbConnectionStringProd)
+        FusionEnvId: $(FusionAppIdQA)
+        FusionServiceConnection: 'conceptapp-preprod'

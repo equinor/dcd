@@ -31,7 +31,7 @@ function WellList({ project, wellProject, setProject }: Props) {
         newWell.wellCategory = 0
         newWell.name = "New well"
         newWell.projectId = project.projectId
-        const newProject = await GetWellService().createWell(newWell)
+        const newProject = await (await GetWellService()).createWell(newWell)
         setProject(newProject)
         setWells(newProject?.wells ?? [])
     }

@@ -16,9 +16,9 @@ export class __UploadService extends __BaseService {
     }
 }
 
-export function GetUploadService() {
+export async function GetUploadService() {
     return new __UploadService({
         ...config.UploadService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

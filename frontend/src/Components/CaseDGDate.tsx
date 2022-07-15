@@ -43,6 +43,10 @@ interface Props {
     dGName: string,
 }
 
+interface CaseDGDateParams {
+    _caseId?: string;
+}
+
 const CaseDGDate = ({
     setProject,
     caseItem,
@@ -50,14 +54,15 @@ const CaseDGDate = ({
     dGType,
     dGName,
 }: Props) => {
-    const params = useParams()
     const [caseDgDate, setCaseDgDate] = useState<Date>()
+
+    const { _caseId }: CaseDGDateParams = useParams()
 
     useEffect(() => {
         (async () => {
             setCaseDgDate(undefined)
         })()
-    }, [params.projectId, params.caseId])
+    }, [])
 
     const handleDgFieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setCaseDgDate(new Date(e.target.value))
@@ -69,9 +74,9 @@ const CaseDGDate = ({
             const unwrappedCase: Case = unwrapCase(caseItem)
             const caseDto = Case.Copy(unwrappedCase)
             caseDto[dGType] = caseDgDate
-            const newProject = await GetCaseService().updateCase(caseDto)
+            const newProject = await (await GetCaseService()).updateCase(caseDto)
             setProject(newProject)
-            const caseResult = newProject.cases.find((o) => o.id === params.caseId)
+            const caseResult = newProject.cases.find((o) => o.id === _caseId)
             setCase(caseResult)
             setCaseDgDate(undefined)
         } catch (error) {
