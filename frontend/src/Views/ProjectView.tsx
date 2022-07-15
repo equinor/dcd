@@ -35,7 +35,7 @@ const StyledTabPanel = styled(Panel)`
     border-top: 1px solid LightGray;
 `
 
-const ManniWrapper = styled.div`
+const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
     padding: 1.5rem 2rem;
@@ -141,7 +141,7 @@ const ProjectView = () => {
 
     return (
         <div>
-            <ManniWrapper>
+            <TopWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
                 <TransparentButton
                     onClick={() => console.log("Edit Project input clicked")}
@@ -153,7 +153,7 @@ const ProjectView = () => {
                 >
                     <Icon data={more_vertical} />
                 </InvisibleButton>
-            </ManniWrapper>
+            </TopWrapper>
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}

@@ -47,8 +47,6 @@ const ExplorationCaseAsset = ({
     enum AssetLink {
         explorationLink = "explorationLink",
       }
-    console.log("Manni")
-    console.log(caseItem)
 
     const onSelectAsset = async (event: React.ChangeEvent<HTMLSelectElement>, link: AssetLink) => {
         try {
@@ -64,11 +62,6 @@ const ExplorationCaseAsset = ({
         } catch (error) {
             console.error("[CaseView] error while submitting form data", error)
         }
-    }
-
-    const submitCreateAsset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
-        event.preventDefault()
-        navigate(`${type.toLowerCase()}/${EMPTY_GUID}`)
     }
 
     return (

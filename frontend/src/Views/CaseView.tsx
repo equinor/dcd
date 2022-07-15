@@ -26,7 +26,7 @@ import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import DefinitionView from "./DefinitionView"
 import ExplorationView from "./ExplorationView"
-import ExplorationViewTab from "./ManniExplorationView"
+import ExplorationViewTab from "./ExplorationViewTab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -45,7 +45,7 @@ const Wrapper = styled.div`
     flex-direction: row;
 `
 
-const ManniWrapper = styled.div`
+const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
     padding: 1.5rem 2rem;
@@ -157,7 +157,7 @@ function CaseView() {
 
     return (
         <div>
-            <ManniWrapper>
+            <TopWrapper>
                 <PageTitle variant="h4">{caseItem.name}</PageTitle>
                 <TransparentButton
                     onClick={() => console.log("Edit Case input clicked")}
@@ -169,7 +169,7 @@ function CaseView() {
                 >
                     <Icon data={more_vertical} />
                 </InvisibleButton>
-            </ManniWrapper>
+            </TopWrapper>
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}
