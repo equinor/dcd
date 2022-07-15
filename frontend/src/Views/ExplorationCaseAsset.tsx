@@ -1,31 +1,18 @@
 import React, {
-    Dispatch, SetStateAction, useEffect, useState,
+    Dispatch, SetStateAction,
 } from "react"
-import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import { useNavigate } from "react-router"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import LinkAsset from "../Components/LinkAsset"
 import { GetCaseService } from "../Services/CaseService"
-import { EMPTY_GUID } from "../Utils/constants"
 import { unwrapCase } from "../Utils/common"
-import { Exploration } from "../models/assets/exploration/Exploration"
 
 const Wrapper = styled.div`
     margin-top: 1rem;
     margin-bottom: -1rem;
     display: flex;
     flex-direction: row;
-`
-
-const AssetButton = styled(Button)`
-    margin-top: 1rem;
-    margin-left: 2rem;
-    &:disabled {
-        margin-top: 1rem;
-        margin-left: 2rem;
-    }
 `
 
 interface Props {
@@ -43,7 +30,6 @@ const ExplorationCaseAsset = ({
     setCase,
     caseId,
 }: Props) => {
-    const navigate = useNavigate()
     enum AssetLink {
         explorationLink = "explorationLink",
       }
