@@ -1,4 +1,3 @@
-
 using api.Dtos;
 using api.Models;
 
@@ -44,8 +43,8 @@ namespace api.Adapters
 
         private static void CalculateCessationCost(Case caseItem, CaseDto caseDto, ProjectDto projectDto)
         {
-            var cessationWells = new CessationCost();
-            var cessationOffshoreFacilities = new CessationCost();
+            var cessationWells = new CessationCostDto();
+            var cessationOffshoreFacilities = new CessationCostDto();
             // Find last year of production
             // Drainage strategy -> Production profile oil, last year
             // var lastYear = projectDto.DrainageStrategies?.FirstOrDefault(ds => ds.Id == caseItem.DrainageStrategyLink)?.ProductionProfileOil;
@@ -56,11 +55,14 @@ namespace api.Adapters
                 // Plugging and abandonment (Well project) * Sum of drilled wells.
                 // Divide cost on last year of production: 50%
                 // And last year + 1 : 50%
-                var drilledWells = caseItem.Wells?.Count;
+                var linkedWellsDrillingSchedule = projectDto.WellProjects?.FirstOrDefault(wp => wp.Id == caseItem.WellProjectLink)?.WellProjectWells?.Select(wpw => wpw.DrillingSchedule);
                 var pluggingAndAbandonment = projectDto.WellProjects?.FirstOrDefault(wp => wp.Id == caseItem.WellProjectLink)?.PluggingAndAbandonment;
-                if (drilledWells != null && pluggingAndAbandonment != null)
+                if (linkedWellsDrillingSchedule != null && pluggingAndAbandonment != null)
                 {
-                    var totalCost = (int)drilledWells * (double)pluggingAndAbandonment;
+                    var linkedWells = linkedWellsDrillingSchedule.Where(lwd => lwd != null && lwd.Values != null).SelectMany(lwd => lwd.Values);
+
+                    var drilledWells = linkedWells.Sum();
+                    var totalCost = drilledWells * (double)pluggingAndAbandonment;
                     cessationWells.StartYear = lastYear;
                     var cessationWellsValues = new double[2] { totalCost / 2, totalCost / 2 };
                     cessationWells.Values = cessationWellsValues;
@@ -78,43 +80,73 @@ namespace api.Adapters
             }
         }
 
-        private static CessationCost? MergeCessationCosts(CessationCost c1, CessationCost c2)
+        private static CessationCostDto? MergeCessationCosts(CessationCostDto t1, CessationCostDto t2)
         {
-            var c1Year = c1.StartYear;
-            var c2Year = c2.StartYear;
-            var c1Values = c1.Values;
-            var c2Values = c2.Values;
-            if (c1Values.Length == 0)
+            var t1Year = t1.StartYear;
+            var t2Year = t2.StartYear;
+            var t1Values = t1.Values;
+            var t2Values = t2.Values;
+            if (t1Values == null || t1Values.Length == 0)
             {
-                if (c2.Values.Length == 0)
+                if (t2Values == null || t2Values.Length == 0)
                 {
                     return null;
                 }
-                return c2;
+                return t2;
             }
-            if (c2Values.Length == 0)
+            if (t2Values == null || t2Values.Length == 0)
             {
-                return c1;
+                return t1;
             }
 
+            var offset = t1Year < t2Year ? t2Year - t1Year : t1Year - t2Year;
+
             var values = new List<double>();
-            if (c1Year < c2Year)
+            if (t1Year < t2Year)
             {
-                values.AddRange(c1Values);
-                var offset = c2Year - c1Year;
-                values.InsertRange(offset, c2Values);
+                values = MergeTimeSeries(t1Values.ToList(), t2Values.ToList(), offset);
             }
             else
             {
-                values.AddRange(c2Values);
-                var offset = c1Year - c2Year;
-                values.InsertRange(offset, c1Values);
+                values = MergeTimeSeries(t2Values.ToList(), t1Values.ToList(), offset);
             }
 
-            var cessation = new CessationCost();
-            cessation.StartYear = Math.Min(c1Year, c2Year);
-            cessation.Values = values.ToArray();
-            return cessation;
+            var timeSeries = new CessationCostDto();
+            timeSeries.StartYear = Math.Min(t1Year, t2Year);
+            timeSeries.Values = values.ToArray();
+            return timeSeries;
+        }
+
+        private static List<double> MergeTimeSeries(List<double> t1, List<double> t2, int offset)
+        {
+            var doubleList = new List<double>();
+            if (offset > t1.Count)
+            {
+                doubleList.AddRange(t1);
+                var zeros = offset - t1.Count;
+                var zeroList = Enumerable.Repeat(0.0, zeros);
+                doubleList.AddRange(zeroList);
+                doubleList.AddRange(t2);
+                return doubleList;
+            }
+            doubleList.AddRange(t1.Take(offset));
+            if (t1.Count - offset == t2.Count)
+            {
+                doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+            }
+            else if (t1.Count - offset > t2.Count)
+            {
+                doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+                var remaining = t1.Count - offset - t2.Count;
+                doubleList.AddRange(t1.TakeLast(remaining));
+            }
+            else
+            {
+                doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+                var remaining = t2.Count - (t1.Count - offset);
+                doubleList.AddRange(t2.TakeLast(remaining));
+            }
+            return doubleList;
         }
     }
 }

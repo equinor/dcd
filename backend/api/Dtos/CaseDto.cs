@@ -32,7 +32,11 @@ namespace api.Dtos
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
         public CapexYear? CapexYear { get; set; }
-        public CessationCost? CessationCost { get; set; }
+        public CessationCostDto? CessationCost { get; set; }
+    }
+
+    public class CessationCostDto : TimeSeriesCostDto
+    {
     }
 
     public class CapexYear
