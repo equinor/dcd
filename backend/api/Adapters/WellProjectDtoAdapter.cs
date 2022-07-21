@@ -17,15 +17,11 @@ namespace api.Adapters
                 AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
                 PluggingAndAbandonment = wellProject.PluggingAndAbandonment,
                 Currency = wellProject.Currency,
-                WellTypes = wellProject.WellTypes
+                WellProjectWells = wellProject.WellProjectWells?.Select(wc => WellProjectWellDtoAdapter.Convert(wc)).ToList()
             };
             if (wellProject.CostProfile != null)
             {
                 wellProjectDto.CostProfile = Convert(wellProject.CostProfile);
-            }
-            if (wellProject.DrillingSchedule != null)
-            {
-                wellProjectDto.DrillingSchedule = Convert(wellProject.DrillingSchedule);
             }
             return wellProjectDto;
         }
@@ -42,24 +38,10 @@ namespace api.Adapters
                 EPAVersion = costProfile.EPAVersion,
                 Currency = costProfile.Currency,
                 StartYear = costProfile.StartYear,
-                Values = costProfile.Values
+                Values = costProfile.Values,
+                Override = costProfile.Override,
             };
             return wellProjectCostProfileDto;
-        }
-
-        private static DrillingScheduleDto? Convert(DrillingSchedule? drillingSchedule)
-        {
-            if (drillingSchedule == null)
-            {
-                return null!;
-            }
-            var drillingScheduleDto = new DrillingScheduleDto
-            {
-                Id = drillingSchedule.Id,
-                StartYear = drillingSchedule.StartYear,
-                Values = drillingSchedule.Values
-            };
-            return drillingScheduleDto;
         }
     }
 }

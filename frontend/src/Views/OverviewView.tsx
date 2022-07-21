@@ -1,29 +1,52 @@
-/* eslint-disable max-len */
+/* eslint-disable camelcase */
 import React, {
-    Dispatch, SetStateAction, MouseEventHandler, useState,
+    MouseEventHandler, useState,
     ChangeEventHandler,
 } from "react"
 import styled from "styled-components"
 import {
-    Button, EdsProvider, Icon, TextField, Tooltip, Typography,
-    Table,
+    Button, Icon, TextField, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
-import { useNavigate } from "react-router-dom"
-import Currency from "../Components/Currency"
-import PhysicalUnit from "../Components/PhysicalUnit"
+import { useHistory } from "react-router"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
-import { WrapperColumn } from "./Asset/StyledAssetComponents"
+import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSTEAService } from "../Services/STEAService"
 import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
+import CasesTableView from "./CasesTableView"
 
 const Wrapper = styled.div`
     margin: 1rem;
     display: flex;
     flex-direction: column;
+`
+
+const RowWrapper = styled.div`
+    margin: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`
+
+const StyledButton = styled(Button)`
+    color: white;
+    background-color: #007079;
+`
+
+const DataDiv = styled.div`
+
+ `
+
+const DescriptionDiv = styled.div`
+    width: 42.875rem;
+    display: flex;
+    flex-wrap: wrap;
+    @media screen and (max-width: 1390px) {
+    margin-right: 1.875rem;
+  }
 `
 
 const Header = styled.header`
@@ -35,14 +58,8 @@ const Header = styled.header`
     }
 `
 
-const ActionsContainer = styled.div`
-    > *:not(:last-child) {
-        margin-right: 0.5rem;
-    }
-`
-
 const ProjectDataFieldLabel = styled(Typography)`
-    margin-top: 1rem;
+    margin-right: 0.5rem;
     font-weight: bold;
     white-space: pre-wrap;
 `
@@ -57,26 +74,16 @@ const CreateCaseForm = styled.form`
 
 interface Props {
     project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    physicalUnit: Components.Schemas.PhysUnit,
-    setPhysicalUnit: Dispatch<SetStateAction<Components.Schemas.PhysUnit>>,
-    currency: Components.Schemas.Currency,
-    setCurrency: Dispatch<SetStateAction<Components.Schemas.Currency>>
 }
 
 function OverviewView({
     project,
-    setProject,
-    physicalUnit,
-    setPhysicalUnit,
-    currency,
-    setCurrency,
-
 }: Props) {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
+    const history = useHistory()
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
     const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -93,8 +100,8 @@ function OverviewView({
 
         try {
             const projectId: string = unwrapProjectId(project.projectId)
-            const projectResult: Project = await GetProjectService().getProjectByID(projectId)
-            GetSTEAService().excelToSTEA(projectResult)
+            const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
+            const result = (await GetSTEAService()).excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -104,13 +111,13 @@ function OverviewView({
         e.preventDefault()
 
         try {
-            const projectResult: Project = await GetCaseService().createCase({
+            const projectResult: Project = await (await GetCaseService()).createCase({
                 description: caseDescription,
                 name: caseName,
                 projectId: project.projectId,
             })
             toggleCreateCaseModal()
-            navigate(`/project/${projectResult.id}/case/${projectResult.cases.find((o) => (
+            history.push(`/project/${projectResult.id}/case/${projectResult.cases.find((o) => (
                 o.name === caseName
             ))?.id}`)
         } catch (error) {
@@ -121,61 +128,41 @@ function OverviewView({
     return (
         <Wrapper>
             <Header>
-                <Typography variant="h2">{project.name}</Typography>
-                <EdsProvider density="compact">
-                    <ActionsContainer>
-                        <Tooltip title="Export to STEA">
-                            <Button
-                                variant="ghost_icon"
-                                aria-label="Export to STEA"
-                                onClick={submitToSTEA}
-                            >
-                                <Icon data={archive} />
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title="Add a case">
-                            <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
-                                <Icon data={add} />
-                            </Button>
-                        </Tooltip>
-                    </ActionsContainer>
-                </EdsProvider>
+                <StyledButton
+                    onClick={submitToSTEA}
+                >
+                    <Icon data={archive} />
+                    Export to STEA
+                </StyledButton>
             </Header>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
-                <Typography variant="h3">{project.description}</Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Project phase">
-                    {GetProjectPhaseName(project.phase)}
-                </Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Project category">
-                    {GetProjectCategoryName(project.category)}
-                </Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Country">
-                    {project.country ?? "Not defined in Common Library"}
-                </Typography>
-            </WrapperColumn>
-            <PhysicalUnit
-                currentValue={physicalUnit}
-                setPhysicalUnit={setPhysicalUnit}
-                setProject={setProject}
-                project={project}
-            />
-
-            <Currency
-                currentValue={currency}
-                setCurrency={setCurrency}
-                setProject={setProject}
-                project={project}
-            />
+            <RowWrapper>
+                <DescriptionDiv>
+                    <WrapperColumn>
+                        <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
+                        <Typography variant="h3">{project.description}</Typography>
+                    </WrapperColumn>
+                </DescriptionDiv>
+                <DataDiv>
+                    <WrapperRow>
+                        <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
+                        <Typography aria-label="Project phase">
+                            {GetProjectPhaseName(project.phase)}
+                        </Typography>
+                    </WrapperRow>
+                    <WrapperRow>
+                        <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
+                        <Typography aria-label="Project category">
+                            {GetProjectCategoryName(project.category)}
+                        </Typography>
+                    </WrapperRow>
+                    <WrapperRow>
+                        <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
+                        <Typography aria-label="Country">
+                            {project.country ?? "Not defined in Common Library"}
+                        </Typography>
+                    </WrapperRow>
+                </DataDiv>
+            </RowWrapper>
             <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
                 <CreateCaseForm>
                     <TextField
@@ -212,28 +199,15 @@ function OverviewView({
                     </div>
                 </CreateCaseForm>
             </Modal>
-            <Table>
-                <Table.Head>
-                    <Table.Cell>Name</Table.Cell>
-                    <Table.Cell>Description</Table.Cell>
-                    <Table.Cell>Production Strategy Overview</Table.Cell>
-                    <Table.Cell>Producers</Table.Cell>
-                    <Table.Cell>Gas Injectors</Table.Cell>
-                    <Table.Cell>Water Injectors</Table.Cell>
-                    <Table.Cell>Created</Table.Cell>
-                </Table.Head>
-                { project.cases && project.cases.map((casee) => (
-                    <Table.Row key={casee.id}>
-                        <Table.Cell>{casee.name}</Table.Cell>
-                        <Table.Cell>{casee.description}</Table.Cell>
-                        <Table.Cell>{casee.productionStrategyOverview}</Table.Cell>
-                        <Table.Cell>{casee.producerCount}</Table.Cell>
-                        <Table.Cell>{casee.gasInjectorCount}</Table.Cell>
-                        <Table.Cell>{casee.waterInjectorCount}</Table.Cell>
-                        <Table.Cell>{casee.createdAt?.toLocaleDateString()}</Table.Cell>
-                    </Table.Row>
-                ))}
-            </Table>
+            <RowWrapper>
+                <Typography variant="h2">Cases</Typography>
+                <StyledButton onClick={toggleCreateCaseModal}>
+                    <Icon data={add} />
+                    Add new Case
+                </StyledButton>
+
+            </RowWrapper>
+            <CasesTableView project={project} />
         </Wrapper>
     )
 }

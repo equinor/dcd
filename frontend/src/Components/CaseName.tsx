@@ -51,12 +51,16 @@ interface Props {
     setCase: Dispatch<SetStateAction<Case | undefined>>
 }
 
+interface CaseNameProps {
+    _caseId?: string;
+}
+
 const CaseName = ({
     setProject,
     caseItem,
     setCase,
 }: Props) => {
-    const params = useParams()
+    const { _caseId }: CaseNameProps = useParams()
     const [caseNameModalIsOpen, setCaseNameModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>(caseItem?.name ?? "")
 
@@ -70,9 +74,9 @@ const CaseName = ({
         const unwrappedCase: Case = unwrapCase(caseItem)
         const caseDto = Case.Copy(unwrappedCase)
         caseDto.name = caseName
-        const newProject: Project = await GetCaseService().updateCase(caseDto)
+        const newProject = await (await GetCaseService()).updateCase(caseDto)
         setProject(newProject)
-        const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === params.caseId))
+        const caseResult = unwrapCase(newProject.cases.find((o) => o.id === _caseId))
         setCase(caseResult)
     }
 

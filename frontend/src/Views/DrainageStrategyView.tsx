@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 import {
-    Input, Typography,
+    Input, Label, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
@@ -16,7 +17,7 @@ import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
-import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
@@ -29,6 +30,7 @@ import { ProductionProfileOil } from "../models/assets/drainagestrategy/Producti
 import { ProductionProfileWater } from "../models/assets/drainagestrategy/ProductionProfileWater"
 import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
+import { IAssetService } from "../Services/IAssetService"
 import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 
@@ -46,7 +48,6 @@ const DrainageStrategyView = () => {
     const [productionProfileOil, setProductionProfileOil] = useState<ProductionProfileOil>()
     const [productionProfileWater, setProductionProfileWater] = useState<ProductionProfileWater>()
     const [productionProfileNGL, setProductionProfileNGL] = useState<ProductionProfileNGL>()
-    // eslint-disable-next-line max-len
     const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjection>()
     const [nGLYield, setNGLYield] = useState<number>()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
@@ -56,16 +57,20 @@ const DrainageStrategyView = () => {
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
-    const params = useParams()
+    const { fusionProjectId, caseId, drainageStrategyId } = useParams<Record<string, string | undefined>>()
+
+    const [drainageStrategyService, setDrainageStrategyService] = useState<IAssetService>()
 
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetDrainageStrategyService()
+                setDrainageStrategyService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [])
@@ -73,10 +78,9 @@ const DrainageStrategyView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
-                // eslint-disable-next-line max-len
-                let newDrainage: DrainageStrategy | undefined = project.drainageStrategies.find((s) => s.id === params.drainageStrategyId)
+                let newDrainage = project.drainageStrategies.find((s) => s.id === drainageStrategyId)
                 if (newDrainage !== undefined) {
                     setDrainageStrategy(newDrainage)
                 } else {
@@ -165,7 +169,7 @@ const DrainageStrategyView = () => {
                     setAsset={setDrainageStrategy}
                     setProject={setProject}
                     asset={drainageStrategy!}
-                    assetService={GetDrainageStrategyService()}
+                    assetService={drainageStrategyService!}
                     assetType={AssetTypeEnum.drainageStrategies}
                 />
             </Wrapper>
@@ -177,7 +181,11 @@ const DrainageStrategyView = () => {
             <Wrapper>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
+                    <Input
+                        disabled
+                        defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")}
+                        type="date"
+                    />
                 </Dg4Field>
             </Wrapper>
             <Wrapper>

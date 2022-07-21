@@ -15,7 +15,6 @@ namespace api.Adapters
                 Name = explorationDto.Name,
                 RigMobDemob = explorationDto.RigMobDemob,
                 Currency = explorationDto.Currency,
-                ExplorationWellTypes = explorationDto.ExplorationWellTypes
             };
             exploration.CostProfile = Convert(explorationDto.CostProfile, exploration);
             exploration.DrillingSchedule = Convert(explorationDto.DrillingSchedule, exploration);
@@ -33,7 +32,6 @@ namespace api.Adapters
             existing.CostProfile = Convert(explorationDto.CostProfile, existing);
             existing.DrillingSchedule = Convert(explorationDto.DrillingSchedule, existing);
             existing.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, existing);
-            existing.ExplorationWellTypes = explorationDto.ExplorationWellTypes;
         }
 
         private static ExplorationCostProfile Convert(ExplorationCostProfileDto? costProfileDto, Exploration exploration)

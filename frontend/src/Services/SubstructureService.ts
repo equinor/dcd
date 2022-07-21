@@ -17,9 +17,9 @@ export class __SubstructureService extends __BaseService implements IAssetServic
     }
 }
 
-export function GetSubstructureService() {
+export async function GetSubstructureService() {
     return new __SubstructureService({
         ...config.SubstructureService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

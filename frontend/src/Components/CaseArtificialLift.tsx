@@ -54,7 +54,7 @@ const CaseArtificialLift = ({
         if (caseItem !== undefined) {
             const newCase = Case.Copy(caseItem)
             newCase.artificialLift = al
-            const newProject = await GetCaseService().updateCase(newCase)
+            const newProject = await (await GetCaseService()).updateCase(newCase)
             setProject(newProject)
         }
     }

@@ -18,9 +18,9 @@ export class __DrainageStrategyService extends __BaseService implements IAssetSe
     }
 }
 
-export function GetDrainageStrategyService() {
+export async function GetDrainageStrategyService() {
     return new __DrainageStrategyService({
         ...config.DrainageStrategyService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

@@ -26,7 +26,7 @@ export const Modal: FunctionComponent<Props> = ({
 }) => {
     if (!isOpen) return null
     return (
-        <Portal>
+        <>
             <div style={{
                 position: "fixed",
                 top: 0,
@@ -43,6 +43,6 @@ export const Modal: FunctionComponent<Props> = ({
                     <div>{children}</div>
                 </ModalDiv>
             </FocusOn>
-        </Portal>
+        </>
     )
 }

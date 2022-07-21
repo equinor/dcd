@@ -1,7 +1,6 @@
 import { EMPTY_GUID } from "../../../Utils/constants"
-import { Well } from "../../Well"
+import { WellProjectWell } from "../../WellProjectWell"
 import { IAsset } from "../IAsset"
-import { DrillingSchedule } from "./DrillingSchedule"
 import { WellProjectCostProfile } from "./WellProjectCostProfile"
 
 export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
@@ -9,13 +8,12 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: WellProjectCostProfile | undefined
-    drillingSchedule?: DrillingSchedule | undefined
     artificialLift?: Components.Schemas.ArtificialLift | undefined
     rigMobDemob?: number | undefined
     annualWellInterventionCost?: number | undefined
     pluggingAndAbandonment?: number | undefined
     currency?: Components.Schemas.Currency
-    wellTypes?: Components.Schemas.WellType[] | undefined
+    wellProjectWells?: WellProjectWell[] | null
 
     constructor(data?: Components.Schemas.WellProjectDto) {
         if (data !== undefined) {
@@ -23,13 +21,12 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.name = data.name ?? ""
             this.projectId = data.projectId ?? ""
             this.costProfile = WellProjectCostProfile.fromJSON(data.costProfile)
-            this.drillingSchedule = DrillingSchedule.fromJSON(data.drillingSchedule)
             this.artificialLift = data.artificialLift ?? 0
             this.rigMobDemob = data.rigMobDemob ?? 0
             this.annualWellInterventionCost = data.annualWellInterventionCost ?? 0
             this.pluggingAndAbandonment = data.pluggingAndAbandonment ?? 0
             this.currency = data.currency ?? 1
-            this.wellTypes = data.wellTypes?.map(Well.fromJSON) ?? []
+            this.wellProjectWells = data.wellProjectWells?.map((wc) => new WellProjectWell(wc))
         } else {
             this.id = EMPTY_GUID
             this.name = ""

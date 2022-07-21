@@ -1,7 +1,8 @@
 import React, { Dispatch, SetStateAction } from "react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import { useNavigate } from "react-router"
+import { useHistory } from "react-router-dom"
+
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import LinkAsset from "./LinkAsset"
@@ -40,8 +41,7 @@ const CaseAsset = ({
     setCase,
     caseId,
 }: Props) => {
-    const navigate = useNavigate()
-
+    const history = useHistory()
     enum AssetLink {
         drainageStrategyLink = "drainageStrategyLink",
         explorationLink = "explorationLink",
@@ -54,14 +54,14 @@ const CaseAsset = ({
 
     const onSelectAsset = async (event: React.ChangeEvent<HTMLSelectElement>, link: AssetLink) => {
         try {
-            const unwrappedCase: Case = unwrapCase(caseItem)
+            const unwrappedCase = unwrapCase(caseItem)
             const caseDto = Case.Copy(unwrappedCase)
 
             caseDto[link] = event.currentTarget.selectedOptions[0].value
 
-            const newProject: Project = await GetCaseService().updateCase(caseDto)
+            const newProject = await (await GetCaseService()).updateCase(caseDto)
             setProject(newProject)
-            const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === caseId))
+            const caseResult = unwrapCase(newProject.cases.find((o) => o.id === caseId))
             setCase(caseResult)
         } catch (error) {
             console.error("[CaseView] error while submitting form data", error)
@@ -76,7 +76,7 @@ const CaseAsset = ({
         event.preventDefault()
 
         try {
-            navigate(`${type.toLowerCase()}/${id}`)
+            history.push(`${caseId}/${type.toLowerCase()}/${id}`)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -84,7 +84,7 @@ const CaseAsset = ({
 
     const submitCreateAsset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
         event.preventDefault()
-        navigate(`${type.toLowerCase()}/${EMPTY_GUID}`)
+        history.push(`${caseId}/${type.toLowerCase()}/${EMPTY_GUID}`)
     }
 
     return (
