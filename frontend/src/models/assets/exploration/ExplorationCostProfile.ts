@@ -1,3 +1,4 @@
+import { EMPTY_GUID } from "../../../Utils/constants"
 import { ITimeSeries } from "../../ITimeSeries"
 
 export class ExplorationCostProfile implements Components.Schemas.ExplorationCostProfileDto, ITimeSeries {
@@ -7,6 +8,7 @@ export class ExplorationCostProfile implements Components.Schemas.ExplorationCos
     epaVersion?: string
     currency?: Components.Schemas.Currency
     sum?: number
+    override?: boolean
 
     constructor(data?: Components.Schemas.ExplorationCostProfileDto) {
         if (data !== undefined && data !== null) {
@@ -16,8 +18,9 @@ export class ExplorationCostProfile implements Components.Schemas.ExplorationCos
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
             this.sum = data.sum
+            this.override = data.override
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.startYear = 0
             this.values = []
         }

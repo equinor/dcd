@@ -14,6 +14,7 @@ import {
 import { WellProjectWell } from "../../models/WellProjectWell"
 import { Project } from "../../models/Project"
 import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
+import { ExplorationWell } from "../../models/ExplorationWell"
 
 interface Props {
     dG4Year: number | undefined
@@ -22,7 +23,7 @@ interface Props {
     lastYear: number | undefined,
     setFirstYear: Dispatch<SetStateAction<number | undefined>>,
     setLastYear: Dispatch<SetStateAction<number | undefined>>,
-    wellProjectWell: WellProjectWell | undefined
+    assetWell: WellProjectWell | ExplorationWell | undefined
     setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
@@ -33,13 +34,13 @@ const DrillingScheduleRow = ({
     lastYear,
     setFirstYear,
     setLastYear,
-    wellProjectWell,
+    assetWell,
     setProject,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
-    const [drillingSchedule, setDrillingSchedule] = useState<ITimeSeries | undefined>(wellProjectWell?.drillingSchedule)
+    const [drillingSchedule, setDrillingSchedule] = useState<ITimeSeries | undefined>(assetWell?.drillingSchedule)
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (updatedTimeSeries !== undefined && drillingSchedule !== undefined) {
@@ -105,16 +106,16 @@ const DrillingScheduleRow = ({
         buildAlignedGrid(newTimeSeries)
         setDialogOpen(!dialogOpen)
 
-        const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
-        newWellProjectWell.drillingSchedule = newTimeSeries
-        const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newWellProjectWell)
+        const newAssetWell: WellProjectWell | ExplorationWell = { ...assetWell }
+        newAssetWell.drillingSchedule = newTimeSeries
+        const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newAssetWell)
         setProject(newProject)
     }
 
     const deleteTimeseries = async () => {
-        const newWellProjectWell: WellProjectWell = { ...wellProjectWell }
-        newWellProjectWell.drillingSchedule = undefined
-        const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newWellProjectWell)
+        const newAssetWell: WellProjectWell | ExplorationWell = { ...assetWell }
+        newAssetWell.drillingSchedule = undefined
+        const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newAssetWell)
         setProject(newProject)
         setColumns([])
         setGridData([[]])

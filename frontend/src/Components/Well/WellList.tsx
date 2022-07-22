@@ -9,22 +9,23 @@ import { WellProjectWell } from "../../models/WellProjectWell"
 import { GetWellService } from "../../Services/WellService"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import WellTableRow from "./WellTableRow"
+import { Exploration } from "../../models/assets/exploration/Exploration"
 
 interface Props {
     project: Project
-    wellProject: WellProject
+    asset: WellProject | Exploration
     setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
-function WellList({ project, wellProject, setProject }: Props) {
+function WellList({ project, asset, setProject }: Props) {
     const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
-    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>(wellProject?.wellProjectWells ?? [])
+    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>(asset?.wellProjectWells ?? [])
 
     useEffect(() => {
-        if (wellProject.wellProjectWells) {
-            setWellProjectWells(wellProject.wellProjectWells)
+        if (asset.wellProjectWells) {
+            setWellProjectWells(asset.wellProjectWells)
         }
-    }, [wellProject.wellProjectWells, project])
+    }, [asset.wellProjectWells, project])
 
     const CreateWell = async () => {
         const newWell = new Well()
@@ -39,9 +40,9 @@ function WellList({ project, wellProject, setProject }: Props) {
     const GenerateWellTableRows = () => {
         const tableRows: JSX.Element[] = []
         wells?.forEach((w) => {
-            const wpw = wellProjectWells?.find((x) => x.wellId === w.id && x.wellProjectId === wellProject.id)
+            const wpw = wellProjectWells?.find((x) => x.wellId === w.id && x.wellProjectId === asset.id)
             tableRows.push((
-                <WellTableRow key={w.id} setProject={setProject} wellId={w.id!} project={project} wellProject={wellProject} wellProjectWell={wpw} />
+                <WellTableRow key={w.id} setProject={setProject} wellId={w.id!} project={project} wellProject={asset} wellProjectWell={wpw} />
             ))
         })
         return tableRows

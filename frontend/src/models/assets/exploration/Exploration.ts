@@ -1,7 +1,7 @@
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { ExplorationWell } from "../../ExplorationWell"
 import { IAsset } from "../IAsset"
 import { ExplorationCostProfile } from "./ExplorationCostProfile"
-import { ExplorationDrillingSchedule } from "./ExplorationDrillingSchedule"
 import { GAndGAdminCost } from "./GAndAdminCost"
 
 export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
@@ -9,10 +9,10 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     projectId?: string | undefined
     name?: string | undefined
     costProfile?: ExplorationCostProfile | undefined
-    drillingSchedule?: ExplorationDrillingSchedule | undefined
     gAndGAdminCost?: GAndGAdminCost | undefined
     rigMobDemob?: number | undefined
     currency?: Components.Schemas.Currency
+    explorationWells?: ExplorationWell[] | null
 
     constructor(data?: Components.Schemas.ExplorationDto) {
         if (data !== undefined) {
@@ -20,10 +20,10 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
             this.projectId = data.projectId
             this.name = data.name ?? ""
             this.costProfile = ExplorationCostProfile.fromJSON(data.costProfile)
-            this.drillingSchedule = ExplorationDrillingSchedule.fromJSON(data.drillingSchedule)
             this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)
             this.rigMobDemob = data.rigMobDemob
             this.currency = data.currency ?? 1
+            this.explorationWells = data.explorationWells?.map((ew) => new ExplorationWell(ew))
         } else {
             this.id = EMPTY_GUID
             this.name = ""
