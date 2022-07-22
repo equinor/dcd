@@ -28,6 +28,8 @@ import { Well } from "../models/Well"
 import DrillingSchedules from "../Components/Well/DrillingSchedules"
 import WellList from "../Components/Well/WellList"
 import { ExplorationWell } from "../models/ExplorationWell"
+import { SeismicAcquisitionAndProcessing } from "../models/assets/exploration/SeismicAcquisitionAndProcessing"
+import { CountryOfficeCost } from "../models/assets/exploration/CountryOfficeCost"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -39,6 +41,9 @@ const ExplorationView = () => {
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
+    const [seismicAcquisitionAndProcessing,
+        setSeismicAcquisitionAndProcessing] = useState<SeismicAcquisitionAndProcessing>()
+    const [countryOfficeCost, setCountryOfficeCost] = useState<CountryOfficeCost>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
@@ -81,11 +86,15 @@ const ExplorationView = () => {
 
                 setCostProfile(newExploration.costProfile)
                 setGAndGAdminCost(newExploration.gAndGAdminCost)
+                setSeismicAcquisitionAndProcessing(newExploration.seismicAcquisitionAndProcessing)
+                setCountryOfficeCost(newExploration.countryOfficeCost)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newExploration.costProfile, newExploration.gAndGAdminCost],
+                        [newExploration.costProfile, newExploration.gAndGAdminCost,
+                            newExploration.seismicAcquisitionAndProcessing,
+                            newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -105,12 +114,12 @@ const ExplorationView = () => {
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [costProfile, gAndGAdminCost],
+                [costProfile, gAndGAdminCost, seismicAcquisitionAndProcessing, countryOfficeCost],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, gAndGAdminCost, currency])
+    }, [rigMobDemob, costProfile, gAndGAdminCost, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
 
     const overrideCostProfile = () => {
         if (costProfile) {
@@ -183,6 +192,28 @@ const ExplorationView = () => {
                 setHasChanges={setHasChanges}
                 timeSeries={gAndGAdminCost}
                 timeSeriesTitle={`G and g admin cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setSeismicAcquisitionAndProcessing}
+                setHasChanges={setHasChanges}
+                timeSeries={seismicAcquisitionAndProcessing}
+                timeSeriesTitle={`Seismic acquisition and processing ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCountryOfficeCost}
+                setHasChanges={setHasChanges}
+                timeSeries={countryOfficeCost}
+                timeSeriesTitle={`Country office cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}

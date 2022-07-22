@@ -82,6 +82,14 @@ declare namespace Components {
             projectCategory?: ProjectCategory /* int32 */;
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
+        export interface CountryOfficeCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export type Currency = 1 | 2; // int32
         export interface DrainageStrategyDto {
             id?: string; // uuid
@@ -123,6 +131,8 @@ declare namespace Components {
             name?: string | null;
             costProfile?: ExplorationCostProfileDto;
             gAndGAdminCost?: GAndGAdminCostDto;
+            seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessingDto;
+            countryOfficeCost?: CountryOfficeCostDto;
             rigMobDemob?: number; // double
             currency?: Currency /* int32 */;
             explorationWells?: ExplorationWellDto[] | null;
@@ -238,6 +248,14 @@ declare namespace Components {
             name?: string | null;
             startYear?: number; // int32
             steaCases?: STEACaseDto[] | null;
+        }
+        export interface SeismicAcquisitionAndProcessingDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export type Source = 0 | 1; // int32
         export interface SubstructureCessationCostProfileDto {

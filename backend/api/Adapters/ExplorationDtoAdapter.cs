@@ -16,6 +16,8 @@ namespace api.Adapters
                 Currency = exploration.Currency,
                 CostProfile = Convert(exploration.CostProfile),
                 GAndGAdminCost = Convert(exploration.GAndGAdminCost),
+                SeismicAcquisitionAndProcessing = Convert(exploration.SeismicAcquisitionAndProcessing),
+                CountryOfficeCost = Convert(exploration.CountryOfficeCost),
                 ExplorationWells = exploration.ExplorationWells?.Select(ew => ExplorationWellDtoAdapter.Convert(ew)).ToList()
             };
             return explorationDto;
@@ -50,6 +52,37 @@ namespace api.Adapters
                 EPAVersion = gAndGAdminCost.EPAVersion,
                 StartYear = gAndGAdminCost.StartYear,
                 Values = gAndGAdminCost.Values,
+            };
+        }
+        private static SeismicAcquisitionAndProcessingDto Convert(SeismicAcquisitionAndProcessing? seismicAcquisitionAndProcessing)
+        {
+            if (seismicAcquisitionAndProcessing == null)
+            {
+                return null!;
+            }
+            return new SeismicAcquisitionAndProcessingDto
+            {
+                Id = seismicAcquisitionAndProcessing.Id,
+                Currency = seismicAcquisitionAndProcessing.Currency,
+                EPAVersion = seismicAcquisitionAndProcessing.EPAVersion,
+                StartYear = seismicAcquisitionAndProcessing.StartYear,
+                Values = seismicAcquisitionAndProcessing.Values,
+            };
+        }
+
+        private static CountryOfficeCostDto Convert(CountryOfficeCost? countryOfficeCost)
+        {
+            if (countryOfficeCost == null)
+            {
+                return null!;
+            }
+            return new CountryOfficeCostDto
+            {
+                Id = countryOfficeCost.Id,
+                Currency = countryOfficeCost.Currency,
+                EPAVersion = countryOfficeCost.EPAVersion,
+                StartYear = countryOfficeCost.StartYear,
+                Values = countryOfficeCost.Values,
             };
         }
     }

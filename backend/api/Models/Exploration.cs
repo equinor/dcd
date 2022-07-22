@@ -9,6 +9,8 @@ namespace api.Models
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
         public ExplorationCostProfile? CostProfile { get; set; }
+        public SeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
+        public CountryOfficeCost? CountryOfficeCost { get; set; }
         public GAndGAdminCost? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
         public Currency Currency { get; set; }
@@ -19,10 +21,22 @@ namespace api.Models
     {
         [ForeignKey("Exploration.Id")]
         public Exploration Exploration { get; set; } = null!;
-        public bool Override {get; set; }
+        public bool Override { get; set; }
     }
 
     public class GAndGAdminCost : TimeSeriesCost
+    {
+        [ForeignKey("Exploration.Id")]
+        public Exploration Exploration { get; set; } = null!;
+    }
+
+    public class SeismicAcquisitionAndProcessing : TimeSeriesCost
+    {
+        [ForeignKey("Exploration.Id")]
+        public Exploration Exploration { get; set; } = null!;
+    }
+
+    public class CountryOfficeCost : TimeSeriesCost
     {
         [ForeignKey("Exploration.Id")]
         public Exploration Exploration { get; set; } = null!;

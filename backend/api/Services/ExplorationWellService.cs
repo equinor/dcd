@@ -98,7 +98,7 @@ namespace api.Services
 
             var offset = t1Year < t2Year ? t2Year - t1Year : t1Year - t2Year;
 
-            var values = new List<double>();
+            List<double> values;
             if (t1Year < t2Year)
             {
                 values = MergeTimeSeries(t1Values.ToList(), t2Values.ToList(), offset);
@@ -148,7 +148,7 @@ namespace api.Services
 
         public void GenerateCostProfileFromDrillingSchedules(Exploration exploration, List<ExplorationWell> explorationWells, List<Well> wells)
         {
-            var costProfile = new ExplorationCostProfile();
+            ExplorationCostProfile costProfile;
             var costProfiles = new List<ExplorationCostProfile>();
             foreach (var explorationWell in explorationWells)
             {

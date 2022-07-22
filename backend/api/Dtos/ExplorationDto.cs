@@ -10,6 +10,8 @@ namespace api.Dtos
         public string Name { get; set; } = string.Empty;
         public ExplorationCostProfileDto? CostProfile { get; set; }
         public GAndGAdminCostDto? GAndGAdminCost { get; set; }
+        public SeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
+        public CountryOfficeCostDto? CountryOfficeCost { get; set; }
         public double RigMobDemob { get; set; }
         public Currency Currency { get; set; }
         public List<ExplorationWellDto>? ExplorationWells { get; set; }
@@ -20,4 +22,6 @@ namespace api.Dtos
         public bool Override { get; set; }
     }
     public class GAndGAdminCostDto : TimeSeriesCostDto { }
+    public class SeismicAcquisitionAndProcessingDto : TimeSeriesCostDto { }
+    public class CountryOfficeCostDto : TimeSeriesCostDto { }
 }

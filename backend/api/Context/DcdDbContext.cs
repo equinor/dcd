@@ -53,6 +53,8 @@ namespace api.Context
         public DbSet<Exploration>? Explorations { get; set; }
         public DbSet<ExplorationCostProfile>? ExplorationCostProfile { get; set; }
         public DbSet<GAndGAdminCost>? GAndGAdminCost { get; set; }
+        public DbSet<SeismicAcquisitionAndProcessing>? SeismicAcquisitionAndProcessing { get; set; }
+        public DbSet<CountryOfficeCost>? CountryOfficeCost { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

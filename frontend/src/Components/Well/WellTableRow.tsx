@@ -14,7 +14,7 @@ import { Project } from "../../models/Project"
 import { GetWellService } from "../../Services/WellService"
 import { Exploration } from "../../models/assets/exploration/Exploration"
 import { ExplorationWell } from "../../models/ExplorationWell"
-import { ExplorationWellService, GetExplorationWellService } from "../../Services/ExplorationWellService"
+import { GetExplorationWellService } from "../../Services/ExplorationWellService"
 
 interface Props {
     wellId: string
@@ -60,33 +60,33 @@ function WellTableRow({
 
     const onWellCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
         switch (event.currentTarget.selectedOptions[0].value) {
-            case "0":
-                setWellCategory(0)
-                break
-            case "1":
-                setWellCategory(1)
-                break
-            case "2":
-                setWellCategory(2)
-                break
-            case "3":
-                setWellCategory(3)
-                break
-            case "4":
-                setWellCategory(4)
-                break
-            case "5":
-                setWellCategory(5)
-                break
-            case "6":
-                setWellCategory(6)
-                break
-            case "7":
-                setWellCategory(7)
-                break
-            default:
-                setWellCategory(0)
-                break
+        case "0":
+            setWellCategory(0)
+            break
+        case "1":
+            setWellCategory(1)
+            break
+        case "2":
+            setWellCategory(2)
+            break
+        case "3":
+            setWellCategory(3)
+            break
+        case "4":
+            setWellCategory(4)
+            break
+        case "5":
+            setWellCategory(5)
+            break
+        case "6":
+            setWellCategory(6)
+            break
+        case "7":
+            setWellCategory(7)
+            break
+        default:
+            setWellCategory(0)
+            break
         }
     }
 
@@ -106,20 +106,18 @@ function WellTableRow({
                 setProject(newProject)
             }
         } else if (exploration) {
-            if (ew) {
-                if (!ExplorationWellService) {
-                    const newExplorationWell = new ExplorationWell()
-                    newExplorationWell.wellId = w.id
-                    newExplorationWell.explorationId = exploration.id
-                    newExplorationWell.count = 1
-                    const newProject = await (await GetExplorationWellService()).createExplorationWell(newExplorationWell)
-                    setProject(newProject)
-                } else {
-                    const newExplorationWell = { ...ew }
-                    newExplorationWell.count! = increase ? ew.count! + 1 : ew.count! - 1
-                    const newProject = await (await GetExplorationWellService()).updateExplorationWell(newExplorationWell)
-                    setProject(newProject)
-                }
+            if (!ew) {
+                const newExplorationWell = new ExplorationWell()
+                newExplorationWell.wellId = w.id
+                newExplorationWell.explorationId = exploration.id
+                newExplorationWell.count = 1
+                const newProject = await (await GetExplorationWellService()).createExplorationWell(newExplorationWell)
+                setProject(newProject)
+            } else {
+                const newExplorationWell = { ...ew }
+                newExplorationWell.count! = increase ? ew.count! + 1 : ew.count! - 1
+                const newProject = await (await GetExplorationWellService()).updateExplorationWell(newExplorationWell)
+                setProject(newProject)
             }
         }
     }

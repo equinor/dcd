@@ -25,10 +25,6 @@ namespace api.Controllers
         [HttpGet(Name = "GetExplorationWells")]
         public IEnumerable<ExplorationWellDto> GetExplorationWells([FromQuery] Guid projectId)
         {
-            if (projectId != Guid.Empty)
-            {
-                // return _explorationWellService.GetDtosForProject(projectId);
-            }
             return _explorationWellService.GetAllDtos();
         }
 

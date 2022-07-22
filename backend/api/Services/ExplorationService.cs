@@ -29,6 +29,8 @@ namespace api.Services
                 return _context.Explorations
                         .Include(c => c.CostProfile)
                         .Include(c => c.GAndGAdminCost)
+                        .Include(c => c.SeismicAcquisitionAndProcessing)
+                        .Include(c => c.CountryOfficeCost)
                         .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
@@ -96,6 +98,16 @@ namespace api.Services
                 _context.GAndGAdminCost!.Remove(existing.GAndGAdminCost);
             }
 
+            if (updatedExplorationDto.SeismicAcquisitionAndProcessing == null && existing.SeismicAcquisitionAndProcessing != null)
+            {
+                _context.SeismicAcquisitionAndProcessing!.Remove(existing.SeismicAcquisitionAndProcessing);
+            }
+
+            if (updatedExplorationDto.CountryOfficeCost == null && existing.CountryOfficeCost != null)
+            {
+                _context.CountryOfficeCost!.Remove(existing.CountryOfficeCost);
+            }
+
             _context.Explorations!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(existing.ProjectId);
@@ -107,6 +119,8 @@ namespace api.Services
             var exploration = _context.Explorations!
                         .Include(c => c.CostProfile)
                         .Include(c => c.GAndGAdminCost)
+                        .Include(c => c.SeismicAcquisitionAndProcessing)
+                        .Include(c => c.CountryOfficeCost)
                         .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
                              .FirstOrDefault(o => o.Id == explorationId);
             if (exploration == null)
