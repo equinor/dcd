@@ -9,25 +9,34 @@ namespace api.Models
         public Guid ProjectId { get; set; }
         public string Name { get; set; } = string.Empty;
         public ExplorationCostProfile? CostProfile { get; set; }
-        public ExplorationDrillingSchedule? DrillingSchedule { get; set; }
+        public SeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
+        public CountryOfficeCost? CountryOfficeCost { get; set; }
         public GAndGAdminCost? GAndGAdminCost { get; set; }
         public double RigMobDemob { get; set; }
         public Currency Currency { get; set; }
+        public ICollection<ExplorationWell>? ExplorationWells { get; set; }
     }
 
     public class ExplorationCostProfile : TimeSeriesCost
     {
         [ForeignKey("Exploration.Id")]
         public Exploration Exploration { get; set; } = null!;
+        public bool Override { get; set; }
     }
 
-    public class ExplorationDrillingSchedule : TimeSeriesSchedule
+    public class GAndGAdminCost : TimeSeriesCost
     {
         [ForeignKey("Exploration.Id")]
         public Exploration Exploration { get; set; } = null!;
     }
 
-    public class GAndGAdminCost : TimeSeriesCost
+    public class SeismicAcquisitionAndProcessing : TimeSeriesCost
+    {
+        [ForeignKey("Exploration.Id")]
+        public Exploration Exploration { get; set; } = null!;
+    }
+
+    public class CountryOfficeCost : TimeSeriesCost
     {
         [ForeignKey("Exploration.Id")]
         public Exploration Exploration { get; set; } = null!;

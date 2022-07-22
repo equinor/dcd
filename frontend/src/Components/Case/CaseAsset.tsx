@@ -3,12 +3,12 @@ import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { useHistory } from "react-router-dom"
 
-import { Project } from "../models/Project"
-import { Case } from "../models/Case"
+import { Project } from "../../models/Project"
+import { Case } from "../../models/case/Case"
 import LinkAsset from "./LinkAsset"
-import { GetCaseService } from "../Services/CaseService"
-import { EMPTY_GUID } from "../Utils/constants"
-import { unwrapCase } from "../Utils/common"
+import { GetCaseService } from "../../Services/CaseService"
+import { EMPTY_GUID } from "../../Utils/constants"
+import { unwrapCase } from "../../Utils/common"
 
 const Wrapper = styled.div`
     margin-top: 1rem;

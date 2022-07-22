@@ -12,6 +12,7 @@ namespace api.Models
         public SurfCostProfile? CostProfile { get; set; }
 
         public SurfCessationCostProfile? CessationCostProfile { get; set; }
+        public double CessationCost { get; set; }
         public Maturity Maturity { get; set; }
         public double InfieldPipelineSystemLength { get; set; }
         public double UmbilicalSystemLength { get; set; }

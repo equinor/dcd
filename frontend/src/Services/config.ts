@@ -50,6 +50,9 @@ const configuration = {
     WellProjectWellService: {
         BASE_URL: "",
     },
+    ExplorationWellService: {
+        BASE_URL: "",
+    },
 }
 
 export const buildConfig = (baseUrl: string) => {
@@ -67,6 +70,7 @@ export const buildConfig = (baseUrl: string) => {
     configuration.UploadService.BASE_URL = `${baseUrl}/Upload`
     configuration.WellService.BASE_URL = `${baseUrl}/wells`
     configuration.WellProjectWellService.BASE_URL = `${baseUrl}/well-project-wells`
+    configuration.ExplorationWellService.BASE_URL = `${baseUrl}/exploration-wells`
 }
 
 export const config = Object.freeze(configuration)

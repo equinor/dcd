@@ -3,7 +3,7 @@ import { Typography } from "@equinor/eds-core-react"
 
 import { useParams } from "react-router"
 import { Surf } from "../models/assets/surf/Surf"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSurfService } from "../Services/SurfService"
@@ -51,6 +51,7 @@ const SurfView = () => {
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [cessationCost, setCessationCost] = useState<number | undefined>()
     const [approvedBy, setApprovedBy] = useState<string>("")
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
@@ -102,6 +103,7 @@ const SurfView = () => {
                 setTemplateCount(newSurf?.templateCount)
                 setProducerCount(newSurf?.producerCount)
                 setCostYear(newSurf?.costYear)
+                setCessationCost(newSurf?.cessationCost ?? 0)
                 setGasInjectorCount(newSurf?.gasInjectorCount)
                 setWaterInjectorCount(newSurf?.waterInjectorCount)
                 setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
@@ -142,6 +144,7 @@ const SurfView = () => {
             newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
             newSurf.umbilicalSystemLength = umbilicalSystemLength
             newSurf.costYear = costYear
+            newSurf.cessationCost = cessationCost
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
@@ -167,7 +170,7 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency, costYear, approvedBy, artificialLift,
+        costProfile, cessationCostProfile, currency, costYear, cessationCost, approvedBy, artificialLift,
         dG3Date, dG4Date])
 
     return (
@@ -300,6 +303,13 @@ const SurfView = () => {
                     value={umbilicalSystemLength ?? 0}
                     integer
                     label="Length of umbilical system (km)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCessationCost}
+                    value={cessationCost ?? 0}
+                    integer
+                    label="Cessation cost"
                 />
             </Wrapper>
             <Maturity

@@ -4,7 +4,7 @@ import {
     Button, Dialog, Input, Typography,
 } from "@equinor/eds-core-react"
 import { useParams } from "react-router"
-import { Case } from "../../models/Case"
+import { Case } from "../../models/case/Case"
 import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
 import { unwrapCase, unwrapCaseId, unwrapProjectId } from "../../Utils/common"

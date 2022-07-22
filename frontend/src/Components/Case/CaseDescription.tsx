@@ -15,11 +15,11 @@ import {
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { edit } from "@equinor/eds-icons"
-import { Project } from "../models/Project"
-import { Case } from "../models/Case"
-import { GetCaseService } from "../Services/CaseService"
-import { Modal } from "../Components/Modal"
-import { unwrapCase } from "../Utils/common"
+import { Project } from "../../models/Project"
+import { Case } from "../../models/case/Case"
+import { GetCaseService } from "../../Services/CaseService"
+import { Modal } from "../Modal"
+import { unwrapCase } from "../../Utils/common"
 
 const Wrapper = styled.div`
     display: flex;

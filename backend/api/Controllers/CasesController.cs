@@ -27,7 +27,7 @@ namespace api.Controllers
             return _caseService.CreateCase(caseDto);
         }
 
-        [HttpPost("copy")]
+        [HttpPost("copy", Name = "Duplicate")]
         public ProjectDto DuplicateCase([FromQuery] Guid copyCaseId)
         {
             return _caseService.DuplicateCase(copyCaseId);

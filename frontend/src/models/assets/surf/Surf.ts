@@ -9,6 +9,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
     projectId?: string | undefined
     costProfile?: SurfCostProfile | undefined
     cessationCostProfile: SurfCessationCostProfile | undefined
+    cessationCost?: number
     maturity?: Components.Schemas.Maturity | undefined
     infieldPipelineSystemLength?: number | undefined
     umbilicalSystemLength?: number | undefined
@@ -34,6 +35,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.cessationCostProfile = SurfCessationCostProfile.fromJSON(data.cessationCostProfile)
+            this.cessationCost = data.cessationCost
             this.costProfile = SurfCostProfile.fromJSON(data.costProfile)
             this.maturity = data.maturity
             this.infieldPipelineSystemLength = data.infieldPipelineSystemLength

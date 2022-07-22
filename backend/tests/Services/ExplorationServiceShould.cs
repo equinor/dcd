@@ -135,12 +135,6 @@ public class ExplorationServiceShould : IDisposable
                   Values = new double[] { 131.4, 28.2, 334.3 }
               }
                 )
-                .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule()
-                {
-                    StartYear = 2050,
-                    Values = new int[] { 143, 5, 45 }
-                }
-                )
                 .WithGAndGAdminCost(new GAndGAdminCost()
                 {
                     Currency = Currency.NOK,
@@ -167,12 +161,6 @@ public class ExplorationServiceShould : IDisposable
                      StartYear = 2010,
                      Values = new double[] { 11.4, 28.2, 34.3 }
                  }
-                )
-                .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule()
-                {
-                    StartYear = 2030,
-                    Values = new int[] { 123, 5, 5 }
-                }
                 )
                 .WithGAndGAdminCost(new GAndGAdminCost()
                 {

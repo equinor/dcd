@@ -29,7 +29,9 @@ namespace api.Services
                 return _context.Explorations
                         .Include(c => c.CostProfile)
                         .Include(c => c.GAndGAdminCost)
-                        .Include(c => c.DrillingSchedule)
+                        .Include(c => c.SeismicAcquisitionAndProcessing)
+                        .Include(c => c.CountryOfficeCost)
+                        .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
             else
@@ -91,14 +93,19 @@ namespace api.Services
                 _context.ExplorationCostProfile!.Remove(existing.CostProfile);
             }
 
-            if (updatedExplorationDto.DrillingSchedule == null && existing.DrillingSchedule != null)
-            {
-                _context.ExplorationDrillingSchedule!.Remove(existing.DrillingSchedule);
-            }
-
             if (updatedExplorationDto.GAndGAdminCost == null && existing.GAndGAdminCost != null)
             {
                 _context.GAndGAdminCost!.Remove(existing.GAndGAdminCost);
+            }
+
+            if (updatedExplorationDto.SeismicAcquisitionAndProcessing == null && existing.SeismicAcquisitionAndProcessing != null)
+            {
+                _context.SeismicAcquisitionAndProcessing!.Remove(existing.SeismicAcquisitionAndProcessing);
+            }
+
+            if (updatedExplorationDto.CountryOfficeCost == null && existing.CountryOfficeCost != null)
+            {
+                _context.CountryOfficeCost!.Remove(existing.CountryOfficeCost);
             }
 
             _context.Explorations!.Update(existing);
@@ -112,7 +119,9 @@ namespace api.Services
             var exploration = _context.Explorations!
                         .Include(c => c.CostProfile)
                         .Include(c => c.GAndGAdminCost)
-                        .Include(c => c.DrillingSchedule)
+                        .Include(c => c.SeismicAcquisitionAndProcessing)
+                        .Include(c => c.CountryOfficeCost)
+                        .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
                              .FirstOrDefault(o => o.Id == explorationId);
             if (exploration == null)
             {

@@ -30,7 +30,8 @@ namespace api.Adapters
                 ProspVersion = surfDto.ProspVersion,
                 ApprovedBy = surfDto.ApprovedBy,
                 DG3Date = surfDto.DG3Date,
-                DG4Date = surfDto.DG4Date
+                DG4Date = surfDto.DG4Date,
+                CessationCost = surfDto.CessationCost,
             };
 
             surf.CostProfile = Convert(surfDto.CostProfile, surf);
@@ -64,6 +65,7 @@ namespace api.Adapters
             existing.ApprovedBy = surfDto.ApprovedBy;
             existing.DG3Date = surfDto.DG3Date;
             existing.DG4Date = surfDto.DG4Date;
+            existing.CessationCost = surfDto.CessationCost;
         }
 
         private static SurfCostProfile? Convert(SurfCostProfileDto? costprofile, Surf surf)

@@ -40,7 +40,8 @@ namespace api.Services
         public Well GetWell(Guid wellId)
         {
             var well = _context.Wells!
-                        .Include(e => e.WellProjectWell)
+                        .Include(e => e.WellProjectWells)
+                        .Include(e => e.ExplorationWells)
                         .FirstOrDefault(w => w.Id == wellId);
             if (well == null)
             {

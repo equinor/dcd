@@ -1,4 +1,4 @@
-import { Case } from "./Case"
+import { Case } from "./case/Case"
 import { DrainageStrategy } from "./assets/drainagestrategy/DrainageStrategy"
 import { Exploration } from "./assets/exploration/Exploration"
 import { ProjectPhase } from "./ProjectPhase"

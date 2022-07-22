@@ -359,14 +359,6 @@ namespace tests
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
                 Assert.Equal(expected.CostProfile.Exploration.Name,
                         actual.CostProfile.Exploration.Name);
-
-                TestHelper.CompareYearValues(expected.DrillingSchedule,
-                        actual.DrillingSchedule);
-                if (expected.DrillingSchedule != null && actual.DrillingSchedule != null)
-                {
-                    Assert.Equal(expected.DrillingSchedule.Exploration.Name,
-                            actual.DrillingSchedule.Exploration.Name);
-                }
                 TestHelper.CompareCosts(expected.GAndGAdminCost,
                         actual.GAndGAdminCost);
                 Assert.Equal(expected.GAndGAdminCost.Exploration.Name,
@@ -414,7 +406,6 @@ namespace tests
                 Assert.Equal(expected.Name, actual.Name);
 
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
-                TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
                 TestHelper.CompareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
 
                 Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);

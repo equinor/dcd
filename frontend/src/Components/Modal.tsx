@@ -2,7 +2,6 @@ import { FunctionComponent } from "react"
 import { FocusOn } from "react-focus-on"
 import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
-import { Portal } from "./Portal"
 
 const ModalDiv = styled.div`
     position: fixed;

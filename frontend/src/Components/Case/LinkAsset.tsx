@@ -5,7 +5,7 @@ import React, {
     ChangeEvent,
 } from "react"
 import styled from "styled-components"
-import { EMPTY_GUID } from "../Utils/constants"
+import { EMPTY_GUID } from "../../Utils/constants"
 
 const AssetDropdown = styled(NativeSelect)`
     width: 20rem;

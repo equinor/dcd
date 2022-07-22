@@ -9,26 +9,34 @@ import { WellProjectWell } from "../../models/WellProjectWell"
 import { GetWellService } from "../../Services/WellService"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import WellTableRow from "./WellTableRow"
+import { Exploration } from "../../models/assets/exploration/Exploration"
+import { ExplorationWell } from "../../models/ExplorationWell"
 
 interface Props {
     project: Project
-    wellProject: WellProject
+    wellProject?: WellProject
+    exploration?: Exploration
     setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
-function WellList({ project, wellProject, setProject }: Props) {
+function WellList({
+    project, wellProject, exploration, setProject,
+}: Props) {
     const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
     const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>(wellProject?.wellProjectWells ?? [])
+    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>(exploration?.explorationWells ?? [])
 
     useEffect(() => {
-        if (wellProject.wellProjectWells) {
+        if (wellProject?.wellProjectWells) {
             setWellProjectWells(wellProject.wellProjectWells)
+        } else if (exploration?.explorationWells) {
+            setExplorationWells(exploration.explorationWells)
         }
-    }, [wellProject.wellProjectWells, project])
+    }, [wellProject?.wellProjectWells, exploration?.explorationWells, project])
 
     const CreateWell = async () => {
         const newWell = new Well()
-        newWell.wellCategory = 0
+        newWell.wellCategory = wellProject ? 0 : 4
         newWell.name = "New well"
         newWell.projectId = project.projectId
         const newProject = await (await GetWellService()).createWell(newWell)
@@ -36,14 +44,27 @@ function WellList({ project, wellProject, setProject }: Props) {
         setWells(newProject?.wells ?? [])
     }
 
+    const isExplorationWell = (category: Components.Schemas.WellCategory | undefined) => [4, 5, 6].indexOf(category ?? -1) > -1
+
     const GenerateWellTableRows = () => {
         const tableRows: JSX.Element[] = []
-        wells?.forEach((w) => {
-            const wpw = wellProjectWells?.find((x) => x.wellId === w.id && x.wellProjectId === wellProject.id)
-            tableRows.push((
-                <WellTableRow key={w.id} setProject={setProject} wellId={w.id!} project={project} wellProject={wellProject} wellProjectWell={wpw} />
-            ))
-        })
+        if (wellProject) {
+            wells?.filter((w) => !isExplorationWell(w.wellCategory)).forEach((w) => {
+                const wpw = wellProjectWells?.find((x) => x.wellId === w.id && x.wellProjectId === wellProject.id)
+
+                tableRows.push((
+                    <WellTableRow key={w.id} setProject={setProject} wellId={w.id!} project={project} wellProject={wellProject} wellProjectWell={wpw} />
+                ))
+            })
+        } else if (exploration) {
+            wells?.filter((w) => isExplorationWell(w.wellCategory)).forEach((w) => {
+                const ew = explorationWells?.find((x) => x.wellId === w.id && x.explorationId === exploration.id)
+
+                tableRows.push((
+                    <WellTableRow key={w.id} setProject={setProject} wellId={w.id!} project={project} explorationWell={ew} exploration={exploration} />
+                ))
+            })
+        }
         return tableRows
     }
 

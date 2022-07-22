@@ -8,7 +8,7 @@ import {
 } from "react-router"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { Project } from "../models/Project"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 
 import { GetProjectService } from "../Services/ProjectService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
