@@ -15,8 +15,8 @@ namespace api.Adapters
                 RigMobDemob = exploration.RigMobDemob,
                 Currency = exploration.Currency,
                 CostProfile = Convert(exploration.CostProfile),
-                DrillingSchedule = Convert(exploration.DrillingSchedule),
                 GAndGAdminCost = Convert(exploration.GAndGAdminCost),
+                ExplorationWells = exploration.ExplorationWells?.Select(ew => ExplorationWellDtoAdapter.Convert(ew)).ToList()
             };
             return explorationDto;
         }
@@ -37,19 +37,6 @@ namespace api.Adapters
             };
         }
 
-        private static ExplorationDrillingScheduleDto Convert(ExplorationDrillingSchedule? drillingSchedule)
-        {
-            if (drillingSchedule == null)
-            {
-                return null!;
-            }
-            return new ExplorationDrillingScheduleDto
-            {
-                Id = drillingSchedule.Id,
-                StartYear = drillingSchedule.StartYear,
-                Values = drillingSchedule.Values,
-            };
-        }
         private static GAndGAdminCostDto Convert(GAndGAdminCost? gAndGAdminCost)
         {
             if (gAndGAdminCost == null)

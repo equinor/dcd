@@ -17,7 +17,6 @@ namespace api.Adapters
                 Currency = explorationDto.Currency,
             };
             exploration.CostProfile = Convert(explorationDto.CostProfile, exploration);
-            exploration.DrillingSchedule = Convert(explorationDto.DrillingSchedule, exploration);
             exploration.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, exploration);
             return exploration;
         }
@@ -30,7 +29,6 @@ namespace api.Adapters
             existing.RigMobDemob = explorationDto.RigMobDemob;
             existing.Currency = explorationDto.Currency;
             existing.CostProfile = Convert(explorationDto.CostProfile, existing);
-            existing.DrillingSchedule = Convert(explorationDto.DrillingSchedule, existing);
             existing.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, existing);
         }
 
@@ -50,20 +48,7 @@ namespace api.Adapters
                 Values = costProfileDto.Values,
             };
         }
-        private static ExplorationDrillingSchedule Convert(ExplorationDrillingScheduleDto? drillingScheduleDto, Exploration exploration)
-        {
-            if (drillingScheduleDto == null)
-            {
-                return null!;
-            }
-            return new ExplorationDrillingSchedule
-            {
-                Exploration = exploration,
-                Id = drillingScheduleDto.Id,
-                StartYear = drillingScheduleDto.StartYear,
-                Values = drillingScheduleDto.Values
-            };
-        }
+
         private static GAndGAdminCost Convert(GAndGAdminCostDto? gAndGAdminCostDto, Exploration exploration)
         {
             if (gAndGAdminCostDto == null)
