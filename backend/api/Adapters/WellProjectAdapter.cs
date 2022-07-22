@@ -42,7 +42,8 @@ namespace api.Adapters
                 {
                     existing.CostProfile = ConvertExisting(wellProjectDto.CostProfile, existing);
                 }
-                else {
+                else
+                {
                     existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
                 }
             }

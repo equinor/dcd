@@ -15,7 +15,7 @@ namespace api.Adapters
             };
             if (wellProjectWellDto.DrillingSchedule != null)
             {
-                wellProjectWell.DrillingSchedule = Convert(wellProjectWellDto.DrillingSchedule, wellProjectWell);
+                wellProjectWell.DrillingSchedule = Convert(wellProjectWellDto.DrillingSchedule);
             }
             return wellProjectWell;
         }
@@ -31,7 +31,7 @@ namespace api.Adapters
                 }
                 else
                 {
-                    existing.DrillingSchedule = Convert(wellProjectWellDto.DrillingSchedule, existing);
+                    existing.DrillingSchedule = Convert(wellProjectWellDto.DrillingSchedule);
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace api.Adapters
             return existing;
         }
 
-        private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto, WellProjectWell wellProjectWell)
+        private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto)
         {
             if (drillingScheduleDto == null) { return null; }
             var drillingSchedule = new DrillingSchedule
