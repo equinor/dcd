@@ -38,8 +38,29 @@ namespace api.Adapters
 
             if (wellProjectDto.CostProfile != null)
             {
-                existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
+                if (existing.CostProfile != null)
+                {
+                    existing.CostProfile = ConvertExisting(wellProjectDto.CostProfile, existing);
+                }
+                else {
+                    existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
+                }
             }
+        }
+
+        private static WellProjectCostProfile? ConvertExisting(WellProjectCostProfileDto? costProfile, WellProject wellProject)
+        {
+            if (costProfile == null) return null;
+
+            var existing = wellProject.CostProfile;
+
+            existing!.EPAVersion = costProfile.EPAVersion;
+            existing.Currency = costProfile.Currency;
+            existing.StartYear = costProfile.StartYear;
+            existing.Values = costProfile.Values;
+            existing.Override = costProfile.Override;
+
+            return existing;
         }
 
         private static WellProjectCostProfile? Convert(WellProjectCostProfileDto? costProfile, WellProject wellProject)

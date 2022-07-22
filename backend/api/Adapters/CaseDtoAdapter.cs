@@ -55,7 +55,7 @@ namespace api.Adapters
                 // Plugging and abandonment (Well project) * Sum of drilled wells.
                 // Divide cost on last year of production: 50%
                 // And last year + 1 : 50%
-                var linkedWellsDrillingSchedule = projectDto.WellProjects?.FirstOrDefault(wp => wp.Id == caseItem.WellProjectLink)?.WellProjectWells?.Select(wpw => wpw.DrillingSchedule);
+                var linkedWellsDrillingSchedule = projectDto.WellProjects?.FirstOrDefault(wp => wp.Id == caseItem.WellProjectLink)?.WellProjectWells?.Where(wpw => wpw.Count > 0).Select(wpw => wpw.DrillingSchedule);
                 var pluggingAndAbandonment = projectDto.WellProjects?.FirstOrDefault(wp => wp.Id == caseItem.WellProjectLink)?.PluggingAndAbandonment;
                 if (linkedWellsDrillingSchedule != null && pluggingAndAbandonment != null)
                 {

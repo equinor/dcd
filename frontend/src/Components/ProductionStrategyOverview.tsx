@@ -5,7 +5,7 @@ import {
     ChangeEvent, Dispatch, SetStateAction,
 } from "react"
 import styled from "styled-components"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
 

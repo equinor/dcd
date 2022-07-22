@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import { Case } from "../../models/Case"
+import { Case } from "../../models/case/Case"
 import { Project } from "../../models/Project"
 import { WellProjectWell } from "../../models/WellProjectWell"
 import DrillingScheduleRow from "./DrillingScheduleRow"

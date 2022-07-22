@@ -25,11 +25,30 @@ namespace api.Adapters
             existing.Count = wellProjectWellDto.Count;
             if (wellProjectWellDto.DrillingSchedule != null)
             {
-                existing.DrillingSchedule = Convert(wellProjectWellDto.DrillingSchedule, existing);
+                if (existing.DrillingSchedule != null)
+                {
+                    existing.DrillingSchedule = ConvertExisting(wellProjectWellDto.DrillingSchedule, existing);
+                }
+                else
+                {
+                    existing.DrillingSchedule = Convert(wellProjectWellDto.DrillingSchedule, existing);
+                }
             }
         }
 
-        private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto, WellProjectWell wellProject)
+        private static DrillingSchedule? ConvertExisting(DrillingScheduleDto? drillingScheduleDto, WellProjectWell wellProjectWell)
+        {
+            if (drillingScheduleDto == null) { return null; }
+
+            var existing = wellProjectWell.DrillingSchedule;
+
+            existing!.Id = drillingScheduleDto.Id;
+            existing.StartYear = drillingScheduleDto.StartYear;
+            existing.Values = drillingScheduleDto.Values;
+            return existing;
+        }
+
+        private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto, WellProjectWell wellProjectWell)
         {
             if (drillingScheduleDto == null) { return null; }
             var drillingSchedule = new DrillingSchedule

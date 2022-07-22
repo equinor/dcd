@@ -5,9 +5,9 @@ import {
     ChangeEvent, Dispatch, SetStateAction,
 } from "react"
 import styled from "styled-components"
-import { Case } from "../models/Case"
-import { Project } from "../models/Project"
-import { GetCaseService } from "../Services/CaseService"
+import { Case } from "../../models/case/Case"
+import { Project } from "../../models/Project"
+import { GetCaseService } from "../../Services/CaseService"
 
 const ArtificialLiftDropdown = styled(NativeSelect)`
 width: 20rem;
