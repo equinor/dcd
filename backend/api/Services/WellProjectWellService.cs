@@ -175,7 +175,15 @@ namespace api.Services
             }
 
             costProfile = tempCostProfile;
-            wellProject.CostProfile = costProfile;
+            if (wellProject.CostProfile != null)
+            {
+                wellProject.CostProfile.StartYear = costProfile.StartYear;
+                wellProject.CostProfile.Values = costProfile.Values;
+            }
+            else
+            {
+                wellProject.CostProfile = costProfile;
+            }
         }
 
         public WellProjectWell GetWellProjectWell(Guid wellId, Guid caseId)

@@ -45,17 +45,11 @@ namespace api.Adapters
         {
             var cessationWells = new CessationCostDto();
             var cessationOffshoreFacilities = new CessationCostDto();
-            // Find last year of production
-            // Drainage strategy -> Production profile oil, last year
-            // var lastYear = projectDto.DrainageStrategies?.FirstOrDefault(ds => ds.Id == caseItem.DrainageStrategyLink)?.ProductionProfileOil;
             var productionProfileOil = projectDto.DrainageStrategies?.FirstOrDefault(ds => ds.Id == caseItem.DrainageStrategyLink)?.ProductionProfileOil;
             if (productionProfileOil != null)
             {
                 var lastYear = productionProfileOil.StartYear + productionProfileOil.Values.Length - 1;
-                // Plugging and abandonment (Well project) * Sum of drilled wells.
-                // Divide cost on last year of production: 50%
-                // And last year + 1 : 50%
-                var linkedWellsDrillingSchedule = projectDto.WellProjects?.FirstOrDefault(wp => wp.Id == caseItem.WellProjectLink)?.WellProjectWells?.Select(wpw => wpw.DrillingSchedule);
+                var linkedWellsDrillingSchedule = projectDto.WellProjects?.FirstOrDefault(wp => wp.Id == caseItem.WellProjectLink)?.WellProjectWells?.Where(wpw => wpw.Count > 0).Select(wpw => wpw.DrillingSchedule);
                 var pluggingAndAbandonment = projectDto.WellProjects?.FirstOrDefault(wp => wp.Id == caseItem.WellProjectLink)?.PluggingAndAbandonment;
                 if (linkedWellsDrillingSchedule != null && pluggingAndAbandonment != null)
                 {
@@ -64,14 +58,14 @@ namespace api.Adapters
                     var drilledWells = linkedWells.Sum();
                     var totalCost = drilledWells * (double)pluggingAndAbandonment;
                     cessationWells.StartYear = lastYear;
-                    var cessationWellsValues = new double[2] { totalCost / 2, totalCost / 2 };
+                    var cessationWellsValues = new double[] { totalCost / 2, totalCost / 2 };
                     cessationWells.Values = cessationWellsValues;
                 }
                 var surfCessationCost = projectDto.Surfs?.FirstOrDefault(s => s.Id == caseItem.SurfLink)?.CessationCost;
                 if (surfCessationCost != null)
                 {
                     cessationOffshoreFacilities.StartYear = lastYear + 1;
-                    var cessationOffshoreFacilitiesValues = new double[2] { (double)surfCessationCost / 2, (double)surfCessationCost / 2 };
+                    var cessationOffshoreFacilitiesValues = new double[] { (double)surfCessationCost / 2, (double)surfCessationCost / 2 };
                     cessationOffshoreFacilities.Values = cessationOffshoreFacilitiesValues;
                 }
                 var cessation = MergeCessationCosts(cessationWells, cessationOffshoreFacilities);
@@ -101,7 +95,7 @@ namespace api.Adapters
 
             var offset = t1Year < t2Year ? t2Year - t1Year : t1Year - t2Year;
 
-            var values = new List<double>();
+            List<double> values;
             if (t1Year < t2Year)
             {
                 values = MergeTimeSeries(t1Values.ToList(), t2Values.ToList(), offset);
