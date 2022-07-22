@@ -134,7 +134,7 @@ function WellProjectView() {
     if (!wellProject) return null
     return (
         <AssetViewDiv>
-            <WellList project={project} asset={wellProject} setProject={setProject} />
+            <WellList project={project} wellProject={wellProject} setProject={setProject} />
 
             <Wrapper>
                 <Typography variant="h2">WellProject</Typography>
@@ -229,7 +229,7 @@ function WellProjectView() {
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules
                 setProject={setProject}
-                assetWells={wellProjectWells}
+                wellProjectWells={wellProjectWells}
                 project={project}
                 caseItem={caseItem!}
                 firstYear={firstTSYear}

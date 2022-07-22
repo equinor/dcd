@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
     Button, Input, NativeSelect, Table,
 } from "@equinor/eds-core-react"
@@ -11,17 +12,22 @@ import { GetWellProjectWellService } from "../../Services/WellProjectWellService
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Project } from "../../models/Project"
 import { GetWellService } from "../../Services/WellService"
+import { Exploration } from "../../models/assets/exploration/Exploration"
+import { ExplorationWell } from "../../models/ExplorationWell"
+import { ExplorationWellService, GetExplorationWellService } from "../../Services/ExplorationWellService"
 
 interface Props {
     wellId: string
     project: Project
-    wellProjectWell: WellProjectWell | undefined
-    wellProject: WellProject
+    wellProjectWell?: WellProjectWell | undefined
+    explorationWell?: ExplorationWell | undefined
+    wellProject?: WellProject
+    exploration?: Exploration
     setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
 function WellTableRow({
-    wellId, project, wellProjectWell, wellProject, setProject,
+    wellId, project, wellProjectWell, explorationWell, wellProject, exploration, setProject,
 }: Props) {
     const [well, setWell] = useState<Well | undefined>(project.wells?.find((w) => w.id === wellId))
     const [wellName, setWellName] = useState<string>(well?.name ?? "")
@@ -54,49 +60,67 @@ function WellTableRow({
 
     const onWellCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
         switch (event.currentTarget.selectedOptions[0].value) {
-        case "0":
-            setWellCategory(0)
-            break
-        case "1":
-            setWellCategory(1)
-            break
-        case "2":
-            setWellCategory(2)
-            break
-        case "3":
-            setWellCategory(3)
-            break
-        case "4":
-            setWellCategory(4)
-            break
-        case "5":
-            setWellCategory(5)
-            break
-        case "6":
-            setWellCategory(6)
-            break
-        case "7":
-            setWellCategory(7)
-            break
-        default:
-            setWellCategory(0)
-            break
+            case "0":
+                setWellCategory(0)
+                break
+            case "1":
+                setWellCategory(1)
+                break
+            case "2":
+                setWellCategory(2)
+                break
+            case "3":
+                setWellCategory(3)
+                break
+            case "4":
+                setWellCategory(4)
+                break
+            case "5":
+                setWellCategory(5)
+                break
+            case "6":
+                setWellCategory(6)
+                break
+            case "7":
+                setWellCategory(7)
+                break
+            default:
+                setWellCategory(0)
+                break
         }
     }
 
-    const changeWellCase = async (w: Well, wpw: WellProjectWell | undefined, increase: boolean) => {
-        if (!wpw) {
-            const newWellCase = new WellProjectWell()
-            newWellCase.wellId = w.id
-            newWellCase.wellProjectId = wellProject.id
-            newWellCase.count = 1
-            const newProject = await (await GetWellProjectWellService()).createWellProjectWell(newWellCase)
-            setProject(newProject)
-        } else {
-            const newWellCase = { ...wpw }
-            newWellCase.count! = increase ? wpw.count! + 1 : wpw.count! - 1
-            const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newWellCase)
-            setProject(newProject)
+    const changeAssetWell = async (w: Well, wpw: WellProjectWell | undefined, ew: ExplorationWell | undefined, increase: boolean) => {
+        if (wellProject) {
+            if (!wpw) {
+                const newWellProjectWell = new WellProjectWell()
+                newWellProjectWell.wellId = w.id
+                newWellProjectWell.wellProjectId = wellProject.id
+                newWellProjectWell.count = 1
+                const newProject = await (await GetWellProjectWellService()).createWellProjectWell(newWellProjectWell)
+                setProject(newProject)
+            } else {
+                const newWellProjectWell = { ...wpw }
+                newWellProjectWell.count! = increase ? wpw.count! + 1 : wpw.count! - 1
+                const newProject = await (await GetWellProjectWellService()).updateWellProjectWell(newWellProjectWell)
+                setProject(newProject)
+            }
+        } else if (exploration) {
+            if (ew) {
+                if (!ExplorationWellService) {
+                    const newExplorationWell = new ExplorationWell()
+                    newExplorationWell.wellId = w.id
+                    newExplorationWell.explorationId = exploration.id
+                    newExplorationWell.count = 1
+                    const newProject = await (await GetExplorationWellService()).createExplorationWell(newExplorationWell)
+                    setProject(newProject)
+                } else {
+                    const newExplorationWell = { ...ew }
+                    newExplorationWell.count! = increase ? ew.count! + 1 : ew.count! - 1
+                    const newProject = await (await GetExplorationWellService()).updateExplorationWell(newExplorationWell)
+                    setProject(newProject)
+                }
+            }
         }
     }
 
@@ -106,9 +130,9 @@ function WellTableRow({
 
         <Table.Row key={well.id}>
             <Table.Cell>
-                {wellProjectWell?.count ?? 0}
-                <Button onClick={() => changeWellCase(well, wellProjectWell, true)}>Increase</Button>
-                <Button onClick={() => changeWellCase(well, wellProjectWell, false)}>Decrease</Button>
+                {wellProjectWell?.count ?? explorationWell?.count ?? 0}
+                <Button onClick={() => changeAssetWell(well, wellProjectWell, explorationWell, true)}>Increase</Button>
+                <Button onClick={() => changeAssetWell(well, wellProjectWell, explorationWell, false)}>Decrease</Button>
             </Table.Cell>
             <Table.Cell>
                 <Input
@@ -128,14 +152,22 @@ function WellTableRow({
                     onChange={onWellCategoryChange}
                     onBlur={updateWell}
                 >
-                    <option key="0" value={0}>Oil producer</option>
-                    <option key="1" value={1}>Gas producer</option>
-                    <option key="2" value={2}>Water injector</option>
-                    <option key="3" value={3}>Gas Injector</option>
-                    {/* <option key="4" value={4}>Exploration well</option>
-                    <option key="5" value={5}>Appraisal well</option>
-                    <option key="6" value={6}>Sidetrack</option> */}
-                    <option key="7" value={7}>Rig mob/demob</option>
+                    {wellProject ? (
+                        <>
+                            <option key="0" value={0}>Oil producer</option>
+                            <option key="1" value={1}>Gas producer</option>
+                            <option key="2" value={2}>Water injector</option>
+                            <option key="3" value={3}>Gas Injector</option>
+                            <option key="7" value={7}>Rig mob/demob</option>
+                        </>
+                    )
+                        : (
+                            <>
+                                <option key="4" value={4}>Exploration well</option>
+                                <option key="5" value={5}>Appraisal well</option>
+                                <option key="6" value={6}>Sidetrack</option>
+                            </>
+                        )}
                 </NativeSelect>
             </Table.Cell>
             <Table.Cell>

@@ -42,7 +42,7 @@ const ExplorationView = () => {
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
-    const [wellProjectWells, setWellProjectWells] = useState<ExplorationWell[] | null | undefined>()
+    const [explorationWells, setExplorationWellsWells] = useState<ExplorationWell[] | null | undefined>()
     const [, setWells] = useState<Well[]>()
 
     const [explorationService, setExplorationService] = useState<IAssetService>()
@@ -69,7 +69,7 @@ const ExplorationView = () => {
                 let newExploration = project.explorations.find((s) => s.id === explorationId)
                 if (newExploration !== undefined) {
                     setExploration(newExploration)
-                    setWellProjectWells(newExploration.explorationWells)
+                    setExplorationWellsWells(newExploration.explorationWells)
                 } else {
                     newExploration = new Exploration()
                     newExploration.currency = project.currency
@@ -126,7 +126,7 @@ const ExplorationView = () => {
 
     return (
         <AssetViewDiv>
-            <WellList project={project} asset={exploration} setProject={setProject} />
+            <WellList project={project} exploration={exploration} setProject={setProject} />
 
             <Wrapper>
                 <Typography variant="h2">Exploration</Typography>
@@ -191,7 +191,7 @@ const ExplorationView = () => {
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules
                 setProject={setProject}
-                assetWells={wellProjectWells}
+                explorationWells={explorationWells}
                 project={project}
                 caseItem={caseItem!}
                 firstYear={firstTSYear}

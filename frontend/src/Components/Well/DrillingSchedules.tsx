@@ -6,7 +6,8 @@ import { WellProjectWell } from "../../models/WellProjectWell"
 import DrillingScheduleRow from "./DrillingScheduleRow"
 
 interface Props {
-    assetWells: WellProjectWell[] | ExplorationWell[] | null | undefined
+    wellProjectWells?: WellProjectWell[] | null | undefined
+    explorationWells?: ExplorationWell[] | null | undefined
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project
     caseItem: Case
@@ -17,7 +18,8 @@ interface Props {
 }
 
 const DrillingSchedules = ({
-    assetWells,
+    wellProjectWells,
+    explorationWells,
     setProject,
     project,
     caseItem,
@@ -28,24 +30,46 @@ const DrillingSchedules = ({
 }: Props) => {
     const GenerateDrillingSchedules = () => {
         const drillingSchedules: JSX.Element[] = []
-        assetWells?.forEach((aw) => {
-            const well = project.wells?.find((w) => w.id === aw.wellId)
-            if (well && aw.count && aw.count > 0) {
-                drillingSchedules.push((
-                    <DrillingScheduleRow
-                        dG4Year={caseItem.DG4Date?.getFullYear()}
-                        firstYear={firstYear}
-                        lastYear={lastYear}
-                        setFirstYear={setFirstYear}
-                        setLastYear={setLastYear}
-                        setProject={setProject}
-                        timeSeriesTitle={well.name ?? ""}
-                        assetWell={aw}
-                        key={well.id}
-                    />
-                ))
-            }
-        })
+        if (wellProjectWells) {
+            wellProjectWells?.forEach((aw) => {
+                const well = project.wells?.find((w) => w.id === aw.wellId)
+                if (well && aw.count && aw.count > 0) {
+                    drillingSchedules.push((
+                        <DrillingScheduleRow
+                            dG4Year={caseItem.DG4Date?.getFullYear()}
+                            firstYear={firstYear}
+                            lastYear={lastYear}
+                            setFirstYear={setFirstYear}
+                            setLastYear={setLastYear}
+                            setProject={setProject}
+                            timeSeriesTitle={well.name ?? ""}
+                            wellProjectWell={aw}
+                            key={well.id}
+                        />
+                    ))
+                }
+            })
+        } else if (explorationWells) {
+            explorationWells?.forEach((aw) => {
+                const well = project.wells?.find((w) => w.id === aw.wellId)
+                if (well && aw.count && aw.count > 0) {
+                    drillingSchedules.push((
+                        <DrillingScheduleRow
+                            dG4Year={caseItem.DG4Date?.getFullYear()}
+                            firstYear={firstYear}
+                            lastYear={lastYear}
+                            setFirstYear={setFirstYear}
+                            setLastYear={setLastYear}
+                            setProject={setProject}
+                            timeSeriesTitle={well.name ?? ""}
+                            explorationWell={aw}
+                            key={well.id}
+                        />
+                    ))
+                }
+            })
+        }
+
         return drillingSchedules
     }
 
