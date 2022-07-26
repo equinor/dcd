@@ -39,7 +39,7 @@ public class CaseShould : IDisposable
         CaseService caseService = new
             CaseService(fixture.context, projectService, loggerFactory);
 
-        caseService.CreateCase(CaseDtoAdapter.Convert(actual));
+        caseService.CreateCase(CaseDtoAdapter.Convert(actual, ProjectDtoAdapter.Convert(project)));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Cases;
@@ -69,7 +69,7 @@ public class CaseShould : IDisposable
         var updatedCase = CreateUpdatedCase(project);
 
         // Act
-        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase));
+        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase, ProjectDtoAdapter.Convert(project)));
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
@@ -85,7 +85,7 @@ public class CaseShould : IDisposable
         var caseService = new CaseService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
-        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
+        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem, ProjectDtoAdapter.Convert(project)));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
         o.Name == project.Name).Cases;
@@ -118,7 +118,7 @@ public class CaseShould : IDisposable
 
         var project = fixture.context.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
-        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
+        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem, ProjectDtoAdapter.Convert(project)));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
             o.Name == project.Name).Cases;

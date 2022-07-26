@@ -1,5 +1,5 @@
 import apiConfig from "../api/apiConfig"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 
 export const LoginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"

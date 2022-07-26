@@ -32,7 +32,7 @@ import { unwrapProjectId, GetProjectCategoryName, GetProjectPhaseName } from "..
 import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import LinearDataTable from "../Components/LinearDataTable"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"

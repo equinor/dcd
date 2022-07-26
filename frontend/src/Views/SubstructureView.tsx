@@ -7,7 +7,7 @@ import {
 } from "react-router"
 import TimeSeries from "../Components/TimeSeries"
 import { Substructure } from "../models/assets/substructure/Substructure"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSubstructureService } from "../Services/SubstructureService"
