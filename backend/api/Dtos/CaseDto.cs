@@ -32,9 +32,19 @@ namespace api.Dtos
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
         public CapexYear? CapexYear { get; set; }
+
+        public  double Opex { get; set; }
+
+        public OpexYear? OpexYear { get; set; }
     }
 
     public class CapexYear
+    {
+        public double[]? Values { get; set; }
+        public int? StartYear { get; set; }
+    }
+
+    public class OpexYear
     {
         public double[]? Values { get; set; }
         public int? StartYear { get; set; }
