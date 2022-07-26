@@ -1,3 +1,4 @@
+using api.Dtos;
 using api.Models;
 
 namespace api.Dtos
@@ -33,13 +34,22 @@ namespace api.Dtos
         public double Capex { get; set; }
         public CapexYear? CapexYear { get; set; }
         public CessationCostDto? CessationCost { get; set; }
+        public double Opex { get; set; }
+        public OpexYear? OpexYear { get; set; }
     }
+
 
     public class CessationCostDto : TimeSeriesCostDto
     {
     }
 
     public class CapexYear
+    {
+        public double[]? Values { get; set; }
+        public int? StartYear { get; set; }
+    }
+
+    public class OpexYear
     {
         public double[]? Values { get; set; }
         public int? StartYear { get; set; }
