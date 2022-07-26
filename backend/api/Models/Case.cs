@@ -31,6 +31,18 @@ namespace api.Models
         public Guid TopsideLink { get; set; } = Guid.Empty;
         public Guid TransportLink { get; set; } = Guid.Empty;
         public Guid ExplorationLink { get; set; } = Guid.Empty;
+
+        public StudyCost StudyCost { get; set; }
+
+        public WellInterventionCost WellIntervention { get; set; }
+
+        public OpexCost OpexCost { get; set; }
+
+        public CessationCost TotalCessationCost { get; set; }
+
+        public CessationCost CessationWells { get; set; }
+
+        public CessationCost CessationOffshoreFacilities { get; set; }
     }
 
     public enum ArtificialLift
@@ -49,6 +61,24 @@ namespace api.Models
         Mixed
     }
     public class CessationCost : TimeSeriesCost
+    {
+        [ForeignKey("Case.Id")]
+        public Case Case { get; set; } = null!;
+    }
+
+    public class StudyCost : TimeSeriesCost
+    {
+        [ForeignKey("Case.Id")]
+        public Case Case { get; set; } = null!;
+    }
+
+    public class WellInterventionCost : TimeSeriesCost
+    {
+        [ForeignKey("Case.Id")]
+        public Case Case { get; set; } = null!;
+    }
+
+    public class OpexCost : TimeSeriesCost
     {
         [ForeignKey("Case.Id")]
         public Case Case { get; set; } = null!;
