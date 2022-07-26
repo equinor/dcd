@@ -10,19 +10,20 @@ import {
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { Project } from "../models/Project"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
-import CaseAsset from "../Components/CaseAsset"
-import CaseDescription from "../Components/CaseDescription"
-import CaseName from "../Components/CaseName"
+import CaseAsset from "../Components/Case/CaseAsset"
+import CaseDescription from "../Components/Case/CaseDescription"
+import CaseName from "../Components/Case/CaseName"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import CaseDGDate from "../Components/CaseDGDate"
-import CaseArtificialLift from "../Components/CaseArtificialLift"
+import CaseDGDate from "../Components/Case/CaseDGDate"
+import CaseArtificialLift from "../Components/Case/CaseArtificialLift"
 import DGEnum from "../models/DGEnum"
 import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import ExcelUpload from "../Components/ExcelUpload"
+import CaseCessationCostProfile from "../Components/Case/CaseCessationCostProfile"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -273,6 +274,11 @@ function CaseView() {
                         label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                     />
                 </Wrapper>
+                <DividerLine />
+                <CaseCessationCostProfile
+                    dG4Year={caseItem.DG4Date?.getFullYear()}
+                    timeSeries={caseItem.cessationCost}
+                />
                 <DividerLine />
                 <CaseAsset
                     caseItem={caseItem}

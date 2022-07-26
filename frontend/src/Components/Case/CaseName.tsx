@@ -16,11 +16,11 @@ import {
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { edit } from "@equinor/eds-icons"
-import { Modal } from "../Components/Modal"
-import { Project } from "../models/Project"
-import { Case } from "../models/Case"
-import { GetCaseService } from "../Services/CaseService"
-import { unwrapCase } from "../Utils/common"
+import { Modal } from "../../Components/Modal"
+import { Project } from "../../models/Project"
+import { Case } from "../../models/case/Case"
+import { GetCaseService } from "../../Services/CaseService"
+import { unwrapCase } from "../../Utils/common"
 
 const CaseHeader = styled.div`
     margin-bottom: 2rem;

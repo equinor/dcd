@@ -27,7 +27,7 @@ namespace api.Services
             foreach (Case c in project.Cases!)
             {
                 ProjectDto projectDto = ProjectDtoAdapter.Convert(project);
-                CaseDto caseDto = CaseDtoAdapter.Convert(c);
+                CaseDto caseDto = CaseDtoAdapter.Convert(c, projectDto);
                 STEACaseDto sTEACaseDto = STEACaseDtoBuilder.Build(caseDto, projectDto);
                 sTEACaseDtos.Add(sTEACaseDto);
             }

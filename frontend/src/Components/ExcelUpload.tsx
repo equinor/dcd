@@ -3,7 +3,7 @@ import {
     Dispatch, SetStateAction, useRef, useState,
 } from "react"
 import { useParams } from "react-router"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetUploadService } from "../Services/UploadService"
 import { unwrapCase } from "../Utils/common"

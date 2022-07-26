@@ -29,7 +29,7 @@
         "@equinor/eds-tokens": "^0.7.0",
         "@equinor/fusion": "^3.3.21",
         "@equinor/fusion-components": "^2.5.25",
-        "@equinor/fusion-framework-react-app": "^0.2.6",        
+        "@equinor/fusion-framework-react-app": "^0.2.6",
         "@material-ui/core": "^4.12.3",
         "@microsoft/applicationinsights-react-js": "^3.2.1",
         "@microsoft/applicationinsights-web": "^2.7.1",
@@ -41,6 +41,7 @@
         "lodash": "^4.17.21",
         "plotly.js": "^2.8.1",
         "plotly.js-dist": "^2.8.1",
+        "react": "^17.0.2",
         "react-chartjs-2": "^4.1.0",
         "react-datasheet": "^1.4.9",
         "react-dom": "^17.0.2",
@@ -103,8 +104,8 @@
         "eslint-plugin-jsx-a11y": "^6.5.1",
         "eslint-plugin-react": "^7.28.0",
         "eslint-plugin-react-hooks": "^4.3.0",
+        "react-hot-loader": "^4.13.0",
         "react-scripts": "^5.0.0",
-        "typescript": "^4.5.5",
-        "react-hot-loader": "^4.13.0"
+        "typescript": "^4.5.5"
     }
 }

@@ -1,3 +1,5 @@
+import { CaseCessationCostProfile } from "./CaseCessationCostProfile"
+
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
     capexYear?: Components.Schemas.CapexYear
@@ -26,6 +28,7 @@ export class Case implements Components.Schemas.CaseDto {
     waterInjectorCount?: number
     facilitiesAvailability?: number
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
+    cessationCost?: CaseCessationCostProfile
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -55,6 +58,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.waterInjectorCount = data.waterInjectorCount
         this.facilitiesAvailability = data.facilitiesAvailability
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
+        this.cessationCost = CaseCessationCostProfile.fromJSON(data.cessationCost)
     }
 
     static Copy(data: Case) {

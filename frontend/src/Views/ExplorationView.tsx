@@ -6,7 +6,7 @@ import {
     useParams,
 } from "react-router"
 import { Exploration } from "../models/assets/exploration/Exploration"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"

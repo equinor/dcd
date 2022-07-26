@@ -17,11 +17,11 @@ import {
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
-import { Project } from "../models/Project"
-import { Case } from "../models/Case"
-import { GetCaseService } from "../Services/CaseService"
-import { unwrapCase } from "../Utils/common"
-import DGEnum from "../models/DGEnum"
+import { Project } from "../../models/Project"
+import { Case } from "../../models/case/Case"
+import { GetCaseService } from "../../Services/CaseService"
+import { unwrapCase } from "../../Utils/common"
+import DGEnum from "../../models/DGEnum"
 
 const DgField = styled.div`
     margin-bottom: 2.5rem;

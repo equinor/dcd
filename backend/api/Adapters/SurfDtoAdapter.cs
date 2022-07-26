@@ -31,7 +31,8 @@ namespace api.Adapters
                 ProspVersion = surf.ProspVersion,
                 ApprovedBy = surf.ApprovedBy,
                 DG3Date = surf.DG3Date,
-                DG4Date = surf.DG4Date
+                DG4Date = surf.DG4Date,
+                CessationCost = surf.CessationCost,
             };
 
             if (surf.CostProfile != null)
