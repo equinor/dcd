@@ -27,6 +27,8 @@ import { GetCaseService } from "../Services/CaseService"
 import DefinitionView from "./DefinitionView"
 import ExplorationView from "./ExplorationView"
 import ExplorationViewTab from "./ExplorationViewTab"
+import { Modal } from "../Components/Modal"
+import { EditCaseInputModal } from "./EditCaseInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -79,6 +81,8 @@ const StyledTabPanel = styled(Panel)`
 `
 
 function CaseView() {
+    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
+
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
@@ -93,6 +97,8 @@ function CaseView() {
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
+
+    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
     useEffect(() => {
         (async () => {
@@ -160,7 +166,7 @@ function CaseView() {
             <TopWrapper>
                 <PageTitle variant="h4">{caseItem.name}</PageTitle>
                 <TransparentButton
-                    onClick={() => console.log("Edit Case input clicked")}
+                    onClick={() => toggleEditCaseModal()}
                 >
                     Edit Case input
                 </TransparentButton>
@@ -291,6 +297,12 @@ function CaseView() {
                 />
 
             </CaseViewDiv>
+            <EditCaseInputModal
+                toggleEditCaseModal={toggleEditCaseModal}
+                caseItem={caseItem}
+                isOpen={editCaseModalIsOpen}
+                shards={[]}
+            />
         </div>
     )
 }
