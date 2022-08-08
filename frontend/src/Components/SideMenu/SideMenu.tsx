@@ -1,5 +1,5 @@
 import { Divider } from "@equinor/eds-core-react"
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 
 import { useEffect, useState } from "react"
 import styled from "styled-components"
@@ -47,6 +47,7 @@ interface Props {
 const SideMenu: React.FC<Props> = ({ children }) => {
     const [project, setProject] = useState<Project>()
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
+    const location = useLocation()
 
     useEffect(() => {
         if (fusionProjectId) {
@@ -60,7 +61,7 @@ const SideMenu: React.FC<Props> = ({ children }) => {
                 }
             })()
         }
-    }, [])
+    }, [location.pathname])
 
     if (project) {
         return (
