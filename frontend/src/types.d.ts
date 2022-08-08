@@ -457,6 +457,19 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
+    namespace CasesCopy {
+        namespace Post {
+            namespace Parameters {
+                export type CopyCaseId = string; // uuid
+            }
+            export interface QueryParameters {
+                copyCaseId?: Parameters.CopyCaseId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDto;
+            }
+        }
+    }
     namespace CreateCase {
         export type RequestBody = Components.Schemas.CaseDto;
         namespace Responses {
