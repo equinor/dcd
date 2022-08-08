@@ -11,24 +11,30 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<WellProjectService> _logger;
 
-        public WellProjectService(DcdDbContext context, ProjectService projectService)
+
+        public WellProjectService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<WellProjectService>();
+
         }
 
         public IEnumerable<WellProject> GetWellProjects(Guid projectId)
         {
             if (_context.WellProjects != null)
             {
+
                 return _context.WellProjects
                         .Include(c => c.CostProfile)
-                        .Include(c => c.DrillingSchedule)
+                        .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
                     .Where(d => d.Project.Id.Equals(projectId));
             }
             else
             {
+
                 return new List<WellProject>();
             }
         }
@@ -56,6 +62,9 @@ namespace api.Services
 
         public ProjectDto DeleteWellProject(Guid wellProjectId)
         {
+            _logger.LogWarning("An example of a Warning trace..");
+            _logger.LogError("An example of an Error level message");
+
             var wellProject = GetWellProject(wellProjectId);
             _context.WellProjects!.Remove(wellProject);
             DeleteCaseLinks(wellProjectId);
@@ -84,11 +93,6 @@ namespace api.Services
                 _context.WellProjectCostProfile!.Remove(existing.CostProfile);
             }
 
-            if (updatedWellProject.DrillingSchedule == null && existing.DrillingSchedule != null)
-            {
-                _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
-            }
-
             _context.WellProjects!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedWellProject.ProjectId);
@@ -98,7 +102,7 @@ namespace api.Services
         {
             var wellProject = _context.WellProjects!
                 .Include(c => c.CostProfile)
-                .Include(c => c.DrillingSchedule)
+                .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
                 .FirstOrDefault(o => o.Id == wellProjectId);
             if (wellProject == null)
             {

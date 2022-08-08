@@ -27,8 +27,9 @@ namespace tests
         public void GetTransports()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var transportService = new TransportService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var expectedTransports = fixture.context.Transports.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -49,9 +50,10 @@ namespace tests
         public void CreateNewTransport()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var transportService = new TransportService(fixture.context, projectService);
-            var project = fixture.context.Projects.FirstOrDefault();
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedTransport = CreateTestTransport(project);
 
@@ -62,39 +64,98 @@ namespace tests
             var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == expectedTransport.Name);
             Assert.NotNull(actualTransport);
             TestHelper.CompareTransports(expectedTransport, actualTransport);
+            var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
+            Assert.Equal(actualTransport.Id, case_.TransportLink);
+        }
+
+        [Fact]
+        public void ThrowNotInDatabaseExceptionWhenCreatingTransportWithBadProjectId()
+        {
+            // Arrange
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var caseId = project.Cases.FirstOrDefault().Id;
+            var expectedTransport = CreateTestTransport(new Project { Id = new Guid() });
+
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), caseId));
+        }
+
+        [Fact]
+        public void ThrowNotFoundInDatabaseExceptionWhenCreatingTransportWithBadCaseId()
+        {
+            // Arrange
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
+            var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
+            var expectedTransport = CreateTestTransport(project);
+
+            // Act, assert
+            Assert.Throws<NotFoundInDBException>(() => transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), new Guid()));
         }
 
         [Fact]
         public void DeleteTransport()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var transportService = new TransportService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var transportToDelete = CreateTestTransport(project);
-
             fixture.context.Transports.Add(transportToDelete);
+            fixture.context.Cases.Add(new Case
+            {
+                Project = project,
+                TransportLink = transportToDelete.Id
+            });
             fixture.context.SaveChanges();
 
             // Act
             var projectResult = transportService.DeleteTransport(transportToDelete.Id);
 
             // Assert
-            var actualDrainageStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == transportToDelete.Name);
-            Assert.Null(actualDrainageStrategy);
+            var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == transportToDelete.Name);
+            Assert.Null(actualTransport);
+            var casesWithTransportLink = projectResult.Cases.Where(o => o.TransportLink == transportToDelete.Id);
+            Assert.Empty(casesWithTransportLink);
+        }
+
+        [Fact]
+        public void ThrowArgumentExceptionIfTryingToDeleteNonExistentTransport()
+        {
+            // Arrange
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
+            var project = fixture.context.Projects.FirstOrDefault();
+            var transportToDelete = CreateTestTransport(project);
+            fixture.context.Transports.Add(transportToDelete);
+            fixture.context.SaveChanges();
+
+            // Act
+            transportService.DeleteTransport(transportToDelete.Id);
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => transportService.DeleteTransport(transportToDelete.Id));
         }
 
         [Fact]
         public void UpdateTransport()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var transportService = new TransportService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldTransport = CreateTestTransport(project);
             fixture.context.Transports.Add(oldTransport);
             fixture.context.SaveChanges();
             var updatedTransport = CreateUpdatedTransport(project, oldTransport);
+            updatedTransport.Id = oldTransport.Id;
 
             // Act
             var projectResult = transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport));
@@ -119,10 +180,32 @@ namespace tests
             {
                 Currency = Currency.USD,
                 StartYear = 2030,
-                Values = new double[] { 13.4, 18.9, 34.3 }
-            }
-            );
+                Values = new double[] { 23.4, 28.9, 24.3 }
+            })
+            .WithTransportCessationCostProfile(new TransportCessationCostProfile()
+            {
+                Currency = Currency.USD,
+                StartYear = 2030,
+                Values = new double[] { 17.4, 17.9, 37.3 }
+            });
+        }
 
+        [Fact]
+        public void ThrowArgumentExceptionIfTryingToUpdateNonExistentTransport()
+        {
+            // Arrange
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var transportService = new TransportService(fixture.context, projectService, loggerFactory);
+            var project = fixture.context.Projects.FirstOrDefault();
+            var oldTransport = CreateTestTransport(project);
+            fixture.context.Transports.Add(oldTransport);
+            fixture.context.SaveChanges();
+            var updatedTransport = CreateUpdatedTransport(project, oldTransport);
+            updatedTransport.Id = new Guid();
+
+            // Act, assert
+            Assert.Throws<ArgumentException>(() => transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport)));
         }
 
         private static Transport CreateTestTransport(Project project)
@@ -141,7 +224,7 @@ namespace tests
                 StartYear = 2030,
                 Values = new double[] { 13.4, 18.9, 34.3 }
             })
-            .WithCostProfile(new TransportCostProfile()
+            .WithTransportCessationCostProfile(new TransportCessationCostProfile()
             {
                 Currency = Currency.USD,
                 StartYear = 2030,

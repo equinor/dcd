@@ -1,0 +1,67 @@
+trigger:
+    branches:
+        include:
+            - main
+    tags:
+        include:
+            - v*
+    paths:
+        exclude:
+            - /*
+pool:
+    vmImage: "ubuntu-latest"
+
+variables:
+  - group: DCD
+  - group: DCD-KeyVault
+
+stages:
+  - template: templates/stage-build-fusion.yml
+    parameters:
+      workSpace: $(Pipeline.Workspace)
+      buildId: $(Build.BuildId)
+      dt_tenant: $(dynatrace_tenant)
+      dt_password: $(dynatrace-prod-token)
+      dt_url: $(dynatrace_baseurl)
+      azAppConfig: $(azureAppConfig)
+      sourcesDirectory: $(Build.SourcesDirectory)
+      name: "DCD"
+
+  - template: templates/stage-deploy-fusion.yml
+    parameters:
+        appName: Deploy_CI
+        envshortname: ci
+        envfullname: CI
+        portalUrl: "https://pro-s-portal-ci.azurewebsites.net/"
+        buildId: $(Build.BuildId)
+        radixToken: $(RadixToken)
+        branch: main
+        DBContext: $(DbConnectionStringDev)
+        FusionEnvId: $(FusionAppIdCi)
+        FusionServiceConnection: 'conceptapp-preprod'
+
+  - template: templates/stage-deploy-fusion.yml
+    parameters:
+        appName: Deploy_QA
+        envshortname: qa
+        envfullname: QA
+        portalUrl: "https://pro-s-portal-fqa.azurewebsites.net/"
+        buildId: $(Build.BuildId)
+        radixToken: $(RadixToken)
+        branch: main
+        DBContext: $(DbConnectionStringQa)
+        FusionEnvId: $(FusionAppIdQA)
+        FusionServiceConnection: 'conceptapp-preprod'
+
+  - template: templates/stage-deploy-fusion.yml
+    parameters:
+        appName: Deploy_Prod
+        envshortname: prod
+        envfullname: Production
+        portalUrl: "https://pro-s-portal-fprd.azurewebsites.net"
+        buildId: $(Build.BuildId)
+        radixToken: $(RadixToken)
+        branch: main
+        DBContext: $(DbConnectionStringProd)
+        FusionEnvId: $(FusionAppIdQA)
+        FusionServiceConnection: 'conceptapp-preprod'

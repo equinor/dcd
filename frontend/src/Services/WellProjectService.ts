@@ -17,9 +17,9 @@ export class __WellProjectService extends __BaseService implements IAssetService
     }
 }
 
-export function GetWellProjectService() {
+export async function GetWellProjectService() {
     return new __WellProjectService({
         ...config.WellProjectService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

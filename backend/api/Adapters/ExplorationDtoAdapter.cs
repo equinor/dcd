@@ -13,11 +13,10 @@ namespace api.Adapters
                 ProjectId = exploration.ProjectId,
                 Name = exploration.Name,
                 RigMobDemob = exploration.RigMobDemob,
-                WellType = exploration.WellType,
                 Currency = exploration.Currency,
                 CostProfile = Convert(exploration.CostProfile),
                 DrillingSchedule = Convert(exploration.DrillingSchedule),
-                GAndGAdminCost = Convert(exploration.GAndGAdminCost)
+                GAndGAdminCost = Convert(exploration.GAndGAdminCost),
             };
             return explorationDto;
         }

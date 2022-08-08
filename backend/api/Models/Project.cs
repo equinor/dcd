@@ -5,6 +5,7 @@ namespace api.Models
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public Guid CommonLibraryId { get; set; }
+        public Guid FusionProjectId { get; set; }
         public string CommonLibraryName { get; set; } = null!;
         public string Description { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
@@ -12,6 +13,7 @@ namespace api.Models
         public PhysUnit PhysicalUnit { get; set; }
         public DateTimeOffset CreateDate { get; set; }
         public ICollection<Case>? Cases { get; set; }
+        public ICollection<Well>? Wells { get; set; }
         public ICollection<Surf>? Surfs { get; set; }
         public ICollection<Substructure>? Substructures { get; set; }
         public ICollection<Topside>? Topsides { get; set; }
@@ -30,8 +32,9 @@ namespace api.Models
     }
     public enum Currency
     {
-        USD,
-        NOK
+        NOK = 1,
+        USD = 2,
+
     }
     public enum ProjectPhase
     {
