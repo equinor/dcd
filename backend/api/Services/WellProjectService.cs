@@ -19,14 +19,12 @@ namespace api.Services
             _context = context;
             _projectService = projectService;
             _logger = loggerFactory.CreateLogger<WellProjectService>();
-
         }
 
         public IEnumerable<WellProject> GetWellProjects(Guid projectId)
         {
             if (_context.WellProjects != null)
             {
-
                 return _context.WellProjects
                         .Include(c => c.CostProfile)
                         .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
@@ -34,7 +32,6 @@ namespace api.Services
             }
             else
             {
-
                 return new List<WellProject>();
             }
         }
@@ -83,9 +80,7 @@ namespace api.Services
             }
         }
 
-        // Drilling schedule
-        // well cost
-        public void CalculateCostProfile(WellProject? wellProject, WellProjectWell wellProjectWell)
+        public void CalculateCostProfile(WellProject? wellProject, WellProjectWell wellProjectWell, Well? updatedWell)
         {
             if (wellProject != null && wellProject?.CostProfile?.Override != true)
             {
@@ -94,7 +89,16 @@ namespace api.Services
                     && (wellProject.WellProjectWells.Any(wpw => wpw.DrillingSchedule != null
                     && wpw.WellId != wellProjectWell.WellId) || wellProjectWell.DrillingSchedule != null))
                 {
-                    GenerateCostProfileFromDrillingSchedules(wellProject, wellProject.WellProjectWells.ToList(), project.Wells.ToList());
+                    var wells = project.Wells.ToList();
+                    if (updatedWell != null)
+                    {
+                        var index = wells.FindIndex(w => w.Id == updatedWell.Id);
+                        if (index >= 0)
+                        {
+                            wells[index].WellCost = updatedWell.WellCost;
+                        }
+                    }
+                    GenerateCostProfileFromDrillingSchedules(wellProject, wellProject.WellProjectWells.ToList(), wells);
                     var wellProjectDto = WellProjectDtoAdapter.Convert(wellProject);
                     UpdateWellProject(wellProjectDto);
                 }

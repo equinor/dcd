@@ -11,13 +11,15 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly WellProjectService _wellProjectService;
         private readonly ILogger<CaseService> _logger;
 
-        public WellService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+        public WellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
             _logger = loggerFactory.CreateLogger<CaseService>();
+            _wellProjectService = wellProjectService;
         }
 
         public ProjectDto CreateWell(WellDto wellDto)
@@ -31,7 +33,18 @@ namespace api.Services
         public ProjectDto UpdateWell(WellDto updatedWellDto)
         {
             var existing = GetWell(updatedWellDto.Id);
+            var updateCostProfiles = existing.WellCost != updatedWellDto.WellCost;
             WellAdapter.ConvertExisting(existing, updatedWellDto);
+
+            if (updateCostProfiles)
+            {
+                foreach (var wpw in existing.WellProjectWells)
+                {
+                    var wellProject = _wellProjectService.GetWellProject(wpw.WellProjectId);
+                    _wellProjectService.CalculateCostProfile(wellProject, wpw, existing);
+                }
+            }
+
             _context.Wells!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(existing.ProjectId);

@@ -47,7 +47,7 @@ namespace api.Services
             }
 
             var wellProject = _context.WellProjects!.Include(wp => wp.CostProfile).Include(wp => wp.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.WellProjectId);
-            _wellProjectService.CalculateCostProfile(wellProject, existing);
+            _wellProjectService.CalculateCostProfile(wellProject, existing, null);
 
             _context.WellProjectWell!.Update(existing);
             _context.SaveChanges();
