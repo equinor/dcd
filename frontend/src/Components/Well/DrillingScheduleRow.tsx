@@ -83,6 +83,14 @@ const DrillingScheduleRow = ({
     }
 
     useEffect(() => {
+        if (wellProjectWell) {
+            setDrillingSchedule(wellProjectWell.drillingSchedule)
+        } else if (explorationWell) {
+            setDrillingSchedule(explorationWell.drillingSchedule)
+        }
+    }, [wellProjectWell, explorationWell])
+
+    useEffect(() => {
         buildAlignedGrid(drillingSchedule!)
     }, [drillingSchedule, lastYear, firstYear])
 
