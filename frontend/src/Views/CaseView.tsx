@@ -1,6 +1,12 @@
+/* eslint-disable max-len */
+/* eslint-disable camelcase */
 import {
     Switch,
+    Button,
+    Icon,
+    Menu,
     Tabs,
+    Typography,
 } from "@equinor/eds-core-react"
 import {
     MouseEventHandler,
@@ -9,6 +15,9 @@ import {
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
+import {
+    add, delete_to_trash, edit, library_add, more_vertical,
+} from "@equinor/eds-icons"
 import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
@@ -23,6 +32,11 @@ import ProductionStrategyOverview from "../Components/ProductionStrategyOverview
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import ExcelUpload from "../Components/ExcelUpload"
+import DefinitionView from "./DefinitionView"
+import ExplorationView from "./ExplorationView"
+import ExplorationViewTab from "./ExplorationViewTab"
+import { Modal } from "../Components/Modal"
+import { EditCaseInputModal } from "./EditCaseInputModal"
 import CaseCessationCostProfile from "../Components/Case/CaseCessationCostProfile"
 
 const { Panel } = Tabs
@@ -42,6 +56,26 @@ const Wrapper = styled.div`
     flex-direction: row;
 `
 
+const TopWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: 1.5rem 2rem;
+`
+
+const PageTitle = styled(Typography)`
+    flex-grow: 1;
+`
+
+const InvisibleButton = styled(Button)`
+    border: 1px solid #007079;
+`
+
+const TransparentButton = styled(Button)`
+    color: #007079;
+    background-color: white;
+    border: 1px solid #007079;
+`
+
 const DividerLine = styled.div`
     background: gray;
     height: 0.05rem;
@@ -56,6 +90,8 @@ const StyledTabPanel = styled(Panel)`
 `
 
 function CaseView() {
+    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
+
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
@@ -67,6 +103,11 @@ function CaseView() {
     const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
     const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
+
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [element, setElement] = useState<HTMLButtonElement>()
+
+    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
     useEffect(() => {
         (async () => {
@@ -115,8 +156,9 @@ function CaseView() {
         })()
     }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase])
 
-    const handleTabChange = (index: number) => {
-        setActiveTab(index)
+    const onMoreClick = (target: any) => {
+        setElement(target)
+        setIsMenuOpen(!isMenuOpen)
     }
 
     const switchReference: MouseEventHandler<HTMLInputElement> = () => {
@@ -129,41 +171,112 @@ function CaseView() {
     if (!caseItem) return null
 
     return (
-        <CaseViewDiv>
-            <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                <List>
-                    <Tab>Definition </Tab>
-                    <Tab>Facilities </Tab>
-                    <Tab>Drainage Strategy</Tab>
-                    <Tab>Exploration</Tab>
-                    <Tab>Well</Tab>
-                </List>
-                <Panels>
-                    <StyledTabPanel>
-                        <p>Definition</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Facilities</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Drainage Strategy</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Exploration</p>
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        <p>Well</p>
-                    </StyledTabPanel>
-                </Panels>
-            </Tabs>
+        <div>
+            <TopWrapper>
+                <PageTitle variant="h4">{caseItem.name}</PageTitle>
+                <TransparentButton
+                    onClick={() => toggleEditCaseModal()}
+                >
+                    Edit Case input
+                </TransparentButton>
+                <InvisibleButton
+                    onClick={(e) => onMoreClick(e.target)}
+                >
+                    <Icon data={more_vertical} />
+                </InvisibleButton>
+            </TopWrapper>
+            <Menu
+                id="menu-complex"
+                open={isMenuOpen}
+                anchorEl={element}
+                onClose={() => setIsMenuOpen(false)}
+                placement="bottom"
+            >
+                <Menu.Item
+                    onClick={() => console.log("Add new case clicked")}
+                >
+                    <Icon data={add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Add New Case
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Duplicate clicked")}
+                >
+                    <Icon data={library_add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Duplicate
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Rename clicked")}
+                >
+                    <Icon data={edit} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Rename
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Delete clicked")}
+                >
+                    <Icon data={delete_to_trash} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Delete
+                    </Typography>
+                </Menu.Item>
+            </Menu>
+            <CaseViewDiv>
+                <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                    <List>
+                        <Tab>Definition </Tab>
+                        <Tab>Facilities </Tab>
+                        <Tab>Drainage Strategy</Tab>
+                        <Tab>Exploration</Tab>
+                        <Tab>Well</Tab>
+                    </List>
+                    <Panels>
+                        <StyledTabPanel>
+                            <DefinitionView
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                                artificialLift={artificialLift}
+                                setArtificialLift={setArtificialLift}
+                                productionStrategyOverview={prodStratOverview}
+                                setProductionStrategyOverview={setProdStratOverview}
+                                switchReference={switchReference}
+                                isReferenceCase={isReferenceCase}
+                                facilitiesAvailability={facilitiesAvailability}
+                                setFacilitiesAvailability={setFacilitiesAvailability}
+                            />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Facilities</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Case with name: </p>
+                            {caseItem.name}
+                            <p>Drainage Strategy</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <ExplorationViewTab
+                                _case={caseItem}
+                                _project={project}
+                            />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Well</p>
+                        </StyledTabPanel>
+                    </Panels>
+                </Tabs>
 
-            <CaseName
-                caseItem={caseItem}
-                setProject={setProject}
-                setCase={setCase}
-            />
-            <ExcelUpload setProject={setProject} setCase={setCase} />
-            <Tabs activeTab={activeTab} onChange={handleTabChange}>
+                <CaseName
+                    caseItem={caseItem}
+                    setProject={setProject}
+                    setCase={setCase}
+                />
+                <ExcelUpload setProject={setProject} setCase={setCase} />
                 <CaseDescription
                     caseItem={caseItem}
                     setProject={setProject}
@@ -266,13 +379,6 @@ function CaseView() {
                         disabled={false}
                         label="Water injector count"
                     />
-                    <NumberInput
-                        setValue={setFacilitiesAvailability}
-                        value={facilitiesAvailability ?? 0}
-                        integer
-                        disabled={false}
-                        label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
-                    />
                 </Wrapper>
                 <DividerLine />
                 <CaseCessationCostProfile
@@ -287,8 +393,15 @@ function CaseView() {
                     setCase={setCase}
                     caseId={caseId}
                 />
-            </Tabs>
-        </CaseViewDiv>
+
+            </CaseViewDiv>
+            <EditCaseInputModal
+                toggleEditCaseModal={toggleEditCaseModal}
+                caseItem={caseItem}
+                isOpen={editCaseModalIsOpen}
+                shards={[]}
+            />
+        </div>
     )
 }
 
