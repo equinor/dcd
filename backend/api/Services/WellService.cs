@@ -12,14 +12,16 @@ namespace api.Services
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
         private readonly WellProjectService _wellProjectService;
+        private readonly ExplorationService _explorationService;
         private readonly ILogger<CaseService> _logger;
 
-        public WellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ILoggerFactory loggerFactory)
+        public WellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ExplorationService explorationService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
             _logger = loggerFactory.CreateLogger<CaseService>();
             _wellProjectService = wellProjectService;
+            _explorationService = explorationService;
         }
 
         public ProjectDto CreateWell(WellDto wellDto)
@@ -38,10 +40,21 @@ namespace api.Services
 
             if (updateCostProfiles)
             {
-                foreach (var wpw in existing.WellProjectWells)
+                if (existing.WellProjectWells?.Count > 0)
                 {
-                    var wellProject = _wellProjectService.GetWellProject(wpw.WellProjectId);
-                    _wellProjectService.CalculateCostProfile(wellProject, wpw, existing);
+                    foreach (var wpw in existing.WellProjectWells)
+                    {
+                        var wellProject = _wellProjectService.GetWellProject(wpw.WellProjectId);
+                        _wellProjectService.CalculateCostProfile(wellProject, wpw, existing);
+                    }
+                }
+                else if (existing.ExplorationWells?.Count > 0)
+                {
+                    foreach (var ew in existing.ExplorationWells)
+                    {
+                        var exploration = _explorationService.GetExploration(ew.ExplorationId);
+                        _explorationService.CalculateCostProfile(exploration, ew, existing);
+                    }
                 }
             }
 
