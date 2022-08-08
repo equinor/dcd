@@ -14,6 +14,8 @@ namespace api.Context
         public DbSet<Project>? Projects { get; set; }
 
         public DbSet<Case>? Cases { get; set; }
+        public DbSet<Well>? Wells { get; set; }
+        public DbSet<WellProjectWell>? WellProjectWell { get; set; }
 
         public DbSet<Surf>? Surfs { get; set; }
         public DbSet<SurfCostProfile>? SurfCostProfile { get; set; }
@@ -47,10 +49,15 @@ namespace api.Context
 
         public DbSet<DrillingSchedule>? DrillingSchedule { get; set; }
 
-
         public DbSet<Exploration>? Explorations { get; set; }
         public DbSet<ExplorationCostProfile>? ExplorationCostProfile { get; set; }
         public DbSet<ExplorationDrillingSchedule>? ExplorationDrillingSchedule { get; set; }
         public DbSet<GAndGAdminCost>? GAndGAdminCost { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<WellProjectWell>().HasKey(wc => new { wc.WellProjectId, wc.WellId });
+            modelBuilder.Entity<WellProjectWell>().HasOne(w => w.Well).WithMany(w => w.WellProjectWell).OnDelete(DeleteBehavior.NoAction);
+        }
     }
 }

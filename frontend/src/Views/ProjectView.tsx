@@ -1,25 +1,26 @@
-// eslint-disable-next-line camelcase
-import { add, archive } from "@equinor/eds-icons"
+/* eslint-disable camelcase */
 import {
     Button,
     EdsProvider,
     Icon,
     TextField,
     Tooltip,
-    Typography,
+    Menu,
+    Tabs, Typography,
 } from "@equinor/eds-core-react"
-import {
+import React, {
     ChangeEventHandler,
     MouseEventHandler,
     useEffect,
     useMemo,
     useState,
 } from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import styled from "styled-components"
-
-import BarChart from "../Components/BarChart"
-
+import {
+    add,
+    delete_to_trash, edit, library_add, more_vertical, archive,
+} from "@equinor/eds-icons"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
@@ -31,7 +32,39 @@ import { unwrapProjectId, GetProjectCategoryName, GetProjectPhaseName } from "..
 import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
+import LinearDataTable from "../Components/LinearDataTable"
+import OverviewView from "./OverviewView"
+import CompareCasesView from "./CompareCasesView"
+import SettingsView from "./SettingsView"
+
+const { Panel } = Tabs
+const { List, Tab, Panels } = Tabs
+
+const StyledTabPanel = styled(Panel)`
+    padding-top: 0px;
+    border-top: 1px solid LightGray;
+`
+
+const ManniWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: 1.5rem 2rem;
+`
+
+const PageTitle = styled(Typography)`
+    flex-grow: 1;
+`
+
+const InvisibleButton = styled(Button)`
+    border: 1px solid #007079;
+`
+
+const TransparentButton = styled(Button)`
+    color: #007079;
+    background-color: white;
+    border: 1px solid #007079;
+`
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -39,54 +72,29 @@ const Wrapper = styled.div`
     flex-direction: column;
 `
 
-const Header = styled.header`
-    display: flex;
-    align-items: center;
-
-    > *:first-child {
-        margin-right: 2rem;
-    }
-`
-
-const ProjectDataFieldLabel = styled(Typography)`
-    margin-top: 1rem;
-    font-weight: bold;
-    white-space: pre-wrap;
-`
-
-const ActionsContainer = styled.div`
-    > *:not(:last-child) {
-        margin-right: 0.5rem;
-    }
-`
-
-const ChartsContainer = styled.div`
-    display: flex;
-`
-
-const CreateCaseForm = styled.form`
-    width: 30rem;
-
-    > * {
-        margin-bottom: 1.5rem;
-    }
-`
-
 const ProjectView = () => {
-    const navigate = useNavigate()
-    const params = useParams()
+    const [activeTab, setActiveTab] = React.useState(0)
+
+    const history = useHistory()
+    const { fusionProjectId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
-    const [currency, setCurrency] = useState<Components.Schemas.PhysUnit>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [element, setElement] = useState<HTMLButtonElement>()
+    const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
+    const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
+    const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
 
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const res: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const res = await (await GetProjectService()).getProjectByID(projectId)
                 if (res !== undefined) {
                     setPhysicalUnit(res?.physUnit)
                     setCurrency(res?.currency)
@@ -94,10 +102,10 @@ const ProjectView = () => {
                 console.log("[ProjectView]", res)
                 setProject(res)
             } catch (error) {
-                console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
-    }, [params.projectId])
+    }, [fusionProjectId])
 
     useEffect(() => {
         (async () => {
@@ -106,169 +114,140 @@ const ProjectView = () => {
                     const projectDto = Project.Copy(project)
                     projectDto.physUnit = physicalUnit
                     projectDto.currency = currency
-                    projectDto.projectId = params.projectId!
+                    projectDto.projectId = fusionProjectId!
                     const cases: Case[] = []
                     project.cases.forEach((c) => cases.push(Case.Copy(c)))
                     projectDto.cases = cases
-                    const res = await GetProjectService().updateProject(projectDto)
+                    const res = await (await GetProjectService()).updateProject(projectDto)
                     setProject(res)
                 }
             } catch (error) {
-                console.error(`[ProjectView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [physicalUnit, currency])
 
-    const chartData = useMemo(() => (project ? {
-        x: project?.cases.map((c) => c.name ?? ""),
-        y: project?.cases.map((c) => c.capex ?? 0),
-    } : { x: [], y: [] }), [project])
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const generateChartDataForCapexYear = useMemo(() => {
+        const years: number[] = []
+        const values: number[][] = []
+        const caseTitles: string[] = []
+        project?.cases.forEach((casee) => {
+            if (casee.capexYear?.startYear !== null) {
+                years.push(casee.capexYear?.startYear!)
+            }
+            if (casee.capexYear?.values?.length !== 0) {
+                values.push(casee.capexYear?.values!)
+                caseTitles?.push(casee.name!)
+            }
+        })
 
-    const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
-
-    const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const { value } = e.target
-        setCaseName(value)
-    }
-
-    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const { value } = e.target
-        setCaseDescription(value)
-    }
-
-    const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
-        e.preventDefault()
-
-        try {
-            const projectId: string = unwrapProjectId(params.projectId)
-            const projectResult: Project = await GetProjectService().getProjectByID(projectId)
-            GetSTEAService().excelToSTEA(projectResult)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
-        e.preventDefault()
-
-        try {
-            const projectResult: Project = await GetCaseService().createCase({
-                description: caseDescription,
-                name: caseName,
-                projectId: params.projectId,
-            })
-            toggleCreateCaseModal()
-            navigate(`/project/${projectResult.id}/case/${projectResult.cases.find((o) => (
-                o.name === caseName
-            ))?.id}`)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
+        setCapexYearXLabels(years)
+        setCapexYearYDatas(values)
+        setCapexYearCaseTitles(caseTitles)
+    }, [project])
 
     if (!project) return null
 
+    const onMoreClick = (target: any) => {
+        setElement(target)
+        setIsMenuOpen(!isMenuOpen)
+    }
+
     return (
-        <Wrapper>
-            <Header>
-                <Typography variant="h2">{project.name}</Typography>
+        <>
+            <ManniWrapper>
+                <PageTitle variant="h4">{project.name}</PageTitle>
+                <TransparentButton
+                    onClick={() => console.log("Edit Project input clicked")}
+                >
+                    Edit project input
+                </TransparentButton>
+                <InvisibleButton
+                    onClick={(e) => onMoreClick(e.target)}
+                >
+                    <Icon data={more_vertical} />
+                </InvisibleButton>
+            </ManniWrapper>
+            <Menu
+                id="menu-complex"
+                open={isMenuOpen}
+                anchorEl={element}
+                onClose={() => setIsMenuOpen(false)}
+                placement="bottom"
+            >
+                <Menu.Item
+                    onClick={() => console.log("Add new case clicked")}
+                >
+                    <Icon data={add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Add New Case
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Duplicate clicked")}
+                >
+                    <Icon data={library_add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Duplicate
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Rename clicked")}
+                >
+                    <Icon data={edit} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Rename
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => console.log("Delete clicked")}
+                >
+                    <Icon data={delete_to_trash} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Delete
+                    </Typography>
+                </Menu.Item>
+            </Menu>
+            <Wrapper>
+                <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                    <List>
+                        <Tab>Overview </Tab>
+                        <Tab>Compare cases</Tab>
+                        <Tab>Workflow</Tab>
+                        <Tab>Settings</Tab>
+                    </List>
+                    <Panels>
+                        <StyledTabPanel>
+                            <OverviewView
+                                project={project}
+                            />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
 
-                <EdsProvider density="compact">
-                    <ActionsContainer>
-                        <Tooltip title="Export to STEA">
-                            <Button
-                                variant="ghost_icon"
-                                aria-label="Export to STEA"
-                                onClick={submitToSTEA}
-                            >
-                                <Icon data={archive} />
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title="Add a case">
-                            <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
-                                <Icon data={add} />
-                            </Button>
-                        </Tooltip>
-                    </ActionsContainer>
-                </EdsProvider>
-            </Header>
-
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
-                <Typography variant="h3">{project.description}</Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Project phase">
-                    {GetProjectPhaseName(project.phase)}
-                </Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Project category">
-                    {GetProjectCategoryName(project.category)}
-                </Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Country">
-                    {project.country ?? "Not defined in Common Library"}
-                </Typography>
-            </WrapperColumn>
-            <PhysicalUnit
-                currentValue={physicalUnit}
-                setPhysicalUnit={setPhysicalUnit}
-                setProject={setProject}
-                project={project}
-            />
-            <Currency
-                currentValue={currency}
-                setCurrency={setCurrency}
-                setProject={setProject}
-                project={project}
-            />
-            <ChartsContainer>
-                <BarChart data={chartData!} title="Capex / case" />
-            </ChartsContainer>
-
-            <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
-                <CreateCaseForm>
-                    <TextField
-                        label="Name"
-                        id="name"
-                        name="name"
-                        placeholder="Enter a name"
-                        onChange={handleCaseNameChange}
-                    />
-
-                    <TextField
-                        label="Description"
-                        id="description"
-                        name="description"
-                        placeholder="Enter a description"
-                        onChange={handleDescriptionChange}
-                    />
-
-                    <div>
-                        <Button
-                            type="submit"
-                            onClick={submitCreateCaseForm}
-                            disabled={caseName === "" || caseDescription === ""}
-                        >
-                            Create case
-                        </Button>
-                        <Button
-                            type="button"
-                            color="secondary"
-                            variant="ghost"
-                            onClick={toggleCreateCaseModal}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </CreateCaseForm>
-            </Modal>
-        </Wrapper>
+                            <CompareCasesView
+                                capexYearX={capexYearXLabels}
+                                capexYearY={capexYearYDatas}
+                                caseTitles={capexYearCaseTitles}
+                            />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Workflow</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <SettingsView
+                                project={project}
+                                setProject={setProject}
+                                physicalUnit={physicalUnit}
+                                setPhysicalUnit={setPhysicalUnit}
+                                currency={currency}
+                                setCurrency={setCurrency}
+                            />
+                        </StyledTabPanel>
+                    </Panels>
+                </Tabs>
+            </Wrapper>
+        </>
     )
 }
 

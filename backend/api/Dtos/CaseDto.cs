@@ -31,5 +31,17 @@ namespace api.Dtos
         public Guid TransportLink { get; set; }
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
+        public CapexYear? CapexYear { get; set; }
+        public CessationCostDto? CessationCost { get; set; }
+    }
+
+    public class CessationCostDto : TimeSeriesCostDto
+    {
+    }
+
+    public class CapexYear
+    {
+        public double[]? Values { get; set; }
+        public int? StartYear { get; set; }
     }
 }

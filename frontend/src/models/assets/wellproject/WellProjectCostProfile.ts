@@ -7,6 +7,7 @@ export class WellProjectCostProfile implements Components.Schemas.WellProjectCos
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
+    override?: boolean
 
     constructor(data?: Components.Schemas.WellProjectCostProfileDto) {
         if (data !== undefined && data !== null) {
@@ -16,6 +17,7 @@ export class WellProjectCostProfile implements Components.Schemas.WellProjectCos
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
             this.sum = data.sum
+            this.override = data.override
         } else {
             this.id = "00000000-0000-0000-0000-000000000000"
             this.startYear = 0

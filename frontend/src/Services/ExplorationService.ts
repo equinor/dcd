@@ -17,9 +17,9 @@ export class __ExplorationService extends __BaseService implements IAssetService
     }
 }
 
-export function GetExplorationService() {
+export async function GetExplorationService() {
     return new __ExplorationService({
         ...config.ExplorationService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

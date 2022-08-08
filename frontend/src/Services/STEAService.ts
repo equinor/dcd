@@ -13,9 +13,9 @@ class __STEAService extends __BaseService {
     }
 }
 
-export function GetSTEAService() {
+export async function GetSTEAService() {
     return new __STEAService({
         ...config.STEAService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

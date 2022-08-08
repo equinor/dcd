@@ -10,18 +10,23 @@ import {
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { Project } from "../models/Project"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
-import CaseAsset from "../Components/CaseAsset"
-import CaseDescription from "../Components/CaseDescription"
-import CaseName from "../Components/CaseName"
+import CaseAsset from "../Components/Case/CaseAsset"
+import CaseDescription from "../Components/Case/CaseDescription"
+import CaseName from "../Components/Case/CaseName"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import CaseDGDate from "../Components/CaseDGDate"
-import CaseArtificialLift from "../Components/CaseArtificialLift"
+import CaseDGDate from "../Components/Case/CaseDGDate"
+import CaseArtificialLift from "../Components/Case/CaseArtificialLift"
 import DGEnum from "../models/DGEnum"
 import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
+import ExcelUpload from "../Components/ExcelUpload"
+import CaseCessationCostProfile from "../Components/Case/CaseCessationCostProfile"
+
+const { Panel } = Tabs
+const { List, Tab, Panels } = Tabs
 
 const CaseViewDiv = styled.div`
     margin: 2rem;
@@ -37,11 +42,24 @@ const Wrapper = styled.div`
     flex-direction: row;
 `
 
+const DividerLine = styled.div`
+    background: gray;
+    height: 0.05rem;
+    width: 50rem;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+`
+
+const StyledTabPanel = styled(Panel)`
+    padding-top: 0px;
+    border-top: 1px solid LightGray;
+`
+
 function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
-    const params = useParams()
+    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
     const [prodStratOverview, setProdStratOverview] = useState<Components.Schemas.ProductionStrategyOverview>(0)
     const [producerCount, setProducerCount] = useState<number>()
@@ -53,20 +71,20 @@ function CaseView() {
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
-                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === params.caseId))
+                const caseResult = projectResult.cases.find((o) => o.id === caseId)
                 setCase(caseResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
-    }, [params.projectId, params.caseId])
+    }, [fusionProjectId, caseId])
 
     useEffect(() => {
         if (project !== undefined) {
-            const caseResult: Case | undefined = project.cases.find((o) => o.id === params.caseId)
+            const caseResult = project.cases.find((o) => o.id === caseId)
             if (caseResult !== undefined) {
                 setArtificialLift(caseResult.artificialLift)
                 setProdStratOverview(caseResult.productionStrategyOverview)
@@ -91,7 +109,7 @@ function CaseView() {
                 caseDto.facilitiesAvailability = facilitiesAvailability
                 caseDto.referenceCase = isReferenceCase ?? false
 
-                const newProject = await GetCaseService().updateCase(caseDto)
+                const newProject = await (await GetCaseService()).updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
@@ -101,28 +119,62 @@ function CaseView() {
         setActiveTab(index)
     }
 
-    const switchReferance: MouseEventHandler<HTMLInputElement> = () => {
+    const switchReference: MouseEventHandler<HTMLInputElement> = () => {
         if (!isReferenceCase || isReferenceCase === undefined) {
             setIsReferenceCase(true)
         } else setIsReferenceCase(false)
     }
 
     if (!project) return null
+    if (!caseItem) return null
 
     return (
         <CaseViewDiv>
+            <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                <List>
+                    <Tab>Definition </Tab>
+                    <Tab>Facilities </Tab>
+                    <Tab>Drainage Strategy</Tab>
+                    <Tab>Exploration</Tab>
+                    <Tab>Well</Tab>
+                </List>
+                <Panels>
+                    <StyledTabPanel>
+                        <p>Definition</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Facilities</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Drainage Strategy</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Exploration</p>
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <p>Well</p>
+                    </StyledTabPanel>
+                </Panels>
+            </Tabs>
+
             <CaseName
                 caseItem={caseItem}
                 setProject={setProject}
                 setCase={setCase}
             />
+            <ExcelUpload setProject={setProject} setCase={setCase} />
             <Tabs activeTab={activeTab} onChange={handleTabChange}>
                 <CaseDescription
                     caseItem={caseItem}
                     setProject={setProject}
                     setCase={setCase}
                 />
-                <Switch onClick={switchReferance} label="Reference case" readOnly checked={isReferenceCase ?? false} />
+                <Switch
+                    onClick={switchReference}
+                    label="Reference case"
+                    readOnly
+                    checked={isReferenceCase ?? false}
+                />
                 <Wrapper>
                     <CaseDGDate
                         caseItem={caseItem}
@@ -148,7 +200,7 @@ function CaseView() {
                         dGName="DG3"
                     />
                 </Wrapper>
-                <Wrapper>
+                <Wrapper style={{ marginBottom: -35 }}>
                     <CaseDGDate
                         caseItem={caseItem}
                         setProject={setProject}
@@ -176,7 +228,23 @@ function CaseView() {
                     setProject={setProject}
                     caseItem={caseItem}
                 />
-                <Wrapper>
+                <DividerLine />
+                <Wrapper style={{ marginBottom: -15 }}>
+                    <CaseArtificialLift
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setProject={setProject}
+                        caseItem={caseItem}
+                    />
+                    <ProductionStrategyOverview
+                        currentValue={prodStratOverview}
+                        setProductionStrategyOverview={setProdStratOverview}
+                        setProject={setProject}
+                        caseItem={caseItem}
+                    />
+                </Wrapper>
+                <DividerLine />
+                <Wrapper style={{ marginBottom: 45 }}>
                     <NumberInput
                         setValue={setProducerCount}
                         value={producerCount ?? 0}
@@ -206,12 +274,18 @@ function CaseView() {
                         label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                     />
                 </Wrapper>
+                <DividerLine />
+                <CaseCessationCostProfile
+                    dG4Year={caseItem.DG4Date?.getFullYear()}
+                    timeSeries={caseItem.cessationCost}
+                />
+                <DividerLine />
                 <CaseAsset
                     caseItem={caseItem}
                     project={project}
                     setProject={setProject}
                     setCase={setCase}
-                    caseId={params.caseId}
+                    caseId={caseId}
                 />
             </Tabs>
         </CaseViewDiv>
