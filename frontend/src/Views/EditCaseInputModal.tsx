@@ -71,7 +71,7 @@ export const EditCaseInputModal: FunctionComponent<Props> = ({
 
     if (!isOpen) return null
     return (
-        <Portal>
+        <>
             <div style={{
                 position: "fixed",
                 top: 0,
@@ -125,6 +125,6 @@ export const EditCaseInputModal: FunctionComponent<Props> = ({
                     </ButtonsDiv>
                 </ModalDiv>
             </FocusOn>
-        </Portal>
+        </>
     )
 }
