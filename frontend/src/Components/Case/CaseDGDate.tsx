@@ -43,10 +43,6 @@ interface Props {
     dGName: string,
 }
 
-interface CaseDGDateParams {
-    _caseId?: string;
-}
-
 const CaseDGDate = ({
     setProject,
     caseItem,
@@ -56,7 +52,7 @@ const CaseDGDate = ({
 }: Props) => {
     const [caseDgDate, setCaseDgDate] = useState<Date>()
 
-    const { _caseId }: CaseDGDateParams = useParams()
+    const { caseId } = useParams<Record<string, string | undefined>>()
 
     useEffect(() => {
         (async () => {
@@ -76,7 +72,7 @@ const CaseDGDate = ({
             caseDto[dGType] = caseDgDate
             const newProject = await (await GetCaseService()).updateCase(caseDto)
             setProject(newProject)
-            const caseResult = newProject.cases.find((o) => o.id === _caseId)
+            const caseResult = newProject.cases.find((o) => o.id === caseId)
             setCase(caseResult)
             setCaseDgDate(undefined)
         } catch (error) {
