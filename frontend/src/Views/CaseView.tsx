@@ -112,7 +112,7 @@ function CaseView() {
     return (
         <div>
             <TopWrapper>
-                <PageTitle variant="h4">{caseItem.name}</PageTitle>
+                <PageTitle variant="h2">{caseItem.name}</PageTitle>
                 <TransparentButton
                     onClick={() => toggleEditCaseModal()}
                 >
@@ -191,10 +191,11 @@ function CaseView() {
                             <p>Drainage Strategy</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <ExplorationViewTab
+                            Exploration
+                            {/* <ExplorationViewTab
                                 _case={caseItem}
                                 _project={project}
-                            />
+                            /> */}
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Well</p>

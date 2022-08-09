@@ -107,14 +107,7 @@ function DefinitionView({
 
     return (
         <Wrapper>
-            <RowWrapper>
-                <Typography variant="h1">Description</Typography>
-                <StyledButton
-                    onClick={(e) => console.log("Clicked Edit button")}
-                >
-                    Edit
-                </StyledButton>
-            </RowWrapper>
+            <Typography variant="h6">Description:</Typography>
 
             <CaseDescription
                 caseItem={caseItem}
@@ -192,8 +185,6 @@ function DefinitionView({
                     disabled={false}
                     label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                 />
-            </RowWrapper>
-            <Wrapper style={{ marginBottom: 45 }}>
                 <NumberInput
                     setValue={setProducerCount}
                     value={producerCount ?? 0}
@@ -215,7 +206,7 @@ function DefinitionView({
                     disabled={false}
                     label="Water injector count"
                 />
-            </Wrapper>
+            </RowWrapper>
 
             <Switch onClick={switchReference} label="Reference case" readOnly checked={isReferenceCase ?? false} />
             <ExcelUpload setProject={setProject} setCase={setCase} />
