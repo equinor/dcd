@@ -121,7 +121,6 @@ builder.Services.AddFusionIntegration(options =>
     options.ApplicationMode = true;
 });
 
-
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
@@ -133,13 +132,13 @@ builder.Services.AddScoped<SubstructureService>();
 builder.Services.AddScoped<TopsideService>();
 builder.Services.AddScoped<WellService>();
 builder.Services.AddScoped<WellProjectWellService>();
+builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryClientOptions { TokenProviderConnectionString = commonLibTokenConnection });
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ImportProspService>();
-builder.Services.AddScoped<GraphRestService>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 

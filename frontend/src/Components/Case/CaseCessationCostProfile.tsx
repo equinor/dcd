@@ -1,6 +1,6 @@
 import { Typography } from "@equinor/eds-core-react"
 import {
-    Dispatch, SetStateAction, useEffect, useState,
+    useEffect, useState,
 } from "react"
 import DataTable, { CellValue } from "../DataTable/DataTable"
 import {
