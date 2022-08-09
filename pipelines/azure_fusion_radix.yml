@@ -11,6 +11,8 @@ trigger:
 pool:
     vmImage: "ubuntu-latest"
 
+pr: none
+
 variables:
   - group: DCD
   - group: DCD-KeyVault
@@ -63,5 +65,5 @@ stages:
         radixToken: $(RadixToken)
         branch: main
         DBContext: $(DbConnectionStringProd)
-        FusionEnvId: $(FusionAppIdQA)
+        FusionEnvId: $(FusionAppIdFPRD)
         FusionServiceConnection: 'conceptapp-preprod'
