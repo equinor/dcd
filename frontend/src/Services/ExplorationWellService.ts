@@ -14,7 +14,6 @@ class _ExplorationWellService extends __BaseService {
     }
 
     public async getExplorationWellsByProjectId(projectId: string) {
-        // eslint-disable-next-line max-len
         const explorationWells: Components.Schemas.ExplorationWellDto[] = await this.getWithParams("", { params: { projectId } })
         return explorationWells.map(ExplorationWell.fromJSON)
     }
