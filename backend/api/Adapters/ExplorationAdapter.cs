@@ -17,8 +17,9 @@ namespace api.Adapters
                 Currency = explorationDto.Currency,
             };
             exploration.CostProfile = Convert(explorationDto.CostProfile, exploration);
-            exploration.DrillingSchedule = Convert(explorationDto.DrillingSchedule, exploration);
             exploration.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, exploration);
+            exploration.SeismicAcquisitionAndProcessing = Convert(explorationDto.SeismicAcquisitionAndProcessing, exploration);
+            exploration.CountryOfficeCost = Convert(explorationDto.CountryOfficeCost, exploration);
             return exploration;
         }
 
@@ -30,8 +31,9 @@ namespace api.Adapters
             existing.RigMobDemob = explorationDto.RigMobDemob;
             existing.Currency = explorationDto.Currency;
             existing.CostProfile = Convert(explorationDto.CostProfile, existing);
-            existing.DrillingSchedule = Convert(explorationDto.DrillingSchedule, existing);
             existing.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, existing);
+            existing.SeismicAcquisitionAndProcessing = Convert(explorationDto.SeismicAcquisitionAndProcessing, existing);
+            existing.CountryOfficeCost = Convert(explorationDto.CountryOfficeCost, existing);
         }
 
         private static ExplorationCostProfile Convert(ExplorationCostProfileDto? costProfileDto, Exploration exploration)
@@ -48,22 +50,10 @@ namespace api.Adapters
                 Exploration = exploration,
                 StartYear = costProfileDto.StartYear,
                 Values = costProfileDto.Values,
+                Override = costProfileDto.Override,
             };
         }
-        private static ExplorationDrillingSchedule Convert(ExplorationDrillingScheduleDto? drillingScheduleDto, Exploration exploration)
-        {
-            if (drillingScheduleDto == null)
-            {
-                return null!;
-            }
-            return new ExplorationDrillingSchedule
-            {
-                Exploration = exploration,
-                Id = drillingScheduleDto.Id,
-                StartYear = drillingScheduleDto.StartYear,
-                Values = drillingScheduleDto.Values
-            };
-        }
+
         private static GAndGAdminCost Convert(GAndGAdminCostDto? gAndGAdminCostDto, Exploration exploration)
         {
             if (gAndGAdminCostDto == null)
@@ -78,6 +68,40 @@ namespace api.Adapters
                 Exploration = exploration,
                 Values = gAndGAdminCostDto.Values,
                 StartYear = gAndGAdminCostDto.StartYear
+            };
+        }
+
+        private static SeismicAcquisitionAndProcessing Convert(SeismicAcquisitionAndProcessingDto? seismicAcquisitionAndProcessing, Exploration exploration)
+        {
+            if (seismicAcquisitionAndProcessing == null)
+            {
+                return null!;
+            }
+            return new SeismicAcquisitionAndProcessing
+            {
+                Id = seismicAcquisitionAndProcessing.Id,
+                Currency = seismicAcquisitionAndProcessing.Currency,
+                EPAVersion = seismicAcquisitionAndProcessing.EPAVersion,
+                Exploration = exploration,
+                Values = seismicAcquisitionAndProcessing.Values,
+                StartYear = seismicAcquisitionAndProcessing.StartYear
+            };
+        }
+
+        private static CountryOfficeCost Convert(CountryOfficeCostDto? countryOfficeCost, Exploration exploration)
+        {
+            if (countryOfficeCost == null)
+            {
+                return null!;
+            }
+            return new CountryOfficeCost
+            {
+                Id = countryOfficeCost.Id,
+                Currency = countryOfficeCost.Currency,
+                EPAVersion = countryOfficeCost.EPAVersion,
+                Exploration = exploration,
+                Values = countryOfficeCost.Values,
+                StartYear = countryOfficeCost.StartYear
             };
         }
     }

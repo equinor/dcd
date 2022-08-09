@@ -36,7 +36,7 @@ namespace api.Services
             _topsideService = new TopsideService(_context, this, loggerFactory);
             _explorationService = new ExplorationService(_context, this, loggerFactory);
             _transportService = new TransportService(_context, this, loggerFactory);
-            _wellService = new WellService(_context, this, loggerFactory);
+            _wellService = new WellService(_context, this, _wellProjectService, _explorationService, loggerFactory);
         }
 
         public ProjectDto UpdateProject(ProjectDto projectDto)
