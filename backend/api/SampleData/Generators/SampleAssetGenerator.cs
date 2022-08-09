@@ -264,12 +264,6 @@ public static class SampleAssetGenerator
                     Values = new[] { 11.4, 28.2, 34.3 }
                 }
                 )
-                .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule
-                {
-                    StartYear = 15,
-                    Values = new int[] { 13, 5, 5 }
-                }
-                )
                 .WithGAndGAdminCost(new GAndGAdminCost
                 {
                     Currency = Currency.NOK,
