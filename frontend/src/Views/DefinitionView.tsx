@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/no-unused-prop-types */
-/* eslint-disable camelcase */
 import {
     MouseEventHandler, useState,
     Dispatch,
     SetStateAction,
+    useEffect,
 } from "react"
 import styled from "styled-components"
 
@@ -20,6 +18,7 @@ import ProductionStrategyOverview from "../Components/ProductionStrategyOverview
 import DGEnum from "../models/DGEnum"
 import { Case } from "../models/case/Case"
 import NumberInput from "../Components/NumberInput"
+import { GetCaseService } from "../Services/CaseService"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -45,28 +44,11 @@ const StyledButton = styled(Button)`
     background-color: #007079;
 `
 
-const DescriptionDiv = styled.div`
-    width: 42.875rem;
-    display: flex;
-    flex-wrap: wrap;
-    @media screen and (max-width: 1390px) {
-    margin-right: 1.875rem;
-  }
-`
-
 interface Props {
     project: Project,
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case | undefined,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
-    artificialLift: Components.Schemas.ArtificialLift,
-    setArtificialLift: Dispatch<SetStateAction<Components.Schemas.ArtificialLift>>,
-    productionStrategyOverview: Components.Schemas.ProductionStrategyOverview,
-    setProductionStrategyOverview: Dispatch<SetStateAction<Components.Schemas.ProductionStrategyOverview>>,
-    switchReference: MouseEventHandler<HTMLInputElement>,
-    isReferenceCase: boolean | undefined,
-    facilitiesAvailability: number | undefined,
-    setFacilitiesAvailability: Dispatch<SetStateAction<number | undefined>>
 }
 
 function DefinitionView({
@@ -74,15 +56,55 @@ function DefinitionView({
     setProject,
     caseItem,
     setCase,
-    artificialLift,
-    setArtificialLift,
-    productionStrategyOverview,
-    setProductionStrategyOverview,
-    switchReference,
-    isReferenceCase,
-    facilitiesAvailability,
-    setFacilitiesAvailability,
 }: Props) {
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
+    const [producerCount, setProducerCount] = useState<number>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
+    const [productionStrategyOverview,
+        setProductionStrategyOverview] = useState<Components.Schemas.ProductionStrategyOverview>(0)
+    const [isReferenceCase, setIsReferenceCase] = useState<boolean | undefined>()
+
+    useEffect(() => {
+        if (project !== undefined) {
+            const caseResult = project.cases.find((o) => o.id === caseItem?.id)
+            if (caseResult !== undefined) {
+                setArtificialLift(caseResult.artificialLift)
+                setProductionStrategyOverview(caseResult.productionStrategyOverview)
+                setFacilitiesAvailability(caseResult?.facilitiesAvailability)
+                setIsReferenceCase(caseResult?.referenceCase ?? false)
+            }
+            setCase(caseResult)
+            setProducerCount(caseResult?.producerCount)
+            setGasInjectorCount(caseResult?.gasInjectorCount)
+            setWaterInjectorCount(caseResult?.waterInjectorCount)
+            setFacilitiesAvailability(caseResult?.facilitiesAvailability)
+        }
+    }, [project])
+
+    useEffect(() => {
+        (async () => {
+            if (caseItem) {
+                const caseDto = Case.Copy(caseItem)
+                caseDto.producerCount = producerCount
+                caseDto.gasInjectorCount = gasInjectorCount
+                caseDto.waterInjectorCount = waterInjectorCount
+                caseDto.facilitiesAvailability = facilitiesAvailability
+                caseDto.referenceCase = isReferenceCase ?? false
+
+                const newProject = await (await GetCaseService()).updateCase(caseDto)
+                setCase(newProject.cases.find((o) => o.id === caseItem.id))
+            }
+        })()
+    }, [producerCount, gasInjectorCount, waterInjectorCount, facilitiesAvailability, isReferenceCase])
+
+    const switchReference: MouseEventHandler<HTMLInputElement> = () => {
+        if (!isReferenceCase || isReferenceCase === undefined) {
+            setIsReferenceCase(true)
+        } else setIsReferenceCase(false)
+    }
+
     return (
         <Wrapper>
             <RowWrapper>
@@ -171,6 +193,29 @@ function DefinitionView({
                     label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
                 />
             </RowWrapper>
+            <Wrapper style={{ marginBottom: 45 }}>
+                <NumberInput
+                    setValue={setProducerCount}
+                    value={producerCount ?? 0}
+                    integer
+                    disabled={false}
+                    label="Producer count"
+                />
+                <NumberInput
+                    setValue={setGasInjectorCount}
+                    value={gasInjectorCount ?? 0}
+                    integer
+                    disabled={false}
+                    label="Gas injector count"
+                />
+                <NumberInput
+                    setValue={setWaterInjectorCount}
+                    value={waterInjectorCount ?? 0}
+                    integer
+                    disabled={false}
+                    label="Water injector count"
+                />
+            </Wrapper>
 
             <Switch onClick={switchReference} label="Reference case" readOnly checked={isReferenceCase ?? false} />
             <ExcelUpload setProject={setProject} setCase={setCase} />
