@@ -8,6 +8,9 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 using Microsoft.Extensions.Options;
 
+using Surf = api.Models.Surf;
+using Transport = api.Models.Transport;
+
 namespace api.Services
 {
     public class ImportProspService
@@ -133,7 +136,7 @@ namespace api.Services
             var importedCurrency = ReadIntValue(cellData, _prospConfig.Surf.importedCurrency);
             var currency = importedCurrency == 1 ? Currency.NOK :
                 importedCurrency == 2 ? Currency.USD : 0;
-            var newSurf = new Models.Surf
+            var newSurf = new Surf
             {
                 Name = "ImportedSurf",
                 CostProfile = costProfile,
@@ -309,9 +312,12 @@ namespace api.Services
             var versionDate = ReadDateValue(cellData, _prospConfig.Transport.versionDate);
             var costYear = ReadIntValue(cellData, _prospConfig.Transport.costYear);
             var importedCurrency = ReadIntValue(cellData, _prospConfig.Transport.importedCurrency);
+            var oilExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.oilExportPipelineLength);
+            var gasExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.gasExportPipelineLength);
             var currency = importedCurrency == 1 ? Currency.NOK :
                 importedCurrency == 2 ? Currency.USD : 0;
-            var newTransport = new Models.Transport
+
+            var newTransport = new Transport
             {
                 Name = "ImportedTransport",
                 CostProfile = costProfile,
@@ -322,6 +328,8 @@ namespace api.Services
                 ProspVersion = versionDate,
                 Currency = currency,
                 CostYear = costYear,
+                OilExportPipelineLength = oilExportPipelineLength,
+                GasExportPipelineLength = gasExportPipelineLength,
                 Maturity = Maturity.A
             };
             var dto = TransportDtoAdapter.Convert(newTransport);
