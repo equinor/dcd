@@ -85,8 +85,8 @@ namespace api.Helpers
         public string versionDate { get; set; } = null!;
         public string costYear { get; set; } = null!;
         public string importedCurrency { get; set; } = null!;
-        public string oilExportPipelineLength  { get; set; } = null!;
-        public string gasExportPipelineLength  { get; set; } = null!;
+        public string oilExportPipelineLength { get; set; } = null!;
+        public string gasExportPipelineLength { get; set; } = null!;
     }
 }
 
