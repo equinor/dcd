@@ -2,12 +2,13 @@ parameters:
     - name: appName
     - name: envshortname
     - name: envfullname
-    - name: fusionToken
     - name: portalUrl
     - name: buildId
     - name: radixToken
     - name: branch
     - name: DBContext
+    - name: FusionEnvId
+    - name: FusionServiceConnection
 
 stages:
     - stage: ${{ parameters.appName }}
@@ -19,34 +20,26 @@ stages:
                 runOnce:
                     deploy:
                         steps:
-                            - task: DownloadPipelineArtifact@2
-                              inputs:
-                                  artifact: ConceptAppPack
-                            - task: PowerShell@2
-                              displayName: "Fusion Publish and Deploy"
-                              inputs:
-                                  targetType: "inline"
-                                  script: |
-                                      $TokenUrl = "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/oauth2/v2.0/token"
-                                      $URL = "${{ parameters.portalUrl }}/api/apps/dcd/versions?api-version=1.0"
-                                      $publishUrl = "${{ parameters.portalUrl }}/api/apps/dcd/publish"
-                                      $tokenbody = @{
-                                          grant_type = "client_credentials"
-                                          client_id="$(appRegistrationClientId)"
-                                          client_secret="$(AzureAdClientSecret)"
-                                          scope="${{ parameters.fusionToken }}/.default"
-                                      }
-
-                                      $Result = Invoke-RestMethod -Uri $TokenUrl -Method Post  -Body $tokenbody
-                                      $jwtToken = $Result.access_token
-
-                                      $requestdata = @{
-                                          Headers = @{
-                                              "Authorization" = "Bearer $jwtToken"
-                                          }
-                                      }
-                                      $deployResult = Invoke-RestMethod -Uri $URL -Headers $requestdata.Headers -Method Post -Infile "$(Agent.BuildDirectory)/dcd.zip" -ContentType "application/zip"
-                                      $publishResult = Invoke-RestMethod -Uri $publishUrl -Headers $requestdata.Headers -Method Post
+                        - task: DownloadPipelineArtifact@2
+                          inputs:
+                            artifact: ConceptApp
+                        - task: FusionApp@2
+                          displayName: 'Deploying app'
+                          inputs:
+                            action: deploy
+                            appKey: 'conceptapp'
+                            bundlePath: '$(Agent.BuildDirectory)/conceptapp.zip'
+                            fusionCredentials: ${{ parameters.FusionServiceConnection }}
+                            tokenResource: ${{ parameters.FusionEnvId }}
+                            portalUrl: ${{ parameters.portalUrl }}
+                        - task: FusionApp@2
+                          inputs:
+                            fusionCredentials: ${{ parameters.FusionServiceConnection }}
+                            portalUrl: ${{ parameters.portalUrl }}
+                            action: 'Publish'
+                            appKey: 'conceptapp'
+                            environment: ${{ parameters.FusionEnvId }}
+                            
           - deployment: "Update_${{ parameters.envshortname }}_Tags"
             environment: ${{ parameters.envfullname }}
             strategy:
@@ -57,13 +50,6 @@ stages:
                               inputs:
                                   containerRegistry: "DCD Registry"
                                   command: "login"
-
-                            - template: step-tag-dockerimage.yml
-                              parameters:
-                                  buildid: ${{ parameters.buildid }}
-                                  envshortname: ${{ parameters.envshortname }}
-                                  registry: "crdcd.azurecr.io"
-                                  repository: "frontend"
 
                             - template: step-tag-dockerimage.yml
                               parameters:
@@ -96,8 +82,7 @@ stages:
                           '@
 
                           $result = Invoke-RestMethod -Uri $url -Headers $Headers -Body $body -Method Post                          
-                          $pipelineName = $result.name
-                          Write-Host $pipelineName
+                          $pipelineName = $result.name                         
                           Write-Host "##vso[task.setvariable variable=radixJobName;]$pipelineName"
                           Write-Host "Done. JobName:" $(radixJobName)
                 - task: PowerShell@2
@@ -139,21 +124,28 @@ stages:
                               Write-Host $result
                               [Environment]::Exit(1)
 
-                          }
+                          }         
           - job: AddDbMigrations_${{ parameters.envshortname }}
             dependsOn: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             steps:
-                - task: DotNetCoreCLI@2
-                  displayName: Install dotnet-ef
-                  inputs:
-                      command: "custom"
-                      custom: "tool"
-                      arguments: "install --global dotnet-ef"
-
-                - task: DotNetCoreCLI@2
-                  displayName: "Apply DB migrations"
-                  inputs:
-                      command: "custom"
-                      custom: "ef"
-                      arguments: "database update --connection \"${{ parameters.DBContext }}\" --verbose"
-                      workingDirectory: "$(Build.SourcesDirectory)/backend/api"
+              - task: FileTransform@1
+                inputs:
+                  folderPath: '$(Build.SourcesDirectory)/backend/api' 
+                  fileType: 'json'
+                  targetFiles: '**/appsettings.json'
+              - task: DotNetCoreCLI@2
+                displayName: Install dotnet-ef
+                inputs:
+                  command: "custom"
+                  custom: "tool"
+                  arguments: "install --global dotnet-ef"
+              - task: AzureCLI@2
+                displayName: Azure CLI
+                inputs:
+                    azureSubscription: 'dcd-pipeline-sp'
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      cd "$(Build.SourcesDirectory)/backend/api"
+                      dotnet ef database update --verbose
+                      

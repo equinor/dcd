@@ -9,13 +9,6 @@ namespace api.Adapters
         {
             var projectDto = ProjectToProjectDto(project);
 
-            if (project.Cases != null)
-            {
-                foreach (Case c in project.Cases)
-                {
-                    projectDto.Cases!.Add(CaseDtoAdapter.Convert(c));
-                }
-            }
             if (project.Wells != null)
             {
                 foreach (Well well in project.Wells)
@@ -80,6 +73,13 @@ namespace api.Adapters
                     projectDto.Transports.Add(TransportDtoAdapter.Convert(t));
                 }
             }
+            if (project.Cases != null)
+            {
+                foreach (Case c in project.Cases)
+                {
+                    projectDto.Cases!.Add(CaseDtoAdapter.Convert(c, projectDto));
+                }
+            }
             if (projectDto.Cases != null)
             {
                 AddCapexToCases(projectDto);
@@ -108,8 +108,6 @@ namespace api.Adapters
                 Wells = new List<WellDto>(),
             };
         }
-
-
 
         public static void AddCapexToCasesYear(ProjectDto p)
         {
@@ -166,8 +164,8 @@ namespace api.Adapters
 
                 c.CapexYear = new CapexYear()
                 {
-                    startYear = minYear,
-                    values = valuesDict.Values.ToArray(),
+                    StartYear = minYear,
+                    Values = valuesDict.Values.ToArray(),
                 };
             }
         }

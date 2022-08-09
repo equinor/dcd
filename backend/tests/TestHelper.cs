@@ -484,8 +484,6 @@ namespace tests
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            TestHelper.CompareYearValues(expected.DrillingSchedule,
-                    actual.DrillingSchedule);
             TestHelper.CompareCosts(expected.CostProfile,
                     actual.CostProfile);
         }
@@ -505,8 +503,6 @@ namespace tests
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            TestHelper.CompareYearValues(expected.DrillingSchedule,
-                    actual.DrillingSchedule);
             TestHelper.CompareCosts(expected.CostProfile,
                     actual.CostProfile);
         }
@@ -531,8 +527,6 @@ namespace tests
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            TestHelper.CompareYearValues(expected.DrillingSchedule,
-                    actual.DrillingSchedule);
             TestHelper.CompareCosts(expected.CostProfile,
                     actual.CostProfile);
         }

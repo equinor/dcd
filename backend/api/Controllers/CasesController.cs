@@ -14,7 +14,6 @@ namespace api.Controllers
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     public class CasesController : ControllerBase
     {
-
         private readonly CaseService _caseService;
 
         public CasesController(CaseService caseService)
@@ -28,10 +27,22 @@ namespace api.Controllers
             return _caseService.CreateCase(caseDto);
         }
 
+        [HttpPost("copy", Name = "Duplicate")]
+        public ProjectDto DuplicateCase([FromQuery] Guid copyCaseId)
+        {
+            return _caseService.DuplicateCase(copyCaseId);
+        }
+
         [HttpPut(Name = "UpdateCase")]
         public ProjectDto UpdateCase([FromBody] CaseDto caseDto)
         {
             return _caseService.UpdateCase(caseDto);
+        }
+
+        [HttpDelete("{caseId}", Name = "DeleteCase")]
+        public ProjectDto DeleteTransport(Guid caseId)
+        {
+            return _caseService.DeleteCase(caseId);
         }
     }
 }

@@ -4,17 +4,6 @@ namespace api.SampleData.Builders;
 
 public class CaseBuilder : Case
 {
-    public CaseBuilder WithWell(string wellName, Project project)
-    {
-
-        var well = project.Wells!.FirstOrDefault(d => d.Name!.Equals(wellName));
-        if (well == null)
-        {
-            throw new Exception(string.Format("Well {0} not found", wellName));
-        }
-        WellsLink = well.Id;
-        return this;
-    }
     public CaseBuilder WithDrainageStrategy(string drainageStrategyName, Project project)
     {
 

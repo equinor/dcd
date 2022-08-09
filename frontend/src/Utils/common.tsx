@@ -1,4 +1,5 @@
-import { Case } from "../models/Case"
+import apiConfig from "../api/apiConfig"
+import { Case } from "../models/case/Case"
 
 export const LoginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -9,7 +10,7 @@ export const GetDrainageStrategy = (
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
 export function ProjectPath(projectId: string) {
-    return `/project/${projectId}`
+    return `/${projectId}`
 }
 
 export function CasePath(projectId: string, caseId: string) {
@@ -21,7 +22,9 @@ export function StoreToken(keyName: string, token: string) {
 }
 
 export function GetToken(keyName: string) {
-    return window.sessionStorage.getItem(keyName)
+    const config = apiConfig()
+    const scopes = [config.scopes[0]]
+    return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
 export const unwrapCase = (_case?: Case | undefined): Case => {

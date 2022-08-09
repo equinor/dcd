@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react"
-import {
-    Typography,
-} from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 
 import { useParams } from "react-router"
 import { Surf } from "../models/assets/surf/Surf"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSurfService } from "../Services/SurfService"
@@ -28,6 +26,7 @@ import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 import ApprovedBy from "../Components/ApprovedBy"
 import DGDateInherited from "../Components/DGDateInherited"
+import { IAssetService } from "../Services/IAssetService"
 
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
@@ -35,7 +34,7 @@ const SurfView = () => {
     const [surf, setSurf] = useState<Surf>()
     const [hasChanges, setHasChanges] = useState(false)
     const [surfName, setSurfName] = useState<string>("")
-    const params = useParams()
+    const { fusionProjectId, caseId, surfId } = useParams<Record<string, string | undefined>>()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [riserCount, setRiserCount] = useState<number | undefined>()
@@ -52,18 +51,22 @@ const SurfView = () => {
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
     const [costYear, setCostYear] = useState<number | undefined>()
+    const [cessationCost, setCessationCost] = useState<number | undefined>()
     const [approvedBy, setApprovedBy] = useState<string>("")
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
+    const [surfService, setSurfService] = useState<IAssetService>()
 
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetSurfService()
+                setSurfService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [])
@@ -71,9 +74,9 @@ const SurfView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
-                let newSurf: Surf | undefined = project.surfs.find((s) => s.id === params.surfId)
+                let newSurf = project.surfs.find((s) => s.id === surfId)
                 if (newSurf !== undefined) {
                     if (newSurf.DG3Date === null
                         || newSurf.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
@@ -100,6 +103,7 @@ const SurfView = () => {
                 setTemplateCount(newSurf?.templateCount)
                 setProducerCount(newSurf?.producerCount)
                 setCostYear(newSurf?.costYear)
+                setCessationCost(newSurf?.cessationCost ?? 0)
                 setGasInjectorCount(newSurf?.gasInjectorCount)
                 setWaterInjectorCount(newSurf?.waterInjectorCount)
                 setInfieldPipelineSystemLength(newSurf?.infieldPipelineSystemLength)
@@ -140,6 +144,7 @@ const SurfView = () => {
             newSurf.infieldPipelineSystemLength = infieldPipelineSystemLength
             newSurf.umbilicalSystemLength = umbilicalSystemLength
             newSurf.costYear = costYear
+            newSurf.cessationCost = cessationCost
             newSurf.maturity = maturity
             newSurf.productionFlowline = productionFlowline
             newSurf.currency = currency
@@ -147,7 +152,6 @@ const SurfView = () => {
             newSurf.approvedBy = approvedBy
             newSurf.DG3Date = dG3Date
             newSurf.DG4Date = dG4Date
-
             newSurf.costProfile = costProfile
             newSurf.cessationCostProfile = cessationCostProfile
 
@@ -166,7 +170,7 @@ const SurfView = () => {
         }
     }, [riserCount, templateCount, producerCount, gasInjectorCount, waterInjectorCount,
         infieldPipelineSystemLength, umbilicalSystemLength, maturity, productionFlowline,
-        costProfile, cessationCostProfile, currency, costYear, approvedBy, artificialLift,
+        costProfile, cessationCostProfile, currency, costYear, cessationCost, approvedBy, artificialLift,
         dG3Date, dG4Date])
 
     return (
@@ -180,7 +184,7 @@ const SurfView = () => {
                     setAsset={setSurf}
                     setProject={setProject}
                     asset={surf!}
-                    assetService={GetSurfService()}
+                    assetService={surfService!}
                     assetType={AssetTypeEnum.surfs}
                 />
                 <Typography variant="h6">
@@ -299,6 +303,13 @@ const SurfView = () => {
                     value={umbilicalSystemLength ?? 0}
                     integer
                     label="Length of umbilical system (km)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCessationCost}
+                    value={cessationCost ?? 0}
+                    integer
+                    label="Cessation cost"
                 />
             </Wrapper>
             <Maturity

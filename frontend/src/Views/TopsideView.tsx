@@ -1,6 +1,4 @@
-import {
-    Typography,
-} from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
     useParams,
@@ -9,7 +7,7 @@ import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
 import { Topside } from "../models/assets/topside/Topside"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
@@ -28,6 +26,7 @@ import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 import ApprovedBy from "../Components/ApprovedBy"
 import DGDateInherited from "../Components/DGDateInherited"
+import { IAssetService } from "../Services/IAssetService"
 
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
@@ -35,7 +34,7 @@ const TopsideView = () => {
     const [topside, setTopside] = useState<Topside>()
     const [hasChanges, setHasChanges] = useState(false)
     const [topsideName, setTopsideName] = useState<string>("")
-    const params = useParams()
+    const { fusionProjectId, caseId, topsideId } = useParams<Record<string, string | undefined>>()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [oilCapacity, setOilCapacity] = useState<number | undefined>()
@@ -62,16 +61,19 @@ const TopsideView = () => {
     const [flaredGas, setFlaredGas] = useState<number | undefined>()
     const [dG3Date, setDG3Date] = useState<Date>()
     const [dG4Date, setDG4Date] = useState<Date>()
+    const [topsideService, setTopsideService] = useState<IAssetService>()
     const [facilityOpex, setFacilityOpex] = useState<number | undefined>()
 
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(params.projectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetTopsideService()
+                setTopsideService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${params.projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [])
@@ -79,9 +81,9 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === params.caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
-                let newTopside: Topside | undefined = project.topsides.find((s) => s.id === params.topsideId)
+                let newTopside = project.topsides.find((s) => s.id === topsideId)
                 if (newTopside !== undefined) {
                     if (newTopside.DG3Date === null
                         || newTopside.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
@@ -203,7 +205,7 @@ const TopsideView = () => {
                     setAsset={setTopside}
                     setProject={setProject}
                     asset={topside!}
-                    assetService={GetTopsideService()}
+                    assetService={topsideService!}
                     assetType={AssetTypeEnum.topsides}
                 />
                 <Typography variant="h6">

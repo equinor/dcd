@@ -3,7 +3,7 @@ import {
     Dispatch, SetStateAction, useRef, useState,
 } from "react"
 import { useParams } from "react-router"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetUploadService } from "../Services/UploadService"
 import { unwrapCase } from "../Utils/common"
@@ -20,7 +20,7 @@ const ExcelUpload = ({
     setProject,
     setCase,
 }: Props) => {
-    const params = useParams()
+    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
     const [surf, setSurf] = useState<boolean>(false)
     const [topside, setTopside] = useState<boolean>(false)
     const [substructure, setSubstructure] = useState<boolean>(false)
@@ -44,10 +44,10 @@ const ExcelUpload = ({
         const data = generateFormData(currentFiles[0])
 
         try {
-            const uploadService = GetUploadService()
-            const response = await uploadService.create(params.caseId!, params.projectId!, data)
+            const uploadService = await GetUploadService()
+            const response = await uploadService.create(caseId!, fusionProjectId!, data)
             setProject(response)
-            const caseResult: Case = unwrapCase(response.cases.find((o) => o.id === params.caseId))
+            const caseResult = unwrapCase(response.cases.find((o) => o.id === caseId))
             setCase(caseResult)
         } catch {
             console.error("Error uploading Excel document: ")

@@ -31,14 +31,17 @@ namespace api.Dtos
         public Guid TransportLink { get; set; }
         public Guid ExplorationLink { get; set; }
         public double Capex { get; set; }
-        public ICollection<Well>? Wells { get; set; }
-        public Guid WellsLink { get; set; } = Guid.Empty;
         public CapexYear? CapexYear { get; set; }
+        public CessationCostDto? CessationCost { get; set; }
+    }
+
+    public class CessationCostDto : TimeSeriesCostDto
+    {
     }
 
     public class CapexYear
     {
-        public double[]? values { get; set; }
-        public int? startYear { get; set; }
+        public double[]? Values { get; set; }
+        public int? StartYear { get; set; }
     }
 }

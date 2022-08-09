@@ -40,8 +40,7 @@ namespace api.Services
         public Well GetWell(Guid wellId)
         {
             var well = _context.Wells!
-                        .Include(w => w.WellType)
-                        .Include(e => e.ExplorationWellType)
+                        .Include(e => e.WellProjectWell)
                         .FirstOrDefault(w => w.Id == wellId);
             if (well == null)
             {
@@ -87,8 +86,6 @@ namespace api.Services
             if (_context.Wells != null)
             {
                 return _context.Wells
-                    .Include(w => w.WellType)
-                    .Include(e => e.ExplorationWellType)
                     .Where(d => d.ProjectId.Equals(projectId));
             }
             else

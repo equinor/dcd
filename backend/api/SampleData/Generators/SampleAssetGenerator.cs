@@ -108,30 +108,6 @@ public static class SampleAssetGenerator
             ProjectCategory = ProjectCategory.OffshoreWind,
             ProjectPhase = ProjectPhase.BusinessPlanning
         }
-            .WithWells(new WellBuilder
-            {
-                Name = "Well1",
-                WellInterventionCost = 53,
-                PlugingAndAbandonmentCost = 24,
-                ExplorationWellType = (new ExplorationWellTypeBuilder
-                {
-                    Name = "Exploration Well Type 1",
-                    Description = "Description for exploration well type 1",
-                    Category = 0,
-                    WellCost = 54,
-                    DrillingDays = 82,
-                }),
-                WellType = (new WellTypeBuilder
-                {
-                    Name = "Well Type 1",
-                    Description = "Description for well type 1",
-                    Category = 0,
-                    WellCost = 5,
-                    DrillingDays = 8,
-                }
-                )
-            }
-            )
             .WithDrainageStrategy(new DrainageStrategyBuilder
             {
                 Name = "DrainStrat 1",
@@ -209,12 +185,6 @@ public static class SampleAssetGenerator
                     Currency = Currency.USD,
                     StartYear = 8,
                     Values = new[] { 33.4, 18.9, 62.3 }
-                }
-                )
-                .WithDrillingSchedule(new DrillingSchedule
-                {
-                    StartYear = 9,
-                    Values = new int[] { 33, 3, 62 }
                 }
                 )
             )
@@ -315,7 +285,8 @@ public static class SampleAssetGenerator
             Name = "P2",
             CommonLibraryId = new Guid(),
             CommonLibraryName = "P2 from common lib",
-            CreateDate = DateTimeOffset.UtcNow.Date
+            CreateDate = DateTimeOffset.UtcNow.Date,
+            Id = new Guid("5a74a716-92e5-4ec8-8b5b-281381509ae3"),
         }
             .WithDrainageStrategy(new DrainageStrategyBuilder
             {

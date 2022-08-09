@@ -1,4 +1,7 @@
+using System.Text.Json.Serialization;
+
 using api.Context;
+using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
 
@@ -14,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
 var configBuilder = new ConfigurationBuilder();
@@ -22,7 +26,6 @@ var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfig
 var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
 
 Console.WriteLine("Loading config for: " + environment);
-
 configBuilder.AddAzureAppConfiguration(options =>
     options
     .Connect(azureAppConfigConnectionString)
@@ -100,7 +103,6 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddFusionIntegration(options =>
 {
@@ -119,6 +121,7 @@ builder.Services.AddFusionIntegration(options =>
     options.ApplicationMode = true;
 });
 
+
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
@@ -129,18 +132,15 @@ builder.Services.AddScoped<SurfService>();
 builder.Services.AddScoped<SubstructureService>();
 builder.Services.AddScoped<TopsideService>();
 builder.Services.AddScoped<WellService>();
+builder.Services.AddScoped<WellProjectWellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryClientOptions { TokenProviderConnectionString = commonLibTokenConnection });
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ImportProspService>();
-builder.Services.AddScoped<GraphRestService>();
-builder.Services.AddSingleton<IHttpContextService, HttpContextService>();
-builder.Services.AddControllers(options =>
-{
-    options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()));
-}
+builder.Services.Configure<IConfiguration>(builder.Configuration);
+builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 
 );
 builder.Services.AddScoped<SurfService>();
