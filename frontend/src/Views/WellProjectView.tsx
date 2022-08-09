@@ -209,11 +209,13 @@ function WellProjectView() {
                     label="Plugging and abandonment"
                 />
             </Wrapper>
-            <Switch
-                label="Override generated cost profile"
-                onClick={overrideCostProfile}
-                checked={costProfile?.override ?? false}
-            />
+            <Wrapper>
+                <Switch
+                    label="Override generated cost profile"
+                    onClick={overrideCostProfile}
+                    checked={costProfile?.override ?? false}
+                />
+            </Wrapper>
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}

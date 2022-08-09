@@ -170,11 +170,13 @@ const ExplorationView = () => {
                     label="Rig mob demob"
                 />
             </Wrapper>
-            <Switch
-                label="Override generated cost profile"
-                onClick={overrideCostProfile}
-                checked={costProfile?.override ?? false}
-            />
+            <Wrapper>
+                <Switch
+                    label="Override generated cost profile"
+                    onClick={overrideCostProfile}
+                    checked={costProfile?.override ?? false}
+                />
+            </Wrapper>
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
@@ -186,6 +188,7 @@ const ExplorationView = () => {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
+
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setGAndGAdminCost}
