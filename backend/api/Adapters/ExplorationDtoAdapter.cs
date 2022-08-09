@@ -36,6 +36,7 @@ namespace api.Adapters
                 EPAVersion = costProfile.EPAVersion,
                 StartYear = costProfile.StartYear,
                 Values = costProfile.Values,
+                Override = costProfile.Override,
             };
         }
 

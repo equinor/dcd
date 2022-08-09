@@ -50,6 +50,7 @@ namespace api.Adapters
                 Exploration = exploration,
                 StartYear = costProfileDto.StartYear,
                 Values = costProfileDto.Values,
+                Override = costProfileDto.Override,
             };
         }
 
