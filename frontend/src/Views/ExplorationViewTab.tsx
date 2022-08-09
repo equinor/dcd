@@ -21,12 +21,12 @@ import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
-import { ExplorationDrillingSchedule } from "../models/assets/exploration/ExplorationDrillingSchedule"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
 import ExplorationCaseAsset from "./ExplorationCaseAsset"
 import { IAssetService } from "../Services/IAssetService"
+import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 
 const RowWrapper = styled.div`
     margin: 1rem;
@@ -53,7 +53,7 @@ const ExplorationViewTab = ({
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
-    const [drillingSchedule, setDrillingSchedule] = useState<ExplorationDrillingSchedule>()
+    const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
@@ -91,13 +91,12 @@ const ExplorationViewTab = ({
                 setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
-                setDrillingSchedule(newExploration.drillingSchedule)
                 setGAndGAdminCost(newExploration.gAndGAdminCost)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newExploration.costProfile, newExploration.drillingSchedule, newExploration.gAndGAdminCost],
+                        [newExploration.costProfile, newExploration.gAndGAdminCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -125,13 +124,12 @@ const ExplorationViewTab = ({
                 setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
-                setDrillingSchedule(newExploration.drillingSchedule)
                 setGAndGAdminCost(newExploration.gAndGAdminCost)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newExploration.costProfile, newExploration.drillingSchedule, newExploration.gAndGAdminCost],
+                        [newExploration.costProfile, newExploration.gAndGAdminCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -144,7 +142,6 @@ const ExplorationViewTab = ({
         const newExploration: Exploration = { ...exploration }
         newExploration.rigMobDemob = rigMobDemob
         newExploration.costProfile = costProfile
-        newExploration.drillingSchedule = drillingSchedule
         newExploration.gAndGAdminCost = gAndGAdminCost
         newExploration.currency = currency
         setExploration(newExploration)
