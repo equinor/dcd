@@ -23,6 +23,14 @@ const columnsForTable = [
     { label: "", accessor: "kebab", sortable: false },
 ]
 
+enum productionStrategyOverviewEnum {
+    "Depletion" = 0,
+    "Water injection" = 1,
+    "Gas injection" = 2,
+    "WAG" = 3,
+    "Mixed" = 4
+}
+
 const createDataTable = (project: Project) => {
     const dataArray: any[] = []
     project.cases.forEach((casee) => {
@@ -30,7 +38,7 @@ const createDataTable = (project: Project) => {
             id: casee.id,
             name: casee.name,
             description: casee.description,
-            productionStrategyOverview: casee.productionStrategyOverview,
+            productionStrategyOverview: productionStrategyOverviewEnum[casee.productionStrategyOverview!],
             producers: casee.producerCount,
             gasInjectors: casee.gasInjectorCount,
             waterInjectors: casee.waterInjectorCount,
