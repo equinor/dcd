@@ -32,6 +32,14 @@ stages:
                             fusionCredentials: ${{ parameters.FusionServiceConnection }}
                             tokenResource: ${{ parameters.FusionEnvId }}
                             portalUrl: ${{ parameters.portalUrl }}
+                        - task: FusionApp@2
+                          inputs:
+                            fusionCredentials: ${{ parameters.FusionServiceConnection }}
+                            portalUrl: ${{ parameters.portalUrl }}
+                            action: 'Publish'
+                            appKey: 'conceptapp'
+                            environment: ${{ parameters.FusionEnvId }}
+                            
           - deployment: "Update_${{ parameters.envshortname }}_Tags"
             environment: ${{ parameters.envfullname }}
             strategy:
