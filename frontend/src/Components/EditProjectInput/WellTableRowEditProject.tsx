@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
     Input, NativeSelect, Table,
 } from "@equinor/eds-core-react"
@@ -82,8 +81,6 @@ function WellTableRowEditProject({
     }
 
     if (!well) return null
-
-    console.log("From table row: ", explorationWell)
 
     return (
 

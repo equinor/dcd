@@ -1,5 +1,4 @@
-/* eslint-disable max-len */
-import { Button, Table, Typography } from "@equinor/eds-core-react"
+import { Button, Table } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useState,
 } from "react"
@@ -29,24 +28,33 @@ function WellListEditProject({
         setWells(newProject?.wells ?? [])
     }
 
+    // eslint-disable-next-line max-len
     const isExplorationWell = (category: Components.Schemas.WellCategory | undefined) => [4, 5, 6].indexOf(category ?? -1) > -1
 
     const GenerateWellTableRows = () => {
         const tableRows: JSX.Element[] = []
         if (!explorationWells) {
             wells?.filter((w) => !isExplorationWell(w.wellCategory)).forEach((w) => {
-                console.log(w.wellCategory)
-                console.log(isExplorationWell(w.wellCategory))
                 tableRows.push((
-                    <WellTableRowEditProject key={w.id} setProject={setProject} wellId={w.id!} project={project} explorationWell={isExplorationWell(w.wellCategory)} />
+                    <WellTableRowEditProject
+                        key={w.id}
+                        setProject={setProject}
+                        wellId={w.id!}
+                        project={project}
+                        explorationWell={isExplorationWell(w.wellCategory)}
+                    />
                 ))
             })
         } else {
             wells?.filter((w) => isExplorationWell(w.wellCategory)).forEach((w) => {
-                console.log(w.wellCategory)
-                console.log(isExplorationWell(w.wellCategory))
                 tableRows.push((
-                    <WellTableRowEditProject key={w.id} setProject={setProject} wellId={w.id!} project={project} explorationWell={isExplorationWell(w.wellCategory)} />
+                    <WellTableRowEditProject
+                        key={w.id}
+                        setProject={setProject}
+                        wellId={w.id!}
+                        project={project}
+                        explorationWell={isExplorationWell(w.wellCategory)}
+                    />
                 ))
             })
         }
@@ -77,7 +85,11 @@ function WellListEditProject({
                     {GenerateWellTableRows()}
                 </Table.Body>
             </Table>
-            <Button onClick={CreateWell} variant="outlined">{explorationWells ? "Add new exploration well type" : "Add new development/drilling well type"}</Button>
+            <Button onClick={CreateWell} variant="outlined">
+                {explorationWells
+            ? "Add new exploration well type" : "Add new development/drilling well type"}
+
+            </Button>
         </>
     )
 }

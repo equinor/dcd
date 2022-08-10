@@ -1,7 +1,6 @@
 import {
     Dispatch, FunctionComponent, SetStateAction, useState,
 } from "react"
-import { FocusOn } from "react-focus-on"
 import styled from "styled-components"
 import {
     Button, Icon, Tabs, Typography,
@@ -13,21 +12,9 @@ import { Project } from "../../models/Project"
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
 
-const TransparentButton = styled(Button)`
-    color: #007079;
-    background-color: white;
-    border: 1px solid #007079;
-`
-
 const StyledTabPanel = styled(Panel)`
     padding-top: 0px;
     border-top: 1px solid LightGray;
-`
-
-const ButtonsDiv = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: end;
 `
 
 const TopWrapper = styled.div`
@@ -57,18 +44,14 @@ const ModalDiv = styled.div`
 type Props = {
     toggleEditCaseModal: any
     isOpen: boolean
-    shards: any[]
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project
 }
 
 export const EditProjectInputModal: FunctionComponent<Props> = ({
-    toggleEditCaseModal, isOpen, shards, setProject, project,
+    toggleEditCaseModal, isOpen, setProject, project,
 }) => {
     const [activeTab, setActiveTab] = useState<number>(0)
-    const onMoreClick = (target: any) => {
-
-    }
 
     if (!isOpen) return null
     return (
@@ -76,7 +59,7 @@ export const EditProjectInputModal: FunctionComponent<Props> = ({
             <TopWrapper>
                 <Typography variant="h2">Edit project input</Typography>
                 <InvisibleButton
-                    onClick={(e) => toggleEditCaseModal()}
+                    onClick={() => toggleEditCaseModal()}
                 >
                     <Icon
                         color="gray"
@@ -98,20 +81,6 @@ export const EditProjectInputModal: FunctionComponent<Props> = ({
                     </StyledTabPanel>
                 </Panels>
             </Tabs>
-            {/* <ButtonsDiv>
-                        <TransparentButton
-                            style={{ marginRight: "1.5rem" }}
-                            onClick={(e) => toggleEditCaseModal()}
-                        >
-                            Cancel
-                        </TransparentButton>
-                        <Button
-                            onClick={() => console.log("Save clicked")}
-                        >
-                            Save
-
-                        </Button>
-                    </ButtonsDiv> */}
         </ModalDiv>
     )
 }

@@ -215,7 +215,6 @@ const ProjectView = () => {
             <EditProjectInputModal
                 toggleEditCaseModal={toggleEditProjectModal}
                 isOpen={editProjectModalIsOpen}
-                shards={[]}
                 project={project}
                 setProject={setProject}
             />
