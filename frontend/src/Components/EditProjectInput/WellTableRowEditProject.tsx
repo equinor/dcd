@@ -14,10 +14,11 @@ interface Props {
     wellId: string
     project: Project
     setProject: Dispatch<SetStateAction<Project | undefined>>
+    explorationWell: boolean
 }
 
 function WellTableRowEditProject({
-    wellId, project, setProject,
+    wellId, project, setProject, explorationWell,
 }: Props) {
     const [well, setWell] = useState<Well | undefined>(project.wells?.find((w) => w.id === wellId))
     const [wellName, setWellName] = useState<string>(well?.name ?? "")
@@ -82,6 +83,8 @@ function WellTableRowEditProject({
 
     if (!well) return null
 
+    console.log("From table row: ", explorationWell)
+
     return (
 
         <Table.Row key={well.id}>
@@ -103,13 +106,12 @@ function WellTableRowEditProject({
                     onChange={onWellCategoryChange}
                     onBlur={updateWell}
                 >
-                    {true ? (
+                    {!explorationWell ? (
                         <>
                             <option key="0" value={0}>Oil producer</option>
                             <option key="1" value={1}>Gas producer</option>
                             <option key="2" value={2}>Water injector</option>
                             <option key="3" value={3}>Gas Injector</option>
-                            <option key="7" value={7}>Rig mob/demob</option>
                         </>
                     )
                         : (

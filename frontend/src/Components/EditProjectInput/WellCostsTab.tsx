@@ -22,9 +22,10 @@ const WellCostsTab = ({
 
     <div color="yellow">
         <TopWrapper color="danger">
-            <Typography variant="h4">Production Profiles</Typography>
-            <WellListEditProject project={project} setProject={setProject} />
+            <Typography variant="h4">Well types</Typography>
         </TopWrapper>
+        <WellListEditProject project={project} setProject={setProject} explorationWells />
+        <WellListEditProject project={project} setProject={setProject} explorationWells={false} />
 
     </div>
 

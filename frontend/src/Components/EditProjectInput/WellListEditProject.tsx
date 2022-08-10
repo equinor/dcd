@@ -11,16 +11,17 @@ import WellTableRowEditProject from "./WellTableRowEditProject"
 interface Props {
     project: Project
     setProject: Dispatch<SetStateAction<Project | undefined>>
+    explorationWells: boolean
 }
 
 function WellListEditProject({
-    project, setProject,
+    project, setProject, explorationWells,
 }: Props) {
     const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
 
     const CreateWell = async () => {
         const newWell = new Well()
-        newWell.wellCategory = true ? 0 : 4
+        newWell.wellCategory = !explorationWells ? 0 : 4
         newWell.name = "New well"
         newWell.projectId = project.projectId
         const newProject = await (await GetWellService()).createWell(newWell)
@@ -32,29 +33,32 @@ function WellListEditProject({
 
     const GenerateWellTableRows = () => {
         const tableRows: JSX.Element[] = []
-            wells?.forEach((w) => {
+        if (!explorationWells) {
+            wells?.filter((w) => !isExplorationWell(w.wellCategory)).forEach((w) => {
+                console.log(w.wellCategory)
+                console.log(isExplorationWell(w.wellCategory))
                 tableRows.push((
-                    <WellTableRowEditProject key={w.id} setProject={setProject} wellId={w.id!} project={project} />
+                    <WellTableRowEditProject key={w.id} setProject={setProject} wellId={w.id!} project={project} explorationWell={isExplorationWell(w.wellCategory)} />
                 ))
             })
+        } else {
+            wells?.filter((w) => isExplorationWell(w.wellCategory)).forEach((w) => {
+                console.log(w.wellCategory)
+                console.log(isExplorationWell(w.wellCategory))
+                tableRows.push((
+                    <WellTableRowEditProject key={w.id} setProject={setProject} wellId={w.id!} project={project} explorationWell={isExplorationWell(w.wellCategory)} />
+                ))
+            })
+        }
 
         return tableRows
     }
 
     return (
         <>
-            <Button onClick={CreateWell} variant="outlined">Add new well</Button>
             <Table>
-                <Table.Caption>
-                    <Typography variant="h2">
-                        Wells
-                    </Typography>
-                </Table.Caption>
                 <Table.Head>
                     <Table.Row>
-                        <Table.Cell>
-                            Count
-                        </Table.Cell>
                         <Table.Cell>
                             Well name
                         </Table.Cell>
@@ -73,6 +77,7 @@ function WellListEditProject({
                     {GenerateWellTableRows()}
                 </Table.Body>
             </Table>
+            <Button onClick={CreateWell} variant="outlined">{explorationWells ? "Add new exploration well type" : "Add new development/drilling well type"}</Button>
         </>
     )
 }

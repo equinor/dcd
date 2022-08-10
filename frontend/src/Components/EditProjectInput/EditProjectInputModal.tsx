@@ -1,5 +1,5 @@
 import {
- Dispatch, FunctionComponent, SetStateAction, useState,
+    Dispatch, FunctionComponent, SetStateAction, useState,
 } from "react"
 import { FocusOn } from "react-focus-on"
 import styled from "styled-components"
@@ -72,45 +72,33 @@ export const EditProjectInputModal: FunctionComponent<Props> = ({
 
     if (!isOpen) return null
     return (
-        <>
-            <div style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: "rgba(0,0,0, .7)",
-                zIndex: 1000,
-            }}
-            />
-            <FocusOn shards={shards}>
-                <ModalDiv>
-                    <TopWrapper>
-                        <Typography variant="h2">Edit case input</Typography>
-                        <InvisibleButton
-                            onClick={(e) => toggleEditCaseModal()}
-                        >
-                            <Icon
-                                color="gray"
-                                data={clear}
-                            />
-                        </InvisibleButton>
-                    </TopWrapper>
-                    <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                        <List>
-                            <Tab>Well Costs</Tab>
-                            <Tab>PROSP</Tab>
-                        </List>
-                        <Panels>
-                            <StyledTabPanel>
-                                <WellCostsTab project={project} setProject={setProject} />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                PROSP
-                            </StyledTabPanel>
-                        </Panels>
-                    </Tabs>
-                    <ButtonsDiv>
+        <ModalDiv>
+            <TopWrapper>
+                <Typography variant="h2">Edit project input</Typography>
+                <InvisibleButton
+                    onClick={(e) => toggleEditCaseModal()}
+                >
+                    <Icon
+                        color="gray"
+                        data={clear}
+                    />
+                </InvisibleButton>
+            </TopWrapper>
+            <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                <List>
+                    <Tab>Well Costs</Tab>
+                    <Tab>PROSP</Tab>
+                </List>
+                <Panels>
+                    <StyledTabPanel>
+                        <WellCostsTab project={project} setProject={setProject} />
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        PROSP
+                    </StyledTabPanel>
+                </Panels>
+            </Tabs>
+            {/* <ButtonsDiv>
                         <TransparentButton
                             style={{ marginRight: "1.5rem" }}
                             onClick={(e) => toggleEditCaseModal()}
@@ -123,9 +111,7 @@ export const EditProjectInputModal: FunctionComponent<Props> = ({
                             Save
 
                         </Button>
-                    </ButtonsDiv>
-                </ModalDiv>
-            </FocusOn>
-        </>
+                    </ButtonsDiv> */}
+        </ModalDiv>
     )
 }
