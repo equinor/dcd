@@ -9,6 +9,7 @@ parameters:
     - name: DBContext
     - name: FusionEnvId
     - name: FusionServiceConnection
+    - name: ContainerTag
 
 stages:
     - stage: ${{ parameters.appName }}
@@ -57,6 +58,7 @@ stages:
                                   envshortname: ${{ parameters.envshortname }}
                                   registry: "crdcd.azurecr.io"
                                   repository: "backend"
+                                  tag: ${{ parameters.ContainerTag }}
 
           - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             dependsOn:
