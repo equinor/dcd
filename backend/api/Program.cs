@@ -85,7 +85,10 @@ builder.Services.AddCors(options =>
                 "http://localhost:3000",
                 "https://*.equinor.com",
                 "https://ase-dcd-frontend-dev.azurewebsites.net/",
-                "https://ase-dcd-frontend-qa.azurewebsites.net/"
+                "https://ase-dcd-frontend-qa.azurewebsites.net/",
+                "https://pro-s-portal-ci.azurewebsites.net/",
+                "https://pro-s-portal-fqa.azurewebsites.net/",
+                "https://pro-s-portal-fprd.azurewebsites.net/"
             ).SetIsOriginAllowedToAllowWildcardSubdomains();
         });
     });
@@ -106,7 +109,13 @@ else
 
 builder.Services.AddFusionIntegration(options =>
 {
-    var fusionEnvironment = config["Fusion:Environment"] ?? "CI";
+    string fusionEnvironment = environment switch
+    {
+        "dev" => "CI",
+        "qa" => "FQA",
+        "prod" => "FPRD",
+        _ => "CI",
+    };
     options.UseServiceInformation("ConceptApp", fusionEnvironment);
 
     options.AddFusionAuthorization();
@@ -121,7 +130,6 @@ builder.Services.AddFusionIntegration(options =>
     options.ApplicationMode = true;
 });
 
-
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
@@ -133,6 +141,7 @@ builder.Services.AddScoped<SubstructureService>();
 builder.Services.AddScoped<TopsideService>();
 builder.Services.AddScoped<WellService>();
 builder.Services.AddScoped<WellProjectWellService>();
+builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryClientOptions { TokenProviderConnectionString = commonLibTokenConnection });

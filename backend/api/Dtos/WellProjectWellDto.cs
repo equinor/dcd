@@ -8,7 +8,4 @@ namespace api.Dtos
         public Guid WellProjectId { get; set; } = Guid.Empty!;
         public Guid WellId { get; set; } = Guid.Empty!;
     }
-    public class DrillingScheduleDto : TimeSeriesScheduleDto
-    {
-    }
 }

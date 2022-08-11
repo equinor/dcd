@@ -82,6 +82,14 @@ declare namespace Components {
             projectCategory?: ProjectCategory /* int32 */;
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
+        export interface CountryOfficeCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export type Currency = 1 | 2; // int32
         export interface DrainageStrategyDto {
             id?: string; // uuid
@@ -115,21 +123,25 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
-        }
-        export interface ExplorationDrillingScheduleDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* int32 */[] | null;
+            override?: boolean;
         }
         export interface ExplorationDto {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
             costProfile?: ExplorationCostProfileDto;
-            drillingSchedule?: ExplorationDrillingScheduleDto;
             gAndGAdminCost?: GAndGAdminCostDto;
+            seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessingDto;
+            countryOfficeCost?: CountryOfficeCostDto;
             rigMobDemob?: number; // double
             currency?: Currency /* int32 */;
+            explorationWells?: ExplorationWellDto[] | null;
+        }
+        export interface ExplorationWellDto {
+            count?: number; // int32
+            drillingSchedule?: DrillingScheduleDto;
+            explorationId?: string; // uuid
+            wellId?: string; // uuid
         }
         export interface FuelFlaringAndLossesDto {
             id?: string; // uuid
@@ -236,6 +248,14 @@ declare namespace Components {
             name?: string | null;
             startYear?: number; // int32
             steaCases?: STEACaseDto[] | null;
+        }
+        export interface SeismicAcquisitionAndProcessingDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export type Source = 0 | 1; // int32
         export interface SubstructureCessationCostProfileDto {
@@ -480,6 +500,12 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace CreateExplorationWell {
+        export type RequestBody = Components.Schemas.ExplorationWellDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
     namespace CreateProject {
         export type RequestBody = Components.Schemas.ProjectDto;
         namespace Responses {
@@ -646,6 +672,17 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace Duplicate {
+        namespace Parameters {
+            export type CopyCaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            copyCaseId?: Parameters.CopyCaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
     namespace ExcelToSTEA {
         namespace Parameters {
             export type ProjectId = string; // uuid
@@ -656,6 +693,17 @@ declare namespace Paths {
         namespace Responses {
             export interface $200 {
             }
+        }
+    }
+    namespace GetExplorationWells {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface QueryParameters {
+            projectId?: Parameters.ProjectId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.ExplorationWellDto[];
         }
     }
     namespace GetInputToSTEA {
@@ -737,6 +785,12 @@ declare namespace Paths {
     }
     namespace UpdateExploration {
         export type RequestBody = Components.Schemas.ExplorationDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateExplorationWell {
+        export type RequestBody = Components.Schemas.ExplorationWellDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

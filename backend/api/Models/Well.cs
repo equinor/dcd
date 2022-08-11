@@ -12,7 +12,8 @@ namespace api.Models
         public double DrillingDays { get; set; }
         public double PlugingAndAbandonmentCost { get; set; }
         public double WellInterventionCost { get; set; }
-        public ICollection<WellProjectWell>? WellProjectWell { get; set; }
+        public ICollection<WellProjectWell>? WellProjectWells { get; set; }
+        public ICollection<ExplorationWell>? ExplorationWells { get; set; }
     }
 
     public enum WellCategory

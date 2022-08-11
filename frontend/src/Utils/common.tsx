@@ -1,4 +1,3 @@
-import apiConfig from "../api/apiConfig"
 import { Case } from "../models/case/Case"
 
 export const LoginAccessTokenKey = "loginAccessToken"
@@ -21,9 +20,12 @@ export function StoreToken(keyName: string, token: string) {
     window.sessionStorage.setItem(keyName, token)
 }
 
+export function StoreAppId(appId: string) {
+    window.sessionStorage.setItem("appId", appId)
+}
+
 export function GetToken(keyName: string) {
-    const config = apiConfig()
-    const scopes = [config.scopes[0]]
+    const scopes = [[`api://${window.sessionStorage.getItem("appId")}/.default`][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 

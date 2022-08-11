@@ -1,3 +1,4 @@
+import { EMPTY_GUID } from "../../../Utils/constants"
 import { ITimeSeries } from "../../ITimeSeries"
 
 export class WellProjectCostProfile implements Components.Schemas.WellProjectCostProfileDto, ITimeSeries {
@@ -19,7 +20,7 @@ export class WellProjectCostProfile implements Components.Schemas.WellProjectCos
             this.sum = data.sum
             this.override = data.override
         } else {
-            this.id = "00000000-0000-0000-0000-000000000000"
+            this.id = EMPTY_GUID
             this.startYear = 0
             this.values = []
             this.epaVersion = ""
