@@ -48,7 +48,7 @@ namespace api.Services
             List<Case> duplicateCaseNames = new List<Case>();
             foreach (Case c in project.Cases!)
             {
-                if(c.Name.Contains(case_.Name))
+                if (c.Name.Contains(case_.Name))
                 {
                     duplicateCaseNames.Add(c);
                 }
