@@ -10,7 +10,6 @@ import { Icon, Menu, Typography } from "@equinor/eds-core-react"
 import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
-import { useHistory } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
 
