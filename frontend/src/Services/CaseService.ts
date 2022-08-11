@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { __BaseService } from "./__BaseService"
 
 import { Project } from "../models/Project"
@@ -13,6 +14,11 @@ class __CaseService extends __BaseService {
 
     public async updateCase(body: Components.Schemas.CaseDto): Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.put("", { body })
+        return Project.fromJSON(res)
+    }
+
+    public async duplicateCase(copyCaseId: any, data: Components.Schemas.CaseDto): Promise<Project> {
+        const res: Components.Schemas.ProjectDto = await this.postWithParams("/copy", { body: data }, { params: { copyCaseId } })
         return Project.fromJSON(res)
     }
 }

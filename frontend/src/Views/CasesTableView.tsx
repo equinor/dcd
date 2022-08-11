@@ -10,7 +10,9 @@ import { Icon, Menu, Typography } from "@equinor/eds-core-react"
 import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
+import { useHistory } from "@equinor/fusion"
 import { Project } from "../models/Project"
+import { GetCaseService } from "../Services/CaseService"
 
 const columnsForTable = [
     { label: "Name", accessor: "name", sortable: true },
@@ -166,6 +168,17 @@ const CasesTableView = ({
             setTableData(sorted)
         }
     }
+
+    const duplicateCase = async () => {
+        try {
+            if (caseRowDataSelected != null) {
+                const newProject: Project = await (await GetCaseService()).duplicateCase(caseRowDataSelected.id, {})
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
     return (
         <div>
             <table className="table">
@@ -202,7 +215,7 @@ const CasesTableView = ({
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
-                    onClick={() => console.log(caseRowDataSelected)}
+                    onClick={duplicateCase}
                 >
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
