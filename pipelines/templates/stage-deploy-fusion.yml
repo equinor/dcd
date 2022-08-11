@@ -9,6 +9,7 @@ parameters:
     - name: DBContext
     - name: FusionEnvId
     - name: FusionServiceConnection
+    - name: ContainerTag
 
 stages:
     - stage: ${{ parameters.appName }}
@@ -32,6 +33,14 @@ stages:
                             fusionCredentials: ${{ parameters.FusionServiceConnection }}
                             tokenResource: ${{ parameters.FusionEnvId }}
                             portalUrl: ${{ parameters.portalUrl }}
+                        - task: FusionApp@2
+                          inputs:
+                            fusionCredentials: ${{ parameters.FusionServiceConnection }}
+                            portalUrl: ${{ parameters.portalUrl }}
+                            action: 'Publish'
+                            appKey: 'conceptapp'
+                            environment: ${{ parameters.FusionEnvId }}
+                            
           - deployment: "Update_${{ parameters.envshortname }}_Tags"
             environment: ${{ parameters.envfullname }}
             strategy:
@@ -49,6 +58,7 @@ stages:
                                   envshortname: ${{ parameters.envshortname }}
                                   registry: "crdcd.azurecr.io"
                                   repository: "backend"
+                                  tag: ${{ parameters.ContainerTag }}
 
           - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             dependsOn:

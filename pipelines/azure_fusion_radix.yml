@@ -11,6 +11,8 @@ trigger:
 pool:
     vmImage: "ubuntu-latest"
 
+pr: none
+
 variables:
   - group: DCD
   - group: DCD-KeyVault
@@ -39,6 +41,7 @@ stages:
         DBContext: $(DbConnectionStringDev)
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
+        ContainerTag: "release"
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -52,6 +55,7 @@ stages:
         DBContext: $(DbConnectionStringQa)
         FusionEnvId: $(FusionAppIdQA)
         FusionServiceConnection: 'conceptapp-preprod'
+        ContainerTag: "release"
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -63,5 +67,6 @@ stages:
         radixToken: $(RadixToken)
         branch: main
         DBContext: $(DbConnectionStringProd)
-        FusionEnvId: $(FusionAppIdQA)
+        FusionEnvId: $(FusionAppIdFPRD)
         FusionServiceConnection: 'conceptapp-preprod'
+        ContainerTag: "release"
