@@ -41,6 +41,7 @@ stages:
         DBContext: $(DbConnectionStringDev)
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
+        ContainerTag: "release"
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -54,6 +55,7 @@ stages:
         DBContext: $(DbConnectionStringQa)
         FusionEnvId: $(FusionAppIdQA)
         FusionServiceConnection: 'conceptapp-preprod'
+        ContainerTag: "release"
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -67,3 +69,4 @@ stages:
         DBContext: $(DbConnectionStringProd)
         FusionEnvId: $(FusionAppIdFPRD)
         FusionServiceConnection: 'conceptapp-preprod'
+        ContainerTag: "release"
