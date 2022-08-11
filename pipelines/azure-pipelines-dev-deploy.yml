@@ -9,6 +9,8 @@ variables:
   - group: DCD
   - group: DCD-KeyVault
 
+pr: none
+
 stages:
   - template: templates/stage-build-fusion.yml
     parameters:
