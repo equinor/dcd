@@ -33,3 +33,4 @@ stages:
         DBContext: $(DbConnectionStringDev)
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
+        ContainerTag: "develop"
