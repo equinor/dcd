@@ -9,6 +9,8 @@ variables:
   - group: DCD
   - group: DCD-KeyVault
 
+pr: none
+
 stages:
   - template: templates/stage-build-fusion.yml
     parameters:
@@ -33,4 +35,4 @@ stages:
         DBContext: $(DbConnectionStringDev)
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
-        ContainerTag: "develop"
+        ContainerTag: "release"
