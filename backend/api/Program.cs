@@ -85,7 +85,10 @@ builder.Services.AddCors(options =>
                 "http://localhost:3000",
                 "https://*.equinor.com",
                 "https://ase-dcd-frontend-dev.azurewebsites.net/",
-                "https://ase-dcd-frontend-qa.azurewebsites.net/"
+                "https://ase-dcd-frontend-qa.azurewebsites.net/",
+                "https://pro-s-portal-ci.azurewebsites.net/",
+                "https://pro-s-portal-fqa.azurewebsites.net/",
+                "https://pro-s-portal-fprd.azurewebsites.net/"
             ).SetIsOriginAllowedToAllowWildcardSubdomains();
         });
     });
