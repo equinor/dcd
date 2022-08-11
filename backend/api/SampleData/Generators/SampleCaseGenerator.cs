@@ -14,7 +14,8 @@ public static class SampleCaseGenerator
         {
             Name = "BusCase 1",
             Description = "Desc Bus Case 1",
-            DG4Date = DateTimeOffset.Now
+            DG4Date = DateTimeOffset.Now,
+            Id = new Guid("43666744-b4be-4cbb-b04f-e0831a87eb85"),
         }
             .WithDrainageStrategy(drainStratSkarven, projectsBuilder.ForProject(projectSkarven))
             .WithWellProject("SkarvenWell", projectsBuilder.ForProject(projectSkarven))
@@ -43,7 +44,8 @@ public static class SampleCaseGenerator
             CreateTime = DateTimeOffset.UtcNow,
             ModifyTime = DateTimeOffset.UtcNow,
             ReferenceCase = true,
-            DG4Date = DateTimeOffset.Now.AddYears(5)
+            DG4Date = DateTimeOffset.Now.AddYears(5),
+            Id = new Guid("afe4448b-0773-4553-b57b-d909ebf9c79d"),
         }
             .WithDrainageStrategy(project1DrainageStrategyName1, projectsBuilder.ForProject(project1))
             .WithWellProject(wellProjectName, projectsBuilder.ForProject(project1))
@@ -77,7 +79,8 @@ public static class SampleCaseGenerator
         {
             Name = "Case 1 in P2",
             Description = "Description Case 1 P2",
-            DG4Date = DateTimeOffset.Now
+            DG4Date = DateTimeOffset.Now,
+            Id = new Guid("f3b58556-68f9-4730-a378-c153e2f0cfa6"),
         }
             .WithDrainageStrategy(project2DrainageStrategyName1, projectsBuilder.ForProject(project2))
         );

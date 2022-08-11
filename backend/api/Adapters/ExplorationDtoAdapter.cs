@@ -13,11 +13,12 @@ namespace api.Adapters
                 ProjectId = exploration.ProjectId,
                 Name = exploration.Name,
                 RigMobDemob = exploration.RigMobDemob,
-                WellType = exploration.WellType,
                 Currency = exploration.Currency,
                 CostProfile = Convert(exploration.CostProfile),
-                DrillingSchedule = Convert(exploration.DrillingSchedule),
-                GAndGAdminCost = Convert(exploration.GAndGAdminCost)
+                GAndGAdminCost = Convert(exploration.GAndGAdminCost),
+                SeismicAcquisitionAndProcessing = Convert(exploration.SeismicAcquisitionAndProcessing),
+                CountryOfficeCost = Convert(exploration.CountryOfficeCost),
+                ExplorationWells = exploration.ExplorationWells?.Select(ew => ExplorationWellDtoAdapter.Convert(ew)).ToList()
             };
             return explorationDto;
         }
@@ -35,22 +36,10 @@ namespace api.Adapters
                 EPAVersion = costProfile.EPAVersion,
                 StartYear = costProfile.StartYear,
                 Values = costProfile.Values,
+                Override = costProfile.Override,
             };
         }
 
-        private static ExplorationDrillingScheduleDto Convert(ExplorationDrillingSchedule? drillingSchedule)
-        {
-            if (drillingSchedule == null)
-            {
-                return null!;
-            }
-            return new ExplorationDrillingScheduleDto
-            {
-                Id = drillingSchedule.Id,
-                StartYear = drillingSchedule.StartYear,
-                Values = drillingSchedule.Values,
-            };
-        }
         private static GAndGAdminCostDto Convert(GAndGAdminCost? gAndGAdminCost)
         {
             if (gAndGAdminCost == null)
@@ -64,6 +53,37 @@ namespace api.Adapters
                 EPAVersion = gAndGAdminCost.EPAVersion,
                 StartYear = gAndGAdminCost.StartYear,
                 Values = gAndGAdminCost.Values,
+            };
+        }
+        private static SeismicAcquisitionAndProcessingDto Convert(SeismicAcquisitionAndProcessing? seismicAcquisitionAndProcessing)
+        {
+            if (seismicAcquisitionAndProcessing == null)
+            {
+                return null!;
+            }
+            return new SeismicAcquisitionAndProcessingDto
+            {
+                Id = seismicAcquisitionAndProcessing.Id,
+                Currency = seismicAcquisitionAndProcessing.Currency,
+                EPAVersion = seismicAcquisitionAndProcessing.EPAVersion,
+                StartYear = seismicAcquisitionAndProcessing.StartYear,
+                Values = seismicAcquisitionAndProcessing.Values,
+            };
+        }
+
+        private static CountryOfficeCostDto Convert(CountryOfficeCost? countryOfficeCost)
+        {
+            if (countryOfficeCost == null)
+            {
+                return null!;
+            }
+            return new CountryOfficeCostDto
+            {
+                Id = countryOfficeCost.Id,
+                Currency = countryOfficeCost.Currency,
+                EPAVersion = countryOfficeCost.EPAVersion,
+                StartYear = countryOfficeCost.StartYear,
+                Values = countryOfficeCost.Values,
             };
         }
     }

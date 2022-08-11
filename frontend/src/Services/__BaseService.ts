@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosRequestConfig, ResponseType } from "axios"
+import axios, { AxiosRequestConfig, ResponseType } from "axios"
 
 import { ServiceConfig } from "./config"
 
@@ -20,7 +20,7 @@ type RequestOptions = {
 
 export class __BaseService {
     private config: ServiceConfig
-    private client: Axios
+    private client: any
 
     constructor(config: ServiceConfig) {
         this.config = config
@@ -61,6 +61,15 @@ export class __BaseService {
         requestQuery?: AxiosRequestConfig,
     ): Promise<any> {
         const { data } = await this.client.post(path, options?.body, requestQuery)
+
+        return data
+    }
+
+    protected async getWithParams(
+        path: string,
+        requestQuery?: AxiosRequestConfig,
+    ): Promise<any> {
+        const { data } = await this.client.get(path, requestQuery)
 
         return data
     }
