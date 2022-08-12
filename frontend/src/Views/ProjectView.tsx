@@ -65,7 +65,7 @@ const ProjectView = () => {
     const [activeTab, setActiveTab] = React.useState(0)
 
     const currentProject = useCurrentContext()
-
+    
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
