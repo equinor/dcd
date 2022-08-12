@@ -27,7 +27,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{projectId}", Name = "GetProject")]
-        public ProjectDto Get(Guid projectId)
+        public ProjectDto? Get(Guid projectId)
         {
             try
             {
