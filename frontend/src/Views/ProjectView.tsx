@@ -21,6 +21,7 @@ import {
     add,
     delete_to_trash, edit, library_add, more_vertical, archive,
 } from "@equinor/eds-icons"
+import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
@@ -37,6 +38,7 @@ import LinearDataTable from "../Components/LinearDataTable"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
+import CreateProject from "../Components/Project/CreateProject"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -75,6 +77,8 @@ const Wrapper = styled.div`
 const ProjectView = () => {
     const [activeTab, setActiveTab] = React.useState(0)
 
+    const currentProject = useCurrentContext()
+
     const history = useHistory()
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
@@ -83,6 +87,7 @@ const ProjectView = () => {
     const [caseDescription, setCaseDescription] = useState<string>("")
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const [retrievingProject, setRetrievingProject] = useState<boolean>(true)
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
@@ -93,14 +98,21 @@ const ProjectView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
-                const res = await (await GetProjectService()).getProjectByID(projectId)
+                if (currentProject?.externalId) {
+                // const projectId = unwrapProjectId(fusionProjectId)
+                const res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
+                if (!res || res.id === "") {
+                    (await GetProjectService()).createProjectFromContextId(fusionProjectId!)
+                }
+                // console.log(currentProject)
+                setRetrievingProject(false)
                 if (res !== undefined) {
                     setPhysicalUnit(res?.physUnit)
                     setCurrency(res?.currency)
                 }
                 console.log("[ProjectView]", res)
                 setProject(res)
+                }
             } catch (error) {
                 console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
             }
@@ -147,12 +159,21 @@ const ProjectView = () => {
         setCapexYearCaseTitles(caseTitles)
     }, [project])
 
-    if (!project) return null
-
     const onMoreClick = (target: any) => {
         setElement(target)
         setIsMenuOpen(!isMenuOpen)
     }
+
+    if (retrievingProject) return (<p>Retrieving project</p>)
+
+    if (!project || project.id === "") {
+        return (
+            <>
+                <p>Project does not exist in database. Do you want to create the project from ProjectMaster?</p>
+                <CreateProject setProject={setProject} />
+            </>
+            )
+        }
 
     return (
         <>
