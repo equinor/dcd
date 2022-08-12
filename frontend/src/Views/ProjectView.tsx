@@ -1,44 +1,31 @@
 /* eslint-disable camelcase */
 import {
     Button,
-    EdsProvider,
     Icon,
-    TextField,
-    Tooltip,
     Menu,
     Tabs, Typography,
 } from "@equinor/eds-core-react"
 import React, {
-    ChangeEventHandler,
-    MouseEventHandler,
     useEffect,
     useMemo,
     useState,
 } from "react"
-import { useParams, useHistory } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
     add,
-    delete_to_trash, edit, library_add, more_vertical, archive,
+    delete_to_trash, edit, library_add, more_vertical,
 } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
-
-import { Modal } from "../Components/Modal"
-import { GetCaseService } from "../Services/CaseService"
-
-import { GetSTEAService } from "../Services/STEAService"
-import { unwrapProjectId, GetProjectCategoryName, GetProjectPhaseName } from "../Utils/common"
-import { WrapperColumn } from "./Asset/StyledAssetComponents"
-import PhysicalUnit from "../Components/PhysicalUnit"
-import Currency from "../Components/Currency"
+import { unwrapProjectId } from "../Utils/common"
 import { Case } from "../models/case/Case"
-import LinearDataTable from "../Components/LinearDataTable"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
 import CreateProject from "../Components/Project/CreateProject"
+import { EditProjectInputModal } from "../Components/EditProjectInput/EditProjectInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -79,33 +66,28 @@ const ProjectView = () => {
 
     const currentProject = useCurrentContext()
 
-    const history = useHistory()
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
-    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
-    const [caseName, setCaseName] = useState<string>("")
-    const [caseDescription, setCaseDescription] = useState<string>("")
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
-    const [retrievingProject, setRetrievingProject] = useState<boolean>(true)
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
+
     const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
+
+    const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState<boolean>(false)
 
     useEffect(() => {
         (async () => {
             try {
                 if (currentProject?.externalId) {
-                // const projectId = unwrapProjectId(fusionProjectId)
-                const res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
+                let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
                 if (!res || res.id === "") {
-                    (await GetProjectService()).createProjectFromContextId(fusionProjectId!)
+                    res = await (await GetProjectService()).createProjectFromContextId(fusionProjectId!)
                 }
-                // console.log(currentProject)
-                setRetrievingProject(false)
                 if (res !== undefined) {
                     setPhysicalUnit(res?.physUnit)
                     setCurrency(res?.currency)
@@ -139,32 +121,12 @@ const ProjectView = () => {
         })()
     }, [physicalUnit, currency])
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const generateChartDataForCapexYear = useMemo(() => {
-        const years: number[] = []
-        const values: number[][] = []
-        const caseTitles: string[] = []
-        project?.cases.forEach((casee) => {
-            if (casee.capexYear?.startYear !== null) {
-                years.push(casee.capexYear?.startYear!)
-            }
-            if (casee.capexYear?.values?.length !== 0) {
-                values.push(casee.capexYear?.values!)
-                caseTitles?.push(casee.name!)
-            }
-        })
-
-        setCapexYearXLabels(years)
-        setCapexYearYDatas(values)
-        setCapexYearCaseTitles(caseTitles)
-    }, [project])
+    const toggleEditProjectModal = () => setEditProjectModalIsOpen(!editProjectModalIsOpen)
 
     const onMoreClick = (target: any) => {
         setElement(target)
         setIsMenuOpen(!isMenuOpen)
     }
-
-    if (retrievingProject) return (<p>Retrieving project</p>)
 
     if (!project || project.id === "") {
         return (
@@ -180,7 +142,7 @@ const ProjectView = () => {
             <TopWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
                 <TransparentButton
-                    onClick={() => console.log("Edit Project input clicked")}
+                    onClick={() => toggleEditProjectModal()}
                 >
                     Edit project input
                 </TransparentButton>
@@ -245,7 +207,6 @@ const ProjectView = () => {
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-
                             <CompareCasesView
                                 capexYearX={capexYearXLabels}
                                 capexYearY={capexYearYDatas}
@@ -268,6 +229,12 @@ const ProjectView = () => {
                     </Panels>
                 </Tabs>
             </Wrapper>
+            <EditProjectInputModal
+                toggleEditCaseModal={toggleEditProjectModal}
+                isOpen={editProjectModalIsOpen}
+                project={project}
+                setProject={setProject}
+            />
         </>
     )
 }

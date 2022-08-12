@@ -29,7 +29,15 @@ namespace api.Controllers
         [HttpGet("{projectId}", Name = "GetProject")]
         public ProjectDto Get(Guid projectId)
         {
-            return _projectService.GetProjectDto(projectId);
+            try
+            {
+                return _projectService.GetProjectDto(projectId);
+
+            }
+            catch (NotFoundInDBException)
+            {
+                return null;
+            }
         }
 
         [HttpPost("createFromFusion", Name = "CreateProjectFromContextId")]
