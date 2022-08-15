@@ -4,7 +4,7 @@
 /* eslint-disable camelcase */
 /* Implementation inspired from https://blog.logrocket.com/creating-react-sortable-table/ */
 import {
-    ChangeEventHandler, Dispatch, MouseEventHandler, SetStateAction, useState,
+    ChangeEventHandler, MouseEventHandler, useState,
 } from "react"
 import "../casesTableViewStyles.css"
 import {
@@ -16,9 +16,7 @@ import {
 import styled from "styled-components"
 import { useHistory } from "react-router"
 import { Project } from "../models/Project"
-import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
-import { Wrapper } from "./Asset/StyledAssetComponents"
 import { CasePath } from "../Utils/common"
 import { ModalNoFocus } from "../Components/ModalNoFocus"
 
@@ -163,12 +161,10 @@ const TableBody = ({
 
 interface CasesTableViewProps {
     project: Project
-    // setEditCaseModalIsOpen: Dispatch<SetStateAction<boolean>>
 }
 
 function CasesTableView({
     project,
-    // setEditCaseModalIsOpen,
 }: CasesTableViewProps) {
     const [tableData, setTableData] = useState(createDataTable(project))
     const [sortField, setSortField] = useState("")
@@ -300,13 +296,13 @@ function CasesTableView({
                     </Menu.Item>
                 </Menu>
             </div>
-            <ModalNoFocus isOpen={editCaseModalIsOpen} title="Edit case name and description">
+            <ModalNoFocus isOpen={editCaseModalIsOpen} title={`Edit case name and description for ${caseRowDataSelected?.name}`}>
                 <EditCaseForm>
                     <TextField
                         label="Name"
                         id="name"
                         name="name"
-                        placeholder="Enter a name"
+                        placeholder={caseRowDataSelected?.name ?? "Enter a name"}
                         onChange={handleCaseNameChange}
                     />
 
@@ -314,7 +310,7 @@ function CasesTableView({
                         label="Description"
                         id="description"
                         name="description"
-                        placeholder="Enter a description"
+                        placeholder={caseRowDataSelected?.description ?? "Enter a description"}
                         onChange={handleDescriptionChange}
                     />
                     <div>
@@ -336,7 +332,6 @@ function CasesTableView({
                     </div>
                 </EditCaseForm>
             </ModalNoFocus>
-
         </>
     )
 }
