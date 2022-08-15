@@ -3,15 +3,16 @@ parameters:
   - name: buildid
   - name: envshortname
   - name: repository
+  - name: tag
 
 steps:
   - task: PowerShell@2
-    displayName: TagContainer_${{ parameters.envshortname }}-release
+    displayName: TagContainer_${{ parameters.envshortname }}-${{ parameters.tag }}
     inputs:
       targetType: "inline"
       script: |
         $sourceImage= "${{ parameters.registry }}/${{ parameters.repository }}:" + ${{ parameters.buildId }}
-        $newtag= "${{ parameters.registry }}/${{ parameters.repository }}:${{ parameters.envshortname }}-release"
+        $newtag= "${{ parameters.registry }}/${{ parameters.repository }}:${{ parameters.envshortname }}-${{ parameters.tag }}"
         docker pull $sourceImage
         docker tag $sourceImage $newtag
         docker push $newtag
