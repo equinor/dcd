@@ -10,8 +10,10 @@ import { Icon, Menu, Typography } from "@equinor/eds-core-react"
 import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
+import { useParams } from "react-router"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
+import { GetProjectService } from "../Services/ProjectService"
 
 const columnsForTable = [
     { label: "Name", accessor: "name", sortable: true },
@@ -159,6 +161,8 @@ const CasesTableView = ({
     const [element, setElement] = useState<HTMLButtonElement>()
 
     const [caseRowDataSelected, setCaseRowDataSelected] = useState<any>()
+    const [, setProject] = useState<Project>()
+    const { fusionProjectId } = useParams<Record<string, string | undefined>>()
 
     const handleSorting = (sortFieldIndex: any, sortOrder: any) => {
         if (sortFieldIndex) {
@@ -179,7 +183,9 @@ const CasesTableView = ({
     const duplicateCase = async () => {
         try {
             if (caseRowDataSelected != null) {
-                const newProject: Project = await (await GetCaseService()).duplicateCase(caseRowDataSelected.id, {})
+                const projectResult = await (await GetProjectService()).getProjectByID(fusionProjectId!)
+                const newProject = await (await GetCaseService()).duplicateCase(caseRowDataSelected.id, {})
+                setProject(newProject)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
