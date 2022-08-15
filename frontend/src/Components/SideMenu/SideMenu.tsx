@@ -1,7 +1,6 @@
-// eslint-disable-next-line camelcase
-import { chevron_left } from "@equinor/eds-icons"
-import { Divider, Icon, Typography } from "@equinor/eds-core-react"
-import { useNavigate, useParams } from "react-router-dom"
+import { Divider } from "@equinor/eds-core-react"
+import { useLocation, useParams } from "react-router-dom"
+
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 
@@ -18,134 +17,65 @@ const SidebarDiv = styled.div`
     flex-direction: column;
 `
 
-const ReturnToSearch = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 1rem 1rem 0 1rem;
-    cursor: pointer;
-`
-
 const StyledDivider = styled(Divider)`
     width: 80%;
 `
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
 
-export const projects = [
-    {
-        name: "Project 1",
-        id: "78hdkssjd7c73ndks38shsn",
-        createdDate: 1641387278188,
-        cases: [
-            {
-                title: "Case 1", id: "7jssgs62hajk", capex: 1400, drillex: 900, ur: 120,
-            },
-            {
-                title: "Case 2", id: "hdgsiwksjs6l", capex: 1200, drillex: 700, ur: 110,
-            },
-            {
-                title: "Case 3", id: "i83uhdgdte73", capex: 1300, drillex: 500, ur: 140,
-            },
-            {
-                title: "Case 4", id: "ksstegdb83jk", capex: 1800, drillex: 200, ur: 155,
-            },
-            {
-                title: "Case 5", id: "9ked63hsvdgd", capex: 900, drillex: 100, ur: 110,
-            },
-            {
-                title: "Case 6", id: "73jshdgfyegd", capex: 1400, drillex: 900, ur: 90,
-            },
-        ],
-    },
-    {
-        name: "Project 2",
-        id: "js83hdytdgsdhffh63hsfs",
-        createdDate: 1633434946771,
-        cases: [
-            {
-                title: "Case 1", id: "gdhj63dhdjkd", capex: 1200, drillex: 700, ur: 150,
-            },
-            {
-                title: "Case 2", id: "dhhdj3dhdjkd", capex: 1400, drillex: 900, ur: 90,
-            },
-        ],
-    },
-    {
-        name: "Project 3",
-        id: "h63fdt3d63a8jfgyd-73isgs",
-        createdDate: 1622894187502,
-        cases: [
-            {
-                title: "Case 1", id: "hd63hdjd8sjs", capex: 1200, drillex: 700, ur: 150,
-            },
-            {
-                title: "Case 2", id: "hfgded7edsgs", capex: 1300, drillex: 500, ur: 140,
-            },
-            {
-                title: "Case 3", id: "83jdhfftehss", capex: 1400, drillex: 800, ur: 120,
-            },
-            {
-                title: "Case 4", id: "fkfjetsshdye", capex: 1500, drillex: 600, ur: 110,
-            },
-        ],
-    },
-    {
-        name: "Project 4",
-        id: "hsye7362jdkhfg73hsgdf73",
-        createdDate: 1641387546683,
-        cases: [
-            {
-                title: "Case 1", id: "83jshddtwgsj", capex: 1400, drillex: 900, ur: 150,
-            },
-            {
-                title: "Case 2", id: "kdjeuhdgfyeh", capex: 1200, drillex: 700, ur: 140,
-            },
-            {
-                title: "Case 3", id: "ieje83shsh6d", capex: 1100, drillex: 500, ur: 130,
-            },
-            {
-                title: "Case 4", id: "93kshdgteshs", capex: 1500, drillex: 400, ur: 120,
-            },
-            {
-                title: "Case 5", id: "93kfyehdsnsh", capex: 1600, drillex: 700, ur: 110,
-            },
-        ],
-    },
-]
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
 
-function SideMenu() {
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
+`
+
+interface Props {
+    children: JSX.Element;
+}
+
+const SideMenu: React.FC<Props> = ({ children }) => {
     const [project, setProject] = useState<Project>()
-    const navigate = useNavigate()
-    const params = useParams()
+    const { fusionProjectId } = useParams<Record<string, string | undefined>>()
+    const location = useLocation()
 
     useEffect(() => {
-        if (params.projectId) {
+        if (fusionProjectId) {
             (async () => {
                 try {
-                    const projectId: string = unwrapProjectId(params.projectId)
-                    const fetchedProject: Project = await GetProjectService().getProjectByID(projectId)
+                    const projectId = unwrapProjectId(fusionProjectId)
+                    const fetchedProject = await (await GetProjectService()).getProjectByID(projectId)
                     setProject(fetchedProject)
                 } catch (error) {
                     console.error()
                 }
             })()
         }
-    }, [params])
-
-    const returnToSearch = () => {
-        setProject(undefined)
-        navigate("/")
-    }
+    }, [location.pathname])
 
     if (project) {
         return (
-            <SidebarDiv>
-                <ReturnToSearch onClick={returnToSearch}>
-                    {/* eslint-disable-next-line camelcase */}
-                    <Icon data={chevron_left} size={24} />
-                    <Typography>Back to search</Typography>
-                </ReturnToSearch>
-                <StyledDivider />
-                <ProjectMenu project={project} />
-            </SidebarDiv>
+            <Wrapper>
+                <Body>
+                    <SidebarDiv>
+                        <StyledDivider />
+                        <ProjectMenu project={project} />
+                    </SidebarDiv>
+                    <MainView>
+                        {children}
+                    </MainView>
+                </Body>
+            </Wrapper>
         )
     }
     return null

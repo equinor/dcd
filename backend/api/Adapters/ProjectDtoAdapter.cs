@@ -9,11 +9,11 @@ namespace api.Adapters
         {
             var projectDto = ProjectToProjectDto(project);
 
-            if (project.Cases != null)
+            if (project.Wells != null)
             {
-                foreach (Case c in project.Cases)
+                foreach (Well well in project.Wells)
                 {
-                    projectDto.Cases!.Add(CaseDtoAdapter.Convert(c));
+                    projectDto.Wells!.Add(WellDtoAdapter.Convert(well));
                 }
             }
             if (project.Explorations != null)
@@ -29,7 +29,7 @@ namespace api.Adapters
                 projectDto.DrainageStrategies = new List<DrainageStrategyDto>();
                 foreach (DrainageStrategy d in project.DrainageStrategies)
                 {
-                    projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d));
+                    projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d, project.PhysicalUnit));
                 }
             }
             if (project.WellProjects != null)
@@ -73,9 +73,17 @@ namespace api.Adapters
                     projectDto.Transports.Add(TransportDtoAdapter.Convert(t));
                 }
             }
+            if (project.Cases != null)
+            {
+                foreach (Case c in project.Cases)
+                {
+                    projectDto.Cases!.Add(CaseDtoAdapter.Convert(c, projectDto));
+                }
+            }
             if (projectDto.Cases != null)
             {
                 AddCapexToCases(projectDto);
+                AddCapexToCasesYear(projectDto);
             }
             return projectDto;
         }
@@ -88,6 +96,7 @@ namespace api.Adapters
                 Name = project.Name,
                 CommonLibraryId = project.CommonLibraryId,
                 CommonLibraryName = project.CommonLibraryName,
+                FusionProjectId = project.FusionProjectId,
                 Description = project.Description,
                 Country = project.Country,
                 CreateDate = project.CreateDate,
@@ -95,12 +104,75 @@ namespace api.Adapters
                 ProjectPhase = project.ProjectPhase,
                 Currency = project.Currency,
                 PhysUnit = project.PhysicalUnit,
-                Cases = new List<CaseDto>()
+                Cases = new List<CaseDto>(),
+                Wells = new List<WellDto>(),
             };
+        }
+
+        public static void AddCapexToCasesYear(ProjectDto p)
+        {
+            foreach (CaseDto c in p.Cases!)
+            {
+                int? minYear = null;
+                var valuesDict = new SortedDictionary<int, double>();
+
+                void CalculateCapexYear(TimeSeriesDto<double>? timeSeries)
+                {
+                    if (timeSeries == null)
+                    {
+                        return;
+                    }
+                    if (minYear == null ? timeSeries.StartYear < int.MaxValue : timeSeries.StartYear < minYear)
+                    {
+                        minYear = timeSeries.StartYear;
+                    }
+
+                    for (var i = 0; i < timeSeries.Values.Length; i++)
+                    {
+                        if (valuesDict.ContainsKey(timeSeries.StartYear + i))
+                        {
+                            valuesDict[timeSeries.StartYear + i] += timeSeries.Values[i];
+                        }
+                        else
+                        {
+                            valuesDict.Add(timeSeries.StartYear + i, timeSeries.Values[i]);
+                        }
+
+                    }
+                }
+
+                CalculateCapexYear(p.WellProjects!.FirstOrDefault(l => l.Id == c.WellProjectLink)?.CostProfile);
+                CalculateCapexYear(p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)?.CostProfile);
+                CalculateCapexYear(p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)?.CessationCostProfile);
+                CalculateCapexYear(p.Surfs!.FirstOrDefault(l => l.Id == c.SurfLink)?.CostProfile);
+                CalculateCapexYear(p.Surfs!.FirstOrDefault(l => l.Id == c.SurfLink)?.CessationCostProfile);
+                CalculateCapexYear(p.Topsides!.FirstOrDefault(l => l.Id == c.TopsideLink)?.CostProfile);
+                CalculateCapexYear(p.Topsides!.FirstOrDefault(l => l.Id == c.TopsideLink)?.CessationCostProfile);
+                CalculateCapexYear(p.Transports!.FirstOrDefault(l => l.Id == c.TransportLink)?.CostProfile);
+                CalculateCapexYear(p.Transports!.FirstOrDefault(l => l.Id == c.TransportLink)?.CessationCostProfile);
+                CalculateCapexYear(p.Explorations!.FirstOrDefault(l => l.Id == c.ExplorationLink)?.CostProfile);
+
+                var lastYear = valuesDict.Keys.Count > 0 ? valuesDict.Keys.Max() : int.MinValue;
+
+                for (var i = minYear ?? 0; i <= lastYear; i++)
+                {
+                    if (!valuesDict.ContainsKey(i))
+                    {
+                        valuesDict.Add(i, 0);
+                    }
+                }
+
+                c.CapexYear = new CapexYear()
+                {
+                    StartYear = minYear,
+                    Values = valuesDict.Values.ToArray(),
+                };
+            }
         }
 
         public static void AddCapexToCases(ProjectDto p)
         {
+
             foreach (CaseDto c in p.Cases!)
             {
                 c.Capex = 0;

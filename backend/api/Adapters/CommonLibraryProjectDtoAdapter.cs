@@ -24,7 +24,7 @@ namespace api.Adapters
             return projectDto;
         }
 
-        private static ProjectCategory ConvertCategory(string category)
+        internal static ProjectCategory ConvertCategory(string category)
         {
             return category switch
             {
@@ -54,7 +54,7 @@ namespace api.Adapters
             };
         }
 
-        private static ProjectPhase ConvertPhase(string phase)
+        internal static ProjectPhase ConvertPhase(string phase)
         {
             return phase switch
             {

@@ -45,11 +45,12 @@ interface Props {
 }
 
 function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
-    const params = useParams()
+    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
+
     // eslint-disable-next-line max-len
-    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && params.caseId === undefined)
-        || (item.name === ProjectMenuItemType.CASES && params.caseId !== undefined)
-    const isSelected = params.projectId === projectId && isSelectedProjectMenuItem
+    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && caseId === undefined)
+        || (item.name === ProjectMenuItemType.CASES && caseId !== undefined)
+    const isSelected = fusionProjectId === projectId && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 
     useEffect(() => {
@@ -73,7 +74,7 @@ function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
                                 <LinkWithoutStyle to={CasePath(projectId, subItem.id ? subItem.id : "")}>
                                     <MenuItem
                                         title={subItem.name ? subItem.name : "Untitled"}
-                                        isSelected={isSelected && params.caseId === subItem.id}
+                                        isSelected={isSelected && caseId === subItem.id}
                                         padding="0.25rem 2rem"
                                     />
                                 </LinkWithoutStyle>
