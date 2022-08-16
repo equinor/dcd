@@ -7,7 +7,6 @@ import {
 } from "@equinor/eds-core-react"
 import React, {
     useEffect,
-    useMemo,
     useState,
 } from "react"
 import { useParams } from "react-router-dom"
@@ -19,12 +18,10 @@ import {
 import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
-import { unwrapProjectId } from "../Utils/common"
 import { Case } from "../models/case/Case"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
-import CreateProject from "../Components/Project/CreateProject"
 import { EditProjectInputModal } from "../Components/EditProjectInput/EditProjectInputModal"
 
 const { Panel } = Tabs
@@ -65,7 +62,7 @@ const ProjectView = () => {
     const [activeTab, setActiveTab] = React.useState(0)
 
     const currentProject = useCurrentContext()
-    
+
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
@@ -84,16 +81,15 @@ const ProjectView = () => {
         (async () => {
             try {
                 if (currentProject?.externalId) {
-                let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
-                if (!res || res.id === "") {
-                    res = await (await GetProjectService()).createProjectFromContextId(fusionProjectId!)
-                }
-                if (res !== undefined) {
-                    setPhysicalUnit(res?.physUnit)
-                    setCurrency(res?.currency)
-                }
-                console.log("[ProjectView]", res)
-                setProject(res)
+                    let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
+                    if (!res || res.id === "") {
+                        res = await (await GetProjectService()).createProjectFromContextId(fusionProjectId!)
+                    }
+                    if (res !== undefined) {
+                        setPhysicalUnit(res?.physUnit)
+                        setCurrency(res?.currency)
+                    }
+                    setProject(res)
                 }
             } catch (error) {
                 console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
@@ -130,12 +126,9 @@ const ProjectView = () => {
 
     if (!project || project.id === "") {
         return (
-            <>
-                <p>Project does not exist in database. Do you want to create the project from ProjectMaster?</p>
-                <CreateProject setProject={setProject} />
-            </>
-            )
-        }
+            <p>Retrieving project</p>
+        )
+    }
 
     return (
         <>
