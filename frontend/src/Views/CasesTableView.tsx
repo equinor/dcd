@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable camelcase */
 /* Implementation inspired from https://blog.logrocket.com/creating-react-sortable-table/ */
-import { useState } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 import { Button } from "@material-ui/core"
 import "../casesTableViewStyles.css"
 import { Icon, Menu, Typography } from "@equinor/eds-core-react"
@@ -148,10 +148,11 @@ const TableBody = ({
 
 interface CasesTableViewProps {
     project: Project
+    setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
 const CasesTableView = ({
-    project,
+    project, setProject,
 }: CasesTableViewProps) => {
     const [tableData, setTableData] = useState(createDataTable(project))
     const [sortField, setSortField] = useState("")
@@ -161,8 +162,6 @@ const CasesTableView = ({
     const [element, setElement] = useState<HTMLButtonElement>()
 
     const [caseRowDataSelected, setCaseRowDataSelected] = useState<any>()
-
-    const [, setProject] = useState<Project>()
 
     const handleSorting = (sortFieldIndex: any, sortOrder: any) => {
         if (sortFieldIndex) {
@@ -185,6 +184,8 @@ const CasesTableView = ({
             if (caseRowDataSelected != null) {
                 const newProject = await (await GetCaseService()).deleteCase(caseRowDataSelected.id)
                 setProject(newProject)
+                console.log(tableData)
+                setTableData(createDataTable(newProject))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
