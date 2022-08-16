@@ -163,9 +163,9 @@ interface CasesTableViewProps {
     setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
-function CasesTableView({
+const CasesTableView = ({
     project, setProject,
-}: CasesTableViewProps) {
+}: CasesTableViewProps) => {
     const [tableData, setTableData] = useState(createDataTable(project))
     const [sortField, setSortField] = useState("")
     const [order, setOrder] = useState("asc")
