@@ -187,6 +187,7 @@ const ProjectView = () => {
                         <StyledTabPanel>
                             <OverviewView
                                 project={project}
+                                setProject={setProject}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>

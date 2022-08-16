@@ -4,7 +4,7 @@
 /* eslint-disable camelcase */
 /* Implementation inspired from https://blog.logrocket.com/creating-react-sortable-table/ */
 import {
-    ChangeEventHandler, MouseEventHandler, useState,
+    ChangeEventHandler, Dispatch, MouseEventHandler, SetStateAction, useState,
 } from "react"
 import "../casesTableViewStyles.css"
 import {
@@ -17,7 +17,7 @@ import styled from "styled-components"
 import { useHistory } from "react-router"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
-import { CasePath } from "../Utils/common"
+import { CasePath, unwrapCase } from "../Utils/common"
 import { ModalNoFocus } from "../Components/ModalNoFocus"
 
 const EditCaseForm = styled.form`
@@ -161,10 +161,11 @@ const TableBody = ({
 
 interface CasesTableViewProps {
     project: Project
+    setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
 function CasesTableView({
-    project,
+    project, setProject,
 }: CasesTableViewProps) {
     const [tableData, setTableData] = useState(createDataTable(project))
     const [sortField, setSortField] = useState("")
@@ -212,12 +213,12 @@ function CasesTableView({
         e.preventDefault()
 
         try {
-            const projectResult: Project = await (await GetCaseService()).updateCase({
-                description: caseDescription,
-                name: caseName,
-                projectId: project.projectId,
-                id: caseRowDataSelected.id,
-            })
+            const caseResult = unwrapCase(project.cases.find((o) => o.id === caseRowDataSelected.id))
+            caseResult.name = (caseName === "" ? caseRowDataSelected.name : caseName)
+            caseResult.description = (caseDescription === "" ? caseRowDataSelected.description : caseDescription)
+            const projectResult: Project = await (await GetCaseService()).updateCase(caseResult)
+            setProject(projectResult)
+            setTableData(createDataTable(projectResult))
             toggleEditCaseModal()
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -317,7 +318,7 @@ function CasesTableView({
                         <Button
                             type="submit"
                             onClick={submitEditCaseForm}
-                            disabled={caseName === "" || caseDescription === ""}
+                            // disabled={caseName === "" || caseDescription === ""}
                         >
                             Update case
                         </Button>
