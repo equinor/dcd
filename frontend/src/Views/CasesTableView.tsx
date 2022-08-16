@@ -10,7 +10,10 @@ import { Icon, Menu, Typography } from "@equinor/eds-core-react"
 import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
+import { useParams } from "react-router"
 import { Project } from "../models/Project"
+import { GetProjectService } from "../Services/ProjectService"
+import { GetCaseService } from "../Services/CaseService"
 
 const columnsForTable = [
     { label: "Name", accessor: "name", sortable: true },
@@ -159,6 +162,8 @@ const CasesTableView = ({
 
     const [caseRowDataSelected, setCaseRowDataSelected] = useState<any>()
 
+    const [, setProject] = useState<Project>()
+
     const handleSorting = (sortFieldIndex: any, sortOrder: any) => {
         if (sortFieldIndex) {
             const sorted = [...tableData].sort((a, b) => {
@@ -174,6 +179,18 @@ const CasesTableView = ({
             setTableData(sorted)
         }
     }
+
+    const deleteCase = async () => {
+        try {
+            if (caseRowDataSelected != null) {
+                const newProject = await (await GetCaseService()).deleteCase(caseRowDataSelected.id)
+                setProject(newProject)
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
     return (
         <div>
             <table className="table">
@@ -226,7 +243,7 @@ const CasesTableView = ({
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
-                    onClick={() => console.log(caseRowDataSelected)}
+                    onClick={deleteCase}
                 >
                     <Icon data={delete_to_trash} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
