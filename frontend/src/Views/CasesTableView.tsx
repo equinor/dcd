@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable camelcase */
 /* Implementation inspired from https://blog.logrocket.com/creating-react-sortable-table/ */
 import {
@@ -11,7 +10,7 @@ import {
     Icon, Menu, TextField, Typography, Button,
 } from "@equinor/eds-core-react"
 import {
-    delete_to_trash, edit, folder, library_add, more_vertical, navigation,
+    delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { useHistory } from "react-router"
