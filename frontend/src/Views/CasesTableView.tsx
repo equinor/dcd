@@ -184,7 +184,6 @@ const CasesTableView = ({
             if (caseRowDataSelected != null) {
                 const newProject = await (await GetCaseService()).deleteCase(caseRowDataSelected.id)
                 setProject(newProject)
-                console.log(tableData)
                 setTableData(createDataTable(newProject))
             }
         } catch (error) {

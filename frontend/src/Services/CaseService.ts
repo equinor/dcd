@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { __BaseService } from "./__BaseService"
 
 import { Project } from "../models/Project"
