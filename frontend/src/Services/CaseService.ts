@@ -17,7 +17,7 @@ class __CaseService extends __BaseService {
         return Project.fromJSON(res)
     }
 
-    public async duplicateCase(copyCaseId: any, data: Components.Schemas.CaseDto): Promise<Project> {
+    public async duplicateCase(copyCaseId: string, data: Components.Schemas.CaseDto): Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.postWithParams("/copy", { body: data }, { params: { copyCaseId } })
         return Project.fromJSON(res)
     }
