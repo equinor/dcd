@@ -2,6 +2,8 @@
 import React, {
     MouseEventHandler, useState,
     ChangeEventHandler,
+    Dispatch,
+    SetStateAction,
 } from "react"
 import styled from "styled-components"
 import {
@@ -74,10 +76,11 @@ const CreateCaseForm = styled.form`
 
 interface Props {
     project: Project,
+    setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
 function OverviewView({
-    project,
+    project, setProject,
 }: Props) {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
@@ -207,7 +210,7 @@ function OverviewView({
                 </StyledButton>
 
             </RowWrapper>
-            <CasesTableView project={project} />
+            <CasesTableView project={project} setProject={setProject} />
         </Wrapper>
     )
 }
