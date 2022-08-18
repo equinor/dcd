@@ -18,7 +18,7 @@ namespace api.Models
             {
                 if (this.InternalData == null)
                 {
-                    throw new Exception("Timeseries contains no values");
+                    return Array.Empty<T>();
                 }
                 string[] tab = this.InternalData.Split(';');
                 return Array.ConvertAll(InternalData.Split(';'), new Converter<string, T>(convertStringToGeneric));

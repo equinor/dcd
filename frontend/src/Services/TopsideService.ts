@@ -17,9 +17,9 @@ export class __TopsideService extends __BaseService implements IAssetService {
     }
 }
 
-export function GetTopsideService() {
+export async function GetTopsideService() {
     return new __TopsideService({
         ...config.TopsideService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

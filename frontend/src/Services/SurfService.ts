@@ -17,9 +17,9 @@ export class __SurfService extends __BaseService implements IAssetService {
     }
 }
 
-export function GetSurfService() {
+export async function GetSurfService() {
     return new __SurfService({
         ...config.SurfService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

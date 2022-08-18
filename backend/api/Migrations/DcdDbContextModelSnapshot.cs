@@ -133,6 +133,37 @@ namespace api.Migrations
                     b.ToTable("Co2Emissions");
                 });
 
+            modelBuilder.Entity("api.Models.CountryOfficeCost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Exploration.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Exploration.Id")
+                        .IsUnique();
+
+                    b.ToTable("CountryOfficeCost");
+                });
+
             modelBuilder.Entity("api.Models.DrainageStrategy", b =>
                 {
                     b.Property<Guid>("Id")
@@ -145,6 +176,9 @@ namespace api.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("FacilitiesAvailability")
+                        .HasColumnType("float");
 
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
@@ -185,13 +219,7 @@ namespace api.Migrations
                     b.Property<int>("StartYear")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("WellProject.Id")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("WellProject.Id")
-                        .IsUnique();
 
                     b.ToTable("DrillingSchedule");
                 });
@@ -214,9 +242,6 @@ namespace api.Migrations
 
                     b.Property<double>("RigMobDemob")
                         .HasColumnType("float");
-
-                    b.Property<int>("WellType")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -245,6 +270,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Override")
+                        .HasColumnType("bit");
+
                     b.Property<int>("StartYear")
                         .HasColumnType("int");
 
@@ -256,28 +284,27 @@ namespace api.Migrations
                     b.ToTable("ExplorationCostProfile");
                 });
 
-            modelBuilder.Entity("api.Models.ExplorationDrillingSchedule", b =>
+            modelBuilder.Entity("api.Models.ExplorationWell", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("ExplorationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("Exploration.Id")
+                    b.Property<Guid>("WellId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("InternalData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartYear")
+                    b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<Guid?>("DrillingScheduleId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("Exploration.Id")
-                        .IsUnique();
+                    b.HasKey("ExplorationId", "WellId");
 
-                    b.ToTable("ExplorationDrillingSchedule");
+                    b.HasIndex("DrillingScheduleId");
+
+                    b.HasIndex("WellId");
+
+                    b.ToTable("ExplorationWell");
                 });
 
             modelBuilder.Entity("api.Models.FuelFlaringAndLosses", b =>
@@ -506,6 +533,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("FusionProjectId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -524,7 +554,7 @@ namespace api.Migrations
                     b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("api.Models.Substructure", b =>
+            modelBuilder.Entity("api.Models.SeismicAcquisitionAndProcessing", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -533,8 +563,58 @@ namespace api.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("Exploration.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Exploration.Id")
+                        .IsUnique();
+
+                    b.ToTable("SeismicAcquisitionAndProcessing");
+                });
+
+            modelBuilder.Entity("api.Models.Substructure", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Concept")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CostYear")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DG4Date")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -545,6 +625,12 @@ namespace api.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -621,17 +707,36 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ArtificialLift")
+                        .HasColumnType("int");
+
+                    b.Property<double>("CessationCost")
+                        .HasColumnType("float");
+
+                    b.Property<int>("CostYear")
                         .HasColumnType("int");
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DG4Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
 
                     b.Property<double>("InfieldPipelineSystemLength")
                         .HasColumnType("float");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -649,7 +754,13 @@ namespace api.Migrations
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<int>("RiserCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Source")
                         .HasColumnType("int");
 
                     b.Property<int>("TemplateCount")
@@ -736,11 +847,42 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ArtificialLift")
+                        .HasColumnType("int");
+
+                    b.Property<double>("CO2OnMaxGasProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2OnMaxOilProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2OnMaxWaterInjectionProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2ShareGasProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2ShareOilProfile")
+                        .HasColumnType("float");
+
+                    b.Property<double>("CO2ShareWaterInjectionProfile")
+                        .HasColumnType("float");
+
+                    b.Property<int>("CostYear")
                         .HasColumnType("int");
 
                     b.Property<int>("Currency")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DG4Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<double>("DryWeight")
                         .HasColumnType("float");
@@ -748,8 +890,23 @@ namespace api.Migrations
                     b.Property<double>("FacilitiesAvailability")
                         .HasColumnType("float");
 
+                    b.Property<double>("FacilityOpex")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FlaredGas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FuelConsumption")
+                        .HasColumnType("float");
+
                     b.Property<double>("GasCapacity")
                         .HasColumnType("float");
+
+                    b.Property<int>("GasInjectorCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -761,8 +918,20 @@ namespace api.Migrations
                     b.Property<double>("OilCapacity")
                         .HasColumnType("float");
 
+                    b.Property<int>("ProducerCount")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WaterInjectorCount")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -839,11 +1008,23 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("CostYear")
+                        .HasColumnType("int");
+
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
+                    b.Property<DateTimeOffset?>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DG4Date")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<double>("GasExportPipelineLength")
                         .HasColumnType("float");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Maturity")
                         .HasColumnType("int");
@@ -857,6 +1038,12 @@ namespace api.Migrations
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -927,6 +1114,40 @@ namespace api.Migrations
                     b.ToTable("TransportCostProfile");
                 });
 
+            modelBuilder.Entity("api.Models.Well", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("DrillingDays")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("PlugingAndAbandonmentCost")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("WellCategory")
+                        .HasColumnType("int");
+
+                    b.Property<double>("WellCost")
+                        .HasColumnType("float");
+
+                    b.Property<double>("WellInterventionCost")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Wells");
+                });
+
             modelBuilder.Entity("api.Models.WellProject", b =>
                 {
                     b.Property<Guid>("Id")
@@ -979,6 +1200,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Override")
+                        .HasColumnType("bit");
+
                     b.Property<int>("StartYear")
                         .HasColumnType("int");
 
@@ -991,6 +1215,29 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("WellProjectCostProfile");
+                });
+
+            modelBuilder.Entity("api.Models.WellProjectWell", b =>
+                {
+                    b.Property<Guid>("WellProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("WellId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("DrillingScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("WellProjectId", "WellId");
+
+                    b.HasIndex("DrillingScheduleId");
+
+                    b.HasIndex("WellId");
+
+                    b.ToTable("WellProjectWell");
                 });
 
             modelBuilder.Entity("api.Models.Case", b =>
@@ -1015,6 +1262,17 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy");
                 });
 
+            modelBuilder.Entity("api.Models.CountryOfficeCost", b =>
+                {
+                    b.HasOne("api.Models.Exploration", "Exploration")
+                        .WithOne("CountryOfficeCost")
+                        .HasForeignKey("api.Models.CountryOfficeCost", "Exploration.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exploration");
+                });
+
             modelBuilder.Entity("api.Models.DrainageStrategy", b =>
                 {
                     b.HasOne("api.Models.Project", "Project")
@@ -1024,17 +1282,6 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("api.Models.DrillingSchedule", b =>
-                {
-                    b.HasOne("api.Models.WellProject", "WellProject")
-                        .WithOne("DrillingSchedule")
-                        .HasForeignKey("api.Models.DrillingSchedule", "WellProject.Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("WellProject");
                 });
 
             modelBuilder.Entity("api.Models.Exploration", b =>
@@ -1059,15 +1306,29 @@ namespace api.Migrations
                     b.Navigation("Exploration");
                 });
 
-            modelBuilder.Entity("api.Models.ExplorationDrillingSchedule", b =>
+            modelBuilder.Entity("api.Models.ExplorationWell", b =>
                 {
+                    b.HasOne("api.Models.DrillingSchedule", "DrillingSchedule")
+                        .WithMany()
+                        .HasForeignKey("DrillingScheduleId");
+
                     b.HasOne("api.Models.Exploration", "Exploration")
-                        .WithOne("DrillingSchedule")
-                        .HasForeignKey("api.Models.ExplorationDrillingSchedule", "Exploration.Id")
+                        .WithMany("ExplorationWells")
+                        .HasForeignKey("ExplorationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("api.Models.Well", "Well")
+                        .WithMany("ExplorationWells")
+                        .HasForeignKey("WellId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("DrillingSchedule");
+
                     b.Navigation("Exploration");
+
+                    b.Navigation("Well");
                 });
 
             modelBuilder.Entity("api.Models.FuelFlaringAndLosses", b =>
@@ -1156,6 +1417,17 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("DrainageStrategy");
+                });
+
+            modelBuilder.Entity("api.Models.SeismicAcquisitionAndProcessing", b =>
+                {
+                    b.HasOne("api.Models.Exploration", "Exploration")
+                        .WithOne("SeismicAcquisitionAndProcessing")
+                        .HasForeignKey("api.Models.SeismicAcquisitionAndProcessing", "Exploration.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exploration");
                 });
 
             modelBuilder.Entity("api.Models.Substructure", b =>
@@ -1290,6 +1562,17 @@ namespace api.Migrations
                     b.Navigation("Transport");
                 });
 
+            modelBuilder.Entity("api.Models.Well", b =>
+                {
+                    b.HasOne("api.Models.Project", "Project")
+                        .WithMany("Wells")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("api.Models.WellProject", b =>
                 {
                     b.HasOne("api.Models.Project", "Project")
@@ -1308,6 +1591,31 @@ namespace api.Migrations
                         .HasForeignKey("api.Models.WellProjectCostProfile", "WellProject.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("WellProject");
+                });
+
+            modelBuilder.Entity("api.Models.WellProjectWell", b =>
+                {
+                    b.HasOne("api.Models.DrillingSchedule", "DrillingSchedule")
+                        .WithMany()
+                        .HasForeignKey("DrillingScheduleId");
+
+                    b.HasOne("api.Models.Well", "Well")
+                        .WithMany("WellProjectWells")
+                        .HasForeignKey("WellId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.WellProject", "WellProject")
+                        .WithMany("WellProjectWells")
+                        .HasForeignKey("WellProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DrillingSchedule");
+
+                    b.Navigation("Well");
 
                     b.Navigation("WellProject");
                 });
@@ -1335,9 +1643,13 @@ namespace api.Migrations
                 {
                     b.Navigation("CostProfile");
 
-                    b.Navigation("DrillingSchedule");
+                    b.Navigation("CountryOfficeCost");
+
+                    b.Navigation("ExplorationWells");
 
                     b.Navigation("GAndGAdminCost");
+
+                    b.Navigation("SeismicAcquisitionAndProcessing");
                 });
 
             modelBuilder.Entity("api.Models.Project", b =>
@@ -1357,6 +1669,8 @@ namespace api.Migrations
                     b.Navigation("Transports");
 
                     b.Navigation("WellProjects");
+
+                    b.Navigation("Wells");
                 });
 
             modelBuilder.Entity("api.Models.Substructure", b =>
@@ -1387,11 +1701,18 @@ namespace api.Migrations
                     b.Navigation("CostProfile");
                 });
 
+            modelBuilder.Entity("api.Models.Well", b =>
+                {
+                    b.Navigation("ExplorationWells");
+
+                    b.Navigation("WellProjectWells");
+                });
+
             modelBuilder.Entity("api.Models.WellProject", b =>
                 {
                     b.Navigation("CostProfile");
 
-                    b.Navigation("DrillingSchedule");
+                    b.Navigation("WellProjectWells");
                 });
 #pragma warning restore 612, 618
         }

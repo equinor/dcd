@@ -1,4 +1,4 @@
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 
 export const LoginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -9,7 +9,7 @@ export const GetDrainageStrategy = (
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
 export function ProjectPath(projectId: string) {
-    return `/project/${projectId}`
+    return `/${projectId}`
 }
 
 export function CasePath(projectId: string, caseId: string) {
@@ -20,8 +20,13 @@ export function StoreToken(keyName: string, token: string) {
     window.sessionStorage.setItem(keyName, token)
 }
 
+export function StoreAppId(appId: string) {
+    window.sessionStorage.setItem("appId", appId)
+}
+
 export function GetToken(keyName: string) {
-    return window.sessionStorage.getItem(keyName)
+    const scopes = [[`api://${window.sessionStorage.getItem("appId")}/.default`][0]]
+    return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
 export const unwrapCase = (_case?: Case | undefined): Case => {
