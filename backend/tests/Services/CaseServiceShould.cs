@@ -1,10 +1,13 @@
 using System;
+using System.Collections;
 using System.Linq;
 
 using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
+
+using NuGet.Frameworks;
 
 using Xunit;
 
@@ -29,13 +32,14 @@ public class CaseShould : IDisposable
     [Fact]
     public void CreateNewCase()
     {
+        var loggerFactory = new LoggerFactory();
         var project = fixture.context.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        ProjectService projectService = new ProjectService(fixture.context);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
         CaseService caseService = new
-            CaseService(fixture.context, projectService);
+            CaseService(fixture.context, projectService, loggerFactory);
 
-        caseService.CreateCase(CaseDtoAdapter.Convert(actual));
+        caseService.CreateCase(CaseDtoAdapter.Convert(actual, ProjectDtoAdapter.Convert(project)));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Cases;
@@ -50,14 +54,14 @@ public class CaseShould : IDisposable
         Assert.Equal(expected.CreateTime, actual.CreateTime);
         Assert.Equal(expected.ModifyTime, actual.ModifyTime);
         Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
-
     }
 
     [Fact]
     public void UpdateCase()
     {
-        var projectService = new ProjectService(fixture.context);
-        var caseService = new CaseService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldCase = CreateCase(project);
         fixture.context.Cases.Add(oldCase);
@@ -65,12 +69,65 @@ public class CaseShould : IDisposable
         var updatedCase = CreateUpdatedCase(project);
 
         // Act
-        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase));
+        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase, ProjectDtoAdapter.Convert(project)));
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
         Assert.NotNull(actualCase);
         TestHelper.CompareCases(updatedCase, actualCase);
+    }
+
+    [Fact]
+    public void DeleteCase()
+    {
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
+        var project = fixture.context.Projects.FirstOrDefault();
+        var caseItem = CreateCase(project);
+        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem, ProjectDtoAdapter.Convert(project)));
+
+        var cases = fixture.context.Projects.FirstOrDefault(o =>
+        o.Name == project.Name).Cases;
+        var expected = cases.FirstOrDefault(o => o.Name ==
+                caseItem.Name);
+        Assert.NotNull(expected);
+
+        caseService.DeleteCase(expected.Id);
+        var deleted = cases.FirstOrDefault(o => o.Name ==
+                caseItem.Name);
+        Assert.Null(deleted);
+    }
+
+    [Fact]
+    public void DeleteNonExistentCase()
+    {
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
+
+        Assert.Throws<NotFoundInDBException>(() => caseService.DeleteCase(new Guid()));
+    }
+
+    [Fact]
+    public void DuplicateCase()
+    {
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
+
+        var project = fixture.context.Projects.FirstOrDefault();
+        var caseItem = CreateCase(project);
+        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem, ProjectDtoAdapter.Convert(project)));
+
+        var cases = fixture.context.Projects.FirstOrDefault(o =>
+            o.Name == project.Name).Cases;
+        var expected = cases.Where(o => o.Description ==
+                caseItem.Description);
+        Assert.True(expected.Count() == 1);
+
+        caseService.DuplicateCase(expected.First().Id);
+        Assert.True(expected.Count() == 2);
     }
 
     private static Case CreateUpdatedCase(Project project)
@@ -97,7 +154,5 @@ public class CaseShould : IDisposable
             ReferenceCase = false,
             DG4Date = DateTimeOffset.Now.AddDays(1)
         };
-
     }
-
 }

@@ -265,6 +265,8 @@ namespace tests
                     actual.ProductionProfileWater);
             CompareVolumes(expected.ProductionProfileWaterInjection,
                     actual.ProductionProfileWaterInjection);
+            CompareVolumes(expected.ProductionProfileNGL,
+                    actual.ProductionProfileNGL);
             CompareVolumes(expected.FuelFlaringAndLosses,
                     actual.FuelFlaringAndLosses);
             CompareVolumes(expected.NetSalesGas, actual.NetSalesGas);
@@ -301,6 +303,8 @@ namespace tests
                     actual.ProductionProfileWater);
             CompareVolumes(expected.ProductionProfileWaterInjection,
                     actual.ProductionProfileWaterInjection);
+            CompareVolumes(expected.ProductionProfileNGL,
+                    actual.ProductionProfileNGL);
             CompareVolumes(expected.FuelFlaringAndLosses,
                     actual.FuelFlaringAndLosses);
             CompareVolumes(expected.NetSalesGas, actual.NetSalesGas);
@@ -351,19 +355,10 @@ namespace tests
             else
             {
                 Assert.Equal(expected.Name, actual.Name);
-                Assert.Equal(expected.WellType, actual.WellType);
 
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
                 Assert.Equal(expected.CostProfile.Exploration.Name,
                         actual.CostProfile.Exploration.Name);
-
-                TestHelper.CompareYearValues(expected.DrillingSchedule,
-                        actual.DrillingSchedule);
-                if (expected.DrillingSchedule != null && actual.DrillingSchedule != null)
-                {
-                    Assert.Equal(expected.DrillingSchedule.Exploration.Name,
-                            actual.DrillingSchedule.Exploration.Name);
-                }
                 TestHelper.CompareCosts(expected.GAndGAdminCost,
                         actual.GAndGAdminCost);
                 Assert.Equal(expected.GAndGAdminCost.Exploration.Name,
@@ -409,10 +404,8 @@ namespace tests
             {
                 Assert.Equal(expected.ProjectId, actual.ProjectId);
                 Assert.Equal(expected.Name, actual.Name);
-                Assert.Equal(expected.WellType, actual.WellType);
 
                 TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
-                TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
                 TestHelper.CompareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
 
                 Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
@@ -482,8 +475,6 @@ namespace tests
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            TestHelper.CompareYearValues(expected.DrillingSchedule,
-                    actual.DrillingSchedule);
             TestHelper.CompareCosts(expected.CostProfile,
                     actual.CostProfile);
         }
@@ -503,8 +494,6 @@ namespace tests
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            TestHelper.CompareYearValues(expected.DrillingSchedule,
-                    actual.DrillingSchedule);
             TestHelper.CompareCosts(expected.CostProfile,
                     actual.CostProfile);
         }
@@ -529,8 +518,6 @@ namespace tests
             Assert.Equal(expected.PluggingAndAbandonment,
                     actual.PluggingAndAbandonment);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            TestHelper.CompareYearValues(expected.DrillingSchedule,
-                    actual.DrillingSchedule);
             TestHelper.CompareCosts(expected.CostProfile,
                     actual.CostProfile);
         }

@@ -1,4 +1,4 @@
-import { Case } from "./Case"
+import { Case } from "./case/Case"
 import { DrainageStrategy } from "./assets/drainagestrategy/DrainageStrategy"
 import { Exploration } from "./assets/exploration/Exploration"
 import { ProjectPhase } from "./ProjectPhase"
@@ -7,6 +7,7 @@ import { Surf } from "./assets/surf/Surf"
 import { Topside } from "./assets/topside/Topside"
 import { Transport } from "./assets/transport/Transport"
 import { WellProject } from "./assets/wellproject/WellProject"
+import { Well } from "./Well"
 
 export class Project implements Components.Schemas.ProjectDto {
     cases: Case[]
@@ -29,6 +30,7 @@ export class Project implements Components.Schemas.ProjectDto {
     commonLibraryName: string
     currency: Components.Schemas.Currency
     physUnit: Components.Schemas.PhysUnit
+    wells?: Well[] | undefined
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
@@ -49,8 +51,9 @@ export class Project implements Components.Schemas.ProjectDto {
         this.topsides = data.topsides?.map(Topside.fromJSON) ?? []
         this.transports = data.transports?.map(Transport.fromJSON) ?? []
         this.wellProjects = data.wellProjects?.map(WellProject.fromJSON) ?? []
-        this.currency = data.currency ?? 0
+        this.currency = data.currency ?? 1
         this.physUnit = data.physUnit ?? 0
+        this.wells = data.wells?.map(Well.fromJSON) ?? []
     }
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {

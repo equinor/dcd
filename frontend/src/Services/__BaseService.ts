@@ -1,4 +1,4 @@
-import axios, { Axios, AxiosRequestConfig, ResponseType } from "axios"
+import axios, { AxiosRequestConfig, ResponseType } from "axios"
 
 import { ServiceConfig } from "./config"
 
@@ -20,7 +20,7 @@ type RequestOptions = {
 
 export class __BaseService {
     private config: ServiceConfig
-    private client: Axios
+    private client: any
 
     constructor(config: ServiceConfig) {
         this.config = config
@@ -65,6 +65,15 @@ export class __BaseService {
         return data
     }
 
+    protected async getWithParams(
+        path: string,
+        requestQuery?: AxiosRequestConfig,
+    ): Promise<any> {
+        const { data } = await this.client.get(path, requestQuery)
+
+        return data
+    }
+
     protected postExcel<T = any>(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<T> {
         return this.requestExcel(path, responseType, { ...options, method: "POST" })
     }
@@ -75,6 +84,10 @@ export class __BaseService {
 
     protected post<T = any>(path: string, options?: RequestOptions): Promise<T> {
         return this.request(path, { ...options, method: "POST" })
+    }
+
+    protected delete<T = any>(path: string, options?: RequestOptions): Promise<T> {
+        return this.request(path, { ...options, method: "DELETE" })
     }
 
     protected put<T = any>(path: string, options?: RequestOptions): Promise<T> {

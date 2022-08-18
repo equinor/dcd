@@ -19,26 +19,26 @@ public static class ExportToSTEA
             BusinessCase businessCase = new BusinessCase();
             int headerRowCount = rowCount;
             rowCount++;
-            businessCase.Exploration = CreateExcelCostRow("Exploration Cost [Expected Real MNOK'21]", project.StartYear, c.Exploration, rowCount, 1e-6);
+            businessCase.Exploration = CreateExcelCostRow("Exploration Cost [Expected Real MNOK'21]", project.StartYear, c.Exploration, rowCount, 1);
             rowCount++;
-            businessCase.Capex = CreateExcelCostRow("Capex [Expected Real MNOK'21]", project.StartYear, c.Capex, rowCount, 1e-6);
+            businessCase.Capex = CreateExcelCostRow("Capex [Expected Real MNOK'21]", project.StartYear, c.Capex, rowCount, 1);
             rowCount++;
-            businessCase.Drilling = CreateExcelCostRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1e-6);
+            businessCase.Drilling = CreateExcelCostRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1);
             rowCount++;
-            businessCase.OffshoreFacilites = CreateExcelCostRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1e-6);
+            businessCase.OffshoreFacilites = CreateExcelCostRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1);
             rowCount++;
-            businessCase.CessationOffshoreFacilites = CreateExcelCostRow("Cessation - Offshore Facilities", project.StartYear, c.Capex.CessationOffshoreFacilities, rowCount, 1e-6);
+            businessCase.CessationOffshoreFacilites = CreateExcelCostRow("Cessation - Offshore Facilities", project.StartYear, c.Capex.CessationOffshoreFacilities, rowCount, 1);
             rowCount++;
             businessCase.ProductionAndSalesVolumes = new ExcelTableCell(columnNumber(1) + rowCount.ToString(), "Production And Sales Volumes");
             rowCount++;
             businessCase.TotalAndAnnualOil = CreateExcelVolumeRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear,
-                c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1e-6);
+                c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1);
             rowCount++;
             businessCase.NetSalesGas = CreateExcelVolumeRow("Net Sales Gas [GSm3]", project.StartYear,
-                c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1e-9);
+                c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1);
             rowCount++;
             businessCase.Co2Emissions = CreateExcelMassRow("Co2 Emissions [mill tonnes]", project.StartYear,
-                c.ProductionAndSalesVolumes.Co2Emissions, rowCount, 1e-6);
+                c.ProductionAndSalesVolumes.Co2Emissions, rowCount, 1);
             rowCount += 2;
             List<int> allRows = new List<int>();
             if (c.Exploration.Values != null)

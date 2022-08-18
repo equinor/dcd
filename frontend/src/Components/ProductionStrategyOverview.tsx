@@ -5,7 +5,7 @@ import {
     ChangeEvent, Dispatch, SetStateAction,
 } from "react"
 import styled from "styled-components"
-import { Case } from "../models/Case"
+import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
 
@@ -58,7 +58,7 @@ const ProductionStrategyOverview = ({
         if (caseItem !== undefined) {
             const newCase = Case.Copy(caseItem)
             newCase.productionStrategyOverview = pso
-            const newProject = await GetCaseService().updateCase(newCase)
+            const newProject = await (await GetCaseService()).updateCase(newCase)
             setProject(newProject)
         }
     }
