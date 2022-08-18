@@ -48,6 +48,17 @@ namespace api.Services
             }
             var project = _projectService.GetProject(case_.ProjectId);
             case_.Project = project;
+
+            List<Case> duplicateCaseNames = new List<Case>();
+            foreach (Case c in project.Cases!)
+            {
+                string copyNumber = c.Name.Substring(c.Name.Length - 1, 1);
+                if (c.Name.Equals(case_.Name) || c.Name.Equals(case_.Name + " - copy #" + copyNumber))
+                {
+                    duplicateCaseNames.Add(c);
+                }
+            }
+            case_.Name = case_.Name + " - copy #" + duplicateCaseNames.Count();
             _context.Cases!.Add(case_);
             _context.SaveChanges();
             return _projectService.GetProjectDto(project.Id);
