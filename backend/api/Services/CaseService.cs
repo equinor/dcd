@@ -48,14 +48,8 @@ namespace api.Services
             List<Case> duplicateCaseNames = new List<Case>();
             foreach (Case c in project.Cases!)
             {
-                if (c.Name.Equals(case_.Name))
-                {
-                    duplicateCaseNames.Add(c);
-                }
-                string lastCharInName = c.Name.Substring(c.Name.Length - 1, 1);
-                int copyNumber;
-                var isNum = int.TryParse(lastCharInName, out copyNumber);
-                if (c.Name.Equals(case_.Name + " - copy #" + copyNumber))
+                string copyNumber = c.Name.Substring(c.Name.Length - 1, 1);
+                if (c.Name.Equals(case_.Name) || c.Name.Equals(case_.Name + " - copy #" + copyNumber))
                 {
                     duplicateCaseNames.Add(c);
                 }
