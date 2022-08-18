@@ -12,11 +12,13 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<DrainageStrategyService> _logger;
 
-        public DrainageStrategyService(DcdDbContext context, ProjectService projectService)
+        public DrainageStrategyService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
         }
 
         public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
@@ -42,7 +44,8 @@ namespace api.Services
 
         public ProjectDto CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
         {
-            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto);
+            var unit = _projectService.GetProject(drainageStrategyDto.ProjectId).PhysicalUnit;
+            var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
             var project = _projectService.GetProject(drainageStrategy.ProjectId);
             drainageStrategy.Project = project;
             _context.DrainageStrategies!.Add(drainageStrategy);
@@ -85,7 +88,9 @@ namespace api.Services
         public ProjectDto UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
         {
             var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
-            DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto);
+            var unit = _projectService.GetProject(existing.ProjectId).PhysicalUnit;
+
+            DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
 
             if (updatedDrainageStrategyDto.ProductionProfileOil == null && existing.ProductionProfileOil != null)
             {

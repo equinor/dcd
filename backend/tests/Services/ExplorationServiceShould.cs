@@ -30,8 +30,9 @@ public class ExplorationServiceShould : IDisposable
     public void GetExplorations()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedExplorations = fixture.context.Explorations.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -52,8 +53,9 @@ public class ExplorationServiceShould : IDisposable
     public void CreateNewExploration()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
         var testExploration = CreateTestExploration(project);
@@ -71,8 +73,9 @@ public class ExplorationServiceShould : IDisposable
     public void DeleteExploration()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var ExplorationToDelete = CreateTestExploration(project);
@@ -96,8 +99,9 @@ public class ExplorationServiceShould : IDisposable
     public void UpdateExploration()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var explorationService = new ExplorationService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var oldExploration = CreateTestExploration(project);
@@ -122,7 +126,6 @@ public class ExplorationServiceShould : IDisposable
             Name = "Test-exploration-23",
             Project = project,
             ProjectId = project.Id,
-            WellType = WellType.Gas,
             RigMobDemob = 32.7
         }
               .WithExplorationCostProfile(new ExplorationCostProfile()
@@ -131,12 +134,6 @@ public class ExplorationServiceShould : IDisposable
                   StartYear = 2230,
                   Values = new double[] { 131.4, 28.2, 334.3 }
               }
-                )
-                .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule()
-                {
-                    StartYear = 2050,
-                    Values = new int[] { 143, 5, 45 }
-                }
                 )
                 .WithGAndGAdminCost(new GAndGAdminCost()
                 {
@@ -156,7 +153,6 @@ public class ExplorationServiceShould : IDisposable
             Name = "Test-exploration-23",
             Project = project,
             ProjectId = project.Id,
-            WellType = WellType.Gas,
             RigMobDemob = 32.7
         }
                  .WithExplorationCostProfile(new ExplorationCostProfile()
@@ -165,12 +161,6 @@ public class ExplorationServiceShould : IDisposable
                      StartYear = 2010,
                      Values = new double[] { 11.4, 28.2, 34.3 }
                  }
-                )
-                .WithExplorationDrillingSchedule(new ExplorationDrillingSchedule()
-                {
-                    StartYear = 2030,
-                    Values = new int[] { 123, 5, 5 }
-                }
                 )
                 .WithGAndGAdminCost(new GAndGAdminCost()
                 {

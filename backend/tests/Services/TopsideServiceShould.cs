@@ -29,8 +29,9 @@ public class TopsideServiceShould : IDisposable
     public void GetTopsides()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedTopsides = fixture.context.Topsides.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -54,8 +55,9 @@ public class TopsideServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
         var testTopside = CreateTestTopside(project);
-        ProjectService projectService = new ProjectService(fixture.context);
-        TopsideService topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+        TopsideService topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
 
         // Act
         var projectResult = topsideService.CreateTopside(TopsideDtoAdapter.Convert(testTopside), caseId);
@@ -73,8 +75,9 @@ public class TopsideServiceShould : IDisposable
     public void ThrowNotInDatabaseExceptionWhenCreatingTopsideWithBadProjectId()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
         var expectedTopside = CreateTestTopside(new Project { Id = new Guid() });
@@ -87,8 +90,9 @@ public class TopsideServiceShould : IDisposable
     public void ThrowNotFoundInDatabaseExceptionWhenCreatingTopsideWithBadCaseId()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedTopside = CreateTestTopside(project);
 
@@ -100,8 +104,9 @@ public class TopsideServiceShould : IDisposable
     public void DeleteTopside()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var topsideToDelete = CreateTestTopside(project);
         fixture.context.Topsides.Add(topsideToDelete);
@@ -126,23 +131,28 @@ public class TopsideServiceShould : IDisposable
     public void ThrowArgumentExceptionIfTryingToDeleteNonExistentTopside()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var topsideToDelete = CreateTestTopside(project);
         fixture.context.Topsides.Add(topsideToDelete);
         fixture.context.SaveChanges();
 
-        // Act, assert
-        Assert.Throws<ArgumentException>(() => topsideService.DeleteTopside(new Guid()));
+        // Act
+        topsideService.DeleteTopside(topsideToDelete.Id);
+
+        // Assert
+        Assert.Throws<ArgumentException>(() => topsideService.DeleteTopside(topsideToDelete.Id));
     }
 
     [Fact]
     public void UpdateTopside()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldTopside = CreateTestTopside(project);
         fixture.context.Topsides.Add(oldTopside);
@@ -162,16 +172,18 @@ public class TopsideServiceShould : IDisposable
     public void ThrowArgumentExceptionIfTryingToUpdateNonExistentTopside()
     {
         // Arrange
-        var projectService = new ProjectService(fixture.context);
-        var topsideService = new TopsideService(fixture.context, projectService);
+        var loggerFactory = new LoggerFactory();
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldTopside = CreateTestTopside(project);
         fixture.context.Topsides.Add(oldTopside);
         fixture.context.SaveChanges();
         var updatedTopside = CreateUpdatedTopside(project, oldTopside);
+        updatedTopside.Id = new Guid();
 
-        //     // Act, assert
-        //     Assert.Throws<ArgumentException>(() => topsideService.UpdateTopside(updatedTopside));
+        // Act, assert
+        Assert.Throws<ArgumentException>(() => topsideService.UpdateTopside(TopsideDtoAdapter.Convert(updatedTopside)));
     }
     private static Topside CreateTestTopside(Project project)
     {
@@ -186,14 +198,18 @@ public class TopsideServiceShould : IDisposable
             FacilitiesAvailability = 0.2,
             ArtificialLift = ArtificialLift.GasLift,
             Maturity = Maturity.B
-        }
-                .WithCostProfile(new TopsideCostProfile()
-                {
-                    Currency = Currency.USD,
-                    StartYear = 2030,
-                    Values = new double[] { 13.4, 18.9, 34.3 }
-                }
-                );
+        }.WithCostProfile(new TopsideCostProfile()
+        {
+            Currency = Currency.USD,
+            StartYear = 2030,
+            Values = new double[] { 13.4, 18.9, 34.3 }
+        })
+        .WithTopsideCessationCostProfile(new TopsideCessationCostProfile()
+        {
+            Currency = Currency.NOK,
+            StartYear = 2030,
+            Values = new double[] { 13.4, 183.9, 34.3 }
+        });
     }
 
     private static Topside CreateUpdatedTopside(Project project, Topside oldTopside)
@@ -210,14 +226,18 @@ public class TopsideServiceShould : IDisposable
             FacilitiesAvailability = 1.2,
             ArtificialLift = ArtificialLift.NoArtificialLift,
             Maturity = Maturity.C
-        }
-            .WithCostProfile(new TopsideCostProfile()
-            {
-                Currency = Currency.NOK,
-                StartYear = 2030,
-                Values = new double[] { 13.4, 183.9, 34.3 }
-            }
-            );
+        }.WithCostProfile(new TopsideCostProfile()
+        {
+            Currency = Currency.NOK,
+            StartYear = 2030,
+            Values = new double[] { 23.4, 283.9, 24.3 }
+        })
+        .WithTopsideCessationCostProfile(new TopsideCessationCostProfile()
+        {
+            Currency = Currency.NOK,
+            StartYear = 2030,
+            Values = new double[] { 23.4, 283.9, 24.3 }
+        });
     }
 
 }

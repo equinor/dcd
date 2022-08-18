@@ -25,9 +25,9 @@ export class __ProjectService extends __BaseService {
     }
 }
 
-export function GetProjectService() {
+export async function GetProjectService() {
     return new __ProjectService({
         ...config.ProjectService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

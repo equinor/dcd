@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 
 using api.Adapters;
+using api.Dtos;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
@@ -30,8 +31,9 @@ namespace tests
         public void GetDrainageStrategies()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var expectedStrategies = fixture.context.DrainageStrategies.ToList().Where(o => o.Project.Id == project.Id);
 
@@ -52,19 +54,21 @@ namespace tests
         public void CreateNewDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedStrategy = CreateTestDrainageStrategy(project);
+            var expectedStrategyCopy = expectedStrategy;
 
             // Act
-            var projectResult = drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), caseId);
+            var projectResult = drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), caseId);
 
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
             Assert.NotNull(actualStrategy);
-            TestHelper.CompareDrainageStrategies(expectedStrategy, actualStrategy);
+            TestHelper.CompareDrainageStrategies(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), actualStrategy);
             var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
             Assert.Equal(actualStrategy.Id, case_.DrainageStrategyLink);
         }
@@ -73,37 +77,40 @@ namespace tests
         public void ThrowNotInDatabaseExceptionWhenCreatingDrainageStrategyWithBadProjectId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var caseId = project.Cases.FirstOrDefault().Id;
             var expectedStrategy = CreateTestDrainageStrategy(new Project { Id = new Guid() });
 
             // Act, assert
             Assert.Throws<NotFoundInDBException>(() =>
-            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), caseId));
+            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), caseId));
         }
 
         [Fact]
         public void ThrowNotFoundInDatabaseExceptionWhenCreatingDrainageStrategyWithBadCaseId()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
             var expectedStrategy = CreateTestDrainageStrategy(project);
 
             // Act, assert
             Assert.Throws<NotFoundInDBException>(() =>
-            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy), new Guid()));
+            drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), new Guid()));
         }
 
         [Fact]
         public void DeleteDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(drainageStrategyToDelete);
@@ -128,8 +135,9 @@ namespace tests
         public void ThrowArgumentExceptionIfTryingToDeleteNonExistentDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(drainageStrategyToDelete);
@@ -143,8 +151,9 @@ namespace tests
         public void UpdateDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldStrategy = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(oldStrategy);
@@ -152,20 +161,21 @@ namespace tests
             var updatedStrategy = CreateUpdatedDrainageStrategy(project, oldStrategy);
 
             // Act
-            var projectResult = drainageStrategyService.UpdateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(updatedStrategy));
+            var projectResult = drainageStrategyService.UpdateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(updatedStrategy, project.PhysicalUnit));
 
             // Assert
             var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == updatedStrategy.Name);
             Assert.NotNull(actualStrategy);
-            TestHelper.CompareDrainageStrategies(updatedStrategy, actualStrategy);
+            TestHelper.CompareDrainageStrategies(DrainageStrategyDtoAdapter.Convert(updatedStrategy, project.PhysicalUnit), actualStrategy);
         }
 
         [Fact]
         public void ThrowArgumentExceptionIfTryingToUpdateNonExistentDrainageStrategy()
         {
             // Arrange
-            var projectService = new ProjectService(fixture.context);
-            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService);
+            var loggerFactory = new LoggerFactory();
+            var projectService = new ProjectService(fixture.context, loggerFactory);
+            var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
             var project = fixture.context.Projects.FirstOrDefault();
             var oldStrategy = CreateTestDrainageStrategy(project);
             fixture.context.DrainageStrategies.Add(oldStrategy);
@@ -190,43 +200,49 @@ namespace tests
                 ProducerCount = 24,
                 ArtificialLift = ArtificialLift.ElectricalSubmergedPumps,
             }
-               .WithProductionProfileGas(new ProductionProfileGas()
+               .WithProductionProfileGas(new ProductionProfileGas
                {
                    StartYear = 2030,
                    Values = new double[] { 2.3, 3.3, 4.4 }
                }
                 )
-                .WithProductionProfileOil(new ProductionProfileOil()
+                .WithProductionProfileOil(new ProductionProfileOil
                 {
                     StartYear = 2030,
                     Values = new double[] { 10.3, 13.3, 24.4 }
                 }
                 )
-                .WithProductionProfileWater(new ProductionProfileWater()
+                .WithProductionProfileWater(new ProductionProfileWater
                 {
                     StartYear = 2030,
                     Values = new double[] { 12.34, 13.45, 14.56 }
                 }
                 )
-                .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection()
+                .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection
                 {
                     StartYear = 2030,
                     Values = new double[] { 7.89, 8.91, 9.01 }
                 }
                 )
-                .WithFuelFlaringAndLosses(new FuelFlaringAndLosses()
+                .WithProductionProfileNGL(new ProductionProfileNGL
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 2.34, 3.45, 4.56 }
+                }
+                )
+                .WithFuelFlaringAndLosses(new FuelFlaringAndLosses
                 {
                     StartYear = 2030,
                     Values = new double[] { 8.45, 4.78, 8, 74 }
                 }
                 )
-                .WithNetSalesGas(new NetSalesGas()
+                .WithNetSalesGas(new NetSalesGas
                 {
                     StartYear = 2030,
                     Values = new double[] { 3.4, 8.9, 2.3 }
                 }
                 )
-                .WithCo2Emissions(new Co2Emissions()
+                .WithCo2Emissions(new Co2Emissions
                 {
                     StartYear = 2030,
                     Values = new double[] { 33.4, 18.9, 62.3 }
@@ -271,6 +287,12 @@ namespace tests
                 {
                     StartYear = 20230,
                     Values = new double[] { 7.89, 28.91, 9.01 }
+                }
+                )
+                .WithProductionProfileNGL(new ProductionProfileNGL()
+                {
+                    StartYear = 2030,
+                    Values = new double[] { 2.34, 3.45, 4.56 }
                 }
                 )
                 .WithFuelFlaringAndLosses(new FuelFlaringAndLosses()

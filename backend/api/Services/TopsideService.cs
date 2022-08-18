@@ -11,11 +11,13 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
+        private readonly ILogger<TopsideService> _logger;
 
-        public TopsideService(DcdDbContext context, ProjectService projectService)
+        public TopsideService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
+            _logger = loggerFactory.CreateLogger<TopsideService>();
         }
 
         public IEnumerable<Topside> GetTopsides(Guid projectId)
@@ -38,6 +40,8 @@ namespace api.Services
             var topside = TopsideAdapter.Convert(topsideDto);
             var project = _projectService.GetProject(topsideDto.ProjectId);
             topside.Project = project;
+            topside.LastChangedDate = DateTimeOffset.Now;
+            topside.ProspVersion = topsideDto.ProspVersion;
             _context.Topsides!.Add(topside);
             _context.SaveChanges();
             SetCaseLink(topside, sourceCaseId, project);
@@ -89,7 +93,7 @@ namespace api.Services
             {
                 _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
             }
-
+            existing.LastChangedDate = DateTimeOffset.Now;
             _context.Topsides!.Update(existing);
             _context.SaveChanges();
             return _projectService.GetProjectDto(updatedTopsideDto.ProjectId);

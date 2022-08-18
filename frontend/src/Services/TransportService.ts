@@ -17,9 +17,9 @@ export class __TransportService extends __BaseService implements IAssetService {
     }
 }
 
-export function GetTransportService() {
+export async function GetTransportService() {
     return new __TransportService({
         ...config.TransportService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }

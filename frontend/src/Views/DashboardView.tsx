@@ -4,8 +4,9 @@ import {
 } from "@equinor/eds-core-react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
-import { useNavigate } from "react-router-dom"
+import { } from "react-router-dom"
 import styled from "styled-components"
+import { useHistory } from "@equinor/fusion"
 import { Project } from "../models/Project"
 
 import { GetProjectService } from "../Services/ProjectService"
@@ -42,9 +43,8 @@ const FindProjectText = styled(Typography)`
 `
 
 const DashboardView = () => {
-    const navigate = useNavigate()
-
     const ProjectService = GetProjectService()
+    const history = useHistory()
 
     const [selectedProject, setCurrentProject] = useState<Components.Schemas.CommonLibraryProjectDto | undefined>()
     const [isOpen, setIsOpen] = useState(false)
@@ -62,10 +62,10 @@ const DashboardView = () => {
             if (!clp || !projects) {
                 try {
                     setFetching(true)
-                    await CommonLibraryService.getProjects().then((commonlibProjects) => {
+                    await (await CommonLibraryService).getProjects().then((commonlibProjects) => {
                         setCommonLibProjects(commonlibProjects)
                     })
-                    await ProjectService.getProjects().then((dcdProjects) => {
+                    await (await ProjectService).getProjects().then((dcdProjects) => {
                         setProjects(dcdProjects)
                     })
                     setFetching(false)
@@ -79,7 +79,7 @@ const DashboardView = () => {
     const onSelected = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const project:Project | undefined = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         if (project) {
-            navigate(ProjectPath(project.id))
+           history.push(ProjectPath(project.id))
         } else {
             const commonlibProject = clp?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
             setCurrentProject(commonlibProject)
@@ -88,14 +88,6 @@ const DashboardView = () => {
     }
 
     const grey: string = tokens.colors.ui.background__scrim.rgba
-
-    if (isFetching) {
-        return (
-            <Modal isOpen={isFetching} title="Getting data" shards={[]}>
-                <Typography>Retrieving projects from Common Library.</Typography>
-            </Modal>
-        )
-    }
 
     if (!projects) return null
 
