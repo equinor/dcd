@@ -198,6 +198,18 @@ const CasesTableView = ({
         }
     }
 
+    const duplicateCase = async () => {
+        try {
+            if (caseRowDataSelected != null) {
+                const newProject = await (await GetCaseService()).duplicateCase(caseRowDataSelected.id, {})
+                setProject(newProject)
+                setTableData(createDataTable(newProject))
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
     const deleteCase = async () => {
         try {
             if (caseRowDataSelected != null) {
@@ -283,7 +295,7 @@ const CasesTableView = ({
                         </Typography>
                     </Menu.Item>
                     <Menu.Item
-                        onClick={() => console.log(caseRowDataSelected)}
+                        onClick={duplicateCase}
                     >
                         <Icon data={library_add} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">
