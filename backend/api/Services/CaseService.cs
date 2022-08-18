@@ -13,14 +13,14 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
-        private readonly ExplorationService _explorationService;
         private readonly ILogger<CaseService> _logger;
+        private readonly IServiceProvider _serviceProvider;
 
-        public CaseService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory, ExplorationService explorationService)
+        public CaseService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             _context = context;
             _projectService = projectService;
-            _explorationService = explorationService;
+            _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<CaseService>();
         }
 
@@ -80,46 +80,48 @@ namespace api.Services
             return caseItem;
         }
 
-        public ProjectDto GenerateGAndGAdminCost(Guid caseId)
+        public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
         {
             var caseItem = GetCase(caseId);
-            var exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
-            // Find linked exploration wells
+            var explorationService = (ExplorationService)_serviceProvider.GetService(typeof(ExplorationService));
+            var exploration = explorationService.GetExploration(caseItem.ExplorationLink);
             var linkedWells = exploration.ExplorationWells;
-            // find earliest date for well
             if (linkedWells?.Count > 0)
             {
                 var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
-                var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min();
-                // find DG1 date
-                var dG1Date = caseItem.DG1Date;
-                // Find country => cost per year
-                var project = _projectService.GetProject(caseItem.ProjectId);
-                var country = project.Country;
-                var countryCost = MapCountry(country);
-                // generate cost profile
-                var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
-                var lastYearMinutes = (dG1Date - lastYear).Minutes;
-
-                var totalMinutesLastYear = new TimeSpan(365, 0, 0, 0).TotalMinutes;
-                var percentageOfLastYear = lastYearMinutes / totalMinutesLastYear;
-
-                var gAndGAdminCost = new GAndGAdminCost
+                var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min() + caseItem.DG4Date.Year;
+                if (earliestYear != null)
                 {
-                    StartYear = (int)earliestYear
-                };
-                var years = lastYear.Year - (int)earliestYear;
-                var values = new List<double>();
-                for (int i = 0; i < years; i++) {
-                    values = (List<double>)values.Append(countryCost);
+                    var dG1Date = caseItem.DG1Date;
+                    var project = _projectService.GetProject(caseItem.ProjectId);
+                    var country = project.Country;
+                    var countryCost = MapCountry(country);
+                    var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
+                    var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;
+
+                    var totalMinutesLastYear = new TimeSpan(365, 0, 0, 0).TotalMinutes;
+                    var percentageOfLastYear = lastYearMinutes / totalMinutesLastYear;
+
+                    var gAndGAdminCost = new GAndGAdminCost
+                    {
+                        StartYear = (int)earliestYear
+                    };
+                    var years = lastYear.Year - (int)earliestYear;
+                    var values = new List<double>();
+                    for (int i = 0; i < years; i++)
+                    {
+                        values.Add(countryCost);
+                    }
+                    values.Add(countryCost * percentageOfLastYear);
+                    gAndGAdminCost.Values = values.ToArray();
+                    return ExplorationDtoAdapter.Convert(gAndGAdminCost);
                 }
-                values = (List<double>)values.Append(countryCost * percentageOfLastYear);
-                gAndGAdminCost.Values = values.ToArray();
             }
-            return _projectService.GetProjectDto(exploration.ProjectId);
+            return new GAndGAdminCostDto();
         }
 
-        private static double MapCountry(string country) {
+        private static double MapCountry(string country)
+        {
             return country switch
             {
                 "NORWAY" => 1,

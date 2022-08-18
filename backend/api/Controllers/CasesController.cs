@@ -46,7 +46,7 @@ namespace api.Controllers
         }
 
         [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
-        public ProjectDto GenerateGAndGAdminCost(Guid caseId)
+        public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
         {
             return _caseService.GenerateGAndGAdminCost(caseId);
         }
