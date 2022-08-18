@@ -198,6 +198,18 @@ const CasesTableView = ({
         }
     }
 
+    const deleteCase = async () => {
+        try {
+            if (caseRowDataSelected != null) {
+                const newProject = await (await GetCaseService()).deleteCase(caseRowDataSelected.id)
+                setProject(newProject)
+                setTableData(createDataTable(newProject))
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
     const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const { value } = e.target
         setCaseName(value)
@@ -287,7 +299,7 @@ const CasesTableView = ({
                         </Typography>
                     </Menu.Item>
                     <Menu.Item
-                        onClick={() => console.log(caseRowDataSelected)}
+                        onClick={deleteCase}
                     >
                         <Icon data={delete_to_trash} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">

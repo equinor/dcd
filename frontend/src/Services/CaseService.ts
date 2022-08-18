@@ -15,6 +15,11 @@ class __CaseService extends __BaseService {
         const res: Components.Schemas.ProjectDto = await this.put("", { body })
         return Project.fromJSON(res)
     }
+
+    public async deleteCase(caseId: string): Promise<Project> {
+        const res: Components.Schemas.ProjectDto = await this.delete(`/${caseId}`)
+        return Project.fromJSON(res)
+    }
 }
 
 export const CaseService = new __CaseService({
