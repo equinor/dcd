@@ -18,10 +18,13 @@ namespace tests;
 public class CaseShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
+    private readonly IServiceProvider _serviceProvider;
 
     public CaseShould(DatabaseFixture fixture)
     {
         this.fixture = new DatabaseFixture();
+        var serviceCollection = new ServiceCollection();
+        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -37,7 +40,7 @@ public class CaseShould : IDisposable
         var actual = CreateCase(project);
         ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
         CaseService caseService = new
-            CaseService(fixture.context, projectService, loggerFactory);
+            CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
 
         caseService.CreateCase(CaseDtoAdapter.Convert(actual, ProjectDtoAdapter.Convert(project)));
 
@@ -61,7 +64,7 @@ public class CaseShould : IDisposable
     {
         var loggerFactory = new LoggerFactory();
         var projectService = new ProjectService(fixture.context, loggerFactory);
-        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldCase = CreateCase(project);
         fixture.context.Cases.Add(oldCase);
@@ -82,7 +85,7 @@ public class CaseShould : IDisposable
     {
         var loggerFactory = new LoggerFactory();
         var projectService = new ProjectService(fixture.context, loggerFactory);
-        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
         var project = fixture.context.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
         caseService.CreateCase(CaseDtoAdapter.Convert(caseItem, ProjectDtoAdapter.Convert(project)));
@@ -104,7 +107,7 @@ public class CaseShould : IDisposable
     {
         var loggerFactory = new LoggerFactory();
         var projectService = new ProjectService(fixture.context, loggerFactory);
-        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
 
         Assert.Throws<NotFoundInDBException>(() => caseService.DeleteCase(new Guid()));
     }
@@ -114,7 +117,7 @@ public class CaseShould : IDisposable
     {
         var loggerFactory = new LoggerFactory();
         var projectService = new ProjectService(fixture.context, loggerFactory);
-        var caseService = new CaseService(fixture.context, projectService, loggerFactory);
+        var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
 
         var project = fixture.context.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
