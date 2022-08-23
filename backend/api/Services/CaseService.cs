@@ -195,7 +195,8 @@ namespace api.Services
                 var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
                 var cumulativeSchedule = GetCumulativeDrillingSchedule(linkedWell.DrillingSchedule);
                 // multiply cumulated schedules with well intervention cost
-                var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
+                // var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
+                var wellInterventionCostValues = cumulativeSchedule.Values.Select(v => v * interventionCost).ToArray();
                 var wellInterventionCost = new TimeSeries<double>
                 {
                     StartYear = linkedWell.DrillingSchedule.StartYear,
@@ -278,7 +279,7 @@ namespace api.Services
             return offshoreFacilitiesOperationsCost;
         }
 
-        public TimeSeries<double> CalculateOPEX(Guid caseId)
+        public OpexCostProfileDto CalculateOPEX(Guid caseId)
         {
             var caseItem = GetCase(caseId);
 
@@ -289,20 +290,29 @@ namespace api.Services
             var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseId);
 
             var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
-            return OPEX;
+            if (OPEX == null) { return new OpexCostProfileDto(); }
+            var opexCostProfile = new OpexCostProfile();
+            opexCostProfile.StartYear = OPEX.StartYear;
+            opexCostProfile.Values = OPEX.Values;
+            var opexDto = CaseDtoAdapter.Convert(opexCostProfile);
+            return opexDto ?? new OpexCostProfileDto();
         }
 
-        private TimeSeries<int> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
+
+
+        private TimeSeries<double> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
         {
-            var cumulativeSchedule = new TimeSeries<int>();
+            var cumulativeSchedule = new TimeSeries<double>();
             cumulativeSchedule.StartYear = drillingSchedule.StartYear;
-            cumulativeSchedule.Values = drillingSchedule.Values;
-            var sum = 0;
-            for (int i = 0; i < cumulativeSchedule.Values.Length; i++)
+            var values = new List<double>();
+            var sum = 0.0;
+            for (int i = 0; i < drillingSchedule.Values.Length; i++)
             {
-                sum += cumulativeSchedule.Values[i];
-                cumulativeSchedule.Values[i] = sum;
+                sum += drillingSchedule.Values[i];
+                values.Add(sum);
             }
+
+            cumulativeSchedule.Values = values.ToArray();
 
             return cumulativeSchedule;
         }

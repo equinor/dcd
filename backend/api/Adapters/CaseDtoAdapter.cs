@@ -41,6 +41,22 @@ namespace api.Adapters
             return caseDto;
         }
 
+        public static OpexCostProfileDto Convert(OpexCostProfile? opexCost)
+        {
+            if (opexCost == null)
+            {
+                return null!;
+            }
+            return new OpexCostProfileDto
+            {
+                Id = opexCost.Id,
+                Currency = opexCost.Currency,
+                EPAVersion = opexCost.EPAVersion,
+                StartYear = opexCost.StartYear,
+                Values = opexCost.Values,
+            };
+        }
+
         private static void CalculateCessationCost(Case caseItem, CaseDto caseDto, ProjectDto projectDto)
         {
             var cessationWells = new CessationCostDto();

@@ -53,4 +53,8 @@ namespace api.Models
         [ForeignKey("Case.Id")]
         public Case Case { get; set; } = null!;
     }
+
+    public class OpexCostProfile : TimeSeriesCost
+    {
+    }
 }

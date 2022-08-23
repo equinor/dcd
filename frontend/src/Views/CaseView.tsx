@@ -19,11 +19,13 @@ import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/Case/CaseAsset"
-import { unwrapProjectId } from "../Utils/common"
+import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import DefinitionView from "./DefinitionView"
 import ExplorationViewTab from "./ExplorationViewTab"
 import { EditCaseInputModal } from "./EditCaseInputModal"
 import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
+import { OpexCostProfile } from "../models/case/OpexCostProfile"
+import { GetCaseService } from "../Services/CaseService"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -68,14 +70,15 @@ const StyledTabPanel = styled(Panel)`
 `
 
 function CaseView() {
-    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
-
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
+    const [opex, setOpex] = useState<OpexCostProfile>()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
+
     const [element, setElement] = useState<HTMLButtonElement>()
 
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
@@ -95,10 +98,14 @@ function CaseView() {
     }, [fusionProjectId, caseId])
 
     useEffect(() => {
-        if (project !== undefined) {
-            const caseResult = project.cases.find((o) => o.id === caseId)
-            setCase(caseResult)
-        }
+        (async () => {
+            if (project !== undefined) {
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
+                setCase(caseResult)
+                const generatedGAndGAdminCost = await (await GetCaseService()).generateOpexCost(caseResult.id!)
+                setOpex(generatedGAndGAdminCost)
+            }
+        })()
     }, [project])
 
     const onMoreClick = (target: any) => {
@@ -206,6 +213,11 @@ function CaseView() {
                     dG4Year={caseItem.DG4Date?.getFullYear()}
                     timeSeries={caseItem.cessationCost}
                     title="Cessation cost profile"
+                />
+                <ReadOnlyCostProfile
+                    dG4Year={caseItem.DG4Date?.getFullYear()}
+                    timeSeries={opex}
+                    title="OPEX cost profile"
                 />
                 <DividerLine />
                 <CaseAsset

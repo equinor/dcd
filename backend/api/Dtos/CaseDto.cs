@@ -39,6 +39,8 @@ namespace api.Dtos
     {
     }
 
+    public class OpexCostProfileDto : TimeSeriesCostDto { }
+
     public class CapexYear
     {
         public double[]? Values { get; set; }
