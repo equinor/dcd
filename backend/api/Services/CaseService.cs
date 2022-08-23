@@ -192,7 +192,7 @@ namespace api.Services
             foreach (var linkedWell in linkedWells)
             {
                 if (linkedWell.DrillingSchedule == null) { continue; }
-                var interventionCost = linkedWell.Well.WellInterventionCost;
+                var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
                 var cumulativeSchedule = GetCumulativeDrillingSchedule(linkedWell.DrillingSchedule);
                 // multiply cumulated schedules with well intervention cost
                 var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
@@ -254,10 +254,12 @@ namespace api.Services
                 return new TimeSeries<double>();
             }
             var facilityOpex = topside.FacilityOpex;
-            var values = new List<double>();
-            values.Add((facilityOpex - 1) / 8);
-            values.Add((facilityOpex - 1) / 4);
-            values.Add((facilityOpex - 1) / 2);
+            var values = new List<double>
+            {
+                (facilityOpex - 1) / 8,
+                (facilityOpex - 1) / 4,
+                (facilityOpex - 1) / 2
+            };
 
             for (int i = firstYear; i <= lastYear; i++)
             {
