@@ -30,6 +30,8 @@ import WellList from "../Components/Well/WellList"
 import { ExplorationWell } from "../models/ExplorationWell"
 import { SeismicAcquisitionAndProcessing } from "../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../models/assets/exploration/CountryOfficeCost"
+import { GetCaseService } from "../Services/CaseService"
+import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -85,16 +87,20 @@ const ExplorationView = () => {
                 setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
-                setGAndGAdminCost(newExploration.gAndGAdminCost)
+
                 setSeismicAcquisitionAndProcessing(newExploration.seismicAcquisitionAndProcessing)
                 setCountryOfficeCost(newExploration.countryOfficeCost)
+
+                const generatedGAndGAdminCost = await (await GetCaseService()).generateGAndGAdminCost(caseResult.id!)
+
+                setGAndGAdminCost(generatedGAndGAdminCost)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newExploration.costProfile, newExploration.gAndGAdminCost,
-                            newExploration.seismicAcquisitionAndProcessing,
-                            newExploration.countryOfficeCost],
+                        [newExploration.costProfile,
+                        newExploration.seismicAcquisitionAndProcessing,
+                        newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -107,19 +113,18 @@ const ExplorationView = () => {
         const newExploration: Exploration = { ...exploration }
         newExploration.rigMobDemob = rigMobDemob
         newExploration.costProfile = costProfile
-        newExploration.gAndGAdminCost = gAndGAdminCost
         newExploration.currency = currency
         setExploration(newExploration)
 
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [costProfile, gAndGAdminCost, seismicAcquisitionAndProcessing, countryOfficeCost],
+                [costProfile, seismicAcquisitionAndProcessing, countryOfficeCost],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, gAndGAdminCost, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
+    }, [rigMobDemob, costProfile, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
 
     const overrideCostProfile = () => {
         if (costProfile) {
@@ -188,18 +193,6 @@ const ExplorationView = () => {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
-
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setGAndGAdminCost}
-                setHasChanges={setHasChanges}
-                timeSeries={gAndGAdminCost}
-                timeSeriesTitle={`G and g admin cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setSeismicAcquisitionAndProcessing}
@@ -221,6 +214,11 @@ const ExplorationView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
+            />
+            <ReadOnlyCostProfile
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                timeSeries={gAndGAdminCost}
+                title="G &amp; G and gdmin cost (MUSD)"
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules

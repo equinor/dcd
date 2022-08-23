@@ -55,11 +55,9 @@ const ExplorationViewTab = ({
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
-    const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
-    const [ggAdmin, setGGAdmin] = useState<GAndGAdminCost>()
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
 
     const [explorationService, setExplorationService] = useState<IAssetService>()
     useEffect(() => {
@@ -88,20 +86,18 @@ const ExplorationViewTab = ({
                     newExploration.currency = project.currency
                     setExploration(newExploration)
                 }
-                const ggAdminnew = await (await GetCaseService()).generateGAndGAdminCost(caseResult.id!)
-                console.log(ggAdmin)
-                setGGAdmin(ggAdminnew)
+                const generatedGAndGAdminCost = await (await GetCaseService()).generateGAndGAdminCost(caseResult.id!)
+                setGAndGAdminCost(generatedGAndGAdminCost)
                 setName(newExploration?.name!)
                 setCurrency(newExploration.currency ?? 1)
                 setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
-                setGAndGAdminCost(newExploration.gAndGAdminCost)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newExploration.costProfile, newExploration.gAndGAdminCost],
+                        [newExploration.costProfile, gAndGAdminCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -128,7 +124,6 @@ const ExplorationViewTab = ({
                 setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
-                setGAndGAdminCost(newExploration.gAndGAdminCost)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -146,19 +141,18 @@ const ExplorationViewTab = ({
         const newExploration: Exploration = { ...exploration }
         newExploration.rigMobDemob = rigMobDemob
         newExploration.costProfile = costProfile
-        newExploration.gAndGAdminCost = gAndGAdminCost
         newExploration.currency = currency
         setExploration(newExploration)
 
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [costProfile, drillingSchedule, gAndGAdminCost],
+                [costProfile, gAndGAdminCost],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost, currency])
+    }, [rigMobDemob, costProfile, gAndGAdminCost, currency])
 
     if (!project) { return null }
 
@@ -208,7 +202,7 @@ const ExplorationViewTab = ({
                 />
                 <ReadOnlyCostProfile
                     dG4Year={caseItem?.DG4Date?.getFullYear()}
-                    timeSeries={ggAdmin}
+                    timeSeries={gAndGAdminCost}
                     title="G &amp; G and gdmin cost (MUSD)"
                 />
             </AssetViewDiv>
