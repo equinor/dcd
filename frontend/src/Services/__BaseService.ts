@@ -86,6 +86,10 @@ export class __BaseService {
         return this.request(path, { ...options, method: "POST" })
     }
 
+    protected delete<T = any>(path: string, options?: RequestOptions): Promise<T> {
+        return this.request(path, { ...options, method: "DELETE" })
+    }
+
     protected put<T = any>(path: string, options?: RequestOptions): Promise<T> {
         return this.request(path, { ...options, method: "PUT" })
     }
