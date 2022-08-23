@@ -122,8 +122,8 @@ public class CaseShould : IDisposable
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
             o.Name == project.Name).Cases;
-        var expected = cases.Where(o => o.Name ==
-                caseItem.Name);
+        var expected = cases.Where(o => o.Description ==
+                caseItem.Description);
         Assert.True(expected.Count() == 1);
 
         caseService.DuplicateCase(expected.First().Id);
