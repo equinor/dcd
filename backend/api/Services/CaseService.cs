@@ -108,7 +108,7 @@ namespace api.Services
                 _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
                 return new GAndGAdminCostDto();
             }
-            var linkedWells = exploration.ExplorationWells;
+            var linkedWells = exploration.ExplorationWells?.Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well).ToList();
             if (exploration != null && linkedWells?.Count > 0)
             {
                 var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);

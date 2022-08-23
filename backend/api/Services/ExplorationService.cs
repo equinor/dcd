@@ -267,6 +267,7 @@ namespace api.Services
                         .Include(c => c.SeismicAcquisitionAndProcessing)
                         .Include(c => c.CountryOfficeCost)
                         .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
+                        .Include(ew => ew.ExplorationWells).ThenInclude(ew => ew.Well)
                              .FirstOrDefault(o => o.Id == explorationId);
             if (exploration == null)
             {
