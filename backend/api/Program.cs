@@ -107,6 +107,7 @@ else
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
 
+Console.WriteLine("Configuring Fusion");
 builder.Services.AddFusionIntegration(options =>
 {
     string fusionEnvironment = environment switch
@@ -116,11 +117,14 @@ builder.Services.AddFusionIntegration(options =>
         "prod" => "FPRD",
         _ => "CI",
     };
+
+    Console.WriteLine("Fusion environment: " + fusionEnvironment);
     options.UseServiceInformation("ConceptApp", fusionEnvironment);
 
     options.AddFusionAuthorization();
 
     options.UseDefaultEndpointResolver(fusionEnvironment);
+    Console.WriteLine("config[AzureAd:ClientId]: " + config["AzureAd:ClientId"]);
     options.UseDefaultTokenProvider(opts =>
     {
         opts.ClientId = config["AzureAd:ClientId"];
