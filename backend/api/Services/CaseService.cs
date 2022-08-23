@@ -155,5 +155,154 @@ namespace api.Services
                 _ => 7.0,
             };
         }
+
+        private static bool IsWellProjectWell(WellCategory wellCategory) => new[] {
+            WellCategory.Oil_Producer,
+            WellCategory.Gas_Producer,
+            WellCategory.Water_Injector,
+            WellCategory.Gas_Injector
+        }.Contains(wellCategory);
+
+        public TimeSeries<double> CalculateWellInterventionCostProfile(Guid caseId)
+        {
+            var caseItem = GetCase(caseId);
+
+            // Calculate cumulative number of wells drilled from drilling schedule well project
+
+            var wellProjectService = (WellProjectService?)_serviceProvider.GetService(typeof(WellProjectService));
+            if (wellProjectService == null)
+            {
+                return new TimeSeries<double>();
+            }
+            WellProject wellProject;
+            try
+            {
+                wellProject = wellProjectService.GetWellProject(caseItem.WellProjectLink);
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation("WellProject {0} not found.", caseItem.WellProjectLink);
+                return new TimeSeries<double>();
+            }
+            var linkedWells = wellProject.WellProjectWells?.Where(ew => IsWellProjectWell(ew.Well.WellCategory)).ToList();
+            if (linkedWells == null) { return new TimeSeries<double>(); }
+            // Calculate cumulative number of wells drilled from drilling schedule well project
+            // Loop over drilling schedules, create cumulated schedules
+            var wellInterventionCostList = new List<TimeSeries<double>>();
+            foreach (var linkedWell in linkedWells)
+            {
+                if (linkedWell.DrillingSchedule == null) { continue; }
+                var interventionCost = linkedWell.Well.WellInterventionCost;
+                var cumulativeSchedule = GetCumulativeDrillingSchedule(linkedWell.DrillingSchedule);
+                // multiply cumulated schedules with well intervention cost
+                var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
+                var wellInterventionCost = new TimeSeries<double>
+                {
+                    StartYear = linkedWell.DrillingSchedule.StartYear,
+                    Values = wellInterventionCostValues
+                };
+                wellInterventionCostList.Add(wellInterventionCost);
+            }
+
+            // Calculate new cost profile on Case : Well intervention cost as: (well intervention cost) * (cummulative number of wells drilled)
+            var wellInterventionCosts = new TimeSeries<double>();
+            foreach (var wi in wellInterventionCostList)
+            {
+                wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, wi);
+            }
+
+            return wellInterventionCosts;
+        }
+
+        public TimeSeries<double> CalculateOffshoreFacilitiesOperationsCostProfile(Guid caseId)
+        {
+            var caseItem = GetCase(caseId);
+
+            // Find first and last year of production, from production profile (First year should be DG4 year.
+            var drainageStrategyService = (DrainageStrategyService?)_serviceProvider.GetService(typeof(DrainageStrategyService));
+            if (drainageStrategyService == null)
+            {
+                return new TimeSeries<double>();
+            }
+            DrainageStrategy drainageStrategy;
+            try
+            {
+                drainageStrategy = drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+                return new TimeSeries<double>();
+            }
+            if (drainageStrategy?.ProductionProfileOil == null) { return new TimeSeries<double>(); }
+            var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
+            var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
+            // From first year of production until last year of production cost per year is Facility opex from Topside facilities
+            var topsideService = (TopsideService?)_serviceProvider.GetService(typeof(TopsideService));
+            if (topsideService == null)
+            {
+                return new TimeSeries<double>();
+            }
+            Topside topside;
+            try
+            {
+                topside = topsideService.GetTopside(caseItem.TopsideLink);
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation("Topside {0} not found.", caseItem.TopsideLink);
+                return new TimeSeries<double>();
+            }
+            var facilityOpex = topside.FacilityOpex;
+            var values = new List<double>();
+            values.Add((facilityOpex - 1) / 8);
+            values.Add((facilityOpex - 1) / 4);
+            values.Add((facilityOpex - 1) / 2);
+
+            for (int i = firstYear; i <= lastYear; i++)
+            {
+                values.Add(facilityOpex);
+            }
+            // Pre-opex should be added to the same cost profile for three years before first year of produciton (T) : 
+            // T - 1  = ((Facility opex) -1)/2
+            // T - 2  = ((Facility opex) -1)/4
+            // T - 3  = ((Facility opex) -1)/8
+
+            var offshoreFacilitiesOperationsCost = new TimeSeries<double>
+            {
+                StartYear = firstYear - 3,
+                Values = values.ToArray()
+            };
+            return offshoreFacilitiesOperationsCost;
+        }
+
+        public TimeSeries<double> CalculateOPEX(Guid caseId)
+        {
+            var caseItem = GetCase(caseId);
+
+            // Calculate cumulative number of wells drilled from drilling schedule well project
+
+            var wellInterventionCost = CalculateWellInterventionCostProfile(caseId);
+
+            var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseId);
+
+            var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
+            return OPEX;
+        }
+
+        private TimeSeries<int> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
+        {
+            var cumulativeSchedule = new TimeSeries<int>();
+            cumulativeSchedule.StartYear = drillingSchedule.StartYear;
+            cumulativeSchedule.Values = drillingSchedule.Values;
+            var sum = 0;
+            for (int i = 0; i < cumulativeSchedule.Values.Length; i++)
+            {
+                sum += cumulativeSchedule.Values[i];
+                cumulativeSchedule.Values[i] = sum;
+            }
+
+            return cumulativeSchedule;
+        }
     }
 }
