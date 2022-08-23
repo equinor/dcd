@@ -5,8 +5,6 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Services
 {
     public class CaseService
@@ -94,10 +92,24 @@ namespace api.Services
         public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
         {
             var caseItem = GetCase(caseId);
-            var explorationService = (ExplorationService)_serviceProvider.GetService(typeof(ExplorationService));
-            var exploration = explorationService.GetExploration(caseItem.ExplorationLink);
+            var explorationService = (ExplorationService?)_serviceProvider.GetService(typeof(ExplorationService));
+            if (explorationService == null)
+            {
+                return new GAndGAdminCostDto();
+
+            }
+            Exploration exploration;
+            try
+            {
+                exploration = explorationService.GetExploration(caseItem.ExplorationLink);
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
+                return new GAndGAdminCostDto();
+            }
             var linkedWells = exploration.ExplorationWells;
-            if (linkedWells?.Count > 0)
+            if (exploration != null && linkedWells?.Count > 0)
             {
                 var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
                 var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min() + caseItem.DG4Date.Year;
@@ -115,11 +127,11 @@ namespace api.Services
 
                     var gAndGAdminCost = new GAndGAdminCost
                     {
-                        StartYear = (int)earliestYear
+                        StartYear = (int)earliestYear - caseItem.DG4Date.Year
                     };
                     var years = lastYear.Year - (int)earliestYear;
                     var values = new List<double>();
-                    for (int i = 0; i < years; i++)
+                    for (int i = 0; i < years - 1; i++)
                     {
                         values.Add(countryCost);
                     }
@@ -139,7 +151,7 @@ namespace api.Services
                 "UK" => 1,
                 "BRAZIL" => 3,
                 "CANADA" => 3,
-                "USA" => 3,
+                "UNITED STATES" => 3,
                 _ => 7.0,
             };
         }

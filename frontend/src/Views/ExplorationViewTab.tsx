@@ -21,12 +21,14 @@ import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
-import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
+import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
 import ExplorationCaseAsset from "./ExplorationCaseAsset"
 import { IAssetService } from "../Services/IAssetService"
 import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
+import { GetCaseService } from "../Services/CaseService"
+import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 
 const RowWrapper = styled.div`
     margin: 1rem;
@@ -57,6 +59,7 @@ const ExplorationViewTab = ({
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const [ggAdmin, setGGAdmin] = useState<GAndGAdminCost>()
 
     const [explorationService, setExplorationService] = useState<IAssetService>()
     useEffect(() => {
@@ -77,7 +80,6 @@ const ExplorationViewTab = ({
             if (project !== undefined) {
                 const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
-                // eslint-disable-next-line max-len
                 let newExploration = project.explorations.find((s) => s.id === explorationId)
                 if (newExploration !== undefined) {
                     setExploration(newExploration)
@@ -86,6 +88,9 @@ const ExplorationViewTab = ({
                     newExploration.currency = project.currency
                     setExploration(newExploration)
                 }
+                const ggAdminnew = await (await GetCaseService()).generateGAndGAdminCost(caseResult.id!)
+                console.log(ggAdmin)
+                setGGAdmin(ggAdminnew)
                 setName(newExploration?.name!)
                 setCurrency(newExploration.currency ?? 1)
                 setRigMobDemob(newExploration.rigMobDemob)
@@ -108,10 +113,9 @@ const ExplorationViewTab = ({
     useEffect(() => {
         (async () => {
             if (project !== undefined) {
-                const caseResult: Case = unwrapCase(project.cases.find((o) => o.id === caseId))
+                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
-                // eslint-disable-next-line max-len
-                let newExploration: Exploration | undefined = project.explorations.find((s) => s.id === caseResult.explorationLink)
+                let newExploration = project.explorations.find((s) => s.id === caseResult.explorationLink)
                 if (newExploration !== undefined) {
                     setExploration(newExploration)
                 } else {
@@ -161,19 +165,16 @@ const ExplorationViewTab = ({
     return (
         <RowWrapper>
             <AssetViewDiv>
-                <Wrapper>
-                    <Typography variant="h2">Exploration</Typography>
-                    <Save
-                        name={name}
-                        setHasChanges={setHasChanges}
-                        hasChanges={hasChanges}
-                        setAsset={setExploration}
-                        setProject={setProject}
-                        asset={exploration!}
-                        assetService={explorationService!}
-                        assetType={AssetTypeEnum.explorations}
-                    />
-                </Wrapper>
+                <Save
+                    name={name}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setExploration}
+                    setProject={setProject}
+                    asset={exploration!}
+                    assetService={explorationService!}
+                    assetType={AssetTypeEnum.explorations}
+                />
                 <AssetName
                     setName={setName}
                     name={name}
@@ -205,27 +206,10 @@ const ExplorationViewTab = ({
                     setFirstYear={setFirstTSYear!}
                     setLastYear={setLastTSYear}
                 />
-                <TimeSeries
+                <ReadOnlyCostProfile
                     dG4Year={caseItem?.DG4Date?.getFullYear()}
-                    setTimeSeries={setDrillingSchedule}
-                    setHasChanges={setHasChanges}
-                    timeSeries={drillingSchedule}
-                    timeSeriesTitle="Drilling schedule"
-                    firstYear={firstTSYear!}
-                    lastYear={lastTSYear!}
-                    setFirstYear={setFirstTSYear!}
-                    setLastYear={setLastTSYear}
-                />
-                <TimeSeries
-                    dG4Year={caseItem?.DG4Date?.getFullYear()}
-                    setTimeSeries={setGAndGAdminCost}
-                    setHasChanges={setHasChanges}
-                    timeSeries={gAndGAdminCost}
-                    timeSeriesTitle={`G and g admin cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                    firstYear={firstTSYear!}
-                    lastYear={lastTSYear!}
-                    setFirstYear={setFirstTSYear!}
-                    setLastYear={setLastTSYear}
+                    timeSeries={ggAdmin}
+                    title="G &amp; G and gdmin cost (MUSD)"
                 />
             </AssetViewDiv>
             <Wrapper>
