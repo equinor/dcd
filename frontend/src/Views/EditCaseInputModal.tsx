@@ -85,7 +85,7 @@ export const EditCaseInputModal: FunctionComponent<Props> = ({
             <FocusOn shards={shards}>
                 <ModalDiv>
                     <TopWrapper>
-                        <Typography variant="h2">Edit case input</Typography>
+                        <Typography variant="h2">Technical input</Typography>
                         <InvisibleButton
                             onClick={(e) => toggleEditCaseModal()}
                         >

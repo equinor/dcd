@@ -3,14 +3,14 @@ import { Button, Table, Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
-import { Project } from "../../../models/Project"
-import { Well } from "../../../models/Well"
-import { WellProjectWell } from "../../../models/WellProjectWell"
-import { GetWellService } from "../../../Services/WellService"
-import { WellProject } from "../../../models/assets/wellproject/WellProject"
-import WellTableRow from "./CaseWellTableRow"
-import { Exploration } from "../../../models/assets/exploration/Exploration"
-import { ExplorationWell } from "../../../models/ExplorationWell"
+import { Project } from "../../models/Project"
+import { Well } from "../../models/Well"
+import { WellProjectWell } from "../../models/WellProjectWell"
+import { GetWellService } from "../../Services/WellService"
+import { WellProject } from "../../models/assets/wellproject/WellProject"
+import WellTableRow from "./EditableWellTableRow"
+import { Exploration } from "../../models/assets/exploration/Exploration"
+import { ExplorationWell } from "../../models/ExplorationWell"
 
 interface Props {
     project: Project

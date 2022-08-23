@@ -21,9 +21,8 @@ import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/Case/CaseAsset"
 import { unwrapProjectId } from "../Utils/common"
 import DefinitionView from "./DefinitionView"
-import ExplorationViewTab from "./ExplorationViewTab"
-import { EditCaseInputModal } from "./EditCaseInputModal"
 import CaseCessationCostProfile from "../Components/Case/CaseCessationCostProfile"
+import { EditTechnicalInputModal } from "../Components/EditProjectInput/EditProjectInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -68,7 +67,7 @@ const StyledTabPanel = styled(Panel)`
 `
 
 function CaseView() {
-    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
+    const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState<boolean>(false)
 
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -78,7 +77,7 @@ function CaseView() {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
 
-    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
+    const toggleEditProjectModal = () => setEditProjectModalIsOpen(!editProjectModalIsOpen)
 
     useEffect(() => {
         (async () => {
@@ -114,9 +113,9 @@ function CaseView() {
             <TopWrapper>
                 <PageTitle variant="h2">{caseItem.name}</PageTitle>
                 <TransparentButton
-                    onClick={() => toggleEditCaseModal()}
+                    onClick={() => toggleEditProjectModal()}
                 >
-                    Edit Case input
+                    Edit technical input
                 </TransparentButton>
                 <InvisibleButton
                     onClick={(e) => onMoreClick(e.target)}
@@ -216,11 +215,11 @@ function CaseView() {
                 />
 
             </CaseViewDiv>
-            <EditCaseInputModal
-                toggleEditCaseModal={toggleEditCaseModal}
-                caseItem={caseItem}
-                isOpen={editCaseModalIsOpen}
-                shards={[]}
+            <EditTechnicalInputModal
+                toggleEditTechnicalInputModal={toggleEditProjectModal}
+                isOpen={editProjectModalIsOpen}
+                project={project}
+                setProject={setProject}
             />
         </div>
     )

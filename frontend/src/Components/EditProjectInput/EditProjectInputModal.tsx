@@ -42,45 +42,57 @@ const ModalDiv = styled.div`
 `
 
 type Props = {
-    toggleEditCaseModal: any
+    toggleEditTechnicalInputModal: any
     isOpen: boolean
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project
 }
 
-export const EditProjectInputModal: FunctionComponent<Props> = ({
-    toggleEditCaseModal, isOpen, setProject, project,
+export const EditTechnicalInputModal: FunctionComponent<Props> = ({
+    toggleEditTechnicalInputModal, isOpen, setProject, project,
 }) => {
     const [activeTab, setActiveTab] = useState<number>(0)
 
     if (!isOpen) return null
     return (
-        <ModalDiv>
-            <TopWrapper>
-                <Typography variant="h2">Edit project input</Typography>
-                <InvisibleButton
-                    onClick={() => toggleEditCaseModal()}
-                >
-                    <Icon
-                        color="gray"
-                        data={clear}
-                    />
-                </InvisibleButton>
-            </TopWrapper>
-            <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                <List>
-                    <Tab>Well Costs</Tab>
-                    <Tab>PROSP</Tab>
-                </List>
-                <Panels>
-                    <StyledTabPanel>
-                        <WellCostsTab project={project} setProject={setProject} />
-                    </StyledTabPanel>
-                    <StyledTabPanel>
-                        PROSP
-                    </StyledTabPanel>
-                </Panels>
-            </Tabs>
-        </ModalDiv>
+        <>
+            <div style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0,0,0, .7)",
+                zIndex: 1000,
+            }}
+            />
+            <ModalDiv>
+                <TopWrapper>
+                    <Typography variant="h2">Edit project input</Typography>
+                    <InvisibleButton
+                        onClick={() => toggleEditTechnicalInputModal()}
+                    >
+                        <Icon
+                            color="gray"
+                            data={clear}
+                        />
+                    </InvisibleButton>
+                </TopWrapper>
+                <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                    <List>
+                        <Tab>Well Costs</Tab>
+                        <Tab>PROSP</Tab>
+                    </List>
+                    <Panels>
+                        <StyledTabPanel>
+                            <WellCostsTab project={project} setProject={setProject} />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            PROSP
+                        </StyledTabPanel>
+                    </Panels>
+                </Tabs>
+            </ModalDiv>
+        </>
     )
 }

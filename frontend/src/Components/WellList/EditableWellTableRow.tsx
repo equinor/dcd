@@ -6,15 +6,15 @@ import {
     ChangeEvent,
     Dispatch, SetStateAction, useState,
 } from "react"
-import { Well } from "../../../models/Well"
-import { WellProjectWell } from "../../../models/WellProjectWell"
-import { GetWellProjectWellService } from "../../../Services/WellProjectWellService"
-import { WellProject } from "../../../models/assets/wellproject/WellProject"
-import { Project } from "../../../models/Project"
-import { GetWellService } from "../../../Services/WellService"
-import { Exploration } from "../../../models/assets/exploration/Exploration"
-import { ExplorationWell } from "../../../models/ExplorationWell"
-import { GetExplorationWellService } from "../../../Services/ExplorationWellService"
+import { Well } from "../../models/Well"
+import { WellProjectWell } from "../../models/WellProjectWell"
+import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
+import { WellProject } from "../../models/assets/wellproject/WellProject"
+import { Project } from "../../models/Project"
+import { GetWellService } from "../../Services/WellService"
+import { Exploration } from "../../models/assets/exploration/Exploration"
+import { ExplorationWell } from "../../models/ExplorationWell"
+import { GetExplorationWellService } from "../../Services/ExplorationWellService"
 
 interface Props {
     wellId: string
