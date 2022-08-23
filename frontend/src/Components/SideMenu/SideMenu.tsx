@@ -1,4 +1,3 @@
-import { Divider } from "@equinor/eds-core-react"
 import { useLocation, useParams } from "react-router-dom"
 
 import { useEffect, useState } from "react"
@@ -17,9 +16,6 @@ const SidebarDiv = styled.div`
     flex-direction: column;
 `
 
-const StyledDivider = styled(Divider)`
-    width: 80%;
-`
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -67,7 +63,6 @@ const SideMenu: React.FC<Props> = ({ children }) => {
             <Wrapper>
                 <Body>
                     <SidebarDiv>
-                        <StyledDivider />
                         <ProjectMenu project={project} />
                     </SidebarDiv>
                     <MainView>
