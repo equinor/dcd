@@ -16,7 +16,7 @@ namespace api.Models
         {
             get
             {
-                if (this.InternalData == null)
+                if (this.InternalData == null || InternalData == "")
                 {
                     return Array.Empty<T>();
                 }

@@ -57,6 +57,22 @@ namespace api.Adapters
             };
         }
 
+        public static StudyCostProfileDto Convert(StudyCostProfile? studyCost)
+        {
+            if (studyCost == null)
+            {
+                return null!;
+            }
+            return new StudyCostProfileDto
+            {
+                Id = studyCost.Id,
+                Currency = studyCost.Currency,
+                EPAVersion = studyCost.EPAVersion,
+                StartYear = studyCost.StartYear,
+                Values = studyCost.Values,
+            };
+        }
+
         private static void CalculateCessationCost(Case caseItem, CaseDto caseDto, ProjectDto projectDto)
         {
             var cessationWells = new CessationCostDto();

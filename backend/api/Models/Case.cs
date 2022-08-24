@@ -59,4 +59,8 @@ namespace api.Models
     public class OpexCostProfile : TimeSeriesCost
     {
     }
+
+    public class StudyCostProfile : TimeSeriesCost
+    {
+    }
 }

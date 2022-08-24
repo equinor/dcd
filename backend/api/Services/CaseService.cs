@@ -353,14 +353,12 @@ namespace api.Services
             return cumulativeSchedule;
         }
 
-        public TimeSeries<double> CalculateTotalFeasibilityAndConceptStudies(Guid caseId)
+        public double SumAllCostFacility(Guid caseId)
         {
-            // Calculate total feasibility and concept studies = (sum of all cost facility + well cost) * (Capex factor feasibility studies, use default)
-            // Generate cost profile from DG0 and DG2 date from schedule. Divide cost per year weighted with number of days per year.
             var caseItem = GetCase(caseId);
 
             var sumFacilityCost = 0.0;
-            // sum of all cost facility
+
             var substructureService = (SubstructureService?)_serviceProvider.GetService(typeof(SubstructureService));
             if (substructureService != null)
             {
@@ -430,28 +428,25 @@ namespace api.Services
                 }
             }
 
+            return sumFacilityCost;
+        }
 
-            // well cost
+        public double SumWellCost(Guid caseId)
+        {
+            var caseItem = GetCase(caseId);
+
             var sumWellCost = 0.0;
             var wellProjectService = (WellProjectService?)_serviceProvider.GetService(typeof(WellProjectService));
             if (wellProjectService != null)
             {
-                WellProject wellProject;
+                var wellProject = new WellProject();
                 try
                 {
                     wellProject = wellProjectService.GetWellProject(caseItem.WellProjectLink);
-                    var linkedWells = wellProject.WellProjectWells?.Where(ew => IsWellProjectWell(ew.Well.WellCategory)).ToList();
-
-                    if (linkedWells != null && linkedWells.Count > 0)
+                    if (wellProject?.CostProfile != null)
                     {
-                        foreach (var linkedWell in linkedWells)
-                        {
-                            if (linkedWell.DrillingSchedule == null) { continue; }
-                            var totalWells = linkedWell.DrillingSchedule.Values.Sum();
-                            sumWellCost += totalWells * linkedWell.Well.WellCost;
-                        }
+                        sumWellCost = wellProject.CostProfile.Values.Sum();
                     }
-
                 }
                 catch (ArgumentException)
                 {
@@ -459,66 +454,125 @@ namespace api.Services
                 }
             }
 
-            var explorationService = (ExplorationService?)_serviceProvider.GetService(typeof(ExplorationService));
-            if (explorationService != null)
-            {
-                Exploration exploration;
-                try
-                {
-                    exploration = explorationService.GetExploration(caseItem.ExplorationLink);
-                    var linkedWells = exploration.ExplorationWells?.Where(ew => !IsWellProjectWell(ew.Well.WellCategory)).ToList();
+            return sumWellCost;
+        }
 
-                    if (linkedWells != null && linkedWells.Count > 0)
-                    {
-                        foreach (var linkedWell in linkedWells)
-                        {
-                            if (linkedWell.DrillingSchedule == null) { continue; }
-                            var totalWells = linkedWell.DrillingSchedule.Values.Sum();
-                            sumWellCost += totalWells * linkedWell.Well.WellCost;
-                        }
-                    }
+        public TimeSeries<double> CalculateTotalFeasibilityAndConceptStudies(Guid caseId)
+        {
+            // Calculate total feasibility and concept studies = (sum of all cost facility + well cost) * (Capex factor feasibility studies, use default)
+            // Generate cost profile from DG0 and DG2 date from schedule. Divide cost per year weighted with number of days per year.
+            var caseItem = GetCase(caseId);
 
-                }
-                catch (ArgumentException)
-                {
-                    _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
-                }
-            }
+            // sum of all cost facility
+            var sumFacilityCost = SumAllCostFacility(caseId);
+
+            // well cost
+            var sumWellCost = SumWellCost(caseId);
 
             var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeasibilityStudies;
 
+            // values count =>  dg2.year - dg0.year 
+            var dg0 = caseItem.DG0Date;
+            var dg2 = caseItem.DG2Date;
+            if (dg0.Year == 1 || dg2.Year == 1) { return new TimeSeries<double>(); }
 
+            // Find total number of days between dg0 and dg2
+            var totalDays = (dg2 - dg0).Days;
+            // add portion of days per year to each value and multiply with totalFeasibilityAndConceptStudies
 
-            // var linkedWells = wellProject.WellProjectWells?.Where(ew => IsWellProjectWell(ew.Well.WellCategory)).ToList();
-            if (linkedWells == null) { return new TimeSeries<double>(); }
-            // Calculate cumulative number of wells drilled from drilling schedule well project
-            // Loop over drilling schedules, create cumulated schedules
-            var wellInterventionCostList = new List<TimeSeries<double>>();
-            foreach (var linkedWell in linkedWells)
+            var firstYearDays = (new DateTime(dg0.Year, 12, 31) - dg0).Days;
+            var firstYearPercentage = firstYearDays / (double)totalDays;
+
+            var lastYearDays = dg2.DayOfYear;
+            var lastYearPercentage = lastYearDays / (double)totalDays;
+
+            var percentageOfYearList = new List<double>();
+            percentageOfYearList.Add(firstYearPercentage);
+            for (int i = dg0.Year + 1; i < dg2.Year; i++)
             {
-                if (linkedWell.DrillingSchedule == null) { continue; }
-                var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
-                var cumulativeSchedule = GetCumulativeDrillingSchedule(linkedWell.DrillingSchedule);
-                // multiply cumulated schedules with well intervention cost
-                // var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
-                var wellInterventionCostValues = cumulativeSchedule.Values.Select(v => v * interventionCost).ToArray();
-                var wellInterventionCost = new TimeSeries<double>
-                {
-                    StartYear = linkedWell.DrillingSchedule.StartYear,
-                    Values = wellInterventionCostValues
-                };
-                wellInterventionCostList.Add(wellInterventionCost);
+                var days = DateTime.IsLeapYear(i) ? 366 : 365;
+                var percentage = days / (double)totalDays;
+                percentageOfYearList.Add(percentage);
             }
+            percentageOfYearList.Add(lastYearPercentage);
 
-            // Calculate new cost profile on Case : Well intervention cost as: (well intervention cost) * (cummulative number of wells drilled)
-            var wellInterventionCosts = new TimeSeries<double>();
-            foreach (var wi in wellInterventionCostList)
+            var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
+
+            var feasibilityAndConceptStudiesCost = new TimeSeries<double>
             {
-                wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, wi);
-            }
+                StartYear = dg0.Year,
+                Values = valuesList.ToArray()
+            };
 
-            return wellInterventionCosts;
+            return feasibilityAndConceptStudiesCost;
         }
 
+        public TimeSeries<double> CalculateTotalFEEDStudies(Guid caseId)
+        {
+            // Calculate total feasibility and concept studies = (sum of all cost facility + well cost) * (Capex factor feasibility studies, use default)
+            // Generate cost profile from DG0 and DG2 date from schedule. Divide cost per year weighted with number of days per year.
+            var caseItem = GetCase(caseId);
+
+            // sum of all cost facility
+            var sumFacilityCost = SumAllCostFacility(caseId);
+
+            // well cost
+            var sumWellCost = SumWellCost(caseId);
+
+            var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
+
+            // values count =>  dg2.year - dg0.year 
+            var dg2 = caseItem.DG2Date;
+            var dg3 = caseItem.DG3Date;
+            if (dg2.Year == 1 || dg3.Year == 1) { return new TimeSeries<double>(); }
+            // Find total number of days between dg0 and dg2
+            var totalDays = (dg3 - dg2).Days;
+            // add portion of days per year to each value and multiply with totalFeasibilityAndConceptStudies
+
+            var firstYearDays = (new DateTime(dg2.Year, 12, 31) - dg2).Days;
+            var firstYearPercentage = firstYearDays / (double)totalDays;
+
+            var lastYearDays = dg3.DayOfYear;
+            var lastYearPercentage = lastYearDays / (double)totalDays;
+
+            var percentageOfYearList = new List<double>();
+            percentageOfYearList.Add(firstYearPercentage);
+            for (int i = dg2.Year + 1; i < dg3.Year; i++)
+            {
+                var days = DateTime.IsLeapYear(i) ? 366 : 365;
+                var percentage = days / (double)totalDays;
+                percentageOfYearList.Add(percentage);
+            }
+            percentageOfYearList.Add(lastYearPercentage);
+
+            var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
+
+            var feasibilityAndConceptStudiesCost = new TimeSeries<double>
+            {
+                StartYear = dg2.Year,
+                Values = valuesList.ToArray()
+            };
+
+            return feasibilityAndConceptStudiesCost;
+        }
+
+        public StudyCostProfileDto CalculateStudyCost(Guid caseId)
+        {
+            var feasibility = CalculateTotalFeasibilityAndConceptStudies(caseId);
+            var feed = CalculateTotalFEEDStudies(caseId);
+
+            if (feasibility == null && feed == null)
+            {
+                return new StudyCostProfileDto();
+            }
+            var cost = TimeSeriesCost.MergeCostProfiles(feasibility, feed);
+            var studyCost = new StudyCostProfile
+            {
+                StartYear = cost.StartYear,
+                Values = cost.Values
+            };
+            var dto = CaseDtoAdapter.Convert(studyCost);
+            return dto;
+        }
     }
 }

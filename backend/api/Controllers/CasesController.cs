@@ -56,5 +56,11 @@ namespace api.Controllers
         {
             return _caseService.CalculateOPEX(caseId);
         }
+
+        [HttpPost("{caseId}/calculateStudy", Name = "CalculateStudy")]
+        public StudyCostProfileDto CalculateStudyCost(Guid caseId)
+        {
+            return _caseService.CalculateStudyCost(caseId);
+        }
     }
 }
