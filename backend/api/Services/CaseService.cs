@@ -1,9 +1,12 @@
+using System.Collections.Immutable;
 using System.Globalization;
 
 using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.Azure;
 
@@ -115,9 +118,9 @@ namespace api.Services
             {
                 var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
                 var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min() + caseItem.DG4Date.Year;
-                if (earliestYear != null)
+                var dG1Date = caseItem.DG1Date;
+                if (earliestYear != null && dG1Date.Year >= earliestYear)
                 {
-                    var dG1Date = caseItem.DG1Date;
                     var project = _projectService.GetProject(caseItem.ProjectId);
                     var country = project.Country;
                     var countryCost = MapCountry(country);
@@ -169,6 +172,24 @@ namespace api.Services
         {
             var caseItem = GetCase(caseId);
 
+            var drainageStrategyService = (DrainageStrategyService?)_serviceProvider.GetService(typeof(DrainageStrategyService));
+            if (drainageStrategyService == null)
+            {
+                return new TimeSeries<double>();
+            }
+            var drainageStrategy = new DrainageStrategy();
+            try
+            {
+                drainageStrategy = drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+                // return new TimeSeries<double>();
+            }
+            // if (drainageStrategy?.ProductionProfileOil == null) { return new TimeSeries<double>(); }
+            var lastYear = drainageStrategy?.ProductionProfileOil == null ? 0 : drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
+
             // Calculate cumulative number of wells drilled from drilling schedule well project
 
             var wellProjectService = (WellProjectService?)_serviceProvider.GetService(typeof(WellProjectService));
@@ -199,6 +220,7 @@ namespace api.Services
                 // multiply cumulated schedules with well intervention cost
                 // var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
                 var wellInterventionCostValues = cumulativeSchedule.Values.Select(v => v * interventionCost).ToArray();
+
                 var wellInterventionCost = new TimeSeries<double>
                 {
                     StartYear = linkedWell.DrillingSchedule.StartYear,
@@ -213,6 +235,20 @@ namespace api.Services
             {
                 wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, wi);
             }
+
+            var totalValuesCount = lastYear == 0 ? wellInterventionCosts.Values.Length : lastYear - wellInterventionCosts.StartYear;
+            var additionalValuesCount = totalValuesCount - wellInterventionCosts.Values.Length;
+
+            var additionalValues = new List<double>();
+            for (int i = 0; i < additionalValuesCount; i++)
+            {
+                additionalValues.Add(wellInterventionCosts.Values.Last());
+            }
+
+            var valuesList = wellInterventionCosts.Values.ToList();
+            valuesList.AddRange(additionalValues);
+
+            wellInterventionCosts.Values = valuesList.ToArray();
 
             return wellInterventionCosts;
         }
@@ -264,7 +300,7 @@ namespace api.Services
                 (facilityOpex - 1) / 2
             };
 
-            for (int i = firstYear; i <= lastYear; i++)
+            for (int i = firstYear; i < lastYear; i++)
             {
                 values.Add(facilityOpex);
             }
@@ -299,8 +335,6 @@ namespace api.Services
             var opexDto = CaseDtoAdapter.Convert(opexCostProfile);
             return opexDto ?? new OpexCostProfileDto();
         }
-
-
 
         private TimeSeries<double> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
         {

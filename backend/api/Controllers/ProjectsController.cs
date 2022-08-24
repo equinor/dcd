@@ -27,41 +27,47 @@ namespace api.Controllers
         }
 
         [HttpGet("{projectId}", Name = "GetProject")]
-        public async Task<ProjectDto> GetAsync(Guid projectId)
+        public ProjectDto? Get(Guid projectId)
         {
             try
             {
-                var projectDto = _projectService.GetProjectDto(projectId);
-                return projectDto;
+                return _projectService.GetProjectDto(projectId);
+
             }
             catch (NotFoundInDBException)
             {
-                var projectMaster = await _fusionService.ProjectMasterAsync(projectId);
-                if (projectMaster != null)
-                {
-                    DateTimeOffset createDate = DateTimeOffset.UtcNow;
-
-                    var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
-                    var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
-                    ProjectDto projectDto = new()
-                    {
-                        Name = projectMaster.Description ?? "",
-                        Description = projectMaster.Description ?? "",
-                        CommonLibraryName = projectMaster.Description ?? "",
-                        CreateDate = createDate,
-                        FusionProjectId = projectId,
-                        Country = projectMaster.Country ?? "",
-                        Currency = Currency.NOK,
-                        PhysUnit = PhysUnit.SI,
-                        ProjectId = projectId,
-                        ProjectCategory = category,
-                        ProjectPhase = phase,
-                    };
-                    var project = ProjectAdapter.Convert(projectDto);
-                    return _projectService.CreateProject(project);
-                }
-                throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+                return null;
             }
+        }
+
+        [HttpPost("createFromFusion", Name = "CreateProjectFromContextId")]
+        public async Task<ProjectDto> CreateProjectFromContextIdAsync([FromQuery] Guid contextId)
+        {
+            var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
+            if (projectMaster != null)
+            {
+                DateTimeOffset createDate = DateTimeOffset.UtcNow;
+
+                var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
+                var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
+                ProjectDto projectDto = new()
+                {
+                    Name = projectMaster.Description ?? "",
+                    Description = projectMaster.Description ?? "",
+                    CommonLibraryName = projectMaster.Description ?? "",
+                    CreateDate = createDate,
+                    FusionProjectId = projectMaster.Identity,
+                    Country = projectMaster.Country ?? "",
+                    Currency = Currency.NOK,
+                    PhysUnit = PhysUnit.SI,
+                    ProjectId = projectMaster.Identity,
+                    ProjectCategory = category,
+                    ProjectPhase = phase,
+                };
+                var project = ProjectAdapter.Convert(projectDto);
+                return _projectService.CreateProject(project);
+            }
+            return new ProjectDto();
         }
 
         [HttpGet(Name = "GetProjects")]
