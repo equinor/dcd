@@ -114,6 +114,8 @@ const ExplorationView = () => {
         newExploration.rigMobDemob = rigMobDemob
         newExploration.costProfile = costProfile
         newExploration.currency = currency
+        newExploration.seismicAcquisitionAndProcessing = seismicAcquisitionAndProcessing
+        newExploration.countryOfficeCost = countryOfficeCost
         setExploration(newExploration)
 
         if (caseItem?.DG4Date) {
@@ -218,7 +220,7 @@ const ExplorationView = () => {
             <ReadOnlyCostProfile
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 timeSeries={gAndGAdminCost}
-                title="G &amp; G and gdmin cost (MUSD)"
+                title="G &amp; G and admin cost (MUSD)"
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules

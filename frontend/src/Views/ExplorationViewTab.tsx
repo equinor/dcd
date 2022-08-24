@@ -203,7 +203,7 @@ const ExplorationViewTab = ({
                 <ReadOnlyCostProfile
                     dG4Year={caseItem?.DG4Date?.getFullYear()}
                     timeSeries={gAndGAdminCost}
-                    title="G &amp; G and gdmin cost (MUSD)"
+                    title="G &amp; G and admin cost (MUSD)"
                 />
             </AssetViewDiv>
             <Wrapper>

@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services
 {
     public class CaseService
@@ -113,9 +115,9 @@ namespace api.Services
             {
                 var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
                 var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min() + caseItem.DG4Date.Year;
-                if (earliestYear != null)
+                var dG1Date = caseItem.DG1Date;
+                if (earliestYear != null && dG1Date.Year >= earliestYear)
                 {
-                    var dG1Date = caseItem.DG1Date;
                     var project = _projectService.GetProject(caseItem.ProjectId);
                     var country = project.Country;
                     var countryCost = MapCountry(country);
@@ -297,8 +299,6 @@ namespace api.Services
             var opexDto = CaseDtoAdapter.Convert(opexCostProfile);
             return opexDto ?? new OpexCostProfileDto();
         }
-
-
 
         private TimeSeries<double> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
         {
