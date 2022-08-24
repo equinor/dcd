@@ -40,7 +40,7 @@ namespace api.Adapters
             };
         }
 
-        private static GAndGAdminCostDto Convert(GAndGAdminCost? gAndGAdminCost)
+        public static GAndGAdminCostDto Convert(GAndGAdminCost? gAndGAdminCost)
         {
             if (gAndGAdminCost == null)
             {

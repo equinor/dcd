@@ -23,7 +23,7 @@ import { unwrapProjectId } from "../Utils/common"
 import DefinitionView from "./DefinitionView"
 import ExplorationViewTab from "./ExplorationViewTab"
 import { EditCaseInputModal } from "./EditCaseInputModal"
-import CaseCessationCostProfile from "../Components/Case/CaseCessationCostProfile"
+import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -192,19 +192,20 @@ function CaseView() {
                         </StyledTabPanel>
                         <StyledTabPanel>
                             Exploration
-                            {/* <ExplorationViewTab
+                            <ExplorationViewTab
                                 _case={caseItem}
                                 _project={project}
-                            /> */}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Well</p>
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
-                <CaseCessationCostProfile
+                <ReadOnlyCostProfile
                     dG4Year={caseItem.DG4Date?.getFullYear()}
                     timeSeries={caseItem.cessationCost}
+                    title="Cessation cost profile"
                 />
                 <DividerLine />
                 <CaseAsset

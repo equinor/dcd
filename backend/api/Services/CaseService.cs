@@ -1,9 +1,9 @@
+using System.Globalization;
+
 using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
@@ -12,11 +12,13 @@ namespace api.Services
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
         private readonly ILogger<CaseService> _logger;
+        private readonly IServiceProvider _serviceProvider;
 
-        public CaseService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+        public CaseService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             _context = context;
             _projectService = projectService;
+            _serviceProvider = serviceProvider;
             _logger = loggerFactory.CreateLogger<CaseService>();
         }
 
@@ -85,6 +87,73 @@ namespace api.Services
                 throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
             }
             return caseItem;
+        }
+
+        public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
+        {
+            var caseItem = GetCase(caseId);
+            var explorationService = (ExplorationService?)_serviceProvider.GetService(typeof(ExplorationService));
+            if (explorationService == null)
+            {
+                return new GAndGAdminCostDto();
+
+            }
+            Exploration exploration;
+            try
+            {
+                exploration = explorationService.GetExploration(caseItem.ExplorationLink);
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
+                return new GAndGAdminCostDto();
+            }
+            var linkedWells = exploration.ExplorationWells?.Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well).ToList();
+            if (exploration != null && linkedWells?.Count > 0)
+            {
+                var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
+                var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min() + caseItem.DG4Date.Year;
+                var dG1Date = caseItem.DG1Date;
+                if (earliestYear != null && dG1Date.Year >= earliestYear)
+                {
+                    var project = _projectService.GetProject(caseItem.ProjectId);
+                    var country = project.Country;
+                    var countryCost = MapCountry(country);
+                    var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
+                    var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;
+
+                    var totalMinutesLastYear = new TimeSpan(365, 0, 0, 0).TotalMinutes;
+                    var percentageOfLastYear = lastYearMinutes / totalMinutesLastYear;
+
+                    var gAndGAdminCost = new GAndGAdminCost
+                    {
+                        StartYear = (int)earliestYear - caseItem.DG4Date.Year
+                    };
+                    var years = lastYear.Year - (int)earliestYear;
+                    var values = new List<double>();
+                    for (int i = 0; i < years - 1; i++)
+                    {
+                        values.Add(countryCost);
+                    }
+                    values.Add(countryCost * percentageOfLastYear);
+                    gAndGAdminCost.Values = values.ToArray();
+                    return ExplorationDtoAdapter.Convert(gAndGAdminCost);
+                }
+            }
+            return new GAndGAdminCostDto();
+        }
+
+        private static double MapCountry(string country)
+        {
+            return country switch
+            {
+                "NORWAY" => 1,
+                "UK" => 1,
+                "BRAZIL" => 3,
+                "CANADA" => 3,
+                "UNITED STATES" => 3,
+                _ => 7.0,
+            };
         }
     }
 }
