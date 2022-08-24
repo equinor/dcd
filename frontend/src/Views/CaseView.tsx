@@ -26,6 +26,7 @@ import { EditCaseInputModal } from "./EditCaseInputModal"
 import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { GetCaseService } from "../Services/CaseService"
+import { StudyCostProfile } from "../models/case/StudyCostProfile"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -75,6 +76,7 @@ function CaseView() {
     const [activeTab, setActiveTab] = useState<number>(0)
     const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
     const [opex, setOpex] = useState<OpexCostProfile>()
+    const [study, setStudy] = useState<StudyCostProfile>()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
@@ -104,6 +106,8 @@ function CaseView() {
                 setCase(caseResult)
                 const generatedGAndGAdminCost = await (await GetCaseService()).generateOpexCost(caseResult.id!)
                 setOpex(generatedGAndGAdminCost)
+                const generateStudy = await (await GetCaseService()).generateStudyCost(caseResult.id!)
+                setStudy(generateStudy)
             }
         })()
     }, [project])
@@ -218,6 +222,11 @@ function CaseView() {
                     dG4Year={caseItem.DG4Date?.getFullYear()}
                     timeSeries={opex}
                     title="OPEX cost profile"
+                />
+                <ReadOnlyCostProfile
+                    dG4Year={caseItem.DG4Date?.getFullYear()}
+                    timeSeries={study}
+                    title="Study cost profile"
                 />
                 <DividerLine />
                 <CaseAsset

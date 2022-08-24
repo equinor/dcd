@@ -500,7 +500,7 @@ namespace api.Services
 
             var feasibilityAndConceptStudiesCost = new TimeSeries<double>
             {
-                StartYear = dg0.Year,
+                StartYear = dg0.Year - caseItem.DG4Date.Year,
                 Values = valuesList.ToArray()
             };
 
@@ -549,7 +549,7 @@ namespace api.Services
 
             var feasibilityAndConceptStudiesCost = new TimeSeries<double>
             {
-                StartYear = dg2.Year,
+                StartYear = dg2.Year - caseItem.DG4Date.Year,
                 Values = valuesList.ToArray()
             };
 
@@ -566,6 +566,7 @@ namespace api.Services
                 return new StudyCostProfileDto();
             }
             var cost = TimeSeriesCost.MergeCostProfiles(feasibility, feed);
+            if (cost == null) { return new StudyCostProfileDto(); }
             var studyCost = new StudyCostProfile
             {
                 StartYear = cost.StartYear,

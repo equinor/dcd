@@ -6,6 +6,7 @@ import { config } from "./config"
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
+import { StudyCostProfile } from "../models/case/StudyCostProfile"
 
 class __CaseService extends __BaseService {
     public async createCase(data: Components.Schemas.CaseDto): Promise<Project> {
@@ -42,6 +43,12 @@ class __CaseService extends __BaseService {
         // eslint-disable-next-line max-len
         const costProfile: Components.Schemas.OpexCostProfileDto = await this.post<Components.Schemas.OpexCostProfileDto>(`/${id}/calculateOpex`)
         return OpexCostProfile.fromJSON(costProfile)
+    }
+
+    async generateStudyCost(id: string) {
+        // eslint-disable-next-line max-len
+        const costProfile: Components.Schemas.StudyCostProfileDto = await this.post<Components.Schemas.StudyCostProfileDto>(`/${id}/calculateStudy`)
+        return StudyCostProfile.fromJSON(costProfile)
     }
 }
 
