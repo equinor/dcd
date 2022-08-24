@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Microsoft.Extensions.Azure;
+
 namespace api.Services
 {
     public class CaseService
@@ -316,5 +318,173 @@ namespace api.Services
 
             return cumulativeSchedule;
         }
+
+        public TimeSeries<double> CalculateTotalFeasibilityAndConceptStudies(Guid caseId)
+        {
+            // Calculate total feasibility and concept studies = (sum of all cost facility + well cost) * (Capex factor feasibility studies, use default)
+            // Generate cost profile from DG0 and DG2 date from schedule. Divide cost per year weighted with number of days per year.
+            var caseItem = GetCase(caseId);
+
+            var sumFacilityCost = 0.0;
+            // sum of all cost facility
+            var substructureService = (SubstructureService?)_serviceProvider.GetService(typeof(SubstructureService));
+            if (substructureService != null)
+            {
+                Substructure substructure;
+                try
+                {
+                    substructure = substructureService.GetSubstructure(caseItem.SubstructureLink);
+                    if (substructure.CostProfile != null)
+                    {
+                        sumFacilityCost += substructure.CostProfile.Values.Sum();
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    _logger.LogInformation("Substructure {0} not found.", caseItem.SubstructureLink);
+                }
+            }
+            var surfService = (SurfService?)_serviceProvider.GetService(typeof(SurfService));
+            if (surfService != null)
+            {
+                Surf surf;
+                try
+                {
+                    surf = surfService.GetSurf(caseItem.SurfLink);
+                    if (surf.CostProfile != null)
+                    {
+                        sumFacilityCost += surf.CostProfile.Values.Sum();
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    _logger.LogInformation("Surf {0} not found.", caseItem.SurfLink);
+                }
+            }
+            var topsideService = (TopsideService?)_serviceProvider.GetService(typeof(TopsideService));
+            if (topsideService != null)
+            {
+                Topside topside;
+                try
+                {
+                    topside = topsideService.GetTopside(caseItem.TopsideLink);
+                    if (topside.CostProfile != null)
+                    {
+                        sumFacilityCost += topside.CostProfile.Values.Sum();
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    _logger.LogInformation("Topside {0} not found.", caseItem.TopsideLink);
+                }
+            }
+            var transportService = (TransportService?)_serviceProvider.GetService(typeof(TransportService));
+            if (transportService != null)
+            {
+                Transport transport;
+                try
+                {
+                    transport = transportService.GetTransport(caseItem.TransportLink);
+                    if (transport.CostProfile != null)
+                    {
+                        sumFacilityCost += transport.CostProfile.Values.Sum();
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    _logger.LogInformation("Transport {0} not found.", caseItem.TransportLink);
+                }
+            }
+
+
+            // well cost
+            var sumWellCost = 0.0;
+            var wellProjectService = (WellProjectService?)_serviceProvider.GetService(typeof(WellProjectService));
+            if (wellProjectService != null)
+            {
+                WellProject wellProject;
+                try
+                {
+                    wellProject = wellProjectService.GetWellProject(caseItem.WellProjectLink);
+                    var linkedWells = wellProject.WellProjectWells?.Where(ew => IsWellProjectWell(ew.Well.WellCategory)).ToList();
+
+                    if (linkedWells != null && linkedWells.Count > 0)
+                    {
+                        foreach (var linkedWell in linkedWells)
+                        {
+                            if (linkedWell.DrillingSchedule == null) { continue; }
+                            var totalWells = linkedWell.DrillingSchedule.Values.Sum();
+                            sumWellCost += totalWells * linkedWell.Well.WellCost;
+                        }
+                    }
+
+                }
+                catch (ArgumentException)
+                {
+                    _logger.LogInformation("WellProject {0} not found.", caseItem.WellProjectLink);
+                }
+            }
+
+            var explorationService = (ExplorationService?)_serviceProvider.GetService(typeof(ExplorationService));
+            if (explorationService != null)
+            {
+                Exploration exploration;
+                try
+                {
+                    exploration = explorationService.GetExploration(caseItem.ExplorationLink);
+                    var linkedWells = exploration.ExplorationWells?.Where(ew => !IsWellProjectWell(ew.Well.WellCategory)).ToList();
+
+                    if (linkedWells != null && linkedWells.Count > 0)
+                    {
+                        foreach (var linkedWell in linkedWells)
+                        {
+                            if (linkedWell.DrillingSchedule == null) { continue; }
+                            var totalWells = linkedWell.DrillingSchedule.Values.Sum();
+                            sumWellCost += totalWells * linkedWell.Well.WellCost;
+                        }
+                    }
+
+                }
+                catch (ArgumentException)
+                {
+                    _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
+                }
+            }
+
+            var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeasibilityStudies;
+
+
+
+            // var linkedWells = wellProject.WellProjectWells?.Where(ew => IsWellProjectWell(ew.Well.WellCategory)).ToList();
+            if (linkedWells == null) { return new TimeSeries<double>(); }
+            // Calculate cumulative number of wells drilled from drilling schedule well project
+            // Loop over drilling schedules, create cumulated schedules
+            var wellInterventionCostList = new List<TimeSeries<double>>();
+            foreach (var linkedWell in linkedWells)
+            {
+                if (linkedWell.DrillingSchedule == null) { continue; }
+                var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
+                var cumulativeSchedule = GetCumulativeDrillingSchedule(linkedWell.DrillingSchedule);
+                // multiply cumulated schedules with well intervention cost
+                // var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
+                var wellInterventionCostValues = cumulativeSchedule.Values.Select(v => v * interventionCost).ToArray();
+                var wellInterventionCost = new TimeSeries<double>
+                {
+                    StartYear = linkedWell.DrillingSchedule.StartYear,
+                    Values = wellInterventionCostValues
+                };
+                wellInterventionCostList.Add(wellInterventionCost);
+            }
+
+            // Calculate new cost profile on Case : Well intervention cost as: (well intervention cost) * (cummulative number of wells drilled)
+            var wellInterventionCosts = new TimeSeries<double>();
+            foreach (var wi in wellInterventionCostList)
+            {
+                wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, wi);
+            }
+
+            return wellInterventionCosts;
+        }
+
     }
 }
