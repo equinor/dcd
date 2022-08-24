@@ -113,9 +113,9 @@ namespace api.Services
             {
                 var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
                 var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min() + caseItem.DG4Date.Year;
-                if (earliestYear != null)
+                var dG1Date = caseItem.DG1Date;
+                if (earliestYear != null && dG1Date.Year >= earliestYear)
                 {
-                    var dG1Date = caseItem.DG1Date;
                     var project = _projectService.GetProject(caseItem.ProjectId);
                     var country = project.Country;
                     var countryCost = MapCountry(country);
