@@ -4,6 +4,10 @@ import React, {
     ChangeEventHandler,
     Dispatch,
     SetStateAction,
+    useEffect,
+    useRef,
+    useCallback,
+    useMemo,
 } from "react"
 import styled from "styled-components"
 import {
@@ -11,6 +15,8 @@ import {
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import { useHistory } from "react-router"
+import { AgGridReact } from "ag-grid-react"
+import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
 import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
 import { Project } from "../models/Project"
@@ -128,90 +134,114 @@ function OverviewView({
         }
     }
 
+    useAgGridStyles()
+
+    const rowData = [
+        { make: "Ford", model: "Focus", price: 40000 },
+        { make: "Toyota", model: "Celica", price: 45000 },
+        { make: "BMW", model: "4 Series", price: 50000 },
+    ]
+
+    const columnDefs = [
+        { field: "make" },
+        { field: "model" },
+        { field: "price" },
+    ]
+
     return (
-        <Wrapper>
-            <Header>
-                <StyledButton
-                    onClick={submitToSTEA}
-                >
-                    <Icon data={archive} />
-                    Export to STEA
-                </StyledButton>
-            </Header>
-            <RowWrapper>
-                <DescriptionDiv>
-                    <WrapperColumn>
-                        <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
-                        <Typography variant="h3">{project.description}</Typography>
-                    </WrapperColumn>
-                </DescriptionDiv>
-                <DataDiv>
-                    <WrapperRow>
-                        <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
-                        <Typography aria-label="Project phase">
-                            {GetProjectPhaseName(project.phase)}
-                        </Typography>
-                    </WrapperRow>
-                    <WrapperRow>
-                        <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
-                        <Typography aria-label="Project category">
-                            {GetProjectCategoryName(project.category)}
-                        </Typography>
-                    </WrapperRow>
-                    <WrapperRow>
-                        <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
-                        <Typography aria-label="Country">
-                            {project.country ?? "Not defined in Common Library"}
-                        </Typography>
-                    </WrapperRow>
-                </DataDiv>
-            </RowWrapper>
-            <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
-                <CreateCaseForm>
-                    <TextField
-                        label="Name"
-                        id="name"
-                        name="name"
-                        placeholder="Enter a name"
-                        onChange={handleCaseNameChange}
-                    />
+        <>
+            <div className="ag-theme-alpine" style={{ height: 500 }}>
+                <AgGridReact
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                />
+            </div>
+            <Wrapper>
+                {/* <div className={clsx("ag-theme-alpine", styles.tableContainer)}> */}
+                <Header>
+                    <StyledButton
+                        onClick={submitToSTEA}
+                    >
+                        <Icon data={archive} />
+                        Export to STEA
+                    </StyledButton>
+                </Header>
+                <RowWrapper>
+                    <DescriptionDiv>
+                        <WrapperColumn>
+                            <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
+                            <Typography variant="h3">{project.description}</Typography>
+                        </WrapperColumn>
+                    </DescriptionDiv>
+                    <DataDiv>
+                        <WrapperRow>
+                            <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
+                            <Typography aria-label="Project phase">
+                                {GetProjectPhaseName(project.phase)}
+                            </Typography>
+                        </WrapperRow>
+                        <WrapperRow>
+                            <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
+                            <Typography aria-label="Project category">
+                                {GetProjectCategoryName(project.category)}
+                            </Typography>
+                        </WrapperRow>
+                        <WrapperRow>
+                            <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
+                            <Typography aria-label="Country">
+                                {project.country ?? "Not defined in Common Library"}
+                            </Typography>
+                        </WrapperRow>
+                    </DataDiv>
+                </RowWrapper>
+                <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
+                    <CreateCaseForm>
+                        <TextField
+                            label="Name"
+                            id="name"
+                            name="name"
+                            placeholder="Enter a name"
+                            onChange={handleCaseNameChange}
+                        />
 
-                    <TextField
-                        label="Description"
-                        id="description"
-                        name="description"
-                        placeholder="Enter a description"
-                        onChange={handleDescriptionChange}
-                    />
-                    <div>
-                        <Button
-                            type="submit"
-                            onClick={submitCreateCaseForm}
-                            disabled={caseName === "" || caseDescription === ""}
-                        >
-                            Create case
-                        </Button>
-                        <Button
-                            type="button"
-                            color="secondary"
-                            variant="ghost"
-                            onClick={toggleCreateCaseModal}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </CreateCaseForm>
-            </Modal>
-            <RowWrapper>
-                <Typography variant="h2">Cases</Typography>
-                <StyledButton onClick={toggleCreateCaseModal}>
-                    <Icon data={add} />
-                    Add new Case
-                </StyledButton>
+                        <TextField
+                            label="Description"
+                            id="description"
+                            name="description"
+                            placeholder="Enter a description"
+                            onChange={handleDescriptionChange}
+                        />
+                        <div>
+                            <Button
+                                type="submit"
+                                onClick={submitCreateCaseForm}
+                                disabled={caseName === "" || caseDescription === ""}
+                            >
+                                Create case
+                            </Button>
+                            <Button
+                                type="button"
+                                color="secondary"
+                                variant="ghost"
+                                onClick={toggleCreateCaseModal}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </CreateCaseForm>
+                </Modal>
+                <RowWrapper>
+                    <Typography variant="h2">Cases</Typography>
+                    <StyledButton onClick={toggleCreateCaseModal}>
+                        <Icon data={add} />
+                        Add new Case
+                    </StyledButton>
 
-            </RowWrapper>
-            <CasesTableView project={project} setProject={setProject} />
-        </Wrapper>
+                </RowWrapper>
+                <CasesTableView project={project} setProject={setProject} />
+            </Wrapper>
+
+        </>
     )
 }
 
