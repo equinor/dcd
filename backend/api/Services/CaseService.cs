@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Globalization;
 
 using api.Adapters;
@@ -169,6 +170,24 @@ namespace api.Services
         {
             var caseItem = GetCase(caseId);
 
+            var drainageStrategyService = (DrainageStrategyService?)_serviceProvider.GetService(typeof(DrainageStrategyService));
+            if (drainageStrategyService == null)
+            {
+                return new TimeSeries<double>();
+            }
+            var drainageStrategy = new DrainageStrategy();
+            try
+            {
+                drainageStrategy = drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+                // return new TimeSeries<double>();
+            }
+            // if (drainageStrategy?.ProductionProfileOil == null) { return new TimeSeries<double>(); }
+            var lastYear = drainageStrategy?.ProductionProfileOil == null ? 0 : drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
+
             // Calculate cumulative number of wells drilled from drilling schedule well project
 
             var wellProjectService = (WellProjectService?)_serviceProvider.GetService(typeof(WellProjectService));
@@ -199,6 +218,7 @@ namespace api.Services
                 // multiply cumulated schedules with well intervention cost
                 // var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
                 var wellInterventionCostValues = cumulativeSchedule.Values.Select(v => v * interventionCost).ToArray();
+
                 var wellInterventionCost = new TimeSeries<double>
                 {
                     StartYear = linkedWell.DrillingSchedule.StartYear,
@@ -213,6 +233,20 @@ namespace api.Services
             {
                 wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, wi);
             }
+
+            var totalValuesCount = lastYear == 0 ? wellInterventionCosts.Values.Length : lastYear - wellInterventionCosts.StartYear;
+            var additionalValuesCount = totalValuesCount - wellInterventionCosts.Values.Length;
+
+            var additionalValues = new List<double>();
+            for (int i = 0; i < additionalValuesCount; i++)
+            {
+                additionalValues.Add(wellInterventionCosts.Values.Last());
+            }
+
+            var valuesList = wellInterventionCosts.Values.ToList();
+            valuesList.AddRange(additionalValues);
+
+            wellInterventionCosts.Values = valuesList.ToArray();
 
             return wellInterventionCosts;
         }
@@ -264,7 +298,7 @@ namespace api.Services
                 (facilityOpex - 1) / 2
             };
 
-            for (int i = firstYear; i <= lastYear; i++)
+            for (int i = firstYear; i < lastYear; i++)
             {
                 values.Add(facilityOpex);
             }
