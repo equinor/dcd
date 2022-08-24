@@ -35,8 +35,8 @@ namespace Api.Services.FusionIntegration
             {
                 // -> No, still not found. Then we log this and fail hard, as the callee should have provided with a
                 // valid ProjectMaster (context) ID.
-                logger.LogError(
-                    "Could not resolve ProjectMaster context from Fusion using GUID '{ProjectMasterId}'",
+                Console.WriteLine(
+                    "Could not resolve ProjectMaster context from Fusion using GUID '{ProjectMasterId}'" +
                     contextId);
                 throw new Exception();
             }
@@ -46,9 +46,9 @@ namespace Api.Services.FusionIntegration
 
             if (fusionProjectMaster == null)
             {
-                logger.LogError(
+                Console.WriteLine(
                     "Project Master with ID '{ProjectMasterId}' was obtained from Fusion, but conversion to explicit " +
-                    "type failed",
+                    "type failed" +
                     contextId);
                 throw new Exception();
             }
@@ -60,6 +60,8 @@ namespace Api.Services.FusionIntegration
         {
             FusionContext? projectMasterContext = await fusionContextResolver.ResolveContextAsync(contextId, FusionContextType.ProjectMaster);
 
+            Console.WriteLine("ResolveProjectMasterContext - contextId: " + contextId);
+            Console.WriteLine("ResolveProjectMasterContext - projectMasterContext: " + projectMasterContext);
             // It might be the GUID provided was the ProjectMaster ID and not the GUID of the Fusion Context. Will
             // thus attempt to query for the ProjectMaster "directly" if not found.
             if (projectMasterContext == null)
