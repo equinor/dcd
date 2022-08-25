@@ -457,19 +457,6 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
-    namespace CasesCopy {
-        namespace Post {
-            namespace Parameters {
-                export type CopyCaseId = string; // uuid
-            }
-            export interface QueryParameters {
-                copyCaseId?: Parameters.CopyCaseId /* uuid */;
-            }
-            namespace Responses {
-                export type $200 = Components.Schemas.ProjectDto;
-            }
-        }
-    }
     namespace CreateCase {
         export type RequestBody = Components.Schemas.CaseDto;
         namespace Responses {
@@ -693,6 +680,17 @@ declare namespace Paths {
         namespace Responses {
             export interface $200 {
             }
+        }
+    }
+    namespace GenerateGAndGAdminCost {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.GAndGAdminCostDto;
         }
     }
     namespace GetExplorationWells {
