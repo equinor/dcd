@@ -17,23 +17,23 @@ export function AppRouter(): JSX.Element {
             <Route exact path="/">
                 <Welcome />
             </Route>
-            <Route exact path="/:fusionProjectId">
+            <Route exact path="/:fusionContextId">
                 <SideMenu>
                     <ProjectView />
                 </SideMenu>
             </Route>
-            <Route path="/:fusionProjectId/case/:caseId" exact>
+            <Route path="/:fusionContextId/case/:caseId" exact>
                 <SideMenu>
                     <CaseView />
                 </SideMenu>
             </Route>
-            <Route path="/:fusionProjectId/case/:caseId/surf/:surfId" exact>
+            <Route path="/:fusionContextId/case/:caseId/surf/:surfId" exact>
                 <SideMenu>
                     <SurfView />
                 </SideMenu>
             </Route>
             <Route
-                path="/:fusionProjectId/case/:caseId/drainagestrategy/:drainageStrategyId"
+                path="/:fusionContextId/case/:caseId/drainagestrategy/:drainageStrategyId"
                 exact
             >
                 <SideMenu>
@@ -41,7 +41,7 @@ export function AppRouter(): JSX.Element {
                 </SideMenu>
             </Route>
             <Route
-                path="/:fusionProjectId/case/:caseId/topside/:topsideId"
+                path="/:fusionContextId/case/:caseId/topside/:topsideId"
                 exact
             >
                 <SideMenu>
@@ -49,7 +49,7 @@ export function AppRouter(): JSX.Element {
                 </SideMenu>
             </Route>
             <Route
-                path="/:fusionProjectId/case/:caseId/substructure/:substructureId"
+                path="/:fusionContextId/case/:caseId/substructure/:substructureId"
                 exact
             >
                 <SideMenu>
@@ -57,7 +57,7 @@ export function AppRouter(): JSX.Element {
                 </SideMenu>
             </Route>
             <Route
-                path="/:fusionProjectId/case/:caseId/transport/:transportId"
+                path="/:fusionContextId/case/:caseId/transport/:transportId"
                 exact
             >
                 <SideMenu>
@@ -65,7 +65,7 @@ export function AppRouter(): JSX.Element {
                 </SideMenu>
             </Route>
             <Route
-                path="/:fusionProjectId/case/:caseId/wellproject/:wellProjectId"
+                path="/:fusionContextId/case/:caseId/wellproject/:wellProjectId"
                 exact
             >
                 <SideMenu>
@@ -73,7 +73,7 @@ export function AppRouter(): JSX.Element {
                 </SideMenu>
             </Route>
             <Route
-                path="/:fusionProjectId/case/:caseId/exploration/:explorationId"
+                path="/:fusionContextId/case/:caseId/exploration/:explorationId"
                 exact
             >
                 <SideMenu>

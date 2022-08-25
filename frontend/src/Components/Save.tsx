@@ -1,4 +1,4 @@
-import { useHistory } from "@equinor/fusion"
+import { useCurrentContext, useHistory } from "@equinor/fusion"
 import { Dispatch, SetStateAction } from "react"
 import { useLocation, useParams } from "react-router"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
@@ -31,7 +31,9 @@ const Save = ({
     assetService,
     assetType,
 }: Props) => {
-    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
+
     const history = useHistory()
     const location = useLocation()
 
@@ -39,7 +41,7 @@ const Save = ({
         const assetDto: IAsset = { ...asset }
         assetDto.name = name
         if (asset?.id === EMPTY_GUID) {
-            assetDto.projectId = fusionProjectId
+            assetDto.projectId = currentProject?.externalId!
             const newProject = await assetService.create(caseId!, assetDto!)
             const newAsset = newProject[assetType].at(-1)
             const newUrl = location.pathname.replace(EMPTY_GUID, newAsset!.id!)

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
@@ -39,7 +40,8 @@ const ExplorationView = () => {
     const [exploration, setExploration] = useState<Exploration>()
     const [hasChanges, setHasChanges] = useState(false)
     const [name, setName] = useState<string>("")
-    const { fusionProjectId, caseId, explorationId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId, explorationId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
@@ -57,12 +59,12 @@ const ExplorationView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await (await GetProjectService()).getProjectByID(fusionProjectId!)
+                const projectResult = await (await GetProjectService()).getProjectByID(currentProject?.externalId!)
                 setProject(projectResult)
                 const service = await GetExplorationService()
                 setExplorationService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [])
