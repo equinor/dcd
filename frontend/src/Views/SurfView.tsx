@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Typography } from "@equinor/eds-core-react"
 
 import { useParams } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import { Surf } from "../models/assets/surf/Surf"
 import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
@@ -34,7 +35,9 @@ const SurfView = () => {
     const [surf, setSurf] = useState<Surf>()
     const [hasChanges, setHasChanges] = useState(false)
     const [surfName, setSurfName] = useState<string>("")
-    const { fusionProjectId, caseId, surfId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId, surfId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
+
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [riserCount, setRiserCount] = useState<number | undefined>()
@@ -60,13 +63,13 @@ const SurfView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
+                const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
                 const service = await GetSurfService()
                 setSurfService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [])

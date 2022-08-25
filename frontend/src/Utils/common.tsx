@@ -29,8 +29,8 @@ export function StoreAppScope(appScope: string) {
 }
 
 export function GetToken(keyName: string) {
-    const scopes = [[window.sessionStorage.getItem("appScope") || ''][0]];
-    return window.Fusion.modules.auth.acquireAccessToken({ scopes })   
+    const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
+    return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
 export const unwrapCase = (_case?: Case | undefined): Case => {
@@ -40,7 +40,7 @@ export const unwrapCase = (_case?: Case | undefined): Case => {
     return _case
 }
 
-export const unwrapProjectId = (projectId?: string | undefined): string => {
+export const unwrapProjectId = (projectId?: string | undefined | null): string => {
     if (projectId === undefined || projectId === null) {
         throw new Error("Attempted to use a Project ID which does not exist")
     }

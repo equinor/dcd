@@ -4,7 +4,7 @@ import {
 } from "@equinor/eds-core-react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
-import { } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { useHistory } from "@equinor/fusion"
 import { Project } from "../models/Project"
@@ -52,6 +52,7 @@ const DashboardView = () => {
     const [projects, setProjects] = useState<Project[]>()
     const [clp, setCommonLibProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]>()
     const CommonLibraryService = GetCommonLibraryService()
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
 
     const closeModal = () => {
         setIsOpen(false)
@@ -79,7 +80,7 @@ const DashboardView = () => {
     const onSelected = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const project:Project | undefined = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         if (project) {
-           history.push(ProjectPath(project.id))
+           history.push(ProjectPath(fusionContextId!))
         } else {
             const commonlibProject = clp?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
             setCurrentProject(commonlibProject)
