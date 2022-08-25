@@ -59,13 +59,12 @@ stages:
                                   tag: ${{ parameters.ContainerTag }}
           - job: "DeployASEContainerBackend"
             steps:
-            - powershell: |
-                if (${{ parameters.envshortname }} -contains "ci") {
-                    echo "##vso[task.setvariable variable=devenvironment;isOutput=true]dev"
-                } else {
-                    echo "##vso[task.setvariable variable=devenvironment;isOutput=true]${{ parameters.envshortname }}
-                }
-                name: envsetter 
+            - script: |
+                ${{ if eq(parameters.envshortname, 'ci') }}:
+                  echo "##vso[task.setvariable variable=devenvironment]dev"
+                ${{ if ne(parameters.envshortname, 'ci') }}:
+                  echo "##vso[task.setvariable variable=devenvironment]ping"       
+                
             - template: step-deploycontainer.yml
               parameters:
                 imageName: "backend"
