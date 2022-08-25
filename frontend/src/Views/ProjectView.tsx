@@ -63,7 +63,7 @@ const ProjectView = () => {
 
     const currentProject = useCurrentContext()
 
-    const { fusionProjectId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
@@ -83,7 +83,7 @@ const ProjectView = () => {
                 if (currentProject?.externalId) {
                     let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
                     if (!res || res.id === "") {
-                        res = await (await GetProjectService()).createProjectFromContextId(fusionProjectId!)
+                        res = await (await GetProjectService()).createProjectFromContextId(fusionContextId!)
                     }
                     if (res !== undefined) {
                         setPhysicalUnit(res?.physUnit)
@@ -92,10 +92,11 @@ const ProjectView = () => {
                     setProject(res)
                 }
             } catch (error) {
-                console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
+                // eslint-disable-next-line max-len
+                console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentProject?.externalId}`, error)
             }
         })()
-    }, [fusionProjectId])
+    }, [currentProject?.externalId])
 
     useEffect(() => {
         (async () => {
@@ -104,7 +105,7 @@ const ProjectView = () => {
                     const projectDto = Project.Copy(project)
                     projectDto.physUnit = physicalUnit
                     projectDto.currency = currency
-                    projectDto.projectId = fusionProjectId!
+                    projectDto.projectId = currentProject?.externalId!
                     const cases: Case[] = []
                     project.cases.forEach((c) => cases.push(Case.Copy(c)))
                     projectDto.cases = cases
@@ -112,7 +113,7 @@ const ProjectView = () => {
                     setProject(res)
                 }
             } catch (error) {
-                console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[ProjectView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [physicalUnit, currency])

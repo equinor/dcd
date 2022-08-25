@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
@@ -35,7 +36,9 @@ function WellProjectView() {
     const [wellProject, setWellProject] = useState<WellProject>()
     const [hasChanges, setHasChanges] = useState(false)
     const [wellProjectName, setWellProjectName] = useState<string>("")
-    const { fusionProjectId, caseId, wellProjectId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId, wellProjectId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
+
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [annualWellInterventionCost, setAnnualWellInterventionCost] = useState<number>()
@@ -51,13 +54,13 @@ function WellProjectView() {
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
+                const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
                 const service = await GetWellProjectService()
                 setWellProjectService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [])

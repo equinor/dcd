@@ -1,4 +1,5 @@
 import { Button, Checkbox } from "@equinor/eds-core-react"
+import { useCurrentContext } from "@equinor/fusion"
 import {
     Dispatch, SetStateAction, useRef, useState,
 } from "react"
@@ -20,7 +21,9 @@ const ExcelUpload = ({
     setProject,
     setCase,
 }: Props) => {
-    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
+
     const [surf, setSurf] = useState<boolean>(false)
     const [topside, setTopside] = useState<boolean>(false)
     const [substructure, setSubstructure] = useState<boolean>(false)
@@ -45,7 +48,7 @@ const ExcelUpload = ({
 
         try {
             const uploadService = await GetUploadService()
-            const response = await uploadService.create(caseId!, fusionProjectId!, data)
+            const response = await uploadService.create(caseId!, currentProject?.externalId!, data)
             setProject(response)
             const caseResult = unwrapCase(response.cases.find((o) => o.id === caseId))
             setCase(caseResult)

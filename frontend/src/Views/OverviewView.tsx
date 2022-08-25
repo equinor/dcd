@@ -11,6 +11,7 @@ import {
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import { useHistory, useParams } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
 import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
 import { Project } from "../models/Project"
@@ -86,7 +87,8 @@ function OverviewView({
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
     const history = useHistory()
-    const { fusionProjectId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
 
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
@@ -121,7 +123,7 @@ function OverviewView({
                 projectId: project.projectId,
             })
             toggleCreateCaseModal()
-            history.push(`/${fusionProjectId}/case/${projectResult.cases.find((o) => (
+            history.push(`/${fusionContextId}/case/${projectResult.cases.find((o) => (
                 o.name === caseName
             ))?.id}`)
         } catch (error) {
