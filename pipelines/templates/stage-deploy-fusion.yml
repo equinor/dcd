@@ -61,7 +61,7 @@ stages:
             steps:
             - powershell: |
                 if('${{ parameters.envshortname }}' -like '*ci*') {
-                  Write-Host "##vso[task.setvariable variable=devenvironment;]ci"
+                  Write-Host "##vso[task.setvariable variable=devenvironment;]dev"
                 } else {
                   Write-Host "##vso[task.setvariable variable=devenvironment;]${{ parameters.envshortname }}"
                 }
