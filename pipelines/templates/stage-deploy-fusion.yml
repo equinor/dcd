@@ -69,7 +69,7 @@ stages:
             - template: step-deploycontainer.yml
               parameters:
                 imageName: "backend"
-                imageTag: "${{ parameters.envshortname }}-dcd"
+                imageTag: "${{ parameters.envshortname }}-release"
                 webAppName: "ase-dcd-backend-$(devenvironment)"
                 serviceConnection: "dcd-pipeline-sp"
                 name: "DeployBackend_${{ parameters.envshortname }}"
