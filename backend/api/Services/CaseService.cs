@@ -6,6 +6,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using DocumentFormat.OpenXml.InkML;
+
 using Microsoft.EntityFrameworkCore;
 
 using Microsoft.Extensions.Azure;
@@ -211,30 +213,68 @@ namespace api.Services
             if (linkedWells == null) { return new TimeSeries<double>(); }
             // Calculate cumulative number of wells drilled from drilling schedule well project
             // Loop over drilling schedules, create cumulated schedules
-            var wellInterventionCostList = new List<TimeSeries<double>>();
-            foreach (var linkedWell in linkedWells)
-            {
-                if (linkedWell.DrillingSchedule == null) { continue; }
-                var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
-                var cumulativeSchedule = GetCumulativeDrillingSchedule(linkedWell.DrillingSchedule);
-                // multiply cumulated schedules with well intervention cost
-                // var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
-                var wellInterventionCostValues = cumulativeSchedule.Values.Select(v => v * interventionCost).ToArray();
 
-                var wellInterventionCost = new TimeSeries<double>
-                {
-                    StartYear = linkedWell.DrillingSchedule.StartYear,
-                    Values = wellInterventionCostValues
-                };
-                wellInterventionCostList.Add(wellInterventionCost);
+            var wellInterventionCosts = new TimeSeries<double>();
+            foreach (var wi in linkedWells)
+            {
+                if (wi.DrillingSchedule == null) { continue; }
+
+                var timeSeries = new TimeSeries<double>();
+                timeSeries.StartYear = wi.DrillingSchedule.StartYear;
+                timeSeries.Values = wi.DrillingSchedule.Values.Select(v => (double)v).ToArray();
+                wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, timeSeries);
             }
+
+            // var wellInterventionCostList = new List<TimeSeries<double>>();
+            // foreach (var linkedWell in linkedWells)
+            // {
+            //     if (linkedWell.DrillingSchedule == null) { continue; }
+            //     var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
+            //     var cumulativeSchedule = GetCumulativeDrillingSchedule(linkedWell.DrillingSchedule);
+            //     // multiply cumulated schedules with well intervention cost
+            //     // var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
+            //     var wellInterventionCostValues = cumulativeSchedule.Values.Select(v => v * interventionCost).ToArray();
+
+            //     var wellInterventionCost = new TimeSeries<double>
+            //     {
+            //         StartYear = linkedWell.DrillingSchedule.StartYear,
+            //         Values = wellInterventionCostValues
+            //     };
+            //     wellInterventionCostList.Add(wellInterventionCost);
+            // }
+            var tempSeries = new TimeSeries<int>
+            {
+                StartYear = wellInterventionCosts.StartYear,
+                Values = wellInterventionCosts.Values.Select(v => (int)v).ToArray()
+            };
+            var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
+            cumulativeDrillingSchedule.StartYear = tempSeries.StartYear;
 
             // Calculate new cost profile on Case : Well intervention cost as: (well intervention cost) * (cummulative number of wells drilled)
-            var wellInterventionCosts = new TimeSeries<double>();
-            foreach (var wi in wellInterventionCostList)
-            {
-                wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, wi);
-            }
+            // var wellInterventionCosts = new TimeSeries<double>();
+            // foreach (var wi in wellInterventionCostList)
+            // {
+            //     wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, wi);
+            // }
+            // cumulative cost => highest value to the end of the time series
+            // var cumulativeList = new List<double>(wellInterventionCosts.Values);
+            // var maxValue = wellInterventionCosts.Values.Max();
+            // for (int i = 0; i < cumulativeList.Count; i++)
+            // {
+            //     if (cumulativeList[i] == maxValue) {
+            //         for (int j = i; j < cumulativeList.Count; j++)
+            //         {
+            //             cumulativeList[j] = maxValue += cumulativeList[j];
+            //         }
+            //         break;
+            //     }
+            // }
+            var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
+
+            var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
+
+            wellInterventionCosts.Values = wellInterventionCostValues; // cumulativeList.ToArray();
+            wellInterventionCosts.StartYear = cumulativeDrillingSchedule.StartYear;
 
             var totalValuesCount = lastYear == 0 ? wellInterventionCosts.Values.Length : lastYear - wellInterventionCosts.StartYear;
             var additionalValuesCount = totalValuesCount - wellInterventionCosts.Values.Length;
