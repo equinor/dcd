@@ -34,7 +34,7 @@ namespace api.Services
             var case_ = CaseAdapter.Convert(caseDto);
             if (case_.DG4Date == DateTimeOffset.MinValue)
             {
-                case_.DG4Date = new DateTime(2030, 1, 1);
+                case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
             }
             var project = _projectService.GetProject(case_.ProjectId);
             case_.Project = project;
@@ -49,7 +49,7 @@ namespace api.Services
             case_.Id = new Guid();
             if (case_.DG4Date == DateTimeOffset.MinValue)
             {
-                case_.DG4Date = new DateTime(2030, 1, 1);
+                case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
             }
             var project = _projectService.GetProject(case_.ProjectId);
             case_.Project = project;
@@ -187,12 +187,8 @@ namespace api.Services
             catch (ArgumentException)
             {
                 _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
-                // return new TimeSeries<double>();
             }
-            // if (drainageStrategy?.ProductionProfileOil == null) { return new TimeSeries<double>(); }
             var lastYear = drainageStrategy?.ProductionProfileOil == null ? 0 : drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
-
-            // Calculate cumulative number of wells drilled from drilling schedule well project
 
             var wellProjectService = (WellProjectService?)_serviceProvider.GetService(typeof(WellProjectService));
             if (wellProjectService == null)
@@ -211,8 +207,6 @@ namespace api.Services
             }
             var linkedWells = wellProject.WellProjectWells?.Where(ew => IsWellProjectWell(ew.Well.WellCategory)).ToList();
             if (linkedWells == null) { return new TimeSeries<double>(); }
-            // Calculate cumulative number of wells drilled from drilling schedule well project
-            // Loop over drilling schedules, create cumulated schedules
 
             var wellInterventionCosts = new TimeSeries<double>();
             foreach (var wi in linkedWells)
@@ -225,23 +219,6 @@ namespace api.Services
                 wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, timeSeries);
             }
 
-            // var wellInterventionCostList = new List<TimeSeries<double>>();
-            // foreach (var linkedWell in linkedWells)
-            // {
-            //     if (linkedWell.DrillingSchedule == null) { continue; }
-            //     var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
-            //     var cumulativeSchedule = GetCumulativeDrillingSchedule(linkedWell.DrillingSchedule);
-            //     // multiply cumulated schedules with well intervention cost
-            //     // var wellInterventionCostValues = Array.ConvertAll(cumulativeSchedule.Values, x => x * interventionCost);
-            //     var wellInterventionCostValues = cumulativeSchedule.Values.Select(v => v * interventionCost).ToArray();
-
-            //     var wellInterventionCost = new TimeSeries<double>
-            //     {
-            //         StartYear = linkedWell.DrillingSchedule.StartYear,
-            //         Values = wellInterventionCostValues
-            //     };
-            //     wellInterventionCostList.Add(wellInterventionCost);
-            // }
             var tempSeries = new TimeSeries<int>
             {
                 StartYear = wellInterventionCosts.StartYear,
@@ -250,30 +227,11 @@ namespace api.Services
             var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
             cumulativeDrillingSchedule.StartYear = tempSeries.StartYear;
 
-            // Calculate new cost profile on Case : Well intervention cost as: (well intervention cost) * (cummulative number of wells drilled)
-            // var wellInterventionCosts = new TimeSeries<double>();
-            // foreach (var wi in wellInterventionCostList)
-            // {
-            //     wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, wi);
-            // }
-            // cumulative cost => highest value to the end of the time series
-            // var cumulativeList = new List<double>(wellInterventionCosts.Values);
-            // var maxValue = wellInterventionCosts.Values.Max();
-            // for (int i = 0; i < cumulativeList.Count; i++)
-            // {
-            //     if (cumulativeList[i] == maxValue) {
-            //         for (int j = i; j < cumulativeList.Count; j++)
-            //         {
-            //             cumulativeList[j] = maxValue += cumulativeList[j];
-            //         }
-            //         break;
-            //     }
-            // }
-            var interventionCost = wellProject.AnnualWellInterventionCost; // linkedWell.Well.WellInterventionCost;
+            var interventionCost = wellProject.AnnualWellInterventionCost;
 
             var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
 
-            wellInterventionCosts.Values = wellInterventionCostValues; // cumulativeList.ToArray();
+            wellInterventionCosts.Values = wellInterventionCostValues;
             wellInterventionCosts.StartYear = cumulativeDrillingSchedule.StartYear;
 
             var totalValuesCount = lastYear == 0 ? wellInterventionCosts.Values.Length : lastYear - wellInterventionCosts.StartYear;
@@ -297,7 +255,6 @@ namespace api.Services
         {
             var caseItem = GetCase(caseId);
 
-            // Find first and last year of production, from production profile (First year should be DG4 year.
             var drainageStrategyService = (DrainageStrategyService?)_serviceProvider.GetService(typeof(DrainageStrategyService));
             if (drainageStrategyService == null)
             {
@@ -316,7 +273,6 @@ namespace api.Services
             if (drainageStrategy?.ProductionProfileOil == null) { return new TimeSeries<double>(); }
             var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
             var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
-            // From first year of production until last year of production cost per year is Facility opex from Topside facilities
             var topsideService = (TopsideService?)_serviceProvider.GetService(typeof(TopsideService));
             if (topsideService == null)
             {
@@ -344,10 +300,6 @@ namespace api.Services
             {
                 values.Add(facilityOpex);
             }
-            // Pre-opex should be added to the same cost profile for three years before first year of produciton (T) : 
-            // T - 1  = ((Facility opex) -1)/2
-            // T - 2  = ((Facility opex) -1)/4
-            // T - 3  = ((Facility opex) -1)/8
 
             var offshoreFacilitiesOperationsCost = new TimeSeries<double>
             {
@@ -360,8 +312,6 @@ namespace api.Services
         public OpexCostProfileDto CalculateOPEX(Guid caseId)
         {
             var caseItem = GetCase(caseId);
-
-            // Calculate cumulative number of wells drilled from drilling schedule well project
 
             var wellInterventionCost = CalculateWellInterventionCostProfile(caseId);
 
@@ -499,28 +449,22 @@ namespace api.Services
 
         public TimeSeries<double> CalculateTotalFeasibilityAndConceptStudies(Guid caseId)
         {
-            // Calculate total feasibility and concept studies = (sum of all cost facility + well cost) * (Capex factor feasibility studies, use default)
-            // Generate cost profile from DG0 and DG2 date from schedule. Divide cost per year weighted with number of days per year.
             var caseItem = GetCase(caseId);
 
-            // sum of all cost facility
             var sumFacilityCost = SumAllCostFacility(caseId);
-
-            // well cost
             var sumWellCost = SumWellCost(caseId);
 
             var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeasibilityStudies;
 
-            // values count =>  dg2.year - dg0.year 
             var dg0 = caseItem.DG0Date;
             var dg2 = caseItem.DG2Date;
+
             if (dg0.Year == 1 || dg2.Year == 1) { return new TimeSeries<double>(); }
+            if (dg2.DayOfYear == 1) { dg2 = dg2.AddDays(-1); } // Treat the 1st of January as the 31st of December
 
-            // Find total number of days between dg0 and dg2
-            var totalDays = (dg2 - dg0).Days;
-            // add portion of days per year to each value and multiply with totalFeasibilityAndConceptStudies
+            var totalDays = (dg2 - dg0).Days + 1;
 
-            var firstYearDays = (new DateTime(dg0.Year, 12, 31) - dg0).Days;
+            var firstYearDays = (new DateTimeOffset(dg0.Year, 12, 31, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero) - dg0).Days + 1;
             var firstYearPercentage = firstYearDays / (double)totalDays;
 
             var lastYearDays = dg2.DayOfYear;
@@ -549,27 +493,22 @@ namespace api.Services
 
         public TimeSeries<double> CalculateTotalFEEDStudies(Guid caseId)
         {
-            // Calculate total feasibility and concept studies = (sum of all cost facility + well cost) * (Capex factor feasibility studies, use default)
-            // Generate cost profile from DG0 and DG2 date from schedule. Divide cost per year weighted with number of days per year.
             var caseItem = GetCase(caseId);
 
-            // sum of all cost facility
             var sumFacilityCost = SumAllCostFacility(caseId);
-
-            // well cost
             var sumWellCost = SumWellCost(caseId);
 
             var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
 
-            // values count =>  dg2.year - dg0.year 
             var dg2 = caseItem.DG2Date;
             var dg3 = caseItem.DG3Date;
-            if (dg2.Year == 1 || dg3.Year == 1) { return new TimeSeries<double>(); }
-            // Find total number of days between dg0 and dg2
-            var totalDays = (dg3 - dg2).Days;
-            // add portion of days per year to each value and multiply with totalFeasibilityAndConceptStudies
 
-            var firstYearDays = (new DateTime(dg2.Year, 12, 31) - dg2).Days;
+            if (dg2.Year == 1 || dg3.Year == 1) { return new TimeSeries<double>(); }
+            if (dg3.DayOfYear == 1) { dg3 = dg3.AddDays(-1); } // Treat the 1st of January as the 31st of December
+
+            var totalDays = (dg3 - dg2).Days + 1;
+
+            var firstYearDays = (new DateTimeOffset(dg2.Year, 12, 31, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero) - dg2).Days + 1;
             var firstYearPercentage = firstYearDays / (double)totalDays;
 
             var lastYearDays = dg3.DayOfYear;

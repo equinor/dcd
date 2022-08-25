@@ -12,7 +12,7 @@ export class StudyCostProfile implements Components.Schemas.StudyCostProfileDto,
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
-            this.values = data.values ?? []
+            this.values = data.values?.map((v) => Math.round((v + Number.EPSILON) * 10) / 10) ?? []
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
             this.sum = data.sum
