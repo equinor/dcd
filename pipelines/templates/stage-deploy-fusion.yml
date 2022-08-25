@@ -10,7 +10,7 @@ parameters:
     - name: FusionEnvId
     - name: FusionServiceConnection
     - name: ContainerTag
-
+ 
 stages:
     - stage: ${{ parameters.appName }}
       displayName: "Deploy  ${{ parameters.envshortname }}"
@@ -40,7 +40,6 @@ stages:
                             action: 'Publish'
                             appKey: 'conceptapp'
                             environment: ${{ parameters.FusionEnvId }}
-                            
           - deployment: "Update_${{ parameters.envshortname }}_Tags"
             environment: ${{ parameters.envfullname }}
             strategy:
@@ -51,7 +50,6 @@ stages:
                               inputs:
                                   containerRegistry: "DCD Registry"
                                   command: "login"
-
                             - template: step-tag-dockerimage.yml
                               parameters:
                                   buildid: ${{ parameters.buildid }}
@@ -59,7 +57,22 @@ stages:
                                   registry: "crdcd.azurecr.io"
                                   repository: "backend"
                                   tag: ${{ parameters.ContainerTag }}
-
+          - job: "DeployASEContainerBackend"
+            steps:
+            - powershell: |
+              if (${{ parameters.envshortname }} -contains "ci") {
+                  echo "##vso[task.setvariable variable=devenvironment;isOutput=true]dev"
+              } else {
+                  echo "##vso[task.setvariable variable=devenvironment;isOutput=true]${{ parameters.envshortname }}
+              }
+              name: envsetter 
+            - template: step-deploycontainer.yml
+              parameters:
+                imageName: "backend"
+                imageTag: "${{ parameters.envshortname }}-dcd"
+                webAppName: "ase-dcd-backend-$(devenvironment)"
+                serviceConnection: "dcd-pipeline-sp"
+                name: "DeployBackend_${{ parameters.envshortname }}"
           - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             dependsOn:
                 - Deploy_${{ parameters.envshortname }}_Frontend
