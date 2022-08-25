@@ -4,7 +4,6 @@
 import {
  createContext, useEffect, useContext, useState,
 } from "react"
-import { getMe } from "../api/user"
 
 interface ConceptAppAuthContextState {
     userError?: Error;
@@ -25,21 +24,6 @@ ConceptAppAuthContext.displayName = "ConceptAppAuthContext"
 const AuthHandler: React.FC<AuthHandlerProps> = ({ children }: AuthHandlerProps) => {
     const [userError, setUserError] = useState<Error>()
     const [isLoading, setIsLoading] = useState(true)
-
-    useEffect(() => {
-        const doGetMeUser = async () => {
-            try {
-                const pitstopUser = await getMe()
-                setUserError(undefined)
-            } catch (error) {
-                console.error("Failed to get me user", error)
-                setUserError(error as Error)
-            } finally {
-                setIsLoading(false)
-            }
-        }
-        doGetMeUser()
-    }, [])
 
     return <ConceptAppAuthContext.Provider value={{ userError, loading: isLoading }}>{children}</ConceptAppAuthContext.Provider>
 }

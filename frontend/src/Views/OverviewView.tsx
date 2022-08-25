@@ -1,14 +1,17 @@
 /* eslint-disable camelcase */
-import React, {
+import {
     MouseEventHandler, useState,
     ChangeEventHandler,
+    Dispatch,
+    SetStateAction,
 } from "react"
 import styled from "styled-components"
 import {
     Button, Icon, TextField, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
-import { useHistory } from "react-router"
+import { useHistory, useParams } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
 import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
 import { Project } from "../models/Project"
@@ -74,16 +77,19 @@ const CreateCaseForm = styled.form`
 
 interface Props {
     project: Project,
+    setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
 function OverviewView({
-    project,
+    project, setProject,
 }: Props) {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
-    // const navigate = useNavigate()
     const history = useHistory()
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
+
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
     const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -117,7 +123,7 @@ function OverviewView({
                 projectId: project.projectId,
             })
             toggleCreateCaseModal()
-            history.push(`/${projectResult.id}/case/${projectResult.cases.find((o) => (
+            history.push(`/${fusionContextId}/case/${projectResult.cases.find((o) => (
                 o.name === caseName
             ))?.id}`)
         } catch (error) {
@@ -207,7 +213,7 @@ function OverviewView({
                 </StyledButton>
 
             </RowWrapper>
-            <CasesTableView project={project} />
+            <CasesTableView project={project} setProject={setProject} />
         </Wrapper>
     )
 }

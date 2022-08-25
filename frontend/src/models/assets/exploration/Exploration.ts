@@ -3,7 +3,7 @@ import { ExplorationWell } from "../../ExplorationWell"
 import { IAsset } from "../IAsset"
 import { ExplorationCostProfile } from "./ExplorationCostProfile"
 import { CountryOfficeCost } from "./CountryOfficeCost"
-import { GAndGAdminCost } from "./GAndAdminCost"
+import { GAndGAdminCost } from "./GAndGAdminCost"
 import { SeismicAcquisitionAndProcessing } from "./SeismicAcquisitionAndProcessing"
 
 export class Exploration implements Components.Schemas.ExplorationDto, IAsset {

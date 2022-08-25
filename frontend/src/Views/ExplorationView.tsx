@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
@@ -20,7 +21,7 @@ import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
-import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
+import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
 import { IAssetService } from "../Services/IAssetService"
@@ -30,6 +31,8 @@ import WellList from "../Components/Well/WellList"
 import { ExplorationWell } from "../models/ExplorationWell"
 import { SeismicAcquisitionAndProcessing } from "../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../models/assets/exploration/CountryOfficeCost"
+import { GetCaseService } from "../Services/CaseService"
+import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -37,7 +40,8 @@ const ExplorationView = () => {
     const [exploration, setExploration] = useState<Exploration>()
     const [hasChanges, setHasChanges] = useState(false)
     const [name, setName] = useState<string>("")
-    const { fusionProjectId, caseId, explorationId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId, explorationId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
@@ -55,12 +59,12 @@ const ExplorationView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectResult = await (await GetProjectService()).getProjectByID(fusionProjectId!)
+                const projectResult = await (await GetProjectService()).getProjectByID(currentProject?.externalId!)
                 setProject(projectResult)
                 const service = await GetExplorationService()
                 setExplorationService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [])
@@ -85,16 +89,20 @@ const ExplorationView = () => {
                 setRigMobDemob(newExploration.rigMobDemob)
 
                 setCostProfile(newExploration.costProfile)
-                setGAndGAdminCost(newExploration.gAndGAdminCost)
+
                 setSeismicAcquisitionAndProcessing(newExploration.seismicAcquisitionAndProcessing)
                 setCountryOfficeCost(newExploration.countryOfficeCost)
+
+                const generatedGAndGAdminCost = await (await GetCaseService()).generateGAndGAdminCost(caseResult.id!)
+
+                setGAndGAdminCost(generatedGAndGAdminCost)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newExploration.costProfile, newExploration.gAndGAdminCost,
-                            newExploration.seismicAcquisitionAndProcessing,
-                            newExploration.countryOfficeCost],
+                        [newExploration.costProfile,
+                        newExploration.seismicAcquisitionAndProcessing,
+                        newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -107,19 +115,20 @@ const ExplorationView = () => {
         const newExploration: Exploration = { ...exploration }
         newExploration.rigMobDemob = rigMobDemob
         newExploration.costProfile = costProfile
-        newExploration.gAndGAdminCost = gAndGAdminCost
         newExploration.currency = currency
+        newExploration.seismicAcquisitionAndProcessing = seismicAcquisitionAndProcessing
+        newExploration.countryOfficeCost = countryOfficeCost
         setExploration(newExploration)
 
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [costProfile, gAndGAdminCost, seismicAcquisitionAndProcessing, countryOfficeCost],
+                [costProfile, seismicAcquisitionAndProcessing, countryOfficeCost],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, gAndGAdminCost, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
+    }, [rigMobDemob, costProfile, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
 
     const overrideCostProfile = () => {
         if (costProfile) {
@@ -188,18 +197,6 @@ const ExplorationView = () => {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
             />
-
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setGAndGAdminCost}
-                setHasChanges={setHasChanges}
-                timeSeries={gAndGAdminCost}
-                timeSeriesTitle={`G and g admin cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setSeismicAcquisitionAndProcessing}
@@ -221,6 +218,11 @@ const ExplorationView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
+            />
+            <ReadOnlyCostProfile
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                timeSeries={gAndGAdminCost}
+                title="G &amp; G and admin cost (MUSD)"
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules

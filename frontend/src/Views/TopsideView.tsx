@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
@@ -34,7 +35,8 @@ const TopsideView = () => {
     const [topside, setTopside] = useState<Topside>()
     const [hasChanges, setHasChanges] = useState(false)
     const [topsideName, setTopsideName] = useState<string>("")
-    const { fusionProjectId, caseId, topsideId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId, topsideId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [oilCapacity, setOilCapacity] = useState<number | undefined>()
@@ -67,13 +69,13 @@ const TopsideView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
+                const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
                 const service = await GetTopsideService()
                 setTopsideService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject}`, error)
             }
         })()
     }, [])

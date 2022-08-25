@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import TimeSeries from "../Components/TimeSeries"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Case } from "../models/case/Case"
@@ -36,7 +37,9 @@ const SubstructureView = () => {
 
     const [hasChanges, setHasChanges] = useState(false)
     const [substructureName, setSubstructureName] = useState<string>("")
-    const { fusionProjectId, caseId, substructureId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId, substructureId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
+
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
     const [maturity, setMaturity] = useState<Components.Schemas.Maturity | undefined>()
@@ -55,11 +58,11 @@ const SubstructureView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
+                const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [])

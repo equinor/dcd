@@ -1,13 +1,12 @@
-import { Divider } from "@equinor/eds-core-react"
 import { useLocation, useParams } from "react-router-dom"
 
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 
+import { useCurrentContext } from "@equinor/fusion"
 import ProjectMenu from "./ProjectMenu"
 import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
-import { unwrapProjectId } from "../../Utils/common"
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -17,9 +16,6 @@ const SidebarDiv = styled.div`
     flex-direction: column;
 `
 
-const StyledDivider = styled(Divider)`
-    width: 80%;
-`
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -46,15 +42,14 @@ interface Props {
 
 const SideMenu: React.FC<Props> = ({ children }) => {
     const [project, setProject] = useState<Project>()
-    const { fusionProjectId } = useParams<Record<string, string | undefined>>()
     const location = useLocation()
+    const currentProject = useCurrentContext()
 
     useEffect(() => {
-        if (fusionProjectId) {
+        if (currentProject?.externalId) {
             (async () => {
                 try {
-                    const projectId = unwrapProjectId(fusionProjectId)
-                    const fetchedProject = await (await GetProjectService()).getProjectByID(projectId)
+                    const fetchedProject = await (await GetProjectService()).getProjectByID(currentProject.externalId!)
                     setProject(fetchedProject)
                 } catch (error) {
                     console.error()
@@ -68,7 +63,6 @@ const SideMenu: React.FC<Props> = ({ children }) => {
             <Wrapper>
                 <Body>
                     <SidebarDiv>
-                        <StyledDivider />
                         <ProjectMenu project={project} />
                     </SidebarDiv>
                     <MainView>

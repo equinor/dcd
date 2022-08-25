@@ -85,7 +85,10 @@ builder.Services.AddCors(options =>
                 "http://localhost:3000",
                 "https://*.equinor.com",
                 "https://ase-dcd-frontend-dev.azurewebsites.net/",
-                "https://ase-dcd-frontend-qa.azurewebsites.net/"
+                "https://ase-dcd-frontend-qa.azurewebsites.net/",
+                "https://pro-s-portal-ci.azurewebsites.net",
+                "https://pro-s-portal-fqa.azurewebsites.net",
+                "https://pro-s-portal-fprd.azurewebsites.net"
             ).SetIsOriginAllowedToAllowWildcardSubdomains();
         });
     });
@@ -104,14 +107,24 @@ else
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
 
+Console.WriteLine("Configuring Fusion");
 builder.Services.AddFusionIntegration(options =>
 {
-    var fusionEnvironment = config["Fusion:Environment"] ?? "CI";
+    string fusionEnvironment = environment switch
+    {
+        "dev" => "CI",
+        "qa" => "FQA",
+        "prod" => "FPRD",
+        _ => "CI",
+    };
+
+    Console.WriteLine("Fusion environment: " + fusionEnvironment);
     options.UseServiceInformation("ConceptApp", fusionEnvironment);
 
     options.AddFusionAuthorization();
 
     options.UseDefaultEndpointResolver(fusionEnvironment);
+    Console.WriteLine("config[AzureAd:ClientId]: " + config["AzureAd:ClientId"]);
     options.UseDefaultTokenProvider(opts =>
     {
         opts.ClientId = config["AzureAd:ClientId"];
