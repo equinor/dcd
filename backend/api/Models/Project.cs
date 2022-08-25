@@ -21,13 +21,13 @@ namespace api.Models
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
 
-        public OperationalWellCosts ExplorationWellCosts { get; set; } = null!;
+        public OperationalWellCosts ExplorationWellCosts { get; set; } = new OperationalWellCosts();
         public Guid ExplorationWellCostsId { get; set; }
 
-        public OperationalWellCosts AppraisalWellCosts { get; set; } = null!;
+        public OperationalWellCosts AppraisalWellCosts { get; set; } = new OperationalWellCosts();
         public Guid AppraisalWellCostsId { get; set; }
 
-        public OperationalWellCosts DrillingWellCosts { get; set; } = null!;
+        public OperationalWellCosts DrillingWellCosts { get; set; } = new OperationalWellCosts();
         public Guid DrillingWellCostsId { get; set; }
         public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
         public ICollection<WellProject>? WellProjects { get; set; }
@@ -36,7 +36,7 @@ namespace api.Models
 
     public class OperationalWellCosts
     {
-        public Project Project { get; set; } = null!;
+        public Project? Project { get; set; }
         public Guid Id { get; set; }
         public double RigUpgrading { get; set; }
         public double RigMobDemob { get; set; }

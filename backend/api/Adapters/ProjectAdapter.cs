@@ -35,7 +35,7 @@ namespace api.Adapters
             return project;
         }
 
-        private static OperationalWellCosts Convert(OperationalWellCostsDto? operationalWellCostsDto)
+        public static OperationalWellCosts Convert(OperationalWellCostsDto? operationalWellCostsDto)
         {
             if (operationalWellCostsDto == null)
             {
