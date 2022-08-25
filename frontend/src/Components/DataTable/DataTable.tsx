@@ -1,7 +1,9 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import ReactDataSheet from "react-datasheet"
 import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
+import { AgGridReact } from "ag-grid-react"
+import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 
 export interface CellValue {
     value: number | string
@@ -21,42 +23,28 @@ interface Props {
 function DataTable({
     columns, gridData, onCellsChanged, dG4Year,
 }: Props) {
+    useAgGridStyles()
+
+    const rowData = [
+        { make: gridData[0].toString() },
+    ]
+
+    const columnsArrayToColDef = () => {
+        const col = columns
+        const columnToColDef = []
+        for (let i = 0; i < col.length; i += 1) {
+            columnToColDef.push({ field: col[i] })
+        }
+        return columnToColDef
+    }
+
     return (
-        <Table
-            onCellsChanged={onCellsChanged}
-            data={gridData}
-            valueRenderer={(cell) => (
-                cell.readOnly
-                    ? cell.value
-                    : new Intl.NumberFormat("no-NO").format(cell.value as number)
-            )}
-            handleCopy={({ data, start, end }) => {
-                let string = ""
-                for (let { i } = start; i <= end.i; i += 1) {
-                    for (let { j } = start; j <= end.j; j += 1) {
-                        string = `${string + data[i][j].value} `
-                    }
-                    string += "\n"
-                }
-                navigator.clipboard.writeText(string)
-            }}
-            sheetRenderer={(props) => (
-                <table className={props.className}>
-                    <thead>
-                        <tr>
-                            {/* eslint-disable-next-line */}
-                            {columns.map((column, index) => (
-                                // eslint-disable-next-line max-len
-                                <th className="table-header" style={{ backgroundColor: column !== dG4Year ? "white" : "#90ee90" }} key={`table-header-${index + 0}`}>
-                                    <span>{column}</span>
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>{props.children}</tbody>
-                </table>
-            )}
-        />
+        <div className="ag-theme-alpine" style={{ height: 200 }}>
+            <AgGridReact
+                rowData={rowData}
+                columnDefs={columnsArrayToColDef()}
+            />
+        </div>
     )
 }
 
