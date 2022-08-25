@@ -24,9 +24,13 @@ export function StoreAppId(appId: string) {
     window.sessionStorage.setItem("appId", appId)
 }
 
+export function StoreAppScope(appScope: string) {
+    window.sessionStorage.setItem("appScope", appScope)
+}
+
 export function GetToken(keyName: string) {
-    const scopes = [[`api://${window.sessionStorage.getItem("appId")}/.default`][0]]
-    return window.Fusion.modules.auth.acquireAccessToken({ scopes })
+    const scopes = [[window.sessionStorage.getItem("appScope") || ''][0]];
+    return window.Fusion.modules.auth.acquireAccessToken({ scopes })   
 }
 
 export const unwrapCase = (_case?: Case | undefined): Case => {

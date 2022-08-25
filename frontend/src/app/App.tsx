@@ -2,7 +2,7 @@ import { useAppConfig, useCurrentUser, useFusionEnvironment } from "@equinor/fus
 import { ErrorBoundary } from "@equinor/fusion-components"
 import ConceptAppAuthProvider from "../auth/ConceptAppAuthProvider"
 import { buildConfig } from "../Services/config"
-import { StoreAppId } from "../Utils/common"
+import { StoreAppId, StoreAppScope } from "../Utils/common"
 import { AppRouter } from "./AppRouter"
 import { FusionRouterBootstrap } from "./FusionRouterBootstrap"
 
@@ -26,6 +26,7 @@ function App(): JSX.Element {
     if (runtimeConfig.value?.environment) {
         const values: any = { ...runtimeConfig.value.environment }
         StoreAppId(values.APP_ID)
+        StoreAppScope(values.BACKEND_APP_SCOPE)
     }
     return (
         <ErrorBoundary>
