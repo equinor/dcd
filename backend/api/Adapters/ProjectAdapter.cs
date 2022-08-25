@@ -25,10 +25,31 @@ namespace api.Adapters
                 ProjectPhase = projectDto.ProjectPhase,
                 Currency = projectDto.Currency,
                 PhysicalUnit = projectDto.PhysUnit,
-                Id = projectDto.ProjectId
+                Id = projectDto.ProjectId,
             };
 
+            project.ExplorationWellCosts = Convert(projectDto.ExplorationWellCosts);
+            project.AppraisalWellCosts = Convert(projectDto.AppraisalWellCosts);
+            project.DrillingWellCosts = Convert(projectDto.DrillingWellCosts);
+
             return project;
+        }
+
+        private static OperationalWellCosts Convert(OperationalWellCostsDto? operationalWellCostsDto)
+        {
+            if (operationalWellCostsDto == null)
+            {
+                return null!;
+            }
+            return new OperationalWellCosts
+            {
+                Id = operationalWellCostsDto.Id,
+                RigUpgrading = operationalWellCostsDto.RigUpgrading,
+                RigMobDemob = operationalWellCostsDto.RigMobDemob,
+                ProjectDrillingCosts = operationalWellCostsDto.ProjectDrillingCosts,
+                AnnualWellInterventionCostPerWell = operationalWellCostsDto.AnnualWellInterventionCostPerWell,
+                PluggingAndAbandonment = operationalWellCostsDto.PluggingAndAbandonment,
+            };
         }
     }
 }

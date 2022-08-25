@@ -16,7 +16,7 @@ interface Props {
     explorationWell: boolean
 }
 
-function WellTableRowEditProject({
+function WellTableRowEditTechnicalInput({
     wellId, project, setProject, explorationWell,
 }: Props) {
     const [well, setWell] = useState<Well | undefined>(project.wells?.find((w) => w.id === wellId))
@@ -141,4 +141,4 @@ function WellTableRowEditProject({
         </Table.Row>
     )
 }
-export default WellTableRowEditProject
+export default WellTableRowEditTechnicalInput

@@ -18,6 +18,9 @@ namespace api.Dtos
         public DateTimeOffset CreateDate { get; set; }
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
+        public OperationalWellCostsDto ExplorationWellCosts { get; set; } = null!;
+        public OperationalWellCostsDto AppraisalWellCosts { get; set; } = null!;
+        public OperationalWellCostsDto DrillingWellCosts { get; set; } = null!;
         public ICollection<CaseDto>? Cases { get; set; }
         public ICollection<WellDto>? Wells { get; set; }
         public ICollection<ExplorationDto>? Explorations { get; set; }
@@ -27,5 +30,15 @@ namespace api.Dtos
         public ICollection<TransportDto>? Transports { get; set; }
         public ICollection<DrainageStrategyDto>? DrainageStrategies { get; set; }
         public ICollection<WellProjectDto>? WellProjects { get; set; }
+    }
+
+    public class OperationalWellCostsDto
+    {
+        public Guid Id { get; set; }
+        public double RigUpgrading { get; set; }
+        public double RigMobDemob { get; set; }
+        public double ProjectDrillingCosts { get; set; }
+        public double AnnualWellInterventionCostPerWell { get; set; }
+        public double PluggingAndAbandonment { get; set; }
     }
 }

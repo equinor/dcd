@@ -5,7 +5,7 @@ import {
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { GetWellService } from "../../Services/WellService"
-import WellTableRowEditProject from "./WellTableRowEditProject"
+import WellTableRowEditTechnicalInput from "./WellTableRowEditTechnicalInput"
 
 interface Props {
     project: Project
@@ -13,7 +13,7 @@ interface Props {
     explorationWells: boolean
 }
 
-function WellListEditProject({
+function WellListEditTechnicalInput({
     project, setProject, explorationWells,
 }: Props) {
     const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
@@ -36,7 +36,7 @@ function WellListEditProject({
         if (!explorationWells) {
             wells?.filter((w) => !isExplorationWell(w.wellCategory)).forEach((w) => {
                 tableRows.push((
-                    <WellTableRowEditProject
+                    <WellTableRowEditTechnicalInput
                         key={w.id}
                         setProject={setProject}
                         wellId={w.id!}
@@ -48,7 +48,7 @@ function WellListEditProject({
         } else {
             wells?.filter((w) => isExplorationWell(w.wellCategory)).forEach((w) => {
                 tableRows.push((
-                    <WellTableRowEditProject
+                    <WellTableRowEditTechnicalInput
                         key={w.id}
                         setProject={setProject}
                         wellId={w.id!}
@@ -94,4 +94,4 @@ function WellListEditProject({
     )
 }
 
-export default WellListEditProject
+export default WellListEditTechnicalInput

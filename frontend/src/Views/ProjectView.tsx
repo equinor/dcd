@@ -75,7 +75,7 @@ const ProjectView = () => {
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
 
-    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
+    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(true)
 
     useEffect(() => {
         (async () => {

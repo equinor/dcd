@@ -172,6 +172,14 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface OperationalWellCostsDto {
+            id?: string; // uuid
+            rigUpgrading?: number; // double
+            rigMobDemob?: number; // double
+            projectDrillingCosts?: number; // double
+            annualWellInterventionCostPerWell?: number; // double
+            pluggingAndAbandonment?: number; // double
+        }
         export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
@@ -225,6 +233,9 @@ declare namespace Components {
             createDate?: string; // date-time
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
+            explorationWellCosts?: OperationalWellCostsDto;
+            appraisalWellCosts?: OperationalWellCostsDto;
+            drillingWellCosts?: OperationalWellCostsDto;
             cases?: CaseDto[] | null;
             wells?: WellDto[] | null;
             explorations?: ExplorationDto[] | null;
@@ -495,6 +506,17 @@ declare namespace Paths {
     }
     namespace CreateProject {
         export type RequestBody = Components.Schemas.ProjectDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace CreateProjectFromContextId {
+        namespace Parameters {
+            export type ContextId = string; // uuid
+        }
+        export interface QueryParameters {
+            contextId?: Parameters.ContextId /* uuid */;
+        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

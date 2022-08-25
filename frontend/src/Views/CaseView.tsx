@@ -68,7 +68,7 @@ const StyledTabPanel = styled(Panel)`
 `
 
 function CaseView() {
-    const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState<boolean>(false)
+    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
 
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -78,7 +78,7 @@ function CaseView() {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
 
-    const toggleEditProjectModal = () => setEditProjectModalIsOpen(!editProjectModalIsOpen)
+    const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
     useEffect(() => {
         (async () => {
@@ -114,7 +114,7 @@ function CaseView() {
             <TopWrapper>
                 <PageTitle variant="h2">{caseItem.name}</PageTitle>
                 <TransparentButton
-                    onClick={() => toggleEditProjectModal()}
+                    onClick={() => toggleTechnicalInputModal()}
                 >
                     Edit technical input
                 </TransparentButton>
@@ -218,8 +218,8 @@ function CaseView() {
 
             </CaseViewDiv>
             <EditTechnicalInputModal
-                toggleEditTechnicalInputModal={toggleEditProjectModal}
-                isOpen={editProjectModalIsOpen}
+                toggleEditTechnicalInputModal={toggleTechnicalInputModal}
+                isOpen={editTechnicalInputModalIsOpen}
                 project={project}
                 setProject={setProject}
             />
