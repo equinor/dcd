@@ -22,7 +22,7 @@ import CaseAsset from "../Components/Case/CaseAsset"
 import { unwrapProjectId } from "../Utils/common"
 import DefinitionView from "./DefinitionView"
 import CaseCessationCostProfile from "../Components/Case/CaseCessationCostProfile"
-import { EditTechnicalInputModal } from "../Components/EditProjectInput/EditProjectInputModal"
+import { EditTechnicalInputModal } from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs

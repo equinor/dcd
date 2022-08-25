@@ -68,7 +68,7 @@ export const EditTechnicalInputModal: FunctionComponent<Props> = ({
             />
             <ModalDiv>
                 <TopWrapper>
-                    <Typography variant="h2">Edit project input</Typography>
+                    <Typography variant="h2">Edit Technical Input</Typography>
                     <InvisibleButton
                         onClick={() => toggleEditTechnicalInputModal()}
                     >
