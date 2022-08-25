@@ -7,7 +7,6 @@ import {
 } from "@equinor/eds-core-react"
 import React, {
     useEffect,
-    useMemo,
     useState,
 } from "react"
 import { useParams } from "react-router-dom"
@@ -16,9 +15,9 @@ import {
     add,
     delete_to_trash, edit, library_add, more_vertical,
 } from "@equinor/eds-icons"
+import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
-import { unwrapProjectId } from "../Utils/common"
 import { Case } from "../models/case/Case"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
@@ -61,6 +60,9 @@ const Wrapper = styled.div`
 
 const ProjectView = () => {
     const [activeTab, setActiveTab] = React.useState(0)
+
+    const currentProject = useCurrentContext()
+
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
@@ -68,6 +70,7 @@ const ProjectView = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
+
     const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
@@ -77,14 +80,17 @@ const ProjectView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
-                const res = await (await GetProjectService()).getProjectByID(projectId)
-                if (res !== undefined) {
-                    setPhysicalUnit(res?.physUnit)
-                    setCurrency(res?.currency)
+                if (currentProject?.externalId) {
+                    let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
+                    if (!res || res.id === "") {
+                        res = await (await GetProjectService()).createProjectFromContextId(fusionProjectId!)
+                    }
+                    if (res !== undefined) {
+                        setPhysicalUnit(res?.physUnit)
+                        setCurrency(res?.currency)
+                    }
+                    setProject(res)
                 }
-                console.log("[ProjectView]", res)
-                setProject(res)
             } catch (error) {
                 console.error(`[ProjectView] Error while fetching project ${fusionProjectId}`, error)
             }
@@ -118,7 +124,11 @@ const ProjectView = () => {
         setIsMenuOpen(!isMenuOpen)
     }
 
-    if (!project) return null
+    if (!project || project.id === "") {
+        return (
+            <p>Retrieving project</p>
+        )
+    }
 
     return (
         <>
