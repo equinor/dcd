@@ -28,27 +28,42 @@ namespace api.Adapters
                 Id = projectDto.ProjectId,
             };
 
-            project.ExplorationWellCosts = Convert(projectDto.ExplorationWellCosts);
-            project.AppraisalWellCosts = Convert(projectDto.AppraisalWellCosts);
-            project.DrillingWellCosts = Convert(projectDto.DrillingWellCosts);
+            project.ExplorationOperationalWellCosts = Convert(projectDto.ExplorationOperationalWellCosts);
+            project.DevelopmentOperationalWellCosts = Convert(projectDto.DevelopmentOperationalWellCosts);
 
             return project;
         }
 
-        public static OperationalWellCosts Convert(OperationalWellCostsDto? operationalWellCostsDto)
+        public static ExplorationOperationalWellCosts Convert(ExplorationOperationalWellCostsDto? explorationOperationalWellCostsDto)
         {
-            if (operationalWellCostsDto == null)
+            if (explorationOperationalWellCostsDto == null)
             {
                 return null!;
             }
-            return new OperationalWellCosts
+            return new ExplorationOperationalWellCosts
             {
-                Id = operationalWellCostsDto.Id,
-                RigUpgrading = operationalWellCostsDto.RigUpgrading,
-                RigMobDemob = operationalWellCostsDto.RigMobDemob,
-                ProjectDrillingCosts = operationalWellCostsDto.ProjectDrillingCosts,
-                AnnualWellInterventionCostPerWell = operationalWellCostsDto.AnnualWellInterventionCostPerWell,
-                PluggingAndAbandonment = operationalWellCostsDto.PluggingAndAbandonment,
+                Id = explorationOperationalWellCostsDto.Id,
+                RigUpgrading = explorationOperationalWellCostsDto.RigUpgrading,
+                ExplorationRigMobDemob = explorationOperationalWellCostsDto.ExplorationRigMobDemob,
+                ExplorationProjectDrillingCosts = explorationOperationalWellCostsDto.ExplorationProjectDrillingCosts,
+                AppraisalRigMobDemob = explorationOperationalWellCostsDto.AppraisalRigMobDemob,
+                AppraisalProjectDrillingCosts = explorationOperationalWellCostsDto.AppraisalProjectDrillingCosts,
+            };
+        }
+
+        public static DevelopmentOperationalWellCosts Convert(DevelopmentOperationalWellCostsDto? developmentOperationalWellCostsDto)
+        {
+            if (developmentOperationalWellCostsDto == null)
+            {
+                return null!;
+            }
+            return new DevelopmentOperationalWellCosts
+            {
+                Id = developmentOperationalWellCostsDto.Id,
+                RigUpgrading = developmentOperationalWellCostsDto.RigUpgrading,
+                RigMobDemob = developmentOperationalWellCostsDto.RigMobDemob,
+                AnnualWellInterventionCostPerWell = developmentOperationalWellCostsDto.AnnualWellInterventionCostPerWell,
+                PluggingAndAbandonment = developmentOperationalWellCostsDto.PluggingAndAbandonment,
             };
         }
     }

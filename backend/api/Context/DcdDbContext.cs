@@ -12,7 +12,8 @@ namespace api.Context
 
         }
         public DbSet<Project>? Projects { get; set; }
-        public DbSet<OperationalWellCosts>? OperationalWellCosts { get; set; }
+        public DbSet<ExplorationOperationalWellCosts>? ExplorationOperationalWellCosts { get; set; }
+        public DbSet<DevelopmentOperationalWellCosts>? DevelopmentOperationalWellCosts { get; set; }
 
         public DbSet<Case>? Cases { get; set; }
         public DbSet<Well>? Wells { get; set; }
@@ -59,19 +60,6 @@ namespace api.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // modelBuilder.Entity<Project>().HasOne(p => p.ExplorationWellCosts).WithOne(e => e.Project);
-            // modelBuilder.Entity<Project>().HasOne(p => p.AppraisalWellCosts).WithOne(e => e.Project);
-            // modelBuilder.Entity<Project>().HasOne(p => p.DrillingWellCosts).WithOne(e => e.Project);
-            // modelBuilder.Entity<OperationalWellCosts>().HasOne(p => p.Project).WithOne(p => p.ExplorationWellCosts)
-            // .HasForeignKey("Project.ExplorationWellCostsId");
-            // modelBuilder.Entity<OperationalWellCosts>().HasOne(p => p.Project).WithOne(p => p.AppraisalWellCosts)
-            // .HasForeignKey("Project.AppraisalWellCostsId");
-            // modelBuilder.Entity<OperationalWellCosts>().HasOne(p => p.Project).WithOne(p => p.DrillingWellCosts);
-
-            modelBuilder.Entity<Project>().HasOne(p => p.ExplorationWellCosts).WithOne().HasForeignKey("Project", "ExplorationWellCostsId");
-            modelBuilder.Entity<Project>().HasOne(p => p.AppraisalWellCosts).WithOne().HasForeignKey("Project", "AppraisalWellCostsId");
-            modelBuilder.Entity<Project>().HasOne(p => p.DrillingWellCosts).WithOne().HasForeignKey("Project", "DrillingWellCostsId");
-
             modelBuilder.Entity<WellProjectWell>().HasKey(wc => new { wc.WellProjectId, wc.WellId });
             modelBuilder.Entity<WellProjectWell>().HasOne(w => w.Well).WithMany(w => w.WellProjectWells).OnDelete(DeleteBehavior.NoAction);
 

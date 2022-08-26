@@ -1,11 +1,10 @@
-import { Button, Table } from "@equinor/eds-core-react"
+import { Button, Input, Table } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useState,
 } from "react"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { GetWellService } from "../../Services/WellService"
-import OperationalWellCost from "./OperationalWellCost"
 import WellTableRowEditTechnicalInput from "./WellTableRowEditTechnicalInput"
 
 interface Props {
@@ -23,21 +22,24 @@ function OperationalWellCosts({
     const isExplorationWell = (category: Components.Schemas.WellCategory | undefined) => [4, 5, 6].indexOf(category ?? -1) > -1
 
     return (
-        <Table>
-            <Table.Head>
-                <Table.Row>
-                    <Table.Cell>
-                        {title}
-                    </Table.Cell>
-                    <Table.Cell>
-                        Cost (MUSD)
-                    </Table.Cell>
-                </Table.Row>
-            </Table.Head>
-            <Table.Body>
-                <OperationalWellCost project={project} setProject={setProject} title="yee" />
-            </Table.Body>
-        </Table>
+        <Table.Row key={1}>
+            <Table.Cell>
+                <Input
+                    id="textfield-normal"
+                    placeholder="Placeholder text"
+                    autoComplete="off"
+                    value="Cost type"
+                />
+            </Table.Cell>
+            <Table.Cell>
+                <Input
+                    id="WellCost"
+                    type="number"
+                    value={10000}
+                    onChange={() => console.log("yee")}
+                />
+            </Table.Cell>
+        </Table.Row>
     )
 }
 

@@ -21,26 +21,33 @@ namespace api.Models
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
 
-        public OperationalWellCosts ExplorationWellCosts { get; set; } = new OperationalWellCosts();
-        public Guid ExplorationWellCostsId { get; set; }
+        public ExplorationOperationalWellCosts ExplorationOperationalWellCosts { get; set; } = null!;
+        public Guid ExplorationOperationalWellCostsId { get; set; }
 
-        public OperationalWellCosts AppraisalWellCosts { get; set; } = new OperationalWellCosts();
-        public Guid AppraisalWellCostsId { get; set; }
-
-        public OperationalWellCosts DrillingWellCosts { get; set; } = new OperationalWellCosts();
-        public Guid DrillingWellCostsId { get; set; }
+        public DevelopmentOperationalWellCosts DevelopmentOperationalWellCosts { get; set; } = null!;
+        public Guid DevelopmentOperationalWellCostsId { get; set; }
         public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
         public ICollection<WellProject>? WellProjects { get; set; }
         public ICollection<Exploration>? Explorations { get; set; }
     }
 
-    public class OperationalWellCosts
+    public class ExplorationOperationalWellCosts
+    {
+        public Project? Project { get; set; }
+        public Guid Id { get; set; }
+        public double RigUpgrading { get; set; }
+        public double ExplorationRigMobDemob { get; set; }
+        public double ExplorationProjectDrillingCosts { get; set; }
+        public double AppraisalRigMobDemob { get; set; }
+        public double AppraisalProjectDrillingCosts { get; set; }
+    }
+
+    public class DevelopmentOperationalWellCosts
     {
         public Project? Project { get; set; }
         public Guid Id { get; set; }
         public double RigUpgrading { get; set; }
         public double RigMobDemob { get; set; }
-        public double ProjectDrillingCosts { get; set; }
         public double AnnualWellInterventionCostPerWell { get; set; }
         public double PluggingAndAbandonment { get; set; }
     }

@@ -20,26 +20,29 @@ namespace api.Services
 
         }
 
-        public ProjectDto UpdateOperationalWellCosts(OperationalWellCostsDto updatedSurfDto)
+        public OperationalWellCostsDto UpdateOperationalWellCosts(OperationalWellCostsDto updatedSurfDto)
         {
-            var existing = GetSurf(updatedSurfDto.Id);
-            ProjectAdapter.Convert(updatedSurfDto);
-
-            _context.OperationalWellCosts!.Update(existing);
-            _context.SaveChanges();
-            return _projectService.GetProjectDto(existing.ProjectId);
-        }
-        public OperationalWellCosts GetSurf(Guid surfId)
-        {
-            var surf = _context.Surfs!
-                .Include(c => c.CostProfile)
-                .Include(c => c.CessationCostProfile)
-                .FirstOrDefault(o => o.Id == surfId);
-            if (surf == null)
-            {
-                throw new ArgumentException(string.Format("Surf {0} not found.", surfId));
+            var existing = GetOperationalWellCosts(updatedSurfDto.Id);
+            if (existing == null) {
+                return null;
             }
-            return surf;
+            var updated = ProjectAdapter.Convert(updatedSurfDto);
+
+            _context.OperationalWellCosts!.Update(updated);
+            _context.SaveChanges();
+            var updatedDto = ProjectDtoAdapter.Convert(updated);
+            return updatedDto;
+            // return _projectService.GetProjectDto(existing.ProjectId);
+        }
+        public OperationalWellCosts GetOperationalWellCosts(Guid id)
+        {
+            var operationalWellCosts = _context.OperationalWellCosts!
+                .FirstOrDefault(o => o.Id == id);
+            if (operationalWellCosts == null)
+            {
+                throw new ArgumentException(string.Format("OperationalWellCosts {0} not found.", id));
+            }
+            return operationalWellCosts;
         }
     }
 }
