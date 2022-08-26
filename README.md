@@ -132,6 +132,6 @@ Container diagram for the DCD application.
 |Delete| Delete information from app | AccessIT Role | [BOFH Fusion]() |
 
 ### Admin Consent Decision Matrix
-|Privilege requested|n-house developed applications|Scope|
+|Privilege requested|In-house developed applications|Scope|
 |-|-|-|
 |Application API permissions (App to App).|Application: API Owner: Team IAF, Data Owner: Atle Svandal|Sites.Read.All|
