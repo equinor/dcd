@@ -130,3 +130,8 @@ Container diagram for the DCD application.
 |Read| Read all information in app| All equinor employee | AD group [Equinor All Employee](https://portal.azure.com/#blade/Microsoft_AAD_IAM/GroupDetailsMenuBlade/Overview/groupId/1db6ba0c-1d2f-4d76-9dae-0881e5913c5c) |
 |Write/Update | Insert new information in app | AccessIT Role | [Developer Fusion](https://accessit.equinor.com/Search/Search?term=Developer+%28FUSION%29)|
 |Delete| Delete information from app | AccessIT Role | [BOFH Fusion]() |
+
+### Admin Consent Decision Matrix
+|Privilege requested|n-house developed applications|Scope|
+|-|-|-|-|
+|Application API permissions (App to App).| Application: API Owner: Team IAF, Data Owner: Atle Svandal | Sites.Read.All |
