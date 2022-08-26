@@ -15,6 +15,7 @@ import styled from "styled-components"
 import {
     add, delete_to_trash, edit, library_add, more_vertical,
 } from "@equinor/eds-icons"
+import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
@@ -73,7 +74,8 @@ function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
-    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
@@ -83,16 +85,16 @@ function CaseView() {
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
+                const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === caseId)
                 setCase(caseResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
-    }, [fusionProjectId, caseId])
+    }, [currentProject?.externalId, caseId])
 
     useEffect(() => {
         if (project !== undefined) {
