@@ -133,5 +133,5 @@ Container diagram for the DCD application.
 
 ### Admin Consent Decision Matrix
 |Privilege requested|n-house developed applications|Scope|
-|-|-|-|-|
-|Application API permissions (App to App).| Application: API Owner: Team IAF, Data Owner: Atle Svandal | Sites.Read.All |
+|-|-|-|
+|Application API permissions (App to App).|Application: API Owner: Team IAF, Data Owner: Atle Svandal|Sites.Read.All|
