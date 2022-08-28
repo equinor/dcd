@@ -4,8 +4,6 @@ import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
-import { objCreate } from "@microsoft/applicationinsights-core-js"
-import { EMPTY_GUID } from "../../Utils/constants"
 
 export interface CellValue {
     value: number | string
@@ -37,15 +35,17 @@ function DataTable({
 
     const rowDataToColumns = () => {
         const col = columns
-        const gridDataToRowData = []
+        const objKey:any = []
+        const objVal: any = []
         for (let i = 0; i < col.length; i += 1) {
-            gridDataToRowData.push(`${col[i]}`)
+            if (gridData[0][i]) {
+                objKey.push(`${col[i]}`)
+                objVal.push(`${gridData[0].map((v:any) => v.value)[i]}`)
+            }
         }
-        console.log(gridData)
-        const obj = gridDataToRowData.reduce((acc, item) => ({ ...acc, [item]: 1 }), {})
-        // setRowData(obj)
-        console.log([obj])
-        return [obj]
+        const obj1 = objKey.reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
+        console.log(obj1)
+        return [obj1]
     }
 
     const defaultColDef = useMemo(() => ({
@@ -62,8 +62,6 @@ function DataTable({
         console.log(columnToColDef)
         return columnToColDef
     }
-
-    console.log(gridData)
 
     return (
         <div className="ag-theme-alpine" style={{ height: 200 }}>
