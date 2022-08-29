@@ -1,0 +1,29 @@
+parameters:
+  - name: radixToken
+  - name: dynatraceTenantId
+  - name: dynatraceSecret
+
+steps:
+- powershell: |
+    $tenantid= "${{ parameters.dynatraceTenantId }}"
+
+    $url = "https://spa-equinor.kanari.com/e/${{ parameters.dynatraceTenantId }}/api/v1/deployment/installer/agent/connectioninfo"
+    $DynaTraceHeaders = @{"Authorization" = "Api-Token ${{ parameters.dynatraceSecret }}"}
+    $result = Invoke-RestMethod -Uri $url -Headers $Headers
+
+    $endpoints = ""
+    foreach ($url in $result.communicationEndpoints) {
+        if($endpoints.Length -cgt 0) {
+            $endpoints = $endpoints +";"
+        }
+        $endpoints = $endpoints + $url
+    }
+
+    $radixbaseurl = "http://api.radix.equinor.com/api/v1/applications/dcd/buildsecrets/"
+    $RadixHeaders = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
+
+    $tenantbody = @'{"secretValue": "${{ result.tenantUUID }}", "type":"string"}'@
+
+    $updateRadixTenantSecret = Invoke-RestMethod -Uri $radixbaseurl+"DT_TENANT"
+    Write-Host $updateRadixTenantSecret
+
