@@ -10,6 +10,7 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public int StartYear { get; set; }
+
         public string InternalData { get; set; } = null!;
         [NotMapped]
         public T[] Values
@@ -75,20 +76,22 @@ namespace api.Models
             List<double> values;
             if (t1Year < t2Year)
             {
-                values = MergeTimeSeries(t1Values.ToList(), t2Values.ToList(), offset);
+                values = MergeCostProfileData(t1Values.ToList(), t2Values.ToList(), offset);
             }
             else
             {
-                values = MergeTimeSeries(t2Values.ToList(), t1Values.ToList(), offset);
+                values = MergeCostProfileData(t2Values.ToList(), t1Values.ToList(), offset);
             }
 
-            var timeSeries = new TimeSeries<double>();
-            timeSeries.StartYear = Math.Min(t1Year, t2Year);
-            timeSeries.Values = values.ToArray();
+            var timeSeries = new TimeSeries<double>
+            {
+                StartYear = Math.Min(t1Year, t2Year),
+                Values = values.ToArray()
+            };
             return timeSeries;
         }
 
-        private static List<double> MergeTimeSeries(List<double> t1, List<double> t2, int offset)
+        private static List<double> MergeCostProfileData(List<double> t1, List<double> t2, int offset)
         {
             var doubleList = new List<double>();
             if (offset > t1.Count)
@@ -123,7 +126,5 @@ namespace api.Models
 
     public class TimeSeriesSchedule : TimeSeries<int>
     {
-
     }
 }
-

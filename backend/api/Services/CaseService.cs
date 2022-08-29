@@ -6,11 +6,7 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
-using DocumentFormat.OpenXml.InkML;
-
 using Microsoft.EntityFrameworkCore;
-
-using Microsoft.Extensions.Azure;
 
 namespace api.Services
 {
@@ -138,7 +134,7 @@ namespace api.Services
                     };
                     var years = lastYear.Year - (int)earliestYear;
                     var values = new List<double>();
-                    for (int i = 0; i < years - 1; i++)
+                    for (int i = 0; i < years; i++)
                     {
                         values.Add(countryCost);
                     }
@@ -208,7 +204,7 @@ namespace api.Services
             var linkedWells = wellProject.WellProjectWells?.Where(ew => IsWellProjectWell(ew.Well.WellCategory)).ToList();
             if (linkedWells == null) { return new TimeSeries<double>(); }
 
-            var wellInterventionCosts = new TimeSeries<double>();
+            var wellInterventionCostsFromDrillingSchedule = new TimeSeries<double>();
             foreach (var wi in linkedWells)
             {
                 if (wi.DrillingSchedule == null) { continue; }
@@ -216,13 +212,13 @@ namespace api.Services
                 var timeSeries = new TimeSeries<double>();
                 timeSeries.StartYear = wi.DrillingSchedule.StartYear;
                 timeSeries.Values = wi.DrillingSchedule.Values.Select(v => (double)v).ToArray();
-                wellInterventionCosts = TimeSeriesCost.MergeCostProfiles(wellInterventionCosts, timeSeries);
+                wellInterventionCostsFromDrillingSchedule = TimeSeriesCost.MergeCostProfiles(wellInterventionCostsFromDrillingSchedule, timeSeries);
             }
 
             var tempSeries = new TimeSeries<int>
             {
-                StartYear = wellInterventionCosts.StartYear,
-                Values = wellInterventionCosts.Values.Select(v => (int)v).ToArray()
+                StartYear = wellInterventionCostsFromDrillingSchedule.StartYear,
+                Values = wellInterventionCostsFromDrillingSchedule.Values.Select(v => (int)v).ToArray()
             };
             var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
             cumulativeDrillingSchedule.StartYear = tempSeries.StartYear;
@@ -231,24 +227,24 @@ namespace api.Services
 
             var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
 
-            wellInterventionCosts.Values = wellInterventionCostValues;
-            wellInterventionCosts.StartYear = cumulativeDrillingSchedule.StartYear;
+            wellInterventionCostsFromDrillingSchedule.Values = wellInterventionCostValues;
+            wellInterventionCostsFromDrillingSchedule.StartYear = cumulativeDrillingSchedule.StartYear;
 
-            var totalValuesCount = lastYear == 0 ? wellInterventionCosts.Values.Length : lastYear - wellInterventionCosts.StartYear;
-            var additionalValuesCount = totalValuesCount - wellInterventionCosts.Values.Length;
+            var totalValuesCount = lastYear == 0 ? wellInterventionCostsFromDrillingSchedule.Values.Length : lastYear - wellInterventionCostsFromDrillingSchedule.StartYear;
+            var additionalValuesCount = totalValuesCount - wellInterventionCostsFromDrillingSchedule.Values.Length;
 
             var additionalValues = new List<double>();
             for (int i = 0; i < additionalValuesCount; i++)
             {
-                additionalValues.Add(wellInterventionCosts.Values.Last());
+                additionalValues.Add(wellInterventionCostsFromDrillingSchedule.Values.Last());
             }
 
-            var valuesList = wellInterventionCosts.Values.ToList();
+            var valuesList = wellInterventionCostsFromDrillingSchedule.Values.ToList();
             valuesList.AddRange(additionalValues);
 
-            wellInterventionCosts.Values = valuesList.ToArray();
+            wellInterventionCostsFromDrillingSchedule.Values = valuesList.ToArray();
 
-            return wellInterventionCosts;
+            return wellInterventionCostsFromDrillingSchedule;
         }
 
         public TimeSeries<double> CalculateOffshoreFacilitiesOperationsCostProfile(Guid caseId)
@@ -300,10 +296,11 @@ namespace api.Services
             {
                 values.Add(facilityOpex);
             }
+            const int preOpexCostYearOffset = 3;
 
             var offshoreFacilitiesOperationsCost = new TimeSeries<double>
             {
-                StartYear = firstYear - 3,
+                StartYear = firstYear - preOpexCostYearOffset,
                 Values = values.ToArray()
             };
             return offshoreFacilitiesOperationsCost;
@@ -311,17 +308,17 @@ namespace api.Services
 
         public OpexCostProfileDto CalculateOPEX(Guid caseId)
         {
-            var caseItem = GetCase(caseId);
-
             var wellInterventionCost = CalculateWellInterventionCostProfile(caseId);
 
             var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseId);
 
             var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
             if (OPEX == null) { return new OpexCostProfileDto(); }
-            var opexCostProfile = new OpexCostProfile();
-            opexCostProfile.StartYear = OPEX.StartYear;
-            opexCostProfile.Values = OPEX.Values;
+            var opexCostProfile = new OpexCostProfile
+            {
+                StartYear = OPEX.StartYear,
+                Values = OPEX.Values
+            };
             var opexDto = CaseDtoAdapter.Convert(opexCostProfile);
             return opexDto ?? new OpexCostProfileDto();
         }
