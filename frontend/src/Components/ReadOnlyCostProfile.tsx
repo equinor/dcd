@@ -2,23 +2,25 @@ import { Typography } from "@equinor/eds-core-react"
 import {
     useEffect, useState,
 } from "react"
-import DataTable, { CellValue } from "../DataTable/DataTable"
+import DataTable, { CellValue } from "./DataTable/DataTable"
 import {
     buildGridData,
-} from "../DataTable/helpers"
-import { ITimeSeries } from "../../models/ITimeSeries"
+} from "./DataTable/helpers"
+import { ITimeSeries } from "../models/ITimeSeries"
 import {
     Wrapper, WrapperColumn,
-} from "../../Views/Asset/StyledAssetComponents"
+} from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
     dG4Year: number | undefined
     timeSeries: ITimeSeries | undefined
+    title: string
 }
 
-const CaseCessationCostProfile = ({
+const ReadOnlyCostProfile = ({
     dG4Year,
     timeSeries,
+    title,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -47,7 +49,7 @@ const CaseCessationCostProfile = ({
     return (
         <>
             <Wrapper>
-                <Typography variant="h4">Cessation cost profile</Typography>
+                <Typography variant="h4">{title}</Typography>
             </Wrapper>
 
             <WrapperColumn>
@@ -62,4 +64,4 @@ const CaseCessationCostProfile = ({
     )
 }
 
-export default CaseCessationCostProfile
+export default ReadOnlyCostProfile

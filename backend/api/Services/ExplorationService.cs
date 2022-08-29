@@ -1,7 +1,12 @@
+using System.Globalization;
+
 using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
+
+using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -262,6 +267,7 @@ namespace api.Services
                         .Include(c => c.SeismicAcquisitionAndProcessing)
                         .Include(c => c.CountryOfficeCost)
                         .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
+                        .Include(ew => ew.ExplorationWells).ThenInclude(ew => ew.Well)
                              .FirstOrDefault(o => o.Id == explorationId);
             if (exploration == null)
             {

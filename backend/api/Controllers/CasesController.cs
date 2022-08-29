@@ -44,5 +44,11 @@ namespace api.Controllers
         {
             return _caseService.DeleteCase(caseId);
         }
+
+        [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
+        public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
+        {
+            return _caseService.GenerateGAndGAdminCost(caseId);
+        }
     }
 }

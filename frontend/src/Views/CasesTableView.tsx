@@ -13,7 +13,7 @@ import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useHistory } from "react-router"
+import { useHistory, useParams } from "react-router"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
 import { CasePath, unwrapCase } from "../Utils/common"
@@ -170,6 +170,8 @@ const CasesTableView = ({
     const [sortField, setSortField] = useState("")
     const [order, setOrder] = useState("asc")
 
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
+
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [element, setElement] = useState<HTMLButtonElement>()
 
@@ -239,7 +241,7 @@ const CasesTableView = ({
             const caseResult = unwrapCase(project.cases.find((o) => o.id === caseRowDataSelected.id))
             caseResult.name = (caseName === "" ? caseRowDataSelected.name : caseName)
             caseResult.description = (caseDescription === "" ? caseRowDataSelected.description : caseDescription)
-            const projectResult: Project = await (await GetCaseService()).updateCase(caseResult)
+            const projectResult = await (await GetCaseService()).updateCase(caseResult)
             setProject(projectResult)
             setTableData(createDataTable(projectResult))
             toggleEditCaseModal()
@@ -251,7 +253,7 @@ const CasesTableView = ({
     const openCase = async () => {
         try {
             if (caseRowDataSelected != null) {
-                history.push(CasePath(project.id, caseRowDataSelected.id))
+                history.push(CasePath(fusionContextId!, caseRowDataSelected.id))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)

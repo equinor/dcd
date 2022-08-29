@@ -12,12 +12,14 @@
         "owners": [
             "eriei@equinor.com",
             "eisande@equinor.com",
-            "ahmab@equinor.com"
+            "ahmab@equinor.com",
+            "toaus@equinor.com"
         ],
         "admins": [
             "eriei@equinor.com",
             "eisande@equinor.com",
-            "ahmab@equinor.com"
+            "ahmab@equinor.com",
+            "toaus@equinor.com"
         ]
     },
     "dependencies": {

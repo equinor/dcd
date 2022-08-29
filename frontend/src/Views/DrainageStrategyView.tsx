@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
@@ -57,20 +58,21 @@ const DrainageStrategyView = () => {
     const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
-    const { fusionProjectId, caseId, drainageStrategyId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId, drainageStrategyId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
 
     const [drainageStrategyService, setDrainageStrategyService] = useState<IAssetService>()
 
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
+                const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
                 const service = await GetDrainageStrategyService()
                 setDrainageStrategyService(service)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [])
