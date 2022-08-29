@@ -2,7 +2,6 @@ trigger:
     branches:
         include:
             - main
-            - cicd
     tags:
         include:
             - v*
@@ -43,8 +42,8 @@ stages:
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DTToken: "  "
-        DTTenantId: "  "
+        DynatraceToken: $(dynatracePreProdToken)
+        DynatraceTenantId: $(dynatracePreProdTenantId)
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -59,8 +58,8 @@ stages:
         FusionEnvId: $(FusionAppIdQA)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DTToken: "  "
-        DTTenantId: "  "
+        DynatraceToken: $(dynatracePreProdToken)
+        DynatraceTenantId: $(dynatracePreProdTenantId)
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -75,5 +74,5 @@ stages:
         FusionEnvId: $(FusionAppIdFPRD)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DTToken: "  "
-        DTTenantId: "  "
+        DynatraceToken: $(dynatrace-prod-token)
+        DynatraceTenantId: $(dynatrace_tenant)
