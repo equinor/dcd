@@ -5,11 +5,11 @@ parameters:
 
 steps:
 - powershell: |
-    $tenantid= "${{ parameters.DynatraceTenantId }}"
+    $tenantid= ${{ parameters.DynatraceTenantId }}
 
-    $url = "https://spa-equinor.kanari.com/e/${{ parameters.DynatraceTenantId }}/api/v1/deployment/installer/agent/connectioninfo"
+    $url = "https://spa-equinor.kanari.com/e/$tenantid/api/v1/deployment/installer/agent/connectioninfo"
     $DynaTraceHeaders = @{"Authorization" = "Api-Token ${{ parameters.DynatraceToken }}"}
-    $result = Invoke-RestMethod -Uri $url -Headers $Headers
+    $result = Invoke-RestMethod -Uri $url -Headers $Headers -Method Get
 
     $endpoints = ""
     foreach ($url in $result.communicationEndpoints) {
