@@ -4,26 +4,30 @@ parameters:
   - name: DynatraceTenantId
 
 steps:
-- powershell: |
-    $tenantid= ${{ parameters.DynatraceTenantId }}
+- task: PowerShell@2
+  displayName: "Update Radix Secrets"
+  inputs:
+    targetType: "inline"
+    script: |
+        $tenantid= ${{ parameters.DynatraceTenantId }}
 
-    $url = "https://spa-equinor.kanari.com/e/$tenantid/api/v1/deployment/installer/agent/connectioninfo"
-    $DynaTraceHeaders = @{"Authorization" = "Api-Token ${{ parameters.DynatraceToken }}"}
-    $result = Invoke-RestMethod -Uri $url -Headers $Headers -Method Get
+        $url = "https://spa-equinor.kanari.com/e/$tenantid/api/v1/deployment/installer/agent/connectioninfo"
+        $DynaTraceHeaders = @{"Authorization" = "Api-Token ${{parameters.DynatraceToken}}"}
+        $result = Invoke-RestMethod -Uri $url -Headers $Headers -Method Get
 
-    $endpoints = ""
-    foreach ($url in $result.communicationEndpoints) {
-        if($endpoints.Length -cgt 0) {
-            $endpoints = $endpoints +";"
+        $endpoints = ""
+        foreach ($url in $result.communicationEndpoints) {
+            if($endpoints.Length -cgt 0) {
+                $endpoints = $endpoints +";"
+            }
+            $endpoints = $endpoints + $url
         }
-        $endpoints = $endpoints + $url
-    }
 
-    $radixbaseurl = "http://api.radix.equinor.com/api/v1/applications/dcd/buildsecrets/"
-    $RadixHeaders = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
+        $radixbaseurl = "http://api.radix.equinor.com/api/v1/applications/dcd/buildsecrets/"
+        $RadixHeaders = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
 
-    $tenantbody = @'{"secretValue": "${{ result.tenantUUID }}", "type":"string"}'@
+        $tenantbody = @'{"secretValue": "${{ result.tenantUUID }}", "type":"string"}'@
 
-    $updateRadixTenantSecret = Invoke-RestMethod -Uri $radixbaseurl+"DT_TENANT"
-    Write-Host $updateRadixTenantSecret
+        $updateRadixTenantSecret = Invoke-RestMethod -Uri $radixbaseurl+"DT_TENANT"
+        Write-Host $updateRadixTenantSecret
 
