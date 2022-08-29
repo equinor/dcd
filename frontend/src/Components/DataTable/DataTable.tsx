@@ -55,7 +55,7 @@ function DataTable({
     }), [])
 
     return (
-        <div className="ag-theme-alpine" style={{ height: 200 }}>
+        <div className="ag-theme-alpine" style={{ height: 93 }}>
             <AgGridReact
                 rowData={rowDataToColumns()}
                 columnDefs={columnsArrayToColDef()}
