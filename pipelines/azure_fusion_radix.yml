@@ -43,8 +43,8 @@ stages:
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DTToken: $(dynatracePreProdToken)
-        DTTenantId: $(dynatracePreProdTenantId)
+        DTToken: "  "
+        DTTenantId: "  "
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -59,8 +59,8 @@ stages:
         FusionEnvId: $(FusionAppIdQA)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DTToken: $(dynatracePreProdToken)
-        DTTenantId: $(dynatracePreProdTenantId)
+        DTToken: "  "
+        DTTenantId: "  "
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -75,5 +75,5 @@ stages:
         FusionEnvId: $(FusionAppIdFPRD)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
-        DTToken: $(dynatrace-prod-token)
-        DTTenantId: $(dynatrace_tenant)
+        DTToken: "  "
+        DTTenantId: "  "
