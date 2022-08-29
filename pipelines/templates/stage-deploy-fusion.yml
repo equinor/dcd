@@ -86,8 +86,8 @@ stages:
                 - template: step-updateradixdynatraceConfig.yml
                   parameters:
                     radixToken: ${{ parameters.radixToken }}
-                    TenantId: ${{ parameters.DynatraceTenantId }}
-                    Token: ${{ parameters.DynatraceToken }}
+                    DynatraceTenantId: ${{ parameters.DynatraceTenantId }}
+                    DynatraceToken: ${{ parameters.DynatraceToken }}
 
                 - task: PowerShell@2
                   displayName: "Trigger Radix Build-Deploy"
