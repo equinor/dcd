@@ -58,6 +58,8 @@ stages:
         FusionEnvId: $(FusionAppIdQA)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
+        DynatraceToken: $(dynatracePreProdToken)
+        DynatraceTenantId: $(dynatracePreProdTenantId)
 
   - template: templates/stage-deploy-fusion.yml
     parameters:
@@ -72,3 +74,5 @@ stages:
         FusionEnvId: $(FusionAppIdFPRD)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
+        DynatraceToken: $(dynatrace-prod-token)
+        DynatraceTenantId: $(dynatrace_tenant)
