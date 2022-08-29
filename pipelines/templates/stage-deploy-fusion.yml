@@ -87,7 +87,7 @@ stages:
                   parameters:
                     radixToken: ${{ parameters.radixToken }}
                     DynatraceTenantId: ${{ parameters.DynatraceTenantId }}
-                    DynatraceSecret: ${{ parameters.DynatraceToken }}
+                    DynatraceToken: ${{ parameters.DynatraceToken }}
 
                 - task: PowerShell@2
                   displayName: "Trigger Radix Build-Deploy"
