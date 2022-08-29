@@ -10,12 +10,6 @@ public class ExplorationBuilder : Exploration
         this.CostProfile = e;
         return this;
     }
-    public ExplorationBuilder WithExplorationDrillingSchedule(ExplorationDrillingSchedule d)
-    {
-        d.Exploration = this;
-        this.DrillingSchedule = d;
-        return this;
-    }
 
     public ExplorationBuilder WithGAndGAdminCost(GAndGAdminCost d)
     {

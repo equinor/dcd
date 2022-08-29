@@ -18,6 +18,7 @@ namespace api.Adapters
                 CommonLibraryId = projectDto.CommonLibraryId,
                 CreateDate = projectDto.CreateDate,
                 CommonLibraryName = projectDto.CommonLibraryName,
+                FusionProjectId = projectDto.FusionProjectId,
                 Description = projectDto.Description,
                 Country = projectDto.Country,
                 ProjectCategory = projectDto.ProjectCategory,

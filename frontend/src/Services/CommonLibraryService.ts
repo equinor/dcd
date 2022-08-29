@@ -1,7 +1,7 @@
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
-import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+import { GetToken, FusionAccessTokenKey } from "../Utils/common"
 
 export class __CommonLibraryService extends __BaseService {
     async getProjects() {
@@ -10,9 +10,9 @@ export class __CommonLibraryService extends __BaseService {
     }
 }
 
-export function GetCommonLibraryService() {
+export async function GetCommonLibraryService() {
     return new __CommonLibraryService({
         ...config.CommonLibraryService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(FusionAccessTokenKey)!,
     })
 }

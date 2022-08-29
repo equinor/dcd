@@ -1,31 +1,36 @@
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { ExplorationWell } from "../../ExplorationWell"
 import { IAsset } from "../IAsset"
 import { ExplorationCostProfile } from "./ExplorationCostProfile"
-import { ExplorationDrillingSchedule } from "./ExplorationDrillingSchedule"
-import { GAndGAdminCost } from "./GAndAdminCost"
+import { CountryOfficeCost } from "./CountryOfficeCost"
+import { GAndGAdminCost } from "./GAndGAdminCost"
+import { SeismicAcquisitionAndProcessing } from "./SeismicAcquisitionAndProcessing"
 
 export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     id?: string | undefined
     projectId?: string | undefined
     name?: string | undefined
-    wellType?: Components.Schemas.WellType | undefined
     costProfile?: ExplorationCostProfile | undefined
-    drillingSchedule?: ExplorationDrillingSchedule | undefined
     gAndGAdminCost?: GAndGAdminCost | undefined
+    seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessing | undefined
+    countryOfficeCost?: CountryOfficeCost | undefined
     rigMobDemob?: number | undefined
     currency?: Components.Schemas.Currency
+    explorationWells?: ExplorationWell[] | null
 
     constructor(data?: Components.Schemas.ExplorationDto) {
         if (data !== undefined) {
             this.id = data.id
             this.projectId = data.projectId
             this.name = data.name ?? ""
-            this.wellType = data.wellType
             this.costProfile = ExplorationCostProfile.fromJSON(data.costProfile)
-            this.drillingSchedule = ExplorationDrillingSchedule.fromJSON(data.drillingSchedule)
             this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)
+            this.seismicAcquisitionAndProcessing = SeismicAcquisitionAndProcessing
+                .fromJSON(data.seismicAcquisitionAndProcessing)
+            this.countryOfficeCost = CountryOfficeCost.fromJSON(data.countryOfficeCost)
             this.rigMobDemob = data.rigMobDemob
-            this.currency = data.currency ?? 0
+            this.currency = data.currency ?? 1
+            this.explorationWells = data.explorationWells?.map((ew) => new ExplorationWell(ew))
         } else {
             this.id = EMPTY_GUID
             this.name = ""

@@ -19,15 +19,24 @@ export class __ProjectService extends __BaseService {
         return this.post("", { body: project })
     }
 
+    public async createProjectFromContextId(contextId: string): Promise<Project> {
+        const res: Components.Schemas.ProjectDto = await this.postWithParams(
+            "/createFromFusion",
+            {},
+            { params: { contextId } },
+        )
+        return Project.fromJSON(res)
+    }
+
     public async updateProject(body: Components.Schemas.ProjectDto): Promise<Project> {
         const res = await this.put("", { body })
         return Project.fromJSON(res)
     }
 }
 
-export function GetProjectService() {
+export async function GetProjectService() {
     return new __ProjectService({
         ...config.ProjectService,
-        accessToken: GetToken(LoginAccessTokenKey)!,
+        accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }
