@@ -1,14 +1,14 @@
 parameters:
   - name: radixToken
-  - name: dynatraceTenantId
-  - name: dynatraceSecret
+  - name: DynatraceToken
+  - name: DynatraceTenantId
 
 steps:
 - powershell: |
-    $tenantid= "${{ parameters.dynatraceTenantId }}"
+    $tenantid= "${{ parameters.DynatraceTenantId }}"
 
-    $url = "https://spa-equinor.kanari.com/e/${{ parameters.dynatraceTenantId }}/api/v1/deployment/installer/agent/connectioninfo"
-    $DynaTraceHeaders = @{"Authorization" = "Api-Token ${{ parameters.dynatraceSecret }}"}
+    $url = "https://spa-equinor.kanari.com/e/${{ parameters.DynatraceTenantId }}/api/v1/deployment/installer/agent/connectioninfo"
+    $DynaTraceHeaders = @{"Authorization" = "Api-Token ${{ parameters.DynatraceToken }}"}
     $result = Invoke-RestMethod -Uri $url -Headers $Headers
 
     $endpoints = ""
