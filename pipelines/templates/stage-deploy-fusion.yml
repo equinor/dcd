@@ -10,8 +10,8 @@ parameters:
     - name: FusionEnvId
     - name: FusionServiceConnection
     - name: ContainerTag
-    - name: DynatraceTenantId
-    - name: DynatraceToken
+    - name: DTTenantId
+    - name: DTToken
 
 stages:
     - stage: ${{ parameters.appName }}
