@@ -72,7 +72,7 @@ stages:
         branch: main
         DBContext: $(DbConnectionStringProd)
         FusionEnvId: $(FusionAppIdFPRD)
-        FusionServiceConnection: 'conceptapp-preprod'
+        FusionServiceConnection: 'conceptapp-prod'
         ContainerTag: "release"
         DynatraceToken: $(dynatrace-prod-token)
         DynatraceTenantId: $(dynatrace_tenant)
