@@ -53,12 +53,12 @@ const ReadOnlyCostProfile = ({
             </Wrapper>
 
             <WrapperColumn>
-                <DataTable
+                {/* <DataTable
                     columns={columns}
                     gridData={gridData}
                     onCellsChanged={() => { }}
                     dG4Year={dG4Year?.toString()!}
-                />
+                /> */}
             </WrapperColumn>
         </>
     )

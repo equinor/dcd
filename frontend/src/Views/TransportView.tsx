@@ -230,23 +230,13 @@ const TransportView = () => {
                 dG4Year={transport?.source === 1 ? transport.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
+                timeSeries={[costProfile!, cessationCostProfile!]}
                 timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={transport?.source === 1 ? transport.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                timeSeriesArray={[costProfile!, cessationCostProfile!]}
             />
         </AssetViewDiv>
     )

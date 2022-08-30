@@ -190,34 +190,15 @@ const ExplorationView = () => {
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
+                timeSeries={[costProfile!, seismicAcquisitionAndProcessing!,
+                    countryOfficeCost!]}
                 timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setSeismicAcquisitionAndProcessing}
-                setHasChanges={setHasChanges}
-                timeSeries={seismicAcquisitionAndProcessing}
-                timeSeriesTitle={`Seismic acquisition and processing ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCountryOfficeCost}
-                setHasChanges={setHasChanges}
-                timeSeries={countryOfficeCost}
-                timeSeriesTitle={`Country office cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                timeSeriesArray={[costProfile!, seismicAcquisitionAndProcessing!,
+                    countryOfficeCost!]}
             />
             <ReadOnlyCostProfile
                 dG4Year={caseItem?.DG4Date?.getFullYear()}

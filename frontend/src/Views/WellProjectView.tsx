@@ -223,12 +223,13 @@ function WellProjectView() {
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
+                timeSeries={[costProfile!]}
                 timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
+                timeSeriesArray={[costProfile!]}
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules

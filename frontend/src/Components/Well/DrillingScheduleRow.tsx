@@ -169,12 +169,12 @@ const DrillingScheduleRow = ({
             </Wrapper>
 
             <WrapperColumn>
-                <DataTable
+                {/* <DataTable
                     columns={columns}
                     gridData={gridData}
                     onCellsChanged={onCellsChanged}
                     dG4Year={dG4Year?.toString()!}
-                />
+                /> */}
             </WrapperColumn>
             {!dialogOpen ? null
                 : <Import onClose={() => { setDialogOpen(!dialogOpen) }} onImport={onImport} />}

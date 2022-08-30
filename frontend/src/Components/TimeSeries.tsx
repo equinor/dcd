@@ -21,7 +21,8 @@ interface Props {
     lastYear: number | undefined,
     setFirstYear: Dispatch<SetStateAction<number | undefined>>,
     setLastYear: Dispatch<SetStateAction<number | undefined>>,
-    timeSeries: ITimeSeries | undefined
+    timeSeries: ITimeSeries[] | undefined
+    timeSeriesArray: ITimeSeries[] | undefined
 }
 
 const TimeSeries = ({
@@ -34,49 +35,74 @@ const TimeSeries = ({
     lastYear,
     setFirstYear,
     setLastYear,
+    timeSeriesArray,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
+    // console.log(timeSeriesArray)
+
+    const combinedTimeseries:any = []
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
-        if (updatedTimeSeries !== undefined && timeSeries !== undefined) {
-            const columnTitles: string[] = []
-            if (firstYear !== undefined && lastYear !== undefined) {
-                for (let i = firstYear; i < lastYear; i += 1) {
-                    columnTitles.push(i.toString())
+        // for each timeseries => build grid
+
+        if (timeSeries![0] !== undefined && updatedTimeSeries !== undefined) {
+            // if (timeSeries![0] !== undefined) {
+            //     console.log(timeSeries![0].values!)
+            //     console.log(timeSeries![1].values!)
+            // }
+            for (let i = 0; i < timeSeries![i]?.values?.length!; i += 1) {
+                console.log(timeSeries![i])
+                if (timeSeries![i] !== undefined) {
+                    if (updatedTimeSeries !== undefined && timeSeries![i] !== undefined) {
+                        const columnTitles: string[] = []
+                        if (firstYear !== undefined && lastYear !== undefined) {
+                            for (let j = firstYear; j < lastYear; j += 1) {
+                                columnTitles.push(j.toString())
+                            }
+                        }
+                        setColumns(columnTitles)
+
+                        const zeroesAtStart: Number[] = Array.from({
+                            length: Number(timeSeries![i].startYear!)
+                            + Number(dG4Year) - Number(firstYear),
+                        }, (() => 0))
+
+                        const zeroesAtEnd: Number[] = Array.from({
+                            length: Number(lastYear)
+                            - (Number(timeSeries![i].startYear!)
+                            + Number(dG4Year)
+                            + Number(timeSeries![i].values!.length!)),
+                        }, (() => 0))
+
+                        const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
+                        const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
+                        const newGridData = buildGridData(timeSeries![i])
+
+                        const alignedAssetGridData = new Array(
+                            assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
+                        )
+                        combinedTimeseries.push(alignedAssetGridData)
+                    }
                 }
             }
-            setColumns(columnTitles)
-
-            const zeroesAtStart: Number[] = Array.from({
-                length: Number(timeSeries!.startYear!)
-                + Number(dG4Year) - Number(firstYear),
-            }, (() => 0))
-
-            const zeroesAtEnd: Number[] = Array.from({
-                length: Number(lastYear)
-                - (Number(timeSeries!.startYear!)
-                + Number(dG4Year)
-                + Number(timeSeries!.values!.length!)),
-            }, (() => 0))
-
-            const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
-            const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
-            const newGridData = buildGridData(timeSeries)
-
-            const alignedAssetGridData = new Array(
-                assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
-            )
-            setGridData(alignedAssetGridData)
-        } else {
-            setColumns([])
-            setGridData([[]])
         }
+        // console.log(combinedTimeseries)
+
+        setGridData(combinedTimeseries)
     }
 
     useEffect(() => {
-        buildAlignedGrid(timeSeries!)
+        buildAlignedGrid(combinedTimeseries!)
+
+        // if (timeSeriesArray![0] !== undefined) {
+        //     console.log(timeSeriesArray![0].values)
+        // }
+
+        // for each timeseries[i]
+        // push to arrayCombined
+        // setGridData([arrayCombined])
     }, [timeSeries, lastYear, firstYear])
 
     const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
@@ -87,7 +113,7 @@ const TimeSeries = ({
     }
 
     const onImport = (input: string, year: number) => {
-        const newTimeSeries: ITimeSeries = { ...timeSeries }
+        const newTimeSeries: ITimeSeries = { ...timeSeries![0] }
         newTimeSeries.startYear = year
         newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
         setTimeSeries(newTimeSeries)
@@ -139,6 +165,7 @@ const TimeSeries = ({
                     gridData={gridData}
                     onCellsChanged={onCellsChanged}
                     dG4Year={dG4Year?.toString()!}
+                    timeSeriesArray={timeSeriesArray}
                 />
             </WrapperColumn>
             {!dialogOpen ? null
