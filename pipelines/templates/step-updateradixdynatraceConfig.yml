@@ -22,12 +22,5 @@ steps:
             }
             $endpoints = $endpoints + $url
         }
-
-        $radixbaseurl = "http://api.radix.equinor.com/api/v1/applications/dcd/buildsecrets/"
-        $RadixHeaders = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
-
-        $tenantbody = @'{"secretValue": "${{ result.tenantUUID }}", "type":"string"}'@
-
-        $updateRadixTenantSecret = Invoke-RestMethod -Uri $radixbaseurl+"DT_TENANT"
-        Write-Host $updateRadixTenantSecret
+        Write-Host $result
 
