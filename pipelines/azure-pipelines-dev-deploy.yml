@@ -1,5 +1,6 @@
 trigger:
   - main
+  - cicd
 
 pool:
   vmImage: "ubuntu-latest"
