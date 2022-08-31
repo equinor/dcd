@@ -14,7 +14,7 @@ steps:
 
         $url = "https://spa-equinor.kanari.com/e/$tenantid/api/v1/deployment/installer/agent/connectioninfo"
         $DynaTraceHeaders = @{"Authorization" = "Api-Token ${{parameters.DynatraceToken}}"}
-        $result = Invoke-RestMethod -Uri $url -Headers $Headers -Method Get
+        $result = Invoke-RestMethod -Uri $url -Headers $DynaTraceHeaders -Method Get
 
         $endpoints = ""
         foreach ($url in $result.communicationEndpoints) {
