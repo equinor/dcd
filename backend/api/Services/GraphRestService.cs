@@ -4,28 +4,35 @@ using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System.Linq;
 
+using api.Dtos;
+
 using Microsoft.AspNetCore.Authentication;
 
 namespace api.Services
 {
     public class GraphRestService
     {
-        private readonly IHttpContextService _httpContextService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _config;
         private const string SiteId = "46439b79-0ac8-4b2c-86ae-0cd94983323c";
+        private const string ListId = "CD2589D1-3E47-41E1-848C-FE1ADB3AA459";
+        private const string driveId = "911990B3-C0F9-48D8-A50B-C218DA049BF7";
+        private const string prospFolder = "f05c5890-4c71-4872-8b7d-aa4bd7826418";
         private const string BaseUrl = "https://statoilsrm.sharepoint.com/sites/Team-IAF";
 
 
-        public GraphRestService(IHttpContextService httpContextService)
+        public GraphRestService(IHttpContextAccessor httpContextAccessor, IConfiguration config)
         {
-            _httpContextService = httpContextService;
+            _httpContextAccessor = httpContextAccessor;
+            _config = config;
         }
 
 
 
         private GraphServiceClient GetGraphClient()
         {
-            var scopes = new[] { "Sites.ReadWrite.All" };
-            var token = _httpContextService.GetToken().GetAwaiter().GetResult();
+            var scopes = new[] { "Sites.Read.All" };
+            var token = _httpContextAccessor?.HttpContext?.Request?.Headers["Authorization"].ToString()?.Split(' ')?.LastOrDefault();
 
             // Multi-tenant apps can use "common",
             // single-tenant apps must use the tenant ID from the Azure portal
@@ -59,27 +66,46 @@ namespace api.Services
             return graphClient;
         }
 
-        public List<Stream> GetAllFilesFromSite()
+        public List<DriveItemDto> GetFilesFromSite()
         {
-            // var graphClient = new GraphServiceClient(BaseUrl, authenticationProvider);
-            // var driveItem =  graphClient.Me.Drive.Root.ListItem.Request().GetAsync();
             var graphClient = GetGraphClient();
-            var stream = graphClient.Sites[SiteId].Drive.Items
-                .Request().GetAsync().GetAwaiter().GetResult();
+            var driveItemSearchCollectionPage = graphClient.Sites[SiteId].Drive.Root.Search("prosp").Request().GetAsync().GetAwaiter()
+                .GetResult();
 
-            var files = (stream.Where(item => item != null).Select(item => item.Content)).ToList();
-            // var files = (from item in stream where item != null && item.Name.Contains("prosp") select item.Content).ToList();
+            var dto = new List<DriveItemDto>();
 
-            // var queryOptions = new List<QueryOption>()
-            // {
-            //     new QueryOption("expand", "fields")
-            // };
-            //
-            // var items = await graphClient.Sites[SiteId].Drive.Items
-            //     .Request(queryOptions)
-            //     .GetAsync();
-            return files;
+            foreach (var driveItem in driveItemSearchCollectionPage )
+            {
+                var item = new DriveItemDto()
+                {
+                    Name = driveItem.Name,
+                    Id = driveItem.Id,
+                    CreatedBy = driveItem.CreatedBy,
+                    Content = driveItem.Content,
+                    CreatedDateTime = driveItem.CreatedDateTime,
+                    Size = driveItem.Size,
+                    SharepointIds = driveItem.SharepointIds,
+                    LastModifiedBy = driveItem.LastModifiedBy,
+                    LastModifiedDateTime = driveItem.LastModifiedDateTime,
+                };
+                dto.Add(item);
+            }
 
+            return dto;
+        }
+
+        public Stream? ImportSharepointFile(string id)
+        {
+            var graphClient = GetGraphClient();
+            var file = graphClient.Sites[SiteId].Drive.Items[id].Content.Request()
+                .GetAsync().GetAwaiter().GetResult();
+
+            if (file != null)
+            {
+                return file;
+            }
+
+            return null;
         }
 
     }

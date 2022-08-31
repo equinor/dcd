@@ -5,6 +5,7 @@ using api.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph;
 
 namespace api.Controllers
 {
@@ -22,16 +23,17 @@ namespace api.Controllers
             _graphRestService = graphRestService;
         }
 
-        [HttpGet(Name = "GetFilesFromSharePoint")]
-        public List<Stream> GetFilesFromSharePoint()
+        [HttpGet("/sharepoint",Name = nameof(GetFilesFromSharePoint))]
+        public List<DriveItemDto> GetFilesFromSharePoint()
         {
-            var graph = _graphRestService.GetAllFilesFromSite();
+            var graph = _graphRestService.GetFilesFromSite();
             return graph;
         }
 
         [HttpPost(Name = "Upload"), DisableRequestSizeLimit]
         public async Task<ProjectDto?> Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
         {
+            var graph = _graphRestService.GetFilesFromSite();
             try
             {
                 var formCollection = await Request.ReadFormAsync();
