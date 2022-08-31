@@ -9,7 +9,7 @@ steps:
   inputs:
     targetType: "inline"
     script: |
-        $tenantid= ${{ parameters.DynatraceTenantId }}
+        $tenantid= "${{ parameters.DynatraceTenantId }}"
 
         $url = "https://spa-equinor.kanari.com/e/$tenantid/api/v1/deployment/installer/agent/connectioninfo"
         $DynaTraceHeaders = @{"Authorization" = "Api-Token ${{parameters.DynatraceToken}}"}
@@ -23,4 +23,5 @@ steps:
             $endpoints = $endpoints + $url
         }
         Write-Host $result
+        Write-Host $endpoints
 
