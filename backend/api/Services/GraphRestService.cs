@@ -6,7 +6,11 @@ using System.Linq;
 
 using api.Dtos;
 
+using DocumentFormat.OpenXml.Office.CustomUI;
+
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Azure;
+using Microsoft.IdentityModel.Tokens;
 
 namespace api.Services
 {
@@ -14,12 +18,6 @@ namespace api.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _config;
-        private const string SiteId = "46439b79-0ac8-4b2c-86ae-0cd94983323c";
-        private const string ListId = "CD2589D1-3E47-41E1-848C-FE1ADB3AA459";
-        private const string driveId = "911990B3-C0F9-48D8-A50B-C218DA049BF7";
-        private const string prospFolder = "f05c5890-4c71-4872-8b7d-aa4bd7826418";
-        private const string BaseUrl = "https://statoilsrm.sharepoint.com/sites/Team-IAF";
-
 
         public GraphRestService(IHttpContextAccessor httpContextAccessor, IConfiguration config)
         {
@@ -27,21 +25,19 @@ namespace api.Services
             _config = config;
         }
 
-
+        private string GetSiteId() => _config["SharePoint:Prosp:SiteId"];
 
         private GraphServiceClient GetGraphClient()
         {
+            var tenantId = _config["AzureAd:TenantId"];
+            var clientId = _config["AzureAd:ClientId"];
+            var clientSecret = _config["AzureAd:ClientSecret"];
             var scopes = new[] { "Sites.Read.All" };
-            var token = _httpContextAccessor?.HttpContext?.Request?.Headers["Authorization"].ToString()?.Split(' ')?.LastOrDefault();
 
-            // Multi-tenant apps can use "common",
-            // single-tenant apps must use the tenant ID from the Azure portal
-            var tenantId = "3aa4a235-b6e2-48d5-9195-7fcf05b459b0";
-
-            // Values from app registration
-            var clientId = "9b125a0c-4907-43b9-8db2-ff405d6b0524";
-            var clientSecret = "";
-
+            var token = _httpContextAccessor?.HttpContext?.Request?.Headers["Authorization"]
+                .ToString()
+                ?.Split(" ")
+                ?.LastOrDefault();
 
             var cca = ConfidentialClientApplicationBuilder
                 .Create(clientId)
@@ -49,10 +45,6 @@ namespace api.Services
                 .WithClientSecret(clientSecret)
                 .Build();
 
-            // DelegateAuthenticationProvider is a simple auth provider implementation
-            // that allows you to define an async function to retrieve a token
-            // Alternatively, you can create a class that implements IAuthenticationProvider
-            // for more complex scenarios
             var authProvider = new DelegateAuthenticationProvider(async (request) => {
                 // Use Microsoft.Identity.Client to retrieve token
                 var assertion = new UserAssertion(token);
@@ -69,44 +61,71 @@ namespace api.Services
         public List<DriveItemDto> GetFilesFromSite()
         {
             var graphClient = GetGraphClient();
-            var driveItemSearchCollectionPage = graphClient.Sites[SiteId].Drive.Root.Search("prosp").Request().GetAsync().GetAwaiter()
+            var siteId = GetSiteId();
+            var dto = new List<DriveItemDto>();
+            var query = _config["SharePoint:Prosp:FileQuery"];
+            var validMimeTypes = new List<string>
+            {
+                ExcelMimeTypes.XLS,
+                ExcelMimeTypes.XLSB,
+                ExcelMimeTypes.XLSM,
+                ExcelMimeTypes.XLSX
+            };
+
+            var driveItemSearchCollectionPage = graphClient.Sites[siteId]
+                .Drive.Root.Search(query)
+                .Request()
+                .GetAsync()
+                .GetAwaiter()
                 .GetResult();
 
-            var dto = new List<DriveItemDto>();
-
-            foreach (var driveItem in driveItemSearchCollectionPage )
+            foreach (var driveItem in driveItemSearchCollectionPage.Where(item =>
+                         item.File != null && validMimeTypes.Contains(item.File.MimeType)))
             {
-                var item = new DriveItemDto()
-                {
-                    Name = driveItem.Name,
-                    Id = driveItem.Id,
-                    CreatedBy = driveItem.CreatedBy,
-                    Content = driveItem.Content,
-                    CreatedDateTime = driveItem.CreatedDateTime,
-                    Size = driveItem.Size,
-                    SharepointIds = driveItem.SharepointIds,
-                    LastModifiedBy = driveItem.LastModifiedBy,
-                    LastModifiedDateTime = driveItem.LastModifiedDateTime,
-                };
-                dto.Add(item);
+                ConvertToDto(driveItem, dto);
             }
 
             return dto;
         }
 
-        public Stream? ImportSharepointFile(string id)
+        private static void ConvertToDto(DriveItem driveItem, List<DriveItemDto> dto)
         {
-            var graphClient = GetGraphClient();
-            var file = graphClient.Sites[SiteId].Drive.Items[id].Content.Request()
-                .GetAsync().GetAwaiter().GetResult();
-
-            if (file != null)
+            var item = new DriveItemDto()
             {
-                return file;
-            }
-
-            return null;
+                Name = driveItem.Name,
+                Id = driveItem.Id,
+                CreatedBy = driveItem.CreatedBy,
+                Content = driveItem.Content,
+                CreatedDateTime = driveItem.CreatedDateTime,
+                Size = driveItem.Size,
+                SharepointIds = driveItem.SharepointIds,
+                LastModifiedBy = driveItem.LastModifiedBy,
+                LastModifiedDateTime = driveItem.LastModifiedDateTime,
+            };
+            dto.Add(item);
         }
 
+        public Stream GetSharepointFileStream(string id)
+        {
+            var graphClient = GetGraphClient();
+            var siteId = GetSiteId();
+            var driveItemStream = graphClient.Sites[siteId]
+                .Drive.Items[id]
+                .Content.Request()
+                .GetAsync()
+                .GetAwaiter()
+                .GetResult();
+
+            return driveItemStream;
+        }
+
+    }
+
+    public class ExcelMimeTypes
+    {
+        public static string XLSX => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public static string XLSB => "application/vnd.ms-excel.sheet.binary.macroEnabled.12";
+        public static string XLS => "application/vnd.ms-excel";
+        public static string XLSM => "application/vnd.ms-excel.sheet.macroEnabled.12";
     }
 }

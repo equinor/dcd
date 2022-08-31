@@ -34,6 +34,7 @@ configBuilder.AddAzureAppConfiguration(options =>
     .Select(KeyFilter.Any, environment)
 );
 var config = configBuilder.Build();
+builder.Configuration.AddConfiguration(config);
 
 string commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
                 config["AzureAd:ClientId"],
@@ -41,6 +42,7 @@ string commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionStrin
                 config["AzureAd:ClientSecret"]);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 
 var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

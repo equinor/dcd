@@ -336,11 +336,9 @@ namespace api.Services
             _transportService.CreateTransport(dto, sourceCaseId);
         }
 
-        public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
+        public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId)
         {
-            using var ms = new MemoryStream();
-            file.CopyTo(ms);
-            using var document = SpreadsheetDocument.Open(ms, false);
+            using var document = SpreadsheetDocument.Open(stream, false);
             var workbookPart = document.WorkbookPart;
             var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
                 .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
@@ -353,25 +351,10 @@ namespace api.Services
                 if (cellData != null)
                 {
                     var parsedData = cellData.ToList();
-                    if (assets["Surf"])
-                    {
-                        ImportSurf(parsedData, sourceCaseId, projectId);
-                    }
-
-                    if (assets["Topside"])
-                    {
-                        ImportTopside(parsedData, sourceCaseId, projectId);
-                    }
-
-                    if (assets["Substructure"])
-                    {
-                        ImportSubstructure(parsedData, sourceCaseId, projectId);
-                    }
-
-                    if (assets["Transport"])
-                    {
-                        ImportTransport(parsedData, sourceCaseId, projectId);
-                    }
+                    ImportSurf(parsedData, sourceCaseId, projectId);
+                    ImportTopside(parsedData, sourceCaseId, projectId);
+                    ImportSubstructure(parsedData, sourceCaseId, projectId);
+                    ImportTransport(parsedData, sourceCaseId, projectId);
                 }
             }
 
