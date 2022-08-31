@@ -728,6 +728,17 @@ declare namespace Paths {
             }
         }
     }
+    namespace GenerateGAndGAdminCost {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.GAndGAdminCostDto;
+        }
+    }
     namespace GetExplorationWells {
         namespace Parameters {
             export type ProjectId = string; // uuid

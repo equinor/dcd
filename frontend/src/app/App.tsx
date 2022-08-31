@@ -1,14 +1,14 @@
 import { useAppConfig, useCurrentUser, useFusionEnvironment } from "@equinor/fusion"
 import { ErrorBoundary } from "@equinor/fusion-components"
-import { FUSION_ENV_LOCAL_CACHE_KEY } from "../api/apiConfig"
 import ConceptAppAuthProvider from "../auth/ConceptAppAuthProvider"
 import { buildConfig } from "../Services/config"
+import { StoreAppId, StoreAppScope } from "../Utils/common"
 import { AppRouter } from "./AppRouter"
 import { FusionRouterBootstrap } from "./FusionRouterBootstrap"
 
 const setEnvironment = (): void => {
     const fusionEnv = useFusionEnvironment()
-    localStorage.setItem(FUSION_ENV_LOCAL_CACHE_KEY, fusionEnv.env)
+    localStorage.setItem("FUSION_ENV_LOCAL_CACHE_KEY", fusionEnv.env)
 }
 
 /**
@@ -21,6 +21,12 @@ function App(): JSX.Element {
     const runtimeConfig = useAppConfig()
     if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {
         buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
+    }
+
+    if (runtimeConfig.value?.environment) {
+        const values: any = { ...runtimeConfig.value.environment }
+        StoreAppId(values.APP_ID)
+        StoreAppScope(values.BACKEND_APP_SCOPE)
     }
     return (
         <ErrorBoundary>

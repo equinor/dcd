@@ -4,6 +4,7 @@ import {
     Button, Dialog, Input, Typography,
 } from "@equinor/eds-core-react"
 import { useParams } from "react-router"
+import { useCurrentContext } from "@equinor/fusion"
 import { Case } from "../../models/case/Case"
 import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
@@ -50,7 +51,9 @@ interface Props {
 }
 
 function Import({ onClose, onImport }: Props) {
-    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
+
     const [dataInput, setDataInput] = useState<string>("")
     const [startYear, setStartYear] = useState(0)
     const [, setProject] = useState<Project>()
@@ -64,7 +67,7 @@ function Import({ onClose, onImport }: Props) {
     useEffect(() => {
         (async () => {
             try {
-                const projectId = unwrapProjectId(fusionProjectId)
+                const projectId = unwrapProjectId(currentProject?.externalId)
                 // eslint-disable-next-line no-underscore-dangle
                 const _caseId = unwrapCaseId(caseId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
@@ -72,7 +75,7 @@ function Import({ onClose, onImport }: Props) {
                 const caseResult = unwrapCase(projectResult.cases.find((o) => o.id === _caseId))
                 setCase(caseResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [])

@@ -9,7 +9,8 @@ parameters:
     - name: DBContext
     - name: FusionEnvId
     - name: FusionServiceConnection
-
+    - name: ContainerTag
+ 
 stages:
     - stage: ${{ parameters.appName }}
       displayName: "Deploy  ${{ parameters.envshortname }}"
@@ -39,7 +40,6 @@ stages:
                             action: 'Publish'
                             appKey: 'conceptapp'
                             environment: ${{ parameters.FusionEnvId }}
-                            
           - deployment: "Update_${{ parameters.envshortname }}_Tags"
             environment: ${{ parameters.envfullname }}
             strategy:
@@ -50,14 +50,29 @@ stages:
                               inputs:
                                   containerRegistry: "DCD Registry"
                                   command: "login"
-
                             - template: step-tag-dockerimage.yml
                               parameters:
                                   buildid: ${{ parameters.buildid }}
                                   envshortname: ${{ parameters.envshortname }}
                                   registry: "crdcd.azurecr.io"
                                   repository: "backend"
-
+                                  tag: ${{ parameters.ContainerTag }}
+          - job: "DeployASEContainerBackend"
+            steps:
+            - powershell: |
+                if('${{ parameters.envshortname }}' -like '*ci*') {
+                  Write-Host "##vso[task.setvariable variable=devenvironment;]dev"
+                } else {
+                  Write-Host "##vso[task.setvariable variable=devenvironment;]${{ parameters.envshortname }}"
+                }
+                
+            - template: step-deploycontainer.yml
+              parameters:
+                imageName: "backend"
+                imageTag: "${{ parameters.envshortname }}-release"
+                webAppName: "ase-dcd-backend-$(devenvironment)"
+                serviceConnection: "dcd-pipeline-sp"
+                name: "DeployBackend_${{ parameters.envshortname }}"
           - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             dependsOn:
                 - Deploy_${{ parameters.envshortname }}_Frontend
