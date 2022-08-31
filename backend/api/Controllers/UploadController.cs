@@ -30,7 +30,7 @@ public class UploadController : ControllerBase
 
     [HttpPost(Name = nameof(Upload))]
     [DisableRequestSizeLimit]
-    public async Task<ProjectDto?> Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
+    public ProjectDto? Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
     {
         var graph = _graphRestService.GetFilesFromSite();
         try
