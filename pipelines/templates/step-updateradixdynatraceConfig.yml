@@ -9,6 +9,7 @@ steps:
   inputs:
     targetType: "inline"
     script: |
+        Write-Host ${{parameters.DynatraceToken}}
         $tenantid= "${{ parameters.DynatraceTenantId }}"
 
         $url = "https://spa-equinor.kanari.com/e/$tenantid/api/v1/deployment/installer/agent/connectioninfo"
