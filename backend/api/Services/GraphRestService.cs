@@ -63,10 +63,10 @@ public class GraphRestService
         var query = _config["SharePoint:Prosp:FileQuery"];
         var validMimeTypes = new List<string>
         {
-            ExcelMimeTypes.XLS,
-            ExcelMimeTypes.XLSB,
-            ExcelMimeTypes.XLSM,
-            ExcelMimeTypes.XLSX
+            ExcelMimeTypes.Xls,
+            ExcelMimeTypes.Xlsb,
+            ExcelMimeTypes.Xlsm,
+            ExcelMimeTypes.Xlsx
         };
 
         var driveItemSearchCollectionPage = graphClient.Sites[siteId]
@@ -78,7 +78,9 @@ public class GraphRestService
 
         foreach (var driveItem in driveItemSearchCollectionPage.Where(item =>
                      item.File != null && validMimeTypes.Contains(item.File.MimeType)))
+        {
             ConvertToDto(driveItem, dto);
+        }
 
         return dto;
     }
@@ -115,10 +117,10 @@ public class GraphRestService
     }
 }
 
-public class ExcelMimeTypes
+public static class ExcelMimeTypes
 {
-    public static string XLSX => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-    public static string XLSB => "application/vnd.ms-excel.sheet.binary.macroEnabled.12";
-    public static string XLS => "application/vnd.ms-excel";
-    public static string XLSM => "application/vnd.ms-excel.sheet.macroEnabled.12";
+    public static string Xlsx => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static string Xlsb => "application/vnd.ms-excel.sheet.binary.macroEnabled.12";
+    public static string Xls => "application/vnd.ms-excel";
+    public static string Xlsm => "application/vnd.ms-excel.sheet.macroEnabled.12";
 }

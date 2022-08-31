@@ -24,8 +24,7 @@ public class UploadController : ControllerBase
     [HttpGet(Name = nameof(GetFilesFromSharePoint))]
     public List<DriveItemDto> GetFilesFromSharePoint()
     {
-        var graph = _graphRestService.GetFilesFromSite();
-        return graph;
+        return _graphRestService.GetFilesFromSite();
     }
 
     [HttpPost(Name = nameof(Upload))]
