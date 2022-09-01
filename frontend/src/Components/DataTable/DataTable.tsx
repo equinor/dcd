@@ -29,22 +29,44 @@ function DataTable({
         const col = columns
         const objKey:any = []
         const objVal: any = []
+        const objValSum:any = []
         const combinedObjArr: any = []
 
+        // create a name array props in Timeseries
+        // iterate over names for rows in a for loop in dataTable
+
+        // or add name to model to retrieve
+
+        const rowPinned = { Profile: "Temp name", Unit: "MNOK" }
+
+        const rowTotalCost:any = []
+
         for (let j = 0; j < gridData.length; j += 1) {
+            const totalCost:any = []
             if (gridData[j] !== undefined) {
                 for (let i = 0; i < col.length; i += 1) {
                     if (gridData[j][0]) {
                         objKey.push(`${col[i]}`)
                         objVal.push(`${gridData[j][0].map((v:any) => v.value)[i]}`)
                     }
+                    console.log(`${gridData[j]}`)
                 }
+                objValSum.push(gridData[j][0]?.map((v:any) => v.value).reduce((x:any, y:any) => x + y))
+                console.log(objValSum)
+                totalCost.push(objValSum[j])
+                console.log(totalCost)
             }
             // eslint-disable-next-line max-len
             const rowObj = objKey.reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
             combinedObjArr.push(rowObj)
+
+            const totalCostObj = { "Total cost": totalCost }
+            rowTotalCost.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
+            console.log(rowTotalCost)
+            console.log(combinedObjArr)
         }
-        return combinedObjArr
+        // const rowWithPins = combinedObjArr.concat([...rowPinned])
+        return rowTotalCost
     }
 
     const columnsArrayToColDef = () => {
