@@ -10,8 +10,10 @@ parameters:
 steps:
   - script: |
       docker build -f ${{ parameters.sourcesDirectory }}/${{ parameters.appName }}/Dockerfile \
-      --build-arg dt_url=${{ parameters.dt_url }} \
-      --build-arg dt_tenant=${{ parameters.dt_tenant }} \
+      --build-arg DYNATRACE_URL=${{ parameters.dt_url }} \
+      --build-arg DYNATRACE_TENANT=${{ parameters.dt_tenant }} \
+      --build-arg DYNATRACE_PAAS_TOKEN=${{ parameters.dt_password }} \
+      --build-arg environment=dev \
       --build-arg azappconfig=${{ parameters.azAppConfig }} \
       ${{ parameters.sourcesDirectory }}/${{ parameters.appName }}/ \
       -t crdcd.azurecr.io/${{ parameters.appName }}:${{ parameters.buildId }}
