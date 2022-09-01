@@ -36,3 +36,5 @@ stages:
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
         ContainerTag: "release"
+        DynatraceToken: $(dynatracePreProdToken)
+        DynatraceTenantId: $(dynatracePreProdTenantId)
