@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
-    public class OperationalWellCostsService
+    public class DevelopmentOperationalWellCostsService
     {
         private readonly DcdDbContext _context;
         private readonly ProjectService _projectService;
         private readonly ILogger<SurfService> _logger;
-        public OperationalWellCostsService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+        public DevelopmentOperationalWellCostsService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;
@@ -20,7 +20,7 @@ namespace api.Services
 
         }
 
-        public OperationalWellCostsDto UpdateOperationalWellCosts(OperationalWellCostsDto updatedSurfDto)
+        public DevelopmentOperationalWellCostsDto UpdateOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedSurfDto)
         {
             var existing = GetOperationalWellCosts(updatedSurfDto.Id);
             if (existing == null) {
@@ -28,15 +28,15 @@ namespace api.Services
             }
             var updated = ProjectAdapter.Convert(updatedSurfDto);
 
-            _context.OperationalWellCosts!.Update(updated);
+            _context.DevelopmentOperationalWellCosts!.Update(updated);
             _context.SaveChanges();
             var updatedDto = ProjectDtoAdapter.Convert(updated);
             return updatedDto;
             // return _projectService.GetProjectDto(existing.ProjectId);
         }
-        public OperationalWellCosts GetOperationalWellCosts(Guid id)
+        public DevelopmentOperationalWellCosts GetOperationalWellCosts(Guid id)
         {
-            var operationalWellCosts = _context.OperationalWellCosts!
+            var operationalWellCosts = _context.DevelopmentOperationalWellCosts!
                 .FirstOrDefault(o => o.Id == id);
             if (operationalWellCosts == null)
             {
