@@ -20,6 +20,16 @@ export class __UploadService extends __BaseService {
         const driveItem: DriveItem[] = await this.get<Components.Schemas.DriveItemDto[]>("")
         return driveItem
     }
+
+    public async importFromSharepoint(projectId: string, body: any): Promise<Project> {
+        const res: Components.Schemas.ProjectDto = await this.postWithParams(
+            "sharepoint",
+            { body },
+
+            { params: { projectId } },
+        )
+        return Project.fromJSON(res)
+    }
 }
 
 export async function GetUploadService() {

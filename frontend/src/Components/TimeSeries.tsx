@@ -142,7 +142,7 @@ const TimeSeries = ({
                 />
             </WrapperColumn>
             {!dialogOpen ? null
-                : <Import onClose={() => { setDialogOpen(!dialogOpen) }} onImport={onImport} />}
+                : <Import onClose={() => setDialogOpen(!dialogOpen)} onImport={onImport} />}
         </>
     )
 }

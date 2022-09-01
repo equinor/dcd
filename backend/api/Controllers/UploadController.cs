@@ -15,15 +15,18 @@ public class UploadController : ControllerBase
     // private const string testDriveItemId = "01LF7VUDUW3IAIVUAVBNAJALIVG7JK62EZ";
     private readonly GraphRestService _graphRestService;
     private readonly ImportProspService _prospService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public UploadController(ImportProspService prospService, GraphRestService graphRestService)
+    public UploadController(ImportProspService prospService, GraphRestService graphRestService, IServiceProvider serviceProvider)
     {
         _prospService = prospService;
         _graphRestService = graphRestService;
+        _serviceProvider = serviceProvider;
+
     }
 
     [HttpGet(Name = nameof(GetSharePointFileNamesAndId))]
-    public List<DriveItemDto> GetSharePointFileNamesAndId([FromQuery] string url)
+    public List<DriveItemDto> GetSharePointFileNamesAndId()
     {
         return _graphRestService.GetFilesFromSite();
     }
@@ -73,9 +76,9 @@ public class UploadController : ControllerBase
         }
     }
 
-    [HttpPost("sharepoint", Name = nameof(ImportFromSharepoint))]
+    [HttpPost("sharepoint", Name = nameof(ImportFromSharepointAsync))]
     [DisableRequestSizeLimit]
-    public ProjectDto? ImportFromSharepoint([FromQuery] Guid projectId, [FromBody] SharePointImportDto[] dto)
+    public async Task<ProjectDto?> ImportFromSharepointAsync([FromQuery] Guid projectId, [FromBody] SharePointImportDto[] dto)
     {
         foreach (var item in dto)
         {
@@ -87,11 +90,21 @@ public class UploadController : ControllerBase
             var projectDto = new ProjectDto();
             foreach (var fileInfo in dto)
             {
-                var stream = _graphRestService.GetSharepointFileStream(fileInfo.SharePointFileId);
-
-                if (stream.Length > 0)
+                try
                 {
-                    projectDto = _prospService.ImportProsp(stream, new Guid(fileInfo.Id!), projectId);
+                    var graphService = (GraphRestService?)_serviceProvider.GetService(typeof(GraphRestService));
+
+                    var stream = await graphService!.GetSharepointFileStreamAsync(fileInfo.SharePointFileId);
+                    if (stream.Length > 0)
+                    {
+                        var assets = MapAssets(fileInfo.Surf, fileInfo.Substructure, fileInfo.Topside, fileInfo.Transport);
+                        projectDto = _prospService.ImportProsp(stream, new Guid(fileInfo.Id!), projectId, assets);
+                        // Thread.Sleep(3000);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(fileInfo.Id);
                 }
             }
             return projectDto;
@@ -100,5 +113,23 @@ public class UploadController : ControllerBase
         {
             return null;
         }
+    }
+
+    private Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport)
+    {
+        var assets = new Dictionary<string, bool>()
+                {
+                    {"Surf", false},
+                    {"Topside", false},
+                    {"Substructure", false},
+                    {"Transport", false},
+                };
+
+        if (surf) { assets["Surf"] = true; }
+        if (substructure) { assets["Substructure"] = true; }
+        if (topside) { assets["Topside"] = true; }
+        if (transport) { assets["Transport"] = true; }
+
+        return assets;
     }
 }

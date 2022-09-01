@@ -102,16 +102,14 @@ public class GraphRestService
         dto.Add(item);
     }
 
-    public Stream GetSharepointFileStream(string id)
+    public async Task<Stream> GetSharepointFileStreamAsync(string id)
     {
         var graphClient = GetGraphClient();
         var siteId = GetSiteId();
-        var driveItemStream = graphClient.Sites[siteId]
+        var driveItemStream = await graphClient.Sites[siteId]
             .Drive.Items[id]
             .Content.Request()
-            .GetAsync()
-            .GetAwaiter()
-            .GetResult();
+            .GetAsync();
 
         return driveItemStream;
     }

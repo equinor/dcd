@@ -9,7 +9,7 @@ import { Project } from "../../models/Project"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
 import Import from "../Import/Import"
 import { ImportStatusEnum } from "./ImportStatusEnum"
-import SharePointImport from "./PROSPCase"
+import SharePointImport from "./SharePointImport"
 
 interface Props {
     project: Project

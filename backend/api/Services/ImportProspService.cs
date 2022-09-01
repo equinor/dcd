@@ -367,7 +367,7 @@ public class ImportProspService
         return _projectService.GetProjectDto(projectId);
     }
 
-    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId)
+    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart;
@@ -382,10 +382,25 @@ public class ImportProspService
             if (cellData != null)
             {
                 var parsedData = cellData.ToList();
-                ImportSurf(parsedData, sourceCaseId, projectId);
-                ImportTopside(parsedData, sourceCaseId, projectId);
-                ImportSubstructure(parsedData, sourceCaseId, projectId);
-                ImportTransport(parsedData, sourceCaseId, projectId);
+                if (assets["Surf"])
+                {
+                    ImportSurf(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Topside"])
+                {
+                    ImportTopside(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Substructure"])
+                {
+                    ImportSubstructure(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Transport"])
+                {
+                    ImportTransport(parsedData, sourceCaseId, projectId);
+                }
             }
         }
 

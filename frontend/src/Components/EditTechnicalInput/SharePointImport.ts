@@ -60,4 +60,14 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
 
         return ImportStatusEnum.NotSelected
     }
+
+    static toDto = (value: SharePointImport): Components.Schemas.SharePointImportDto => {
+        const dto: Components.Schemas.SharePointImportDto = { ...value }
+        dto.surf = value.surfState === ImportStatusEnum.Selected
+        dto.substructure = value.substructureState === ImportStatusEnum.Selected
+        dto.topside = value.topsideState === ImportStatusEnum.Selected
+        dto.transport = value.transportState === ImportStatusEnum.Selected
+
+        return dto
+    }
 }
