@@ -258,6 +258,161 @@ const DrainageStrategyView = () => {
                     fuelFlaringAndLosses!, productionProfileGas!,
                     productionProfileOil!, productionProfileWater!,
                     productionProfileWaterInjection!, productionProfileNGL!]}
+                profileName={["CO2 emissions", "Net sales gas",
+                    "Fuel flaring and losses", "Production profile gas",
+                    "Production profile oil", "Production profile water",
+                    "Production profile water injection", "Production profile NGL"]}
+                profileEnum={project?.physUnit!}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setNetSalesGas}
+                setHasChanges={setHasChanges}
+                timeSeries={[netSalesGas!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                timeSeriesTitle={`Net sales gas ${project?.physUnit === 0 ? "(GSm³/yr)" : "(Bscf/yr)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
+                timeSeriesArray={[fuelFlaringAndLosses!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                profileName={["Net sales gas", "Net sales gas",
+                    "Fuel flaring and losses", "Production profile gas",
+                    "Production profile oil", "Production profile water",
+                    "Production profile water injection", "Production profile NGL"]}
+                profileEnum={project?.physUnit!}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setFuelFlaringAndLosses}
+                setHasChanges={setHasChanges}
+                timeSeries={[fuelFlaringAndLosses!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                timeSeriesTitle={`Fuel flaring and losses ${project?.physUnit === 0 ? "(GSm³/yr)" : "(Bscf/yr)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
+                timeSeriesArray={[fuelFlaringAndLosses!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                profileName={["Fuel flaring and losses", "Net sales gas",
+                    "Fuel flaring and losses", "Production profile gas",
+                    "Production profile oil", "Production profile water",
+                    "Production profile water injection", "Production profile NGL"]}
+                profileEnum={project?.physUnit!}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileGas}
+                setHasChanges={setHasChanges}
+                timeSeries={[productionProfileGas!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                timeSeriesTitle={`Production profile gas ${project?.physUnit === 0 ? "(GSm³/yr)" : "(Bscf/yr)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
+                timeSeriesArray={[co2Emissions!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                profileName={["Production profile gas", "Net sales gas",
+                    "Fuel flaring and losses", "Production profile gas",
+                    "Production profile oil", "Production profile water",
+                    "Production profile water injection", "Production profile NGL"]}
+                profileEnum={project?.physUnit!}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileOil}
+                setHasChanges={setHasChanges}
+                timeSeries={[productionProfileOil!]}
+                timeSeriesTitle={`Production profile oil ${project?.physUnit === 0 ? "(MSm³/yr)" : "(mill bbls/yr)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
+                timeSeriesArray={[co2Emissions!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                profileName={["Production profile oil", "Net sales gas",
+                    "Fuel flaring and losses", "Production profile gas",
+                    "Production profile oil", "Production profile water",
+                    "Production profile water injection", "Production profile NGL"]}
+                profileEnum={project?.physUnit!}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileWater}
+                setHasChanges={setHasChanges}
+                timeSeries={[productionProfileWater!]}
+                timeSeriesTitle={`Production profile water ${project?.physUnit === 0 ? "(MSm³/yr)" : "(mill bbls/yr)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
+                timeSeriesArray={[co2Emissions!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                profileName={["Production profile water", "Net sales gas",
+                    "Fuel flaring and losses", "Production profile gas",
+                    "Production profile oil", "Production profile water",
+                    "Production profile water injection", "Production profile NGL"]}
+                profileEnum={project?.physUnit!}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileWaterInjection}
+                setHasChanges={setHasChanges}
+                timeSeries={[productionProfileWaterInjection!]}
+                timeSeriesTitle={`Production profile water injection 
+                    ${project?.physUnit === 0 ? "(MSm³/yr)" : "(mill bbls/yr)"}`}
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear}
+                setLastYear={setLastTSYear}
+                timeSeriesArray={[co2Emissions!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                profileName={["Production profile water injection", "Net sales gas",
+                    "Fuel flaring and losses", "Production profile gas",
+                    "Production profile oil", "Production profile water",
+                    "Production profile water injection", "Production profile NGL"]}
+                profileEnum={project?.physUnit!}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setProductionProfileNGL}
+                setHasChanges={setHasChanges}
+                timeSeries={[productionProfileNGL!]}
+                timeSeriesTitle="Production profile NGL (MTPA)"
+                firstYear={firstTSYear}
+                lastYear={lastTSYear}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
+                timeSeriesArray={[co2Emissions!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
+                profileName={["Production profile NGL", "Net sales gas",
+                    "Fuel flaring and losses", "Production profile gas",
+                    "Production profile oil", "Production profile water",
+                    "Production profile water injection", "Production profile NGL"]}
+                profileEnum={project?.physUnit!}
             />
         </AssetViewDiv>
     )

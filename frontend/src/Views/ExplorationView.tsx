@@ -101,8 +101,8 @@ const ExplorationView = () => {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
                         [newExploration.costProfile,
-                        newExploration.seismicAcquisitionAndProcessing,
-                        newExploration.countryOfficeCost],
+                            newExploration.seismicAcquisitionAndProcessing,
+                            newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -199,6 +199,8 @@ const ExplorationView = () => {
                 setLastYear={setLastTSYear}
                 timeSeriesArray={[costProfile!, seismicAcquisitionAndProcessing!,
                     countryOfficeCost!]}
+                profileName={[""]}
+                profileEnum={project?.physUnit!}
             />
             <ReadOnlyCostProfile
                 dG4Year={caseItem?.DG4Date?.getFullYear()}

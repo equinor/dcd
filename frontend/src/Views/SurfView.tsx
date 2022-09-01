@@ -336,6 +336,22 @@ const SurfView = () => {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
                 timeSeriesArray={[costProfile!, cessationCostProfile!]}
+                profileName={["Cost profile", "Cessation cost profile"]}
+                profileEnum={currency}
+            />
+            <TimeSeries
+                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCessationCostProfile}
+                setHasChanges={setHasChanges}
+                timeSeries={[cessationCostProfile!, costProfile!]}
+                timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
+                timeSeriesArray={[costProfile!, cessationCostProfile!]}
+                profileName={["Cessation cost profile", "Cost profile"]}
+                profileEnum={currency}
             />
         </AssetViewDiv>
     )

@@ -23,6 +23,8 @@ interface Props {
     setLastYear: Dispatch<SetStateAction<number | undefined>>,
     timeSeries: ITimeSeries[] | undefined
     timeSeriesArray: ITimeSeries[] | undefined
+    profileName: string[]
+    profileEnum: number
 }
 
 const TimeSeries = ({
@@ -36,6 +38,8 @@ const TimeSeries = ({
     setFirstYear,
     setLastYear,
     timeSeriesArray,
+    profileName,
+    profileEnum,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -166,6 +170,8 @@ const TimeSeries = ({
                     onCellsChanged={onCellsChanged}
                     dG4Year={dG4Year?.toString()!}
                     timeSeriesArray={timeSeriesArray}
+                    profileName={profileName}
+                    profileEnum={profileEnum}
                 />
             </WrapperColumn>
             {!dialogOpen ? null

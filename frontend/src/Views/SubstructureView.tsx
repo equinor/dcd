@@ -261,6 +261,8 @@ const SubstructureView = () => {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
                 timeSeriesArray={[costProfile!, cessationCostProfile!]}
+                profileName={[""]}
+                profileEnum={project?.physUnit!}
             />
         </AssetViewDiv>
     )

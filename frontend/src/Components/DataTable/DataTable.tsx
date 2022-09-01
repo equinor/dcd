@@ -1,4 +1,6 @@
-import { useMemo } from "react"
+import {
+    useCallback, useEffect, useMemo, useRef, useState,
+} from "react"
 import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
 import { AgGridReact } from "ag-grid-react"
@@ -15,15 +17,47 @@ interface Props {
     onCellsChanged: any
     dG4Year: string
     timeSeriesArray: ITimeSeries[] | undefined
+    profileName: string[]
+    profileEnum: number
 }
 
 function DataTable({
-    columns, gridData, onCellsChanged, dG4Year, timeSeriesArray,
+    columns, gridData, onCellsChanged, dG4Year, timeSeriesArray, profileName, profileEnum,
 }: Props) {
-    // const [rowData, setRowData] = useState<any[]>(rowDataToColumns())
+    // const [rowData, setRowData] = useState<any>(rowDataToColumns())
+    // const gridRef = useRef(HTMLDivElement)
     // const [columnDefs, setColumnDefs] = useState<ColDef[]>()
 
     useAgGridStyles()
+
+    enum CurrencyEnum {
+        "MUSD" = 0,
+        "MNOK" = 1
+    }
+
+    enum GSM3Enum {
+        "GSm³/yr" = 0,
+        "Bscf/yr" = 1
+    }
+
+    enum MSM3Enum {
+        "MSm³/yr" = 0,
+        "mill bbls/yr" = 1
+    }
+
+    const setUnit = (j:number) => {
+        if (["CO2 emissions", "Production profile NGL"].includes(profileName[j])) {
+            return "MTPA"
+        }
+        if (["Net sales gas", "Fuel flaring and losses", "Production profile gas"].includes(profileName[j])) {
+            return GSM3Enum[profileEnum]
+        }
+        if (["Production profile oil", "Production profile water",
+            "Production profile water injection"].includes(profileName[j])) {
+            return MSM3Enum[profileEnum]
+        }
+        return CurrencyEnum[profileEnum]
+    }
 
     const rowDataToColumns = () => {
         const col = columns
@@ -37,11 +71,17 @@ function DataTable({
 
         // or add name to model to retrieve
 
-        const rowPinned = { Profile: "Temp name", Unit: "MNOK" }
+        // pass currency as a prop
+        // then one can retrieve the actual currency enum from each view
+        // but units will be worse as production profiles have different units...
+
+        // const rowPinned = { Profile: "Temp name", Unit: "MNOK 2022" }
 
         const rowTotalCost:any = []
 
         for (let j = 0; j < gridData.length; j += 1) {
+            console.log(setUnit(j))
+            const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
             const totalCost:any = []
             if (gridData[j] !== undefined) {
                 for (let i = 0; i < col.length; i += 1) {
@@ -66,8 +106,11 @@ function DataTable({
             console.log(combinedObjArr)
         }
         // const rowWithPins = combinedObjArr.concat([...rowPinned])
+        console.log(rowTotalCost)
         return rowTotalCost
     }
+
+    // const [rowData, setRowData] = useState(rowDataToColumns())
 
     const columnsArrayToColDef = () => {
         const col = columns
@@ -89,13 +132,33 @@ function DataTable({
         initialWidth: 120,
     }), [])
 
+    // const onGridReady = useCallback((params) => {
+    //     console.log(rowData)
+    //     if (rowData !== undefined) {
+    //         setRowData(rowDataToColumns())
+    //     }
+    // }, [])
+
+    // useEffect(() => {
+    //     (async () => {
+    //         try {
+    //             rowDataToColumns()
+    //         } catch (error) {
+    //             console.error("[CaseView] Error while fetching project ?.externalId}", error)
+    //         }
+    //     })()
+    // }, [])
+
     return (
-        <div className="ag-theme-alpine" style={{ height: 200 }}>
+        <div className="ag-theme-alpine" style={{ height: 500 }}>
             <AgGridReact
+                // ref={gridRef}
+                // onGridReady={onGridReady}
                 rowData={rowDataToColumns()}
                 columnDefs={columnsArrayToColDef()}
                 defaultColDef={defaultColDef}
                 animateRows
+                enableCellChangeFlash
             />
         </div>
     )
