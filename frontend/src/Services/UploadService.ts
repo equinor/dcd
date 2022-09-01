@@ -3,6 +3,7 @@ import { __BaseService } from "./__BaseService"
 
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { Project } from "../models/Project"
+import { DriveItem } from "../models/sharepoint/DriveItem"
 
 export class __UploadService extends __BaseService {
     public async create(sourceCaseId: string, projectId: string, body: any) :Promise<Project> {
@@ -13,6 +14,11 @@ export class __UploadService extends __BaseService {
             { params: { sourceCaseId, projectId } },
         )
         return Project.fromJSON(res)
+    }
+
+    async getSharePointFileNamesAndId(id: string) {
+        const driveItem: DriveItem[] = await this.get<Components.Schemas.DriveItemDto[]>("")
+        return driveItem
     }
 }
 

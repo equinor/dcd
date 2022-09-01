@@ -325,6 +325,48 @@ public class ImportProspService
         _transportService.CreateTransport(dto, sourceCaseId);
     }
 
+    public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
+    {
+        using var ms = new MemoryStream();
+        file.CopyTo(ms);
+        using var document = SpreadsheetDocument.Open(ms, false);
+        var workbookPart = document.WorkbookPart;
+        var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
+            .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
+
+        if (mainSheet?.Id != null && workbookPart != null)
+        {
+            var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
+            var cellData = wsPart?.Worksheet.Descendants<Cell>();
+
+            if (cellData != null)
+            {
+                var parsedData = cellData.ToList();
+                if (assets["Surf"])
+                {
+                    ImportSurf(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Topside"])
+                {
+                    ImportTopside(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Substructure"])
+                {
+                    ImportSubstructure(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Transport"])
+                {
+                    ImportTransport(parsedData, sourceCaseId, projectId);
+                }
+            }
+        }
+
+        return _projectService.GetProjectDto(projectId);
+    }
+
     public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId)
     {
         using var document = SpreadsheetDocument.Open(stream, false);

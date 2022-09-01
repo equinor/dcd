@@ -282,6 +282,15 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface SharePointImportDto {
+            id?: string | null;
+            surf?: boolean;
+            substructure?: boolean;
+            topside?: boolean;
+            transport?: boolean;
+            sharePointFileName?: string | null;
+            sharePointFileId?: string | null;
+        }
         export interface SharepointIds {
             [name: string]: any;
             listId?: string | null;
@@ -545,6 +554,17 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace CreateProjectFromContextId {
+        namespace Parameters {
+            export type ContextId = string; // uuid
+        }
+        export interface QueryParameters {
+            contextId?: Parameters.ContextId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
     namespace CreateSubstructure {
         namespace Parameters {
             export type SourceCaseId = string; // uuid
@@ -750,11 +770,6 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ExplorationWellDto[];
         }
     }
-    namespace GetFilesFromSharePoint {
-        namespace Responses {
-            export type $200 = Components.Schemas.DriveItemDto[];
-        }
-    }
     namespace GetInputToSTEA {
         namespace Parameters {
             export type ProjectId = string; // uuid
@@ -785,6 +800,17 @@ declare namespace Paths {
     namespace GetProjectsFromCommonLibrary {
         namespace Responses {
             export type $200 = Components.Schemas.CommonLibraryProjectDto[];
+        }
+    }
+    namespace GetSharePointFileNamesAndId {
+        namespace Parameters {
+            export type Url = string;
+        }
+        export interface QueryParameters {
+            url?: Parameters.Url;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.DriveItemDto[];
         }
     }
     namespace GetWell {
@@ -818,6 +844,18 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.WellDto[];
+        }
+    }
+    namespace ImportFromSharepoint {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface QueryParameters {
+            projectId?: Parameters.ProjectId /* uuid */;
+        }
+        export type RequestBody = Components.Schemas.SharePointImportDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateCase {

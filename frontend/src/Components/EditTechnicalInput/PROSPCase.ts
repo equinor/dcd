@@ -1,0 +1,63 @@
+import { Case } from "../../models/case/Case"
+import { Project } from "../../models/Project"
+import { ImportStatusEnum } from "./ImportStatusEnum"
+
+export default class SharePointImport implements Components.Schemas.SharePointImportDto {
+    id?: string | undefined
+    selected?: boolean | undefined
+    surfState?: ImportStatusEnum | undefined
+    substructureState?: ImportStatusEnum | undefined
+    topsideState?: ImportStatusEnum | undefined
+    transportState?: ImportStatusEnum | undefined
+    sharePointFileName?: string | undefined
+    sharePointFileId?: string | undefined
+
+    constructor(caseItem: Case, project: Project) {
+        this.id = caseItem.id!
+        this.selected = false
+        this.surfState = SharePointImport.surfStatus(caseItem, project)
+        this.substructureState = SharePointImport.substructureStatus(caseItem, project)
+        this.topsideState = SharePointImport.topsideStatus(caseItem, project)
+        this.transportState = SharePointImport.transportStatus(caseItem, project)
+        this.sharePointFileName = ""
+        this.sharePointFileId = ""
+    }
+
+    static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")
+
+    static surfStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
+        const surfId = caseItem.surfLink
+        const surf = project.surfs.find((s) => s.id === surfId)
+        if (!surf) { return ImportStatusEnum.NotSelected }
+        if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
+
+        return ImportStatusEnum.NotSelected
+    }
+
+    static substructureStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
+        const surfId = caseItem.substructureLink
+        const surf = project.substructures.find((s) => s.id === surfId)
+        if (!surf) { return ImportStatusEnum.NotSelected }
+        if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
+
+        return ImportStatusEnum.NotSelected
+    }
+
+    static topsideStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
+        const surfId = caseItem.topsideLink
+        const surf = project.topsides.find((s) => s.id === surfId)
+        if (!surf) { return ImportStatusEnum.NotSelected }
+        if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
+
+        return ImportStatusEnum.NotSelected
+    }
+
+    static transportStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
+        const surfId = caseItem.transportLink
+        const surf = project.transports.find((s) => s.id === surfId)
+        if (!surf) { return ImportStatusEnum.NotSelected }
+        if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
+
+        return ImportStatusEnum.NotSelected
+    }
+}
