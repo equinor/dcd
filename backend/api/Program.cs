@@ -158,7 +158,7 @@ builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
-builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@".cache/"));
+// builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@".cache/"));
 builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
