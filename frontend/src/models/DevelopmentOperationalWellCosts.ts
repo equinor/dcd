@@ -1,19 +1,17 @@
 import { EMPTY_GUID } from "../Utils/constants"
 
-export class OperationalWellCosts implements Components.Schemas.OperationalWellCostsDto {
+export class DevelopmentOperationalWellCosts implements Components.Schemas.DevelopmentOperationalWellCostsDto {
     id?: string // uuid
     rigUpgrading?: number // double
     rigMobDemob?: number // double
-    projectDrillingCosts?: number // double
     annualWellInterventionCostPerWell?: number // double
     pluggingAndAbandonment?: number // double
 
-    constructor(data?: Components.Schemas.OperationalWellCostsDto) {
+    constructor(data?: Components.Schemas.DevelopmentOperationalWellCostsDto) {
         if (data !== undefined) {
             this.id = data.id
             this.rigUpgrading = data.rigUpgrading
             this.rigMobDemob = data.rigMobDemob
-            this.projectDrillingCosts = data.projectDrillingCosts
             this.annualWellInterventionCostPerWell = data.annualWellInterventionCostPerWell
             this.pluggingAndAbandonment = data.pluggingAndAbandonment
         } else {
@@ -21,7 +19,8 @@ export class OperationalWellCosts implements Components.Schemas.OperationalWellC
         }
     }
 
-    static fromJSON(data: Components.Schemas.OperationalWellCostsDto | undefined): OperationalWellCosts {
-        return new OperationalWellCosts(data)
+    static fromJSON(data: Components.Schemas.DevelopmentOperationalWellCostsDto | undefined):
+        DevelopmentOperationalWellCosts {
+        return new DevelopmentOperationalWellCosts(data)
     }
 }

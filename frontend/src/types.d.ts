@@ -91,6 +91,13 @@ declare namespace Components {
             sum?: number; // double
         }
         export type Currency = 1 | 2; // int32
+        export interface DevelopmentOperationalWellCostsDto {
+            id?: string; // uuid
+            rigUpgrading?: number; // double
+            rigMobDemob?: number; // double
+            annualWellInterventionCostPerWell?: number; // double
+            pluggingAndAbandonment?: number; // double
+        }
         export interface DrainageStrategyDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -149,6 +156,14 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             explorationWells?: ExplorationWellDto[] | null;
         }
+        export interface ExplorationOperationalWellCostsDto {
+            id?: string; // uuid
+            rigUpgrading?: number; // double
+            explorationRigMobDemob?: number; // double
+            explorationProjectDrillingCosts?: number; // double
+            appraisalRigMobDemob?: number; // double
+            appraisalProjectDrillingCosts?: number; // double
+        }
         export interface ExplorationWellDto {
             count?: number; // int32
             drillingSchedule?: DrillingScheduleDto;
@@ -196,14 +211,6 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
-        }
-        export interface OperationalWellCostsDto {
-            id?: string; // uuid
-            rigUpgrading?: number; // double
-            rigMobDemob?: number; // double
-            projectDrillingCosts?: number; // double
-            annualWellInterventionCostPerWell?: number; // double
-            pluggingAndAbandonment?: number; // double
         }
         export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
@@ -258,9 +265,8 @@ declare namespace Components {
             createDate?: string; // date-time
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
-            explorationWellCosts?: OperationalWellCostsDto;
-            appraisalWellCosts?: OperationalWellCostsDto;
-            drillingWellCosts?: OperationalWellCostsDto;
+            explorationOperationalWellCosts?: ExplorationOperationalWellCostsDto;
+            developmentOperationalWellCosts?: DevelopmentOperationalWellCostsDto;
             cases?: CaseDto[] | null;
             wells?: WellDto[] | null;
             explorations?: ExplorationDto[] | null;
@@ -848,6 +854,12 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace UpdateDevelopmentOperationalWellCosts {
+        export type RequestBody = Components.Schemas.DevelopmentOperationalWellCostsDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
+        }
+    }
     namespace UpdateDrainageStrategy {
         export type RequestBody = Components.Schemas.DrainageStrategyDto;
         namespace Responses {
@@ -858,6 +870,12 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.ExplorationDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateExplorationOperationalWellCosts {
+        export type RequestBody = Components.Schemas.ExplorationOperationalWellCostsDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ExplorationOperationalWellCostsDto;
         }
     }
     namespace UpdateExplorationWell {

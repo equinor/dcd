@@ -8,7 +8,8 @@ import { Topside } from "./assets/topside/Topside"
 import { Transport } from "./assets/transport/Transport"
 import { WellProject } from "./assets/wellproject/WellProject"
 import { Well } from "./Well"
-import { OperationalWellCosts } from "./OperationalWellCosts"
+import { ExplorationOperationalWellCosts } from "./ExplorationOperationalWellCosts"
+import { DevelopmentOperationalWellCosts } from "./DevelopmentOperationalWellCosts"
 
 export class Project implements Components.Schemas.ProjectDto {
     cases: Case[]
@@ -32,9 +33,8 @@ export class Project implements Components.Schemas.ProjectDto {
     currency: Components.Schemas.Currency
     physUnit: Components.Schemas.PhysUnit
     wells?: Well[] | undefined
-    explorationWellCosts?: OperationalWellCosts
-    appraisalWellCosts?: OperationalWellCosts
-    drillingWellCosts?: OperationalWellCosts
+    explorationWellCosts?: ExplorationOperationalWellCosts
+    developmentWellCosts?: DevelopmentOperationalWellCosts
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
@@ -58,9 +58,8 @@ export class Project implements Components.Schemas.ProjectDto {
         this.currency = data.currency ?? 1
         this.physUnit = data.physUnit ?? 0
         this.wells = data.wells?.map(Well.fromJSON) ?? []
-        this.explorationWellCosts = OperationalWellCosts.fromJSON(data.explorationWellCosts)
-        this.appraisalWellCosts = OperationalWellCosts.fromJSON(data.appraisalWellCosts)
-        this.drillingWellCosts = OperationalWellCosts.fromJSON(data.drillingWellCosts)
+        this.explorationWellCosts = ExplorationOperationalWellCosts.fromJSON(data.explorationOperationalWellCosts)
+        this.developmentWellCosts = DevelopmentOperationalWellCosts.fromJSON(data.developmentOperationalWellCosts)
     }
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {

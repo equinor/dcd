@@ -17,10 +17,11 @@ namespace api.Services
             _logger = loggerFactory.CreateLogger<SurfService>();
         }
 
-        public DevelopmentOperationalWellCostsDto UpdateOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedSurfDto)
+        public DevelopmentOperationalWellCostsDto? UpdateOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedSurfDto)
         {
             var existing = GetOperationalWellCosts(updatedSurfDto.Id);
-            if (existing == null) {
+            if (existing == null)
+            {
                 return null;
             }
             var updated = DevelopmentOperationalWellCostsAdapter.Convert(updatedSurfDto);
