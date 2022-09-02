@@ -149,14 +149,13 @@ builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
+builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryClientOptions { TokenProviderConnectionString = commonLibTokenConnection });
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ImportProspService>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
-builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
-
-);
+builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer())));
 builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

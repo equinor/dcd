@@ -1,9 +1,7 @@
-
 using api.Models;
 
 namespace api.Dtos
 {
-
     public class ProjectDto
     {
         public Guid ProjectId { get; set; }
@@ -29,25 +27,5 @@ namespace api.Dtos
         public ICollection<TransportDto>? Transports { get; set; }
         public ICollection<DrainageStrategyDto>? DrainageStrategies { get; set; }
         public ICollection<WellProjectDto>? WellProjects { get; set; }
-    }
-
-    public class ExplorationOperationalWellCostsDto
-    {
-        public Guid Id { get; set; }
-
-        public double RigUpgrading { get; set; }
-        public double ExplorationRigMobDemob { get; set; }
-        public double ExplorationProjectDrillingCosts { get; set; }
-        public double AppraisalRigMobDemob { get; set; }
-        public double AppraisalProjectDrillingCosts { get; set; }
-    }
-
-        public class DevelopmentOperationalWellCostsDto
-    {
-        public Guid Id { get; set; }
-        public double RigUpgrading { get; set; }
-        public double RigMobDemob { get; set; }
-        public double AnnualWellInterventionCostPerWell { get; set; }
-        public double PluggingAndAbandonment { get; set; }
     }
 }

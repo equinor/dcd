@@ -104,43 +104,10 @@ namespace api.Adapters
                 ProjectPhase = project.ProjectPhase,
                 Currency = project.Currency,
                 PhysUnit = project.PhysicalUnit,
-                ExplorationOperationalWellCosts = Convert(project.ExplorationOperationalWellCosts),
-                DevelopmentOperationalWellCosts = Convert(project.DevelopmentOperationalWellCosts),
+                ExplorationOperationalWellCosts = ExplorationOperationalWellCostsDtoAdapter.Convert(project.ExplorationOperationalWellCosts),
+                DevelopmentOperationalWellCosts = DevelopmentOperationalWellCostsDtoAdapter.Convert(project.DevelopmentOperationalWellCosts),
                 Cases = new List<CaseDto>(),
                 Wells = new List<WellDto>(),
-            };
-        }
-
-        public static ExplorationOperationalWellCostsDto Convert(ExplorationOperationalWellCosts? explorationOperationalWellCostsDto)
-        {
-            if (explorationOperationalWellCostsDto == null)
-            {
-                return null!;
-            }
-            return new ExplorationOperationalWellCostsDto
-            {
-                Id = explorationOperationalWellCostsDto.Id,
-                RigUpgrading = explorationOperationalWellCostsDto.RigUpgrading,
-                ExplorationRigMobDemob = explorationOperationalWellCostsDto.ExplorationRigMobDemob,
-                ExplorationProjectDrillingCosts = explorationOperationalWellCostsDto.ExplorationProjectDrillingCosts,
-                AppraisalRigMobDemob = explorationOperationalWellCostsDto.AppraisalRigMobDemob,
-                AppraisalProjectDrillingCosts = explorationOperationalWellCostsDto.AppraisalProjectDrillingCosts,
-            };
-        }
-
-        public static DevelopmentOperationalWellCostsDto Convert(DevelopmentOperationalWellCosts? developmentOperationalWellCostsDto)
-        {
-            if (developmentOperationalWellCostsDto == null)
-            {
-                return null!;
-            }
-            return new DevelopmentOperationalWellCostsDto
-            {
-                Id = developmentOperationalWellCostsDto.Id,
-                RigUpgrading = developmentOperationalWellCostsDto.RigUpgrading,
-                RigMobDemob = developmentOperationalWellCostsDto.RigMobDemob,
-                AnnualWellInterventionCostPerWell = developmentOperationalWellCostsDto.AnnualWellInterventionCostPerWell,
-                PluggingAndAbandonment = developmentOperationalWellCostsDto.PluggingAndAbandonment,
             };
         }
 

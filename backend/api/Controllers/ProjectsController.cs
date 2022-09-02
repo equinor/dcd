@@ -63,9 +63,8 @@ namespace api.Controllers
                     ProjectId = projectMaster.Identity,
                     ProjectCategory = category,
                     ProjectPhase = phase,
-                    ExplorationWellCosts = new OperationalWellCostsDto(),
-                    AppraisalWellCosts = new OperationalWellCostsDto(),
-                    DrillingWellCosts = new OperationalWellCostsDto(),
+                    ExplorationOperationalWellCosts = new ExplorationOperationalWellCostsDto(),
+                    DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCostsDto(),
                 };
                 var project = ProjectAdapter.Convert(projectDto);
                 return _projectService.CreateProject(project);

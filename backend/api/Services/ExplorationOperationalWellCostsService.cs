@@ -3,8 +3,6 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace api.Services
 {
     public class ExplorationOperationalWellCostsService
@@ -17,7 +15,6 @@ namespace api.Services
             _context = context;
             _projectService = projectService;
             _logger = loggerFactory.CreateLogger<SurfService>();
-
         }
 
         public ExplorationOperationalWellCostsDto UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto updatedSurfDto)
@@ -26,11 +23,11 @@ namespace api.Services
             if (existing == null) {
                 return null;
             }
-            var updated = ProjectAdapter.Convert(updatedSurfDto);
+            var updated = ExplorationOperationalWellCostsAdapter.Convert(updatedSurfDto);
 
             _context.ExplorationOperationalWellCosts!.Update(updated);
             _context.SaveChanges();
-            var updatedDto = ProjectDtoAdapter.Convert(updated);
+            var updatedDto = ExplorationOperationalWellCostsDtoAdapter.Convert(updated);
             return updatedDto;
             // return _projectService.GetProjectDto(existing.ProjectId);
         }

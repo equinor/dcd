@@ -20,10 +20,8 @@ namespace api.Models
         public ICollection<Transport>? Transports { get; set; }
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
-
         public ExplorationOperationalWellCosts ExplorationOperationalWellCosts { get; set; } = null!;
         public Guid ExplorationOperationalWellCostsId { get; set; }
-
         public DevelopmentOperationalWellCosts DevelopmentOperationalWellCosts { get; set; } = null!;
         public Guid DevelopmentOperationalWellCostsId { get; set; }
         public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
@@ -31,26 +29,6 @@ namespace api.Models
         public ICollection<Exploration>? Explorations { get; set; }
     }
 
-    public class ExplorationOperationalWellCosts
-    {
-        public Project? Project { get; set; }
-        public Guid Id { get; set; }
-        public double RigUpgrading { get; set; }
-        public double ExplorationRigMobDemob { get; set; }
-        public double ExplorationProjectDrillingCosts { get; set; }
-        public double AppraisalRigMobDemob { get; set; }
-        public double AppraisalProjectDrillingCosts { get; set; }
-    }
-
-    public class DevelopmentOperationalWellCosts
-    {
-        public Project? Project { get; set; }
-        public Guid Id { get; set; }
-        public double RigUpgrading { get; set; }
-        public double RigMobDemob { get; set; }
-        public double AnnualWellInterventionCostPerWell { get; set; }
-        public double PluggingAndAbandonment { get; set; }
-    }
 
     public enum PhysUnit
     {
