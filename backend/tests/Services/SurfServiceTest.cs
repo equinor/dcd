@@ -175,7 +175,6 @@ namespace tests
             Assert.Throws<ArgumentException>(() => surfService.DeleteSurf(testSurf.Id));
         }
 
-
         private static Surf CreateTestSurf(Project project)
         {
             return new SurfBuilder

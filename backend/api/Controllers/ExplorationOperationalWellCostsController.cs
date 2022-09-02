@@ -20,7 +20,7 @@ namespace api.Controllers
         }
 
         [HttpPut(Name = "UpdateExplorationOperationalWellCosts")]
-        public ExplorationOperationalWellCostsDto UpdateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
+        public ExplorationOperationalWellCostsDto? UpdateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
         {
             return _operationalWellCostsService.UpdateOperationalWellCosts(dto);
         }

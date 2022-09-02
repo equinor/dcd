@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
     Dispatch, FunctionComponent, SetStateAction, useState,
 } from "react"
@@ -8,6 +9,10 @@ import {
 import { clear } from "@equinor/eds-icons"
 import WellCostsTab from "./WellCostsTab"
 import { Project } from "../../models/Project"
+import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
+import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
+import { ExplorationWell } from "../../models/ExplorationWell"
+import { WellProjectWell } from "../../models/WellProjectWell"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -52,6 +57,10 @@ export const EditTechnicalInputModal: FunctionComponent<Props> = ({
     toggleEditTechnicalInputModal, isOpen, setProject, project,
 }) => {
     const [activeTab, setActiveTab] = useState<number>(0)
+    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
+    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts>()
+    const [wellProjectWell, setWellProjectWell] = useState<WellProjectWell[]>()
+    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts>()
 
     if (!isOpen) return null
     return (
