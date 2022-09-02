@@ -10,7 +10,9 @@ parameters:
     - name: FusionEnvId
     - name: FusionServiceConnection
     - name: ContainerTag
- 
+    - name: DynatraceTenantId
+    - name: DynatraceToken
+
 stages:
     - stage: ${{ parameters.appName }}
       displayName: "Deploy  ${{ parameters.envshortname }}"
@@ -81,6 +83,12 @@ stages:
             cancelTimeoutInMinutes: 60
             timeoutInMinutes: 60
             steps:
+                - template: step-updateradixdynatraceConfig.yml
+                  parameters:
+                    radixToken: ${{ parameters.radixToken }}
+                    DynatraceTenantId: ${{ parameters.DynatraceTenantId }}
+                    DynatraceToken: ${{ parameters.DynatraceToken }}
+
                 - task: PowerShell@2
                   displayName: "Trigger Radix Build-Deploy"
                   inputs:

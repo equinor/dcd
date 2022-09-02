@@ -1,65 +1,52 @@
-using System.Net.Http.Headers;
-
 using api.Dtos;
 using api.Services;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Controllers
+namespace api.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+[Authorize]
+public class UploadController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class UploadController : ControllerBase
+    private const string testDriveItemId = "01LF7VUDUW3IAIVUAVBNAJALIVG7JK62EZ";
+    private readonly GraphRestService _graphRestService;
+    private readonly ImportProspService _prospService;
+
+    public UploadController(ImportProspService prospService, GraphRestService graphRestService)
     {
-        private readonly ImportProspService _prospService;
-        public UploadController(ImportProspService prospService)
+        _prospService = prospService;
+        _graphRestService = graphRestService;
+    }
+
+    [HttpGet(Name = nameof(GetFilesFromSharePoint))]
+    public List<DriveItemDto> GetFilesFromSharePoint()
+    {
+        return _graphRestService.GetFilesFromSite();
+    }
+
+    [HttpPost(Name = nameof(Upload))]
+    [DisableRequestSizeLimit]
+    public ProjectDto? Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
+    {
+        var graph = _graphRestService.GetFilesFromSite();
+        try
         {
-            _prospService = prospService;
+            var stream = _graphRestService.GetSharepointFileStream(testDriveItemId);
+
+            if (stream.Length > 0)
+            {
+                var dto = _prospService.ImportProsp(stream, sourceCaseId, projectId);
+                return dto;
+            }
+
+            return null;
         }
-
-        [HttpPost(Name = "Upload"), DisableRequestSizeLimit]
-        public async Task<ProjectDto?> Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
+        catch (Exception)
         {
-            try
-            {
-                var formCollection = await Request.ReadFormAsync();
-                var file = formCollection.Files.First();
-                var assets = new Dictionary<string, bool>()
-                {
-                    {"Surf", false},
-                    {"Topside", false},
-                    {"Substructure", false},
-                    {"Transport", false},
-
-                };
-
-                if (file.Length > 0)
-                {
-                    if (formCollection.TryGetValue("Surf", out var surf) && surf == "true")
-                    {
-                        assets["Surf"] = true;
-                    }
-                    if (formCollection.TryGetValue("Topside", out var topside) && topside == "true")
-                    {
-                        assets["Topside"] = true;
-                    }
-                    if (formCollection.TryGetValue("Substructure", out var substructure) && substructure == "true")
-                    {
-                        assets["Substructure"] = true;
-                    }
-                    if (formCollection.TryGetValue("Transport", out var transport) && transport == "true")
-                    {
-                        assets["Transport"] = true;
-                    }
-                    var dto = _prospService.ImportProsp(file, sourceCaseId, projectId, assets);
-                    return dto;
-                }
-                return null;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return null;
         }
     }
 }
