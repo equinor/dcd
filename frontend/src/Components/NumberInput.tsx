@@ -1,8 +1,6 @@
 import { Input, Label } from "@equinor/eds-core-react"
 import { ChangeEventHandler, Dispatch, SetStateAction } from "react"
-import {
-    WrapperColumn,
-} from "../Views/Asset/StyledAssetComponents"
+import { WrapperColumnTablePeriod } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
     setValue?: Dispatch<SetStateAction<number | undefined>>
@@ -35,7 +33,7 @@ const NumberInput = ({
     }
 
     return (
-        <WrapperColumn>
+        <WrapperColumnTablePeriod>
             <Label htmlFor="NumberInput" label={label} />
             <Input
                 id="NumberInput"
@@ -49,7 +47,7 @@ const NumberInput = ({
                     }
                 }}
             />
-        </WrapperColumn>
+        </WrapperColumnTablePeriod>
     )
 }
 

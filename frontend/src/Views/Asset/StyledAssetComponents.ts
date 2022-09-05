@@ -21,6 +21,14 @@ export const Wrapper = styled.div`
     flex-direction: row;
 `
 
+export const WrapperTablePeriod = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-left: 70rem;
+    margin-bottom: 2rem;
+    align-content: right;
+`
+
 export const WrapperInherited = styled.div`
     display: flex;
     flex-direction: row;
@@ -39,6 +47,14 @@ export const WrapperRow = styled.div`
 export const WrapperColumn = styled.div`
     display: flex;
     flex-direction: column;
+`
+
+export const WrapperColumnTablePeriod = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    margin-top: -1rem;
 `
 
 export const SaveButton = styled(Button)`

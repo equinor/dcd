@@ -244,6 +244,9 @@ const DrainageStrategyView = () => {
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setCo2Emissions}
+                // setTimeSeries={[setCo2Emissions, setNetSalesGas, setFuelFlaringAndLosses,
+                //     setProductionProfileGas, setProductionProfileOil, setProductionProfileWater,
+                //     setProductionProfileWaterInjection, setProductionProfileNGL]}
                 setHasChanges={setHasChanges}
                 timeSeries={[co2Emissions!, netSalesGas!,
                     fuelFlaringAndLosses!, productionProfileGas!,
@@ -337,7 +340,10 @@ const DrainageStrategyView = () => {
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setProductionProfileOil}
                 setHasChanges={setHasChanges}
-                timeSeries={[productionProfileOil!]}
+                timeSeries={[productionProfileOil!, netSalesGas!,
+                    fuelFlaringAndLosses!, productionProfileGas!,
+                    productionProfileOil!, productionProfileWater!,
+                    productionProfileWaterInjection!, productionProfileNGL!]}
                 timeSeriesTitle={`Production profile oil ${project?.physUnit === 0 ? "(MSm³/yr)" : "(mill bbls/yr)"}`}
                 firstYear={firstTSYear}
                 lastYear={lastTSYear}

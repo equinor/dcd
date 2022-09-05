@@ -24,9 +24,10 @@ interface Props {
 function DataTable({
     columns, gridData, onCellsChanged, dG4Year, timeSeriesArray, profileName, profileEnum,
 }: Props) {
-    // const [rowData, setRowData] = useState<any>(rowDataToColumns())
+    const [rowData, setRowData] = useState<any>([{ 2026: 1, 2027: 5 }])
     // const gridRef = useRef(HTMLDivElement)
     // const [columnDefs, setColumnDefs] = useState<ColDef[]>()
+    const gridRef = useRef<AgGridReact | null>(null)
 
     useAgGridStyles()
 
@@ -59,6 +60,8 @@ function DataTable({
         return CurrencyEnum[profileEnum]
     }
 
+    console.log(gridData)
+
     const rowDataToColumns = () => {
         const col = columns
         const objKey:any = []
@@ -79,34 +82,66 @@ function DataTable({
 
         const rowTotalCost:any = []
 
-        for (let j = 0; j < gridData.length; j += 1) {
-            console.log(setUnit(j))
-            const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
-            const totalCost:any = []
-            if (gridData[j] !== undefined) {
-                for (let i = 0; i < col.length; i += 1) {
-                    if (gridData[j][0]) {
-                        objKey.push(`${col[i]}`)
-                        objVal.push(`${gridData[j][0].map((v:any) => v.value)[i]}`)
-                    }
-                    console.log(`${gridData[j]}`)
-                }
-                objValSum.push(gridData[j][0]?.map((v:any) => v.value).reduce((x:any, y:any) => x + y))
-                console.log(objValSum)
-                totalCost.push(objValSum[j])
-                console.log(totalCost)
-            }
-            // eslint-disable-next-line max-len
-            const rowObj = objKey.reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
-            combinedObjArr.push(rowObj)
+        // CHECK IF griddata only has 0 values? after griddata gets 0 values,
+        // it uses griddata.length >= 1
+        if (gridData.length === 0) {
+            for (let j = 0; j < profileName.length; j += 1) {
+                console.log(setUnit(j))
+                const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
+                // if (gridData[j] !== undefined) {
+                //     for (let i = 0; i < col.length; i += 1) {
+                //         if (gridData[j][0]) {
+                //             objKey.push(`${col[i]}`)
+                //             objVal.push(`${0}`)
+                //         }
+                //         // console.log(`${gridData[j]}`)
+                //     }
+                //     // objValSum.push(gridData[j][0]?.map((v:any) => v.value).reduce((x:any, y:any) => x + y))
+                //     // // console.log(objValSum)
+                //     // totalCost.push(objValSum[j])
+                //     // console.log(totalCost)
+                // }
+                // eslint-disable-next-line max-len
+                const rowObj = objKey.reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
+                combinedObjArr.push(rowObj)
 
-            const totalCostObj = { "Total cost": totalCost }
-            rowTotalCost.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
-            console.log(rowTotalCost)
-            console.log(combinedObjArr)
+                const totalCostObj = { "Total cost": 0 }
+                rowTotalCost.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
+                // console.log(rowTotalCost)
+                // console.log(combinedObjArr)
+            }
+        }
+
+        if (gridData.length >= 1) {
+            for (let j = 0; j < gridData.length; j += 1) {
+                console.log(setUnit(j))
+                const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
+                const totalCost:any = []
+                if (gridData[j] !== undefined) {
+                    for (let i = 0; i < col.length; i += 1) {
+                        if (gridData[j][0]) {
+                            objKey.push(`${col[i]}`)
+                            objVal.push(`${gridData[j][0].map((v:any) => v.value)[i]}`)
+                        }
+                        // console.log(`${gridData[j]}`)
+                    }
+                    objValSum.push(gridData[j][0]?.map((v:any) => v.value).reduce((x:any, y:any) => x + y))
+                    // console.log(objValSum)
+                    totalCost.push(objValSum[j])
+                    // console.log(totalCost)
+                }
+                // eslint-disable-next-line max-len
+                const rowObj = objKey.reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
+                combinedObjArr.push(rowObj)
+    
+                const totalCostObj = { "Total cost": totalCost }
+                rowTotalCost.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
+                // console.log(rowTotalCost)
+                // console.log(combinedObjArr)
+            }
         }
         // const rowWithPins = combinedObjArr.concat([...rowPinned])
-        console.log(rowTotalCost)
+        // console.log(rowTotalCost)
         return rowTotalCost
     }
 
@@ -130,6 +165,8 @@ function DataTable({
         resizable: true,
         sortable: true,
         initialWidth: 120,
+        editable: true,
+        flex: 1,
     }), [])
 
     // const onGridReady = useCallback((params) => {
@@ -152,7 +189,7 @@ function DataTable({
     return (
         <div className="ag-theme-alpine" style={{ height: 500 }}>
             <AgGridReact
-                // ref={gridRef}
+                ref={gridRef}
                 // onGridReady={onGridReady}
                 rowData={rowDataToColumns()}
                 columnDefs={columnsArrayToColDef()}

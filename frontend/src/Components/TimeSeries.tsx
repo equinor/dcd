@@ -9,8 +9,9 @@ import {
 import Import from "./Import/Import"
 import { ITimeSeries } from "../models/ITimeSeries"
 import {
-    DeleteButton, ImportButton, Wrapper, WrapperColumn,
+    DeleteButton, ImportButton, Wrapper, WrapperColumn, WrapperTablePeriod,
 } from "../Views/Asset/StyledAssetComponents"
+import NumberInput from "./NumberInput"
 
 interface Props {
     dG4Year: number | undefined
@@ -45,8 +46,11 @@ const TimeSeries = ({
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [dialogOpen, setDialogOpen] = useState(false)
     // console.log(timeSeriesArray)
+    const [beginningYear, setBeginningYear] = useState<number | undefined>()
+    const [endingYear, setEndingYear] = useState<number | undefined>()
 
     const combinedTimeseries:any = []
+    const combinedEmptyTimeseries:any = []
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         // for each timeseries => build grid
@@ -100,6 +104,10 @@ const TimeSeries = ({
     useEffect(() => {
         buildAlignedGrid(combinedTimeseries!)
 
+        if (gridData !== undefined) {
+            setBeginningYear(firstYear)
+            setEndingYear(lastYear)
+        }
         // if (timeSeriesArray![0] !== undefined) {
         //     console.log(timeSeriesArray![0].values)
         // }
@@ -143,6 +151,109 @@ const TimeSeries = ({
         setTimeSeries(undefined)
     }
 
+    // const startYear = ""
+    // const endYear = ""
+
+    // const findFirstAndLastYear = () => {
+    //     const startYears = []
+    //     for (let i = 0; i < timeSeries![i]?.values?.length!; i += 1) {
+    //         startYears.push(timeSeries![i]?.startYear)
+    //     }
+    // }
+
+    const createEmptyGrid = (j: any) => {
+        // if (timeSeries![j] !== undefined) {
+        //     console.log(timeSeries![j])
+        // }
+        const newTimeSeries: ITimeSeries = { ...timeSeries![j] }
+        const colYears = []
+        for (let c = beginningYear; c! < endingYear!; c! += 1) {
+            colYears.push(c!.toString())
+        }
+        setColumns(colYears)
+        console.log(timeSeries![j])
+
+        newTimeSeries.startYear = -Number(colYears.length - 1)
+        newTimeSeries.values = new Array(colYears.length).fill(0)
+
+        // newTimeSeries.startYear = 0
+        // newTimeSeries.values = [0]
+        // for (let i = 0; i < columns.length; i += 1) {
+        //     newTimeSeries.values!.push(0)
+        //     // console.log(`${gridData[j]}`)
+        // }
+        // console.log(newTimeSeries)
+
+        // const allZeroes: Number[] = Array.from({
+        //     length: Number(lastYear) - Number(firstYear),
+        // }, (() => 0))
+
+        // const assetZeroesStartGrid = buildZeroGridData(allZeroes)
+        // // console.log(newGridData)
+        // setGridData([assetZeroesStartGrid[j]])
+        setTimeSeries(newTimeSeries)
+
+        // setTimeSeries må være en array!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        // buildAlignedGrid(newTimeSeries)
+        // setHasChanges(true)
+
+        if (newTimeSeries !== undefined) {
+            const zeroesAtStart: Number[] = Array.from({
+                length: Number(newTimeSeries.startYear!)
+                + Number(dG4Year) - Number(beginningYear),
+            }, (() => 0))
+
+            const zeroesAtEnd: Number[] = Array.from({
+                length: Number(lastYear)
+                - (Number(newTimeSeries.startYear!)
+                + Number(dG4Year)
+                + Number(newTimeSeries.values!.length!)),
+            }, (() => 0))
+
+            const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
+            const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
+            const newGridData = buildGridData(newTimeSeries)
+
+            const alignedAssetGridData = new Array(
+                assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
+            )
+
+            combinedEmptyTimeseries.push(alignedAssetGridData)
+        }
+        setGridData(combinedEmptyTimeseries)
+        // buildAlignedGrid(newTimeSeries)
+        setHasChanges(true)
+    }
+
+    const addTimeSeries = () => {
+        // when apply
+        // for each timeseries add column years
+        // set rows to be 0 for entire spans
+        // console.log(timeSeries)
+
+        // set startYear and endYear from number inputs
+
+        const colYears = []
+        console.log(firstYear)
+        console.log(lastYear)
+        if (beginningYear?.toString().length === 4 && endingYear?.toString().length === 4) {
+            for (let j = beginningYear; j! < lastYear!; j! += 1) {
+                colYears.push(j!.toString())
+            }
+            setColumns(colYears)
+            console.log(timeSeries?.length)
+            for (let i = 0; i < timeSeries?.length!; i += 1) {
+                createEmptyGrid(i)
+            }
+        }
+
+        // console.log(firstYear)
+        // console.log(lastYear)
+
+        // console.log(colYears)
+    }
+
     return (
         <>
             <Wrapper>
@@ -162,6 +273,26 @@ const TimeSeries = ({
                     Delete
                 </DeleteButton>
             </Wrapper>
+            <WrapperTablePeriod>
+                <NumberInput // must fix new custom wrapper that breaks other numberinputs
+                    value={beginningYear?.toString().length === 4 ? beginningYear : 2020}
+                    setValue={setBeginningYear}
+                    integer
+                    label="Start year"
+                />
+                <Typography variant="h2">-</Typography>
+                <NumberInput
+                    value={endingYear?.toString().length === 4 ? (Number(endingYear) - 1) : 2030}
+                    setValue={setEndingYear}
+                    integer
+                    label="End year"
+                />
+                <ImportButton
+                    onClick={addTimeSeries}
+                >
+                    Apply
+                </ImportButton>
+            </WrapperTablePeriod>
 
             <WrapperColumn>
                 <DataTable
