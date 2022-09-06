@@ -4,6 +4,8 @@ using api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
+using Microsoft.Graph;
+using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
@@ -13,22 +15,53 @@ namespace api.Controllers;
 public class UploadController : ControllerBase
 {
     // private const string testDriveItemId = "01LF7VUDUW3IAIVUAVBNAJALIVG7JK62EZ";
-    private readonly GraphRestService _graphRestService;
+    private readonly GraphServiceClient _graphServiceClient;
     private readonly ImportProspService _prospService;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _config;
+    private readonly GraphRestService _graphRestService;
 
-    public UploadController(ImportProspService prospService, GraphRestService graphRestService, IServiceProvider serviceProvider)
+
+    public UploadController(ImportProspService prospService, GraphServiceClient  graphService, IServiceProvider serviceProvider, IConfiguration config, GraphRestService graphRestService)
     {
         _prospService = prospService;
-        _graphRestService = graphRestService;
+        _graphServiceClient = graphService;
         _serviceProvider = serviceProvider;
+        _config = config;
+        _graphRestService = graphRestService;
 
     }
 
     [HttpGet(Name = nameof(GetSharePointFileNamesAndId))]
     public List<DriveItemDto> GetSharePointFileNamesAndId()
     {
-        return _graphRestService.GetFilesFromSite();
+        var siteId = _config["SharePoint:Prosp:SiteId"];
+        var dto = new List<DriveItemDto>();
+        var query = _config["SharePoint:Prosp:FileQuery"];
+        var validMimeTypes = new List<string>
+        {
+            ExcelMimeTypes.Xls,
+            ExcelMimeTypes.Xlsb,
+            ExcelMimeTypes.Xlsm,
+            ExcelMimeTypes.Xlsx
+        };
+
+        var driveItemSearchCollectionPage = _graphServiceClient.Sites[siteId]
+            .Drive.Root
+            .Search(query)
+            .Request()
+            .GetAsync()
+            .GetAwaiter()
+            .GetResult();
+
+        foreach (var driveItem in driveItemSearchCollectionPage.Where(item =>
+                     item.File != null && validMimeTypes.Contains(item.File.MimeType)))
+        {
+            ConvertToDto(driveItem, dto);
+        }
+
+        return dto;
+        // return _graphRestService.GetFilesFromSite();
     }
 
     [HttpPost(Name = "Upload"), DisableRequestSizeLimit]
@@ -87,32 +120,52 @@ public class UploadController : ControllerBase
 
         try
         {
-            var projectDto = new ProjectDto();
-            foreach (var fileInfo in dto)
-            {
-                try
-                {
-                    var graphService = (GraphRestService?)_serviceProvider.GetService(typeof(GraphRestService));
+            var projectDto = await ConvertSharepointFilesToProjectDto(projectId, dto);
 
-                    var stream = await graphService!.GetSharepointFileStreamAsync(fileInfo.SharePointFileId);
-                    if (stream.Length > 0)
-                    {
-                        var assets = MapAssets(fileInfo.Surf, fileInfo.Substructure, fileInfo.Topside, fileInfo.Transport);
-                        projectDto = _prospService.ImportProsp(stream, new Guid(fileInfo.Id!), projectId, assets);
-                        // Thread.Sleep(3000);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(fileInfo.Id);
-                }
-            }
             return projectDto;
         }
         catch (Exception)
         {
             return null;
         }
+    }
+
+    private async Task<ProjectDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dto)
+    {
+        var projectDto = new ProjectDto();
+        var siteId = _config["SharePoint:Prosp:SiteId"];
+        var fileIds = new Dictionary<Guid, string>();
+        foreach (var fileInfo in dto)
+        {
+            fileIds.Add(new Guid(fileInfo.Id!), fileInfo.SharePointFileId);
+        }
+
+        var caseAndStream = new Dictionary<Guid, Stream>();
+        foreach (var item in fileIds)
+        {
+            var driveItemStream = await _graphServiceClient.Sites[siteId]
+                .Drive.Items[item.Value]
+                .Content.Request()
+                .GetAsync();
+
+            caseAndStream.Add(item.Key, driveItemStream);
+        }
+
+        foreach (var item in caseAndStream)
+        {
+            if (item.Value.Length > 0)
+            {
+                foreach (var iteminfo in dto.Where(d => new Guid(d.Id) == item.Key))
+                {
+                    var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside, iteminfo.Transport);
+                    projectDto = _prospService.ImportProsp(item.Value, item.Key, projectId, assets);
+                }
+
+                // Thread.Sleep(3000);
+            }
+        }
+
+        return projectDto;
     }
 
     private Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport)
@@ -132,4 +185,21 @@ public class UploadController : ControllerBase
 
         return assets;
     }
+    private static void ConvertToDto(DriveItem driveItem, List<DriveItemDto> dto)
+    {
+        var item = new DriveItemDto
+        {
+            Name = driveItem.Name,
+            Id = driveItem.Id,
+            CreatedBy = driveItem.CreatedBy,
+            Content = driveItem.Content,
+            CreatedDateTime = driveItem.CreatedDateTime,
+            Size = driveItem.Size,
+            SharepointIds = driveItem.SharepointIds,
+            LastModifiedBy = driveItem.LastModifiedBy,
+            LastModifiedDateTime = driveItem.LastModifiedDateTime
+        };
+        dto.Add(item);
+    }
+
 }

@@ -45,6 +45,8 @@ declare namespace Components {
             capex?: number; // double
             capexYear?: CapexYear;
             cessationCost?: CessationCostDto;
+            sharepointFileId?: string | null;
+            sharepointFileName?: string | null;
         }
         export interface CessationCostDto {
             id?: string; // uuid
@@ -803,12 +805,6 @@ declare namespace Paths {
         }
     }
     namespace GetSharePointFileNamesAndId {
-        namespace Parameters {
-            export type Url = string;
-        }
-        export interface QueryParameters {
-            url?: Parameters.Url;
-        }
         namespace Responses {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
@@ -846,7 +842,7 @@ declare namespace Paths {
             export type $200 = Components.Schemas.WellDto[];
         }
     }
-    namespace ImportFromSharepoint {
+    namespace ImportFromSharepointAsync {
         namespace Parameters {
             export type ProjectId = string; // uuid
         }

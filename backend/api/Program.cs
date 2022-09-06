@@ -41,10 +41,14 @@ var commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"))
+    .EnableTokenAcquisitionToCallDownstreamApi()
+    .AddMicrosoftGraph(builder.Configuration.GetSection("Graph"))
+    .AddInMemoryTokenCaches();
 
 var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
 // Setup in memory DB SQL lite for test purposes
 var _sqlConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
 
@@ -133,7 +137,10 @@ builder.Services.AddFusionIntegration(options =>
 
     options.ApplicationMode = true;
 });
-
+// builder.Services.AddMicrosoftIdentityWebApiAuthentication(config)
+//     .EnableTokenAcquisitionToCallDownstreamApi()
+//     .AddMicrosoftGraph()
+//     .AddInMemoryTokenCaches();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();

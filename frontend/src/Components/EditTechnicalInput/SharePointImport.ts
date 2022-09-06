@@ -19,8 +19,8 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         this.substructureState = SharePointImport.substructureStatus(caseItem, project)
         this.topsideState = SharePointImport.topsideStatus(caseItem, project)
         this.transportState = SharePointImport.transportStatus(caseItem, project)
-        this.sharePointFileName = ""
-        this.sharePointFileId = ""
+        this.sharePointFileName = caseItem.sharepointFileName ?? ""
+        this.sharePointFileId = caseItem.sharepointFileId ?? ""
     }
 
     static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")

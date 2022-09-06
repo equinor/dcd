@@ -35,6 +35,8 @@ namespace api.Adapters
                 GasInjectorCount = caseDto.GasInjectorCount,
                 WaterInjectorCount = caseDto.WaterInjectorCount,
                 FacilitiesAvailability = caseDto.FacilitiesAvailability,
+                SharepointFileId = caseDto.SharepointFileId,
+                SharepointFileName = caseDto.SharepointFileName,
             };
         }
     }

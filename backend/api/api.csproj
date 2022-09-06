@@ -19,8 +19,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="4.5.1" />
-    <PackageReference Include="Microsoft.Graph" Version="4.32.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="1.21.1" />
+    <PackageReference Include="Microsoft.Graph" Version="4.34.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.25.2" />
+    <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.25.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="ClosedXML" Version="0.95.4" />
     <PackageReference Include="Fusion.Integration" Version="5.4.3" />
