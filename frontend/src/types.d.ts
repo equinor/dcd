@@ -116,6 +116,18 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* int32 */[] | null;
         }
+        export interface DriveItemDto {
+            name?: string | null;
+            id?: string | null;
+            webUrl?: string | null;
+            createdDateTime?: string | null; // date-time
+            content?: Stream;
+            size?: number | null; // int64
+            sharepointIds?: SharepointIds;
+            createdBy?: IdentitySet;
+            lastModifiedBy?: IdentitySet;
+            lastModifiedDateTime?: string | null; // date-time
+        }
         export interface ExplorationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -156,6 +168,19 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface Identity {
+            [name: string]: any;
+            displayName?: string | null;
+            id?: string | null;
+            "@odata.type"?: string | null;
+        }
+        export interface IdentitySet {
+            [name: string]: any;
+            application?: Identity;
+            device?: Identity;
+            user?: Identity;
+            "@odata.type"?: string | null;
         }
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
@@ -265,7 +290,28 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface SharepointIds {
+            [name: string]: any;
+            listId?: string | null;
+            listItemId?: string | null;
+            listItemUniqueId?: string | null;
+            siteId?: string | null;
+            siteUrl?: string | null;
+            tenantId?: string | null;
+            webId?: string | null;
+            "@odata.type"?: string | null;
+        }
         export type Source = 0 | 1; // int32
+        export interface Stream {
+            canRead?: boolean;
+            canWrite?: boolean;
+            canSeek?: boolean;
+            canTimeout?: boolean;
+            length?: number; // int64
+            position?: number; // int64
+            readTimeout?: number; // int32
+            writeTimeout?: number; // int32
+        }
         export interface StudyCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -751,6 +797,11 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.ExplorationWellDto[];
+        }
+    }
+    namespace GetFilesFromSharePoint {
+        namespace Responses {
+            export type $200 = Components.Schemas.DriveItemDto[];
         }
     }
     namespace GetInputToSTEA {
