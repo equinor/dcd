@@ -206,33 +206,35 @@ function DataTable({
         console.log(timeSeries)
 
         const rowEventData = event.data
+        const index = event.node.rowIndex
+
+        console.log(event.data.name)
+        console.log(event.node.rowIndex)
 
         if (timeSeries! !== undefined) {
-            for (let i = 0; i < timeSeries?.length!; i += 1) {
-                // console.log(timeSeries![i])
-                // eslint-disable-next-line max-len
-                const convertObj = { convertObj: (delete rowEventData.Unit, delete rowEventData.Profile, delete rowEventData["Total cost"]), rowEventData }
-                // console.log(convertObj)
-                // eslint-disable-next-line max-len
-                const changeKeysToValue = Object.keys(rowEventData).reduce((prev:any, curr:any, index:any) => ({ ...prev, [(index)]: Number(rowEventData[curr]) }), {})
-                // console.log(Object.values(changeKeysToValue))
-    
-                const newTimeSeries: ITimeSeries = { ...timeSeries![i] } // find rowNumber
-                console.log(Number(Object.keys(rowEventData)[0]))
-                console.log(Number(Object.keys(rowEventData).slice(-1)[0]))
-                // eslint-disable-next-line max-len
-                console.log(Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData)[rowEventData.length - 1]))
-                // newTimeSeries.startYear = Number(Object.keys(rowEventData)[0])
-                // eslint-disable-next-line max-len
-                newTimeSeries.startYear = Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData).slice(-1)[0])
-                newTimeSeries.name = profileName![i] // need to add profileName!!!
-                newTimeSeries.values = Object.values(changeKeysToValue)
-                setTimeSeries(newTimeSeries)
-                const newGridData = buildGridData(newTimeSeries)
-                // console.log(newTimeSeries)
-                combinedTimeseries.push(newGridData)
-                // combinedTimeseries.push(newTimeSeries)
-            }
+            // console.log(timeSeries![i])
+            // eslint-disable-next-line max-len
+            const convertObj = { convertObj: (delete rowEventData.Unit, delete rowEventData.Profile, delete rowEventData["Total cost"]), rowEventData }
+            // console.log(convertObj)
+            // eslint-disable-next-line max-len
+            const changeKeysToValue = Object.keys(rowEventData).reduce((prev:any, curr:any, index:any) => ({ ...prev, [(index)]: Number(rowEventData[curr]) }), {})
+            // console.log(Object.values(changeKeysToValue))
+
+            const newTimeSeries: ITimeSeries = { ...timeSeries![index!] } // find rowNumber
+            console.log(Number(Object.keys(rowEventData)[0]))
+            console.log(Number(Object.keys(rowEventData).slice(-1)[0]))
+            // eslint-disable-next-line max-len
+            console.log(Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData)[rowEventData.length - 1]))
+            // newTimeSeries.startYear = Number(Object.keys(rowEventData)[0])
+            // eslint-disable-next-line max-len
+            newTimeSeries.startYear = Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData).slice(-1)[0])
+            newTimeSeries.name = profileName![index!] // need to add profileName!!!
+            newTimeSeries.values = Object.values(changeKeysToValue)
+            setTimeSeries(newTimeSeries)
+            const newGridData = buildGridData(newTimeSeries)
+            // console.log(newTimeSeries)
+            combinedTimeseries.push(newGridData)
+            // combinedTimeseries.push(newTimeSeries)
         }
         // buildEditedGrid(combinedTimeseries)
 
