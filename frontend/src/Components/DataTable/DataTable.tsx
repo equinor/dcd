@@ -1,11 +1,16 @@
 import {
+    Dispatch,
+    SetStateAction,
     useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
 import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
+import { CellValueChangedEvent } from "ag-grid-community"
+import { objKeys } from "@microsoft/applicationinsights-core-js"
 import { ITimeSeries } from "../../models/ITimeSeries"
+import { buildGridData } from "./helpers"
 
 export interface CellValue {
     value: number | string
@@ -19,15 +24,21 @@ interface Props {
     timeSeriesArray: ITimeSeries[] | undefined
     profileName: string[]
     profileEnum: number
+    setHasChanges: Dispatch<SetStateAction<boolean>>,
+    setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+    timeSeries: ITimeSeries[] | undefined
 }
 
 function DataTable({
-    columns, gridData, onCellsChanged, dG4Year, timeSeriesArray, profileName, profileEnum,
+    // eslint-disable-next-line max-len
+    columns, gridData, onCellsChanged, dG4Year, timeSeriesArray, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries,
 }: Props) {
     const [rowData, setRowData] = useState<any>([{ 2026: 1, 2027: 5 }])
     // const gridRef = useRef(HTMLDivElement)
     // const [columnDefs, setColumnDefs] = useState<ColDef[]>()
     const gridRef = useRef<AgGridReact | null>(null)
+
+    const combinedTimeseries:any = []
 
     useAgGridStyles()
 
@@ -60,7 +71,7 @@ function DataTable({
         return CurrencyEnum[profileEnum]
     }
 
-    console.log(gridData)
+    // console.log(gridData)
 
     const rowDataToColumns = () => {
         const col = columns
@@ -86,7 +97,7 @@ function DataTable({
         // it uses griddata.length >= 1
         if (gridData.length === 0) {
             for (let j = 0; j < profileName.length; j += 1) {
-                console.log(setUnit(j))
+                // console.log(setUnit(j))
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
                 // if (gridData[j] !== undefined) {
                 //     for (let i = 0; i < col.length; i += 1) {
@@ -114,7 +125,7 @@ function DataTable({
 
         if (gridData.length >= 1) {
             for (let j = 0; j < gridData.length; j += 1) {
-                console.log(setUnit(j))
+                // console.log(setUnit(j))
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
                 const totalCost:any = []
                 if (gridData[j] !== undefined) {
@@ -133,7 +144,7 @@ function DataTable({
                 // eslint-disable-next-line max-len
                 const rowObj = objKey.reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
                 combinedObjArr.push(rowObj)
-    
+
                 const totalCostObj = { "Total cost": totalCost }
                 rowTotalCost.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
                 // console.log(rowTotalCost)
@@ -169,22 +180,65 @@ function DataTable({
         flex: 1,
     }), [])
 
-    // const onGridReady = useCallback((params) => {
-    //     console.log(rowData)
-    //     if (rowData !== undefined) {
-    //         setRowData(rowDataToColumns())
-    //     }
-    // }, [])
+    // const buildEditedGrid = (updatedTimeSeries: ITimeSeries) => {
+    //     // if (timeSeries![0] !== undefined && updatedTimeSeries !== undefined) {
+    //     //     setGridData(combinedTimeseries)
+    //     // }
+    //     setGridData(combinedTimeseries)
+    // }
 
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             rowDataToColumns()
-    //         } catch (error) {
-    //             console.error("[CaseView] Error while fetching project ?.externalId}", error)
-    //         }
-    //     })()
-    // }, [])
+    useEffect(() => {
+        // buildEditedGrid(combinedTimeseries!)
+
+        console.log(gridData)
+        console.log(timeSeries)
+        console.log(profileName)
+        console.log(timeSeries?.length)
+    }, [timeSeries, profileName, gridData])
+
+    const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
+        // reverse engineer row to gridData
+        // set profile start year to first year
+        // send entire row with 0s
+        // setGridData
+
+        console.log(gridData)
+        console.log(timeSeries)
+
+        const rowEventData = event.data
+
+        if (timeSeries! !== undefined) {
+            for (let i = 0; i < timeSeries?.length!; i += 1) {
+                // console.log(timeSeries![i])
+                // eslint-disable-next-line max-len
+                const convertObj = { convertObj: (delete rowEventData.Unit, delete rowEventData.Profile, delete rowEventData["Total cost"]), rowEventData }
+                // console.log(convertObj)
+                // eslint-disable-next-line max-len
+                const changeKeysToValue = Object.keys(rowEventData).reduce((prev:any, curr:any, index:any) => ({ ...prev, [(index)]: Number(rowEventData[curr]) }), {})
+                // console.log(Object.values(changeKeysToValue))
+    
+                const newTimeSeries: ITimeSeries = { ...timeSeries![i] } // find rowNumber
+                console.log(Number(Object.keys(rowEventData)[0]))
+                console.log(Number(Object.keys(rowEventData).slice(-1)[0]))
+                // eslint-disable-next-line max-len
+                console.log(Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData)[rowEventData.length - 1]))
+                // newTimeSeries.startYear = Number(Object.keys(rowEventData)[0])
+                // eslint-disable-next-line max-len
+                newTimeSeries.startYear = Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData).slice(-1)[0])
+                newTimeSeries.name = profileName![i] // need to add profileName!!!
+                newTimeSeries.values = Object.values(changeKeysToValue)
+                setTimeSeries(newTimeSeries)
+                const newGridData = buildGridData(newTimeSeries)
+                // console.log(newTimeSeries)
+                combinedTimeseries.push(newGridData)
+                // combinedTimeseries.push(newTimeSeries)
+            }
+        }
+        // buildEditedGrid(combinedTimeseries)
+
+        // console.log(combinedTimeseries)
+        setHasChanges(true)
+    }, [])
 
     return (
         <div className="ag-theme-alpine" style={{ height: 500 }}>
@@ -196,6 +250,7 @@ function DataTable({
                 defaultColDef={defaultColDef}
                 animateRows
                 enableCellChangeFlash
+                onCellValueChanged={onCellValueChanged}
             />
         </div>
     )

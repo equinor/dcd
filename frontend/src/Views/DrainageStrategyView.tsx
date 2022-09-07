@@ -34,6 +34,8 @@ import { ProductionProfileNGL } from "../models/assets/drainagestrategy/Producti
 import { IAssetService } from "../Services/IAssetService"
 import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
+import { ITimeSeries } from "../models/ITimeSeries"
+import { profile } from "console"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -160,6 +162,98 @@ const DrainageStrategyView = () => {
         productionProfileNGL, artificialLift, producerCount, gasInjectorCount, waterInjectorCount,
         facilitiesAvailability])
 
+    // const setAllStates = () => {
+    //     setCo2Emissions
+    //     setNetSalesGas
+    //     setFuelFlaringAndLosses
+    //     setProductionProfileGas
+    //     setProductionProfileOil
+    //     setProductionProfileWater
+    //     setProductionProfileWaterInjection
+    //     setProductionProfileNGL
+    // }
+
+    const setAllInitialStates = (timeSeries: any) => {
+        if (timeSeries) {
+            if (timeSeries.name === "CO2 emissions") {
+                setCo2Emissions(timeSeries)
+            }
+            if (typeof timeSeries === typeof Co2Emissions) {
+                console.log(timeSeries)
+            }
+            if (timeSeries.name === "Net sales gas") {
+                setNetSalesGas(timeSeries)
+            }
+            if (timeSeries.name === "Fuel flaring and losses") {
+                setFuelFlaringAndLosses(timeSeries)
+            }
+            if (timeSeries.name === "Production profile gas") {
+                setProductionProfileGas(timeSeries)
+            }
+            if (timeSeries.name === "Production profile oil") {
+                setProductionProfileOil(timeSeries)
+            }
+            if (timeSeries.name === "Production profile water") {
+                setProductionProfileWater(timeSeries)
+            }
+            if (timeSeries.name === "Production profile water injection") {
+                setProductionProfileWaterInjection(timeSeries)
+            }
+            if (timeSeries.name === "Production profile NGL") {
+                setProductionProfileNGL(timeSeries)
+            }
+        }
+    }
+
+    const setAllInitialStates2 = (timeSeries: any) => {
+        if (timeSeries) {
+            if (co2Emissions) {
+                setCo2Emissions(timeSeries)
+            }
+            if (netSalesGas) {
+                setNetSalesGas(timeSeries)
+            }
+            if (fuelFlaringAndLosses) {
+                setFuelFlaringAndLosses(timeSeries)
+            }
+            if (productionProfileGas) {
+                setProductionProfileGas(timeSeries)
+            }
+            if (productionProfileOil) {
+                setProductionProfileOil(timeSeries)
+            }
+            if (productionProfileWater) {
+                setProductionProfileWater(timeSeries)
+            }
+            if (productionProfileWaterInjection) {
+                setProductionProfileWaterInjection(timeSeries)
+            }
+            if (productionProfileNGL) {
+                setProductionProfileNGL(timeSeries)
+            }
+        }
+    }
+
+    const setAllStates = (timeSeries: any) => {
+        if (timeSeries) {
+            setCo2Emissions(timeSeries)
+            setNetSalesGas(timeSeries)
+            setFuelFlaringAndLosses(timeSeries)
+            setProductionProfileGas(timeSeries)
+            setProductionProfileOil(timeSeries)
+            setProductionProfileWater(timeSeries)
+            setProductionProfileWaterInjection(timeSeries)
+            setProductionProfileNGL(timeSeries)
+        }
+        // console.log(timeSeries)
+    }
+
+    // console.log(drainageStrategy)
+
+    // inkluder navn i timeseries modellen
+    // sjekk på navn og setTimeseries ut i fra navn
+    // slipper også profileName for matching
+
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -243,10 +337,11 @@ const DrainageStrategyView = () => {
             </Wrapper>
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCo2Emissions}
+                setTimeSeries={setAllInitialStates}
                 // setTimeSeries={[setCo2Emissions, setNetSalesGas, setFuelFlaringAndLosses,
                 //     setProductionProfileGas, setProductionProfileOil, setProductionProfileWater,
                 //     setProductionProfileWaterInjection, setProductionProfileNGL]}
+                // setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[co2Emissions!, netSalesGas!,
                     fuelFlaringAndLosses!, productionProfileGas!,
@@ -267,7 +362,7 @@ const DrainageStrategyView = () => {
                     "Production profile water injection", "Production profile NGL"]}
                 profileEnum={project?.physUnit!}
             />
-            <TimeSeries
+            {/* <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
                 setTimeSeries={setNetSalesGas}
                 setHasChanges={setHasChanges}
@@ -384,7 +479,7 @@ const DrainageStrategyView = () => {
                 setTimeSeries={setProductionProfileWaterInjection}
                 setHasChanges={setHasChanges}
                 timeSeries={[productionProfileWaterInjection!]}
-                timeSeriesTitle={`Production profile water injection 
+                timeSeriesTitle={`Production profile water injection
                     ${project?.physUnit === 0 ? "(MSm³/yr)" : "(mill bbls/yr)"}`}
                 firstYear={firstTSYear}
                 lastYear={lastTSYear}
@@ -419,7 +514,7 @@ const DrainageStrategyView = () => {
                     "Production profile oil", "Production profile water",
                     "Production profile water injection", "Production profile NGL"]}
                 profileEnum={project?.physUnit!}
-            />
+            /> */}
         </AssetViewDiv>
     )
 }

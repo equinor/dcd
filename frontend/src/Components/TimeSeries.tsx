@@ -12,6 +12,7 @@ import {
     DeleteButton, ImportButton, Wrapper, WrapperColumn, WrapperTablePeriod,
 } from "../Views/Asset/StyledAssetComponents"
 import NumberInput from "./NumberInput"
+import { name } from "@azure/msal-browser/dist/packageMetadata"
 
 interface Props {
     dG4Year: number | undefined
@@ -61,7 +62,7 @@ const TimeSeries = ({
             //     console.log(timeSeries![1].values!)
             // }
             for (let i = 0; i < timeSeries![i]?.values?.length!; i += 1) {
-                console.log(timeSeries![i])
+                // console.log(timeSeries![i])
                 if (timeSeries![i] !== undefined) {
                     if (updatedTimeSeries !== undefined && timeSeries![i] !== undefined) {
                         const columnTitles: string[] = []
@@ -96,7 +97,7 @@ const TimeSeries = ({
                 }
             }
         }
-        // console.log(combinedTimeseries)
+        console.log(combinedTimeseries)
 
         setGridData(combinedTimeseries)
     }
@@ -173,30 +174,14 @@ const TimeSeries = ({
         setColumns(colYears)
         console.log(timeSeries![j])
 
+        newTimeSeries.name = profileName[j]
         newTimeSeries.startYear = -Number(colYears.length - 1)
         newTimeSeries.values = new Array(colYears.length).fill(0)
 
-        // newTimeSeries.startYear = 0
-        // newTimeSeries.values = [0]
-        // for (let i = 0; i < columns.length; i += 1) {
-        //     newTimeSeries.values!.push(0)
-        //     // console.log(`${gridData[j]}`)
-        // }
-        // console.log(newTimeSeries)
-
-        // const allZeroes: Number[] = Array.from({
-        //     length: Number(lastYear) - Number(firstYear),
-        // }, (() => 0))
-
-        // const assetZeroesStartGrid = buildZeroGridData(allZeroes)
-        // // console.log(newGridData)
-        // setGridData([assetZeroesStartGrid[j]])
         setTimeSeries(newTimeSeries)
 
+        console.log(newTimeSeries)
         // setTimeSeries må være en array!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        // buildAlignedGrid(newTimeSeries)
-        // setHasChanges(true)
 
         if (newTimeSeries !== undefined) {
             const zeroesAtStart: Number[] = Array.from({
@@ -224,6 +209,7 @@ const TimeSeries = ({
         setGridData(combinedEmptyTimeseries)
         // buildAlignedGrid(newTimeSeries)
         setHasChanges(true)
+        console.log(gridData)
     }
 
     const addTimeSeries = () => {
@@ -303,6 +289,9 @@ const TimeSeries = ({
                     timeSeriesArray={timeSeriesArray}
                     profileName={profileName}
                     profileEnum={profileEnum}
+                    setHasChanges={setHasChanges}
+                    setTimeSeries={setTimeSeries}
+                    timeSeries={timeSeries}
                 />
             </WrapperColumn>
             {!dialogOpen ? null
