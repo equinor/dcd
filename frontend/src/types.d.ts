@@ -197,6 +197,14 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface OpexCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
@@ -303,6 +311,14 @@ declare namespace Components {
             position?: number; // int64
             readTimeout?: number; // int32
             writeTimeout?: number; // int32
+        }
+        export interface StudyCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
@@ -503,6 +519,28 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
+    namespace CalculateOpex {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.OpexCostProfileDto;
+        }
+    }
+    namespace CalculateStudy {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.StudyCostProfileDto;
+        }
+    }
     namespace CreateCase {
         export type RequestBody = Components.Schemas.CaseDto;
         namespace Responses {
@@ -541,6 +579,17 @@ declare namespace Paths {
     }
     namespace CreateProject {
         export type RequestBody = Components.Schemas.ProjectDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace CreateProjectFromContextId {
+        namespace Parameters {
+            export type ContextId = string; // uuid
+        }
+        export interface QueryParameters {
+            contextId?: Parameters.ContextId /* uuid */;
+        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
