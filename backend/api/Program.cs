@@ -1,4 +1,5 @@
 using api.Context;
+using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
 
@@ -160,7 +161,7 @@ builder.Services.AddScoped(_ => new CommonLibraryClientOptions
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ImportProspService>();
-builder.Services.AddScoped<GraphRestService>();
+builder.Services.AddScoped<ProspImportHelper>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers(

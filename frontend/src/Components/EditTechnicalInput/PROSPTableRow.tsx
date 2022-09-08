@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { Checkbox, NativeSelect, Table } from "@equinor/eds-core-react"
-import {
+import React, {
     ChangeEvent,
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
@@ -10,6 +10,7 @@ import { DriveItem } from "../../models/sharepoint/DriveItem"
 import Import from "../Import/Import"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import SharePointImport from "./SharePointImport"
+import {EMPTY_GUID} from "../../Utils/constants";
 
 interface Props {
     project: Project
@@ -31,12 +32,15 @@ function PROSPTableRow({
     const [sharePointFileId, setSharePointFileId] = useState<string>("")
     const [sharePointFileName, setSharePointFileName] = useState<string>("")
     const [selected, setSelected] = useState<boolean>()
+    const [hasFile, setHasFileState] = useState<boolean>(false)
 
     useEffect(() => {
         const selectedCase = project.cases.find((c) => c.id === caseId)
         setCaseItem(selectedCase)
         if (prospCases && prospCases.length > 0) {
             const selectedProspCase = prospCases.find((pc) => pc.id === caseId)
+            console.log("SelectedProspCase", selectedProspCase)
+            console.log("SelectedCase", selectedCase)
             setProspCase(selectedProspCase)
             setSurf(selectedProspCase?.surfState)
             setSubstructure(selectedProspCase?.substructureState)
@@ -91,13 +95,22 @@ function PROSPTableRow({
         const options: JSX.Element[] = []
 
         driveItems.forEach((item) => {
-            options.push((<option key={item.id} value={item.id!}>{item.name}</option>))
+            options.push((<option key={item.id} value={item.id!} >{item.name}</option>))
         })
         return options
     }
 
     const onSharePointFileChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        const newProspCase = {...prospCase}
+        newProspCase.sharePointFileId = event.currentTarget.selectedOptions[0].value
+        setProspCase(newProspCase)
         setSharePointFileId(event.currentTarget.selectedOptions[0].value)
+    }
+
+    const hasFileOnCase = () => {
+        if(caseItem.sharepointFileId !== null || caseItem.sharepointFileId !== undefined){
+            setHasFileState(true)
+        }
     }
 
     return (
@@ -126,9 +139,12 @@ function PROSPTableRow({
                     id="sharePointFile"
                     label=""
                     value={prospCase.sharePointFileId}
+                    // currentValue={caseItem.sharepointFileId}
                     onChange={onSharePointFileChange}
+                    disabled={!!caseItem.sharepointFileId}
                 >
                     {sharePointFileDropdownOptions()}
+                    <option key="" value=""></option>
                 </NativeSelect>
             </Table.Cell>
         </Table.Row>

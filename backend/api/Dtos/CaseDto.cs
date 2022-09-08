@@ -33,7 +33,7 @@ namespace api.Dtos
         public double Capex { get; set; }
         public CapexYear? CapexYear { get; set; }
         public CessationCostDto? CessationCost { get; set; }
-        public string SharepointFileId { get; set; }
+        public string? SharepointFileId { get; set; }
         public string? SharepointFileName { get; set; }
     }
 

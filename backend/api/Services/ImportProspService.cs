@@ -20,9 +20,10 @@ public class ImportProspService
     private readonly SurfService _surfService;
     private readonly TopsideService _topsideService;
     private readonly TransportService _transportService;
+    private readonly CaseService _caseService;
 
 
-    public ImportProspService(ProjectService projectService, ILoggerFactory loggerFactory, SurfService surfService,
+    public ImportProspService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory, SurfService surfService,
         SubstructureService substructureService, TopsideService topsideService, TransportService transportService,
         IConfiguration config)
     {
@@ -33,6 +34,7 @@ public class ImportProspService
         _topsideService = topsideService;
         _transportService = transportService;
         _prospConfig = CreateConfig(config);
+        _caseService = caseService;
     }
 
     private Prosp CreateConfig(IConfiguration config)
@@ -49,7 +51,9 @@ public class ImportProspService
     {
         if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
                 out var value))
+        {
             return Math.Round(value, 3);
+        }
 
         return 0;
     }
@@ -58,7 +62,9 @@ public class ImportProspService
     {
         if (int.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
                 out var value))
+        {
             return value;
+        }
 
         return -1;
     }
@@ -68,7 +74,9 @@ public class ImportProspService
         var values = new List<double>();
         foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
             if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
+            {
                 values.Add(value);
+            }
 
         return values.ToArray();
     }
@@ -77,7 +85,9 @@ public class ImportProspService
     {
         if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
                 out var value))
+        {
             return DateTime.FromOADate(value);
+        }
 
         return new DateTime(1900, 1, 1);
     }
@@ -367,7 +377,7 @@ public class ImportProspService
         return _projectService.GetProjectDto(projectId);
     }
 
-    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
+    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets, string sharepointFileId)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart;
@@ -402,6 +412,11 @@ public class ImportProspService
                     ImportTransport(parsedData, sourceCaseId, projectId);
                 }
             }
+
+            var caseItem = _caseService.GetCase(sourceCaseId);
+            caseItem.SharepointFileId = sharepointFileId;
+            var caseDto = CaseDtoAdapter.Convert(caseItem, _projectService.GetProjectDto(projectId));
+            return _caseService.UpdateCase(caseDto);
         }
 
         return _projectService.GetProjectDto(projectId);

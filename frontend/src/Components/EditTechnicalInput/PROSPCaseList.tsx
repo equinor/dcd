@@ -6,7 +6,7 @@ import {
 import { Project } from "../../models/Project"
 import PROSPTableRow from "./PROSPTableRow"
 import SharePointImport from "./SharePointImport"
-import { GetUploadService } from "../../Services/UploadService"
+import { GetProspService } from "../../Services/ProspService"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
 
 interface Props {
@@ -22,7 +22,7 @@ function PROSPCaseList({
 
     useEffect(() => {
         (async () => {
-            const newDriveItems = await (await GetUploadService()).getSharePointFileNamesAndId("")
+            const newDriveItems = await (await GetProspService()).getSharePointFileNamesAndId("")
             setDriveItems(newDriveItems)
             const prosp: SharePointImport[] = []
 
@@ -47,7 +47,7 @@ function PROSPCaseList({
 
     const save = async () => {
         const cases = prospCases.map((pc) => SharePointImport.toDto(pc))
-        const newProject = await (await GetUploadService()).importFromSharepoint(project.id!, cases)
+        const newProject = await (await GetProspService()).importFromSharepoint(project.id!, cases)
         setProject(newProject)
     }
 
