@@ -107,7 +107,7 @@ const TimeSeries = ({
 
         if (gridData !== undefined) {
             setBeginningYear(firstYear)
-            setEndingYear(lastYear)
+            setEndingYear(lastYear! - 1)
         }
         // if (timeSeriesArray![0] !== undefined) {
         //     console.log(timeSeriesArray![0].values)
@@ -212,6 +212,57 @@ const TimeSeries = ({
         console.log(gridData)
     }
 
+    const createNewGridWithData = (j: any) => {
+        const newTimeSeries: ITimeSeries = { ...timeSeries![j] }
+        const colYears = []
+        for (let c = beginningYear; c! < endingYear!; c! += 1) {
+            colYears.push(c!.toString())
+        }
+        setColumns(colYears)
+        console.log(timeSeries![j])
+
+        newTimeSeries.name = profileName[j]
+        newTimeSeries.startYear = timeSeries![j].startYear
+
+        if (beginningYear! < (timeSeries![j].startYear! + dG4Year!)) {
+            newTimeSeries.startYear = -Number(colYears.length)
+            // eslint-disable-next-line max-len
+            newTimeSeries.values = new Array(colYears.length + 1 - newTimeSeries.values!.length!).fill(0).concat(newTimeSeries.values)
+        }
+
+        if ((endingYear!) > (Number(colYears[0]) + newTimeSeries.values!.length - 1)) {
+            // eslint-disable-next-line max-len
+            newTimeSeries.values = (newTimeSeries.values)?.concat(new Array(colYears.length + 1 - timeSeries![j].values!.length!).fill(0))
+        }
+
+        if (endingYear! < (Number(colYears[0]) + timeSeries![j].values!.length - 1)) {
+            const yearDifference = (Number(colYears[0]) + timeSeries![j].values!.length - 1) - endingYear!
+            console.log(yearDifference)
+            newTimeSeries.values = timeSeries![j].values?.slice(0, -yearDifference)
+        }
+
+        if (beginningYear! > (timeSeries![j].startYear! + dG4Year!)) {
+            newTimeSeries.startYear = -Number(colYears.length)
+            const yearDifference = beginningYear! - (timeSeries![j].startYear! + dG4Year!)
+            newTimeSeries.values = timeSeries![j].values?.slice(yearDifference)
+        }
+
+        setTimeSeries(newTimeSeries)
+
+        console.log(newTimeSeries)
+
+        if (newTimeSeries !== undefined) {
+            const newGridData = buildGridData(newTimeSeries)
+
+            const alignedAssetGridData = new Array(newGridData[0])
+
+            combinedEmptyTimeseries.push(alignedAssetGridData)
+        }
+        setGridData(combinedEmptyTimeseries)
+        setHasChanges(true)
+        console.log(gridData)
+    }
+
     const addTimeSeries = () => {
         // when apply
         // for each timeseries add column years
@@ -224,13 +275,21 @@ const TimeSeries = ({
         console.log(firstYear)
         console.log(lastYear)
         if (beginningYear?.toString().length === 4 && endingYear?.toString().length === 4) {
-            for (let j = beginningYear; j! < lastYear!; j! += 1) {
+            for (let j = beginningYear; j! < endingYear!; j! += 1) {
                 colYears.push(j!.toString())
             }
             setColumns(colYears)
             console.log(timeSeries?.length)
-            for (let i = 0; i < timeSeries?.length!; i += 1) {
-                createEmptyGrid(i)
+            console.log(gridData)
+            if (gridData === undefined) {
+                for (let i = 0; i < timeSeries?.length!; i += 1) {
+                    createEmptyGrid(i)
+                }
+            }
+            if (gridData !== undefined) {
+                for (let i = 0; i < timeSeries?.length!; i += 1) {
+                    createNewGridWithData(i)
+                }
             }
         }
 
@@ -268,7 +327,7 @@ const TimeSeries = ({
                 />
                 <Typography variant="h2">-</Typography>
                 <NumberInput
-                    value={endingYear?.toString().length === 4 ? (Number(endingYear) - 1) : 2030}
+                    value={endingYear?.toString().length === 4 ? (Number(endingYear)) : 2030}
                     setValue={setEndingYear}
                     integer
                     label="End year"

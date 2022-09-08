@@ -221,11 +221,6 @@ function DataTable({
             // console.log(Object.values(changeKeysToValue))
 
             const newTimeSeries: ITimeSeries = { ...timeSeries![index!] } // find rowNumber
-            console.log(Number(Object.keys(rowEventData)[0]))
-            console.log(Number(Object.keys(rowEventData).slice(-1)[0]))
-            // eslint-disable-next-line max-len
-            console.log(Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData)[rowEventData.length - 1]))
-            // newTimeSeries.startYear = Number(Object.keys(rowEventData)[0])
             // eslint-disable-next-line max-len
             newTimeSeries.startYear = Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData).slice(-1)[0])
             newTimeSeries.name = profileName![index!] // need to add profileName!!!
