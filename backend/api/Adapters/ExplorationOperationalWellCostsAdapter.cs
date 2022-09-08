@@ -22,5 +22,15 @@ namespace api.Adapters
                 AppraisalProjectDrillingCosts = explorationOperationalWellCostsDto.AppraisalProjectDrillingCosts,
             };
         }
+
+        public static void ConvertExisting(ExplorationOperationalWellCosts existing, ExplorationOperationalWellCostsDto explorationOperationalWellCostsDto)
+        {
+            existing.ExplorationRigUpgrading = explorationOperationalWellCostsDto.RigUpgrading;
+            existing.ExplorationRigMobDemob = explorationOperationalWellCostsDto.ExplorationRigMobDemob;
+            existing.ExplorationProjectDrillingCosts = explorationOperationalWellCostsDto.ExplorationProjectDrillingCosts;
+            existing.AppraisalRigMobDemob = explorationOperationalWellCostsDto.AppraisalRigMobDemob;
+            existing.AppraisalProjectDrillingCosts = explorationOperationalWellCostsDto.AppraisalProjectDrillingCosts;
+
+        }
     }
 }

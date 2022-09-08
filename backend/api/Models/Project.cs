@@ -20,10 +20,10 @@ namespace api.Models
         public ICollection<Transport>? Transports { get; set; }
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
-        public ExplorationOperationalWellCosts ExplorationOperationalWellCosts { get; set; } = null!;
-        public Guid ExplorationOperationalWellCostsId { get; set; }
-        public DevelopmentOperationalWellCosts DevelopmentOperationalWellCosts { get; set; } = null!;
-        public Guid DevelopmentOperationalWellCostsId { get; set; }
+        public ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; } // = null!;
+        // public Guid ExplorationOperationalWellCostsId { get; set; }
+        public DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; } // = null!;
+        // public Guid DevelopmentOperationalWellCostsId { get; set; }
         public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
         public ICollection<WellProject>? WellProjects { get; set; }
         public ICollection<Exploration>? Explorations { get; set; }

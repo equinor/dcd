@@ -1,18 +1,22 @@
 /* eslint-disable max-len */
 import {
-    Dispatch, FunctionComponent, SetStateAction, useState,
+    Dispatch, FunctionComponent, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
 import {
     Button, Icon, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { clear } from "@equinor/eds-icons"
+import _, { isEqual } from "underscore"
 import WellCostsTab from "./WellCostsTab"
 import { Project } from "../../models/Project"
 import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
 import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
 import { ExplorationWell } from "../../models/ExplorationWell"
 import { WellProjectWell } from "../../models/WellProjectWell"
+import { GetExplorationOperationalWellCostsService } from "../../Services/ExplorationOperationalWellCostsService"
+import { EMPTY_GUID } from "../../Utils/constants"
+import { GetDevelopmentOperationalWellCostsService } from "../../Services/DevelopmentOperationalWellCostsService"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -58,11 +62,49 @@ export const EditTechnicalInputModal: FunctionComponent<Props> = ({
 }) => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
-    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts>()
+    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
     const [wellProjectWell, setWellProjectWell] = useState<WellProjectWell[]>()
-    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts>()
+    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts | undefined>(project.developmentWellCosts)
 
     if (!isOpen) return null
+
+    useEffect(() => {
+        (async () => {
+            try {
+                if (!project.explorationWellCosts || project.explorationWellCosts.id === EMPTY_GUID) {
+                    const res = await (await GetExplorationOperationalWellCostsService()).create({ projectId: project.id })
+                    console.log("Result: ", res)
+                    setExplorationOperationalWellCosts(res)
+                }
+                if (!project.developmentWellCosts || project.developmentWellCosts.id === EMPTY_GUID) {
+                    const res = await (await GetDevelopmentOperationalWellCostsService()).create({ projectId: project.id })
+                    console.log("Result: ", res)
+                    setDevelopmentOperationalWellCosts(res)
+                }
+            } catch (error) {
+                // eslint-disable-next-line max-len
+                console.error()
+            }
+        })()
+    }, [])
+
+    if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
+        return null
+    }
+
+    const handleSave = async () => {
+        if (!_.isEqual(project.explorationWellCosts, explorationOperationalWellCosts)) {
+            const res = await (await GetExplorationOperationalWellCostsService()).update({ ...explorationOperationalWellCosts })
+            setExplorationOperationalWellCosts(res)
+            console.log(res)
+        }
+        if (!_.isEqual(project.developmentWellCosts, developmentOperationalWellCosts)) {
+            const res = await (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
+            setDevelopmentOperationalWellCosts(res)
+            console.log(res)
+        }
+    }
+
     return (
         <>
             <div style={{
@@ -94,13 +136,21 @@ export const EditTechnicalInputModal: FunctionComponent<Props> = ({
                     </List>
                     <Panels>
                         <StyledTabPanel>
-                            <WellCostsTab project={project} setProject={setProject} />
+                            <WellCostsTab
+                                project={project}
+                                setProject={setProject}
+                                developmentOperationalWellCosts={developmentOperationalWellCosts}
+                                setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
+                                explorationOperationalWellCosts={explorationOperationalWellCosts}
+                                setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
                             PROSP
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
+                <Button onClick={handleSave}>Save</Button>
             </ModalDiv>
         </>
     )

@@ -16,8 +16,8 @@ namespace api.Dtos
         public DateTimeOffset CreateDate { get; set; }
         public ProjectPhase ProjectPhase { get; set; }
         public ProjectCategory ProjectCategory { get; set; }
-        public ExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = null!;
-        public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = null!;
+        public ExplorationOperationalWellCostsDto? ExplorationOperationalWellCosts { get; set; } // = null!;
+        public DevelopmentOperationalWellCostsDto? DevelopmentOperationalWellCosts { get; set; } // = null!;
         public ICollection<CaseDto>? Cases { get; set; }
         public ICollection<WellDto>? Wells { get; set; }
         public ICollection<ExplorationDto>? Explorations { get; set; }

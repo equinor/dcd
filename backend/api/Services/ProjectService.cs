@@ -62,8 +62,6 @@ namespace api.Services
             project.Transports = new List<Transport>();
             project.WellProjects = new List<WellProject>();
             project.Explorations = new List<Exploration>();
-            project.DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts();
-            project.ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts();
 
             Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
                         new JsonSerializerSettings()
@@ -150,6 +148,8 @@ namespace api.Services
                 var project = _context.Projects!
                     .Include(p => p.Cases)
                     .Include(p => p.Wells)
+                    .Include(p => p.ExplorationOperationalWellCosts)
+                    .Include(p => p.DevelopmentOperationalWellCosts)
                     .FirstOrDefault(p => p.Id.Equals(projectId));
 
                 if (project == null)
@@ -201,8 +201,6 @@ namespace api.Services
             project.Transports = _transportService.GetTransports(project.Id).ToList();
             project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
             project.Wells = _wellService.GetWells(project.Id).ToList();
-            project.ExplorationOperationalWellCosts = _explorationOperationalWellCostsService.GetOperationalWellCosts(project.Id);
-            project.DevelopmentOperationalWellCosts = _developmentOperationalWellCostsService.GetOperationalWellCosts(project.Id);
             return project;
         }
     }

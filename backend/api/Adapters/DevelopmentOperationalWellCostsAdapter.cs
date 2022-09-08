@@ -21,5 +21,13 @@ namespace api.Adapters
                 PluggingAndAbandonment = developmentOperationalWellCostsDto.PluggingAndAbandonment,
             };
         }
+
+        public static void ConvertExisting(DevelopmentOperationalWellCosts existing, DevelopmentOperationalWellCostsDto explorationOperationalWellCostsDto)
+        {
+            existing.RigUpgrading = explorationOperationalWellCostsDto.RigUpgrading;
+            existing.RigMobDemob = explorationOperationalWellCostsDto.RigMobDemob;
+            existing.AnnualWellInterventionCostPerWell = explorationOperationalWellCostsDto.AnnualWellInterventionCostPerWell;
+            existing.PluggingAndAbandonment = explorationOperationalWellCostsDto.PluggingAndAbandonment;
+        }
     }
 }

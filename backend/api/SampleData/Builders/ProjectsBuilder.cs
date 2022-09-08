@@ -36,8 +36,6 @@ public class ProjectBuilder : Project
         Transports = new List<Transport>();
         Explorations = new List<Exploration>();
         Wells = new List<Well>();
-        ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts();
-        DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts();
     }
 
     public ProjectBuilder WithDrainageStrategy(DrainageStrategyBuilder d)

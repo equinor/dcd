@@ -17,20 +17,28 @@ namespace api.Services
             _logger = loggerFactory.CreateLogger<SurfService>();
         }
 
-        public DevelopmentOperationalWellCostsDto? UpdateOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedSurfDto)
+        public DevelopmentOperationalWellCostsDto? UpdateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto)
         {
-            var existing = GetOperationalWellCosts(updatedSurfDto.Id);
+            var existing = GetOperationalWellCosts(dto.ProjectId);
             if (existing == null)
             {
                 return null;
             }
-            var updated = DevelopmentOperationalWellCostsAdapter.Convert(updatedSurfDto);
+            DevelopmentOperationalWellCostsAdapter.ConvertExisting(existing, dto);
 
-            _context.DevelopmentOperationalWellCosts!.Update(updated);
+            _context.DevelopmentOperationalWellCosts!.Update(existing);
             _context.SaveChanges();
-            var updatedDto = DevelopmentOperationalWellCostsDtoAdapter.Convert(updated);
+            var updatedDto = DevelopmentOperationalWellCostsDtoAdapter.Convert(existing);
             return updatedDto;
-            // return _projectService.GetProjectDto(existing.ProjectId);
+        }
+        public DevelopmentOperationalWellCostsDto CreateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto)
+        {
+            var explorationOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(dto);
+            var project = _projectService.GetProject(dto.ProjectId);
+            explorationOperationalWellCosts.Project = project;
+            _context.DevelopmentOperationalWellCosts!.Add(explorationOperationalWellCosts);
+            _context.SaveChanges();
+            return DevelopmentOperationalWellCostsDtoAdapter.Convert(explorationOperationalWellCosts);
         }
         public DevelopmentOperationalWellCosts GetOperationalWellCosts(Guid id)
         {
@@ -38,7 +46,8 @@ namespace api.Services
                 .FirstOrDefault(o => o.ProjectId == id);
             if (operationalWellCosts == null)
             {
-                throw new ArgumentException(string.Format("OperationalWellCosts {0} not found.", id));
+                return null!;
+                // throw new ArgumentException(string.Format("OperationalWellCosts {0} not found.", id));
             }
             return operationalWellCosts;
         }

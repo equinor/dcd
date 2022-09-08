@@ -24,5 +24,11 @@ namespace api.Controllers
         {
             return _operationalWellCostsService.UpdateOperationalWellCosts(dto);
         }
+
+        [HttpPost(Name = "CreateExplorationOperationalWellCosts")]
+        public ExplorationOperationalWellCostsDto CreateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
+        {
+            return _operationalWellCostsService.CreateOperationalWellCosts(dto);
+        }
     }
 }

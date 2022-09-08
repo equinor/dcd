@@ -1,26 +1,21 @@
-import { Button, Input, Table } from "@equinor/eds-core-react"
+import { Input, Table } from "@equinor/eds-core-react"
 import {
+    ChangeEventHandler,
     Dispatch, SetStateAction, useState,
 } from "react"
-import { Project } from "../../models/Project"
-import { Well } from "../../models/Well"
-import { GetWellService } from "../../Services/WellService"
-import WellTableRowEditTechnicalInput from "./WellTableRowEditTechnicalInput"
 
 interface Props {
-    project: Project
-    setProject: Dispatch<SetStateAction<Project | undefined>>
     title: string
+    setValue: Dispatch<SetStateAction<number | undefined>>
+    value: number
 }
 
 function OperationalWellCost({
-    project, setProject, title,
+    title, setValue, value,
 }: Props) {
-    const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
-
-    // eslint-disable-next-line max-len
-    const isExplorationWell = (category: Components.Schemas.WellCategory | undefined) => [4, 5, 6].indexOf(category ?? -1) > -1
-
+    const onValueChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setValue(Number(e.target.value))
+    }
     return (
         <Table.Row key={1}>
             <Table.Cell>
@@ -30,8 +25,8 @@ function OperationalWellCost({
                 <Input
                     id="WellCost"
                     type="number"
-                    value={10000}
-                    onChange={() => console.log("yee")}
+                    value={value}
+                    onChange={onValueChange}
                 />
             </Table.Cell>
         </Table.Row>

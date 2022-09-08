@@ -93,6 +93,7 @@ declare namespace Components {
         export type Currency = 1 | 2; // int32
         export interface DevelopmentOperationalWellCostsDto {
             id?: string; // uuid
+            projectId?: string; // uuid
             rigUpgrading?: number; // double
             rigMobDemob?: number; // double
             annualWellInterventionCostPerWell?: number; // double
@@ -158,6 +159,7 @@ declare namespace Components {
         }
         export interface ExplorationOperationalWellCostsDto {
             id?: string; // uuid
+            projectId?: string; // uuid
             rigUpgrading?: number; // double
             explorationRigMobDemob?: number; // double
             explorationProjectDrillingCosts?: number; // double
@@ -564,6 +566,12 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace CreateDevelopmentOperationalWellCosts {
+        export type RequestBody = Components.Schemas.DevelopmentOperationalWellCostsDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
+        }
+    }
     namespace CreateDrainageStrategy {
         namespace Parameters {
             export type SourceCaseId = string; // uuid
@@ -586,6 +594,12 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.ExplorationDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace CreateExplorationOperationalWellCosts {
+        export type RequestBody = Components.Schemas.ExplorationOperationalWellCostsDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ExplorationOperationalWellCostsDto;
         }
     }
     namespace CreateExplorationWell {

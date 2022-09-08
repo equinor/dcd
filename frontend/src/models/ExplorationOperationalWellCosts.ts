@@ -2,6 +2,7 @@ import { EMPTY_GUID } from "../Utils/constants"
 
 export class ExplorationOperationalWellCosts implements Components.Schemas.ExplorationOperationalWellCostsDto {
     id?: string // uuid
+    projectId?: string // uuid
     rigUpgrading?: number // double
     explorationRigMobDemob?: number // double
     explorationProjectDrillingCosts?: number // double
@@ -11,6 +12,7 @@ export class ExplorationOperationalWellCosts implements Components.Schemas.Explo
     constructor(data?: Components.Schemas.ExplorationOperationalWellCostsDto) {
         if (data) {
             this.id = data.id
+            this.projectId = data.projectId
             this.rigUpgrading = data.rigUpgrading
             this.explorationRigMobDemob = data.explorationRigMobDemob
             this.explorationProjectDrillingCosts = data.explorationProjectDrillingCosts

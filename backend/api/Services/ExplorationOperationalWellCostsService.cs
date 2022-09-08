@@ -17,30 +17,38 @@ namespace api.Services
             _logger = loggerFactory.CreateLogger<SurfService>();
         }
 
-        public ExplorationOperationalWellCostsDto? UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto updatedSurfDto)
+        public ExplorationOperationalWellCostsDto? UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
         {
-            var existing = GetOperationalWellCosts(updatedSurfDto.Id);
+            var existing = GetOperationalWellCosts(dto.ProjectId);
             if (existing == null)
             {
                 return null;
             }
-            var updated = ExplorationOperationalWellCostsAdapter.Convert(updatedSurfDto);
+            ExplorationOperationalWellCostsAdapter.ConvertExisting(existing, dto);
 
-            _context.ExplorationOperationalWellCosts!.Update(updated);
+            _context.ExplorationOperationalWellCosts!.Update(existing);
             _context.SaveChanges();
-            var updatedDto = ExplorationOperationalWellCostsDtoAdapter.Convert(updated);
+            var updatedDto = ExplorationOperationalWellCostsDtoAdapter.Convert(existing);
             return updatedDto;
-            // return _projectService.GetProjectDto(existing.ProjectId);
+        }
+
+        public ExplorationOperationalWellCostsDto CreateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
+        {
+            var explorationOperationalWellCosts = ExplorationOperationalWellCostsAdapter.Convert(dto);
+            var project = _projectService.GetProject(dto.ProjectId);
+            explorationOperationalWellCosts.Project = project;
+            _context.ExplorationOperationalWellCosts!.Add(explorationOperationalWellCosts);
+            _context.SaveChanges();
+            return ExplorationOperationalWellCostsDtoAdapter.Convert(explorationOperationalWellCosts);
         }
         public ExplorationOperationalWellCosts GetOperationalWellCosts(Guid id)
         {
-            Console.WriteLine(_context.ExplorationOperationalWellCosts.Count());
-            var a = _context.ExplorationOperationalWellCosts.First();
             var operationalWellCosts = _context.ExplorationOperationalWellCosts!
                 .FirstOrDefault(o => o.ProjectId == id);
             if (operationalWellCosts == null)
             {
-                throw new ArgumentException(string.Format("OperationalWellCosts {0} not found.", id));
+                return null!;
+                // throw new ArgumentException(string.Format("OperationalWellCosts {0} not found.", id));
             }
             return operationalWellCosts;
         }
