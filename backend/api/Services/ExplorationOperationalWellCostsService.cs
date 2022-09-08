@@ -34,8 +34,10 @@ namespace api.Services
         }
         public ExplorationOperationalWellCosts GetOperationalWellCosts(Guid id)
         {
+            Console.WriteLine(_context.ExplorationOperationalWellCosts.Count());
+            var a = _context.ExplorationOperationalWellCosts.First();
             var operationalWellCosts = _context.ExplorationOperationalWellCosts!
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefault(o => o.ProjectId == id);
             if (operationalWellCosts == null)
             {
                 throw new ArgumentException(string.Format("OperationalWellCosts {0} not found.", id));

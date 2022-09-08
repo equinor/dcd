@@ -13,7 +13,7 @@ interface Props {
     title: string
 }
 
-function OperationalWellCosts({
+function OperationalWellCost({
     project, setProject, title,
 }: Props) {
     const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
@@ -24,12 +24,7 @@ function OperationalWellCosts({
     return (
         <Table.Row key={1}>
             <Table.Cell>
-                <Input
-                    id="textfield-normal"
-                    placeholder="Placeholder text"
-                    autoComplete="off"
-                    value="Cost type"
-                />
+                {title}
             </Table.Cell>
             <Table.Cell>
                 <Input
@@ -43,4 +38,4 @@ function OperationalWellCosts({
     )
 }
 
-export default OperationalWellCosts
+export default OperationalWellCost

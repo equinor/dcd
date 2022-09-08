@@ -50,5 +50,17 @@ namespace api.Controllers
         {
             return _caseService.GenerateGAndGAdminCost(caseId);
         }
+
+        [HttpPost("{caseId}/calculateOpex", Name = "CalculateOpex")]
+        public OpexCostProfileDto CalculateOPEX(Guid caseId)
+        {
+            return _caseService.CalculateOPEX(caseId);
+        }
+
+        [HttpPost("{caseId}/calculateStudy", Name = "CalculateStudy")]
+        public StudyCostProfileDto CalculateStudyCost(Guid caseId)
+        {
+            return _caseService.CalculateStudyCost(caseId);
+        }
     }
 }

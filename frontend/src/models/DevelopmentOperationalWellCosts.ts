@@ -8,7 +8,7 @@ export class DevelopmentOperationalWellCosts implements Components.Schemas.Devel
     pluggingAndAbandonment?: number // double
 
     constructor(data?: Components.Schemas.DevelopmentOperationalWellCostsDto) {
-        if (data !== undefined) {
+        if (data) {
             this.id = data.id
             this.rigUpgrading = data.rigUpgrading
             this.rigMobDemob = data.rigMobDemob

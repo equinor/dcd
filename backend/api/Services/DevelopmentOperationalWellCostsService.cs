@@ -35,7 +35,7 @@ namespace api.Services
         public DevelopmentOperationalWellCosts GetOperationalWellCosts(Guid id)
         {
             var operationalWellCosts = _context.DevelopmentOperationalWellCosts!
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefault(o => o.ProjectId == id);
             if (operationalWellCosts == null)
             {
                 throw new ArgumentException(string.Format("OperationalWellCosts {0} not found.", id));

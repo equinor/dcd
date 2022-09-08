@@ -9,7 +9,7 @@ export class ExplorationOperationalWellCosts implements Components.Schemas.Explo
     appraisalProjectDrillingCosts?: number // double
 
     constructor(data?: Components.Schemas.ExplorationOperationalWellCostsDto) {
-        if (data !== undefined) {
+        if (data) {
             this.id = data.id
             this.rigUpgrading = data.rigUpgrading
             this.explorationRigMobDemob = data.explorationRigMobDemob

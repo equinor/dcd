@@ -14,6 +14,7 @@ namespace api.Adapters
             return new DevelopmentOperationalWellCostsDto
             {
                 Id = developmentOperationalWellCostsDto.Id,
+                ProjectId = developmentOperationalWellCostsDto.ProjectId,
                 RigUpgrading = developmentOperationalWellCostsDto.RigUpgrading,
                 RigMobDemob = developmentOperationalWellCostsDto.RigMobDemob,
                 AnnualWellInterventionCostPerWell = developmentOperationalWellCostsDto.AnnualWellInterventionCostPerWell,

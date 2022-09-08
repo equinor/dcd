@@ -22,6 +22,8 @@ namespace api.Services
         private readonly TransportService _transportService;
         private readonly ExplorationService _explorationService;
         private readonly WellService _wellService;
+        private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
+        private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
 
         private readonly ILogger<ProjectService> _logger;
 
@@ -37,6 +39,8 @@ namespace api.Services
             _explorationService = new ExplorationService(_context, this, loggerFactory);
             _transportService = new TransportService(_context, this, loggerFactory);
             _wellService = new WellService(_context, this, _wellProjectService, _explorationService, loggerFactory);
+            _explorationOperationalWellCostsService = new ExplorationOperationalWellCostsService(_context, this, loggerFactory);
+            _developmentOperationalWellCostsService = new DevelopmentOperationalWellCostsService(_context, this, loggerFactory);
         }
 
         public ProjectDto UpdateProject(ProjectDto projectDto)
@@ -58,6 +62,8 @@ namespace api.Services
             project.Transports = new List<Transport>();
             project.WellProjects = new List<WellProject>();
             project.Explorations = new List<Exploration>();
+            project.DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts();
+            project.ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts();
 
             Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
                         new JsonSerializerSettings()
@@ -195,6 +201,8 @@ namespace api.Services
             project.Transports = _transportService.GetTransports(project.Id).ToList();
             project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
             project.Wells = _wellService.GetWells(project.Id).ToList();
+            project.ExplorationOperationalWellCosts = _explorationOperationalWellCostsService.GetOperationalWellCosts(project.Id);
+            project.DevelopmentOperationalWellCosts = _developmentOperationalWellCostsService.GetOperationalWellCosts(project.Id);
             return project;
         }
     }

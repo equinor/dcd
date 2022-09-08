@@ -14,6 +14,7 @@ namespace api.Adapters
             return new ExplorationOperationalWellCosts
             {
                 Id = explorationOperationalWellCostsDto.Id,
+                ProjectId = explorationOperationalWellCostsDto.ProjectId,
                 ExplorationRigUpgrading = explorationOperationalWellCostsDto.RigUpgrading,
                 ExplorationRigMobDemob = explorationOperationalWellCostsDto.ExplorationRigMobDemob,
                 ExplorationProjectDrillingCosts = explorationOperationalWellCostsDto.ExplorationProjectDrillingCosts,

@@ -24,6 +24,8 @@ namespace api.Models
         public int GasInjectorCount { get; set; }
         public int WaterInjectorCount { get; set; }
         public double FacilitiesAvailability { get; set; }
+        public double CapexFactorFeasibilityStudies { get; set; } = 0.015;
+        public double CapexFactorFEEDStudies { get; set; } = 0.015;
         public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
         public Guid WellProjectLink { get; set; } = Guid.Empty;
         public Guid SurfLink { get; set; } = Guid.Empty;
@@ -52,5 +54,13 @@ namespace api.Models
     {
         [ForeignKey("Case.Id")]
         public Case Case { get; set; } = null!;
+    }
+
+    public class OpexCostProfile : TimeSeriesCost
+    {
+    }
+
+    public class StudyCostProfile : TimeSeriesCost
+    {
     }
 }

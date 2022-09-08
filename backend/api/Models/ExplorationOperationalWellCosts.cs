@@ -2,7 +2,8 @@ namespace api.Models
 {
     public class ExplorationOperationalWellCosts
     {
-        public Project? Project { get; set; }
+        // public Project? Project { get; set; }
+        public Guid ProjectId { get; set; }
         public Guid Id { get; set; }
         public double ExplorationRigUpgrading { get; set; }
         public double ExplorationRigMobDemob { get; set; }
