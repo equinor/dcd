@@ -80,7 +80,7 @@ const CaseDGDate = ({
         }
     }
 
-    const dgReturnDate = () => caseItem?.[dGType]?.toLocaleDateString("en-CA")
+    const dgReturnDate = () => caseItem?.[dGType]?.toISOString().substring(0, 7)
 
     const limitDateToNextDGDate = () => {
         if (dGType === DGEnum.DG1) {
@@ -100,10 +100,10 @@ const CaseDGDate = ({
             <Typography variant="h6">{dGName}</Typography>
             <DgField>
                 <Input
+                    type="month"
                     defaultValue={dgReturnDate()}
                     key={dgReturnDate()}
                     id="dgDate"
-                    type="date"
                     name="dgDate"
                     onChange={handleDgFieldChange}
                     max={limitDateToNextDGDate()}

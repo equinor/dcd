@@ -70,7 +70,7 @@ const DGDateInherited = ({
         }
     }
 
-    const dgReturnDate = () => value?.toLocaleDateString("en-CA")
+    const dgReturnDate = () => value?.toISOString().substring(0, 7)
 
     return (
         <>
@@ -97,7 +97,7 @@ const DGDateInherited = ({
                 <Input
                     defaultValue={dgReturnDate()}
                     id="dgDate"
-                    type="date"
+                    type="month"
                     name="dgDate"
                     onChange={onChange}
                     disabled={disabled}
