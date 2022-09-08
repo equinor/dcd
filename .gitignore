@@ -3,6 +3,7 @@ backend/*/bin
 backend/*/obj
 backend/api/Properties/launchSettings.json
 backend/api/app
+backend/api/.cache
 
 node_modules/
 

@@ -11,6 +11,7 @@ using Equinor.TI.CommonLibrary.Client;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -112,7 +113,6 @@ if (environment == "localdev")
 else
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 
-Console.WriteLine("Configuring Fusion");
 builder.Services.AddFusionIntegration(options =>
 {
     var fusionEnvironment = environment switch
@@ -129,7 +129,6 @@ builder.Services.AddFusionIntegration(options =>
     options.AddFusionAuthorization();
 
     options.UseDefaultEndpointResolver(fusionEnvironment);
-    Console.WriteLine("config[AzureAd:ClientId]: " + config["AzureAd:ClientId"]);
     options.UseDefaultTokenProvider(opts =>
     {
         opts.ClientId = config["AzureAd:ClientId"];

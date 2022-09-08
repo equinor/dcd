@@ -43,6 +43,38 @@ namespace api.Adapters
             return caseDto;
         }
 
+        public static OpexCostProfileDto Convert(OpexCostProfile? opexCost)
+        {
+            if (opexCost == null)
+            {
+                return null!;
+            }
+            return new OpexCostProfileDto
+            {
+                Id = opexCost.Id,
+                Currency = opexCost.Currency,
+                EPAVersion = opexCost.EPAVersion,
+                StartYear = opexCost.StartYear,
+                Values = opexCost.Values,
+            };
+        }
+
+        public static StudyCostProfileDto Convert(StudyCostProfile? studyCost)
+        {
+            if (studyCost == null)
+            {
+                return null!;
+            }
+            return new StudyCostProfileDto
+            {
+                Id = studyCost.Id,
+                Currency = studyCost.Currency,
+                EPAVersion = studyCost.EPAVersion,
+                StartYear = studyCost.StartYear,
+                Values = studyCost.Values,
+            };
+        }
+
         private static void CalculateCessationCost(Case caseItem, CaseDto caseDto, ProjectDto projectDto)
         {
             var cessationWells = new CessationCostDto();

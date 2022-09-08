@@ -240,6 +240,7 @@ namespace api.Services
             var wellProject = _context.WellProjects!
                 .Include(c => c.CostProfile)
                 .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
+                .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.Well)
                 .FirstOrDefault(o => o.Id == wellProjectId);
             if (wellProject == null)
             {
