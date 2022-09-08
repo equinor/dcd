@@ -1,5 +1,4 @@
 using api.Dtos;
-using api.Helpers;
 using api.Models;
 using api.Services;
 
@@ -20,19 +19,19 @@ public class PROSPController : ControllerBase
     private const string isCheckedAsset = "true";
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
-    private readonly ProspImportHelper _prospHelper;
-    private readonly ImportProspService _prospService;
+    private readonly ProspSharepointImportService _prospSharepointImportService;
+    private readonly ProspExcelImportService _prospExcelImportService;
 
 
-    public PROSPController(ImportProspService prospService,
+    public PROSPController(ProspExcelImportService prospExcelImportService,
         GraphServiceClient graphService,
         IConfiguration config,
-        ProspImportHelper prospImportHelper)
+        ProspSharepointImportService prospSharepointImportImportService)
     {
-        _prospService = prospService;
+        _prospExcelImportService = prospExcelImportService;
         _graphServiceClient = graphService;
         _config = config;
-        _prospHelper = prospImportHelper;
+        _prospSharepointImportService = prospSharepointImportImportService;
     }
 
     [HttpGet("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
@@ -41,7 +40,7 @@ public class PROSPController : ControllerBase
         var siteId = _config["SharePoint:Prosp:SiteId"];
         var dto = new List<DriveItemDto>();
         var query = _config["SharePoint:Prosp:FileQuery"];
-        var validMimeTypes = _prospHelper.ValidMimeTypes();
+        var validMimeTypes = _prospSharepointImportService.ValidMimeTypes();
 
         var driveItemSearchCollectionPage = _graphServiceClient.Sites[siteId]
             .Drive.Root
@@ -54,7 +53,7 @@ public class PROSPController : ControllerBase
         foreach (var driveItem in driveItemSearchCollectionPage.Where(item =>
                      item.File != null && validMimeTypes.Contains(item.File.MimeType)))
         {
-            _prospHelper.ConvertToDto(driveItem, dto);
+            _prospSharepointImportService.ConvertToDto(driveItem, dto);
         }
 
         return dto;
@@ -67,7 +66,7 @@ public class PROSPController : ControllerBase
     {
         try
         {
-            var projectDto = await _prospHelper.ConvertSharepointFilesToProjectDto(projectId, dto);
+            var projectDto = await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dto);
 
             return projectDto;
         }
@@ -103,7 +102,7 @@ public class PROSPController : ControllerBase
                     }
                 }
 
-                var dto = _prospService.ImportProsp(file, sourceCaseId, projectId, assets);
+                var dto = _prospExcelImportService.ImportProsp(file, sourceCaseId, projectId, assets);
                 return dto;
             }
 

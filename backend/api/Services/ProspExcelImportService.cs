@@ -11,7 +11,7 @@ using Transport = api.Helpers.Transport;
 
 namespace api.Services;
 
-public class ImportProspService
+public class ProspExcelImportService
 {
     private const string SheetName = "main";
     private readonly ProjectService _projectService;
@@ -23,12 +23,12 @@ public class ImportProspService
     private readonly CaseService _caseService;
 
 
-    public ImportProspService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory, SurfService surfService,
+    public ProspExcelImportService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory, SurfService surfService,
         SubstructureService substructureService, TopsideService topsideService, TransportService transportService,
         IConfiguration config)
     {
         _projectService = projectService;
-        loggerFactory.CreateLogger<ImportProspService>();
+        loggerFactory.CreateLogger<ProspExcelImportService>();
         _surfService = surfService;
         _substructureService = substructureService;
         _topsideService = topsideService;

@@ -160,8 +160,8 @@ builder.Services.AddScoped(_ => new CommonLibraryClientOptions
 { TokenProviderConnectionString = commonLibTokenConnection });
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
-builder.Services.AddScoped<ImportProspService>();
-builder.Services.AddScoped<ProspImportHelper>();
+builder.Services.AddScoped<ProspExcelImportService>();
+builder.Services.AddScoped<ProspSharepointImportService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers(
