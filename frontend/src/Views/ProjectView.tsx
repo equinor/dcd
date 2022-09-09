@@ -23,6 +23,7 @@ import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
 import { EditProjectInputModal } from "../Components/EditProjectInput/EditProjectInputModal"
+import { EditTechnicalInputModal } from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -224,8 +225,8 @@ const ProjectView = () => {
                     </Panels>
                 </Tabs>
             </Wrapper>
-            <EditProjectInputModal
-                toggleEditCaseModal={toggleEditProjectModal}
+            <EditTechnicalInputModal
+                toggleEditTechnicalInputModal={toggleEditProjectModal}
                 isOpen={editProjectModalIsOpen}
                 project={project}
                 setProject={setProject}
