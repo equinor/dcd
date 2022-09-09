@@ -14,7 +14,7 @@ import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetWellProjectService } from "../Services/WellProjectService"
-import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { ToMonthDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
@@ -161,16 +161,16 @@ function WellProjectView() {
                 <Dg4Field>
                     <Input
                         disabled
-                        defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")}
-                        type="date"
+                        defaultValue={ToMonthDate(caseItem?.DG3Date)}
+                        type="month"
                     />
                 </Dg4Field>
                 <Typography variant="h4">DG4</Typography>
                 <Dg4Field>
                     <Input
                         disabled
-                        defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")}
-                        type="date"
+                        defaultValue={ToMonthDate(caseItem?.DG4Date)}
+                        type="month"
                     />
                 </Dg4Field>
             </Wrapper>

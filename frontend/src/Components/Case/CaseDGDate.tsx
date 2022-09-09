@@ -20,7 +20,7 @@ import styled from "styled-components"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { GetCaseService } from "../../Services/CaseService"
-import { unwrapCase } from "../../Utils/common"
+import { IsInvalidDate, ToMonthDate, unwrapCase } from "../../Utils/common"
 import DGEnum from "../../models/DGEnum"
 
 const DgField = styled.div`
@@ -80,17 +80,22 @@ const CaseDGDate = ({
         }
     }
 
-    const dgReturnDate = () => caseItem?.[dGType]?.toISOString().substring(0, 7)
+    const dgReturnDate = () => (IsInvalidDate(caseItem?.[dGType])
+        ? undefined
+        : ToMonthDate(caseItem?.[dGType]))
 
     const limitDateToNextDGDate = () => {
+        if (dGType === DGEnum.DG0) {
+            return IsInvalidDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
+        }
         if (dGType === DGEnum.DG1) {
-            return caseItem?.DG2Date?.toLocaleDateString("en-CA")
+            return IsInvalidDate(caseItem?.DG2Date) ? undefined : ToMonthDate(caseItem?.DG2Date)
         }
         if (dGType === DGEnum.DG2) {
-            return caseItem?.DG3Date?.toLocaleDateString("en-CA")
+            return IsInvalidDate(caseItem?.DG3Date) ? undefined : ToMonthDate(caseItem?.DG3Date)
         }
         if (dGType === DGEnum.DG3) {
-            return caseItem?.DG4Date?.toLocaleDateString("en-CA")
+            return IsInvalidDate(caseItem?.DG4Date) ? undefined : ToMonthDate(caseItem?.DG4Date)
         }
         return undefined
     }
