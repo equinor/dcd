@@ -68,10 +68,11 @@ namespace api.Services
 
         public ProjectDto UpdateCase(CaseDto updatedCaseDto)
         {
-            var updatedCase = CaseAdapter.Convert(updatedCaseDto);
-            _context.Cases!.Update(updatedCase);
+            var caseItem = GetCase(updatedCaseDto.Id);
+            CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
+            _context.Cases!.Update(caseItem);
             _context.SaveChanges();
-            return _projectService.GetProjectDto(updatedCase.ProjectId);
+            return _projectService.GetProjectDto(caseItem.ProjectId);
         }
 
         public ProjectDto DeleteCase(Guid caseId)

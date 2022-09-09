@@ -29,6 +29,8 @@ export class Case implements Components.Schemas.CaseDto {
     facilitiesAvailability?: number
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
     cessationCost?: CaseCessationCostProfile
+    sharepointFileId?: string
+    sharepointFileName?: string
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -59,6 +61,8 @@ export class Case implements Components.Schemas.CaseDto {
         this.facilitiesAvailability = data.facilitiesAvailability
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
         this.cessationCost = CaseCessationCostProfile.fromJSON(data.cessationCost)
+        this.sharepointFileId = data.sharepointFileId ?? ""
+        this.sharepointFileName = data.sharepointFileName ?? ""
     }
 
     static Copy(data: Case) {

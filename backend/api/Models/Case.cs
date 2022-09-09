@@ -33,6 +33,8 @@ namespace api.Models
         public Guid TopsideLink { get; set; } = Guid.Empty;
         public Guid TransportLink { get; set; } = Guid.Empty;
         public Guid ExplorationLink { get; set; } = Guid.Empty;
+        public string? SharepointFileId { get; set; }
+        public string? SharepointFileName { get; set; }
     }
 
     public enum ArtificialLift

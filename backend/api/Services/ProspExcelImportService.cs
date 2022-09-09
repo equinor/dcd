@@ -11,7 +11,7 @@ using Transport = api.Helpers.Transport;
 
 namespace api.Services;
 
-public class ImportProspService
+public class ProspExcelImportService
 {
     private const string SheetName = "main";
     private readonly ProjectService _projectService;
@@ -20,19 +20,21 @@ public class ImportProspService
     private readonly SurfService _surfService;
     private readonly TopsideService _topsideService;
     private readonly TransportService _transportService;
+    private readonly CaseService _caseService;
 
 
-    public ImportProspService(ProjectService projectService, ILoggerFactory loggerFactory, SurfService surfService,
+    public ProspExcelImportService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory, SurfService surfService,
         SubstructureService substructureService, TopsideService topsideService, TransportService transportService,
         IConfiguration config)
     {
         _projectService = projectService;
-        loggerFactory.CreateLogger<ImportProspService>();
+        loggerFactory.CreateLogger<ProspExcelImportService>();
         _surfService = surfService;
         _substructureService = substructureService;
         _topsideService = topsideService;
         _transportService = transportService;
         _prospConfig = CreateConfig(config);
+        _caseService = caseService;
     }
 
     private Prosp CreateConfig(IConfiguration config)
@@ -49,7 +51,9 @@ public class ImportProspService
     {
         if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
                 out var value))
+        {
             return Math.Round(value, 3);
+        }
 
         return 0;
     }
@@ -58,7 +62,9 @@ public class ImportProspService
     {
         if (int.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
                 out var value))
+        {
             return value;
+        }
 
         return -1;
     }
@@ -68,7 +74,9 @@ public class ImportProspService
         var values = new List<double>();
         foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
             if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
+            {
                 values.Add(value);
+            }
 
         return values.ToArray();
     }
@@ -77,7 +85,9 @@ public class ImportProspService
     {
         if (double.TryParse(cellData.FirstOrDefault(c => c.CellReference == coordinate)?.CellValue?.InnerText,
                 out var value))
+        {
             return DateTime.FromOADate(value);
+        }
 
         return new DateTime(1900, 1, 1);
     }
@@ -325,7 +335,49 @@ public class ImportProspService
         _transportService.CreateTransport(dto, sourceCaseId);
     }
 
-    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId)
+    public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
+    {
+        using var ms = new MemoryStream();
+        file.CopyTo(ms);
+        using var document = SpreadsheetDocument.Open(ms, false);
+        var workbookPart = document.WorkbookPart;
+        var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
+            .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
+
+        if (mainSheet?.Id != null && workbookPart != null)
+        {
+            var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
+            var cellData = wsPart?.Worksheet.Descendants<Cell>();
+
+            if (cellData != null)
+            {
+                var parsedData = cellData.ToList();
+                if (assets["Surf"])
+                {
+                    ImportSurf(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Topside"])
+                {
+                    ImportTopside(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Substructure"])
+                {
+                    ImportSubstructure(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Transport"])
+                {
+                    ImportTransport(parsedData, sourceCaseId, projectId);
+                }
+            }
+        }
+
+        return _projectService.GetProjectDto(projectId);
+    }
+
+    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets, string sharepointFileId)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart;
@@ -340,11 +392,31 @@ public class ImportProspService
             if (cellData != null)
             {
                 var parsedData = cellData.ToList();
-                ImportSurf(parsedData, sourceCaseId, projectId);
-                ImportTopside(parsedData, sourceCaseId, projectId);
-                ImportSubstructure(parsedData, sourceCaseId, projectId);
-                ImportTransport(parsedData, sourceCaseId, projectId);
+                if (assets["Surf"])
+                {
+                    ImportSurf(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Topside"])
+                {
+                    ImportTopside(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Substructure"])
+                {
+                    ImportSubstructure(parsedData, sourceCaseId, projectId);
+                }
+
+                if (assets["Transport"])
+                {
+                    ImportTransport(parsedData, sourceCaseId, projectId);
+                }
             }
+
+            var caseItem = _caseService.GetCase(sourceCaseId);
+            caseItem.SharepointFileId = sharepointFileId;
+            var caseDto = CaseDtoAdapter.Convert(caseItem, _projectService.GetProjectDto(projectId));
+            return _caseService.UpdateCase(caseDto);
         }
 
         return _projectService.GetProjectDto(projectId);

@@ -6,7 +6,7 @@ import {
 import { useParams } from "react-router"
 import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
-import { GetUploadService } from "../Services/UploadService"
+import { GetProspService } from "../Services/ProspService"
 import { unwrapCase } from "../Utils/common"
 import {
     Wrapper,
@@ -47,7 +47,7 @@ const ExcelUpload = ({
         const data = generateFormData(currentFiles[0])
 
         try {
-            const uploadService = await GetUploadService()
+            const uploadService = await GetProspService()
             const response = await uploadService.create(caseId!, currentProject?.externalId!, data)
             setProject(response)
             const caseResult = unwrapCase(response.cases.find((o) => o.id === caseId))

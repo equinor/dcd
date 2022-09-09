@@ -68,7 +68,7 @@ public class CaseShould : IDisposable
         var oldCase = CreateCase(project);
         fixture.context.Cases.Add(oldCase);
         fixture.context.SaveChanges();
-        var updatedCase = CreateUpdatedCase(project);
+        var updatedCase = CreateUpdatedCase(project, oldCase);
 
         // Act
         var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase, ProjectDtoAdapter.Convert(project)));
@@ -132,10 +132,11 @@ public class CaseShould : IDisposable
         Assert.True(expected.Count() == 2);
     }
 
-    private static Case CreateUpdatedCase(Project project)
+    private static Case CreateUpdatedCase(Project project, Case oldCase)
     {
         return new CaseBuilder
         {
+            Id = oldCase.Id,
             ProjectId = project.Id,
             Name = "Test-exploration-34",
             Project = project,
