@@ -181,10 +181,14 @@ function CaseView() {
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>
                         <Tab>Definition </Tab>
+                        <Tab>Schedule </Tab>
                         <Tab>Facilities </Tab>
-                        <Tab>Drainage Strategy</Tab>
                         <Tab>Exploration</Tab>
-                        <Tab>Well</Tab>
+                        <Tab>Development </Tab>
+                        <Tab>Production Profiles</Tab>
+                        <Tab>Cost</Tab>
+                        <Tab>CO2 Emissions </Tab>
+                        <Tab>Summary </Tab>
                     </List>
                     <Panels>
                         <StyledTabPanel>
@@ -196,12 +200,10 @@ function CaseView() {
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Facilities</p>
+                            <p>Schedule</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Case with name: </p>
-                            {caseItem.name}
-                            <p>Drainage Strategy</p>
+                            <p>Facilities</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
                             Exploration
@@ -211,7 +213,19 @@ function CaseView() {
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Well</p>
+                            <p>Development</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Production profiles</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Cost</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>CO2 Emissions</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p>Summary</p>
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
