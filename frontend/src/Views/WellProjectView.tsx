@@ -230,7 +230,7 @@ function WellProjectView() {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
                 timeSeriesArray={[costProfile!]}
-                profileName={[""]}
+                profileName={["Cost profile"]}
                 profileEnum={project?.physUnit!}
             />
             <Typography>Drilling schedules:</Typography>

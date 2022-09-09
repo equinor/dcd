@@ -202,7 +202,7 @@ const ExplorationViewTab = ({
                     setFirstYear={setFirstTSYear!}
                     setLastYear={setLastTSYear}
                     timeSeriesArray={[costProfile!]}
-                    profileName={[""]}
+                    profileName={["Cost profile"]}
                     profileEnum={project?.physUnit!}
                 />
                 <ReadOnlyCostProfile

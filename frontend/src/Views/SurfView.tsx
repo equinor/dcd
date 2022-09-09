@@ -176,6 +176,17 @@ const SurfView = () => {
         costProfile, cessationCostProfile, currency, costYear, cessationCost, approvedBy, artificialLift,
         dG3Date, dG4Date])
 
+    const setAllInitialStates = (timeSeries: any) => {
+        if (timeSeries) {
+            if (timeSeries.name === "Cost profile") {
+                setCostProfile(timeSeries)
+            }
+            if (timeSeries.name === "Cessation cost profile") {
+                setCessationCostProfile(timeSeries)
+            }
+        }
+    }
+
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -327,7 +338,7 @@ const SurfView = () => {
             />
             <TimeSeries
                 dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
+                setTimeSeries={setAllInitialStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!, cessationCostProfile!]}
                 timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
@@ -337,20 +348,6 @@ const SurfView = () => {
                 setLastYear={setLastTSYear}
                 timeSeriesArray={[costProfile!, cessationCostProfile!]}
                 profileName={["Cost profile", "Cessation cost profile"]}
-                profileEnum={currency}
-            />
-            <TimeSeries
-                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={[cessationCostProfile!, costProfile!]}
-                timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-                timeSeriesArray={[costProfile!, cessationCostProfile!]}
-                profileName={["Cessation cost profile", "Cost profile"]}
                 profileEnum={currency}
             />
         </AssetViewDiv>

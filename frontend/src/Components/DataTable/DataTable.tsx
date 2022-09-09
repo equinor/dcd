@@ -175,9 +175,9 @@ function DataTable({
     const defaultColDef = useMemo(() => ({
         resizable: true,
         sortable: true,
-        initialWidth: 120,
+        // initialWidth: 120,
         editable: true,
-        flex: 1,
+        // flex: 1,
     }), [])
 
     // const buildEditedGrid = (updatedTimeSeries: ITimeSeries) => {
@@ -238,7 +238,7 @@ function DataTable({
     }, [])
 
     return (
-        <div className="ag-theme-alpine" style={{ height: 500 }}>
+        <div className="ag-theme-alpine">
             <AgGridReact
                 ref={gridRef}
                 // onGridReady={onGridReady}
@@ -246,6 +246,7 @@ function DataTable({
                 columnDefs={columnsArrayToColDef()}
                 defaultColDef={defaultColDef}
                 animateRows
+                domLayout="autoHeight"
                 enableCellChangeFlash
                 onCellValueChanged={onCellValueChanged}
             />

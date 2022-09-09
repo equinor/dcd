@@ -142,6 +142,17 @@ const TransportView = () => {
     }, [gasExportPipelineLength, oilExportPipelineLength, maturity,
         costProfile, cessationCostProfile, currency, costYear, dG3Date, dG4Date])
 
+    const setAllInitialStates = (timeSeries: any) => {
+        if (timeSeries) {
+            if (timeSeries.name === "Cost profile") {
+                setCostProfile(timeSeries)
+            }
+            if (timeSeries.name === "Cessation cost profile") {
+                setCessationCostProfile(timeSeries)
+            }
+        }
+    }
+
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -228,7 +239,7 @@ const TransportView = () => {
             />
             <TimeSeries
                 dG4Year={transport?.source === 1 ? transport.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
+                setTimeSeries={setAllInitialStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!, cessationCostProfile!]}
                 timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
@@ -237,7 +248,7 @@ const TransportView = () => {
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
                 timeSeriesArray={[costProfile!, cessationCostProfile!]}
-                profileName={[""]}
+                profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={project?.physUnit!}
             />
         </AssetViewDiv>

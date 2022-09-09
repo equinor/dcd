@@ -231,11 +231,13 @@ const TimeSeries = ({
         }
 
         if ((endingYear!) > (Number(colYears[0]) + newTimeSeries.values!.length - 1)) {
+            // this breaks table when adding value after having increased ending year...
             // eslint-disable-next-line max-len
             newTimeSeries.values = (newTimeSeries.values)?.concat(new Array(colYears.length + 1 - timeSeries![j].values!.length!).fill(0))
         }
 
         if (endingYear! < (Number(colYears[0]) + timeSeries![j].values!.length - 1)) {
+            // this breaks table when adding value after having increased ending year...
             const yearDifference = (Number(colYears[0]) + timeSeries![j].values!.length - 1) - endingYear!
             console.log(yearDifference)
             newTimeSeries.values = timeSeries![j].values?.slice(0, -yearDifference)
@@ -281,12 +283,13 @@ const TimeSeries = ({
             setColumns(colYears)
             console.log(timeSeries?.length)
             console.log(gridData)
-            if (gridData === undefined) {
+            console.log(timeSeries)
+            if (timeSeries![0] === undefined) {
                 for (let i = 0; i < timeSeries?.length!; i += 1) {
                     createEmptyGrid(i)
                 }
             }
-            if (gridData !== undefined) {
+            if (timeSeries![0] !== undefined) {
                 for (let i = 0; i < timeSeries?.length!; i += 1) {
                     createNewGridWithData(i)
                 }
