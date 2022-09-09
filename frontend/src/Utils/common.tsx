@@ -101,3 +101,12 @@ export function GetProjectPhaseName(key?: Components.Schemas.ProjectPhase): stri
         9: "Screening business opportunities",
     }[key]
 }
+
+export const ToMonthDate = (date?: Date | null): string | undefined => date?.toISOString().substring(0, 7)
+
+export const IsInvalidDate = (date?: Date | null): boolean => {
+    if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
+        return true
+    }
+    return false
+}

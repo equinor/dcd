@@ -139,6 +139,15 @@ function DefinitionView({
                         caseItem={caseItem}
                         setProject={setProject}
                         setCase={setCase}
+                        dGType={DGEnum.DG2}
+                        dGName="DG2"
+                    />
+                </DGWrapper>
+                <DGWrapper>
+                    <CaseDGDate
+                        caseItem={caseItem}
+                        setProject={setProject}
+                        setCase={setCase}
                         dGType={DGEnum.DG3}
                         dGName="DG3"
                     />
@@ -148,23 +157,12 @@ function DefinitionView({
                         caseItem={caseItem}
                         setProject={setProject}
                         setCase={setCase}
-                        dGType={DGEnum.DG2}
-                        dGName="DG2"
-                    />
-
-                </DGWrapper>
-                <DGWrapper>
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
                         dGType={DGEnum.DG4}
                         dGName="DG4"
                     />
-
                 </DGWrapper>
-
             </RowWrapper>
+
             <RowWrapper>
                 <ProductionStrategyOverview
                     currentValue={productionStrategyOverview}

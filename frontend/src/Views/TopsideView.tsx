@@ -12,7 +12,7 @@ import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
-import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { IsInvalidDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Wrapper, WrapperColumn,
@@ -88,11 +88,11 @@ const TopsideView = () => {
                 let newTopside = project.topsides.find((s) => s.id === topsideId)
                 if (newTopside !== undefined) {
                     if (newTopside.DG3Date === null
-                        || newTopside.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        || IsInvalidDate(newTopside.DG3Date)) {
                         newTopside.DG3Date = caseResult?.DG3Date
                     }
                     if (newTopside.DG4Date === null
-                        || newTopside.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        || IsInvalidDate(newTopside.DG4Date)) {
                         newTopside.DG4Date = caseResult?.DG4Date
                     }
                     setTopside(newTopside)

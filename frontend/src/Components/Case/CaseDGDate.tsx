@@ -20,7 +20,7 @@ import styled from "styled-components"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { GetCaseService } from "../../Services/CaseService"
-import { unwrapCase } from "../../Utils/common"
+import { IsInvalidDate, ToMonthDate, unwrapCase } from "../../Utils/common"
 import DGEnum from "../../models/DGEnum"
 
 const DgField = styled.div`
@@ -80,17 +80,38 @@ const CaseDGDate = ({
         }
     }
 
-    const dgReturnDate = () => caseItem?.[dGType]?.toLocaleDateString("en-CA")
+    const dgReturnDate = () => (IsInvalidDate(caseItem?.[dGType])
+        ? undefined
+        : ToMonthDate(caseItem?.[dGType]))
 
-    const limitDateToNextDGDate = () => {
+    const inputMaxDate = () => {
+        if (dGType === DGEnum.DG0) {
+            return IsInvalidDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
+        }
         if (dGType === DGEnum.DG1) {
-            return caseItem?.DG2Date?.toLocaleDateString("en-CA")
+            return IsInvalidDate(caseItem?.DG2Date) ? undefined : ToMonthDate(caseItem?.DG2Date)
         }
         if (dGType === DGEnum.DG2) {
-            return caseItem?.DG3Date?.toLocaleDateString("en-CA")
+            return IsInvalidDate(caseItem?.DG3Date) ? undefined : ToMonthDate(caseItem?.DG3Date)
         }
         if (dGType === DGEnum.DG3) {
-            return caseItem?.DG4Date?.toLocaleDateString("en-CA")
+            return IsInvalidDate(caseItem?.DG4Date) ? undefined : ToMonthDate(caseItem?.DG4Date)
+        }
+        return undefined
+    }
+
+    const inputMinDate = () => {
+        if (dGType === DGEnum.DG1) {
+            return IsInvalidDate(caseItem?.DG0Date) ? undefined : ToMonthDate(caseItem?.DG0Date)
+        }
+        if (dGType === DGEnum.DG2) {
+            return IsInvalidDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
+        }
+        if (dGType === DGEnum.DG3) {
+            return IsInvalidDate(caseItem?.DG2Date) ? undefined : ToMonthDate(caseItem?.DG2Date)
+        }
+        if (dGType === DGEnum.DG4) {
+            return IsInvalidDate(caseItem?.DG3Date) ? undefined : ToMonthDate(caseItem?.DG3Date)
         }
         return undefined
     }
@@ -100,13 +121,14 @@ const CaseDGDate = ({
             <Typography variant="h6">{dGName}</Typography>
             <DgField>
                 <Input
+                    type="month"
                     defaultValue={dgReturnDate()}
                     key={dgReturnDate()}
                     id="dgDate"
-                    type="date"
                     name="dgDate"
                     onChange={handleDgFieldChange}
-                    max={limitDateToNextDGDate()}
+                    max={inputMaxDate()}
+                    min={inputMinDate()}
                 />
                 <EdsProvider density="compact">
                     <ActionsContainer>
