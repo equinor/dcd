@@ -72,6 +72,7 @@ export class Case implements Components.Schemas.CaseDto {
             DG4Date: data.DG4Date,
             createdAt: data.createdAt,
             updatedAt: data.updatedAt,
+            CreateTime: data.createdAt,
         }
     }
 
