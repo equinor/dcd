@@ -57,10 +57,10 @@ public class ProspSharepointImportService
     public Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport) =>
         new()
         {
-            {nameof(Surf), surf},
-            {nameof(Topside), topside},
-            {nameof(Substructure), substructure},
-            {nameof(Transport), transport},
+            { nameof(Surf), surf },
+            { nameof(Topside), topside },
+            { nameof(Substructure), substructure },
+            { nameof(Transport), transport },
         };
 
     public void ConvertToDto(DriveItem driveItem, List<DriveItemDto> dto)
