@@ -84,7 +84,7 @@ const CaseDGDate = ({
         ? undefined
         : ToMonthDate(caseItem?.[dGType]))
 
-    const limitDateToNextDGDate = () => {
+    const inputMaxDate = () => {
         if (dGType === DGEnum.DG0) {
             return IsInvalidDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
         }
@@ -100,6 +100,22 @@ const CaseDGDate = ({
         return undefined
     }
 
+    const inputMinDate = () => {
+        if (dGType === DGEnum.DG1) {
+            return IsInvalidDate(caseItem?.DG0Date) ? undefined : ToMonthDate(caseItem?.DG0Date)
+        }
+        if (dGType === DGEnum.DG2) {
+            return IsInvalidDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
+        }
+        if (dGType === DGEnum.DG3) {
+            return IsInvalidDate(caseItem?.DG2Date) ? undefined : ToMonthDate(caseItem?.DG2Date)
+        }
+        if (dGType === DGEnum.DG4) {
+            return IsInvalidDate(caseItem?.DG3Date) ? undefined : ToMonthDate(caseItem?.DG3Date)
+        }
+        return undefined
+    }
+
     return (
         <>
             <Typography variant="h6">{dGName}</Typography>
@@ -111,7 +127,8 @@ const CaseDGDate = ({
                     id="dgDate"
                     name="dgDate"
                     onChange={handleDgFieldChange}
-                    max={limitDateToNextDGDate()}
+                    max={inputMaxDate()}
+                    min={inputMinDate()}
                 />
                 <EdsProvider density="compact">
                     <ActionsContainer>
