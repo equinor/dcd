@@ -39,12 +39,11 @@ public class PROSPController : ControllerBase
     {
         var siteId = _config["SharePoint:Prosp:SiteId"];
         var dto = new List<DriveItemDto>();
-        var query = _config["SharePoint:Prosp:FileQuery"];
         var validMimeTypes = _prospSharepointImportService.ValidMimeTypes();
 
         var driveItemSearchCollectionPage = _graphServiceClient.Sites[siteId]
             .Drive.Root
-            .Search(query)
+            .Search(string.Empty)
             .Request()
             .GetAsync()
             .GetAwaiter()
