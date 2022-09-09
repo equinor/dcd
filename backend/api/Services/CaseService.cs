@@ -28,6 +28,7 @@ namespace api.Services
         public ProjectDto CreateCase(CaseDto caseDto)
         {
             var case_ = CaseAdapter.Convert(caseDto);
+            case_.CreateTime = DateTime.UtcNow;
             if (case_.DG4Date == DateTimeOffset.MinValue)
             {
                 case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
