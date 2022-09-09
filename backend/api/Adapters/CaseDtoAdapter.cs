@@ -34,6 +34,8 @@ namespace api.Adapters
                 GasInjectorCount = case_.GasInjectorCount,
                 WaterInjectorCount = case_.WaterInjectorCount,
                 FacilitiesAvailability = case_.FacilitiesAvailability,
+                SharepointFileId = case_.SharepointFileId,
+                SharepointFileName = case_.SharepointFileName,
             };
 
             CalculateCessationCost(case_, caseDto, projectDto);

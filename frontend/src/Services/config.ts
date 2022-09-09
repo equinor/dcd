@@ -73,7 +73,7 @@ export const buildConfig = (baseUrl: string) => {
     configuration.SubstructureService.BASE_URL = `${baseUrl}/substructures`
     configuration.TransportService.BASE_URL = `${baseUrl}/transports`
     configuration.STEAService.BASE_URL = `${baseUrl}/stea`
-    configuration.UploadService.BASE_URL = `${baseUrl}/Upload`
+    configuration.UploadService.BASE_URL = `${baseUrl}/prosp`
     configuration.WellService.BASE_URL = `${baseUrl}/wells`
     configuration.WellProjectWellService.BASE_URL = `${baseUrl}/well-project-wells`
     configuration.ExplorationWellService.BASE_URL = `${baseUrl}/exploration-wells`

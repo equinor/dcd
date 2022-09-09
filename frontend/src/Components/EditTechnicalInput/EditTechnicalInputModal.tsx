@@ -10,6 +10,7 @@ import { clear } from "@equinor/eds-icons"
 import _, { isEqual } from "underscore"
 import WellCostsTab from "./WellCostsTab"
 import { Project } from "../../models/Project"
+import PROSPTab from "./PROSPTab"
 import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
 import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
 import { ExplorationWell } from "../../models/ExplorationWell"
@@ -146,7 +147,7 @@ export const EditTechnicalInputModal: FunctionComponent<Props> = ({
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            PROSP
+                            <PROSPTab project={project} setProject={setProject} />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>

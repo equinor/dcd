@@ -1,4 +1,5 @@
 using api.Context;
+using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
 
@@ -42,10 +43,14 @@ var commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"))
+    .EnableTokenAcquisitionToCallDownstreamApi()
+    .AddMicrosoftGraph(builder.Configuration.GetSection("Graph"))
+    .AddInMemoryTokenCaches();
 
 var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
 // Setup in memory DB SQL lite for test purposes
 var _sqlConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
 
@@ -153,8 +158,8 @@ builder.Services.AddScoped(_ => new CommonLibraryClientOptions
 { TokenProviderConnectionString = commonLibTokenConnection });
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
-builder.Services.AddScoped<ImportProspService>();
-builder.Services.AddScoped<GraphRestService>();
+builder.Services.AddScoped<ProspExcelImportService>();
+builder.Services.AddScoped<ProspSharepointImportService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers(
