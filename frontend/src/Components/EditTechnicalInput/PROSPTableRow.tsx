@@ -129,7 +129,7 @@ function PROSPTableRow({
                     disabled={!!caseItem.sharepointFileId}
                 >
                     {sharePointFileDropdownOptions()}
-                    <option key="" value="" />
+                    <option aria-label="empty value" key="" value="" />
                 </NativeSelect>
             </Table.Cell>
         </Table.Row>

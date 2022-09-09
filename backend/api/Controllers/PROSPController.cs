@@ -21,17 +21,23 @@ public class PROSPController : ControllerBase
     private readonly GraphServiceClient _graphServiceClient;
     private readonly ProspSharepointImportService _prospSharepointImportService;
     private readonly ProspExcelImportService _prospExcelImportService;
+    private readonly ProjectService _projectService;
+    private readonly ILogger<PROSPController> _logger;
 
 
     public PROSPController(ProspExcelImportService prospExcelImportService,
         GraphServiceClient graphService,
         IConfiguration config,
-        ProspSharepointImportService prospSharepointImportImportService)
+        ProspSharepointImportService prospSharepointImportImportService,
+        ProjectService projectService,
+        ILoggerFactory loggerFactory)
     {
         _prospExcelImportService = prospExcelImportService;
         _graphServiceClient = graphService;
         _config = config;
         _prospSharepointImportService = prospSharepointImportImportService;
+        _projectService = projectService;
+        _logger = loggerFactory.CreateLogger<PROSPController>();
     }
 
     [HttpGet("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
@@ -67,11 +73,14 @@ public class PROSPController : ControllerBase
         {
             var projectDto = await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dto);
 
-            return projectDto;
+            return projectDto.ProjectId == projectId
+                ? projectDto
+                : _projectService.GetProjectDto(projectId);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return null;
+            _logger.LogError(e.Message);
+            return _projectService.GetProjectDto(projectId);
         }
     }
 
@@ -107,9 +116,10 @@ public class PROSPController : ControllerBase
 
             return null;
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return null;
+            _logger.LogError(e.Message);
+            return _projectService.GetProjectDto(projectId);
         }
     }
 }

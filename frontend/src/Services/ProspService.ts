@@ -16,7 +16,7 @@ export class __ProspService extends __BaseService {
         return Project.fromJSON(res)
     }
 
-    async getSharePointFileNamesAndId(id: string) {
+    async getSharePointFileNamesAndId() {
         const driveItem: DriveItem[] = await this.get<Components.Schemas.DriveItemDto[]>("sharepoint")
         return driveItem
     }

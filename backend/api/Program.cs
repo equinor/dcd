@@ -137,10 +137,7 @@ builder.Services.AddFusionIntegration(options =>
 
     options.ApplicationMode = true;
 });
-// builder.Services.AddMicrosoftIdentityWebApiAuthentication(config)
-//     .EnableTokenAcquisitionToCallDownstreamApi()
-//     .AddMicrosoftGraph()
-//     .AddInMemoryTokenCaches();
+
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();

@@ -54,23 +54,15 @@ public class ProspSharepointImportService
         return projectDto;
     }
 
-    public Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport)
-    {
-        var assets = new Dictionary<string, bool>()
-                {
-                    {nameof(Surf), false},
-                    {nameof(Topside), false},
-                    {nameof(Substructure), false},
-                    {nameof(Transport), false},
-                };
+    public Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport) =>
+        new()
+        {
+            {nameof(Surf), surf},
+            {nameof(Topside), topside},
+            {nameof(Substructure), substructure},
+            {nameof(Transport), transport},
+        };
 
-        if (surf) { assets[nameof(Surf)] = true; }
-        if (substructure) { assets[nameof(Substructure)] = true; }
-        if (topside) { assets[nameof(Topside)] = true; }
-        if (transport) { assets[nameof(Transport)] = true; }
-
-        return assets;
-    }
     public void ConvertToDto(DriveItem driveItem, List<DriveItemDto> dto)
     {
         var item = new DriveItemDto

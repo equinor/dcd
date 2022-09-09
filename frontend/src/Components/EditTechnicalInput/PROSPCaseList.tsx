@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { Button, Table } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
@@ -22,7 +21,7 @@ function PROSPCaseList({
 
     useEffect(() => {
         (async () => {
-            const newDriveItems = await (await GetProspService()).getSharePointFileNamesAndId("")
+            const newDriveItems = await (await GetProspService()).getSharePointFileNamesAndId()
             setDriveItems(newDriveItems)
             const prosp: SharePointImport[] = []
 
@@ -38,7 +37,14 @@ function PROSPCaseList({
         const tableRows: JSX.Element[] = []
         project.cases.forEach((caseItem) => {
             tableRows.push((
-                <PROSPTableRow key={caseItem.id!} project={project} prospCases={prospCases} setProspCases={setProspCases} caseId={caseItem.id!} driveItems={driveItems} />
+                <PROSPTableRow
+                    key={caseItem.id!}
+                    project={project}
+                    prospCases={prospCases}
+                    setProspCases={setProspCases}
+                    caseId={caseItem.id!}
+                    driveItems={driveItems}
+                />
             ))
         })
 
