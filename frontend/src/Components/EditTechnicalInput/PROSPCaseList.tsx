@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Button, Table, Typography } from "@equinor/eds-core-react"
+import { Button, Table } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
