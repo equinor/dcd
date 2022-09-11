@@ -17,7 +17,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
-import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { IsInvalidDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import Maturity from "../Components/Maturity"
@@ -76,11 +76,11 @@ const SubstructureView = () => {
                 let newSubstructure = project.substructures.find((s) => s.id === substructureId)
                 if (newSubstructure !== undefined) {
                     if (newSubstructure.DG3Date === null
-                        || newSubstructure.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        || IsInvalidDate(newSubstructure.DG3Date)) {
                         newSubstructure.DG3Date = caseResult?.DG3Date
                     }
                     if (newSubstructure.DG4Date === null
-                        || newSubstructure.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        || IsInvalidDate(newSubstructure.DG4Date)) {
                         newSubstructure.DG4Date = caseResult?.DG4Date
                     }
                     setSubstructure(newSubstructure)
