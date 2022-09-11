@@ -1,24 +1,17 @@
-using System;
-using System.Collections;
-using System.Linq;
-
 using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
 
-using NuGet.Frameworks;
-
 using Xunit;
-
 
 namespace tests;
 
 [Collection("Database collection")]
 public class CaseShould : IDisposable
 {
-    private readonly DatabaseFixture fixture;
     private readonly IServiceProvider _serviceProvider;
+    private readonly DatabaseFixture fixture;
 
     public CaseShould(DatabaseFixture fixture)
     {
@@ -38,16 +31,16 @@ public class CaseShould : IDisposable
         var loggerFactory = new LoggerFactory();
         var project = fixture.context.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
-        CaseService caseService = new
+        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var caseService = new
             CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
 
         caseService.CreateCase(CaseDtoAdapter.Convert(actual, ProjectDtoAdapter.Convert(project)));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
-                o.Name == project.Name).Cases;
+            o.Name == project.Name).Cases;
         var expected = cases.FirstOrDefault(o => o.Name ==
-                actual.Name);
+                                                 actual.Name);
         Assert.NotNull(expected);
 
         Assert.Equal(expected.Name, actual.Name);
@@ -71,7 +64,8 @@ public class CaseShould : IDisposable
         var updatedCase = CreateUpdatedCase(project, oldCase);
 
         // Act
-        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase, ProjectDtoAdapter.Convert(project)));
+        var projectResult =
+            caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase, ProjectDtoAdapter.Convert(project)));
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
@@ -90,14 +84,14 @@ public class CaseShould : IDisposable
         caseService.CreateCase(CaseDtoAdapter.Convert(caseItem, ProjectDtoAdapter.Convert(project)));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
-        o.Name == project.Name).Cases;
+            o.Name == project.Name).Cases;
         var expected = cases.FirstOrDefault(o => o.Name ==
-                caseItem.Name);
+                                                 caseItem.Name);
         Assert.NotNull(expected);
 
         caseService.DeleteCase(expected.Id);
         var deleted = cases.FirstOrDefault(o => o.Name ==
-                caseItem.Name);
+                                                caseItem.Name);
         Assert.Null(deleted);
     }
 
@@ -125,7 +119,7 @@ public class CaseShould : IDisposable
         var cases = fixture.context.Projects.FirstOrDefault(o =>
             o.Name == project.Name).Cases;
         var expected = cases.Where(o => o.Description ==
-                caseItem.Description);
+                                        caseItem.Description);
         Assert.True(expected.Count() == 1);
 
         caseService.DuplicateCase(expected.First().Id);

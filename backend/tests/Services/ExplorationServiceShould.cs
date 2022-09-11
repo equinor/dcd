@@ -1,13 +1,9 @@
-using System;
-using System.Linq;
-
 using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
 
 using Xunit;
-
 
 namespace tests;
 
@@ -62,9 +58,9 @@ public class ExplorationServiceShould : IDisposable
         explorationService.CreateExploration(ExplorationDtoAdapter.Convert(testExploration), caseId);
 
         var explorations = fixture.context.Projects.FirstOrDefault(o =>
-                o.Name == project.Name).Explorations;
+            o.Name == project.Name).Explorations;
         var retrievedExploration = explorations.FirstOrDefault(o => o.Name ==
-                testExploration.Name);
+                                                                    testExploration.Name);
         Assert.NotNull(retrievedExploration);
         TestHelper.CompareExplorations(testExploration, retrievedExploration);
     }
@@ -86,12 +82,14 @@ public class ExplorationServiceShould : IDisposable
         var projectResult = explorationService.DeleteExploration(deletedExplorationId);
 
         // Assert
-        var actualExploration = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == ExplorationToDelete.Name);
+        var actualExploration =
+            projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == ExplorationToDelete.Name);
         // No case links to deleted exploration
-        foreach (Case c in fixture.context.Cases!)
+        foreach (var c in fixture.context.Cases!)
         {
             Assert.NotEqual(c.ExplorationLink, deletedExplorationId);
         }
+
         Assert.Null(actualExploration);
     }
 
@@ -105,7 +103,8 @@ public class ExplorationServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var oldExploration = CreateTestExploration(project);
-        var oldId = explorationService.CreateExploration(ExplorationDtoAdapter.Convert(oldExploration), sourceCaseId).Explorations.Last().Id;
+        var oldId = explorationService.CreateExploration(ExplorationDtoAdapter.Convert(oldExploration), sourceCaseId)
+            .Explorations.Last().Id;
 
         var updatedExploration = CreateUpdatedTestExploration(project, oldId);
 
@@ -122,54 +121,51 @@ public class ExplorationServiceShould : IDisposable
     private static Exploration CreateTestExploration(Project project)
     {
         return new ExplorationBuilder
-        {
-            Name = "Test-exploration-23",
-            Project = project,
-            ProjectId = project.Id,
-            RigMobDemob = 32.7
-        }
-              .WithExplorationCostProfile(new ExplorationCostProfile()
-              {
-                  Currency = Currency.USD,
-                  StartYear = 2230,
-                  Values = new double[] { 131.4, 28.2, 334.3 }
-              }
-                )
-                .WithGAndGAdminCost(new GAndGAdminCost()
+            {
+                Name = "Test-exploration-23",
+                Project = project,
+                ProjectId = project.Id,
+                RigMobDemob = 32.7
+            }
+            .WithExplorationCostProfile(new ExplorationCostProfile
+                {
+                    Currency = Currency.USD,
+                    StartYear = 2230,
+                    Values = new[] { 131.4, 28.2, 334.3 }
+                }
+            )
+            .WithGAndGAdminCost(new GAndGAdminCost
                 {
                     Currency = Currency.NOK,
                     StartYear = 2010,
-                    Values = new double[] { 314.4, 281.2, 34.3 }
+                    Values = new[] { 314.4, 281.2, 34.3 }
                 }
-
-                );
+            );
     }
 
     private static Exploration CreateUpdatedTestExploration(Project project, Guid oldExplorationId)
     {
         return new ExplorationBuilder
-        {
-            Id = oldExplorationId,
-            Name = "Test-exploration-23",
-            Project = project,
-            ProjectId = project.Id,
-            RigMobDemob = 32.7
-        }
-                 .WithExplorationCostProfile(new ExplorationCostProfile()
-                 {
-                     Currency = Currency.NOK,
-                     StartYear = 2010,
-                     Values = new double[] { 11.4, 28.2, 34.3 }
-                 }
-                )
-                .WithGAndGAdminCost(new GAndGAdminCost()
+            {
+                Id = oldExplorationId,
+                Name = "Test-exploration-23",
+                Project = project,
+                ProjectId = project.Id,
+                RigMobDemob = 32.7
+            }
+            .WithExplorationCostProfile(new ExplorationCostProfile
+                {
+                    Currency = Currency.NOK,
+                    StartYear = 2010,
+                    Values = new[] { 11.4, 28.2, 34.3 }
+                }
+            )
+            .WithGAndGAdminCost(new GAndGAdminCost
                 {
                     Currency = Currency.USD,
                     StartYear = 2030,
-                    Values = new double[] { 31.4, 282.2, 34.3 }
+                    Values = new[] { 31.4, 282.2, 34.3 }
                 }
-
-                );
+            );
     }
-
 }
