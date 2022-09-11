@@ -14,16 +14,17 @@ namespace api.Services;
 public class ProspExcelImportService
 {
     private const string SheetName = "main";
+    private readonly CaseService _caseService;
     private readonly ProjectService _projectService;
     private readonly Prosp _prospConfig;
     private readonly SubstructureService _substructureService;
     private readonly SurfService _surfService;
     private readonly TopsideService _topsideService;
     private readonly TransportService _transportService;
-    private readonly CaseService _caseService;
 
 
-    public ProspExcelImportService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory, SurfService surfService,
+    public ProspExcelImportService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory,
+        SurfService surfService,
         SubstructureService substructureService, TopsideService topsideService, TransportService transportService,
         IConfiguration config)
     {
@@ -377,7 +378,8 @@ public class ProspExcelImportService
         return _projectService.GetProjectDto(projectId);
     }
 
-    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets, string sharepointFileId)
+    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
+        string sharepointFileId)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart;

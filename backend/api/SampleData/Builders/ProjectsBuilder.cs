@@ -4,7 +4,7 @@ namespace api.SampleData.Builders;
 
 public class ProjectsBuilder
 {
-    public List<ProjectBuilder> Projects { get; set; } = new List<ProjectBuilder>();
+    public List<ProjectBuilder> Projects { get; set; } = new();
 
     public ProjectsBuilder WithProject(ProjectBuilder p)
     {
@@ -19,6 +19,7 @@ public class ProjectsBuilder
         {
             throw new Exception(string.Format("Cannot find project {0}", projectName));
         }
+
         return projectBuilder;
     }
 }
@@ -51,6 +52,7 @@ public class ProjectBuilder : Project
         Explorations!.Add(w);
         return this;
     }
+
     public ProjectBuilder WithWellProject(WellProjectBuilder w)
     {
         w.Project = this;

@@ -1,63 +1,71 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Adapters
+namespace api.Adapters;
+
+public static class ExplorationWellAdapter
 {
-    public static class ExplorationWellAdapter
+    public static ExplorationWell Convert(ExplorationWellDto explorationWellDto)
     {
-        public static ExplorationWell Convert(ExplorationWellDto explorationWellDto)
+        var explorationWell = new ExplorationWell
         {
-            var explorationWell = new ExplorationWell
-            {
-                Count = explorationWellDto.Count,
-                ExplorationId = explorationWellDto.ExplorationId,
-                WellId = explorationWellDto.WellId,
-            };
-            if (explorationWellDto.DrillingSchedule != null)
-            {
-                explorationWell.DrillingSchedule = Convert(explorationWellDto.DrillingSchedule);
-            }
-            return explorationWell;
+            Count = explorationWellDto.Count,
+            ExplorationId = explorationWellDto.ExplorationId,
+            WellId = explorationWellDto.WellId
+        };
+        if (explorationWellDto.DrillingSchedule != null)
+        {
+            explorationWell.DrillingSchedule = Convert(explorationWellDto.DrillingSchedule);
         }
 
-        public static void ConvertExisting(ExplorationWell existing, ExplorationWellDto explorationWellDto)
+        return explorationWell;
+    }
+
+    public static void ConvertExisting(ExplorationWell existing, ExplorationWellDto explorationWellDto)
+    {
+        existing.Count = explorationWellDto.Count;
+        if (explorationWellDto.DrillingSchedule != null)
         {
-            existing.Count = explorationWellDto.Count;
-            if (explorationWellDto.DrillingSchedule != null)
+            if (existing.DrillingSchedule != null)
             {
-                if (existing.DrillingSchedule != null)
-                {
-                    existing.DrillingSchedule = ConvertExisting(explorationWellDto.DrillingSchedule, existing);
-                }
-                else
-                {
-                    existing.DrillingSchedule = Convert(explorationWellDto.DrillingSchedule);
-                }
+                existing.DrillingSchedule = ConvertExisting(explorationWellDto.DrillingSchedule, existing);
+            }
+            else
+            {
+                existing.DrillingSchedule = Convert(explorationWellDto.DrillingSchedule);
             }
         }
+    }
 
-        private static DrillingSchedule? ConvertExisting(DrillingScheduleDto? drillingScheduleDto, ExplorationWell explorationWell)
+    private static DrillingSchedule? ConvertExisting(DrillingScheduleDto? drillingScheduleDto,
+        ExplorationWell explorationWell)
+    {
+        if (drillingScheduleDto == null)
         {
-            if (drillingScheduleDto == null) { return null; }
-
-            var existing = explorationWell.DrillingSchedule;
-
-            existing!.Id = drillingScheduleDto.Id;
-            existing.StartYear = drillingScheduleDto.StartYear;
-            existing.Values = drillingScheduleDto.Values;
-            return existing;
+            return null;
         }
 
-        private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto)
+        var existing = explorationWell.DrillingSchedule;
+
+        existing!.Id = drillingScheduleDto.Id;
+        existing.StartYear = drillingScheduleDto.StartYear;
+        existing.Values = drillingScheduleDto.Values;
+        return existing;
+    }
+
+    private static DrillingSchedule? Convert(DrillingScheduleDto? drillingScheduleDto)
+    {
+        if (drillingScheduleDto == null)
         {
-            if (drillingScheduleDto == null) { return null; }
-            var drillingSchedule = new DrillingSchedule
-            {
-                Id = drillingScheduleDto.Id,
-                StartYear = drillingScheduleDto.StartYear,
-                Values = drillingScheduleDto.Values
-            };
-            return drillingSchedule;
+            return null;
         }
+
+        var drillingSchedule = new DrillingSchedule
+        {
+            Id = drillingScheduleDto.Id,
+            StartYear = drillingScheduleDto.StartYear,
+            Values = drillingScheduleDto.Values
+        };
+        return drillingSchedule;
     }
 }

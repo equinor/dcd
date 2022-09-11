@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
 
-using Surf = api.Models.Surf;
-using Transport = api.Models.Transport;
-
 namespace api.Controllers;
 
 [Route("[controller]")]
@@ -19,10 +16,10 @@ public class PROSPController : ControllerBase
     private const string isCheckedAsset = "true";
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
-    private readonly ProspSharepointImportService _prospSharepointImportService;
-    private readonly ProspExcelImportService _prospExcelImportService;
-    private readonly ProjectService _projectService;
     private readonly ILogger<PROSPController> _logger;
+    private readonly ProjectService _projectService;
+    private readonly ProspExcelImportService _prospExcelImportService;
+    private readonly ProspSharepointImportService _prospSharepointImportService;
 
 
     public PROSPController(ProspExcelImportService prospExcelImportService,

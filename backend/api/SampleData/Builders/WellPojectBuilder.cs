@@ -6,7 +6,7 @@ public class WellProjectBuilder : WellProject
 {
     public WellProjectBuilder WithWellProjectCostProfile(WellProjectCostProfile w)
     {
-        this.CostProfile = w;
+        CostProfile = w;
         return this;
     }
 }

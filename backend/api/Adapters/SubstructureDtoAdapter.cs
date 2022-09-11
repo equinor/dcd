@@ -1,66 +1,68 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Adapters
+namespace api.Adapters;
+
+public static class SubstructureDtoAdapter
 {
-    public static class SubstructureDtoAdapter
+    public static SubstructureDto Convert(Substructure substructure)
     {
-        public static SubstructureDto Convert(Substructure substructure)
+        var substructureDto = new SubstructureDto
         {
-            var substructureDto = new SubstructureDto
-            {
-                Id = substructure.Id,
-                ProjectId = substructure.ProjectId,
-                Name = substructure.Name,
-                DryWeight = substructure.DryWeight,
-                Maturity = substructure.Maturity,
-                Currency = substructure.Currency,
-                ApprovedBy = substructure.ApprovedBy,
-                CostYear = substructure.CostYear,
-                CostProfile = Convert(substructure.CostProfile),
-                CessationCostProfile = Convert(substructure.CessationCostProfile),
-                ProspVersion = substructure.ProspVersion,
-                Source = substructure.Source,
-                LastChangedDate = substructure.LastChangedDate,
-                Concept = substructure.Concept,
-                DG3Date = substructure.DG3Date,
-                DG4Date = substructure.DG4Date
-            };
-            return substructureDto;
+            Id = substructure.Id,
+            ProjectId = substructure.ProjectId,
+            Name = substructure.Name,
+            DryWeight = substructure.DryWeight,
+            Maturity = substructure.Maturity,
+            Currency = substructure.Currency,
+            ApprovedBy = substructure.ApprovedBy,
+            CostYear = substructure.CostYear,
+            CostProfile = Convert(substructure.CostProfile),
+            CessationCostProfile = Convert(substructure.CessationCostProfile),
+            ProspVersion = substructure.ProspVersion,
+            Source = substructure.Source,
+            LastChangedDate = substructure.LastChangedDate,
+            Concept = substructure.Concept,
+            DG3Date = substructure.DG3Date,
+            DG4Date = substructure.DG4Date
+        };
+        return substructureDto;
+    }
+
+    private static SubstructureCostProfileDto? Convert(SubstructureCostProfile? costProfile)
+    {
+        if (costProfile == null)
+        {
+            return null;
         }
 
-        private static SubstructureCostProfileDto? Convert(SubstructureCostProfile? costProfile)
+        var substructureCostProfile = new SubstructureCostProfileDto
         {
-            if (costProfile == null)
-            {
-                return null;
-            }
-            var substructureCostProfile = new SubstructureCostProfileDto
-            {
-                Id = costProfile.Id,
-                EPAVersion = costProfile.EPAVersion,
-                Currency = costProfile.Currency,
-                StartYear = costProfile.StartYear,
-                Values = costProfile.Values
-            };
-            return substructureCostProfile;
+            Id = costProfile.Id,
+            EPAVersion = costProfile.EPAVersion,
+            Currency = costProfile.Currency,
+            StartYear = costProfile.StartYear,
+            Values = costProfile.Values
+        };
+        return substructureCostProfile;
+    }
+
+    private static SubstructureCessationCostProfileDto? Convert(
+        SubstructureCessationCostProfile? substructureCessationCostProfile)
+    {
+        if (substructureCessationCostProfile == null)
+        {
+            return null;
         }
 
-        private static SubstructureCessationCostProfileDto? Convert(SubstructureCessationCostProfile? substructureCessationCostProfile)
+        var substructureCessationCostProfileDto = new SubstructureCessationCostProfileDto
         {
-            if (substructureCessationCostProfile == null)
-            {
-                return null;
-            }
-            SubstructureCessationCostProfileDto substructureCessationCostProfileDto = new SubstructureCessationCostProfileDto
-            {
-                Id = substructureCessationCostProfile.Id,
-                EPAVersion = substructureCessationCostProfile.EPAVersion,
-                Currency = substructureCessationCostProfile.Currency,
-                StartYear = substructureCessationCostProfile.StartYear,
-                Values = substructureCessationCostProfile.Values
-            };
-            return substructureCessationCostProfileDto;
-        }
+            Id = substructureCessationCostProfile.Id,
+            EPAVersion = substructureCessationCostProfile.EPAVersion,
+            Currency = substructureCessationCostProfile.Currency,
+            StartYear = substructureCessationCostProfile.StartYear,
+            Values = substructureCessationCostProfile.Values
+        };
+        return substructureCessationCostProfileDto;
     }
 }

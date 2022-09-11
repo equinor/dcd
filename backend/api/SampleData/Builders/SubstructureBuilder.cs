@@ -7,14 +7,15 @@ public class SubstructureBuilder : Substructure
     public SubstructureBuilder WithCostProfile(SubstructureCostProfile costProfile)
     {
         costProfile.Substructure = this;
-        this.CostProfile = costProfile;
+        CostProfile = costProfile;
         return this;
     }
 
-    public SubstructureBuilder WithSubStructureCessationCostProfile(SubstructureCessationCostProfile substructureCessationCostProfile)
+    public SubstructureBuilder WithSubStructureCessationCostProfile(
+        SubstructureCessationCostProfile substructureCessationCostProfile)
     {
         substructureCessationCostProfile.Substructure = this;
-        this.CessationCostProfile = substructureCessationCostProfile;
+        CessationCostProfile = substructureCessationCostProfile;
         return this;
     }
 }

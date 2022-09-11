@@ -1,39 +1,40 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Adapters
+namespace api.Adapters;
+
+public static class WellProjectWellDtoAdapter
 {
-    public static class WellProjectWellDtoAdapter
+    public static WellProjectWellDto Convert(WellProjectWell wellProjectWell)
     {
-        public static WellProjectWellDto Convert(WellProjectWell wellProjectWell)
+        var wellProjectWellDto = new WellProjectWellDto
         {
-            var wellProjectWellDto = new WellProjectWellDto
-            {
-                WellProjectId = wellProjectWell.WellProjectId,
-                WellId = wellProjectWell.WellId,
-                Count = wellProjectWell.Count,
-            };
+            WellProjectId = wellProjectWell.WellProjectId,
+            WellId = wellProjectWell.WellId,
+            Count = wellProjectWell.Count
+        };
 
-            if (wellProjectWell.DrillingSchedule != null)
-            {
-                wellProjectWellDto.DrillingSchedule = Convert(wellProjectWell.DrillingSchedule);
-            }
-            return wellProjectWellDto;
+        if (wellProjectWell.DrillingSchedule != null)
+        {
+            wellProjectWellDto.DrillingSchedule = Convert(wellProjectWell.DrillingSchedule);
         }
 
-        private static DrillingScheduleDto? Convert(DrillingSchedule? drillingSchedule)
+        return wellProjectWellDto;
+    }
+
+    private static DrillingScheduleDto? Convert(DrillingSchedule? drillingSchedule)
+    {
+        if (drillingSchedule == null)
         {
-            if (drillingSchedule == null)
-            {
-                return null!;
-            }
-            var drillingScheduleDto = new DrillingScheduleDto
-            {
-                Id = drillingSchedule.Id,
-                StartYear = drillingSchedule.StartYear,
-                Values = drillingSchedule.Values
-            };
-            return drillingScheduleDto;
+            return null!;
         }
+
+        var drillingScheduleDto = new DrillingScheduleDto
+        {
+            Id = drillingSchedule.Id,
+            StartYear = drillingSchedule.StartYear,
+            Values = drillingSchedule.Values
+        };
+        return drillingScheduleDto;
     }
 }

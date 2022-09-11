@@ -1,92 +1,86 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Adapters
+namespace api.Adapters;
+
+public static class SurfDtoAdapter
 {
-    public static class SurfDtoAdapter
+    public static SurfDto Convert(Surf surf)
     {
-
-        public static SurfDto Convert(Surf surf)
+        var surfDto = new SurfDto
         {
-            var surfDto = new SurfDto
-            {
-                Id = surf.Id,
-                ProjectId = surf.ProjectId,
-                Name = surf.Name,
-                ArtificialLift = surf.ArtificialLift,
-                Maturity = surf.Maturity,
-                InfieldPipelineSystemLength = surf.InfieldPipelineSystemLength,
-                UmbilicalSystemLength = surf.UmbilicalSystemLength,
-                ProductionFlowline = surf.ProductionFlowline,
-                RiserCount = surf.RiserCount,
-                TemplateCount = surf.TemplateCount,
-                ProducerCount = surf.ProducerCount,
-                GasInjectorCount = surf.GasInjectorCount,
-                WaterInjectorCount = surf.WaterInjectorCount,
-                Currency = surf.Currency,
-                CostProfile = Convert(surf.CostProfile),
-                LastChangedDate = surf.LastChangedDate,
-                CostYear = surf.CostYear,
-                Source = surf.Source,
-                ProspVersion = surf.ProspVersion,
-                ApprovedBy = surf.ApprovedBy,
-                DG3Date = surf.DG3Date,
-                DG4Date = surf.DG4Date,
-                CessationCost = surf.CessationCost,
-            };
+            Id = surf.Id,
+            ProjectId = surf.ProjectId,
+            Name = surf.Name,
+            ArtificialLift = surf.ArtificialLift,
+            Maturity = surf.Maturity,
+            InfieldPipelineSystemLength = surf.InfieldPipelineSystemLength,
+            UmbilicalSystemLength = surf.UmbilicalSystemLength,
+            ProductionFlowline = surf.ProductionFlowline,
+            RiserCount = surf.RiserCount,
+            TemplateCount = surf.TemplateCount,
+            ProducerCount = surf.ProducerCount,
+            GasInjectorCount = surf.GasInjectorCount,
+            WaterInjectorCount = surf.WaterInjectorCount,
+            Currency = surf.Currency,
+            CostProfile = Convert(surf.CostProfile),
+            LastChangedDate = surf.LastChangedDate,
+            CostYear = surf.CostYear,
+            Source = surf.Source,
+            ProspVersion = surf.ProspVersion,
+            ApprovedBy = surf.ApprovedBy,
+            DG3Date = surf.DG3Date,
+            DG4Date = surf.DG4Date,
+            CessationCost = surf.CessationCost
+        };
 
-            if (surf.CostProfile != null)
-            {
-                surfDto.CostProfile = Convert(surf.CostProfile);
-            }
-
-            if (surf.CessationCostProfile != null)
-            {
-                surfDto.CessationCostProfile = Convert(surf.CessationCostProfile);
-            }
-
-            return surfDto;
+        if (surf.CostProfile != null)
+        {
+            surfDto.CostProfile = Convert(surf.CostProfile);
         }
 
-        private static SurfCostProfileDto? Convert(SurfCostProfile? costprofile)
+        if (surf.CessationCostProfile != null)
         {
-
-            if (costprofile == null)
-            {
-                return null;
-            }
-
-            var surfCostProfile = new SurfCostProfileDto
-            {
-                Id = costprofile.Id,
-                Currency = costprofile.Currency,
-                EPAVersion = costprofile.EPAVersion,
-                Values = costprofile.Values,
-                StartYear = costprofile.StartYear
-            };
-            return surfCostProfile;
-
+            surfDto.CessationCostProfile = Convert(surf.CessationCostProfile);
         }
 
-        private static SurfCessationCostProfileDto? Convert(SurfCessationCostProfile? surfCessationCostProfile)
+        return surfDto;
+    }
+
+    private static SurfCostProfileDto? Convert(SurfCostProfile? costprofile)
+    {
+        if (costprofile == null)
         {
-
-            if (surfCessationCostProfile == null)
-            {
-                return null;
-            }
-
-            SurfCessationCostProfileDto surfCessationCostProfileDto = new SurfCessationCostProfileDto
-            {
-                Id = surfCessationCostProfile.Id,
-                Currency = surfCessationCostProfile.Currency,
-                EPAVersion = surfCessationCostProfile.EPAVersion,
-                Values = surfCessationCostProfile.Values,
-                StartYear = surfCessationCostProfile.StartYear
-            };
-
-            return surfCessationCostProfileDto;
-
+            return null;
         }
+
+        var surfCostProfile = new SurfCostProfileDto
+        {
+            Id = costprofile.Id,
+            Currency = costprofile.Currency,
+            EPAVersion = costprofile.EPAVersion,
+            Values = costprofile.Values,
+            StartYear = costprofile.StartYear
+        };
+        return surfCostProfile;
+    }
+
+    private static SurfCessationCostProfileDto? Convert(SurfCessationCostProfile? surfCessationCostProfile)
+    {
+        if (surfCessationCostProfile == null)
+        {
+            return null;
+        }
+
+        var surfCessationCostProfileDto = new SurfCessationCostProfileDto
+        {
+            Id = surfCessationCostProfile.Id,
+            Currency = surfCessationCostProfile.Currency,
+            EPAVersion = surfCessationCostProfile.EPAVersion,
+            Values = surfCessationCostProfile.Values,
+            StartYear = surfCessationCostProfile.StartYear
+        };
+
+        return surfCessationCostProfileDto;
     }
 }

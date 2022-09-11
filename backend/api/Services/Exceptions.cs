@@ -1,4 +1,3 @@
-
 public class NotFoundInDBException : Exception
 {
     public NotFoundInDBException()

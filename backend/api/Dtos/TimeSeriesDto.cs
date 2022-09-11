@@ -2,103 +2,105 @@ using api.Models;
 
 using Microsoft.IdentityModel.Tokens;
 
-namespace api.Dtos
+namespace api.Dtos;
+
+public class TimeSeriesDto<T>
 {
+    public Guid Id { get; set; }
+    public int StartYear { get; set; }
+    public T[] Values { get; set; } = null!;
+}
 
-    public class TimeSeriesDto<T>
+public class TimeSeriesCostDto : TimeSeriesDto<double>
+{
+    public string EPAVersion { get; set; } = string.Empty;
+    public Currency Currency { get; set; }
+
+    public double Sum
     {
-        public Guid Id { get; set; }
-        public int StartYear { get; set; }
-        public T[] Values { get; set; } = null!;
+        get
+        {
+            var s = 0.0;
+            if (Values != null)
+            {
+                Array.ForEach(Values, i => s += i);
+            }
 
+            return s;
+        }
+        private set { }
     }
 
-    public class TimeSeriesCostDto : TimeSeriesDto<double>
+    public TimeSeriesCostDto AddValues(TimeSeriesCostDto timeSeriesCost)
     {
-        public string EPAVersion { get; set; } = string.Empty;
-        public Currency Currency { get; set; }
-        public double Sum
+        if (timeSeriesCost == null || timeSeriesCost.Values.IsNullOrEmpty())
         {
-            get
-            {
-                double s = 0.0;
-                if (Values != null)
-                {
-                    Array.ForEach(Values, i => s += i);
-                }
-                return s;
-            }
-            private set
-            { }
+            return this;
         }
 
-        public TimeSeriesCostDto AddValues(TimeSeriesCostDto timeSeriesCost)
+        if (Values.IsNullOrEmpty())
         {
-            if (timeSeriesCost == null || timeSeriesCost.Values.IsNullOrEmpty())
+            Values = timeSeriesCost.Values;
+            StartYear = timeSeriesCost.StartYear;
+            return this;
+        }
+
+        var newEndYear = StartYear + Values.Length > timeSeriesCost.StartYear + timeSeriesCost.Values.Length
+            ? StartYear + Values.Length
+            : timeSeriesCost.StartYear + timeSeriesCost.Values.Length;
+        var newStartYear = StartYear < timeSeriesCost.StartYear ? StartYear : timeSeriesCost.StartYear;
+        var newLength = newEndYear - newStartYear;
+        var values = new double[newLength];
+        for (var i = 0; i < Values.Length; i++)
+        {
+            values[StartYear - newStartYear + i] += Values[i];
+        }
+
+        for (var i = 0; i < timeSeriesCost.Values.Length; i++)
+        {
+            values[timeSeriesCost.StartYear - newStartYear + i] += timeSeriesCost.Values[i];
+        }
+
+        Values = values;
+        StartYear = newStartYear;
+        return this;
+    }
+}
+
+public class TimeSeriesVolumeDto : TimeSeriesDto<double>
+{
+    public double Sum
+    {
+        get
+        {
+            var s = 0.0;
+            if (Values != null)
             {
-                return this;
+                Array.ForEach(Values, i => s += i);
             }
-            if (Values.IsNullOrEmpty())
-            {
-                Values = timeSeriesCost.Values;
-                StartYear = timeSeriesCost.StartYear;
-                return this;
-            }
-            else
-            {
-                int newEndYear = StartYear + Values.Length > timeSeriesCost.StartYear + timeSeriesCost.Values.Length ? StartYear + Values.Length
-                            : timeSeriesCost.StartYear + timeSeriesCost.Values.Length;
-                int newStartYear = StartYear < timeSeriesCost.StartYear ? StartYear : timeSeriesCost.StartYear;
-                int newLength = newEndYear - newStartYear;
-                double[] values = new double[newLength];
-                for (int i = 0; i < Values.Length; i++)
-                {
-                    values[StartYear - newStartYear + i] += Values[i];
-                }
-                for (int i = 0; i < timeSeriesCost.Values.Length; i++)
-                {
-                    values[timeSeriesCost.StartYear - newStartYear + i] += timeSeriesCost.Values[i];
-                }
-                Values = values;
-                StartYear = newStartYear;
-                return this;
-            }
+
+            return s;
         }
     }
+}
 
-    public class TimeSeriesVolumeDto : TimeSeriesDto<double>
+public class TimeSeriesMassDto : TimeSeriesDto<double>
+{
+    public double Sum
     {
-        public double Sum
+        get
         {
-            get
+            var s = 0.0;
+            if (Values != null)
             {
-                double s = 0.0;
-                if (Values != null)
-                {
-                    Array.ForEach(Values, i => s += i);
-                }
-                return s;
+                Array.ForEach(Values, i => s += i);
             }
+
+            return s;
         }
     }
-    public class TimeSeriesMassDto : TimeSeriesDto<double>
-    {
-        public double Sum
-        {
-            get
-            {
-                double s = 0.0;
-                if (Values != null)
-                {
-                    Array.ForEach(Values, i => s += i);
-                }
-                return s;
-            }
-        }
-    }
+}
 
-    public class TimeSeriesScheduleDto : TimeSeriesDto<int>
-    {
-
-    }
+public class TimeSeriesScheduleDto : TimeSeriesDto<int>
+{
 }

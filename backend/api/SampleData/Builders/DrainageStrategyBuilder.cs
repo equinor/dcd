@@ -7,50 +7,56 @@ public class DrainageStrategyBuilder : DrainageStrategy
     public DrainageStrategyBuilder WithProductionProfileOil(ProductionProfileOil p)
     {
         p.DrainageStrategy = this;
-        this.ProductionProfileOil = p;
+        ProductionProfileOil = p;
         return this;
     }
 
     public DrainageStrategyBuilder WithProductionProfileGas(ProductionProfileGas p)
     {
         p.DrainageStrategy = this;
-        this.ProductionProfileGas = p;
+        ProductionProfileGas = p;
         return this;
     }
+
     public DrainageStrategyBuilder WithProductionProfileWater(ProductionProfileWater p)
     {
         p.DrainageStrategy = this;
-        this.ProductionProfileWater = p;
+        ProductionProfileWater = p;
         return this;
     }
+
     public DrainageStrategyBuilder WithProductionProfileWaterInjection(ProductionProfileWaterInjection p)
     {
         p.DrainageStrategy = this;
-        this.ProductionProfileWaterInjection = p;
+        ProductionProfileWaterInjection = p;
         return this;
     }
+
     public DrainageStrategyBuilder WithProductionProfileNGL(ProductionProfileNGL p)
     {
         p.DrainageStrategy = this;
-        this.ProductionProfileNGL = p;
+        ProductionProfileNGL = p;
         return this;
     }
+
     public DrainageStrategyBuilder WithFuelFlaringAndLosses(FuelFlaringAndLosses p)
     {
         p.DrainageStrategy = this;
-        this.FuelFlaringAndLosses = p;
+        FuelFlaringAndLosses = p;
         return this;
     }
+
     public DrainageStrategyBuilder WithNetSalesGas(NetSalesGas p)
     {
         p.DrainageStrategy = this;
-        this.NetSalesGas = p;
+        NetSalesGas = p;
         return this;
     }
+
     public DrainageStrategyBuilder WithCo2Emissions(Co2Emissions p)
     {
         p.DrainageStrategy = this;
-        this.Co2Emissions = p;
+        Co2Emissions = p;
         return this;
     }
 }
