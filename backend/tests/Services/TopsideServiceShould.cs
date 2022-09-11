@@ -188,22 +188,22 @@ public class TopsideServiceShould : IDisposable
     private static Topside CreateTestTopside(Project project)
     {
         return new TopsideBuilder
-            {
-                Name = "Test-topside-23",
-                Project = project,
-                ProjectId = project.Id,
-                DryWeight = 0.3e6,
-                OilCapacity = 50e6,
-                GasCapacity = 0,
-                FacilitiesAvailability = 0.2,
-                ArtificialLift = ArtificialLift.GasLift,
-                Maturity = Maturity.B
-            }.WithCostProfile(new TopsideCostProfile
-            {
-                Currency = Currency.USD,
-                StartYear = 2030,
-                Values = new[] { 13.4, 18.9, 34.3 }
-            })
+        {
+            Name = "Test-topside-23",
+            Project = project,
+            ProjectId = project.Id,
+            DryWeight = 0.3e6,
+            OilCapacity = 50e6,
+            GasCapacity = 0,
+            FacilitiesAvailability = 0.2,
+            ArtificialLift = ArtificialLift.GasLift,
+            Maturity = Maturity.B
+        }.WithCostProfile(new TopsideCostProfile
+        {
+            Currency = Currency.USD,
+            StartYear = 2030,
+            Values = new[] { 13.4, 18.9, 34.3 }
+        })
             .WithTopsideCessationCostProfile(new TopsideCessationCostProfile
             {
                 Currency = Currency.NOK,
@@ -215,23 +215,23 @@ public class TopsideServiceShould : IDisposable
     private static Topside CreateUpdatedTopside(Project project, Topside oldTopside)
     {
         return new TopsideBuilder
-            {
-                Id = oldTopside.Id,
-                Name = "Test-topside-34",
-                Project = project,
-                ProjectId = project.Id,
-                DryWeight = 5.3e6,
-                OilCapacity = 52e6,
-                GasCapacity = 7,
-                FacilitiesAvailability = 1.2,
-                ArtificialLift = ArtificialLift.NoArtificialLift,
-                Maturity = Maturity.C
-            }.WithCostProfile(new TopsideCostProfile
-            {
-                Currency = Currency.NOK,
-                StartYear = 2030,
-                Values = new[] { 23.4, 283.9, 24.3 }
-            })
+        {
+            Id = oldTopside.Id,
+            Name = "Test-topside-34",
+            Project = project,
+            ProjectId = project.Id,
+            DryWeight = 5.3e6,
+            OilCapacity = 52e6,
+            GasCapacity = 7,
+            FacilitiesAvailability = 1.2,
+            ArtificialLift = ArtificialLift.NoArtificialLift,
+            Maturity = Maturity.C
+        }.WithCostProfile(new TopsideCostProfile
+        {
+            Currency = Currency.NOK,
+            StartYear = 2030,
+            Values = new[] { 23.4, 283.9, 24.3 }
+        })
             .WithTopsideCessationCostProfile(new TopsideCessationCostProfile
             {
                 Currency = Currency.NOK,

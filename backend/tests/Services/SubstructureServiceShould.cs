@@ -175,39 +175,39 @@ public class SubstructureServiceShould : IDisposable
     private static Substructure CreateTestSubstructure(Project project)
     {
         return new SubstructureBuilder
-            {
-                Project = project,
-                ProjectId = project.Id,
-                Name = "Substructure 11",
-                Maturity = Maturity.A,
-                DryWeight = 423.5
-            }
+        {
+            Project = project,
+            ProjectId = project.Id,
+            Name = "Substructure 11",
+            Maturity = Maturity.A,
+            DryWeight = 423.5
+        }
             .WithCostProfile(new SubstructureCostProfile
-                {
-                    Currency = Currency.USD,
-                    StartYear = 1030,
-                    Values = new[] { 23.4, 238.9, 32.3 }
-                }
+            {
+                Currency = Currency.USD,
+                StartYear = 1030,
+                Values = new[] { 23.4, 238.9, 32.3 }
+            }
             );
     }
 
     private static Substructure CreateUpdatedSubstructure(Project project, Substructure oldSubstructure)
     {
         return new SubstructureBuilder
-            {
-                Id = oldSubstructure.Id,
-                Project = project,
-                ProjectId = project.Id,
-                Name = "Substructure 1",
-                Maturity = Maturity.B,
-                DryWeight = 4.5
-            }
+        {
+            Id = oldSubstructure.Id,
+            Project = project,
+            ProjectId = project.Id,
+            Name = "Substructure 1",
+            Maturity = Maturity.B,
+            DryWeight = 4.5
+        }
             .WithCostProfile(new SubstructureCostProfile
-                {
-                    Currency = Currency.USD,
-                    StartYear = 2030,
-                    Values = new[] { 23.4, 28.9, 32.3 }
-                }
+            {
+                Currency = Currency.USD,
+                StartYear = 2030,
+                Values = new[] { 23.4, 28.9, 32.3 }
+            }
             );
     }
 }

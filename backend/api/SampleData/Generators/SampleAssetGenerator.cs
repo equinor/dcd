@@ -10,14 +10,14 @@ public static class SampleAssetGenerator
         var projectBuilder = new ProjectsBuilder()
             .WithProject(spreadSheetProjectAssembledWithCase2Assets()
                 .WithDrainageStrategy(new DrainageStrategyBuilder
-                    {
-                        Name = "SkarvenDrainStrat",
-                        Description = "Skarvens drainage strategy"
-                    }
+                {
+                    Name = "SkarvenDrainStrat",
+                    Description = "Skarvens drainage strategy"
+                }
                     .WithProductionProfileGas(new ProductionProfileGas
-                        {
-                            StartYear = 8,
-                            Values = new[]
+                    {
+                        StartYear = 8,
+                        Values = new[]
                             {
                                 1.1382328e9, 2.129461160089552e9,
                                 3.101858662653302e9, 4.0793845923999293e9,
@@ -27,12 +27,12 @@ public static class SampleAssetGenerator
                                 22.0138644921140046e9, 0.0108054339869784e9,
                                 44.00735035059831965e9
                             }
-                        }
+                    }
                     )
                     .WithProductionProfileOil(new ProductionProfileOil
-                        {
-                            StartYear = 8,
-                            Values = new[]
+                    {
+                        StartYear = 8,
+                        Values = new[]
                             {
                                 1.314e6, 1.23061939248623e6,
                                 1.968238238149264e6, 2.754606391634305e6,
@@ -42,12 +42,12 @@ public static class SampleAssetGenerator
                                 8.131791750133118e6, 102.102713250826803e6,
                                 9.069870252835732
                             }
-                        }
+                    }
                     )
                     .WithNetSalesGas(new NetSalesGas
-                        {
-                            StartYear = 8,
-                            Values = new[]
+                    {
+                        StartYear = 8,
+                        Values = new[]
                             {
                                 25.136602283840308e9,
                                 1.127934109247939e9, 7.100657195306473e9,
@@ -57,12 +57,12 @@ public static class SampleAssetGenerator
                                 5.017579744990234e9, 11.013700954383178e9,
                                 6.0106779791808235e9, 15.00726365000750502e9
                             }
-                        }
+                    }
                     )
                     .WithCo2Emissions(new Co2Emissions
-                        {
-                            StartYear = 7,
-                            Values = new[]
+                    {
+                        StartYear = 7,
+                        Values = new[]
                             {
                                 29.0135e6, 55.00608182527565116e6,
                                 43.00569589963921555e6, 4.00448147320367438e6,
@@ -72,7 +72,7 @@ public static class SampleAssetGenerator
                                 80.000782687773698545e6, 7.000609995735983182e6,
                                 92.000475406426957946e6, 8.000323393203738581e6
                             }
-                        }
+                    }
                     )
                 )
                 .WithSubstructure(new SubstructureBuilder
@@ -113,199 +113,199 @@ public static class SampleAssetGenerator
                 }))
             )
             .WithProject(new ProjectBuilder
-                {
-                    Name = "P1",
-                    CommonLibraryId = new Guid(),
-                    CommonLibraryName = "P1 from common lib",
-                    CreateDate = DateTimeOffset.UtcNow.Date,
-                    ProjectCategory = ProjectCategory.OffshoreWind,
-                    ProjectPhase = ProjectPhase.BusinessPlanning
-                }
+            {
+                Name = "P1",
+                CommonLibraryId = new Guid(),
+                CommonLibraryName = "P1 from common lib",
+                CreateDate = DateTimeOffset.UtcNow.Date,
+                ProjectCategory = ProjectCategory.OffshoreWind,
+                ProjectPhase = ProjectPhase.BusinessPlanning
+            }
                 .WithDrainageStrategy(new DrainageStrategyBuilder
-                    {
-                        Name = "DrainStrat 1",
-                        Description = "Desc of drain strat 1",
-                        NGLYield = 0.3,
-                        ProducerCount = 2,
-                        GasInjectorCount = 3,
-                        WaterInjectorCount = 4
-                    }
+                {
+                    Name = "DrainStrat 1",
+                    Description = "Desc of drain strat 1",
+                    NGLYield = 0.3,
+                    ProducerCount = 2,
+                    GasInjectorCount = 3,
+                    WaterInjectorCount = 4
+                }
                     .WithProductionProfileGas(new ProductionProfileGas
-                        {
-                            StartYear = 9,
-                            Values = new[] { 2.3e9, 3.3e9, 4.4e9 }
-                        }
+                    {
+                        StartYear = 9,
+                        Values = new[] { 2.3e9, 3.3e9, 4.4e9 }
+                    }
                     )
                     .WithProductionProfileOil(new ProductionProfileOil
-                        {
-                            StartYear = 11,
-                            Values = new[] { 10.3e6, 13.3e6, 24.4e6, 1.2e6 }
-                        }
+                    {
+                        StartYear = 11,
+                        Values = new[] { 10.3e6, 13.3e6, 24.4e6, 1.2e6 }
+                    }
                     )
                     .WithProductionProfileWater(new ProductionProfileWater
-                        {
-                            StartYear = 12,
-                            Values = new[] { 12.34e6, 13.45e6, 14.56e6 }
-                        }
+                    {
+                        StartYear = 12,
+                        Values = new[] { 12.34e6, 13.45e6, 14.56e6 }
+                    }
                     )
                     .WithProductionProfileWaterInjection(new ProductionProfileWaterInjection
-                        {
-                            StartYear = 8,
-                            Values = new[] { 7.89e6, 8.91e6, 9.01e6 }
-                        }
+                    {
+                        StartYear = 8,
+                        Values = new[] { 7.89e6, 8.91e6, 9.01e6 }
+                    }
                     )
                     .WithFuelFlaringAndLosses(new FuelFlaringAndLosses
-                        {
-                            StartYear = 12,
-                            Values = new[] { 8.45e9, 4.78e9, 8, 74e9 }
-                        }
+                    {
+                        StartYear = 12,
+                        Values = new[] { 8.45e9, 4.78e9, 8, 74e9 }
+                    }
                     )
                     .WithNetSalesGas(new NetSalesGas
-                        {
-                            StartYear = 13,
-                            Values = new[] { 3.4e9, 8.9e9, 2.3e9 }
-                        }
+                    {
+                        StartYear = 13,
+                        Values = new[] { 3.4e9, 8.9e9, 2.3e9 }
+                    }
                     )
                     .WithCo2Emissions(new Co2Emissions
-                        {
-                            StartYear = 8,
-                            Values = new[] { 33.4e6, 18.9e6, 62.3e6 }
-                        }
+                    {
+                        StartYear = 8,
+                        Values = new[] { 33.4e6, 18.9e6, 62.3e6 }
+                    }
                     )
                 )
                 .WithDrainageStrategy(new DrainageStrategyBuilder
-                    {
-                        Name = "DrainStrat 2",
-                        Description = "Desc of drain strategy 2",
-                        NGLYield = 0.3
-                    }
+                {
+                    Name = "DrainStrat 2",
+                    Description = "Desc of drain strategy 2",
+                    NGLYield = 0.3
+                }
                     .WithProductionProfileGas(new ProductionProfileGas
-                        {
-                            StartYear = 9,
-                            Values = new[] { 12.34e9, 13.45e9, 14.56e9 }
-                        }
+                    {
+                        StartYear = 9,
+                        Values = new[] { 12.34e9, 13.45e9, 14.56e9 }
+                    }
                     )
                 )
                 .WithWellProject(new WellProjectBuilder
-                    {
-                        RigMobDemob = 100.0,
-                        AnnualWellInterventionCost = 200.0,
-                        PluggingAndAbandonment = 300.0,
-                        ArtificialLift = ArtificialLift.GasLift
-                    }
+                {
+                    RigMobDemob = 100.0,
+                    AnnualWellInterventionCost = 200.0,
+                    PluggingAndAbandonment = 300.0,
+                    ArtificialLift = ArtificialLift.GasLift
+                }
                     .WithWellProjectCostProfile(new WellProjectCostProfile
-                        {
-                            Currency = Currency.USD,
-                            StartYear = 8,
-                            Values = new[] { 33.4, 18.9, 62.3 }
-                        }
+                    {
+                        Currency = Currency.USD,
+                        StartYear = 8,
+                        Values = new[] { 33.4, 18.9, 62.3 }
+                    }
                     )
                 )
                 .WithSurf(new SurfBuilder
-                    {
-                        Name = "Surf 1",
-                        Maturity = Maturity.A,
-                        ProductionFlowline = ProductionFlowline.No_production_flowline,
-                        InfieldPipelineSystemLength = 5.5,
-                        UmbilicalSystemLength = 1.1,
-                        RiserCount = 5,
-                        TemplateCount = 6,
-                        ArtificialLift = ArtificialLift.GasLift
-                    }
+                {
+                    Name = "Surf 1",
+                    Maturity = Maturity.A,
+                    ProductionFlowline = ProductionFlowline.No_production_flowline,
+                    InfieldPipelineSystemLength = 5.5,
+                    UmbilicalSystemLength = 1.1,
+                    RiserCount = 5,
+                    TemplateCount = 6,
+                    ArtificialLift = ArtificialLift.GasLift
+                }
                     .WithCostProfile(new SurfCostProfile
-                        {
-                            Currency = Currency.USD,
-                            StartYear = 10,
-                            Values = new[] { 33.4, 18.9, 62.3 }
-                        }
+                    {
+                        Currency = Currency.USD,
+                        StartYear = 10,
+                        Values = new[] { 33.4, 18.9, 62.3 }
+                    }
                     )
                 )
                 .WithSubstructure(new SubstructureBuilder
-                    {
-                        Name = "Substructure 1",
-                        Maturity = Maturity.B,
-                        DryWeight = 4.5
-                    }
+                {
+                    Name = "Substructure 1",
+                    Maturity = Maturity.B,
+                    DryWeight = 4.5
+                }
                     .WithCostProfile(new SubstructureCostProfile
-                        {
-                            Currency = Currency.USD,
-                            StartYear = 11,
-                            Values = new[] { 23.4, 28.9, 32.3 }
-                        }
+                    {
+                        Currency = Currency.USD,
+                        StartYear = 11,
+                        Values = new[] { 23.4, 28.9, 32.3 }
+                    }
                     )
                 )
                 .WithTopside(new TopsideBuilder
-                    {
-                        Name = "Topside 1",
-                        Maturity = Maturity.C,
-                        OilCapacity = 50.0,
-                        GasCapacity = 75.0,
-                        DryWeight = 45.1,
-                        FacilitiesAvailability = 0.8,
-                        ArtificialLift = ArtificialLift.GasLift
-                    }
+                {
+                    Name = "Topside 1",
+                    Maturity = Maturity.C,
+                    OilCapacity = 50.0,
+                    GasCapacity = 75.0,
+                    DryWeight = 45.1,
+                    FacilitiesAvailability = 0.8,
+                    ArtificialLift = ArtificialLift.GasLift
+                }
                     .WithCostProfile(new TopsideCostProfile
-                        {
-                            Currency = Currency.USD,
-                            StartYear = 12,
-                            Values = new[] { 123.4, 218.9, 312.3 }
-                        }
+                    {
+                        Currency = Currency.USD,
+                        StartYear = 12,
+                        Values = new[] { 123.4, 218.9, 312.3 }
+                    }
                     )
                 )
                 .WithTransport(new TransportBuilder
-                    {
-                        Name = "Transport 1",
-                        Maturity = Maturity.D
-                    }
+                {
+                    Name = "Transport 1",
+                    Maturity = Maturity.D
+                }
                     .WithCostProfile(new TransportCostProfile
-                        {
-                            Currency = Currency.USD,
-                            StartYear = 13,
-                            Values = new[] { 13.4, 18.9, 34.3 }
-                        }
+                    {
+                        Currency = Currency.USD,
+                        StartYear = 13,
+                        Values = new[] { 13.4, 18.9, 34.3 }
+                    }
                     )
                 )
                 .WithExploration(new ExplorationBuilder
-                    {
-                        Name = "Exploration",
-                        RigMobDemob = 122.4
-                    }
+                {
+                    Name = "Exploration",
+                    RigMobDemob = 122.4
+                }
                     .WithExplorationCostProfile(new ExplorationCostProfile
-                        {
-                            Currency = Currency.USD,
-                            StartYear = 14,
-                            Values = new[] { 11.4, 28.2, 34.3 }
-                        }
+                    {
+                        Currency = Currency.USD,
+                        StartYear = 14,
+                        Values = new[] { 11.4, 28.2, 34.3 }
+                    }
                     )
                     .WithGAndGAdminCost(new GAndGAdminCost
-                        {
-                            Currency = Currency.NOK,
-                            StartYear = 16,
-                            Values = new[] { 31.4, 28.2, 34.3 }
-                        }
+                    {
+                        Currency = Currency.NOK,
+                        StartYear = 16,
+                        Values = new[] { 31.4, 28.2, 34.3 }
+                    }
                     )
                 )
             )
             .WithProject(new ProjectBuilder
-                {
-                    Name = "P2",
-                    CommonLibraryId = new Guid(),
-                    CommonLibraryName = "P2 from common lib",
-                    CreateDate = DateTimeOffset.UtcNow.Date,
-                    Id = new Guid("5a74a716-92e5-4ec8-8b5b-281381509ae3")
-                }
+            {
+                Name = "P2",
+                CommonLibraryId = new Guid(),
+                CommonLibraryName = "P2 from common lib",
+                CreateDate = DateTimeOffset.UtcNow.Date,
+                Id = new Guid("5a74a716-92e5-4ec8-8b5b-281381509ae3")
+            }
                 .WithDrainageStrategy(new DrainageStrategyBuilder
-                    {
-                        Name = "Drainage Strategy 1",
-                        Description = "Desc. of drainage strategy in P2",
-                        NGLYield = 0.56,
-                        ArtificialLift = ArtificialLift.GasLift
-                    }
+                {
+                    Name = "Drainage Strategy 1",
+                    Description = "Desc. of drainage strategy in P2",
+                    NGLYield = 0.56,
+                    ArtificialLift = ArtificialLift.GasLift
+                }
                     .WithProductionProfileGas(new ProductionProfileGas
-                        {
-                            StartYear = 8,
-                            Values = new[] { 12.34e9, 13.45e9, 14.56e9 }
-                        }
+                    {
+                        StartYear = 8,
+                        Values = new[] { 12.34e9, 13.45e9, 14.56e9 }
+                    }
                     ))
             );
         return projectBuilder;
@@ -349,14 +349,14 @@ public static class SampleAssetGenerator
     public static DrainageStrategyBuilder case2DrainageStrategy()
     {
         return new DrainageStrategyBuilder
-            {
-                Name = "SkarvenDrainStratCase2",
-                Description = "Skarvens drainage strategy"
-            }
+        {
+            Name = "SkarvenDrainStratCase2",
+            Description = "Skarvens drainage strategy"
+        }
             .WithProductionProfileGas(new ProductionProfileGas
-                {
-                    StartYear = 8,
-                    Values = new[]
+            {
+                StartYear = 8,
+                Values = new[]
                     {
                         25.0460776e9, 52.0459552635016671e9,
                         32.0411623281639219e9, 28.0347990402399031e9,
@@ -368,12 +368,12 @@ public static class SampleAssetGenerator
                         7020.00548665884374195e9, 6020.00463847577147806e9,
                         3.00249628453355253e9
                     }
-                }
+            }
             )
             .WithProductionProfileOil(new ProductionProfileOil
-                {
-                    StartYear = 8,
-                    Values = new[]
+            {
+                StartYear = 8,
+                Values = new[]
                     {
                         0.438e6, 0.436837105529155e6,
                         24.391276883687471e6, 92.330789355892615e6, 834.279652600329056e6,
@@ -382,12 +382,12 @@ public static class SampleAssetGenerator
                         78.0863157822132823e6, 485.0729722178642801e6, 55.0616914362992658e6,
                         5.0521545517465929e6, 0.0440919750140482e6, 66.0237289404330128e6
                     }
-                }
+            }
             )
             .WithNetSalesGas(new NetSalesGas
-                {
-                    StartYear = 8,
-                    Values = new[]
+            {
+                StartYear = 8,
+                Values = new[]
                     {
                         28.045534094613436e9,
                         83.0454132011274522e9, 29.0406768005522276e9,
@@ -399,12 +399,12 @@ public static class SampleAssetGenerator
                         10.00641338743673343e9, 35.0054219413099335e9,
                         9.00458376292690185e9, 56.00246683976884294e9
                     }
-                }
+            }
             )
             .WithCo2Emissions(new Co2Emissions
-                {
-                    StartYear = 7,
-                    Values = new[]
+            {
+                StartYear = 7,
+                Values = new[]
                     {
                         55.009e6, 66.00202727509188372e6,
                         77.00202189265582155e6, 33.00181101799161985e6,
@@ -416,7 +416,7 @@ public static class SampleAssetGenerator
                         14.000285537699068565e6, 400.000241396401105546e6,
                         15.000204078910269268e6, 500.000109828972366755e6
                     }
-                }
+            }
             );
     }
 

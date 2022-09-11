@@ -121,51 +121,51 @@ public class ExplorationServiceShould : IDisposable
     private static Exploration CreateTestExploration(Project project)
     {
         return new ExplorationBuilder
-            {
-                Name = "Test-exploration-23",
-                Project = project,
-                ProjectId = project.Id,
-                RigMobDemob = 32.7
-            }
+        {
+            Name = "Test-exploration-23",
+            Project = project,
+            ProjectId = project.Id,
+            RigMobDemob = 32.7
+        }
             .WithExplorationCostProfile(new ExplorationCostProfile
-                {
-                    Currency = Currency.USD,
-                    StartYear = 2230,
-                    Values = new[] { 131.4, 28.2, 334.3 }
-                }
+            {
+                Currency = Currency.USD,
+                StartYear = 2230,
+                Values = new[] { 131.4, 28.2, 334.3 }
+            }
             )
             .WithGAndGAdminCost(new GAndGAdminCost
-                {
-                    Currency = Currency.NOK,
-                    StartYear = 2010,
-                    Values = new[] { 314.4, 281.2, 34.3 }
-                }
+            {
+                Currency = Currency.NOK,
+                StartYear = 2010,
+                Values = new[] { 314.4, 281.2, 34.3 }
+            }
             );
     }
 
     private static Exploration CreateUpdatedTestExploration(Project project, Guid oldExplorationId)
     {
         return new ExplorationBuilder
-            {
-                Id = oldExplorationId,
-                Name = "Test-exploration-23",
-                Project = project,
-                ProjectId = project.Id,
-                RigMobDemob = 32.7
-            }
+        {
+            Id = oldExplorationId,
+            Name = "Test-exploration-23",
+            Project = project,
+            ProjectId = project.Id,
+            RigMobDemob = 32.7
+        }
             .WithExplorationCostProfile(new ExplorationCostProfile
-                {
-                    Currency = Currency.NOK,
-                    StartYear = 2010,
-                    Values = new[] { 11.4, 28.2, 34.3 }
-                }
+            {
+                Currency = Currency.NOK,
+                StartYear = 2010,
+                Values = new[] { 11.4, 28.2, 34.3 }
+            }
             )
             .WithGAndGAdminCost(new GAndGAdminCost
-                {
-                    Currency = Currency.USD,
-                    StartYear = 2030,
-                    Values = new[] { 31.4, 282.2, 34.3 }
-                }
+            {
+                Currency = Currency.USD,
+                StartYear = 2030,
+                Values = new[] { 31.4, 282.2, 34.3 }
+            }
             );
     }
 }

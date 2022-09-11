@@ -17,7 +17,7 @@ public class DatabaseFixture : IDisposable
     {
         var builder = new DbContextOptionsBuilder<DcdDbContext>();
         var connectionString = new SqliteConnectionStringBuilder
-            { DataSource = ":memory:", Cache = SqliteCacheMode.Shared }.ToString();
+        { DataSource = ":memory:", Cache = SqliteCacheMode.Shared }.ToString();
         _connection = new SqliteConnection(connectionString);
         _connection.Open();
         builder.EnableSensitiveDataLogging();

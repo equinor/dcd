@@ -176,61 +176,61 @@ public class SurfServiceTest
     private static Surf CreateTestSurf(Project project)
     {
         return new SurfBuilder
-            {
-                Name = "Surf Test",
-                Project = project,
-                ProjectId = project.Id,
-                ArtificialLift = ArtificialLift.GasLift,
-                Currency = Currency.NOK,
-                RiserCount = 10,
-                TemplateCount = 11,
-                InfieldPipelineSystemLength = 12,
-                UmbilicalSystemLength = 13,
-                Maturity = Maturity.D,
-                ProductionFlowline = ProductionFlowline.HDPELinedCS
-            }
+        {
+            Name = "Surf Test",
+            Project = project,
+            ProjectId = project.Id,
+            ArtificialLift = ArtificialLift.GasLift,
+            Currency = Currency.NOK,
+            RiserCount = 10,
+            TemplateCount = 11,
+            InfieldPipelineSystemLength = 12,
+            UmbilicalSystemLength = 13,
+            Maturity = Maturity.D,
+            ProductionFlowline = ProductionFlowline.HDPELinedCS
+        }
             .WithCostProfile(new SurfCostProfile
-                {
-                    StartYear = 2030,
-                    Values = new[] { 2.3, 3.3, 4.4 }
-                }
+            {
+                StartYear = 2030,
+                Values = new[] { 2.3, 3.3, 4.4 }
+            }
             )
             .WithSurfCessationCostProfile(new SurfCessationCostProfile
-                {
-                    StartYear = 2030,
-                    Values = new[] { 4.2, 5.2, 6.2 }
-                }
+            {
+                StartYear = 2030,
+                Values = new[] { 4.2, 5.2, 6.2 }
+            }
             );
     }
 
     private static Surf CreateUpdatedSurf(Project project, Surf oldSurf)
     {
         return new SurfBuilder
-            {
-                Id = oldSurf.Id,
-                Name = "Updated surf",
-                Project = project,
-                ProjectId = project.Id,
-                ArtificialLift = ArtificialLift.ElectricalSubmergedPumps,
-                Currency = Currency.NOK,
-                RiserCount = 11,
-                TemplateCount = 12,
-                InfieldPipelineSystemLength = 13,
-                UmbilicalSystemLength = 14,
-                Maturity = Maturity.B,
-                ProductionFlowline = ProductionFlowline.SSClad_Insulation
-            }
+        {
+            Id = oldSurf.Id,
+            Name = "Updated surf",
+            Project = project,
+            ProjectId = project.Id,
+            ArtificialLift = ArtificialLift.ElectricalSubmergedPumps,
+            Currency = Currency.NOK,
+            RiserCount = 11,
+            TemplateCount = 12,
+            InfieldPipelineSystemLength = 13,
+            UmbilicalSystemLength = 14,
+            Maturity = Maturity.B,
+            ProductionFlowline = ProductionFlowline.SSClad_Insulation
+        }
             .WithCostProfile(new SurfCostProfile
-                {
-                    StartYear = 2031,
-                    Values = new[] { 5.5, 6.6, 7.7 }
-                }
+            {
+                StartYear = 2031,
+                Values = new[] { 5.5, 6.6, 7.7 }
+            }
             )
             .WithSurfCessationCostProfile(new SurfCessationCostProfile
-                {
-                    StartYear = 2032,
-                    Values = new[] { 7.7, 8.8, 9.9 }
-                }
+            {
+                StartYear = 2032,
+                Values = new[] { 7.7, 8.8, 9.9 }
+            }
             );
     }
 }
