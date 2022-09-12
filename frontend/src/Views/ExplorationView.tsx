@@ -206,11 +206,8 @@ const ExplorationView = () => {
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!, seismicAcquisitionAndProcessing!,
                     countryOfficeCost!]}
-                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
                 profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
                 profileEnum={project?.physUnit!}
             />

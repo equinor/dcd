@@ -341,11 +341,8 @@ const SurfView = () => {
                 setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!, cessationCostProfile!]}
-                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={currency}
             />

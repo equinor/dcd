@@ -1,7 +1,7 @@
 import {
     Dispatch,
     SetStateAction,
-    useCallback, useEffect, useMemo, useRef, useState,
+    useCallback, useEffect, useMemo, useRef,
 } from "react"
 import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
@@ -18,7 +18,6 @@ export interface CellValue {
 interface Props {
     columns: string[]
     gridData: any[]
-    onCellsChanged: any
     dG4Year: string
     profileName: string[]
     profileEnum: number
@@ -28,8 +27,7 @@ interface Props {
 }
 
 function DataTable({
-    // eslint-disable-next-line max-len
-    columns, gridData, onCellsChanged, dG4Year, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries,
+    columns, gridData, dG4Year, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries,
 }: Props) {
     const gridRef = useRef<AgGridReact | null>(null)
 
@@ -78,8 +76,8 @@ function DataTable({
         if (gridData.length === 0) {
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
-                // eslint-disable-next-line max-len
-                const rowObj = objKey.reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
+                const rowObj = objKey
+                    .reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
                 combinedObjArr.push(rowObj)
 
                 const totalCostObj = { "Total cost": 0 }
@@ -101,8 +99,8 @@ function DataTable({
                     objValSum.push(gridData[j][0]?.map((v:any) => v.value).reduce((x:any, y:any) => x + y))
                     totalCost.push(objValSum[j])
                 }
-                // eslint-disable-next-line max-len
-                const rowObj = objKey.reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
+                const rowObj = objKey
+                    .reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
                 combinedObjArr.push(rowObj)
 
                 const totalCostObj = { "Total cost": totalCost }
@@ -134,7 +132,7 @@ function DataTable({
         sortable: true,
         // initialWidth: 120,
         editable: true,
-        // flex: 1,
+        flex: 1,
     }), [])
 
     useEffect(() => {
@@ -144,16 +142,18 @@ function DataTable({
         const rowEventData = event.data
         const index = event.node.rowIndex
 
-        // timeseries[0] doesn't update griddata. total cost is 0 and isnt saved
         if (timeSeries! !== undefined) {
-            // eslint-disable-next-line max-len
-            const convertObj = { convertObj: (delete rowEventData.Unit, delete rowEventData.Profile, delete rowEventData["Total cost"]), rowEventData }
-            // eslint-disable-next-line max-len
-            const changeKeysToValue = Object.keys(rowEventData).reduce((prev:any, curr:any, index:any) => ({ ...prev, [(index)]: Number(rowEventData[curr]) }), {})
-            const newTimeSeries: ITimeSeries = { ...timeSeries![index!] } // find rowNumber
-            // eslint-disable-next-line max-len
+            const convertObj = {
+                convertObj:
+                (delete rowEventData.Unit, delete rowEventData.Profile,
+                delete rowEventData["Total cost"]),
+                rowEventData,
+            }
+            const changeKeysToValue = Object.keys(rowEventData)
+                .reduce((prev:any, curr:any, index:any) => ({ ...prev, [(index)]: Number(rowEventData[curr]) }), {})
+            const newTimeSeries: ITimeSeries = { ...timeSeries![index!] }
             newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year!))
-            newTimeSeries.name = profileName![index!] // need to add profileName!!!
+            newTimeSeries.name = profileName![index!]
             newTimeSeries.values = Object.values(changeKeysToValue)
             setTimeSeries(newTimeSeries)
             const newGridData = buildGridData(newTimeSeries)

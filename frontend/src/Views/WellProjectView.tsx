@@ -224,11 +224,8 @@ function WellProjectView() {
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!]}
-                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
                 profileName={["Cost profile"]}
                 profileEnum={project?.physUnit!}
             />

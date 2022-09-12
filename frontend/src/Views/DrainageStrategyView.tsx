@@ -278,11 +278,8 @@ const DrainageStrategyView = () => {
                     fuelFlaringAndLosses!, productionProfileGas!,
                     productionProfileOil!, productionProfileWater!,
                     productionProfileWaterInjection!, productionProfileNGL!]}
-                timeSeriesTitle="CO2 emissions (MTPA)"
                 firstYear={firstTSYear}
                 lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
                 profileName={["CO2 emissions", "Net sales gas",
                     "Fuel flaring and losses", "Production profile gas",
                     "Production profile oil", "Production profile water",

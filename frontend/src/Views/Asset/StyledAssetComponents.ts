@@ -25,7 +25,7 @@ export const WrapperTablePeriod = styled.div`
     display: flex;
     flex-direction: row;
     margin-left: 70rem;
-    margin-bottom: 2rem;
+    margin-bottom: -1rem;
     align-content: right;
 `
 

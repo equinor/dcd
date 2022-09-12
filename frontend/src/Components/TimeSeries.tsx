@@ -4,24 +4,20 @@ import {
 } from "react"
 import DataTable, { CellValue } from "./DataTable/DataTable"
 import {
-    buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
+    buildGridData, buildZeroGridData,
 } from "./DataTable/helpers"
-import Import from "./Import/Import"
 import { ITimeSeries } from "../models/ITimeSeries"
 import {
-    DeleteButton, ImportButton, Wrapper, WrapperColumn, WrapperTablePeriod,
+    ImportButton, Wrapper, WrapperColumn, WrapperTablePeriod,
 } from "../Views/Asset/StyledAssetComponents"
-import NumberInput from "./NumberInput"
+import NumberInputTable from "./NumberInputTable"
 
 interface Props {
     dG4Year: number | undefined
     setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     setHasChanges: Dispatch<SetStateAction<boolean>>,
-    timeSeriesTitle: string,
     firstYear: number | undefined,
     lastYear: number | undefined,
-    setFirstYear: Dispatch<SetStateAction<number | undefined>>,
-    setLastYear: Dispatch<SetStateAction<number | undefined>>,
     timeSeries: ITimeSeries[] | undefined
     profileName: string[]
     profileEnum: number
@@ -32,17 +28,13 @@ const TimeSeries = ({
     setTimeSeries,
     setHasChanges,
     timeSeries,
-    timeSeriesTitle,
     firstYear,
     lastYear,
-    setFirstYear,
-    setLastYear,
     profileName,
     profileEnum,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
-    const [dialogOpen, setDialogOpen] = useState(false)
     const [beginningYear, setBeginningYear] = useState<number | undefined>()
     const [endingYear, setEndingYear] = useState<number | undefined>()
 
@@ -61,11 +53,6 @@ const TimeSeries = ({
                             }
                         }
                         setColumns(columnTitles)
-                        // if (timeSeries![i] !== undefined) {
-                        //     const newGridData = buildGridData(timeSeries![i])
-                        //     const alignedAssetGridData = new Array(newGridData[0])
-                        //     combinedEmptyTimeseries.push(alignedAssetGridData)
-                        // }
 
                         const zeroesAtStart: Number[] = Array.from({
                             length: Number(timeSeries![i].startYear!)
@@ -103,40 +90,6 @@ const TimeSeries = ({
             setEndingYear(lastYear - 1)
         }
     }, [timeSeries, lastYear, firstYear])
-
-    const onCellsChanged = (changes: { cell: { value: number }; col: number; row: number; value: string }[]) => {
-        const newGridData: CellValue[][] = replaceOldData(gridData, changes)
-        setGridData(newGridData)
-        setColumns(getColumnAbsoluteYears(dG4Year, timeSeries))
-        setHasChanges(true)
-    }
-
-    const onImport = (input: string, year: number) => {
-        const newTimeSeries: ITimeSeries = { ...timeSeries![0] }
-        newTimeSeries.startYear = year
-        newTimeSeries.values = input.replace(/(\r\n|\n|\r)/gm, "").split("\t").map((i) => parseFloat(i))
-        setTimeSeries(newTimeSeries)
-        if ((Number(year)
-        + Number(dG4Year!)) < (firstYear ?? Number.MAX_SAFE_INTEGER)) {
-            setFirstYear((Number(year) + Number(dG4Year!)))
-        }
-        if ((Number(year)
-        + Number(dG4Year!)
-        + Number(newTimeSeries!.values!.length)) > (lastYear ?? Number.MIN_SAFE_INTEGER)) {
-            setLastYear(Number(year)
-            + Number(dG4Year!) + Number(newTimeSeries.values.length))
-        }
-        buildAlignedGrid(newTimeSeries)
-        setDialogOpen(!dialogOpen)
-        setHasChanges(true)
-    }
-
-    const deleteTimeseries = () => {
-        setHasChanges(true)
-        setColumns([])
-        setGridData([[]])
-        setTimeSeries(undefined)
-    }
 
     const createEmptyGrid = (j: any) => {
         if (gridData !== undefined && firstYear?.toString().length === 4 && lastYear?.toString().length === 4) {
@@ -228,32 +181,15 @@ const TimeSeries = ({
 
     return (
         <>
-            <Wrapper>
-                <Typography variant="h4">{timeSeriesTitle}</Typography>
-            </Wrapper>
-            <Wrapper>
-                <ImportButton
-                    onClick={() => { setDialogOpen(true) }}
-                >
-                    {timeSeries !== undefined ? "Edit" : "Import"}
-                </ImportButton>
-                <DeleteButton
-                    disabled={timeSeries === undefined}
-                    color="danger"
-                    onClick={deleteTimeseries}
-                >
-                    Delete
-                </DeleteButton>
-            </Wrapper>
             <WrapperTablePeriod>
-                <NumberInput // must fix new custom wrapper that breaks other numberinputs
+                <NumberInputTable
                     value={beginningYear?.toString().length === 4 ? beginningYear : 2020}
                     setValue={setBeginningYear}
                     integer
                     label="Start year"
                 />
                 <Typography variant="h2">-</Typography>
-                <NumberInput
+                <NumberInputTable
                     value={endingYear?.toString().length === 4 ? endingYear : 2030}
                     setValue={setEndingYear}
                     integer
@@ -265,12 +201,12 @@ const TimeSeries = ({
                     Apply
                 </ImportButton>
             </WrapperTablePeriod>
+            <Typography variant="h2">Cost</Typography>
 
             <WrapperColumn>
                 <DataTable
                     columns={columns}
                     gridData={gridData}
-                    onCellsChanged={onCellsChanged}
                     dG4Year={dG4Year?.toString()!}
                     profileName={profileName}
                     profileEnum={profileEnum}
@@ -279,8 +215,6 @@ const TimeSeries = ({
                     timeSeries={timeSeries}
                 />
             </WrapperColumn>
-            {!dialogOpen ? null
-                : <Import onClose={() => { setDialogOpen(!dialogOpen) }} onImport={onImport} />}
         </>
     )
 }
