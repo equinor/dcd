@@ -176,7 +176,7 @@ const SurfView = () => {
         costProfile, cessationCostProfile, currency, costYear, cessationCost, approvedBy, artificialLift,
         dG3Date, dG4Date])
 
-    const setAllInitialStates = (timeSeries: any) => {
+    const setAllStates = (timeSeries: any) => {
         if (timeSeries) {
             if (timeSeries.name === "Cost profile") {
                 setCostProfile(timeSeries)
@@ -338,7 +338,7 @@ const SurfView = () => {
             />
             <TimeSeries
                 dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setAllInitialStates}
+                setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!, cessationCostProfile!]}
                 timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
@@ -346,7 +346,6 @@ const SurfView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-                timeSeriesArray={[costProfile!, cessationCostProfile!]}
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={currency}
             />

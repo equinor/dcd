@@ -20,7 +20,6 @@ interface Props {
     gridData: any[]
     onCellsChanged: any
     dG4Year: string
-    timeSeriesArray: ITimeSeries[] | undefined
     profileName: string[]
     profileEnum: number
     setHasChanges: Dispatch<SetStateAction<boolean>>,
@@ -30,7 +29,7 @@ interface Props {
 
 function DataTable({
     // eslint-disable-next-line max-len
-    columns, gridData, onCellsChanged, dG4Year, timeSeriesArray, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries,
+    columns, gridData, onCellsChanged, dG4Year, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries,
 }: Props) {
     const gridRef = useRef<AgGridReact | null>(null)
 
@@ -139,12 +138,13 @@ function DataTable({
     }), [])
 
     useEffect(() => {
-    }, [timeSeries, profileName, gridData])
+    }, [timeSeries, profileName, gridData, dG4Year])
 
     const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
         const rowEventData = event.data
         const index = event.node.rowIndex
 
+        // timeseries[0] doesn't update griddata. total cost is 0 and isnt saved
         if (timeSeries! !== undefined) {
             // eslint-disable-next-line max-len
             const convertObj = { convertObj: (delete rowEventData.Unit, delete rowEventData.Profile, delete rowEventData["Total cost"]), rowEventData }
@@ -152,7 +152,7 @@ function DataTable({
             const changeKeysToValue = Object.keys(rowEventData).reduce((prev:any, curr:any, index:any) => ({ ...prev, [(index)]: Number(rowEventData[curr]) }), {})
             const newTimeSeries: ITimeSeries = { ...timeSeries![index!] } // find rowNumber
             // eslint-disable-next-line max-len
-            newTimeSeries.startYear = Number(Object.keys(rowEventData)[0]) - Number(Object.keys(rowEventData).slice(-1)[0])
+            newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year!))
             newTimeSeries.name = profileName![index!] // need to add profileName!!!
             newTimeSeries.values = Object.values(changeKeysToValue)
             setTimeSeries(newTimeSeries)
@@ -160,7 +160,7 @@ function DataTable({
             combinedTimeseries.push(newGridData)
         }
         setHasChanges(true)
-    }, [])
+    }, [dG4Year])
 
     return (
         <div className="ag-theme-alpine">

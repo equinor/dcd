@@ -139,7 +139,7 @@ const ExplorationView = () => {
         }
     }
 
-    const setAllInitialStates = (timeSeries: any) => {
+    const setAllStates = (timeSeries: any) => {
         if (timeSeries) {
             if (timeSeries.name === "Cost profile") {
                 setCostProfile(timeSeries)
@@ -202,7 +202,7 @@ const ExplorationView = () => {
             </Wrapper>
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setAllInitialStates}
+                setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!, seismicAcquisitionAndProcessing!,
                     countryOfficeCost!]}
@@ -211,8 +211,6 @@ const ExplorationView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-                timeSeriesArray={[costProfile!, seismicAcquisitionAndProcessing!,
-                    countryOfficeCost!]}
                 profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
                 profileEnum={project?.physUnit!}
             />

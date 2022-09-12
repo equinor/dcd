@@ -34,8 +34,6 @@ import { ProductionProfileNGL } from "../models/assets/drainagestrategy/Producti
 import { IAssetService } from "../Services/IAssetService"
 import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
-import { ITimeSeries } from "../models/ITimeSeries"
-import { profile } from "console"
 
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
@@ -162,24 +160,10 @@ const DrainageStrategyView = () => {
         productionProfileNGL, artificialLift, producerCount, gasInjectorCount, waterInjectorCount,
         facilitiesAvailability])
 
-    // const setAllStates = () => {
-    //     setCo2Emissions
-    //     setNetSalesGas
-    //     setFuelFlaringAndLosses
-    //     setProductionProfileGas
-    //     setProductionProfileOil
-    //     setProductionProfileWater
-    //     setProductionProfileWaterInjection
-    //     setProductionProfileNGL
-    // }
-
-    const setAllInitialStates = (timeSeries: any) => {
+    const setAllStates = (timeSeries: any) => {
         if (timeSeries) {
             if (timeSeries.name === "CO2 emissions") {
                 setCo2Emissions(timeSeries)
-            }
-            if (typeof timeSeries === typeof Co2Emissions) {
-                console.log(timeSeries)
             }
             if (timeSeries.name === "Net sales gas") {
                 setNetSalesGas(timeSeries)
@@ -204,55 +188,6 @@ const DrainageStrategyView = () => {
             }
         }
     }
-
-    const setAllInitialStates2 = (timeSeries: any) => {
-        if (timeSeries) {
-            if (co2Emissions) {
-                setCo2Emissions(timeSeries)
-            }
-            if (netSalesGas) {
-                setNetSalesGas(timeSeries)
-            }
-            if (fuelFlaringAndLosses) {
-                setFuelFlaringAndLosses(timeSeries)
-            }
-            if (productionProfileGas) {
-                setProductionProfileGas(timeSeries)
-            }
-            if (productionProfileOil) {
-                setProductionProfileOil(timeSeries)
-            }
-            if (productionProfileWater) {
-                setProductionProfileWater(timeSeries)
-            }
-            if (productionProfileWaterInjection) {
-                setProductionProfileWaterInjection(timeSeries)
-            }
-            if (productionProfileNGL) {
-                setProductionProfileNGL(timeSeries)
-            }
-        }
-    }
-
-    const setAllStates = (timeSeries: any) => {
-        if (timeSeries) {
-            setCo2Emissions(timeSeries)
-            setNetSalesGas(timeSeries)
-            setFuelFlaringAndLosses(timeSeries)
-            setProductionProfileGas(timeSeries)
-            setProductionProfileOil(timeSeries)
-            setProductionProfileWater(timeSeries)
-            setProductionProfileWaterInjection(timeSeries)
-            setProductionProfileNGL(timeSeries)
-        }
-        // console.log(timeSeries)
-    }
-
-    // console.log(drainageStrategy)
-
-    // inkluder navn i timeseries modellen
-    // sjekk på navn og setTimeseries ut i fra navn
-    // slipper også profileName for matching
 
     return (
         <AssetViewDiv>
@@ -337,7 +272,7 @@ const DrainageStrategyView = () => {
             </Wrapper>
             <TimeSeries
                 dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setAllInitialStates}
+                setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[co2Emissions!, netSalesGas!,
                     fuelFlaringAndLosses!, productionProfileGas!,
@@ -348,10 +283,6 @@ const DrainageStrategyView = () => {
                 lastYear={lastTSYear}
                 setFirstYear={setFirstTSYear}
                 setLastYear={setLastTSYear}
-                timeSeriesArray={[co2Emissions!, netSalesGas!,
-                    fuelFlaringAndLosses!, productionProfileGas!,
-                    productionProfileOil!, productionProfileWater!,
-                    productionProfileWaterInjection!, productionProfileNGL!]}
                 profileName={["CO2 emissions", "Net sales gas",
                     "Fuel flaring and losses", "Production profile gas",
                     "Production profile oil", "Production profile water",

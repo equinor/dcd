@@ -149,7 +149,7 @@ const SubstructureView = () => {
     }, [maturity, dryWeight, costProfile, cessationCostProfile, currency, approvedBy, costYear, concept,
         dG3Date, dG4Date])
 
-    const setAllInitialStates = (timeSeries: any) => {
+    const setAllStates = (timeSeries: any) => {
         if (timeSeries) {
             if (timeSeries.name === "Cost profile") {
                 setCostProfile(timeSeries)
@@ -263,7 +263,7 @@ const SubstructureView = () => {
             <TimeSeries
                 dG4Year={substructure?.source === 1 ? substructure.DG4Date?.getFullYear()
                     : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setAllInitialStates}
+                setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!, cessationCostProfile!]}
                 timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
@@ -271,7 +271,6 @@ const SubstructureView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-                timeSeriesArray={[costProfile!, cessationCostProfile!]}
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={project?.physUnit!}
             />

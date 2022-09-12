@@ -196,7 +196,7 @@ const TopsideView = () => {
         producerCount, gasInjectorCount, waterInjectorCount, fuelConsumption, flaredGas, dG3Date, dG4Date,
         facilityOpex])
 
-    const setAllInitialStates = (timeSeries: any) => {
+    const setAllStates = (timeSeries: any) => {
         if (timeSeries) {
             if (timeSeries.name === "Cost profile") {
                 setCostProfile(timeSeries)
@@ -418,7 +418,7 @@ const TopsideView = () => {
             />
             <TimeSeries
                 dG4Year={topside?.source === 1 ? topside.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setAllInitialStates}
+                setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
                 timeSeries={[costProfile!, cessationCostProfile!]}
                 timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
@@ -426,7 +426,6 @@ const TopsideView = () => {
                 lastYear={lastTSYear!}
                 setFirstYear={setFirstTSYear!}
                 setLastYear={setLastTSYear}
-                timeSeriesArray={[costProfile!, cessationCostProfile!]}
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={project?.physUnit!}
             />

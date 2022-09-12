@@ -23,7 +23,6 @@ interface Props {
     setFirstYear: Dispatch<SetStateAction<number | undefined>>,
     setLastYear: Dispatch<SetStateAction<number | undefined>>,
     timeSeries: ITimeSeries[] | undefined
-    timeSeriesArray: ITimeSeries[] | undefined
     profileName: string[]
     profileEnum: number
 }
@@ -38,7 +37,6 @@ const TimeSeries = ({
     lastYear,
     setFirstYear,
     setLastYear,
-    timeSeriesArray,
     profileName,
     profileEnum,
 }: Props) => {
@@ -63,6 +61,11 @@ const TimeSeries = ({
                             }
                         }
                         setColumns(columnTitles)
+                        // if (timeSeries![i] !== undefined) {
+                        //     const newGridData = buildGridData(timeSeries![i])
+                        //     const alignedAssetGridData = new Array(newGridData[0])
+                        //     combinedEmptyTimeseries.push(alignedAssetGridData)
+                        // }
 
                         const zeroesAtStart: Number[] = Array.from({
                             length: Number(timeSeries![i].startYear!)
@@ -152,28 +155,9 @@ const TimeSeries = ({
         newTimeSeries.values = new Array(colYears.length).fill(0)
 
         setTimeSeries(newTimeSeries)
-
         if (newTimeSeries !== undefined) {
-            const zeroesAtStart: Number[] = Array.from({
-                length: Number(newTimeSeries.startYear!)
-                + Number(dG4Year) - Number(beginningYear),
-            }, (() => 0))
-
-            const zeroesAtEnd: Number[] = Array.from({
-                length: Number(lastYear)
-                - (Number(newTimeSeries.startYear!)
-                + Number(dG4Year)
-                + Number(newTimeSeries.values!.length!)),
-            }, (() => 0))
-
-            const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
-            const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
             const newGridData = buildGridData(newTimeSeries)
-
-            const alignedAssetGridData = new Array(
-                assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
-            )
-
+            const alignedAssetGridData = new Array(newGridData[0])
             combinedEmptyTimeseries.push(alignedAssetGridData)
         }
         setGridData(combinedEmptyTimeseries)
@@ -192,19 +176,16 @@ const TimeSeries = ({
 
         if (beginningYear! < (Number(timeSeries![j].startYear!) + Number(dG4Year!))) {
             newTimeSeries.startYear = beginningYear! - dG4Year!
-            // eslint-disable-next-line max-len
-            newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length!).fill(0).concat(newTimeSeries.values)
+            newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length!)
+                .fill(0).concat(newTimeSeries.values)
         }
 
         if ((endingYear!) > (Number(colYears[0]) + Number(newTimeSeries.values!.length))) {
-            // this breaks table when adding value after having increased ending year...
-            // eslint-disable-next-line max-len
-            newTimeSeries.values = (newTimeSeries.values)?.concat(new Array(colYears.length - timeSeries![j].values!.length!).fill(0))
+            newTimeSeries.values = (newTimeSeries.values)
+                ?.concat(new Array(colYears.length - timeSeries![j].values!.length!).fill(0))
         }
 
         if (endingYear! < (Number(colYears[0]) + Number(timeSeries![j].values!.length))) {
-            // colyears[0] goes up when increasing startyear
-            // this breaks table when adding value after having increased ending year...
             const yearDifference = (Number(colYears[0]) + timeSeries![j].values!.length - 1) - endingYear!
             newTimeSeries.values = timeSeries![j].values?.slice(0, -yearDifference)
         }
@@ -291,7 +272,6 @@ const TimeSeries = ({
                     gridData={gridData}
                     onCellsChanged={onCellsChanged}
                     dG4Year={dG4Year?.toString()!}
-                    timeSeriesArray={timeSeriesArray}
                     profileName={profileName}
                     profileEnum={profileEnum}
                     setHasChanges={setHasChanges}
