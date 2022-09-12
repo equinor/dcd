@@ -169,19 +169,19 @@ public class TransportServiceShould
     private static Transport CreateUpdatedTransport(Project project, Transport oldTransport)
     {
         return new TransportBuilder
-            {
-                Id = oldTransport.Id,
-                Name = "Updated Transport",
-                Project = project,
-                ProjectId = project.Id,
-                GasExportPipelineLength = 100,
-                OilExportPipelineLength = 100,
-            }.WithCostProfile(new TransportCostProfile()
-            {
-                Currency = Currency.USD,
-                StartYear = 2030,
-                Values = new double[] { 23.4, 28.9, 24.3 }
-            })
+        {
+            Id = oldTransport.Id,
+            Name = "Updated Transport",
+            Project = project,
+            ProjectId = project.Id,
+            GasExportPipelineLength = 100,
+            OilExportPipelineLength = 100,
+        }.WithCostProfile(new TransportCostProfile()
+        {
+            Currency = Currency.USD,
+            StartYear = 2030,
+            Values = new double[] { 23.4, 28.9, 24.3 }
+        })
             .WithTransportCessationCostProfile(new TransportCessationCostProfile()
             {
                 Currency = Currency.USD,
@@ -211,19 +211,19 @@ public class TransportServiceShould
     private static Transport CreateTestTransport(Project project)
     {
         return new TransportBuilder
-            {
-                Name = "Transport Transport",
-                Project = project,
-                ProjectId = project.Id,
-                GasExportPipelineLength = 999,
-                OilExportPipelineLength = 999,
+        {
+            Name = "Transport Transport",
+            Project = project,
+            ProjectId = project.Id,
+            GasExportPipelineLength = 999,
+            OilExportPipelineLength = 999,
 
-            }.WithCostProfile(new TransportCostProfile()
-            {
-                Currency = Currency.USD,
-                StartYear = 2030,
-                Values = new double[] { 13.4, 18.9, 34.3 }
-            })
+        }.WithCostProfile(new TransportCostProfile()
+        {
+            Currency = Currency.USD,
+            StartYear = 2030,
+            Values = new double[] { 13.4, 18.9, 34.3 }
+        })
             .WithTransportCessationCostProfile(new TransportCessationCostProfile()
             {
                 Currency = Currency.USD,

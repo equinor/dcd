@@ -190,44 +190,44 @@ public class WellProjectServiceShould : IDisposable
     private static WellProject CreateTestWellProject(Project project)
     {
         return new WellProjectBuilder
-            {
-                Name = "DrainStrat Test",
-                ArtificialLift = ArtificialLift.ElectricalSubmergedPumps,
-                RigMobDemob = 2.2,
-                AnnualWellInterventionCost = 3.3,
-                PluggingAndAbandonment = 4.4,
-                Project = project,
-                ProjectId = project.Id,
-            }
+        {
+            Name = "DrainStrat Test",
+            ArtificialLift = ArtificialLift.ElectricalSubmergedPumps,
+            RigMobDemob = 2.2,
+            AnnualWellInterventionCost = 3.3,
+            PluggingAndAbandonment = 4.4,
+            Project = project,
+            ProjectId = project.Id,
+        }
             .WithWellProjectCostProfile(new WellProjectCostProfile
-                {
-                    Currency = Currency.USD,
-                    EPAVersion = "test EPA",
-                    StartYear = 2030,
-                    Values = new double[] { 13.4, 18.9, 34.3 }
-                }
+            {
+                Currency = Currency.USD,
+                EPAVersion = "test EPA",
+                StartYear = 2030,
+                Values = new double[] { 13.4, 18.9, 34.3 }
+            }
             );
     }
 
     private static WellProjectDto CreateUpdatedWellProject(Project project)
     {
         return WellProjectDtoAdapter.Convert(new WellProjectBuilder
-            {
-                Name = "updated name",
-                ArtificialLift = ArtificialLift.GasLift,
-                RigMobDemob = 3.3,
-                AnnualWellInterventionCost = 4.4,
-                PluggingAndAbandonment = 5.5,
-                Project = project,
-                ProjectId = project.Id,
-            }
+        {
+            Name = "updated name",
+            ArtificialLift = ArtificialLift.GasLift,
+            RigMobDemob = 3.3,
+            AnnualWellInterventionCost = 4.4,
+            PluggingAndAbandonment = 5.5,
+            Project = project,
+            ProjectId = project.Id,
+        }
             .WithWellProjectCostProfile(new WellProjectCostProfile
-                {
-                    Currency = Currency.NOK,
-                    EPAVersion = "Updated EPA",
-                    StartYear = 2030,
-                    Values = new double[] { 13.4, 18.9, 34.3 }
-                }
+            {
+                Currency = Currency.NOK,
+                EPAVersion = "Updated EPA",
+                StartYear = 2030,
+                Values = new double[] { 13.4, 18.9, 34.3 }
+            }
             )
         );
     }
