@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
 
-using Surf = api.Models.Surf;
-using Transport = api.Models.Transport;
-
 namespace api.Controllers;
 
 [Route("[controller]")]
@@ -19,10 +16,10 @@ public class PROSPController : ControllerBase
     private const string isCheckedAsset = "true";
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
-    private readonly ProspSharepointImportService _prospSharepointImportService;
-    private readonly ProspExcelImportService _prospExcelImportService;
-    private readonly ProjectService _projectService;
     private readonly ILogger<PROSPController> _logger;
+    private readonly ProjectService _projectService;
+    private readonly ProspExcelImportService _prospExcelImportService;
+    private readonly ProspSharepointImportService _prospSharepointImportService;
 
 
     public PROSPController(ProspExcelImportService prospExcelImportService,
@@ -43,7 +40,10 @@ public class PROSPController : ControllerBase
     [HttpGet("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
     public List<DriveItemDto> GetSharePointFileNamesAndId()
     {
-        var siteId = _config["SharePoint:Prosp:SiteId"];
+        var url =
+            "https://statoilsrm.sharepoint.com/sites/Team-IAF/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2FTeam%2DIAF%2FShared%20Documents%2FBoard&FolderCTID=0x0120007F5A26E2C9637A48BB7A8CA14E729794";
+        var siteId = _prospSharepointImportService.GetSharepointSiteId(url) ??
+                     _config["SharePoint:Prosp:SiteId"];
         var dto = new List<DriveItemDto>();
         var validMimeTypes = _prospSharepointImportService.ValidMimeTypes();
 

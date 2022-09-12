@@ -7,15 +7,34 @@ namespace api.Services;
 
 public class ProspSharepointImportService
 {
-    private readonly GraphServiceClient _graphServiceClient;
     private readonly IConfiguration _config;
+    private readonly GraphServiceClient _graphServiceClient;
     private readonly ProspExcelImportService _service;
 
-    public ProspSharepointImportService(IConfiguration config, GraphServiceClient graphServiceClient, ProspExcelImportService service)
+    public ProspSharepointImportService(IConfiguration config, GraphServiceClient graphServiceClient,
+        ProspExcelImportService service)
     {
         _graphServiceClient = graphServiceClient;
         _config = config;
         _service = service;
+    }
+
+    public string GetSharepointSiteId(string url)
+    {
+        var siteName = "Team-IAF";
+        var siteId = GetSiteId(url);
+
+        return siteId;
+    }
+
+    private string GetSiteId(string url)
+    {
+        var siteUri = new Uri(url);
+        var site = _graphServiceClient.Sites.GetByPath(siteUri.AbsolutePath, siteUri.Host)
+            .Request()
+            .GetAsync()
+            .GetAwaiter().GetResult();
+        return site.Id;
     }
 
     public async Task<ProjectDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
@@ -43,10 +62,12 @@ public class ProspSharepointImportService
         {
             if (keyValuePair.Value.Length > 0)
             {
-                foreach (var iteminfo in dtos.Where(importDto => importDto.Id != null && new Guid(importDto.Id) == keyValuePair.Key))
+                foreach (var iteminfo in dtos.Where(importDto =>
+                             importDto.Id != null && new Guid(importDto.Id) == keyValuePair.Key))
                 {
                     var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside, iteminfo.Transport);
-                    projectDto = _service.ImportProsp(keyValuePair.Value, keyValuePair.Key, projectId, assets, iteminfo.SharePointFileId);
+                    projectDto = _service.ImportProsp(keyValuePair.Value, keyValuePair.Key, projectId, assets,
+                        iteminfo.SharePointFileId);
                 }
             }
         }
@@ -54,14 +75,16 @@ public class ProspSharepointImportService
         return projectDto;
     }
 
-    public Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport) =>
-        new()
+    public Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport)
+    {
+        return new Dictionary<string, bool>
         {
             { nameof(Surf), surf },
             { nameof(Topside), topside },
             { nameof(Substructure), substructure },
-            { nameof(Transport), transport },
+            { nameof(Transport), transport }
         };
+    }
 
     public void ConvertToDto(DriveItem driveItem, List<DriveItemDto> dto)
     {
