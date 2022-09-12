@@ -22,34 +22,15 @@ public class ProspSharepointImportService
     public string GetSiteId(string url)
     {
         var siteUri = new Uri(url);
-        var siteId = "";
-
-        // var queryOptions = new List<QueryOption>
-        // {
-        //     new("search", siteUri.AbsolutePath.Split("/", 3)[2])
-        // };
-        //
-        // var sitesCollection = _graphServiceClient.Sites
-        //     .Request(queryOptions)
-        //     .GetAsync()
-        //     .GetAwaiter().GetResult();
         var hostName = siteUri.Host;
-        var relativePath = "/sites/" + siteUri.AbsolutePath.Split('/', 3)[2].Split('/')[0];
+        var relativePath = $"/sites/{siteUri.AbsolutePath.Split('/', 3)[2].Split('/')[0]}";
 
         var site = _graphServiceClient.Sites.GetByPath(relativePath, hostName)
             .Request()
             .GetAsync()
             .GetAwaiter().GetResult();
 
-        // foreach (var site in sitesCollection)
-        // {
-        //     if (!string.IsNullOrWhiteSpace(site.Id))
-        //     {
-        //         siteId = site.Id;
-        //     }
-        // }
-
-        return site.Id; //siteId;
+        return site.Id;
     }
 
     public async Task<ProjectDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
@@ -58,7 +39,7 @@ public class ProspSharepointImportService
         // var siteId = _config["SharePoint:Prosp:SiteId"];
         var url =
             "https://statoilsrm.sharepoint.com/sites/Team-IAF/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2FTeam%2DIAF%2FShared%20Documents%2FBoard&FolderCTID=0x0120007F5A26E2C9637A48BB7A8CA14E729794"; //"https://statoilsrm.sharepoint.com/sites/ConceptApp-Test/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FConceptApp%2DTest%2FShared%20Documents%2FGeneral&viewid=3369dfb1%2D14bb%2D465f%2D9558%2De96212ae80c7";
-        var siteId = GetSiteId(url) ?? _config["SharePoint:Prosp:SiteId"];
+        var siteId = GetSiteId(url);
         var fileIdsOnCases = new Dictionary<Guid, string>();
         foreach (var dto in dtos)
         {
