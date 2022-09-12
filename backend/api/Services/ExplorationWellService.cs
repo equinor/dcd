@@ -7,109 +7,108 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Services
+namespace api.Services;
+
+public class ExplorationWellService
 {
-    public class ExplorationWellService
+    private readonly DcdDbContext _context;
+    private readonly ProjectService _projectService;
+    private readonly ExplorationService _explorationService;
+    private readonly ILogger<CaseService> _logger;
+
+    public ExplorationWellService(DcdDbContext context, ProjectService projectService, ExplorationService explorationService, ILoggerFactory loggerFactory)
     {
-        private readonly DcdDbContext _context;
-        private readonly ProjectService _projectService;
-        private readonly ExplorationService _explorationService;
-        private readonly ILogger<CaseService> _logger;
+        _context = context;
+        _projectService = projectService;
+        _logger = loggerFactory.CreateLogger<CaseService>();
+        _explorationService = explorationService;
+    }
 
-        public ExplorationWellService(DcdDbContext context, ProjectService projectService, ExplorationService explorationService, ILoggerFactory loggerFactory)
+    public ProjectDto CreateExplorationWell(ExplorationWellDto explorationWellDto)
+    {
+        var explorationWell = ExplorationWellAdapter.Convert(explorationWellDto);
+        _context.ExplorationWell!.Add(explorationWell);
+        _context.SaveChanges();
+        var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == explorationWellDto.ExplorationId)?.ProjectId;
+        if (projectId != null)
         {
-            _context = context;
-            _projectService = projectService;
-            _logger = loggerFactory.CreateLogger<CaseService>();
-            _explorationService = explorationService;
+            return _projectService.GetProjectDto((Guid)projectId);
+        }
+        throw new NotFoundInDBException();
+    }
+
+    public ProjectDto UpdateExplorationWell(ExplorationWellDto updatedExplorationWellDto)
+    {
+        var existing = GetExplorationWell(updatedExplorationWellDto.WellId, updatedExplorationWellDto.ExplorationId);
+        ExplorationWellAdapter.ConvertExisting(existing, updatedExplorationWellDto);
+        if (updatedExplorationWellDto.DrillingSchedule == null && existing.DrillingSchedule != null)
+        {
+            _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
         }
 
-        public ProjectDto CreateExplorationWell(ExplorationWellDto explorationWellDto)
+        var exploration = _context.Explorations!.Include(wp => wp.CostProfile).Include(wp => wp.ExplorationWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.ExplorationId);
+        _explorationService.CalculateCostProfile(exploration, existing, null);
+
+        _context.ExplorationWell!.Update(existing);
+        _context.SaveChanges();
+        var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == updatedExplorationWellDto.ExplorationId)?.ProjectId;
+        if (projectId != null)
         {
-            var explorationWell = ExplorationWellAdapter.Convert(explorationWellDto);
-            _context.ExplorationWell!.Add(explorationWell);
-            _context.SaveChanges();
-            var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == explorationWellDto.ExplorationId)?.ProjectId;
-            if (projectId != null)
-            {
-                return _projectService.GetProjectDto((Guid)projectId);
-            }
-            throw new NotFoundInDBException();
+            return _projectService.GetProjectDto((Guid)projectId);
         }
+        throw new NotFoundInDBException();
+    }
 
-        public ProjectDto UpdateExplorationWell(ExplorationWellDto updatedExplorationWellDto)
+    public ExplorationWell GetExplorationWell(Guid wellId, Guid caseId)
+    {
+        var explorationWell = _context.ExplorationWell!
+            .Include(wpw => wpw.DrillingSchedule)
+            .FirstOrDefault(w => w.WellId == wellId && w.ExplorationId == caseId);
+        if (explorationWell == null)
         {
-            var existing = GetExplorationWell(updatedExplorationWellDto.WellId, updatedExplorationWellDto.ExplorationId);
-            ExplorationWellAdapter.ConvertExisting(existing, updatedExplorationWellDto);
-            if (updatedExplorationWellDto.DrillingSchedule == null && existing.DrillingSchedule != null)
-            {
-                _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
-            }
-
-            var exploration = _context.Explorations!.Include(wp => wp.CostProfile).Include(wp => wp.ExplorationWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.ExplorationId);
-            _explorationService.CalculateCostProfile(exploration, existing, null);
-
-            _context.ExplorationWell!.Update(existing);
-            _context.SaveChanges();
-            var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == updatedExplorationWellDto.ExplorationId)?.ProjectId;
-            if (projectId != null)
-            {
-                return _projectService.GetProjectDto((Guid)projectId);
-            }
-            throw new NotFoundInDBException();
+            throw new ArgumentException(string.Format("ExplorationWell {0} not found.", wellId));
         }
+        return explorationWell;
+    }
 
-        public ExplorationWell GetExplorationWell(Guid wellId, Guid caseId)
+    public ExplorationWellDto GetExplorationWellDto(Guid wellId, Guid caseId)
+    {
+        var explorationWell = GetExplorationWell(wellId, caseId);
+        var explorationWellDto = ExplorationWellDtoAdapter.Convert(explorationWell);
+
+        return explorationWellDto;
+    }
+
+    public IEnumerable<ExplorationWell> GetAll()
+    {
+        if (_context.ExplorationWell != null)
         {
-            var explorationWell = _context.ExplorationWell!
-                        .Include(wpw => wpw.DrillingSchedule)
-                        .FirstOrDefault(w => w.WellId == wellId && w.ExplorationId == caseId);
-            if (explorationWell == null)
-            {
-                throw new ArgumentException(string.Format("ExplorationWell {0} not found.", wellId));
-            }
-            return explorationWell;
+            return _context.ExplorationWell;
         }
-
-        public ExplorationWellDto GetExplorationWellDto(Guid wellId, Guid caseId)
+        else
         {
-            var explorationWell = GetExplorationWell(wellId, caseId);
-            var explorationWellDto = ExplorationWellDtoAdapter.Convert(explorationWell);
-
-            return explorationWellDto;
+            _logger.LogInformation("No ExplorationWells existing");
+            return new List<ExplorationWell>();
         }
+    }
 
-        public IEnumerable<ExplorationWell> GetAll()
+    public IEnumerable<ExplorationWellDto> GetAllDtos()
+    {
+        var explorationWells = GetAll();
+        if (explorationWells.Any())
         {
-            if (_context.ExplorationWell != null)
+            var explorationWellDtos = new List<ExplorationWellDto>();
+            foreach (ExplorationWell explorationWell in explorationWells)
             {
-                return _context.ExplorationWell;
+                var explorationWellDto = ExplorationWellDtoAdapter.Convert(explorationWell);
+                explorationWellDtos.Add(explorationWellDto);
             }
-            else
-            {
-                _logger.LogInformation("No ExplorationWells existing");
-                return new List<ExplorationWell>();
-            }
+
+            return explorationWellDtos;
         }
-
-        public IEnumerable<ExplorationWellDto> GetAllDtos()
+        else
         {
-            var explorationWells = GetAll();
-            if (explorationWells.Any())
-            {
-                var explorationWellDtos = new List<ExplorationWellDto>();
-                foreach (ExplorationWell explorationWell in explorationWells)
-                {
-                    var explorationWellDto = ExplorationWellDtoAdapter.Convert(explorationWell);
-                    explorationWellDtos.Add(explorationWellDto);
-                }
-
-                return explorationWellDtos;
-            }
-            else
-            {
-                return new List<ExplorationWellDto>();
-            }
+            return new List<ExplorationWellDto>();
         }
     }
 }

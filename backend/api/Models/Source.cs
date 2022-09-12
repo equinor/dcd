@@ -1,8 +1,7 @@
-namespace api.Models
+namespace api.Models;
+
+public enum Source
 {
-    public enum Source
-    {
-        ConceptApp,
-        Prosp
-    }
+    ConceptApp,
+    Prosp
 }

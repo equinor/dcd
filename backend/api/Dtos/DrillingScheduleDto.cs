@@ -1,7 +1,6 @@
 
-namespace api.Dtos
+namespace api.Dtos;
+
+public class DrillingScheduleDto : TimeSeriesScheduleDto
 {
-    public class DrillingScheduleDto : TimeSeriesScheduleDto
-    {
-    }
 }

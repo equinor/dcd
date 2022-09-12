@@ -1,6 +1,5 @@
-namespace api.Models
+namespace api.Models;
+
+public class DrillingSchedule : TimeSeriesSchedule
 {
-    public class DrillingSchedule : TimeSeriesSchedule
-    {
-    }
 }

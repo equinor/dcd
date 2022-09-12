@@ -1,10 +1,9 @@
-namespace api.Models
+namespace api.Models;
+
+public enum Maturity
 {
-    public enum Maturity
-    {
-        A,
-        B,
-        C,
-        D
-    }
+    A,
+    B,
+    C,
+    D
 }

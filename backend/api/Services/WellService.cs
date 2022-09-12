@@ -5,140 +5,139 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Services
+namespace api.Services;
+
+public class WellService
 {
-    public class WellService
+    private readonly DcdDbContext _context;
+    private readonly ProjectService _projectService;
+    private readonly WellProjectService _wellProjectService;
+    private readonly ExplorationService _explorationService;
+    private readonly ILogger<CaseService> _logger;
+
+    public WellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ExplorationService explorationService, ILoggerFactory loggerFactory)
     {
-        private readonly DcdDbContext _context;
-        private readonly ProjectService _projectService;
-        private readonly WellProjectService _wellProjectService;
-        private readonly ExplorationService _explorationService;
-        private readonly ILogger<CaseService> _logger;
+        _context = context;
+        _projectService = projectService;
+        _logger = loggerFactory.CreateLogger<CaseService>();
+        _wellProjectService = wellProjectService;
+        _explorationService = explorationService;
+    }
 
-        public WellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ExplorationService explorationService, ILoggerFactory loggerFactory)
+    public ProjectDto CreateWell(WellDto wellDto)
+    {
+        var _well = WellAdapter.Convert(wellDto);
+        _context.Wells!.Add(_well);
+        _context.SaveChanges();
+        return _projectService.GetProjectDto(wellDto.ProjectId);
+    }
+
+    public ProjectDto UpdateWell(WellDto updatedWellDto)
+    {
+        var existing = GetWell(updatedWellDto.Id);
+        var updateCostProfiles = existing.WellCost != updatedWellDto.WellCost;
+        WellAdapter.ConvertExisting(existing, updatedWellDto);
+
+        if (updateCostProfiles)
         {
-            _context = context;
-            _projectService = projectService;
-            _logger = loggerFactory.CreateLogger<CaseService>();
-            _wellProjectService = wellProjectService;
-            _explorationService = explorationService;
-        }
-
-        public ProjectDto CreateWell(WellDto wellDto)
-        {
-            var _well = WellAdapter.Convert(wellDto);
-            _context.Wells!.Add(_well);
-            _context.SaveChanges();
-            return _projectService.GetProjectDto(wellDto.ProjectId);
-        }
-
-        public ProjectDto UpdateWell(WellDto updatedWellDto)
-        {
-            var existing = GetWell(updatedWellDto.Id);
-            var updateCostProfiles = existing.WellCost != updatedWellDto.WellCost;
-            WellAdapter.ConvertExisting(existing, updatedWellDto);
-
-            if (updateCostProfiles)
+            if (existing.WellProjectWells?.Count > 0)
             {
-                if (existing.WellProjectWells?.Count > 0)
+                foreach (var wpw in existing.WellProjectWells)
                 {
-                    foreach (var wpw in existing.WellProjectWells)
-                    {
-                        var wellProject = _wellProjectService.GetWellProject(wpw.WellProjectId);
-                        _wellProjectService.CalculateCostProfile(wellProject, wpw, existing);
-                    }
-                }
-                else if (existing.ExplorationWells?.Count > 0)
-                {
-                    foreach (var ew in existing.ExplorationWells)
-                    {
-                        var exploration = _explorationService.GetExploration(ew.ExplorationId);
-                        _explorationService.CalculateCostProfile(exploration, ew, existing);
-                    }
+                    var wellProject = _wellProjectService.GetWellProject(wpw.WellProjectId);
+                    _wellProjectService.CalculateCostProfile(wellProject, wpw, existing);
                 }
             }
-
-            _context.Wells!.Update(existing);
-            _context.SaveChanges();
-            return _projectService.GetProjectDto(existing.ProjectId);
-        }
-
-        public Well GetWell(Guid wellId)
-        {
-            var well = _context.Wells!
-                        .Include(e => e.WellProjectWells)
-                        .Include(e => e.ExplorationWells)
-                        .FirstOrDefault(w => w.Id == wellId);
-            if (well == null)
+            else if (existing.ExplorationWells?.Count > 0)
             {
-                throw new ArgumentException(string.Format("Well {0} not found.", wellId));
-            }
-            return well;
-        }
-
-        public WellDto GetWellDto(Guid wellId)
-        {
-            var well = GetWell(wellId);
-            var wellDto = WellDtoAdapter.Convert(well);
-
-            return wellDto;
-        }
-
-        public IEnumerable<Well> GetAll()
-        {
-            if (_context.Wells != null)
-            {
-                return _context.Wells;
-            }
-            else
-            {
-                _logger.LogInformation("No Wells existing");
-                return new List<Well>();
+                foreach (var ew in existing.ExplorationWells)
+                {
+                    var exploration = _explorationService.GetExploration(ew.ExplorationId);
+                    _explorationService.CalculateCostProfile(exploration, ew, existing);
+                }
             }
         }
 
-        public IEnumerable<WellDto> GetDtosForProject(Guid projectId)
+        _context.Wells!.Update(existing);
+        _context.SaveChanges();
+        return _projectService.GetProjectDto(existing.ProjectId);
+    }
+
+    public Well GetWell(Guid wellId)
+    {
+        var well = _context.Wells!
+            .Include(e => e.WellProjectWells)
+            .Include(e => e.ExplorationWells)
+            .FirstOrDefault(w => w.Id == wellId);
+        if (well == null)
         {
-            var wells = GetWells(projectId);
-            var wellsDtos = new List<WellDto>();
+            throw new ArgumentException(string.Format("Well {0} not found.", wellId));
+        }
+        return well;
+    }
+
+    public WellDto GetWellDto(Guid wellId)
+    {
+        var well = GetWell(wellId);
+        var wellDto = WellDtoAdapter.Convert(well);
+
+        return wellDto;
+    }
+
+    public IEnumerable<Well> GetAll()
+    {
+        if (_context.Wells != null)
+        {
+            return _context.Wells;
+        }
+        else
+        {
+            _logger.LogInformation("No Wells existing");
+            return new List<Well>();
+        }
+    }
+
+    public IEnumerable<WellDto> GetDtosForProject(Guid projectId)
+    {
+        var wells = GetWells(projectId);
+        var wellsDtos = new List<WellDto>();
+        foreach (Well well in wells)
+        {
+            wellsDtos.Add(WellDtoAdapter.Convert(well));
+        }
+        return wellsDtos;
+    }
+
+    public IEnumerable<Well> GetWells(Guid projectId)
+    {
+        if (_context.Wells != null)
+        {
+            return _context.Wells
+                .Where(d => d.ProjectId.Equals(projectId));
+        }
+        else
+        {
+            return new List<Well>();
+        }
+    }
+
+    public IEnumerable<WellDto> GetAllDtos()
+    {
+        if (GetAll().Any())
+        {
+            var wells = GetAll();
+            var wellDtos = new List<WellDto>();
             foreach (Well well in wells)
             {
-                wellsDtos.Add(WellDtoAdapter.Convert(well));
+                var wellDto = WellDtoAdapter.Convert(well);
+                wellDtos.Add(wellDto);
             }
-            return wellsDtos;
+
+            return wellDtos;
         }
-
-        public IEnumerable<Well> GetWells(Guid projectId)
+        else
         {
-            if (_context.Wells != null)
-            {
-                return _context.Wells
-                    .Where(d => d.ProjectId.Equals(projectId));
-            }
-            else
-            {
-                return new List<Well>();
-            }
-        }
-
-        public IEnumerable<WellDto> GetAllDtos()
-        {
-            if (GetAll().Any())
-            {
-                var wells = GetAll();
-                var wellDtos = new List<WellDto>();
-                foreach (Well well in wells)
-                {
-                    var wellDto = WellDtoAdapter.Convert(well);
-                    wellDtos.Add(wellDto);
-                }
-
-                return wellDtos;
-            }
-            else
-            {
-                return new List<WellDto>();
-            }
+            return new List<WellDto>();
         }
     }
 }
