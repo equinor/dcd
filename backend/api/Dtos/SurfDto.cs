@@ -1,46 +1,45 @@
 using api.Models;
-namespace api.Dtos
+namespace api.Dtos;
+
+public class SurfDto
 {
-    public class SurfDto
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty!;
-        public Guid ProjectId { get; set; }
-        public SurfCostProfileDto? CostProfile { get; set; }
-        public SurfCessationCostProfileDto? CessationCostProfile { get; set; }
-        public double CessationCost { get; set; }
-        public Maturity Maturity { get; set; }
-        public double InfieldPipelineSystemLength { get; set; }
-        public double UmbilicalSystemLength { get; set; }
-        public ArtificialLift ArtificialLift { get; set; }
-        public int RiserCount { get; set; }
-        public int TemplateCount { get; set; }
-        public int ProducerCount { get; set; }
-        public int GasInjectorCount { get; set; }
-        public int WaterInjectorCount { get; set; }
-        public ProductionFlowline ProductionFlowline { get; set; }
-        public Currency Currency { get; set; }
-        public DateTimeOffset? LastChangedDate { get; set; }
-        public int CostYear { get; set; }
-        public Source Source { get; set; }
-        public DateTimeOffset? ProspVersion { get; set; }
-        public string ApprovedBy { get; set; } = string.Empty;
-        public DateTimeOffset? DG3Date { get; set; }
-        public DateTimeOffset? DG4Date { get; set; }
-    }
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty!;
+    public Guid ProjectId { get; set; }
+    public SurfCostProfileDto? CostProfile { get; set; }
+    public SurfCessationCostProfileDto? CessationCostProfile { get; set; }
+    public double CessationCost { get; set; }
+    public Maturity Maturity { get; set; }
+    public double InfieldPipelineSystemLength { get; set; }
+    public double UmbilicalSystemLength { get; set; }
+    public ArtificialLift ArtificialLift { get; set; }
+    public int RiserCount { get; set; }
+    public int TemplateCount { get; set; }
+    public int ProducerCount { get; set; }
+    public int GasInjectorCount { get; set; }
+    public int WaterInjectorCount { get; set; }
+    public ProductionFlowline ProductionFlowline { get; set; }
+    public Currency Currency { get; set; }
+    public DateTimeOffset? LastChangedDate { get; set; }
+    public int CostYear { get; set; }
+    public Source Source { get; set; }
+    public DateTimeOffset? ProspVersion { get; set; }
+    public string ApprovedBy { get; set; } = string.Empty;
+    public DateTimeOffset? DG3Date { get; set; }
+    public DateTimeOffset? DG4Date { get; set; }
+}
 
-    public class SurfCostProfileDto : TimeSeriesCostDto
-    {
+public class SurfCostProfileDto : TimeSeriesCostDto
+{
 
-    }
+}
 
-    public class SurfCessationCostProfileDto : TimeSeriesCostDto
-    {
+public class SurfCessationCostProfileDto : TimeSeriesCostDto
+{
 
-    }
+}
 
-    public enum ProductionFlowlineDto
-    {
-        Default = 999
-    }
+public enum ProductionFlowlineDto
+{
+    Default = 999
 }
