@@ -6,48 +6,47 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace api.Controllers
+namespace api.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("[controller]")]
+[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+public class WellsController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [Route("[controller]")]
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-    public class WellsController : ControllerBase
+
+    private readonly WellService _wellService;
+
+    public WellsController(WellService wellService)
     {
+        _wellService = wellService;
+    }
 
-        private readonly WellService _wellService;
+    [HttpGet("{wellId}", Name = "GetWell")]
+    public WellDto GetWell(Guid wellId)
+    {
+        return _wellService.GetWellDto(wellId);
+    }
 
-        public WellsController(WellService wellService)
+    [HttpGet(Name = "GetWells")]
+    public IEnumerable<WellDto> GetWells([FromQuery] Guid projectId)
+    {
+        if (projectId != Guid.Empty)
         {
-            _wellService = wellService;
+            return _wellService.GetDtosForProject(projectId);
         }
+        return _wellService.GetAllDtos();
+    }
 
-        [HttpGet("{wellId}", Name = "GetWell")]
-        public WellDto GetWell(Guid wellId)
-        {
-            return _wellService.GetWellDto(wellId);
-        }
+    [HttpPost(Name = "CreateWell")]
+    public ProjectDto CreateWell([FromBody] WellDto wellDto)
+    {
+        return _wellService.CreateWell(wellDto);
+    }
 
-        [HttpGet(Name = "GetWells")]
-        public IEnumerable<WellDto> GetWells([FromQuery] Guid projectId)
-        {
-            if (projectId != Guid.Empty)
-            {
-                return _wellService.GetDtosForProject(projectId);
-            }
-            return _wellService.GetAllDtos();
-        }
-
-        [HttpPost(Name = "CreateWell")]
-        public ProjectDto CreateWell([FromBody] WellDto wellDto)
-        {
-            return _wellService.CreateWell(wellDto);
-        }
-
-        [HttpPut(Name = "UpdateWell")]
-        public ProjectDto UpdateWell([FromBody] WellDto wellDto)
-        {
-            return _wellService.UpdateWell(wellDto);
-        }
+    [HttpPut(Name = "UpdateWell")]
+    public ProjectDto UpdateWell([FromBody] WellDto wellDto)
+    {
+        return _wellService.UpdateWell(wellDto);
     }
 }

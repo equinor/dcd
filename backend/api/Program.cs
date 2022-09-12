@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 using api.Context;
 using api.Helpers;
 using api.SampleData.Generators;
@@ -13,47 +11,57 @@ using Equinor.TI.CommonLibrary.Client;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
-using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
-var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
+var azureAppConfigConnectionString =
+    builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
 var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
 
 Console.WriteLine("Loading config for: " + environment);
 configBuilder.AddAzureAppConfiguration(options =>
     options
-    .Connect(azureAppConfigConnectionString)
-    .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeSharedTokenCacheCredential = true })))
-    .Select(KeyFilter.Any, LabelFilter.Null)
-    .Select(KeyFilter.Any, environment)
+        .Connect(azureAppConfigConnectionString)
+        .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions
+        { ExcludeSharedTokenCacheCredential = true })))
+        .Select(KeyFilter.Any)
+        .Select(KeyFilter.Any, environment)
 );
 var config = configBuilder.Build();
+builder.Configuration.AddConfiguration(config);
 
-string commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
-                config["AzureAd:ClientId"],
-                config["AzureAd:TenantId"],
-                config["AzureAd:ClientSecret"]);
+var commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
+    config["AzureAd:ClientId"],
+    config["AzureAd:TenantId"],
+    config["AzureAd:ClientSecret"]);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"))
+    .EnableTokenAcquisitionToCallDownstreamApi()
+    .AddMicrosoftGraph(builder.Configuration.GetSection("Graph"))
+    .AddInMemoryTokenCaches();
+
+var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
+
 // Setup in memory DB SQL lite for test purposes
-string _sqlConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
+var _sqlConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");
 
 if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnectionString))
 {
     if (environment == "localdev")
     {
         DbContextOptionsBuilder<DcdDbContext> dBbuilder = new();
-        _sqlConnectionString = new SqliteConnectionStringBuilder { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }.ToString();
+        _sqlConnectionString = new SqliteConnectionStringBuilder
+        { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }
+            .ToString();
 
         SqliteConnection _connectionToInMemorySqlite = new(_sqlConnectionString);
         _connectionToInMemorySqlite.Open();
@@ -71,11 +79,12 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
         context.Database.EnsureCreated();
     }
 }
+
 // Set up CORS
 var _accessControlPolicyName = "AllowSpecificOrigins";
 builder.Services.AddCors(options =>
-    {
-        options.AddPolicy(_accessControlPolicyName,
+{
+    options.AddPolicy(_accessControlPolicyName,
         builder =>
         {
             builder.AllowAnyHeader();
@@ -91,7 +100,7 @@ builder.Services.AddCors(options =>
                 "https://pro-s-portal-fprd.azurewebsites.net"
             ).SetIsOriginAllowedToAllowWildcardSubdomains();
         });
-    });
+});
 
 var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 {
@@ -99,23 +108,19 @@ var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 };
 
 if (environment == "localdev")
-{
-    builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
-}
+    builder.Services.AddDbContext<DcdDbContext>(options =>
+        options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 else
-{
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
-}
 
-Console.WriteLine("Configuring Fusion");
 builder.Services.AddFusionIntegration(options =>
 {
-    string fusionEnvironment = environment switch
+    var fusionEnvironment = environment switch
     {
         "dev" => "CI",
         "qa" => "FQA",
         "prod" => "FPRD",
-        _ => "CI",
+        _ => "CI"
     };
 
     Console.WriteLine("Fusion environment: " + fusionEnvironment);
@@ -124,7 +129,6 @@ builder.Services.AddFusionIntegration(options =>
     options.AddFusionAuthorization();
 
     options.UseDefaultEndpointResolver(fusionEnvironment);
-    Console.WriteLine("config[AzureAd:ClientId]: " + config["AzureAd:ClientId"]);
     options.UseDefaultTokenProvider(opts =>
     {
         opts.ClientId = config["AzureAd:ClientId"];
@@ -148,13 +152,16 @@ builder.Services.AddScoped<WellProjectWellService>();
 builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
-builder.Services.AddScoped<CommonLibraryClientOptions>(_ => new CommonLibraryClientOptions { TokenProviderConnectionString = commonLibTokenConnection });
+builder.Services.AddScoped(_ => new CommonLibraryClientOptions
+{ TokenProviderConnectionString = commonLibTokenConnection });
 builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
-builder.Services.AddScoped<ImportProspService>();
+builder.Services.AddScoped<ProspExcelImportService>();
+builder.Services.AddScoped<ProspSharepointImportService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
-builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
-
+builder.Services.AddControllers(
+    options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
 builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
@@ -179,5 +186,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-public partial class Program { }

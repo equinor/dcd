@@ -20,7 +20,7 @@ import {
 import Save from "../Components/Save"
 import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import AssetName from "../Components/AssetName"
-import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { ToMonthDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import NumberInput from "../Components/NumberInput"
 import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
@@ -214,8 +214,8 @@ const DrainageStrategyView = () => {
                 <Dg4Field>
                     <Input
                         disabled
-                        defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")}
-                        type="date"
+                        defaultValue={ToMonthDate(caseItem?.DG4Date)}
+                        type="month"
                     />
                 </Dg4Field>
             </Wrapper>

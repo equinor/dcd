@@ -45,6 +45,8 @@ declare namespace Components {
             capex?: number; // double
             capexYear?: CapexYear;
             cessationCost?: CessationCostDto;
+            sharepointFileId?: string | null;
+            sharepointFileName?: string | null;
         }
         export interface CessationCostDto {
             id?: string; // uuid
@@ -116,6 +118,18 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* int32 */[] | null;
         }
+        export interface DriveItemDto {
+            name?: string | null;
+            id?: string | null;
+            webUrl?: string | null;
+            createdDateTime?: string | null; // date-time
+            content?: Stream;
+            size?: number | null; // int64
+            sharepointIds?: SharepointIds;
+            createdBy?: IdentitySet;
+            lastModifiedBy?: IdentitySet;
+            lastModifiedDateTime?: string | null; // date-time
+        }
         export interface ExplorationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -157,6 +171,19 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface Identity {
+            [name: string]: any;
+            displayName?: string | null;
+            id?: string | null;
+            "@odata.type"?: string | null;
+        }
+        export interface IdentitySet {
+            [name: string]: any;
+            application?: Identity;
+            device?: Identity;
+            user?: Identity;
+            "@odata.type"?: string | null;
+        }
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
             id?: string; // uuid
@@ -165,6 +192,14 @@ declare namespace Components {
             sum?: number; // double
         }
         export interface OffshoreFacilitiesCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface OpexCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -257,7 +292,45 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface SharePointImportDto {
+            id?: string | null;
+            surf?: boolean;
+            substructure?: boolean;
+            topside?: boolean;
+            transport?: boolean;
+            sharePointFileName?: string | null;
+            sharePointFileId?: string | null;
+        }
+        export interface SharepointIds {
+            [name: string]: any;
+            listId?: string | null;
+            listItemId?: string | null;
+            listItemUniqueId?: string | null;
+            siteId?: string | null;
+            siteUrl?: string | null;
+            tenantId?: string | null;
+            webId?: string | null;
+            "@odata.type"?: string | null;
+        }
         export type Source = 0 | 1; // int32
+        export interface Stream {
+            canRead?: boolean;
+            canWrite?: boolean;
+            canSeek?: boolean;
+            canTimeout?: boolean;
+            length?: number; // int64
+            position?: number; // int64
+            readTimeout?: number; // int32
+            writeTimeout?: number; // int32
+        }
+        export interface StudyCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -457,6 +530,28 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
+    namespace CalculateOpex {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.OpexCostProfileDto;
+        }
+    }
+    namespace CalculateStudy {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.StudyCostProfileDto;
+        }
+    }
     namespace CreateCase {
         export type RequestBody = Components.Schemas.CaseDto;
         namespace Responses {
@@ -495,6 +590,17 @@ declare namespace Paths {
     }
     namespace CreateProject {
         export type RequestBody = Components.Schemas.ProjectDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace CreateProjectFromContextId {
+        namespace Parameters {
+            export type ContextId = string; // uuid
+        }
+        export interface QueryParameters {
+            contextId?: Parameters.ContextId /* uuid */;
+        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
@@ -736,6 +842,11 @@ declare namespace Paths {
             export type $200 = Components.Schemas.CommonLibraryProjectDto[];
         }
     }
+    namespace GetSharePointFileNamesAndId {
+        namespace Responses {
+            export type $200 = Components.Schemas.DriveItemDto[];
+        }
+    }
     namespace GetWell {
         namespace Parameters {
             export type WellId = string; // uuid
@@ -767,6 +878,18 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.WellDto[];
+        }
+    }
+    namespace ImportFromSharepointAsync {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface QueryParameters {
+            projectId?: Parameters.ProjectId /* uuid */;
+        }
+        export type RequestBody = Components.Schemas.SharePointImportDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateCase {
