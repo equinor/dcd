@@ -41,15 +41,13 @@ public class PROSPController : ControllerBase
     public List<DriveItemDto> GetSharePointFileNamesAndId()
     {
         var url =
-            "https://statoilsrm.sharepoint.com/sites/Team-IAF/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2FTeam%2DIAF%2FShared%20Documents%2FBoard&FolderCTID=0x0120007F5A26E2C9637A48BB7A8CA14E729794";
-        var siteId = _prospSharepointImportService.GetSharepointSiteId(url) ??
-                     _config["SharePoint:Prosp:SiteId"];
+            "https://statoilsrm.sharepoint.com/sites/Team-IAF/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2FTeam%2DIAF%2FShared%20Documents%2FBoard&FolderCTID=0x0120007F5A26E2C9637A48BB7A8CA14E729794"; //"https://statoilsrm.sharepoint.com/sites/ConceptApp-Test/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FConceptApp%2DTest%2FShared%20Documents%2FGeneral&viewid=3369dfb1%2D14bb%2D465f%2D9558%2De96212ae80c7";
+        var siteId = _prospSharepointImportService.GetSiteId(url) ?? _config["SharePoint:Prosp:SiteId"];
         var dto = new List<DriveItemDto>();
         var validMimeTypes = _prospSharepointImportService.ValidMimeTypes();
 
         var driveItemSearchCollectionPage = _graphServiceClient.Sites[siteId]
-            .Drive.Root
-            .Search(string.Empty)
+            .Drive.Root.Delta()
             .Request()
             .GetAsync()
             .GetAwaiter()
