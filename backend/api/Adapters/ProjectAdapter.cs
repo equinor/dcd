@@ -5,29 +5,29 @@ using api.Models;
 using api.Services;
 
 
-namespace api.Adapters
+namespace api.Adapters;
+
+public static class ProjectAdapter
 {
-    public static class ProjectAdapter
+
+    public static Project Convert(ProjectDto projectDto)
     {
-
-        public static Project Convert(ProjectDto projectDto)
+        var project = new Project
         {
-            var project = new Project
-            {
-                Name = projectDto.Name,
-                CommonLibraryId = projectDto.CommonLibraryId,
-                CreateDate = projectDto.CreateDate,
-                CommonLibraryName = projectDto.CommonLibraryName,
-                Description = projectDto.Description,
-                Country = projectDto.Country,
-                ProjectCategory = projectDto.ProjectCategory,
-                ProjectPhase = projectDto.ProjectPhase,
-                Currency = projectDto.Currency,
-                PhysicalUnit = projectDto.PhysUnit,
-                Id = projectDto.ProjectId
-            };
+            Name = projectDto.Name,
+            CommonLibraryId = projectDto.CommonLibraryId,
+            CreateDate = projectDto.CreateDate,
+            CommonLibraryName = projectDto.CommonLibraryName,
+            FusionProjectId = projectDto.FusionProjectId,
+            Description = projectDto.Description,
+            Country = projectDto.Country,
+            ProjectCategory = projectDto.ProjectCategory,
+            ProjectPhase = projectDto.ProjectPhase,
+            Currency = projectDto.Currency,
+            PhysicalUnit = projectDto.PhysUnit,
+            Id = projectDto.ProjectId
+        };
 
-            return project;
-        }
+        return project;
     }
 }

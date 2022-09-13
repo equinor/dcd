@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 import { file, folder, dashboard } from "@equinor/eds-icons"
 
+import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../../models/Project"
 import MenuItem from "./MenuItem"
 import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
@@ -51,16 +52,17 @@ interface Props {
 }
 
 function ProjectMenu({ project }: Props) {
-    const params = useParams()
-    const [isOpen, setIsOpen] = useState<boolean>(params.projectId === project.id)
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
+    const [isOpen, setIsOpen] = useState<boolean>(true)
+    const currentProject = useCurrentContext()
 
     return (
         <ExpandableDiv>
             <nav>
-                <LinkWithoutStyle to={ProjectPath(project.id)}>
+                <LinkWithoutStyle to={ProjectPath(fusionContextId!)}>
                     <MenuItem
                         title={project.name!}
-                        isSelected={params.projectId === project.id}
+                        isSelected={currentProject?.externalId === project.id}
                         icon={folder}
                         isOpen={isOpen}
                         onClick={() => setIsOpen(!isOpen)}
@@ -73,7 +75,7 @@ function ProjectMenu({ project }: Props) {
                         <Item key={`project-menu-item-${index + 1}`}>
                             {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                 <nav>
-                                    <LinkWithoutStyle to={`/project/${project.id}`}>
+                                    <LinkWithoutStyle to={`/${fusionContextId}`}>
                                         <ProjectMenuItemComponent
                                             item={projectMenuItem}
                                             projectId={project.id}

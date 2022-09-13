@@ -1,0 +1,174 @@
+parameters:
+    - name: appName
+    - name: envshortname
+    - name: envfullname
+    - name: portalUrl
+    - name: buildId
+    - name: radixToken
+    - name: branch
+    - name: DBContext
+    - name: FusionEnvId
+    - name: FusionServiceConnection
+    - name: ContainerTag
+    - name: DynatraceTenantId
+    - name: DynatraceToken
+
+stages:
+    - stage: ${{ parameters.appName }}
+      displayName: "Deploy  ${{ parameters.envshortname }}"
+      jobs:
+          - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
+            environment: ${{ parameters.envfullname }}
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                        - task: DownloadPipelineArtifact@2
+                          inputs:
+                            artifact: ConceptApp
+                        - task: FusionApp@2
+                          displayName: 'Deploying app'
+                          inputs:
+                            action: deploy
+                            appKey: 'conceptapp'
+                            bundlePath: '$(Agent.BuildDirectory)/conceptapp.zip'
+                            fusionCredentials: ${{ parameters.FusionServiceConnection }}
+                            tokenResource: ${{ parameters.FusionEnvId }}
+                            portalUrl: ${{ parameters.portalUrl }}
+                        - task: FusionApp@2
+                          inputs:
+                            fusionCredentials: ${{ parameters.FusionServiceConnection }}
+                            portalUrl: ${{ parameters.portalUrl }}
+                            action: 'Publish'
+                            appKey: 'conceptapp'
+                            environment: ${{ parameters.FusionEnvId }}
+          - deployment: "Update_${{ parameters.envshortname }}_Tags"
+            environment: ${{ parameters.envfullname }}
+            strategy:
+                runOnce:
+                    deploy:
+                        steps:
+                            - task: Docker@2
+                              inputs:
+                                  containerRegistry: "DCD Registry"
+                                  command: "login"
+                            - template: step-tag-dockerimage.yml
+                              parameters:
+                                  buildid: ${{ parameters.buildid }}
+                                  envshortname: ${{ parameters.envshortname }}
+                                  registry: "crdcd.azurecr.io"
+                                  repository: "backend"
+                                  tag: ${{ parameters.ContainerTag }}
+          - job: "DeployASEContainerBackend"
+            steps:
+            - powershell: |
+                if('${{ parameters.envshortname }}' -like '*ci*') {
+                  Write-Host "##vso[task.setvariable variable=devenvironment;]dev"
+                } else {
+                  Write-Host "##vso[task.setvariable variable=devenvironment;]${{ parameters.envshortname }}"
+                }
+                
+            - template: step-deploycontainer.yml
+              parameters:
+                imageName: "backend"
+                imageTag: "${{ parameters.envshortname }}-release"
+                webAppName: "ase-dcd-backend-$(devenvironment)"
+                serviceConnection: "dcd-pipeline-sp"
+                name: "DeployBackend_${{ parameters.envshortname }}"
+          - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
+            dependsOn:
+                - Deploy_${{ parameters.envshortname }}_Frontend
+                - Update_${{ parameters.envshortname }}_Tags
+            displayName: Trigger Radix Deploy
+            cancelTimeoutInMinutes: 60
+            timeoutInMinutes: 60
+            steps:
+                - template: step-updateradixdynatraceConfig.yml
+                  parameters:
+                    radixToken: ${{ parameters.radixToken }}
+                    DynatraceTenantId: ${{ parameters.DynatraceTenantId }}
+                    DynatraceToken: ${{ parameters.DynatraceToken }}
+
+                - task: PowerShell@2
+                  displayName: "Trigger Radix Build-Deploy"
+                  inputs:
+                      targetType: "inline"
+                      script: |
+                          $url = "https://api.radix.equinor.com/api/v1/applications/dcd/pipelines/build-deploy"
+
+                          $Headers = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
+
+                          $body = @'
+                          {"branch":"${{ parameters.branch }}",
+                          "triggeredBy":"${{ parameters.buildId }}-${{ parameters.branch }}"
+                          }
+                          '@
+
+                          $result = Invoke-RestMethod -Uri $url -Headers $Headers -Body $body -Method Post                          
+                          $pipelineName = $result.name                         
+                          Write-Host "##vso[task.setvariable variable=radixJobName;]$pipelineName"
+                          Write-Host "Done. JobName:" $(radixJobName)
+                - task: PowerShell@2
+                  displayName: "Wait for Radix Build-Deploy job"
+                  inputs:
+                      targetType: "inline"
+                      script: |
+                          $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'
+
+                          $Headers = @{"Authorization" = "Bearer ${{ parameters.radixToken }}"}
+
+                          $TimeoutAfter = New-TimeSpan -Minutes 60
+                          $WaitBetweenPolling = New-TimeSpan -Seconds 10
+
+                          $Timeout = (Get-Date).Add($TimeoutAfter)
+                          $stepCounter = 0
+                          do
+                          {
+                              $result = Invoke-RestMethod -Uri $url -Headers $Headers
+                              $steps = $result.steps |  where { $_.status -eq "Succeeded" }
+                              if ($stepCounter -eq $steps.Length) {
+
+                              } else {
+                                  $stepCounter = $steps.Length
+                                  Write-Host "Steps:" $steps.Length "of" $result.steps.length
+                              }
+                              Start-Sleep -Seconds $WaitBetweenPolling.Seconds
+
+                          }
+                          while ((($result.status -eq "Running") -or ($result.status -eq "Waiting")) -and ((Get-Date) -lt $Timeout))
+
+                          if ($result.status -eq "Succeeded")
+                          {
+                              Write-Host "Build-deploy Success"
+                              Write-Host $result
+                              [Environment]::Exit(0)
+                          } else {
+                              Write-Host "Build-deploy Non-success"
+                              Write-Host $result
+                              [Environment]::Exit(1)
+
+                          }         
+          - job: AddDbMigrations_${{ parameters.envshortname }}
+            dependsOn: Trigger_Radix_Deploy_${{ parameters.envshortname }}
+            steps:
+              - task: FileTransform@1
+                inputs:
+                  folderPath: '$(Build.SourcesDirectory)/backend/api' 
+                  fileType: 'json'
+                  targetFiles: '**/appsettings.json'
+              - task: DotNetCoreCLI@2
+                displayName: Install dotnet-ef
+                inputs:
+                  command: "custom"
+                  custom: "tool"
+                  arguments: "install --global dotnet-ef"
+              - task: AzureCLI@2
+                displayName: Azure CLI
+                inputs:
+                    azureSubscription: 'dcd-pipeline-sp'
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      cd "$(Build.SourcesDirectory)/backend/api"
+                      dotnet ef database update --verbose
+                      

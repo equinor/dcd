@@ -3,6 +3,7 @@ import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 import { IconData } from "@equinor/eds-icons"
 
+import { useCurrentContext } from "@equinor/fusion"
 import { ProjectMenuItemType } from "./ProjectMenu"
 import MenuItem from "./MenuItem"
 import { CasePath } from "../../Utils/common"
@@ -45,11 +46,13 @@ interface Props {
 }
 
 function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
-    const params = useParams()
+    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
+    const currentProject = useCurrentContext()
+
     // eslint-disable-next-line max-len
-    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && params.caseId === undefined)
-        || (item.name === ProjectMenuItemType.CASES && params.caseId !== undefined)
-    const isSelected = params.projectId === projectId && isSelectedProjectMenuItem
+    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && caseId === undefined)
+        || (item.name === ProjectMenuItemType.CASES && caseId !== undefined)
+    const isSelected = currentProject?.externalId === projectId && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 
     useEffect(() => {
@@ -70,10 +73,10 @@ function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
                     {subItems.map((subItem, index) => (
                         <SubItem key={`menu-sub-item-${index + 1}`}>
                             <nav>
-                                <LinkWithoutStyle to={CasePath(projectId, subItem.id ? subItem.id : "")}>
+                                <LinkWithoutStyle to={CasePath(fusionContextId!, subItem.id ? subItem.id : "")}>
                                     <MenuItem
                                         title={subItem.name ? subItem.name : "Untitled"}
-                                        isSelected={isSelected && params.caseId === subItem.id}
+                                        isSelected={isSelected && caseId === subItem.id}
                                         padding="0.25rem 2rem"
                                     />
                                 </LinkWithoutStyle>

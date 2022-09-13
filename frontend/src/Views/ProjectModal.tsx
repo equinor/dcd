@@ -8,7 +8,6 @@ import {
 import React, { ChangeEvent, useEffect, useState } from "react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
-import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import { Modal } from "../Components/Modal"
 import { ProjectCategory } from "../models/ProjectCategory"
@@ -76,7 +75,7 @@ type Props = {
 const ProjectModal = ({
     passedInProject, passedInProjects, isOpen, closeModal,
 }: Props) => {
-    const navigate = useNavigate()
+  //  const navigate = useNavigate()
     const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]
         | undefined>(passedInProjects ?? undefined)
     const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto
@@ -122,9 +121,9 @@ const ProjectModal = ({
         if (pressedOkButton === true) {
             try {
                 project = convertCommonLibProjectToProject(selectedProject)
-                await GetProjectService().createProject(project).then((createdProject) => {
+                await (await GetProjectService()).createProject(project).then((createdProject) => {
                     closeModal()
-                    navigate(`/project/${createdProject.projectId}`)
+             //       navigate(`/project/${createdProject.projectId}`)
                 })
             } catch (error) {
                 console.error("Could not create project. ", error)

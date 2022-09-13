@@ -1,0 +1,40 @@
+trigger:
+  - main
+  - cicd
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  - group: DCD
+  - group: DCD-KeyVault
+
+pr: none
+
+stages:
+  - template: templates/stage-build-fusion.yml
+    parameters:
+      workSpace: $(Pipeline.Workspace)
+      buildId: $(Build.BuildId)
+      dt_tenant: $(dynatrace_tenant)
+      dt_password: $(dynatrace-prod-token)
+      dt_url: $(dynatrace_baseurl)
+      azAppConfig: $(azureAppConfig)
+      sourcesDirectory: $(Build.SourcesDirectory)
+      name: "DCD"
+
+  - template: templates/stage-deploy-fusion.yml
+    parameters:
+        appName: Deploy_CI
+        envshortname: ci
+        envfullname: CI
+        portalUrl: "https://pro-s-portal-ci.azurewebsites.net/"
+        buildId: $(Build.BuildId)
+        radixToken: $(RadixToken)
+        branch: main
+        DBContext: $(DbConnectionStringDev)
+        FusionEnvId: $(FusionAppIdCi)
+        FusionServiceConnection: 'conceptapp-preprod'
+        ContainerTag: "release"
+        DynatraceToken: $(dynatracePreProdToken)
+        DynatraceTenantId: $(dynatracePreProdTenantId)
