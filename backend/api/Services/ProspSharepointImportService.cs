@@ -19,6 +19,32 @@ public class ProspSharepointImportService
         _service = service;
     }
 
+    public IDriveItemDeltaCollectionPage GetDeltaDriveItemCollectionFromSite(string url)
+    {
+        var siteId = GetSiteId(url);
+
+        var driveItemSearchCollectionPage = _graphServiceClient.Sites[siteId]
+            .Drive.Root.Delta()
+            .Request()
+            .GetAsync()
+            .GetAwaiter()
+            .GetResult();
+
+        return driveItemSearchCollectionPage;
+    }
+
+    public List<DriveItemDto> GetFilesFromSite(IDriveItemDeltaCollectionPage driveItemDeltaCollectionPage)
+    {
+        var dto = new List<DriveItemDto>();
+        foreach (var driveItem in driveItemDeltaCollectionPage.Where(item =>
+                     item.File != null && ValidMimeTypes().Contains(item.File.MimeType)))
+        {
+            ConvertToDto(driveItem, dto);
+        }
+
+        return dto;
+    }
+
     public string GetSiteId(string url)
     {
         var siteUri = new Uri(url);
@@ -36,37 +62,39 @@ public class ProspSharepointImportService
     public async Task<ProjectDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
     {
         var projectDto = new ProjectDto();
-        // var siteId = _config["SharePoint:Prosp:SiteId"];
-        var url =
-            "https://statoilsrm.sharepoint.com/sites/Team-IAF/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2FTeam%2DIAF%2FShared%20Documents%2FBoard&FolderCTID=0x0120007F5A26E2C9637A48BB7A8CA14E729794"; //"https://statoilsrm.sharepoint.com/sites/ConceptApp-Test/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FConceptApp%2DTest%2FShared%20Documents%2FGeneral&viewid=3369dfb1%2D14bb%2D465f%2D9558%2De96212ae80c7";
-        var siteId = GetSiteId(url);
-        var fileIdsOnCases = new Dictionary<Guid, string>();
-        foreach (var dto in dtos)
+        if (!string.IsNullOrWhiteSpace(dtos.FirstOrDefault()?.SharePointSiteUrl))
         {
-            fileIdsOnCases.Add(new Guid(dto.Id!), dto.SharePointFileId);
-        }
-
-        var fileStreamsOnCases = new Dictionary<Guid, Stream>();
-        foreach (var item in fileIdsOnCases.Where(d => !string.IsNullOrWhiteSpace(d.Value)))
-        {
-            var driveItemStream = await _graphServiceClient.Sites[siteId]
-                .Drive.Items[item.Value]
-                .Content.Request()
-                .GetAsync();
-
-            fileStreamsOnCases.Add(item.Key, driveItemStream);
-        }
-
-        foreach (var keyValuePair in fileStreamsOnCases)
-        {
-            if (keyValuePair.Value.Length > 0)
+            var siteId = GetSiteId(dtos.FirstOrDefault()!.SharePointSiteUrl);
+            var fileIdsOnCases = new Dictionary<Guid, string>();
+            foreach (var dto in dtos)
             {
-                foreach (var iteminfo in dtos.Where(importDto =>
-                             importDto.Id != null && new Guid(importDto.Id) == keyValuePair.Key))
+                fileIdsOnCases.Add(new Guid(dto.Id!), dto.SharePointFileId);
+            }
+
+            var fileStreamsOnCases = new Dictionary<Guid, Stream>();
+            foreach (var item in fileIdsOnCases.Where(d => !string.IsNullOrWhiteSpace(d.Value)))
+            {
+                var driveItemStream = await _graphServiceClient.Sites[siteId]
+                    .Drive.Items[item.Value]
+                    .Content.Request()
+                    .GetAsync();
+
+                fileStreamsOnCases.Add(item.Key, driveItemStream);
+            }
+
+            foreach (var caseWithFileStream in fileStreamsOnCases)
+            {
+                if (caseWithFileStream.Value.Length > 0)
                 {
-                    var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside, iteminfo.Transport);
-                    projectDto = _service.ImportProsp(keyValuePair.Value, keyValuePair.Key, projectId, assets,
-                        iteminfo.SharePointFileId);
+                    foreach (var iteminfo in dtos.Where(importDto =>
+                                 importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
+                    {
+                        var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
+                            iteminfo.Transport);
+                        projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key, projectId,
+                            assets,
+                            iteminfo.SharePointFileId);
+                    }
                 }
             }
         }

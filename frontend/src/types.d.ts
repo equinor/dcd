@@ -300,6 +300,7 @@ declare namespace Components {
             transport?: boolean;
             sharePointFileName?: string | null;
             sharePointFileId?: string | null;
+            sharePointSiteUrl?: string | null;
         }
         export interface SharepointIds {
             [name: string]: any;
@@ -843,6 +844,7 @@ declare namespace Paths {
         }
     }
     namespace GetSharePointFileNamesAndId {
+        export type RequestBody = Components.Schemas.SharePointImportDto;
         namespace Responses {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
@@ -880,7 +882,7 @@ declare namespace Paths {
             export type $200 = Components.Schemas.WellDto[];
         }
     }
-    namespace ImportFromSharepointAsync {
+    namespace ImportFilesFromSharepointAsync {
         namespace Parameters {
             export type ProjectId = string; // uuid
         }

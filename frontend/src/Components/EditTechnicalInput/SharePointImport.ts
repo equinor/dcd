@@ -11,6 +11,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
     transportState?: ImportStatusEnum | undefined
     sharePointFileName?: string | undefined
     sharePointFileId?: string | undefined
+    sharePointSiteUrl?: string | undefined
 
     constructor(caseItem: Case, project: Project) {
         this.id = caseItem.id!
@@ -21,6 +22,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         this.transportState = SharePointImport.transportStatus(caseItem, project)
         this.sharePointFileName = caseItem.sharepointFileName ?? ""
         this.sharePointFileId = caseItem.sharepointFileId ?? ""
+        this.sharePointSiteUrl = ""
     }
 
     static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")

@@ -37,34 +37,19 @@ public class PROSPController : ControllerBase
         _logger = loggerFactory.CreateLogger<PROSPController>();
     }
 
-    [HttpGet("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
-    public List<DriveItemDto> GetSharePointFileNamesAndId()
+    [HttpPost("sharepointfileinfo", Name = nameof(GetSharePointFileNamesAndId))]
+    public List<DriveItemDto> GetSharePointFileNamesAndId([FromBody] SharePointImportDto sharePointImportDto)
     {
-        var url =
-            "https://statoilsrm.sharepoint.com/sites/Team-IAF/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2FTeam%2DIAF%2FShared%20Documents%2FBoard&FolderCTID=0x0120007F5A26E2C9637A48BB7A8CA14E729794"; //"https://statoilsrm.sharepoint.com/sites/ConceptApp-Test/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FConceptApp%2DTest%2FShared%20Documents%2FGeneral&viewid=3369dfb1%2D14bb%2D465f%2D9558%2De96212ae80c7";
-        var siteId = _prospSharepointImportService.GetSiteId(url) ?? _config["SharePoint:Prosp:SiteId"];
-        var dto = new List<DriveItemDto>();
-        var validMimeTypes = _prospSharepointImportService.ValidMimeTypes();
+        var driveItemCollectionFromSite =
+            _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(sharePointImportDto.SharePointSiteUrl);
+        var filesFromSite = _prospSharepointImportService.GetFilesFromSite(driveItemCollectionFromSite);
 
-        var driveItemSearchCollectionPage = _graphServiceClient.Sites[siteId]
-            .Drive.Root.Delta()
-            .Request()
-            .GetAsync()
-            .GetAwaiter()
-            .GetResult();
-
-        foreach (var driveItem in driveItemSearchCollectionPage.Where(item =>
-                     item.File != null && validMimeTypes.Contains(item.File.MimeType)))
-        {
-            _prospSharepointImportService.ConvertToDto(driveItem, dto);
-        }
-
-        return dto;
+        return filesFromSite;
     }
 
-    [HttpPost("sharepoint", Name = nameof(ImportFromSharepointAsync))]
+    [HttpPost("sharepointfiledata", Name = nameof(ImportFilesFromSharepointAsync))]
     [DisableRequestSizeLimit]
-    public async Task<ProjectDto?> ImportFromSharepointAsync([FromQuery] Guid projectId,
+    public async Task<ProjectDto?> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
         [FromBody] SharePointImportDto[] dto)
     {
         try

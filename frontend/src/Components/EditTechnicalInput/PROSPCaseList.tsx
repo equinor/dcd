@@ -21,7 +21,7 @@ function PROSPCaseList({
 
     useEffect(() => {
         (async () => {
-            const newDriveItems = await (await GetProspService()).getSharePointFileNamesAndId()
+            const newDriveItems = await (await GetProspService()).getSharePointFileNamesAndId(prospCases)
             setDriveItems(newDriveItems)
             const prosp: SharePointImport[] = []
 
