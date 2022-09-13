@@ -20,6 +20,7 @@ import { GetSTEAService } from "../Services/STEAService"
 import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
 import CasesTableView from "./CasesTableView"
+import EditCaseModal from "../Components/Case/EditCaseModal"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -169,7 +170,14 @@ function OverviewView({
                     </WrapperRow>
                 </DataDiv>
             </RowWrapper>
-            <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
+            <EditCaseModal
+                setProject={setProject}
+                caseItem={undefined}
+                isOpen={createCaseModalIsOpen}
+                project={project}
+                toggleModal={toggleCreateCaseModal}
+            />
+            {/* <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
                 <CreateCaseForm>
                     <TextField
                         label="Name"
@@ -204,7 +212,7 @@ function OverviewView({
                         </Button>
                     </div>
                 </CreateCaseForm>
-            </Modal>
+            </Modal> */}
             <RowWrapper>
                 <Typography variant="h2">Cases</Typography>
                 <StyledButton onClick={toggleCreateCaseModal}>

@@ -9,6 +9,7 @@ import styled from "styled-components"
 import {
     Button, Switch, Typography,
 } from "@equinor/eds-core-react"
+import { useLocation } from "react-router"
 import { Project } from "../models/Project"
 import CaseArtificialLift from "../Components/Case/CaseArtificialLift"
 import CaseDescription from "../Components/Case/CaseDescription"
@@ -57,6 +58,7 @@ function DefinitionView({
     caseItem,
     setCase,
 }: Props) {
+    const location = useLocation()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
@@ -81,7 +83,7 @@ function DefinitionView({
             setWaterInjectorCount(caseResult?.waterInjectorCount)
             setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
-    }, [project])
+    }, [project, location.pathname])
 
     useEffect(() => {
         (async () => {
