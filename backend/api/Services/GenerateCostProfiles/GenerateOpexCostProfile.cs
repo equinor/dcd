@@ -1,10 +1,6 @@
-using System.Collections.Immutable;
-
 using api.Adapters;
 using api.Dtos;
 using api.Models;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
@@ -67,7 +63,7 @@ public class GenerateOpexCostProfile
             _logger.LogInformation("WellProject {0} not found.", caseItem.WellProjectLink);
             return new TimeSeries<double>();
         }
-        var linkedWells = wellProject.WellProjectWells?.Where(ew => IsWellProjectWell(ew.Well.WellCategory)).ToList();
+        var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
         if (linkedWells == null) { return new TimeSeries<double>(); }
 
         var wellInterventionCostsFromDrillingSchedule = new TimeSeries<double>();
@@ -165,13 +161,6 @@ public class GenerateOpexCostProfile
         };
         return offshoreFacilitiesOperationsCost;
     }
-
-    private static bool IsWellProjectWell(WellCategory wellCategory) => new[] {
-        WellCategory.Oil_Producer,
-        WellCategory.Gas_Producer,
-        WellCategory.Water_Injector,
-        WellCategory.Gas_Injector
-    }.Contains(wellCategory);
 
     private TimeSeries<double> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
     {

@@ -153,6 +153,7 @@ builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
 builder.Services.AddScoped<GenerateGAndGAdminCostProfile>();
+builder.Services.AddScoped<GenerateCessationCostProfile>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
