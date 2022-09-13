@@ -2,16 +2,10 @@ using api.Context;
 using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
-
 using Api.Services.FusionIntegration;
-
 using Azure.Identity;
-
-using Equinor.TI.CommonLibrary.Client;
-
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -35,11 +29,6 @@ configBuilder.AddAzureAppConfiguration(options =>
 );
 var config = configBuilder.Build();
 builder.Configuration.AddConfiguration(config);
-
-var commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
-    config["AzureAd:ClientId"],
-    config["AzureAd:TenantId"],
-    config["AzureAd:ClientSecret"]);
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -155,9 +144,6 @@ builder.Services.AddScoped<WellProjectWellService>();
 builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
-builder.Services.AddScoped(_ => new CommonLibraryClientOptions
-{ TokenProviderConnectionString = commonLibTokenConnection });
-builder.Services.AddScoped<CommonLibraryService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
