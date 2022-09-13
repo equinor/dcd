@@ -16,6 +16,7 @@ import {
     SetStateAction,
 } from "react"
 import styled from "styled-components"
+import { ToMonthDate } from "../Utils/common"
 import { WrapperInherited } from "../Views/Asset/StyledAssetComponents"
 
 const DgField = styled.div`
@@ -50,7 +51,7 @@ const DGDateInherited = ({
 
     useEffect(() => {
         (async () => {
-            if (caseValue?.toLocaleDateString("en-CA") !== value?.toLocaleDateString("en-CA")) {
+            if (ToMonthDate(caseValue) !== ToMonthDate(value)) {
                 return setIsMismatchedToCase(true)
             }
             return setIsMismatchedToCase(false)
@@ -70,7 +71,7 @@ const DGDateInherited = ({
         }
     }
 
-    const dgReturnDate = () => value?.toLocaleDateString("en-CA")
+    const dgReturnDate = () => ToMonthDate(value)
 
     return (
         <>
@@ -97,7 +98,7 @@ const DGDateInherited = ({
                 <Input
                     defaultValue={dgReturnDate()}
                     id="dgDate"
-                    type="date"
+                    type="month"
                     name="dgDate"
                     onChange={onChange}
                     disabled={disabled}

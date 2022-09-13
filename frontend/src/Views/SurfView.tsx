@@ -14,7 +14,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
-import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { IsInvalidDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
@@ -82,11 +82,11 @@ const SurfView = () => {
                 let newSurf = project.surfs.find((s) => s.id === surfId)
                 if (newSurf !== undefined) {
                     if (newSurf.DG3Date === null
-                        || newSurf.DG3Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        || IsInvalidDate(newSurf.DG3Date)) {
                         newSurf.DG3Date = caseResult?.DG3Date
                     }
                     if (newSurf.DG4Date === null
-                        || newSurf.DG4Date?.toLocaleDateString("en-CA") === "1-01-01") {
+                        || IsInvalidDate(newSurf.DG4Date)) {
                         newSurf.DG4Date = caseResult?.DG4Date
                     }
                     setSurf(newSurf)
