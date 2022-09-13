@@ -13,7 +13,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
     sharePointFileId?: string | undefined
     sharePointSiteUrl?: string | undefined
 
-    constructor(caseItem: Case, project: Project) {
+    constructor(caseItem: Case, project: Project, data:Components.Schemas.SharePointImportDto) {
         this.id = caseItem.id!
         this.selected = false
         this.surfState = SharePointImport.surfStatus(caseItem, project)
@@ -22,7 +22,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         this.transportState = SharePointImport.transportStatus(caseItem, project)
         this.sharePointFileName = caseItem.sharepointFileName ?? ""
         this.sharePointFileId = caseItem.sharepointFileId ?? ""
-        this.sharePointSiteUrl = ""
+        this.sharePointSiteUrl = data.sharePointSiteUrl ?? ""
     }
 
     static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")

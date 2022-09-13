@@ -17,13 +17,13 @@ export class __ProspService extends __BaseService {
     }
 
     async getSharePointFileNamesAndId(body:any) {
-        const driveItem: DriveItem[] = await this.post("sharepointfileinfo", { body })
+        const driveItem: DriveItem[] = await this.post("sharepoint", { body })
         return driveItem
     }
 
     public async importFromSharepoint(projectId: string, body: any): Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.postWithParams(
-            "sharepointfiledata",
+            `${projectId}/sharepoint`,
             { body },
 
             { params: { projectId } },
