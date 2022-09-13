@@ -29,9 +29,7 @@ configBuilder.AddAzureAppConfiguration(options =>
 );
 var config = configBuilder.Build();
 builder.Configuration.AddConfiguration(config);
-
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"))
     .EnableTokenAcquisitionToCallDownstreamApi()
@@ -97,10 +95,14 @@ var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 };
 
 if (environment == "localdev")
+{
     builder.Services.AddDbContext<DcdDbContext>(options =>
-        options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+}
 else
+{
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
+}
 
 builder.Services.AddFusionIntegration(options =>
 {
@@ -154,14 +156,12 @@ builder.Services.AddControllers(
 );
 builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Fom Program, running the host now");
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -171,7 +171,5 @@ if (app.Environment.IsDevelopment())
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
