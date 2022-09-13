@@ -37,7 +37,7 @@ public class PROSPController : ControllerBase
         _logger = loggerFactory.CreateLogger<PROSPController>();
     }
 
-    [HttpPost("sharepointfileinfo", Name = nameof(GetSharePointFileNamesAndId))]
+    [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
     public List<DriveItemDto> GetSharePointFileNamesAndId([FromBody] SharePointImportDto sharePointImportDto)
     {
         var driveItemCollectionFromSite =
@@ -47,7 +47,7 @@ public class PROSPController : ControllerBase
         return filesFromSite;
     }
 
-    [HttpPost("sharepointfiledata", Name = nameof(ImportFilesFromSharepointAsync))]
+    [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
     [DisableRequestSizeLimit]
     public async Task<ProjectDto?> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
         [FromBody] SharePointImportDto[] dto)
