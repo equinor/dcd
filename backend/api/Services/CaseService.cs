@@ -238,7 +238,10 @@ public class CaseService
         var additionalValues = new List<double>();
         for (int i = 0; i < additionalValuesCount; i++)
         {
-            additionalValues.Add(wellInterventionCostsFromDrillingSchedule.Values.Last());
+            if (wellInterventionCostsFromDrillingSchedule.Values.Length > 0)
+            {
+                additionalValues.Add(wellInterventionCostsFromDrillingSchedule.Values.Last());
+            }
         }
 
         var valuesList = wellInterventionCostsFromDrillingSchedule.Values.ToList();

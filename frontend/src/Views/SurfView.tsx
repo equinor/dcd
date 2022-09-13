@@ -297,21 +297,21 @@ const SurfView = () => {
                     setHasChanges={setHasChanges}
                     setValue={setInfieldPipelineSystemLength}
                     value={infieldPipelineSystemLength ?? 0}
-                    integer
+                    integer={false}
                     label="Length of production lines (km)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setUmbilicalSystemLength}
                     value={umbilicalSystemLength ?? 0}
-                    integer
+                    integer={false}
                     label="Length of umbilical system (km)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setCessationCost}
                     value={cessationCost ?? 0}
-                    integer
+                    integer={false}
                     label="Cessation cost"
                 />
             </Wrapper>
