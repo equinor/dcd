@@ -52,11 +52,13 @@ public class ProspSharepointImportService
     {
         var dto = new List<DriveItemDto>();
         if (driveItemDeltaCollectionPage != null)
+        {
             foreach (var driveItem in driveItemDeltaCollectionPage.Where(item =>
                          item.File != null && ValidMimeTypes().Contains(item.File.MimeType)))
             {
                 ConvertToDto(driveItem, dto);
             }
+        }
 
         return dto;
     }
