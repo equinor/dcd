@@ -19,7 +19,7 @@ public class ProspSharepointImportService
         _service = service;
     }
 
-    public IDriveItemDeltaCollectionPage GetDeltaDriveItemCollectionFromSite(string url)
+    public IDriveItemDeltaCollectionPage GetDeltaDriveItemCollectionFromSite(string? url)
     {
         var siteId = GetSiteId(url);
 
@@ -45,7 +45,7 @@ public class ProspSharepointImportService
         return dto;
     }
 
-    public string GetSiteId(string url)
+    public string GetSiteId(string? url)
     {
         var siteUri = new Uri(url);
         var hostName = siteUri.Host;

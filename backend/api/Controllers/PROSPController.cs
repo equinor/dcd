@@ -108,6 +108,6 @@ public class PROSPController : ControllerBase
 
     public class urlDto
     {
-        public string url { get; set; }
+        public string? url { get; set; }
     }
 }
