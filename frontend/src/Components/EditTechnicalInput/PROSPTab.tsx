@@ -1,21 +1,21 @@
 import { Typography } from "@material-ui/core"
 import React, {
-    Dispatch, MouseEventHandler, SetStateAction, useEffect,
+    Dispatch, MouseEventHandler, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
-import {
-    Button, Input, Label,
-} from "@equinor/eds-core-react"
+import { Button, Input, Label } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import PROSPCaseList from "./PROSPCaseList"
-import { Case } from "../../models/case/Case"
-import { unwrapCase } from "../../Utils/common"
-import { GetCaseService } from "../../Services/CaseService"
+import { GetProspService } from "../../Services/ProspService"
+import { GetProjectService } from "../../Services/ProjectService"
+import { DriveItem } from "../../models/sharepoint/DriveItem"
 
 const ProspFieldWrapper = styled.div`
     margin-bottom: 2.5rem;
-    width: 24rem;
+    width: 48rem;
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 `
 
 const TopWrapper = styled.div`
@@ -26,20 +26,45 @@ const TopWrapper = styled.div`
 
 interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project
+    project: Project,
 }
 
 function PROSPTab({
     project,
     setProject,
 }: Props) {
-    const saveUri: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    const [sharepointUrl, setSharepointUrl] = useState<string>()
+    const [driveItems, setDriveItems] = useState<DriveItem[]>()
+
+    useEffect(() => {
+        (async () => {
+            setSharepointUrl(project.sharepointSiteUrl ?? "")
+            if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
+                try {
+                    const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
+                    setDriveItems(result)
+                } catch (error) {
+                    console.error("[PROSPTab] error while submitting form data", error)
+                }
+            }
+        })()
+    }, [])
+
+    const saveUrl: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
-        // try {
-        //
-        // } catch (error) {
-        //     console.error("[CaseView] error while submitting form data", error)
-        // }
+        try {
+            const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
+            if (sharepointUrl !== project.sharepointSiteUrl) {
+                const newProject:Project = { ...project }
+                newProject.sharepointSiteUrl = sharepointUrl
+                const projectResult = await (await GetProjectService()).updateProject(newProject)
+                setProject(projectResult)
+                setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
+            }
+            setDriveItems(result)
+        } catch (error) {
+            console.error("[PROSPTab] error while submitting form data", error)
+        }
     }
     return (
         <div color="yellow">
@@ -48,12 +73,21 @@ function PROSPTab({
             </TopWrapper>
             <Label htmlFor="textfield-normal" label="Sharepoint Site addresse" />
             <ProspFieldWrapper>
-
-                <Input id="textfield-normal" placeholder="Paste Uri here" />
-                <Button variant="outlined" onClick={saveUri}>Refresh</Button>
+                <Input
+                    id="textfield-normal"
+                    placeholder="Paste Uri here"
+                    onChange={(e) => setSharepointUrl(e.currentTarget.value)}
+                    value={sharepointUrl}
+                />
+                <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
             </ProspFieldWrapper>
 
-            <PROSPCaseList project={project} setProject={setProject} />
+            <PROSPCaseList
+                project={project}
+                setProject={setProject}
+                driveItems={driveItems}
+                setDriveItems={setDriveItems}
+            />
 
         </div>
     )

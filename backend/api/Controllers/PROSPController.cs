@@ -38,10 +38,10 @@ public class PROSPController : ControllerBase
     }
 
     [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
-    public List<DriveItemDto> GetSharePointFileNamesAndId([FromBody] SharePointImportDto sharePointImportDto)
+    public List<DriveItemDto> GetSharePointFileNamesAndId([FromBody] urlDto dto)
     {
         var driveItemCollectionFromSite =
-            _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(sharePointImportDto.SharePointSiteUrl);
+            _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(dto.url);
         var filesFromSite = _prospSharepointImportService.GetFilesFromSite(driveItemCollectionFromSite);
 
         return filesFromSite;
@@ -104,5 +104,10 @@ public class PROSPController : ControllerBase
             _logger.LogError(e.Message);
             return _projectService.GetProjectDto(projectId);
         }
+    }
+
+    public class urlDto
+    {
+        public string url { get; set; }
     }
 }

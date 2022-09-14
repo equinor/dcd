@@ -269,6 +269,7 @@ declare namespace Components {
             transports?: TransportDto[] | null;
             drainageStrategies?: DrainageStrategyDto[] | null;
             wellProjects?: WellProjectDto[] | null;
+            sharepointSiteUrl?: string | null;
         }
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface STEACaseDto {
@@ -844,7 +845,7 @@ declare namespace Paths {
         }
     }
     namespace GetSharePointFileNamesAndId {
-        export type RequestBody = Components.Schemas.SharePointImportDto;
+        export type RequestBody = string;
         namespace Responses {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
@@ -885,6 +886,9 @@ declare namespace Paths {
     namespace ImportFilesFromSharepointAsync {
         namespace Parameters {
             export type ProjectId = string; // uuid
+        }
+        export interface PathParameters {
+            projectId: Parameters.ProjectId /* uuid */;
         }
         export interface QueryParameters {
             projectId?: Parameters.ProjectId /* uuid */;

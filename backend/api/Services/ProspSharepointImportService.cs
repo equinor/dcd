@@ -74,12 +74,19 @@ public class ProspSharepointImportService
             var fileStreamsOnCases = new Dictionary<Guid, Stream>();
             foreach (var item in fileIdsOnCases.Where(d => !string.IsNullOrWhiteSpace(d.Value)))
             {
-                var driveItemStream = await _graphServiceClient.Sites[siteId]
-                    .Drive.Items[item.Value]
-                    .Content.Request()
-                    .GetAsync();
+                try
+                {
+                    var driveItemStream = await _graphServiceClient.Sites[siteId]
+                        .Drive.Items[item.Value]
+                        .Content.Request()
+                        .GetAsync();
 
-                fileStreamsOnCases.Add(item.Key, driveItemStream);
+                    fileStreamsOnCases.Add(item.Key, driveItemStream);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
 
             foreach (var caseWithFileStream in fileStreamsOnCases)

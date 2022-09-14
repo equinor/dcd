@@ -1,15 +1,10 @@
-using System.Linq;
-
 using api.Dtos;
 using api.Models;
-using api.Services;
-
 
 namespace api.Adapters;
 
 public static class ProjectAdapter
 {
-
     public static Project Convert(ProjectDto projectDto)
     {
         var project = new Project
@@ -25,7 +20,8 @@ public static class ProjectAdapter
             ProjectPhase = projectDto.ProjectPhase,
             Currency = projectDto.Currency,
             PhysicalUnit = projectDto.PhysUnit,
-            Id = projectDto.ProjectId
+            Id = projectDto.ProjectId,
+            SharepointSiteUrl = projectDto.SharepointSiteUrl
         };
 
         return project;

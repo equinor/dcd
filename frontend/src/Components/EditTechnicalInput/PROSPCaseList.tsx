@@ -11,22 +11,22 @@ import { DriveItem } from "../../models/sharepoint/DriveItem"
 interface Props {
     project: Project
     setProject: Dispatch<SetStateAction<Project | undefined>>
+    driveItems: DriveItem[] | undefined
+    setDriveItems: Dispatch<SetStateAction<DriveItem[] | undefined>>
 }
 
 function PROSPCaseList({
-    project, setProject,
+    project, setProject, driveItems, setDriveItems,
 }: Props) {
     const [prospCases, setProspCases] = useState<SharePointImport[]>([])
-    const [driveItems, setDriveItems] = useState<DriveItem[]>()
 
     useEffect(() => {
         (async () => {
-            const newDriveItems = await (await GetProspService()).getSharePointFileNamesAndId(prospCases)
-            setDriveItems(newDriveItems)
             const prosp: SharePointImport[] = []
 
             project.cases.forEach((caseItem) => {
-                const prospCase = new SharePointImport(caseItem, project)
+                const prospCase = new SharePointImport(caseItem, project, undefined)
+                prospCase.sharePointSiteUrl = project.sharepointSiteUrl ?? ""
                 prosp.push(prospCase)
             })
             setProspCases(prosp)
