@@ -66,6 +66,7 @@ const ProjectView = () => {
 
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
+    const [caseItem, setCase] = useState<Case>()
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
 
