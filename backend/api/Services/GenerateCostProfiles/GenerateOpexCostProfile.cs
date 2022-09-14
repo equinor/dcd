@@ -67,13 +67,15 @@ public class GenerateOpexCostProfile
         if (linkedWells == null) { return new TimeSeries<double>(); }
 
         var wellInterventionCostsFromDrillingSchedule = new TimeSeries<double>();
-        foreach (var wi in linkedWells)
+        foreach (var linkedWell in linkedWells)
         {
-            if (wi.DrillingSchedule == null) { continue; }
+            if (linkedWell.DrillingSchedule == null) { continue; }
 
-            var timeSeries = new TimeSeries<double>();
-            timeSeries.StartYear = wi.DrillingSchedule.StartYear;
-            timeSeries.Values = wi.DrillingSchedule.Values.Select(v => (double)v).ToArray();
+            var timeSeries = new TimeSeries<double>
+            {
+                StartYear = linkedWell.DrillingSchedule.StartYear,
+                Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray()
+            };
             wellInterventionCostsFromDrillingSchedule = TimeSeriesCost.MergeCostProfiles(wellInterventionCostsFromDrillingSchedule, timeSeries);
         }
 
@@ -162,10 +164,12 @@ public class GenerateOpexCostProfile
         return offshoreFacilitiesOperationsCost;
     }
 
-    private TimeSeries<double> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
+    private static TimeSeries<double> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
     {
-        var cumulativeSchedule = new TimeSeries<double>();
-        cumulativeSchedule.StartYear = drillingSchedule.StartYear;
+        var cumulativeSchedule = new TimeSeries<double>
+        {
+            StartYear = drillingSchedule.StartYear
+        };
         var values = new List<double>();
         var sum = 0.0;
         for (int i = 0; i < drillingSchedule.Values.Length; i++)

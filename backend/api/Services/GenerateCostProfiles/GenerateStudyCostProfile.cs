@@ -114,8 +114,10 @@ public class GenerateStudyCostProfile
         var lastYearDays = dg3.DayOfYear;
         var lastYearPercentage = lastYearDays / (double)totalDays;
 
-        var percentageOfYearList = new List<double>();
-        percentageOfYearList.Add(firstYearPercentage);
+        var percentageOfYearList = new List<double>
+        {
+            firstYearPercentage
+        };
         for (int i = dg2.Year + 1; i < dg3.Year; i++)
         {
             var days = DateTime.IsLeapYear(i) ? 366 : 365;
@@ -206,7 +208,7 @@ public class GenerateStudyCostProfile
 
         var sumWellCost = 0.0;
 
-        var wellProject = new WellProject();
+        WellProject wellProject;
         try
         {
             wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
