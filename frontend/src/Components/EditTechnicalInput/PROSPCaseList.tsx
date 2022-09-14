@@ -12,7 +12,6 @@ interface Props {
     project: Project
     setProject: Dispatch<SetStateAction<Project | undefined>>
     driveItems: DriveItem[] | undefined
-    setDriveItems: Dispatch<SetStateAction<DriveItem[] | undefined>>
 }
 
 function PROSPCaseList({

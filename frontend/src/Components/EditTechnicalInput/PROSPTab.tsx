@@ -41,7 +41,8 @@ function PROSPTab({
             setSharepointUrl(project.sharepointSiteUrl ?? "")
             if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
                 try {
-                    const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
+                    const result = await (await GetProspService())
+                        .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
                     setDriveItems(result)
                 } catch (error) {
                     console.error("[PROSPTab] error while submitting form data", error)
@@ -86,7 +87,6 @@ function PROSPTab({
                 project={project}
                 setProject={setProject}
                 driveItems={driveItems}
-                setDriveItems={setDriveItems}
             />
 
         </div>
