@@ -57,18 +57,18 @@ public static class ProjectDtoAdapter
         if (project.Surfs != null)
         {
             projectDto.Surfs = new List<SurfDto>();
-            foreach (var s in project.Surfs)
+            foreach (var surf in project.Surfs)
             {
-                projectDto.Surfs.Add(SurfDtoAdapter.Convert(s));
+                projectDto.Surfs.Add(SurfDtoAdapter.Convert(surf));
             }
         }
 
         if (project.Topsides != null)
         {
             projectDto.Topsides = new List<TopsideDto>();
-            foreach (var t in project.Topsides)
+            foreach (var topside in project.Topsides)
             {
-                projectDto.Topsides.Add(TopsideDtoAdapter.Convert(t));
+                projectDto.Topsides.Add(TopsideDtoAdapter.Convert(topside));
             }
         }
 
@@ -122,7 +122,7 @@ public static class ProjectDtoAdapter
 
     public static void AddCapexToCasesYear(ProjectDto projectDto)
     {
-        foreach (var c in projectDto.Cases!)
+        foreach (var caseDto in projectDto.Cases!)
         {
             int? minYear = null;
             var valuesDict = new SortedDictionary<int, double>();
@@ -152,18 +152,28 @@ public static class ProjectDtoAdapter
                 }
             }
 
-            CalculateCapexYear(projectDto.WellProjects!.FirstOrDefault(l => l.Id == c.WellProjectLink)?.CostProfile);
-            CalculateCapexYear(projectDto.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)?.CostProfile);
-            CalculateCapexYear(projectDto.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)
+            CalculateCapexYear(projectDto.WellProjects!
+                .FirstOrDefault(wellProjectDto => wellProjectDto.Id == caseDto.WellProjectLink)?.CostProfile);
+            CalculateCapexYear(projectDto.Substructures!
+                .FirstOrDefault(substructureDto => substructureDto.Id == caseDto.SubstructureLink)?.CostProfile);
+            CalculateCapexYear(projectDto.Substructures!
+                .FirstOrDefault(substructureDto => substructureDto.Id == caseDto.SubstructureLink)
                 ?.CessationCostProfile);
-            CalculateCapexYear(projectDto.Surfs!.FirstOrDefault(l => l.Id == c.SurfLink)?.CostProfile);
-            CalculateCapexYear(projectDto.Surfs!.FirstOrDefault(l => l.Id == c.SurfLink)?.CessationCostProfile);
-            CalculateCapexYear(projectDto.Topsides!.FirstOrDefault(l => l.Id == c.TopsideLink)?.CostProfile);
-            CalculateCapexYear(projectDto.Topsides!.FirstOrDefault(l => l.Id == c.TopsideLink)?.CessationCostProfile);
-            CalculateCapexYear(projectDto.Transports!.FirstOrDefault(l => l.Id == c.TransportLink)?.CostProfile);
+            CalculateCapexYear(projectDto.Surfs!.FirstOrDefault(surfDto => surfDto.Id == caseDto.SurfLink)
+                ?.CostProfile);
+            CalculateCapexYear(projectDto.Surfs!.FirstOrDefault(surfDto => surfDto.Id == caseDto.SurfLink)
+                ?.CessationCostProfile);
+            CalculateCapexYear(projectDto.Topsides!.FirstOrDefault(topsideDto => topsideDto.Id == caseDto.TopsideLink)
+                ?.CostProfile);
+            CalculateCapexYear(projectDto.Topsides!.FirstOrDefault(topsideDto => topsideDto.Id == caseDto.TopsideLink)
+                ?.CessationCostProfile);
+            CalculateCapexYear(projectDto.Transports!
+                .FirstOrDefault(transportDto => transportDto.Id == caseDto.TransportLink)?.CostProfile);
             CalculateCapexYear(
-                projectDto.Transports!.FirstOrDefault(l => l.Id == c.TransportLink)?.CessationCostProfile);
-            CalculateCapexYear(projectDto.Explorations!.FirstOrDefault(l => l.Id == c.ExplorationLink)?.CostProfile);
+                projectDto.Transports!.FirstOrDefault(transportDto => transportDto.Id == caseDto.TransportLink)
+                    ?.CessationCostProfile);
+            CalculateCapexYear(projectDto.Explorations!
+                .FirstOrDefault(explorationDto => explorationDto.Id == caseDto.ExplorationLink)?.CostProfile);
 
             var lastYear = valuesDict.Keys.Count > 0 ? valuesDict.Keys.Max() : int.MinValue;
 
@@ -175,7 +185,7 @@ public static class ProjectDtoAdapter
                 }
             }
 
-            c.CapexYear = new CapexYear
+            caseDto.CapexYear = new CapexYear
             {
                 StartYear = minYear,
                 Values = valuesDict.Values.ToArray()
