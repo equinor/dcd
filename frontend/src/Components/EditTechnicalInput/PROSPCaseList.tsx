@@ -16,7 +16,7 @@ interface Props {
 }
 
 function PROSPCaseList({
-    project, setProject, driveItems, setDriveItems,
+    project, setProject, driveItems,
 }: Props) {
     const [prospCases, setProspCases] = useState<SharePointImport[]>([])
 
