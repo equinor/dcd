@@ -49,6 +49,8 @@ public class ProspSharepointImportService
     {
         var siteUri = new Uri(url);
         var hostName = siteUri.Host;
+
+        // Example of valid relativepath: /sites/{your site name} such as /sites/ConceptApp-Test
         var relativePath = $"/sites/{siteUri.AbsolutePath.Split('/', 3)[2].Split('/')[0]}";
 
         var site = _graphServiceClient.Sites.GetByPath(relativePath, hostName)
