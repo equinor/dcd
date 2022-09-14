@@ -39,7 +39,6 @@ const EditCaseModal = ({
     toggleModal,
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const [caseNameModalIsOpen, setCaseNameModalIsOpen] = useState<boolean>(false)
     const [caseName, setCaseName] = useState<string>(caseItem?.name ?? "")
     const [dG4Date, setDG4Date] = useState<Date>()
     const [description, setDescription] = useState<string>()
@@ -48,32 +47,20 @@ const EditCaseModal = ({
     const [gasInjectorCount, setGasInjectorWells] = useState<number>()
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>()
 
-    // const toggleEditCaseNameModal = () => setCaseNameModalIsOpen(!caseNameModalIsOpen)
+    const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setCaseName(e.currentTarget.value)
+    }
 
-    // const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-    //     setCaseName(e.target.value)
-    // }
+    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        setDescription(e.currentTarget.value)
+    }
 
-    // const submitUpdateCaseName = async () => {
-    //     const unwrappedCase: Case = unwrapCase(caseItem)
-    //     const caseDto = Case.Copy(unwrappedCase)
-    //     caseDto.name = caseName
-    //     const newProject = await (await GetCaseService()).updateCase(caseDto)
-    //     setProject(newProject)
-    //     const caseResult = unwrapCase(newProject.cases.find((o) => o.id === _caseId))
-    //     setCase(caseResult)
-    // }
-
-    // const submitEditCaseNameForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    //     e.preventDefault()
-
-    //     try {
-    //         submitUpdateCaseName()
-    //         toggleEditCaseNameModal()
-    //     } catch (error) {
-    //         console.error("[CaseView] error while submitting form data", error)
-    //     }
-    // }
+    const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+        if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
+            // const a: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value)
+            // setProductionStrategy(a)
+        }
+    }
 
     const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
@@ -93,14 +80,6 @@ const EditCaseModal = ({
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
-    }
-
-    const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setCaseName(e.currentTarget.value)
-    }
-
-    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setDescription(e.currentTarget.value)
     }
 
     return (
@@ -180,7 +159,7 @@ const EditCaseModal = ({
                         type="button"
                         color="secondary"
                         variant="ghost"
-                        onClick={() => console.log("yee")}
+                        onClick={toggleModal}
                     >
                         Cancel
                     </Button>

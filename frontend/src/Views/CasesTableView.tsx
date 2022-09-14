@@ -3,7 +3,7 @@
 /* eslint-disable camelcase */
 /* Implementation inspired from https://blog.logrocket.com/creating-react-sortable-table/ */
 import {
-    ChangeEventHandler, Dispatch, MouseEventHandler, SetStateAction, useState,
+    ChangeEventHandler, Dispatch, MouseEventHandler, SetStateAction, useEffect, useState,
 } from "react"
 import "../casesTableViewStyles.css"
 import {
@@ -166,6 +166,8 @@ interface CasesTableViewProps {
 const CasesTableView = ({
     project, setProject,
 }: CasesTableViewProps) => {
+    console.log("Rendered table")
+    console.log("Project.cases: ", project.cases)
     const [tableData, setTableData] = useState(createDataTable(project))
     const [sortField, setSortField] = useState("")
     const [order, setOrder] = useState("asc")
@@ -183,6 +185,10 @@ const CasesTableView = ({
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
     const history = useHistory()
+
+    useEffect(() => {
+        setTableData(createDataTable(project))
+    }, [project])
 
     const handleSorting = (sortFieldIndex: any, sortOrder: any) => {
         if (sortFieldIndex) {
@@ -205,7 +211,6 @@ const CasesTableView = ({
             if (caseRowDataSelected != null) {
                 const newProject = await (await GetCaseService()).duplicateCase(caseRowDataSelected.id, {})
                 setProject(newProject)
-                setTableData(createDataTable(newProject))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -217,7 +222,6 @@ const CasesTableView = ({
             if (caseRowDataSelected != null) {
                 const newProject = await (await GetCaseService()).deleteCase(caseRowDataSelected.id)
                 setProject(newProject)
-                setTableData(createDataTable(newProject))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
