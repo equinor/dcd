@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
 
-using Surf = api.Models.Surf;
-using Transport = api.Models.Transport;
-
 namespace api.Controllers;
 
 [Route("[controller]")]
@@ -19,10 +16,10 @@ public class PROSPController : ControllerBase
     private const string isCheckedAsset = "true";
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
-    private readonly ProspSharepointImportService _prospSharepointImportService;
-    private readonly ProspExcelImportService _prospExcelImportService;
-    private readonly ProjectService _projectService;
     private readonly ILogger<PROSPController> _logger;
+    private readonly ProjectService _projectService;
+    private readonly ProspExcelImportService _prospExcelImportService;
+    private readonly ProspSharepointImportService _prospSharepointImportService;
 
 
     public PROSPController(ProspExcelImportService prospExcelImportService,
@@ -40,33 +37,23 @@ public class PROSPController : ControllerBase
         _logger = loggerFactory.CreateLogger<PROSPController>();
     }
 
-    [HttpGet("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
-    public List<DriveItemDto> GetSharePointFileNamesAndId()
+    [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
+    public List<DriveItemDto> GetSharePointFileNamesAndId([FromBody] urlDto dto)
     {
-        var siteId = _config["SharePoint:Prosp:SiteId"];
-        var dto = new List<DriveItemDto>();
-        var validMimeTypes = _prospSharepointImportService.ValidMimeTypes();
+        var deltaDriveItemCollection =
+            _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(dto.url);
 
-        var driveItemSearchCollectionPage = _graphServiceClient.Sites[siteId]
-            .Drive.Root
-            .Search(string.Empty)
-            .Request()
-            .GetAsync()
-            .GetAwaiter()
-            .GetResult();
-
-        foreach (var driveItem in driveItemSearchCollectionPage.Where(item =>
-                     item.File != null && validMimeTypes.Contains(item.File.MimeType)))
+        if (deltaDriveItemCollection != null)
         {
-            _prospSharepointImportService.ConvertToDto(driveItem, dto);
+            return ProspSharepointImportService.GetExcelDriveItemsFromSite(deltaDriveItemCollection.Result);
         }
 
-        return dto;
+        return new List<DriveItemDto>();
     }
 
-    [HttpPost("sharepoint", Name = nameof(ImportFromSharepointAsync))]
+    [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
     [DisableRequestSizeLimit]
-    public async Task<ProjectDto?> ImportFromSharepointAsync([FromQuery] Guid projectId,
+    public async Task<ProjectDto?> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
         [FromBody] SharePointImportDto[] dto)
     {
         try
@@ -121,5 +108,10 @@ public class PROSPController : ControllerBase
             _logger.LogError(e.Message);
             return _projectService.GetProjectDto(projectId);
         }
+    }
+
+    public class urlDto
+    {
+        public string? url { get; set; }
     }
 }

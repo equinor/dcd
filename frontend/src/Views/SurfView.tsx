@@ -176,6 +176,21 @@ const SurfView = () => {
         costProfile, cessationCostProfile, currency, costYear, cessationCost, approvedBy, artificialLift,
         dG3Date, dG4Date])
 
+    const setAllStates = (timeSeries: any) => {
+        if (timeSeries) {
+            if (timeSeries.name === "Cost profile") {
+                setCostProfile(timeSeries)
+            }
+            if (timeSeries.name === "Cessation cost profile") {
+                setCessationCostProfile(timeSeries)
+            }
+        }
+    }
+
+    if (!surf || !caseItem) {
+        return null
+    }
+
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -297,21 +312,21 @@ const SurfView = () => {
                     setHasChanges={setHasChanges}
                     setValue={setInfieldPipelineSystemLength}
                     value={infieldPipelineSystemLength ?? 0}
-                    integer
+                    integer={false}
                     label="Length of production lines (km)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setUmbilicalSystemLength}
                     value={umbilicalSystemLength ?? 0}
-                    integer
+                    integer={false}
                     label="Length of umbilical system (km)"
                 />
                 <NumberInput
                     setHasChanges={setHasChanges}
                     setValue={setCessationCost}
                     value={cessationCost ?? 0}
-                    integer
+                    integer={false}
                     label="Cessation cost"
                 />
             </Wrapper>
@@ -326,26 +341,15 @@ const SurfView = () => {
                 setProductionFlowline={setProductionFlowline}
             />
             <TimeSeries
-                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
+                dG4Year={surf.source === 1 ? surf.DG4Date!.getFullYear() : caseItem.DG4Date!.getFullYear()}
+                setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeries={[costProfile, cessationCostProfile]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                profileName={["Cost profile", "Cessation cost profile"]}
+                profileEnum={currency}
+                profileType="Cost"
             />
         </AssetViewDiv>
     )

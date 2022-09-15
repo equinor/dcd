@@ -4,6 +4,7 @@ import { ITimeSeries } from "../../ITimeSeries"
 export class WellProjectCostProfile implements Components.Schemas.WellProjectCostProfileDto, ITimeSeries {
     id?: string
     startYear?: number
+    name?: string
     values?: number []
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
@@ -14,6 +15,7 @@ export class WellProjectCostProfile implements Components.Schemas.WellProjectCos
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
+            this.name = "Cost profile"
             this.values = data.values ?? []
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
@@ -22,6 +24,7 @@ export class WellProjectCostProfile implements Components.Schemas.WellProjectCos
         } else {
             this.id = EMPTY_GUID
             this.startYear = 0
+            this.name = "Cost profile"
             this.values = []
             this.epaVersion = ""
         }
