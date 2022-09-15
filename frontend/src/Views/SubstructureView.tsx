@@ -160,6 +160,10 @@ const SubstructureView = () => {
         }
     }
 
+    if (!substructure || !caseItem) {
+        return null
+    }
+
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -261,11 +265,11 @@ const SubstructureView = () => {
                 setConcept={setConcept}
             />
             <TimeSeries
-                dG4Year={substructure?.source === 1 ? substructure.DG4Date?.getFullYear()
-                    : caseItem?.DG4Date?.getFullYear()}
+                dG4Year={substructure.source === 1 ? substructure.DG4Date!.getFullYear()
+                    : caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={[costProfile!, cessationCostProfile!]}
+                timeSeries={[costProfile, cessationCostProfile]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Cessation cost profile"]}

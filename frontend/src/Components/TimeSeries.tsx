@@ -13,12 +13,12 @@ import {
 import NumberInputTable from "./NumberInputTable"
 
 interface Props {
-    dG4Year: number | undefined
+    dG4Year: number
     setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     setHasChanges: Dispatch<SetStateAction<boolean>>,
     firstYear: number | undefined,
     lastYear: number | undefined,
-    timeSeries: ITimeSeries[] | undefined
+    timeSeries: (ITimeSeries | undefined)[]
     profileName: string[]
     profileEnum: number
     profileType: string
@@ -37,14 +37,15 @@ const TimeSeries = ({
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
-    const [tableFirstYear, setTableFirstYear] = useState<number | undefined>()
-    const [tableLastYear, setTableLastYear] = useState<number | undefined>()
+    const [tableFirstYear, setTableFirstYear] = useState<number>(Number.MAX_SAFE_INTEGER)
+    const [tableLastYear, setTableLastYear] = useState<number>(Number.MIN_SAFE_INTEGER)
 
     const combinedTimeseries:any = []
     const combinedEmptyTimeseries:any = []
 
-    const tableFirstYearLength = tableFirstYear?.toString().length === 4
-    const tableLastYearLength = tableLastYear?.toString().length === 4
+    const isValidYear = (year: number | undefined) => year?.toString().length === 4
+    const tableFirstYearLength = isValidYear(tableFirstYear)
+    const tableLastYearLength = isValidYear(tableLastYear)
     const firstYearLength = firstYear?.toString().length === 4
     const lastYearLength = lastYear?.toString().length === 4
 
@@ -63,15 +64,15 @@ const TimeSeries = ({
                             setColumns(columnTitles)
 
                             const zeroesAtStart: Number[] = Array.from({
-                                length: Number(timeSeries[i].startYear!)
+                                length: Number(timeSeries[i]?.startYear!)
                                 + Number(dG4Year) - Number(firstYear),
                             }, (() => 0))
 
                             const zeroesAtEnd: Number[] = Array.from({
                                 length: Number(lastYear)
-                                - (Number(timeSeries[i].startYear!)
+                                - (Number(timeSeries[i]?.startYear!)
                                 + Number(dG4Year)
-                                + Number(timeSeries[i].values!.length!)),
+                                + Number(timeSeries[i]?.values!.length!)),
                             }, (() => 0))
 
                             const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
@@ -94,7 +95,7 @@ const TimeSeries = ({
         buildAlignedGrid(combinedTimeseries!)
 
         if (gridData !== undefined && firstYearLength && lastYearLength
-            && tableFirstYear === undefined && tableLastYear === undefined) {
+            && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER) {
             setTableFirstYear(firstYear)
             setTableLastYear(lastYear - 1)
         }
@@ -105,15 +106,15 @@ const TimeSeries = ({
             setTableFirstYear(firstYear)
             setTableLastYear(lastYear - 1)
         }
-        const newTimeSeries: ITimeSeries = { ...timeSeries![j] }
+        const newTimeSeries: ITimeSeries = { ...timeSeries[j] }
         const colYears = []
-        for (let c = tableFirstYear; c! <= tableLastYear!; c! += 1) {
-            colYears.push(c!.toString())
+        for (let c = tableFirstYear; c <= (tableLastYear ?? Number.MIN_SAFE_INTEGER); c += 1) {
+            colYears.push(c.toString())
         }
         setColumns(colYears)
 
         newTimeSeries.name = profileName[j]
-        newTimeSeries.startYear = tableFirstYear! - dG4Year!
+        newTimeSeries.startYear = tableFirstYear - dG4Year
         newTimeSeries.values = new Array(colYears.length).fill(0)
 
         setTimeSeries(newTimeSeries)
@@ -126,46 +127,46 @@ const TimeSeries = ({
         setHasChanges(true)
     }
 
-    const NewTableFirstYearSmallerThanProfileFirstYear = (j:any) => tableFirstYear!
-    < (Number(timeSeries![j].startYear!) + Number(dG4Year!))
-    const NewTableLastYearGreaterThanProfileLastYear = (colYears:any, newTimeSeries:ITimeSeries) => (tableLastYear!)
+    const NewTableFirstYearSmallerThanProfileFirstYear = (j:any) => tableFirstYear
+    < (Number(timeSeries[j]?.startYear!) + Number(dG4Year))
+    const NewTableLastYearGreaterThanProfileLastYear = (colYears:any, newTimeSeries:ITimeSeries) => (tableLastYear)
     > (Number(colYears[0]) + Number(newTimeSeries.values!.length))
-    const NewTableLastYearSmallerThanProfileLastYear = (j:any, colYears:any) => tableLastYear!
-    < (Number(colYears[0]) + Number(timeSeries![j].values!.length))
-    const NewTableFirstYearGreaterThanProfileFirstYear = (j:any) => tableFirstYear!
-    > (Number(timeSeries![j].startYear!) + Number(dG4Year!))
+    const NewTableLastYearSmallerThanProfileLastYear = (j:any, colYears:any) => tableLastYear
+    < (Number(colYears[0]) + Number(timeSeries[j]?.values!.length))
+    const NewTableFirstYearGreaterThanProfileFirstYear = (j:any) => tableFirstYear
+    > (Number(timeSeries[j]?.startYear!) + Number(dG4Year))
 
     const createNewGridWithData = (j: any) => {
         if (tableFirstYear && tableLastYear && timeSeries !== undefined) {
             const newTimeSeries: ITimeSeries = { ...timeSeries[j] }
             const colYears = []
             for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
-                colYears.push(c!.toString())
+                colYears.push(c.toString())
             }
             setColumns(colYears)
             newTimeSeries.name = profileName[j]
-            newTimeSeries.startYear = timeSeries![j].startYear
+            newTimeSeries.startYear = timeSeries[j]?.startYear
 
             if (NewTableFirstYearSmallerThanProfileFirstYear(j)) {
-                newTimeSeries.startYear = tableFirstYear - dG4Year!
+                newTimeSeries.startYear = tableFirstYear - dG4Year
                 newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length)
-                    .fill(0).concat(newTimeSeries.values)
+                    .fill(0).concat(newTimeSeries.values) ?? []
             }
 
             if (NewTableLastYearGreaterThanProfileLastYear(colYears, newTimeSeries)) {
                 newTimeSeries.values = (newTimeSeries.values)
-                    ?.concat(new Array(colYears.length - timeSeries[j].values!.length).fill(0))
+                    ?.concat(new Array(colYears.length - Number(timeSeries[j]?.values!.length)).fill(0)) ?? []
             }
 
             if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
-                const yearDifference = (Number(colYears[0]) + timeSeries[j].values!.length - 1) - tableLastYear
-                newTimeSeries.values = timeSeries[j].values?.slice(0, -yearDifference)
+                const yearDifference = (Number(colYears[0]) + Number(timeSeries[j]?.values!.length) - 1) - tableLastYear
+                newTimeSeries.values = timeSeries[j]?.values?.slice(0, -yearDifference) ?? []
             }
 
             if (NewTableFirstYearGreaterThanProfileFirstYear(j)) {
-                newTimeSeries.startYear = tableFirstYear - dG4Year!
-                const yearDifference = tableFirstYear - (timeSeries[j].startYear! + dG4Year!)
-                newTimeSeries.values = timeSeries[j].values?.slice(yearDifference)
+                newTimeSeries.startYear = tableFirstYear - dG4Year
+                const yearDifference = tableFirstYear - (Number(timeSeries[j]?.startYear!) + dG4Year)
+                newTimeSeries.values = timeSeries[j]?.values?.slice(yearDifference) ?? []
             }
             setTimeSeries(newTimeSeries)
             if (newTimeSeries !== undefined) {
@@ -186,12 +187,12 @@ const TimeSeries = ({
             }
             setColumns(colYears)
 
-            if (timeSeries![0] === undefined) {
+            if (timeSeries[0] === undefined) {
                 for (let i = 0; i < timeSeries?.length!; i += 1) {
                     createEmptyGrid(i)
                 }
             }
-            if (timeSeries![0] !== undefined) {
+            if (timeSeries[0] !== undefined) {
                 for (let i = 0; i < timeSeries?.length!; i += 1) {
                     createNewGridWithData(i)
                 }
@@ -227,7 +228,7 @@ const TimeSeries = ({
                 <DataTable
                     columns={columns}
                     gridData={gridData}
-                    dG4Year={dG4Year?.toString()!}
+                    dG4Year={dG4Year.toString()}
                     profileName={profileName}
                     profileEnum={profileEnum}
                     setHasChanges={setHasChanges}

@@ -187,6 +187,10 @@ const SurfView = () => {
         }
     }
 
+    if (!surf || !caseItem) {
+        return null
+    }
+
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -337,10 +341,10 @@ const SurfView = () => {
                 setProductionFlowline={setProductionFlowline}
             />
             <TimeSeries
-                dG4Year={surf?.source === 1 ? surf.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
+                dG4Year={surf.source === 1 ? surf.DG4Date!.getFullYear() : caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={[costProfile!, cessationCostProfile!]}
+                timeSeries={[costProfile, cessationCostProfile]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Cessation cost profile"]}

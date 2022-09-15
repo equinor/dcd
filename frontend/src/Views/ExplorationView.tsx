@@ -154,7 +154,7 @@ const ExplorationView = () => {
     }
 
     if (!project) return null
-    if (!exploration) return null
+    if (!exploration || !caseItem) return null
 
     return (
         <AssetViewDiv>
@@ -201,11 +201,11 @@ const ExplorationView = () => {
                 />
             </Wrapper>
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={[costProfile!, seismicAcquisitionAndProcessing!,
-                    countryOfficeCost!]}
+                timeSeries={[costProfile, seismicAcquisitionAndProcessing,
+                    countryOfficeCost]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}

@@ -133,7 +133,7 @@ function WellProjectView() {
     }
 
     if (!project) return null
-    if (!wellProject) return null
+    if (!wellProject || !caseItem) return null
     return (
         <AssetViewDiv>
             <WellList project={project} wellProject={wellProject} setProject={setProject} />
@@ -220,10 +220,10 @@ function WellProjectView() {
                 />
             </Wrapper>
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                timeSeries={[costProfile!]}
+                timeSeries={[costProfile]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 profileName={["Cost profile"]}

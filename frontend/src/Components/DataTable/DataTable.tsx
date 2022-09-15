@@ -23,7 +23,7 @@ interface Props {
     profileEnum: number
     setHasChanges: Dispatch<SetStateAction<boolean>>,
     setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
-    timeSeries: ITimeSeries[] | undefined
+    timeSeries: (ITimeSeries | undefined)[]
 }
 
 function DataTable({
@@ -80,15 +80,15 @@ function DataTable({
                     .reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
                 combinedObjArr.push(rowObj)
 
-                const totalCostObj = { "Total cost": 0 }
-                value.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
+                const totalValueObj = { Total: 0 }
+                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
             }
         }
 
         if (gridData.length >= 1 && col.length !== 0) {
             for (let j = 0; j < gridData.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
-                const totalCost:any = []
+                const totalValue:any = []
                 if (gridData[j] !== undefined) {
                     for (let i = 0; i < col.length; i += 1) {
                         if (gridData[j][0]) {
@@ -97,14 +97,14 @@ function DataTable({
                         }
                     }
                     objValSum.push(gridData[j][0]?.map((v:any) => v.value).reduce((x:any, y:any) => x + y))
-                    totalCost.push(objValSum[j])
+                    totalValue.push(objValSum[j])
                 }
                 const rowObj = objKey
                     .reduce((obj:any, element:any, index:any) => ({ ...obj, [element]: objVal[index] }), {})
                 combinedObjArr.push(rowObj)
 
-                const totalCostObj = { "Total cost": totalCost }
-                value.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
+                const totalValueObj = { Total: totalValue }
+                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
             }
         }
         return value
@@ -117,7 +117,7 @@ function DataTable({
             const columnPinned = [
                 { field: "Profile", pinned: "left", width: "autoWidth" },
                 { field: "Unit", pinned: "left", width: "autoWidth" },
-                { field: "Total cost", pinned: "right" }]
+                { field: "Total", pinned: "right" }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i] })
             }
@@ -146,7 +146,7 @@ function DataTable({
             const convertObj = {
                 convertObj:
                 (delete rowEventData.Unit, delete rowEventData.Profile,
-                delete rowEventData["Total cost"]),
+                delete rowEventData.Total),
                 rowEventData,
             }
             const changeKeysToValue = Object.keys(rowEventData)

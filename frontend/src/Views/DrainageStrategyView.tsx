@@ -189,6 +189,10 @@ const DrainageStrategyView = () => {
         }
     }
 
+    if (!drainageStrategy || !caseItem) {
+        return null
+    }
+
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -271,13 +275,13 @@ const DrainageStrategyView = () => {
                 />
             </Wrapper>
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={[co2Emissions!, netSalesGas!,
-                    fuelFlaringAndLosses!, productionProfileGas!,
-                    productionProfileOil!, productionProfileWater!,
-                    productionProfileWaterInjection!, productionProfileNGL!]}
+                timeSeries={[co2Emissions, netSalesGas,
+                    fuelFlaringAndLosses, productionProfileGas,
+                    productionProfileOil, productionProfileWater,
+                    productionProfileWaterInjection, productionProfileNGL]}
                 firstYear={firstTSYear}
                 lastYear={lastTSYear}
                 profileName={["CO2 emissions", "Net sales gas",

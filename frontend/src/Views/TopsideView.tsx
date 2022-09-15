@@ -207,6 +207,10 @@ const TopsideView = () => {
         }
     }
 
+    if (!topside || !caseItem) {
+        return null
+    }
+
     return (
         <AssetViewDiv>
             <Wrapper>
@@ -417,10 +421,10 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={topside?.source === 1 ? topside.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
+                dG4Year={topside.source === 1 ? topside.DG4Date!.getFullYear() : caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={[costProfile!, cessationCostProfile!]}
+                timeSeries={[costProfile, cessationCostProfile]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Cessation cost profile"]}

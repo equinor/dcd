@@ -156,7 +156,7 @@ const ExplorationViewTab = ({
         }
     }, [rigMobDemob, costProfile, gAndGAdminCost, currency])
 
-    if (!project) { return null }
+    if (!project || !exploration || !caseItem) { return null }
 
     return (
         <RowWrapper>
@@ -192,10 +192,10 @@ const ExplorationViewTab = ({
                     />
                 </Wrapper>
                 <TimeSeries
-                    dG4Year={caseItem?.DG4Date?.getFullYear()}
+                    dG4Year={caseItem.DG4Date!.getFullYear()}
                     setTimeSeries={setCostProfile}
                     setHasChanges={setHasChanges}
-                    timeSeries={[costProfile!]}
+                    timeSeries={[costProfile]}
                     firstYear={firstTSYear!}
                     lastYear={lastTSYear!}
                     profileName={["Cost profile"]}

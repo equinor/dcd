@@ -3,7 +3,7 @@ import { ChangeEventHandler, Dispatch, SetStateAction } from "react"
 import { WrapperColumnTablePeriod } from "../Views/Asset/StyledAssetComponents"
 
 interface Props {
-    setValue?: Dispatch<SetStateAction<number | undefined>>
+    setValue?: Dispatch<SetStateAction<number>>
     value: number | undefined
     setHasChanges?: Dispatch<SetStateAction<boolean>>
     integer: boolean,
