@@ -21,6 +21,7 @@ interface Props {
     timeSeries: ITimeSeries[] | undefined
     profileName: string[]
     profileEnum: number
+    profileType: string
 }
 
 const TimeSeries = ({
@@ -32,6 +33,7 @@ const TimeSeries = ({
     lastYear,
     profileName,
     profileEnum,
+    profileType,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -40,6 +42,11 @@ const TimeSeries = ({
 
     const combinedTimeseries:any = []
     const combinedEmptyTimeseries:any = []
+
+    const beginningYearLength = beginningYear?.toString().length === 4
+    const endingYearLength = endingYear?.toString().length === 4
+    const firstYearLength = firstYear?.toString().length === 4
+    const lastYearLength = lastYear?.toString().length === 4
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (timeSeries![0] !== undefined && updatedTimeSeries !== undefined) {
@@ -84,7 +91,7 @@ const TimeSeries = ({
     useEffect(() => {
         buildAlignedGrid(combinedTimeseries!)
 
-        if (gridData !== undefined && firstYear?.toString().length === 4 && lastYear?.toString().length === 4
+        if (gridData !== undefined && firstYearLength && lastYearLength
             && beginningYear === undefined && endingYear === undefined) {
             setBeginningYear(firstYear)
             setEndingYear(lastYear - 1)
@@ -92,7 +99,7 @@ const TimeSeries = ({
     }, [timeSeries, lastYear, firstYear])
 
     const createEmptyGrid = (j: any) => {
-        if (gridData !== undefined && firstYear?.toString().length === 4 && lastYear?.toString().length === 4) {
+        if (gridData !== undefined && firstYearLength && lastYearLength) {
             setBeginningYear(firstYear)
             setEndingYear(lastYear - 1)
         }
@@ -160,7 +167,7 @@ const TimeSeries = ({
 
     const addTimeSeries = () => {
         const colYears = []
-        if (beginningYear?.toString().length === 4 && endingYear?.toString().length === 4) {
+        if (beginningYearLength && endingYearLength) {
             for (let j = beginningYear; j! < endingYear!; j! += 1) {
                 colYears.push(j!.toString())
             }
@@ -183,14 +190,14 @@ const TimeSeries = ({
         <>
             <WrapperTablePeriod>
                 <NumberInputTable
-                    value={beginningYear?.toString().length === 4 ? beginningYear : 2020}
+                    value={beginningYearLength ? beginningYear : 2020}
                     setValue={setBeginningYear}
                     integer
                     label="Start year"
                 />
                 <Typography variant="h2">-</Typography>
                 <NumberInputTable
-                    value={endingYear?.toString().length === 4 ? endingYear : 2030}
+                    value={endingYearLength ? endingYear : 2030}
                     setValue={setEndingYear}
                     integer
                     label="End year"
@@ -201,7 +208,7 @@ const TimeSeries = ({
                     Apply
                 </ImportButton>
             </WrapperTablePeriod>
-            <Typography variant="h2">Cost</Typography>
+            <Typography variant="h2">{profileType}</Typography>
 
             <WrapperColumn>
                 <DataTable

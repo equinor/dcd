@@ -228,6 +228,7 @@ function WellProjectView() {
                 lastYear={lastTSYear!}
                 profileName={["Cost profile"]}
                 profileEnum={project?.physUnit!}
+                profileType="Cost"
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules

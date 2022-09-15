@@ -210,6 +210,7 @@ const ExplorationView = () => {
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
                 profileEnum={project?.physUnit!}
+                profileType="Cost"
             />
             <ReadOnlyCostProfile
                 dG4Year={caseItem?.DG4Date?.getFullYear()}

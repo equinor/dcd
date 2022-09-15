@@ -345,6 +345,7 @@ const SurfView = () => {
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={currency}
+                profileType="Cost"
             />
         </AssetViewDiv>
     )

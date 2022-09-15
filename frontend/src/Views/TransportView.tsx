@@ -246,6 +246,7 @@ const TransportView = () => {
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={project?.physUnit!}
+                profileType="Cost"
             />
         </AssetViewDiv>
     )

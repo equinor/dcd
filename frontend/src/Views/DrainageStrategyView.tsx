@@ -285,6 +285,7 @@ const DrainageStrategyView = () => {
                     "Production profile oil", "Production profile water",
                     "Production profile water injection", "Production profile NGL"]}
                 profileEnum={project?.physUnit!}
+                profileType="Production"
             />
         </AssetViewDiv>
     )

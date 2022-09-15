@@ -200,6 +200,7 @@ const ExplorationViewTab = ({
                     lastYear={lastTSYear!}
                     profileName={["Cost profile"]}
                     profileEnum={project?.physUnit!}
+                    profileType="Cost"
                 />
                 <ReadOnlyCostProfile
                     dG4Year={caseItem?.DG4Date?.getFullYear()}
