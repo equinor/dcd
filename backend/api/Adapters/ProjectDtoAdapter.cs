@@ -11,80 +11,90 @@ public static class ProjectDtoAdapter
 
         if (project.Wells != null)
         {
-            foreach (Well well in project.Wells)
+            foreach (var well in project.Wells)
             {
                 projectDto.Wells!.Add(WellDtoAdapter.Convert(well));
             }
         }
+
         if (project.Explorations != null)
         {
             projectDto.Explorations = new List<ExplorationDto>();
-            foreach (Exploration e in project.Explorations)
+            foreach (var exploration in project.Explorations)
             {
-                projectDto.Explorations.Add(ExplorationDtoAdapter.Convert(e));
+                projectDto.Explorations.Add(ExplorationDtoAdapter.Convert(exploration));
             }
         }
+
         if (project.DrainageStrategies != null)
         {
             projectDto.DrainageStrategies = new List<DrainageStrategyDto>();
-            foreach (DrainageStrategy d in project.DrainageStrategies)
+            foreach (var drainageStrategy in project.DrainageStrategies)
             {
-                projectDto.DrainageStrategies.Add(DrainageStrategyDtoAdapter.Convert(d, project.PhysicalUnit));
+                projectDto.DrainageStrategies.Add(
+                    DrainageStrategyDtoAdapter.Convert(drainageStrategy, project.PhysicalUnit));
             }
         }
+
         if (project.WellProjects != null)
         {
             projectDto.WellProjects = new List<WellProjectDto>();
-            foreach (WellProject w in project.WellProjects)
+            foreach (var wellProject in project.WellProjects)
             {
-                projectDto.WellProjects.Add(WellProjectDtoAdapter.Convert(w));
+                projectDto.WellProjects.Add(WellProjectDtoAdapter.Convert(wellProject));
             }
         }
+
         if (project.Substructures != null)
         {
             projectDto.Substructures = new List<SubstructureDto>();
-            foreach (Substructure s in project.Substructures)
+            foreach (var substructure in project.Substructures)
             {
-
-                projectDto.Substructures.Add(SubstructureDtoAdapter.Convert(s));
+                projectDto.Substructures.Add(SubstructureDtoAdapter.Convert(substructure));
             }
         }
+
         if (project.Surfs != null)
         {
             projectDto.Surfs = new List<SurfDto>();
-            foreach (Surf s in project.Surfs)
+            foreach (var surf in project.Surfs)
             {
-                projectDto.Surfs.Add(SurfDtoAdapter.Convert(s));
+                projectDto.Surfs.Add(SurfDtoAdapter.Convert(surf));
             }
         }
+
         if (project.Topsides != null)
         {
             projectDto.Topsides = new List<TopsideDto>();
-            foreach (Topside t in project.Topsides)
+            foreach (var topside in project.Topsides)
             {
-                projectDto.Topsides.Add(TopsideDtoAdapter.Convert(t));
+                projectDto.Topsides.Add(TopsideDtoAdapter.Convert(topside));
             }
         }
+
         if (project.Transports != null)
         {
             projectDto.Transports = new List<TransportDto>();
-            foreach (Transport t in project.Transports)
+            foreach (var transport in project.Transports)
             {
-                projectDto.Transports.Add(TransportDtoAdapter.Convert(t));
+                projectDto.Transports.Add(TransportDtoAdapter.Convert(transport));
             }
         }
+
         if (project.Cases != null)
         {
-            foreach (Case c in project.Cases)
+            foreach (var caseItem in project.Cases)
             {
-                projectDto.Cases!.Add(CaseDtoAdapter.Convert(c, projectDto));
+                projectDto.Cases!.Add(CaseDtoAdapter.Convert(caseItem, projectDto));
             }
         }
+
         if (projectDto.Cases != null)
         {
             AddCapexToCases(projectDto);
             AddCapexToCasesYear(projectDto);
         }
+
         return projectDto;
     }
 
@@ -106,12 +116,13 @@ public static class ProjectDtoAdapter
             PhysUnit = project.PhysicalUnit,
             Cases = new List<CaseDto>(),
             Wells = new List<WellDto>(),
+            SharepointSiteUrl = project.SharepointSiteUrl
         };
     }
 
-    public static void AddCapexToCasesYear(ProjectDto p)
+    public static void AddCapexToCasesYear(ProjectDto projectDto)
     {
-        foreach (CaseDto c in p.Cases!)
+        foreach (var caseDto in projectDto.Cases!)
         {
             int? minYear = null;
             var valuesDict = new SortedDictionary<int, double>();
@@ -122,6 +133,7 @@ public static class ProjectDtoAdapter
                 {
                     return;
                 }
+
                 if (minYear == null ? timeSeries.StartYear < int.MaxValue : timeSeries.StartYear < minYear)
                 {
                     minYear = timeSeries.StartYear;
@@ -137,20 +149,31 @@ public static class ProjectDtoAdapter
                     {
                         valuesDict.Add(timeSeries.StartYear + i, timeSeries.Values[i]);
                     }
-
                 }
             }
 
-            CalculateCapexYear(p.WellProjects!.FirstOrDefault(l => l.Id == c.WellProjectLink)?.CostProfile);
-            CalculateCapexYear(p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)?.CostProfile);
-            CalculateCapexYear(p.Substructures!.FirstOrDefault(l => l.Id == c.SubstructureLink)?.CessationCostProfile);
-            CalculateCapexYear(p.Surfs!.FirstOrDefault(l => l.Id == c.SurfLink)?.CostProfile);
-            CalculateCapexYear(p.Surfs!.FirstOrDefault(l => l.Id == c.SurfLink)?.CessationCostProfile);
-            CalculateCapexYear(p.Topsides!.FirstOrDefault(l => l.Id == c.TopsideLink)?.CostProfile);
-            CalculateCapexYear(p.Topsides!.FirstOrDefault(l => l.Id == c.TopsideLink)?.CessationCostProfile);
-            CalculateCapexYear(p.Transports!.FirstOrDefault(l => l.Id == c.TransportLink)?.CostProfile);
-            CalculateCapexYear(p.Transports!.FirstOrDefault(l => l.Id == c.TransportLink)?.CessationCostProfile);
-            CalculateCapexYear(p.Explorations!.FirstOrDefault(l => l.Id == c.ExplorationLink)?.CostProfile);
+            CalculateCapexYear(projectDto.WellProjects!
+                .FirstOrDefault(wellProjectDto => wellProjectDto.Id == caseDto.WellProjectLink)?.CostProfile);
+            CalculateCapexYear(projectDto.Substructures!
+                .FirstOrDefault(substructureDto => substructureDto.Id == caseDto.SubstructureLink)?.CostProfile);
+            CalculateCapexYear(projectDto.Substructures!
+                .FirstOrDefault(substructureDto => substructureDto.Id == caseDto.SubstructureLink)
+                ?.CessationCostProfile);
+            CalculateCapexYear(projectDto.Surfs!.FirstOrDefault(surfDto => surfDto.Id == caseDto.SurfLink)
+                ?.CostProfile);
+            CalculateCapexYear(projectDto.Surfs!.FirstOrDefault(surfDto => surfDto.Id == caseDto.SurfLink)
+                ?.CessationCostProfile);
+            CalculateCapexYear(projectDto.Topsides!.FirstOrDefault(topsideDto => topsideDto.Id == caseDto.TopsideLink)
+                ?.CostProfile);
+            CalculateCapexYear(projectDto.Topsides!.FirstOrDefault(topsideDto => topsideDto.Id == caseDto.TopsideLink)
+                ?.CessationCostProfile);
+            CalculateCapexYear(projectDto.Transports!
+                .FirstOrDefault(transportDto => transportDto.Id == caseDto.TransportLink)?.CostProfile);
+            CalculateCapexYear(
+                projectDto.Transports!.FirstOrDefault(transportDto => transportDto.Id == caseDto.TransportLink)
+                    ?.CessationCostProfile);
+            CalculateCapexYear(projectDto.Explorations!
+                .FirstOrDefault(explorationDto => explorationDto.Id == caseDto.ExplorationLink)?.CostProfile);
 
             var lastYear = valuesDict.Keys.Count > 0 ? valuesDict.Keys.Max() : int.MinValue;
 
@@ -162,47 +185,60 @@ public static class ProjectDtoAdapter
                 }
             }
 
-            c.CapexYear = new CapexYear()
+            caseDto.CapexYear = new CapexYear
             {
                 StartYear = minYear,
-                Values = valuesDict.Values.ToArray(),
+                Values = valuesDict.Values.ToArray()
             };
         }
     }
 
-    public static void AddCapexToCases(ProjectDto p)
+    public static void AddCapexToCases(ProjectDto projectDto)
     {
-
-        foreach (CaseDto c in p.Cases!)
+        foreach (var caseDto in projectDto.Cases!)
         {
-            c.Capex = 0;
-            if (c.WellProjectLink != Guid.Empty)
+            caseDto.Capex = 0;
+            if (caseDto.WellProjectLink != Guid.Empty)
             {
-                var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
+                var wellProject =
+                    projectDto.WellProjects!.First(wellProjectDto => wellProjectDto.Id == caseDto.WellProjectLink);
                 if (wellProject.CostProfile != null)
                 {
-                    c.Capex += wellProject.CostProfile?.Sum ?? 0;
+                    caseDto.Capex += wellProject.CostProfile?.Sum ?? 0;
                 }
             }
-            if (c.SubstructureLink != Guid.Empty)
+
+            if (caseDto.SubstructureLink != Guid.Empty)
             {
-                c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CostProfile?.Sum ?? 0;
-                c.Capex += p.Substructures!.First(l => l.Id == c.SubstructureLink)?.CessationCostProfile?.Sum ?? 0;
+                caseDto.Capex += projectDto.Substructures!
+                    .First(substructureDto => substructureDto.Id == caseDto.SubstructureLink)?.CostProfile?.Sum ?? 0;
+                caseDto.Capex += projectDto.Substructures!
+                    .First(substructureDto => substructureDto.Id == caseDto.SubstructureLink)?.CessationCostProfile
+                    ?.Sum ?? 0;
             }
-            if (c.SurfLink != Guid.Empty)
+
+            if (caseDto.SurfLink != Guid.Empty)
             {
-                c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CostProfile?.Sum ?? 0;
-                c.Capex += p.Surfs!.First(l => l.Id == c.SurfLink)?.CessationCostProfile?.Sum ?? 0;
+                caseDto.Capex += projectDto.Surfs!.First(surfDto => surfDto.Id == caseDto.SurfLink)?.CostProfile?.Sum ??
+                                 0;
+                caseDto.Capex += projectDto.Surfs!.First(surfDto => surfDto.Id == caseDto.SurfLink)
+                    ?.CessationCostProfile?.Sum ?? 0;
             }
-            if (c.TopsideLink != Guid.Empty)
+
+            if (caseDto.TopsideLink != Guid.Empty)
             {
-                c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CostProfile?.Sum ?? 0;
-                c.Capex += p.Topsides!.First(l => l.Id == c.TopsideLink)?.CessationCostProfile?.Sum ?? 0;
+                caseDto.Capex += projectDto.Topsides!.First(topsideDto => topsideDto.Id == caseDto.TopsideLink)
+                    ?.CostProfile?.Sum ?? 0;
+                caseDto.Capex += projectDto.Topsides!.First(topsideDto => topsideDto.Id == caseDto.TopsideLink)
+                    ?.CessationCostProfile?.Sum ?? 0;
             }
-            if (c.TransportLink != Guid.Empty)
+
+            if (caseDto.TransportLink != Guid.Empty)
             {
-                c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CostProfile?.Sum ?? 0;
-                c.Capex += p.Transports!.First(l => l.Id == c.TransportLink)?.CessationCostProfile?.Sum ?? 0;
+                caseDto.Capex += projectDto.Transports!.First(transportDto => transportDto.Id == caseDto.TransportLink)
+                    ?.CostProfile?.Sum ?? 0;
+                caseDto.Capex += projectDto.Transports!.First(transportDto => transportDto.Id == caseDto.TransportLink)
+                    ?.CessationCostProfile?.Sum ?? 0;
             }
         }
     }

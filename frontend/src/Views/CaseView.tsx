@@ -79,6 +79,7 @@ function CaseView() {
     const currentProject = useCurrentContext()
     const [opex, setOpex] = useState<OpexCostProfile>()
     const [study, setStudy] = useState<StudyCostProfile>()
+    const [cessation, setCessation] = useState<StudyCostProfile>()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
@@ -106,10 +107,24 @@ function CaseView() {
             if (project !== undefined) {
                 const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
-                const generatedGAndGAdminCost = await (await GetCaseService()).generateOpexCost(caseResult.id!)
-                setOpex(generatedGAndGAdminCost)
-                const generateStudy = await (await GetCaseService()).generateStudyCost(caseResult.id!)
-                setStudy(generateStudy)
+                try {
+                    const generatedOpexCost = await (await GetCaseService()).generateOpexCost(caseResult.id!)
+                    setOpex(generatedOpexCost)
+                } catch (error) {
+                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                }
+                try {
+                    const generateStudy = await (await GetCaseService()).generateStudyCost(caseResult.id!)
+                    setStudy(generateStudy)
+                } catch (error) {
+                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                }
+                try {
+                    const generateCessation = await (await GetCaseService()).generateCessationCost(caseResult.id!)
+                    setCessation(generateCessation)
+                } catch (error) {
+                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                }
             }
         })()
     }, [project])
@@ -231,7 +246,7 @@ function CaseView() {
                 </Tabs>
                 <ReadOnlyCostProfile
                     dG4Year={caseItem.DG4Date?.getFullYear()}
-                    timeSeries={caseItem.cessationCost}
+                    timeSeries={cessation}
                     title="Cessation cost profile"
                 />
                 <ReadOnlyCostProfile
