@@ -49,43 +49,45 @@ const TimeSeries = ({
     const lastYearLength = lastYear?.toString().length === 4
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
-        if (timeSeries![0] !== undefined && updatedTimeSeries !== undefined) {
-            for (let i = 0; i < timeSeries![i]?.values?.length!; i += 1) {
-                if (timeSeries![i] !== undefined) {
-                    if (updatedTimeSeries !== undefined && timeSeries![i] !== undefined) {
-                        const columnTitles: string[] = []
-                        if (firstYear !== undefined && lastYear !== undefined) {
-                            for (let j = firstYear; j < lastYear; j += 1) {
-                                columnTitles.push(j.toString())
+        if (timeSeries !== undefined) {
+            if (timeSeries[0] !== undefined && updatedTimeSeries !== undefined) {
+                for (let i = 0; i < timeSeries[i]?.values?.length!; i += 1) {
+                    if (timeSeries[i] !== undefined) {
+                        if (updatedTimeSeries !== undefined && timeSeries[i] !== undefined) {
+                            const columnTitles: string[] = []
+                            if (firstYear !== undefined && lastYear !== undefined) {
+                                for (let j = firstYear; j < lastYear; j += 1) {
+                                    columnTitles.push(j.toString())
+                                }
                             }
+                            setColumns(columnTitles)
+
+                            const zeroesAtStart: Number[] = Array.from({
+                                length: Number(timeSeries[i].startYear!)
+                                + Number(dG4Year) - Number(firstYear),
+                            }, (() => 0))
+
+                            const zeroesAtEnd: Number[] = Array.from({
+                                length: Number(lastYear)
+                                - (Number(timeSeries[i].startYear!)
+                                + Number(dG4Year)
+                                + Number(timeSeries[i].values!.length!)),
+                            }, (() => 0))
+
+                            const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
+                            const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
+                            const newGridData = buildGridData(timeSeries[i])
+
+                            const alignedAssetGridData = new Array(
+                                assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
+                            )
+                            combinedTimeseries.push(alignedAssetGridData)
                         }
-                        setColumns(columnTitles)
-
-                        const zeroesAtStart: Number[] = Array.from({
-                            length: Number(timeSeries![i].startYear!)
-                            + Number(dG4Year) - Number(firstYear),
-                        }, (() => 0))
-
-                        const zeroesAtEnd: Number[] = Array.from({
-                            length: Number(lastYear)
-                            - (Number(timeSeries![i].startYear!)
-                            + Number(dG4Year)
-                            + Number(timeSeries![i].values!.length!)),
-                        }, (() => 0))
-
-                        const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
-                        const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
-                        const newGridData = buildGridData(timeSeries![i])
-
-                        const alignedAssetGridData = new Array(
-                            assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
-                        )
-                        combinedTimeseries.push(alignedAssetGridData)
                     }
                 }
             }
+            setGridData(combinedTimeseries)
         }
-        setGridData(combinedTimeseries)
     }
 
     useEffect(() => {
@@ -134,44 +136,46 @@ const TimeSeries = ({
     > (Number(timeSeries![j].startYear!) + Number(dG4Year!))
 
     const createNewGridWithData = (j: any) => {
-        const newTimeSeries: ITimeSeries = { ...timeSeries![j] }
-        const colYears = []
-        for (let c = tableFirstYear; c! <= tableLastYear!; c! += 1) {
-            colYears.push(c!.toString())
-        }
-        setColumns(colYears)
-        newTimeSeries.name = profileName[j]
-        newTimeSeries.startYear = timeSeries![j].startYear
+        if (tableFirstYear && tableLastYear && timeSeries !== undefined) {
+            const newTimeSeries: ITimeSeries = { ...timeSeries[j] }
+            const colYears = []
+            for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
+                colYears.push(c!.toString())
+            }
+            setColumns(colYears)
+            newTimeSeries.name = profileName[j]
+            newTimeSeries.startYear = timeSeries![j].startYear
 
-        if (NewTableFirstYearSmallerThanProfileFirstYear(j)) {
-            newTimeSeries.startYear = tableFirstYear! - dG4Year!
-            newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length!)
-                .fill(0).concat(newTimeSeries.values)
-        }
+            if (NewTableFirstYearSmallerThanProfileFirstYear(j)) {
+                newTimeSeries.startYear = tableFirstYear - dG4Year!
+                newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length)
+                    .fill(0).concat(newTimeSeries.values)
+            }
 
-        if (NewTableLastYearGreaterThanProfileLastYear(colYears, newTimeSeries)) {
-            newTimeSeries.values = (newTimeSeries.values)
-                ?.concat(new Array(colYears.length - timeSeries![j].values!.length!).fill(0))
-        }
+            if (NewTableLastYearGreaterThanProfileLastYear(colYears, newTimeSeries)) {
+                newTimeSeries.values = (newTimeSeries.values)
+                    ?.concat(new Array(colYears.length - timeSeries[j].values!.length).fill(0))
+            }
 
-        if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
-            const yearDifference = (Number(colYears[0]) + timeSeries![j].values!.length - 1) - tableLastYear!
-            newTimeSeries.values = timeSeries![j].values?.slice(0, -yearDifference)
-        }
+            if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
+                const yearDifference = (Number(colYears[0]) + timeSeries[j].values!.length - 1) - tableLastYear
+                newTimeSeries.values = timeSeries[j].values?.slice(0, -yearDifference)
+            }
 
-        if (NewTableFirstYearGreaterThanProfileFirstYear(j)) {
-            newTimeSeries.startYear = tableFirstYear! - dG4Year!
-            const yearDifference = tableFirstYear! - (timeSeries![j].startYear! + dG4Year!)
-            newTimeSeries.values = timeSeries![j].values?.slice(yearDifference)
+            if (NewTableFirstYearGreaterThanProfileFirstYear(j)) {
+                newTimeSeries.startYear = tableFirstYear - dG4Year!
+                const yearDifference = tableFirstYear - (timeSeries[j].startYear! + dG4Year!)
+                newTimeSeries.values = timeSeries[j].values?.slice(yearDifference)
+            }
+            setTimeSeries(newTimeSeries)
+            if (newTimeSeries !== undefined) {
+                const newGridData = buildGridData(newTimeSeries)
+                const alignedAssetGridData = new Array(newGridData[0])
+                combinedEmptyTimeseries.push(alignedAssetGridData)
+            }
+            setGridData(combinedEmptyTimeseries)
+            setHasChanges(true)
         }
-        setTimeSeries(newTimeSeries)
-        if (newTimeSeries !== undefined) {
-            const newGridData = buildGridData(newTimeSeries)
-            const alignedAssetGridData = new Array(newGridData[0])
-            combinedEmptyTimeseries.push(alignedAssetGridData)
-        }
-        setGridData(combinedEmptyTimeseries)
-        setHasChanges(true)
     }
 
     const addTimeSeries = () => {
