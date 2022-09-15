@@ -1,8 +1,12 @@
 import { useMemo } from "react"
 import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
+import "@equinor/fusion-framework-module-ag-grid"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
+import {
+    ColDef, ColGroupDef, Grid, GridOptions,
+} from "ag-grid-community"
 
 export interface CellValue {
     value: number | string
@@ -42,16 +46,20 @@ function DataTable({
         const columnToColDef = []
         const columnPinned = { field: "Profile", initialPinned: "left" }
         for (let i = 0; i < col.length; i += 1) {
-            columnToColDef.push({ field: col[i] })
+            columnToColDef.push({ field: col[i], aggFunc: "sum" })
         }
-        const columnWithProfile = columnToColDef.concat([...[columnPinned]])
-        return columnWithProfile
+        // const columnWithProfile = columnToColDef.concat([...[columnPinned]])
+        return columnToColDef
     }
 
     const defaultColDef = useMemo(() => ({
         resizable: true,
         sortable: true,
         initialWidth: 120,
+    }), [])
+
+    const autoGroupColumnDef = useMemo<ColDef>(() => ({
+        minWidth: 300,
     }), [])
 
     return (
@@ -61,6 +69,9 @@ function DataTable({
                 columnDefs={columnsArrayToColDef()}
                 defaultColDef={defaultColDef}
                 animateRows
+                autoGroupColumnDef={autoGroupColumnDef}
+                groupIncludeFooter
+                groupIncludeTotalFooter
             />
         </div>
     )
