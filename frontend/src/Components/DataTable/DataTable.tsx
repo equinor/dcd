@@ -150,7 +150,7 @@ function DataTable({
                 rowEventData,
             }
             const changeKeysToValue = Object.keys(rowEventData)
-                .reduce((prev:any, curr:any, index:any) => ({ ...prev, [(index)]: Number(rowEventData[curr]) }), {})
+                .reduce((prev:any, curr:any, ind:any) => ({ ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
             const newTimeSeries: ITimeSeries = { ...timeSeries![index!] }
             newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year!))
             newTimeSeries.name = profileName![index!]

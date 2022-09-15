@@ -8,7 +8,7 @@ import {
 } from "./DataTable/helpers"
 import { ITimeSeries } from "../models/ITimeSeries"
 import {
-    ImportButton, Wrapper, WrapperColumn, WrapperTablePeriod,
+    ImportButton, WrapperColumn, WrapperTablePeriod,
 } from "../Views/Asset/StyledAssetComponents"
 import NumberInputTable from "./NumberInputTable"
 

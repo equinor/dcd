@@ -18,9 +18,6 @@ interface Props {
 function DataTableOld({
     columns, gridData, onCellsChanged, dG4Year,
 }: Props) {
-    // const [rowData, setRowData] = useState<any[]>(rowDataToColumns())
-    // const [columnDefs, setColumnDefs] = useState<ColDef[]>()
-
     useAgGridStyles()
 
     const rowDataToColumns = () => {

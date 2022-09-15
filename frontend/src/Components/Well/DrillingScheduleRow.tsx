@@ -2,7 +2,6 @@ import { Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
-import DataTable, { CellValue } from "../DataTable/DataTable"
 import {
     buildGridData, buildZeroGridData, getColumnAbsoluteYears, replaceOldData,
 } from "../DataTable/helpers"
@@ -16,6 +15,7 @@ import { Project } from "../../models/Project"
 import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
 import { ExplorationWell } from "../../models/ExplorationWell"
 import { GetExplorationWellService } from "../../Services/ExplorationWellService"
+import DataTableOld, { CellValue } from "../DataTable/DataTableOld"
 
 interface Props {
     dG4Year: number | undefined
@@ -169,12 +169,12 @@ const DrillingScheduleRow = ({
             </Wrapper>
 
             <WrapperColumn>
-                {/* <DataTable
+                <DataTableOld
                     columns={columns}
                     gridData={gridData}
                     onCellsChanged={onCellsChanged}
                     dG4Year={dG4Year?.toString()!}
-                /> */}
+                />
             </WrapperColumn>
             {!dialogOpen ? null
                 : <Import onClose={() => { setDialogOpen(!dialogOpen) }} onImport={onImport} />}
