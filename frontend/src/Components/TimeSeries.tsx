@@ -37,14 +37,14 @@ const TimeSeries = ({
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
-    const [beginningYear, setBeginningYear] = useState<number | undefined>()
-    const [endingYear, setEndingYear] = useState<number | undefined>()
+    const [tableFirstYear, setTableFirstYear] = useState<number | undefined>()
+    const [tableLastYear, setTableLastYear] = useState<number | undefined>()
 
     const combinedTimeseries:any = []
     const combinedEmptyTimeseries:any = []
 
-    const beginningYearLength = beginningYear?.toString().length === 4
-    const endingYearLength = endingYear?.toString().length === 4
+    const tableFirstYearLength = tableFirstYear?.toString().length === 4
+    const tableLastYearLength = tableLastYear?.toString().length === 4
     const firstYearLength = firstYear?.toString().length === 4
     const lastYearLength = lastYear?.toString().length === 4
 
@@ -92,26 +92,26 @@ const TimeSeries = ({
         buildAlignedGrid(combinedTimeseries!)
 
         if (gridData !== undefined && firstYearLength && lastYearLength
-            && beginningYear === undefined && endingYear === undefined) {
-            setBeginningYear(firstYear)
-            setEndingYear(lastYear - 1)
+            && tableFirstYear === undefined && tableLastYear === undefined) {
+            setTableFirstYear(firstYear)
+            setTableLastYear(lastYear - 1)
         }
     }, [timeSeries, lastYear, firstYear])
 
     const createEmptyGrid = (j: any) => {
         if (gridData !== undefined && firstYearLength && lastYearLength) {
-            setBeginningYear(firstYear)
-            setEndingYear(lastYear - 1)
+            setTableFirstYear(firstYear)
+            setTableLastYear(lastYear - 1)
         }
         const newTimeSeries: ITimeSeries = { ...timeSeries![j] }
         const colYears = []
-        for (let c = beginningYear; c! <= endingYear!; c! += 1) {
+        for (let c = tableFirstYear; c! <= tableLastYear!; c! += 1) {
             colYears.push(c!.toString())
         }
         setColumns(colYears)
 
         newTimeSeries.name = profileName[j]
-        newTimeSeries.startYear = beginningYear! - dG4Year!
+        newTimeSeries.startYear = tableFirstYear! - dG4Year!
         newTimeSeries.values = new Array(colYears.length).fill(0)
 
         setTimeSeries(newTimeSeries)
@@ -124,35 +124,44 @@ const TimeSeries = ({
         setHasChanges(true)
     }
 
+    const NewTableFirstYearSmallerThanProfileFirstYear = (j:any) => tableFirstYear!
+    < (Number(timeSeries![j].startYear!) + Number(dG4Year!))
+    const NewTableLastYearGreaterThanProfileLastYear = (colYears:any, newTimeSeries:ITimeSeries) => (tableLastYear!)
+    > (Number(colYears[0]) + Number(newTimeSeries.values!.length))
+    const NewTableLastYearSmallerThanProfileLastYear = (j:any, colYears:any) => tableLastYear!
+    < (Number(colYears[0]) + Number(timeSeries![j].values!.length))
+    const NewTableFirstYearGreaterThanProfileFirstYear = (j:any) => tableFirstYear!
+    > (Number(timeSeries![j].startYear!) + Number(dG4Year!))
+
     const createNewGridWithData = (j: any) => {
         const newTimeSeries: ITimeSeries = { ...timeSeries![j] }
         const colYears = []
-        for (let c = beginningYear; c! <= endingYear!; c! += 1) {
+        for (let c = tableFirstYear; c! <= tableLastYear!; c! += 1) {
             colYears.push(c!.toString())
         }
         setColumns(colYears)
         newTimeSeries.name = profileName[j]
         newTimeSeries.startYear = timeSeries![j].startYear
 
-        if (beginningYear! < (Number(timeSeries![j].startYear!) + Number(dG4Year!))) {
-            newTimeSeries.startYear = beginningYear! - dG4Year!
+        if (NewTableFirstYearSmallerThanProfileFirstYear(j)) {
+            newTimeSeries.startYear = tableFirstYear! - dG4Year!
             newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length!)
                 .fill(0).concat(newTimeSeries.values)
         }
 
-        if ((endingYear!) > (Number(colYears[0]) + Number(newTimeSeries.values!.length))) {
+        if (NewTableLastYearGreaterThanProfileLastYear(colYears, newTimeSeries)) {
             newTimeSeries.values = (newTimeSeries.values)
                 ?.concat(new Array(colYears.length - timeSeries![j].values!.length!).fill(0))
         }
 
-        if (endingYear! < (Number(colYears[0]) + Number(timeSeries![j].values!.length))) {
-            const yearDifference = (Number(colYears[0]) + timeSeries![j].values!.length - 1) - endingYear!
+        if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
+            const yearDifference = (Number(colYears[0]) + timeSeries![j].values!.length - 1) - tableLastYear!
             newTimeSeries.values = timeSeries![j].values?.slice(0, -yearDifference)
         }
 
-        if (beginningYear! > (Number(timeSeries![j].startYear!) + Number(dG4Year!))) {
-            newTimeSeries.startYear = beginningYear! - dG4Year!
-            const yearDifference = beginningYear! - (timeSeries![j].startYear! + dG4Year!)
+        if (NewTableFirstYearGreaterThanProfileFirstYear(j)) {
+            newTimeSeries.startYear = tableFirstYear! - dG4Year!
+            const yearDifference = tableFirstYear! - (timeSeries![j].startYear! + dG4Year!)
             newTimeSeries.values = timeSeries![j].values?.slice(yearDifference)
         }
         setTimeSeries(newTimeSeries)
@@ -167,8 +176,8 @@ const TimeSeries = ({
 
     const addTimeSeries = () => {
         const colYears = []
-        if (beginningYearLength && endingYearLength) {
-            for (let j = beginningYear; j! < endingYear!; j! += 1) {
+        if (tableFirstYearLength && tableLastYearLength) {
+            for (let j = tableFirstYear; j! < tableLastYear!; j! += 1) {
                 colYears.push(j!.toString())
             }
             setColumns(colYears)
@@ -190,15 +199,15 @@ const TimeSeries = ({
         <>
             <WrapperTablePeriod>
                 <NumberInputTable
-                    value={beginningYearLength ? beginningYear : 2020}
-                    setValue={setBeginningYear}
+                    value={tableFirstYearLength ? tableFirstYear : 2020}
+                    setValue={setTableFirstYear}
                     integer
                     label="Start year"
                 />
                 <Typography variant="h2">-</Typography>
                 <NumberInputTable
-                    value={endingYearLength ? endingYear : 2030}
-                    setValue={setEndingYear}
+                    value={tableLastYearLength ? tableLastYear : 2030}
+                    setValue={setTableLastYear}
                     integer
                     label="End year"
                 />

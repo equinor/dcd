@@ -71,7 +71,7 @@ function DataTable({
         const objValSum:any = []
         const combinedObjArr: any = []
 
-        const rowTotalCost:any = []
+        const value:any = []
 
         if (gridData.length === 0) {
             for (let j = 0; j < profileName.length; j += 1) {
@@ -81,7 +81,7 @@ function DataTable({
                 combinedObjArr.push(rowObj)
 
                 const totalCostObj = { "Total cost": 0 }
-                rowTotalCost.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
+                value.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
             }
         }
 
@@ -104,10 +104,10 @@ function DataTable({
                 combinedObjArr.push(rowObj)
 
                 const totalCostObj = { "Total cost": totalCost }
-                rowTotalCost.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
+                value.push({ ...combinedObjArr[j], ...totalCostObj, ...rowPinned })
             }
         }
-        return rowTotalCost
+        return value
     }
 
     const columnsArrayToColDef = () => {
