@@ -7,9 +7,10 @@ import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
-import { CellValueChangedEvent } from "ag-grid-community"
+import { CellValueChangedEvent, ColDef } from "ag-grid-community"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
+import "ag-grid-enterprise"
 
 export interface CellValue {
     value: number | string
@@ -117,7 +118,7 @@ function DataTable({
             const columnPinned = [
                 { field: "Profile", pinned: "left", width: "autoWidth" },
                 { field: "Unit", pinned: "left", width: "autoWidth" },
-                { field: "Total", pinned: "right" }]
+                { field: "Total", pinned: "right", aggFunc: "sum" }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i] })
             }
@@ -162,6 +163,18 @@ function DataTable({
         setHasChanges(true)
     }, [dG4Year])
 
+    const autoGroupColumnDef = {
+        cellRendererParams: {
+            footerValueGetter: (params:any) => {
+                const isRootLevel = params.node.level === -1
+                if (isRootLevel) {
+                    return "Grand Total"
+                }
+                return `Sub Total (${params.value})`
+            },
+        },
+    }
+
     return (
         <div className="ag-theme-alpine">
             <AgGridReact
@@ -173,6 +186,12 @@ function DataTable({
                 domLayout="autoHeight"
                 enableCellChangeFlash
                 onCellValueChanged={onCellValueChanged}
+                // autoGroupColumnDef={autoGroupColumnDef}
+                // groupIncludeFooter
+                // groupIncludeTotalFooter
+                rowSelection="multiple"
+                enableRangeSelection
+                suppressCopySingleCellRanges
             />
         </div>
     )
