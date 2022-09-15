@@ -2,7 +2,6 @@ import { Typography } from "@equinor/eds-core-react"
 import {
     useEffect, useState,
 } from "react"
-import DataTable, { CellValue } from "./DataTable/DataTable"
 import {
     buildGridData,
 } from "./DataTable/helpers"
@@ -10,6 +9,7 @@ import { ITimeSeries } from "../models/ITimeSeries"
 import {
     Wrapper, WrapperColumn,
 } from "../Views/Asset/StyledAssetComponents"
+import DataTableOld, { CellValue } from "./DataTable/DataTableOld"
 
 interface Props {
     dG4Year: number | undefined
@@ -53,12 +53,12 @@ const ReadOnlyCostProfile = ({
             </Wrapper>
 
             <WrapperColumn>
-                {/* <DataTable
+                <DataTableOld
                     columns={columns}
                     gridData={gridData}
                     onCellsChanged={() => { }}
                     dG4Year={dG4Year?.toString()!}
-                /> */}
+                />
             </WrapperColumn>
         </>
     )
