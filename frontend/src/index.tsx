@@ -4,8 +4,6 @@ import createApp, { createLegacyApp } from "@equinor/fusion-framework-react-app"
 import { enableAgGrid } from "@equinor/fusion-framework-module-ag-grid"
 import App from "./app/App"
 
-// export const render = createApp(App)
-
 registerApp("conceptapp", {
     AppComponent: createLegacyApp(App, (config) => enableAgGrid(config)),
     context: {
