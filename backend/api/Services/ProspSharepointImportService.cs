@@ -1,3 +1,5 @@
+using System.Web;
+
 using api.Dtos;
 using api.Models;
 
@@ -7,9 +9,9 @@ namespace api.Services;
 
 public class ProspSharepointImportService
 {
+    private static ILogger<ProspSharepointImportService> _logger;
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
-    private readonly ILogger<ProspSharepointImportService> _logger;
     private readonly ProspExcelImportService _service;
 
     public ProspSharepointImportService(IConfiguration config, GraphServiceClient graphServiceClient,
@@ -21,73 +23,139 @@ public class ProspSharepointImportService
         _logger = loggerFactory.CreateLogger<ProspSharepointImportService>();
     }
 
-    public async Task<IDriveItemDeltaCollectionPage?>? GetDeltaDriveItemCollectionFromSite(string? url)
+    public async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string? url)
     {
-        var siteId = GetSiteId(url)?.Result;
+        var driveItems = new List<DriveItem>();
+        var siteIdAndParentRef = GetSiteIdAndParentReferencePath(url)?.Result;
+        var siteId = siteIdAndParentRef?[0];
+        var parentRefPath = siteIdAndParentRef?.Count > 1 ? siteIdAndParentRef?[1] : "";
 
         if (string.IsNullOrWhiteSpace(siteId))
         {
-            return null;
+            return driveItems;
         }
 
         try
         {
-            var driveItemSearchCollectionPage = await _graphServiceClient.Sites[siteId]
-                .Drive.Root.Delta()
-                .Request()
-                .GetAsync();
+            var documentLibraryName = parentRefPath?.Split('/')[3].Replace("%20", " ");
+            var itemPath = string.Join('/', parentRefPath?.Split('/').Skip(4) ?? Array.Empty<string>());
+            var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
 
-            return driveItemSearchCollectionPage;
+            return await GetDeltaDriveItemCollectionFromSite(itemPath, siteId, driveId, driveItems);
         }
         catch (Exception e)
         {
             _logger.LogError(e, $"failed retrieving list of latest DriveItems in Site: {e.Message}");
         }
 
-        return null;
+        return driveItems;
     }
 
+    private async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string itemPath, string siteId,
+        string? driveId, List<DriveItem> driveItems)
+    {
+        DriveItemDeltaCollectionPage? files;
+        if (!string.IsNullOrWhiteSpace(itemPath))
+        {
+            files = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
+                .ItemWithPath("/" + itemPath).Delta().Request().GetAsync() as DriveItemDeltaCollectionPage;
+        }
+        else
+        {
+            files = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
+                .Delta().Request().GetAsync() as DriveItemDeltaCollectionPage;
+        }
+
+
+        if (files == null)
+        {
+            return driveItems;
+        }
+
+        foreach (var driveItem in files)
+        {
+            driveItems.Add(driveItem);
+        }
+
+        return driveItems;
+    }
+
+    private async Task<string?> GetDocumentLibraryDriveId(string siteId, string? documentLibraryName)
+    {
+        var getDrivesInSite = await _graphServiceClient.Sites[siteId].Drives
+            .Request()
+            .GetAsync();
+
+        var driveIds = getDrivesInSite.Where(x => x.Name == documentLibraryName).Select(i => i.Id).ToList();
+
+        var driveId = driveIds?.FirstOrDefault();
+        return driveId;
+    }
+
+
     public static List<DriveItemDto> GetExcelDriveItemsFromSite(
-        IDriveItemDeltaCollectionPage? driveItemDeltaCollectionPage)
+        List<DriveItem>? driveItemDeltaCollectionPage)
     {
         var dto = new List<DriveItemDto>();
-        if (driveItemDeltaCollectionPage != null)
+        try
         {
-            foreach (var driveItem in driveItemDeltaCollectionPage.Where(item =>
-                         item.File != null && ValidMimeTypes().Contains(item.File.MimeType)))
+            if (driveItemDeltaCollectionPage != null)
             {
-                ConvertToDto(driveItem, dto);
+                foreach (var driveItem in driveItemDeltaCollectionPage.Where(item =>
+                             item.File != null && ValidMimeTypes().Contains(item.File.MimeType)))
+                {
+                    ConvertToDto(driveItem, dto);
+                }
             }
+
+            return dto;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, $"failed converting filtered driveItem list to driveItemDto in Site: {e.Message}");
         }
 
         return dto;
     }
 
-    private async Task<string?>? GetSiteId(string? url)
+    private async Task<List<string>>? GetSiteIdAndParentReferencePath(string? url)
     {
+        var siteData = new List<string>();
         try
         {
             if (url != null)
             {
                 var siteUri = new Uri(url);
                 var hostName = siteUri.Host;
+                var pathFromIdParameter = HttpUtility.ParseQueryString(siteUri.Query).Get("id");
 
                 // Example of valid relativepath: /sites/{your site name} such as /sites/ConceptApp-Test
-                var relativePath = $"/sites/{siteUri.AbsolutePath.Split('/', 3)[2].Split('/')[0]}";
+                var relativePath = $@"/sites/{siteUri.AbsolutePath.Split('/', 3)[2].Split('/')[0]}";
+
 
                 var site = await _graphServiceClient.Sites.GetByPath(relativePath, hostName)
                     .Request()
                     .GetAsync();
 
-                return site.Id;
+                siteData.Add(site.Id);
+
+                // DriveItem path to get content from subfolder, if no subfolder given then set folder from absolute path
+                var parentReferencePath = pathFromIdParameter != null
+                    ? $@"/drive/root:/{string.Join('/', pathFromIdParameter.Split('/').Skip(3))}"
+                    : $@"/drive/root:/{siteUri.AbsolutePath.Split('/')[3]}";
+
+                siteData.Add(parentReferencePath);
+
+
+                return siteData;
             }
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"failed retrieving Site id : {e.Message}");
+            _logger.LogError(e, $"Invalid url: {e.Message}");
         }
 
-        return null;
+        return siteData;
     }
 
     public async Task<ProjectDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
@@ -95,7 +163,7 @@ public class ProspSharepointImportService
         var projectDto = new ProjectDto();
         if (!string.IsNullOrWhiteSpace(dtos.FirstOrDefault()?.SharePointSiteUrl))
         {
-            var siteId = GetSiteId(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result;
+            var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
             if (siteId != null)
             {
                 var fileIdsOnCases = new Dictionary<Guid, string>();
