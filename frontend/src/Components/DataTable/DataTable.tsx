@@ -118,7 +118,7 @@ function DataTable({
             const columnPinned = [
                 { field: "Profile", pinned: "left", width: "autoWidth" },
                 { field: "Unit", pinned: "left", width: "autoWidth" },
-                { field: "Total", pinned: "right", aggFunc: "sum" }]
+                { field: "Total", pinned: "right" }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i] })
             }
@@ -143,6 +143,8 @@ function DataTable({
         const rowEventData = event.data
         const index = event.node.rowIndex
 
+        console.log(rowEventData)
+
         if (timeSeries! !== undefined) {
             const convertObj = {
                 convertObj:
@@ -163,18 +165,6 @@ function DataTable({
         setHasChanges(true)
     }, [dG4Year])
 
-    const autoGroupColumnDef = {
-        cellRendererParams: {
-            footerValueGetter: (params:any) => {
-                const isRootLevel = params.node.level === -1
-                if (isRootLevel) {
-                    return "Grand Total"
-                }
-                return `Sub Total (${params.value})`
-            },
-        },
-    }
-
     return (
         <div className="ag-theme-alpine">
             <AgGridReact
@@ -186,9 +176,6 @@ function DataTable({
                 domLayout="autoHeight"
                 enableCellChangeFlash
                 onCellValueChanged={onCellValueChanged}
-                // autoGroupColumnDef={autoGroupColumnDef}
-                // groupIncludeFooter
-                // groupIncludeTotalFooter
                 rowSelection="multiple"
                 enableRangeSelection
                 suppressCopySingleCellRanges
