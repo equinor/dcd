@@ -7,7 +7,7 @@ import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
-import { CellValueChangedEvent, ColDef } from "ag-grid-community"
+import { CellValueChangedEvent } from "ag-grid-community"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
 import "ag-grid-enterprise"
@@ -142,8 +142,6 @@ function DataTable({
     const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
         const rowEventData = event.data
         const index = event.node.rowIndex
-
-        console.log(rowEventData)
 
         if (timeSeries! !== undefined) {
             const convertObj = {
