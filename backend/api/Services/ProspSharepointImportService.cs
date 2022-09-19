@@ -9,7 +9,7 @@ namespace api.Services;
 
 public class ProspSharepointImportService
 {
-    private static ILogger<ProspSharepointImportService> _logger;
+    private static ILogger<ProspSharepointImportService>? _logger;
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
     private readonly ProspExcelImportService _service;
@@ -43,7 +43,7 @@ public class ProspSharepointImportService
 
             return await GetDeltaDriveItemCollectionFromSite(itemPath, siteId, driveId, driveItems);
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             _logger.LogError(e, $"failed retrieving list of latest DriveItems in Site: {e.Message}");
         }
@@ -110,7 +110,7 @@ public class ProspSharepointImportService
 
             return dto;
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             _logger.LogError(e, $"failed converting filtered driveItem list to driveItemDto in Site: {e.Message}");
         }
@@ -150,7 +150,7 @@ public class ProspSharepointImportService
                 return siteData;
             }
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             _logger.LogError(e, $"Invalid url: {e.Message}");
         }
