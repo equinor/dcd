@@ -14,6 +14,13 @@ public class Well
     public double WellInterventionCost { get; set; }
     public ICollection<WellProjectWell>? WellProjectWells { get; set; }
     public ICollection<ExplorationWell>? ExplorationWells { get; set; }
+
+    public static bool IsWellProjectWell(WellCategory wellCategory) => new[] {
+        WellCategory.Oil_Producer,
+        WellCategory.Gas_Producer,
+        WellCategory.Water_Injector,
+        WellCategory.Gas_Injector
+    }.Contains(wellCategory);
 }
 
 public enum WellCategory

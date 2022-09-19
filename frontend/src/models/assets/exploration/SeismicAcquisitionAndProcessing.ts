@@ -5,6 +5,7 @@ export class SeismicAcquisitionAndProcessing implements
 Components.Schemas.SeismicAcquisitionAndProcessingDto, ITimeSeries {
     id?: string
     startYear?: number
+    name?: string
     values?: number []
     epaVersion?: string
     currency?: Components.Schemas.Currency
@@ -14,6 +15,7 @@ Components.Schemas.SeismicAcquisitionAndProcessingDto, ITimeSeries {
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
+            this.name = "Seismic acquisition and processing"
             this.values = data.values ?? []
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
@@ -21,6 +23,7 @@ Components.Schemas.SeismicAcquisitionAndProcessingDto, ITimeSeries {
         } else {
             this.id = EMPTY_GUID
             this.startYear = 0
+            this.name = "Seismic acquisition and processing"
             this.values = []
         }
     }
