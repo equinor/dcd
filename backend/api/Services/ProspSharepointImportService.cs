@@ -54,25 +54,25 @@ public class ProspSharepointImportService
     private async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string itemPath, string siteId,
         string? driveId, List<DriveItem> driveItems)
     {
-        IDriveItemDeltaCollectionPage? files;
+        IDriveItemDeltaCollectionPage? driveItemsdelta;
         if (!string.IsNullOrWhiteSpace(itemPath))
         {
-            files = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
+            driveItemsdelta = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
                 .ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
         }
         else
         {
-            files = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
+            driveItemsdelta = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
                 .Delta().Request().GetAsync();
         }
 
 
-        if (files == null)
+        if (driveItemsdelta == null)
         {
             return driveItems;
         }
 
-        foreach (var driveItem in files)
+        foreach (var driveItem in driveItemsdelta)
         {
             driveItems.Add(driveItem);
         }
@@ -150,7 +150,7 @@ public class ProspSharepointImportService
                 return siteData;
             }
         }
-        catch (Exception? e)
+        catch (Exception e)
         {
             _logger.LogError(e, $"Invalid url: {e.Message}");
         }
