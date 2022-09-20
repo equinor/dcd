@@ -7,7 +7,7 @@ import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
-import { CellValueChangedEvent } from "ag-grid-community"
+import { CellValueChangedEvent, ColDef } from "ag-grid-community"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
 import "ag-grid-enterprise"
@@ -100,11 +100,12 @@ function DataTable({
                     objValSum.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: any, y: any) => x + y))
                     totalValue.push(objValSum[j])
                 }
+                const objValToNumbers = objVal.map((x: any) => parseFloat(x))
                 const rowObj = objKey
-                    .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: objVal[index] }), {})
+                    .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: objValToNumbers[index] }), {})
                 combinedObjArr.push(rowObj)
 
-                const totalValueObj = { Total: totalValue }
+                const totalValueObj = { Total: Number(totalValue) }
                 value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
             }
         }
@@ -115,20 +116,34 @@ function DataTable({
         if (columns.length !== 0) {
             const col = columns
             const columnToColDef = []
+            const columnToColDef2 = []
             const columnPinned = [
-                { field: "Profile", pinned: "left", width: "autoWidth" },
-                { field: "Unit", pinned: "left", width: "autoWidth" },
-                { field: "Total", pinned: "right" }]
+                {
+                    field: "Profile", pinned: "left", width: "autoWidth", aggFunc: "",
+                },
+                {
+                    field: "Unit", pinned: "left", width: "autoWidth", aggFunc: "",
+                },
+                {
+                    field: "Total", pinned: "right", aggFunc: "sum", cellStyle: { fontWeight: "bold" },
+                }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i] })
+                columnToColDef2.push({ field: col[i], aggFunc: "sum" })
             }
+            //            const columnWithProfile2 = [...columnToColDef2, ...columnPinned]
+
+            const columnWithProfile2 = columnToColDef2.concat([...columnPinned])
+            // console.log(columnWithProfile2)
+
             const columnWithProfile = columnToColDef.concat([...columnPinned])
-            return columnWithProfile
+            // console.log(columnWithProfile)
+            return columnWithProfile2
         }
         return undefined
     }
 
-    const defaultColDef = useMemo(() => ({
+    const defaultColDef = useMemo<ColDef>(() => ({
         resizable: true,
         sortable: true,
         // initialWidth: 120,
@@ -163,6 +178,31 @@ function DataTable({
         setHasChanges(true)
     }, [dG4Year])
 
+    const autoGroupColumnDef = {
+        cellRendererParams: {
+            footerValueGetter: (params: any) => {
+                const isRootLevel = params.node.level === -1
+                if (isRootLevel) {
+                    return "Total"
+                }
+                return `Sub Total (${params.value})`
+            },
+        },
+    }
+
+    const footerPins = [
+        { Profile: "Total" },
+    ]
+
+    const gridOptions = {
+        getRowStyle: (params: any) => {
+            if (params.node.footer) {
+                return { fontWeight: "bold" }
+            }
+            return { fontWeight: "normal" }
+        },
+    }
+
     return (
         <div className="ag-theme-alpine">
             <AgGridReact
@@ -177,6 +217,11 @@ function DataTable({
                 rowSelection="multiple"
                 enableRangeSelection
                 suppressCopySingleCellRanges
+                autoGroupColumnDef={autoGroupColumnDef}
+                groupIncludeFooter
+                groupIncludeTotalFooter
+                gridOptions={gridOptions}
+                suppressMovableColumns
             />
         </div>
     )
