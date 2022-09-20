@@ -26,9 +26,9 @@ public class ProspSharepointImportService
     public async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string? url)
     {
         var driveItems = new List<DriveItem>();
-        var siteIdAndParentRef = GetSiteIdAndParentReferencePath(url)?.Result;
-        var siteId = siteIdAndParentRef?[0];
-        var parentRefPath = siteIdAndParentRef?.Count > 1 ? siteIdAndParentRef[1] : "";
+        var siteIdAndParentRef = GetSiteIdAndParentReferencePath(url).Result;
+        var siteId = siteIdAndParentRef[0];
+        var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
 
         if (string.IsNullOrWhiteSpace(siteId))
         {
@@ -45,7 +45,7 @@ public class ProspSharepointImportService
         }
         catch (Exception? e)
         {
-            _logger.LogError(e, $"failed retrieving list of latest DriveItems in Site: {e.Message}");
+            _logger?.LogError(e, $"failed retrieving list of latest DriveItems in Site: {e.Message}");
         }
 
         return driveItems;
@@ -72,10 +72,7 @@ public class ProspSharepointImportService
             return driveItems;
         }
 
-        foreach (var driveItem in driveItemsDelta)
-        {
-            driveItems.Add(driveItem);
-        }
+        driveItems.AddRange(driveItemsDelta);
 
         return driveItems;
     }
@@ -117,13 +114,13 @@ public class ProspSharepointImportService
         }
         catch (Exception? e)
         {
-            _logger.LogError(e, $"failed converting filtered driveItem list to driveItemDto in Site: {e.Message}");
+            _logger?.LogError(e, $"failed converting filtered driveItem list to driveItemDto in Site: {e.Message}");
         }
 
         return dto;
     }
 
-    private async Task<List<string>>? GetSiteIdAndParentReferencePath(string? url)
+    private async Task<List<string>> GetSiteIdAndParentReferencePath(string? url)
     {
         var siteData = new List<string>();
         try
@@ -159,7 +156,7 @@ public class ProspSharepointImportService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, $"Invalid url: {e.Message}");
+            _logger?.LogError(e, $"Invalid url: {e.Message}");
         }
 
         return siteData;
@@ -178,50 +175,48 @@ public class ProspSharepointImportService
         if (!string.IsNullOrWhiteSpace(dtos.FirstOrDefault()?.SharePointSiteUrl))
         {
             var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
-            if (siteId != null)
+            if (siteId == null)
             {
-                var driveId = await GetDriveIdFromSharePointSiteUrl(dtos, siteId);
+                return projectDto;
+            }
+            var driveId = await GetDriveIdFromSharePointSiteUrl(dtos, siteId);
 
-                var fileIdsOnCases = new Dictionary<Guid, string>();
-                foreach (var dto in dtos)
+            var fileIdsOnCases = dtos.ToDictionary(dto => new Guid(dto.Id!), dto => dto.SharePointFileId);
+
+            var fileStreamsOnCases = new Dictionary<Guid, Stream>();
+            foreach (var item in fileIdsOnCases.Where(d => !string.IsNullOrWhiteSpace(d.Value)))
+            {
+                try
                 {
-                    fileIdsOnCases.Add(new Guid(dto.Id!), dto.SharePointFileId);
+                    var driveItemStream = await _graphServiceClient.Sites[siteId]
+                        .Drives[driveId].Items[item.Value]
+                        .Content.Request()
+                        .GetAsync();
+
+                    fileStreamsOnCases.Add(item.Key, driveItemStream);
                 }
-
-                var fileStreamsOnCases = new Dictionary<Guid, Stream>();
-                foreach (var item in fileIdsOnCases.Where(d => !string.IsNullOrWhiteSpace(d.Value)))
+                catch (Exception e)
                 {
-                    try
-                    {
-                        var driveItemStream = await _graphServiceClient.Sites[siteId]
-                            .Drives[driveId].Items[item.Value]
-                            .Content.Request()
-                            .GetAsync();
-
-                        fileStreamsOnCases.Add(item.Key, driveItemStream);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
+                    Console.WriteLine(e);
                 }
+            }
 
-                foreach (var caseWithFileStream in fileStreamsOnCases)
+            foreach (var caseWithFileStream in fileStreamsOnCases)
+            {
+                if (caseWithFileStream.Value.Length <= 0)
                 {
-                    if (caseWithFileStream.Value.Length > 0)
-                    {
-                        foreach (var iteminfo in dtos.Where(importDto =>
-                                     importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
-                        {
-                            var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
-                                iteminfo.Transport);
+                    continue;
+                }
+                foreach (var iteminfo in dtos.Where(importDto =>
+                             importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
+                {
+                    var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
+                        iteminfo.Transport);
 
-                            projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
-                                projectId,
-                                assets,
-                                iteminfo.SharePointFileId);
-                        }
-                    }
+                    projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                        projectId,
+                        assets,
+                        iteminfo.SharePointFileId);
                 }
             }
         }
@@ -232,9 +227,9 @@ public class ProspSharepointImportService
     private async Task<string?> GetDriveIdFromSharePointSiteUrl(SharePointImportDto[] dtos, string siteId)
     {
         var siteIdAndParentRef =
-            GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()?.SharePointSiteUrl)?.Result;
-        var parentRefPath = siteIdAndParentRef?.Count > 1 ? siteIdAndParentRef?[1] : "";
-        var documentLibraryName = parentRefPath?.Split('/')[3];
+            GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()?.SharePointSiteUrl).Result;
+        var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
+        var documentLibraryName = parentRefPath.Split('/')[3];
         var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
         return driveId;
     }
