@@ -11,6 +11,7 @@ import { CellValueChangedEvent, ColDef } from "ag-grid-community"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
 import "ag-grid-enterprise"
+import { useParams } from "react-router"
 
 export interface CellValue {
     value: number | string
@@ -25,12 +26,15 @@ interface Props {
     setHasChanges: Dispatch<SetStateAction<boolean>>,
     setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     timeSeries: (ITimeSeries | undefined)[]
+    profileType: string
 }
 
 function DataTable({
-    columns, gridData, dG4Year, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries,
+    columns, gridData, dG4Year, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries, profileType,
 }: Props) {
-    const gridRef = useRef<AgGridReact | null>(null)
+    // const gridRef = useRef<AgGridReact | null>(null)
+    const topGrid = useRef<AgGridReact>(null)
+    const bottomGrid = useRef<AgGridReact>(null)
 
     const combinedTimeseries: any = []
 
@@ -138,6 +142,7 @@ function DataTable({
 
             const columnWithProfile = columnToColDef.concat([...columnPinned])
             // console.log(columnWithProfile)
+            // console.log(columnToColDef2)
             return columnWithProfile2
         }
         return undefined
@@ -148,6 +153,14 @@ function DataTable({
         sortable: true,
         // initialWidth: 120,
         editable: true,
+        flex: 1,
+    }), [])
+
+    const footerColDef = useMemo<ColDef>(() => ({
+        resizable: true,
+        sortable: true,
+        // initialWidth: 120,
+        editable: false,
         flex: 1,
     }), [])
 
@@ -178,21 +191,114 @@ function DataTable({
         setHasChanges(true)
     }, [dG4Year])
 
-    const autoGroupColumnDef = {
+    const autoGroupColumnDef = useMemo<ColDef>(() => ({
+        minWidth: 300,
         cellRendererParams: {
             footerValueGetter: (params: any) => {
+                const profileColumn = params.node.rowindex === -1
                 const isRootLevel = params.node.level === -1
-                if (isRootLevel) {
+                if (isRootLevel && profileColumn) {
                     return "Total"
                 }
-                return `Sub Total (${params.value})`
+                return "Total"
             },
         },
+    }), [])
+
+    const aggFuncs = useMemo(() => ({
+        yearSum: (params: any) => {
+            const year = params.node
+            console.log(year)
+            return 50
+        },
+    }), [])
+
+    const totalTotalCost = () => {
+        console.log(columns)
+        const totalTotalCostArray = []
+        const totalValueArray = []
+        const valueArray = []
+        console.log(timeSeries!)
+        if (timeSeries!.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < timeSeries!.length; j += 1) {
+                if (timeSeries![j] !== undefined) {
+                    totalTotalCostArray.push(timeSeries![j]?.sum)
+                }
+            }
+            for (let i = 0; i < columns.length; i += 1) {
+                if (timeSeries![i] !== undefined) {
+                    valueArray.push(timeSeries![i]?.values)
+                }
+            }
+            console.log(timeSeries)
+            console.log(valueArray)
+            // console.log(valueArray.reduce((prev, curr) => prev! + curr![11], 0))
+
+            for (let k = 0; k < columns.length; k += 1) {
+                if (timeSeries! !== undefined) {
+                    totalValueArray.push(valueArray.reduce((prev, curr) => prev! + curr![k], 0))
+                }
+            }
+        }
+        console.log(columns.length)
+        console.log(totalTotalCostArray)
+        // console.log(valueArray)
+        console.log(totalValueArray)
+
+        // for each array - reduce - then push to new array with each sum
+
+        // const sumValues = totalValueArray.reduce((prev, curr) => prev! + curr![0], 0)
+        // console.log(sumValues)
+
+        const sum = totalTotalCostArray.reduce((prev, curr) => prev! + curr!, 0)
+        console.log(sum)
+        return sum
     }
 
-    const footerPins = [
-        { Profile: "Total" },
-    ]
+    const columnTotalsData = () => {
+        const footerGridData = {
+            Profile: `Total ${profileType.toLowerCase()}`,
+            Unit: "",
+            Total: totalTotalCost(),
+        }
+        console.log(columns)
+        const totalValueArray: any = []
+        const valueArray = []
+        console.log(timeSeries!)
+        if (timeSeries!.length >= 1 && columns.length !== 0) {
+            for (let i = 0; i < columns.length; i += 1) {
+                if (timeSeries![i] !== undefined) {
+                    valueArray.push(timeSeries![i]?.values)
+                }
+            }
+            for (let k = 0; k < columns.length; k += 1) {
+                if (timeSeries! !== undefined) {
+                    totalValueArray.push(valueArray.reduce((prev, curr) => prev! + curr![k], 0))
+                }
+            }
+        }
+        const value = columns
+            .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: totalValueArray[index] }), {})
+        console.log(value)
+        console.log(footerGridData)
+        const combinedFooterRow = [{...value, ...footerGridData}]
+        return combinedFooterRow
+    }
+
+    // lag en ny rowDataToColumns for footer med totaler
+
+    // const footerGridData = [
+    //     {
+    //         Profile: `Total ${profileType.toLowerCase()}`,
+    //         Unit: "",
+    //         Total: totalTotalCost(),
+    //     },
+    //     // {...yearTotals, ...footerGridData}
+    // ]
+
+    const footerData2 = columnTotalsData()
+    // const footerData = footerData2.concat([...footerGridData])
+    console.log(footerData2)
 
     const gridOptions = {
         getRowStyle: (params: any) => {
@@ -204,25 +310,44 @@ function DataTable({
     }
 
     return (
-        <div className="ag-theme-alpine">
-            <AgGridReact
-                ref={gridRef}
-                rowData={rowDataToColumns()}
-                columnDefs={columnsArrayToColDef()}
-                defaultColDef={defaultColDef}
-                animateRows
-                domLayout="autoHeight"
-                enableCellChangeFlash
-                onCellValueChanged={onCellValueChanged}
-                rowSelection="multiple"
-                enableRangeSelection
-                suppressCopySingleCellRanges
-                autoGroupColumnDef={autoGroupColumnDef}
-                groupIncludeFooter
-                groupIncludeTotalFooter
-                gridOptions={gridOptions}
-                suppressMovableColumns
-            />
+        <div
+            style={{ display: "flex", flexDirection: "column", height: 150 }}
+            className="ag-theme-alpine"
+        >
+            <div style={{ flex: "1 1 auto" }}>
+                <AgGridReact
+                    ref={topGrid}
+                    alignedGrids={bottomGrid.current ? [bottomGrid.current] : undefined}
+                    rowData={rowDataToColumns()}
+                    columnDefs={columnsArrayToColDef()}
+                    defaultColDef={defaultColDef}
+                    animateRows
+                    domLayout="autoHeight"
+                    enableCellChangeFlash
+                    onCellValueChanged={onCellValueChanged}
+                    rowSelection="multiple"
+                    enableRangeSelection
+                    suppressCopySingleCellRanges
+                    // autoGroupColumnDef={autoGroupColumnDef}
+                    // groupIncludeFooter
+                    // groupIncludeTotalFooter
+                    gridOptions={gridOptions}
+                    aggFuncs={aggFuncs}
+                    suppressMovableColumns
+                    suppressHorizontalScroll
+                />
+            </div>
+            <div style={{ flex: "none", height: "60px" }}>
+                <AgGridReact
+                    ref={bottomGrid}
+                    alignedGrids={topGrid.current ? [topGrid.current] : undefined}
+                    rowData={columnTotalsData()}
+                    defaultColDef={footerColDef}
+                    columnDefs={columnsArrayToColDef()}
+                    headerHeight={0}
+                    rowStyle={{ fontWeight: "bold" }}
+                />
+            </div>
         </div>
     )
 }
