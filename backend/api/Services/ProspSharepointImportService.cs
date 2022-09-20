@@ -54,16 +54,16 @@ public class ProspSharepointImportService
     private async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string itemPath, string siteId,
         string? driveId, List<DriveItem> driveItems)
     {
-        DriveItemDeltaCollectionPage? files;
+        IDriveItemDeltaCollectionPage? files;
         if (!string.IsNullOrWhiteSpace(itemPath))
         {
             files = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
-                .ItemWithPath("/" + itemPath).Delta().Request().GetAsync() as DriveItemDeltaCollectionPage;
+                .ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
         }
         else
         {
             files = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
-                .Delta().Request().GetAsync() as DriveItemDeltaCollectionPage;
+                .Delta().Request().GetAsync();
         }
 
 
@@ -166,6 +166,12 @@ public class ProspSharepointImportService
             var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
             if (siteId != null)
             {
+                var siteIdAndParentRef =
+                    GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()?.SharePointSiteUrl)?.Result;
+                var parentRefPath = siteIdAndParentRef?.Count > 1 ? siteIdAndParentRef?[1] : "";
+                var documentLibraryName = parentRefPath?.Split('/')[3].Replace("%20", " ");
+                var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
+
                 var fileIdsOnCases = new Dictionary<Guid, string>();
                 foreach (var dto in dtos)
                 {
@@ -178,7 +184,7 @@ public class ProspSharepointImportService
                     try
                     {
                         var driveItemStream = await _graphServiceClient.Sites[siteId]
-                            .Drive.Items[item.Value]
+                            .Drives[driveId].Items[item.Value]
                             .Content.Request()
                             .GetAsync();
 
