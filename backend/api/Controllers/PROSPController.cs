@@ -43,12 +43,7 @@ public class PROSPController : ControllerBase
         var deltaDriveItemCollection =
             _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(dto.url);
 
-        if (deltaDriveItemCollection != null)
-        {
-            return ProspSharepointImportService.GetExcelDriveItemsFromSite(deltaDriveItemCollection.Result);
-        }
-
-        return new List<DriveItemDto>();
+        return ProspSharepointImportService.GetExcelDriveItemsFromSite(deltaDriveItemCollection.Result);
     }
 
     [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]

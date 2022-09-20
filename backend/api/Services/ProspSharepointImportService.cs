@@ -28,7 +28,7 @@ public class ProspSharepointImportService
         var driveItems = new List<DriveItem>();
         var siteIdAndParentRef = GetSiteIdAndParentReferencePath(url)?.Result;
         var siteId = siteIdAndParentRef?[0];
-        var parentRefPath = siteIdAndParentRef?.Count > 1 ? siteIdAndParentRef?[1] : "";
+        var parentRefPath = siteIdAndParentRef?.Count > 1 ? siteIdAndParentRef[1] : "";
 
         if (string.IsNullOrWhiteSpace(siteId))
         {
@@ -37,7 +37,7 @@ public class ProspSharepointImportService
 
         try
         {
-            var documentLibraryName = parentRefPath?.Split('/')[3].Replace("%20", " ");
+            var documentLibraryName = parentRefPath?.Split('/')[3];
             var itemPath = string.Join('/', parentRefPath?.Split('/').Skip(4) ?? Array.Empty<string>());
             var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
 
@@ -54,25 +54,25 @@ public class ProspSharepointImportService
     private async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string itemPath, string siteId,
         string? driveId, List<DriveItem> driveItems)
     {
-        IDriveItemDeltaCollectionPage? driveItemsdelta;
+        IDriveItemDeltaCollectionPage? driveItemsDelta;
         if (!string.IsNullOrWhiteSpace(itemPath))
         {
-            driveItemsdelta = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
+            driveItemsDelta = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
                 .ItemWithPath("/" + itemPath).Delta().Request().GetAsync();
         }
         else
         {
-            driveItemsdelta = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
+            driveItemsDelta = await _graphServiceClient.Sites[siteId].Drives[driveId].Root
                 .Delta().Request().GetAsync();
         }
 
 
-        if (driveItemsdelta == null)
+        if (driveItemsDelta == null)
         {
             return driveItems;
         }
 
-        foreach (var driveItem in driveItemsdelta)
+        foreach (var driveItem in driveItemsDelta)
         {
             driveItems.Add(driveItem);
         }
@@ -86,7 +86,12 @@ public class ProspSharepointImportService
             .Request()
             .GetAsync();
 
-        var driveIds = getDrivesInSite.Where(x => x.Name == documentLibraryName).Select(i => i.Id).ToList();
+        // Sharepoint document library 'Documents' will have the name "Shared Documents" in Url
+        var decodedDocumentLibraryName = HttpUtility.UrlDecode(documentLibraryName) == "Shared Documents"
+            ? "Documents"
+            : HttpUtility.UrlDecode(documentLibraryName);
+
+        var driveIds = getDrivesInSite.Where(x => x.Name == decodedDocumentLibraryName).Select(i => i.Id).ToList();
 
         var driveId = driveIds?.FirstOrDefault();
         return driveId;
@@ -125,12 +130,13 @@ public class ProspSharepointImportService
         {
             if (url != null)
             {
-                var siteUri = new Uri(url);
-                var hostName = siteUri.Host;
-                var pathFromIdParameter = HttpUtility.ParseQueryString(siteUri.Query).Get("id");
+                var siteUrl = new Uri(url);
+                var hostName = siteUrl.Host;
+                var pathFromIdParameter = HttpUtility.ParseQueryString(siteUrl.Query).Get("id");
+                var siteNameFromUrl = siteUrl.AbsolutePath.Split('/')[2];
 
                 // Example of valid relativepath: /sites/{your site name} such as /sites/ConceptApp-Test
-                var relativePath = $@"/sites/{siteUri.AbsolutePath.Split('/', 3)[2].Split('/')[0]}";
+                var relativePath = $@"/sites/{siteNameFromUrl}";
 
 
                 var site = await _graphServiceClient.Sites.GetByPath(relativePath, hostName)
@@ -139,10 +145,11 @@ public class ProspSharepointImportService
 
                 siteData.Add(site.Id);
 
+                var documentLibraryNameFromUrl = siteUrl.AbsolutePath.Split('/')[3];
                 // DriveItem path to get content from subfolder, if no subfolder given then set folder from absolute path
                 var parentReferencePath = pathFromIdParameter != null
-                    ? $@"/drive/root:/{string.Join('/', pathFromIdParameter.Split('/').Skip(3))}"
-                    : $@"/drive/root:/{siteUri.AbsolutePath.Split('/')[3]}";
+                    ? $@"/drive/root:/{GetDriveItemPathFromUrl(pathFromIdParameter)}"
+                    : $@"/drive/root:/{documentLibraryNameFromUrl}";
 
                 siteData.Add(parentReferencePath);
 
@@ -158,6 +165,13 @@ public class ProspSharepointImportService
         return siteData;
     }
 
+    private static string? GetDriveItemPathFromUrl(string? pathFromIdParameter)
+    {
+        return pathFromIdParameter != null
+            ? string.Join('/', pathFromIdParameter.Split('/').Skip(3))
+            : null;
+    }
+
     public async Task<ProjectDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
     {
         var projectDto = new ProjectDto();
@@ -166,11 +180,7 @@ public class ProspSharepointImportService
             var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
             if (siteId != null)
             {
-                var siteIdAndParentRef =
-                    GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()?.SharePointSiteUrl)?.Result;
-                var parentRefPath = siteIdAndParentRef?.Count > 1 ? siteIdAndParentRef?[1] : "";
-                var documentLibraryName = parentRefPath?.Split('/')[3].Replace("%20", " ");
-                var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
+                var driveId = await GetDriveIdFromSharePointSiteUrl(dtos, siteId);
 
                 var fileIdsOnCases = new Dictionary<Guid, string>();
                 foreach (var dto in dtos)
@@ -217,6 +227,16 @@ public class ProspSharepointImportService
         }
 
         return projectDto;
+    }
+
+    private async Task<string?> GetDriveIdFromSharePointSiteUrl(SharePointImportDto[] dtos, string siteId)
+    {
+        var siteIdAndParentRef =
+            GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()?.SharePointSiteUrl)?.Result;
+        var parentRefPath = siteIdAndParentRef?.Count > 1 ? siteIdAndParentRef?[1] : "";
+        var documentLibraryName = parentRefPath?.Split('/')[3];
+        var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
+        return driveId;
     }
 
     private static Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport)
