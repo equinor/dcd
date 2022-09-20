@@ -10,6 +10,7 @@ import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { CellValueChangedEvent } from "ag-grid-community"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
+import "ag-grid-enterprise"
 
 export interface CellValue {
     value: number | string
@@ -173,6 +174,9 @@ function DataTable({
                 domLayout="autoHeight"
                 enableCellChangeFlash
                 onCellValueChanged={onCellValueChanged}
+                rowSelection="multiple"
+                enableRangeSelection
+                suppressCopySingleCellRanges
             />
         </div>
     )
