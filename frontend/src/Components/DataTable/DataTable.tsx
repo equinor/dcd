@@ -41,8 +41,8 @@ function DataTable({
     useAgGridStyles()
 
     enum CurrencyEnum {
-        "MUSD" = 0,
-        "MNOK" = 1
+        "MNOK" = 0,
+        "MUSD" = 1
     }
 
     enum GSM3Enum {
@@ -257,7 +257,7 @@ function DataTable({
 
     const columnTotalsData = () => {
         const footerGridData = {
-            Profile: `Total ${profileType.toLowerCase()}`,
+            Profile: "Total cost",
             Unit: "",
             Total: totalTotalCost(),
         }
@@ -281,7 +281,7 @@ function DataTable({
             .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: totalValueArray[index] }), {})
         console.log(value)
         console.log(footerGridData)
-        const combinedFooterRow = [{...value, ...footerGridData}]
+        const combinedFooterRow = [{ ...value, ...footerGridData }]
         return combinedFooterRow
     }
 
@@ -337,17 +337,20 @@ function DataTable({
                     suppressHorizontalScroll
                 />
             </div>
-            <div style={{ flex: "none", height: "60px" }}>
-                <AgGridReact
-                    ref={bottomGrid}
-                    alignedGrids={topGrid.current ? [topGrid.current] : undefined}
-                    rowData={columnTotalsData()}
-                    defaultColDef={footerColDef}
-                    columnDefs={columnsArrayToColDef()}
-                    headerHeight={0}
-                    rowStyle={{ fontWeight: "bold" }}
-                />
-            </div>
+            { profileType === "Cost"
+                        && (
+                            <div style={{ flex: "none", height: "60px" }}>
+                                <AgGridReact
+                                    ref={bottomGrid}
+                                    alignedGrids={topGrid.current ? [topGrid.current] : undefined}
+                                    rowData={columnTotalsData()}
+                                    defaultColDef={footerColDef}
+                                    columnDefs={columnsArrayToColDef()}
+                                    headerHeight={0}
+                                    rowStyle={{ fontWeight: "bold" }}
+                                />
+                            </div>
+                        )}
         </div>
     )
 }
