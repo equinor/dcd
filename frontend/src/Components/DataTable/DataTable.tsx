@@ -31,7 +31,6 @@ interface Props {
 function DataTable({
     columns, gridData, dG4Year, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries, profileType,
 }: Props) {
-    // const gridRef = useRef<AgGridReact | null>(null)
     const topGrid = useRef<AgGridReact>(null)
     const bottomGrid = useRef<AgGridReact>(null)
 
@@ -119,7 +118,6 @@ function DataTable({
         if (columns.length !== 0) {
             const col = columns
             const columnToColDef = []
-            const columnToColDef2 = []
             const columnPinned = [
                 {
                     field: "Profile", pinned: "left", width: "autoWidth", aggFunc: "",
@@ -131,18 +129,10 @@ function DataTable({
                     field: "Total", pinned: "right", aggFunc: "sum", cellStyle: { fontWeight: "bold" },
                 }]
             for (let i = 0; i < col.length; i += 1) {
-                columnToColDef.push({ field: col[i] })
-                columnToColDef2.push({ field: col[i], aggFunc: "sum" })
+                columnToColDef.push({ field: col[i], aggFunc: "sum" })
             }
-            //            const columnWithProfile2 = [...columnToColDef2, ...columnPinned]
-
-            const columnWithProfile2 = columnToColDef2.concat([...columnPinned])
-            // console.log(columnWithProfile2)
-
             const columnWithProfile = columnToColDef.concat([...columnPinned])
-            // console.log(columnWithProfile)
-            // console.log(columnToColDef2)
-            return columnWithProfile2
+            return columnWithProfile
         }
         return undefined
     }
@@ -150,7 +140,6 @@ function DataTable({
     const defaultColDef = useMemo<ColDef>(() => ({
         resizable: true,
         sortable: true,
-        // initialWidth: 120,
         editable: true,
         flex: 1,
     }), [])
@@ -158,7 +147,6 @@ function DataTable({
     const footerColDef = useMemo<ColDef>(() => ({
         resizable: true,
         sortable: true,
-        // initialWidth: 120,
         editable: false,
         flex: 1,
     }), [])
