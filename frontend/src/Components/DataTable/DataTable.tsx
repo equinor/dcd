@@ -215,14 +215,14 @@ function DataTable({
         const totalTotalCostArray = []
         if (timeSeries!.length >= 1 && columns.length !== 0) {
             for (let j = 0; j < timeSeries!.length; j += 1) {
-                if (timeSeries![j] !== undefined) {
-                    totalTotalCostArray.push(timeSeries![j]?.sum)
+                if (timeSeries![j] !== undefined && gridData[j] !== undefined) {
+                    totalTotalCostArray.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: any, y: any) => x + y))
                 }
             }
         }
         const sum = totalTotalCostArray.reduce((prev, curr) => prev! + curr!, 0)
-        const totalValueObj = { Total: Number(sum) }
-        const combinedFooterRow = [{ ...value, ...footerGridData, ...totalValueObj }]
+        const totalTotalObj = { Total: Number(sum) }
+        const combinedFooterRow = [{ ...value, ...footerGridData, ...totalTotalObj }]
         return combinedFooterRow
     }
 
