@@ -428,7 +428,7 @@ const TopsideView = () => {
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Cessation cost profile"]}
-                profileEnum={project?.physUnit!}
+                profileEnum={project?.currency!}
                 profileType="Cost"
             />
         </AssetViewDiv>

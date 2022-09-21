@@ -199,7 +199,7 @@ const ExplorationViewTab = ({
                     firstYear={firstTSYear!}
                     lastYear={lastTSYear!}
                     profileName={["Cost profile"]}
-                    profileEnum={project?.physUnit!}
+                    profileEnum={project?.currency!}
                     profileType="Cost"
                 />
                 <ReadOnlyCostProfile

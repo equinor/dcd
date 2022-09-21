@@ -40,8 +40,8 @@ function DataTable({
     useAgGridStyles()
 
     enum CurrencyEnum {
-        "MNOK" = 0,
-        "MUSD" = 1
+        "MNOK" = 1,
+        "MUSD" = 2
     }
 
     enum GSM3Enum {
@@ -193,7 +193,7 @@ function DataTable({
     const columnTotalsData = () => {
         const footerGridData = {
             Profile: "Total cost",
-            Unit: "",
+            Unit: setUnit(0),
         }
         const totalValueArray: any = []
         const valueArray = []
