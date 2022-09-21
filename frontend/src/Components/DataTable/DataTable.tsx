@@ -11,7 +11,6 @@ import { CellValueChangedEvent, ColDef } from "ag-grid-community"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
 import "ag-grid-enterprise"
-import { useParams } from "react-router"
 
 export interface CellValue {
     value: number | string
@@ -191,80 +190,13 @@ function DataTable({
         setHasChanges(true)
     }, [dG4Year])
 
-    const autoGroupColumnDef = useMemo<ColDef>(() => ({
-        minWidth: 300,
-        cellRendererParams: {
-            footerValueGetter: (params: any) => {
-                const profileColumn = params.node.rowindex === -1
-                const isRootLevel = params.node.level === -1
-                if (isRootLevel && profileColumn) {
-                    return "Total"
-                }
-                return "Total"
-            },
-        },
-    }), [])
-
-    const aggFuncs = useMemo(() => ({
-        yearSum: (params: any) => {
-            const year = params.node
-            console.log(year)
-            return 50
-        },
-    }), [])
-
-    const totalTotalCost = () => {
-        console.log(columns)
-        const totalTotalCostArray = []
-        const totalValueArray = []
-        const valueArray = []
-        console.log(timeSeries!)
-        if (timeSeries!.length >= 1 && columns.length !== 0) {
-            for (let j = 0; j < timeSeries!.length; j += 1) {
-                if (timeSeries![j] !== undefined) {
-                    totalTotalCostArray.push(timeSeries![j]?.sum)
-                }
-            }
-            for (let i = 0; i < columns.length; i += 1) {
-                if (timeSeries![i] !== undefined) {
-                    valueArray.push(timeSeries![i]?.values)
-                }
-            }
-            console.log(timeSeries)
-            console.log(valueArray)
-            // console.log(valueArray.reduce((prev, curr) => prev! + curr![11], 0))
-
-            for (let k = 0; k < columns.length; k += 1) {
-                if (timeSeries! !== undefined) {
-                    totalValueArray.push(valueArray.reduce((prev, curr) => prev! + curr![k], 0))
-                }
-            }
-        }
-        console.log(columns.length)
-        console.log(totalTotalCostArray)
-        // console.log(valueArray)
-        console.log(totalValueArray)
-
-        // for each array - reduce - then push to new array with each sum
-
-        // const sumValues = totalValueArray.reduce((prev, curr) => prev! + curr![0], 0)
-        // console.log(sumValues)
-
-        const sum = totalTotalCostArray.reduce((prev, curr) => prev! + curr!, 0)
-        console.log(sum)
-        return sum
-    }
-
     const columnTotalsData = () => {
         const footerGridData = {
             Profile: "Total cost",
             Unit: "",
-            Total: totalTotalCost(),
         }
-        console.log(columns)
         const totalValueArray: any = []
         const valueArray = []
-        console.log(timeSeries!)
         if (timeSeries!.length >= 1 && columns.length !== 0) {
             for (let i = 0; i < columns.length; i += 1) {
                 if (timeSeries![i] !== undefined) {
@@ -279,34 +211,19 @@ function DataTable({
         }
         const value = columns
             .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: totalValueArray[index] }), {})
-        console.log(value)
-        console.log(footerGridData)
-        const combinedFooterRow = [{ ...value, ...footerGridData }]
-        return combinedFooterRow
-    }
 
-    // lag en ny rowDataToColumns for footer med totaler
-
-    // const footerGridData = [
-    //     {
-    //         Profile: `Total ${profileType.toLowerCase()}`,
-    //         Unit: "",
-    //         Total: totalTotalCost(),
-    //     },
-    //     // {...yearTotals, ...footerGridData}
-    // ]
-
-    const footerData2 = columnTotalsData()
-    // const footerData = footerData2.concat([...footerGridData])
-    console.log(footerData2)
-
-    const gridOptions = {
-        getRowStyle: (params: any) => {
-            if (params.node.footer) {
-                return { fontWeight: "bold" }
+        const totalTotalCostArray = []
+        if (timeSeries!.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < timeSeries!.length; j += 1) {
+                if (timeSeries![j] !== undefined) {
+                    totalTotalCostArray.push(timeSeries![j]?.sum)
+                }
             }
-            return { fontWeight: "normal" }
-        },
+        }
+        const sum = totalTotalCostArray.reduce((prev, curr) => prev! + curr!, 0)
+        const totalValueObj = { Total: Number(sum) }
+        const combinedFooterRow = [{ ...value, ...footerGridData, ...totalValueObj }]
+        return combinedFooterRow
     }
 
     return (
@@ -328,11 +245,6 @@ function DataTable({
                     rowSelection="multiple"
                     enableRangeSelection
                     suppressCopySingleCellRanges
-                    // autoGroupColumnDef={autoGroupColumnDef}
-                    // groupIncludeFooter
-                    // groupIncludeTotalFooter
-                    gridOptions={gridOptions}
-                    aggFuncs={aggFuncs}
                     suppressMovableColumns
                     suppressHorizontalScroll
                 />
