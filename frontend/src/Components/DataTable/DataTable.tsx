@@ -185,15 +185,15 @@ function DataTable({
         }
         const totalValueArray: any = []
         const valueArray = []
-        if (timeSeries!.length >= 1 && columns.length !== 0) {
+        if (timeSeries !== undefined && timeSeries.length >= 1 && columns.length !== 0) {
             for (let i = 0; i < columns.length; i += 1) {
-                if (timeSeries![i] !== undefined) {
-                    valueArray.push(timeSeries![i]?.values)
+                if (timeSeries[i] !== undefined) {
+                    valueArray.push(timeSeries[i]?.values)
                 }
             }
             for (let k = 0; k < columns.length; k += 1) {
-                if (timeSeries! !== undefined) {
-                    totalValueArray.push(valueArray.reduce((prev, curr) => prev! + curr![k], 0))
+                if (timeSeries !== undefined) {
+                    totalValueArray.push(valueArray.reduce((prev, curr) => prev + curr![k], 0))
                 }
             }
         }
@@ -201,14 +201,14 @@ function DataTable({
             .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: totalValueArray[index] }), {})
 
         const totalTotalCostArray = []
-        if (timeSeries!.length >= 1 && columns.length !== 0) {
-            for (let j = 0; j < timeSeries!.length; j += 1) {
-                if (timeSeries![j] !== undefined && gridData[j] !== undefined) {
+        if (timeSeries !== undefined && timeSeries.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < timeSeries.length; j += 1) {
+                if (timeSeries[j] !== undefined && gridData[j] !== undefined) {
                     totalTotalCostArray.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: any, y: any) => x + y))
                 }
             }
         }
-        const sum = totalTotalCostArray.reduce((prev, curr) => prev! + curr!, 0)
+        const sum = totalTotalCostArray.reduce((prev, curr) => prev + curr, 0)
         const totalTotalObj = { Total: Number(sum) }
         const combinedFooterRow = [{ ...value, ...footerGridData, ...totalTotalObj }]
         return combinedFooterRow
