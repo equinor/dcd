@@ -4,7 +4,7 @@ import {
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import styled from "styled-components"
 import { useCurrentContext } from "@equinor/fusion"
 import { Exploration } from "../models/assets/exploration/Exploration"

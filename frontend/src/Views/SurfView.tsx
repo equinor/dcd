@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Typography } from "@equinor/eds-core-react"
 
-import { useParams } from "react-router"
+import { useParams } from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import { Surf } from "../models/assets/surf/Surf"
 import { Case } from "../models/case/Case"

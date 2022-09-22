@@ -13,7 +13,7 @@ import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useHistory, useParams } from "react-router"
+import { useHistory, useParams } from "react-router-dom"
 import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
 import { CasePath, unwrapCase } from "../Utils/common"
