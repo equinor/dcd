@@ -36,6 +36,7 @@ function PROSPTableRow({
     useEffect(() => {
         const selectedCase = project.cases.find((c) => c.id === caseId)
         setCaseItem(selectedCase)
+        console.log("prospcases", prospCases)
         if (prospCases && prospCases.length > 0) {
             const selectedProspCase = prospCases.find((pc) => pc.id === caseId)
             setProspCase(selectedProspCase)
@@ -45,6 +46,7 @@ function PROSPTableRow({
             setTransport(selectedProspCase?.transportState)
             setSelected(selectedProspCase?.selected)
             setSharePointFileId(selectedProspCase?.sharePointFileId!)
+            console.log("sharepointfileId in useEffect:", selectedProspCase?.sharePointFileId)
             setSharePointFileName(selectedProspCase?.sharePointFileName!)
         }
     }, [project, prospCases])
@@ -57,6 +59,7 @@ function PROSPTableRow({
             return pc
         })
         setProspCases(newProspCases)
+        console.log("New prospCASES IN UPDATEPROSPCASES:", newProspCases)
     }
 
     useEffect(() => {
@@ -67,7 +70,7 @@ function PROSPTableRow({
         newProspCase.substructureState = substructure!
         newProspCase.topsideState = topside!
         newProspCase.transportState = transport!
-        newProspCase.sharePointFileId = sharePointFileId
+        newProspCase.sharePointFileId = prospCase?.sharePointFileId
         newProspCase.sharePointFileName = sharePointFileName
         setProspCase(newProspCase)
         updateProspCases(newProspCase)
@@ -83,6 +86,9 @@ function PROSPTableRow({
         }
         if (status === ImportStatusEnum.Selected) {
             return <Checkbox checked onChange={() => changeStatus(ImportStatusEnum.NotSelected)} />
+        }
+        if (status === ImportStatusEnum.NotSelected) {
+            return <Checkbox onChange={() => changeStatus(ImportStatusEnum.Selected)} />
         }
         return <Checkbox onChange={() => changeStatus(ImportStatusEnum.Selected)} />
     }
@@ -103,25 +109,36 @@ function PROSPTableRow({
         return options
     }
 
+    const unlinkAssetsOnCase = (newCase: Case) => {
+        const unlinkingCase = newCase
+        unlinkingCase.transportLink = EMPTY_GUID
+        unlinkingCase.surfLink = EMPTY_GUID
+        unlinkingCase.substructureLink = EMPTY_GUID
+        unlinkingCase.topsideLink = EMPTY_GUID
+        setTransport(ImportStatusEnum.NotSelected)
+        setSubstructure(ImportStatusEnum.NotSelected)
+        setSurf(ImportStatusEnum.NotSelected)
+        setTopside(ImportStatusEnum.NotSelected)
+        return unlinkingCase
+    }
+
     const onSharePointFileChange = async (event: ChangeEvent<HTMLSelectElement>) => {
         const newProspCase = { ...prospCase }
-        newProspCase.sharePointFileId = event.currentTarget.selectedOptions[0].value
+        const newSharepointFileId = event.currentTarget.selectedOptions[0].value
+        newProspCase.sharePointFileId = newSharepointFileId
         try {
-            if (caseItem.sharepointFileId === "" || caseItem.sharepointFileId === undefined) {
-                const newCase = caseItem
-                newCase.transportLink = EMPTY_GUID
-                newCase.surfLink = EMPTY_GUID
-                newCase.substructureLink = EMPTY_GUID
-                newCase.topsideLink = EMPTY_GUID
-                setTransport(ImportStatusEnum.NotSelected)
-                setSubstructure(ImportStatusEnum.NotSelected)
-                setSurf(ImportStatusEnum.NotSelected)
-                setTopside(ImportStatusEnum.NotSelected)
-                const caseResult = await (await GetCaseService()).updateCase(newCase)
+            if (caseItem.sharepointFileId !== newSharepointFileId) {
+                const unlinkedCase = unlinkAssetsOnCase(caseItem)
+                unlinkedCase.sharepointFileId = sharePointFileId
+                const caseResult = await (await GetCaseService()).updateCase(unlinkedCase)
+                console.log("Im in try getting new Case REsult")
                 setProject(caseResult)
+                setCaseItem(caseResult.cases.find((i) => i.id === caseItem.id))
             }
+            setSharePointFileId(newProspCase.sharePointFileId)
+            console.log("Sharepointfile has been set to", newProspCase.sharePointFileId)
             setProspCase(newProspCase)
-            setSharePointFileId(event.currentTarget.selectedOptions[0].value)
+            console.log("new prospcase is set as:", newProspCase)
         } catch (e) {
             console.error(e)
         }

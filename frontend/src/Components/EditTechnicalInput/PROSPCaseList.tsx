@@ -28,6 +28,7 @@ function PROSPCaseList({
                 prospCase.sharePointSiteUrl = project.sharepointSiteUrl ?? ""
                 prosp.push(prospCase)
             })
+            console.log("prosp value in prospcaselist: ", prosp)
             setProspCases(prosp)
         })()
     }, [project])
@@ -55,6 +56,10 @@ function PROSPCaseList({
         const cases = prospCases.map((pc) => SharePointImport.toDto(pc))
         const newProject = await (await GetProspService()).importFromSharepoint(project.id!, cases)
         setProject(newProject)
+    }
+
+    if (!prospCases) {
+        return null
     }
 
     return (
