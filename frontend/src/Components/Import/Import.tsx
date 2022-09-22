@@ -3,7 +3,7 @@ import styled from "styled-components"
 import {
     Button, Dialog, Input, Typography,
 } from "@equinor/eds-core-react"
-import { useParams } from "react-router"
+import { useParams } from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import { Case } from "../../models/case/Case"
 import { Project } from "../../models/Project"
