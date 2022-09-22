@@ -4,7 +4,7 @@ import {
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import TimeSeries from "../Components/TimeSeries"
 import { Substructure } from "../models/assets/substructure/Substructure"
