@@ -1,6 +1,6 @@
 import { useCurrentContext, useHistory } from "@equinor/fusion"
 import { Dispatch, SetStateAction } from "react"
-import { useLocation, useParams } from "react-router"
+import { useLocation, useParams } from "react-router-dom"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { IAsset } from "../models/assets/IAsset"
 import { Project } from "../models/Project"
