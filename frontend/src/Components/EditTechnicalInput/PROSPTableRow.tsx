@@ -8,9 +8,12 @@ import { Project } from "../../models/Project"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import SharePointImport from "./SharePointImport"
+import { EMPTY_GUID } from "../../Utils/constants"
+import { GetCaseService } from "../../Services/CaseService"
 
 interface Props {
     project: Project
+    setProject: Dispatch<SetStateAction<Project | undefined>>
     setProspCases: Dispatch<SetStateAction<SharePointImport[]>>
     prospCases: SharePointImport[]
     caseId: string
@@ -18,7 +21,7 @@ interface Props {
 }
 
 function PROSPTableRow({
-    project, setProspCases, prospCases, caseId, driveItems,
+    project, setProject, setProspCases, prospCases, caseId, driveItems,
 }: Props) {
     const [caseItem, setCaseItem] = useState<Case>()
     const [prospCase, setProspCase] = useState<SharePointImport>()
@@ -70,18 +73,28 @@ function PROSPTableRow({
         updateProspCases(newProspCase)
     }, [selected, surf, substructure, topside, transport, sharePointFileId, sharePointFileName])
 
-    if (!prospCase) { return null }
+    if (!prospCase) {
+        return null
+    }
 
     const checkBoxStatus = (status: ImportStatusEnum, changeStatus: Dispatch<SetStateAction<ImportStatusEnum | undefined>>) => {
-        if (status === ImportStatusEnum.PROSP) { return <Checkbox disabled defaultChecked /> }
-        if (status === ImportStatusEnum.Selected) { return <Checkbox checked onChange={() => changeStatus(ImportStatusEnum.NotSelected)} /> }
+        if (status === ImportStatusEnum.PROSP) {
+            return <Checkbox disabled defaultChecked />
+        }
+        if (status === ImportStatusEnum.Selected) {
+            return <Checkbox checked onChange={() => changeStatus(ImportStatusEnum.NotSelected)} />
+        }
         return <Checkbox onChange={() => changeStatus(ImportStatusEnum.Selected)} />
     }
 
-    if (!caseItem) { return null }
+    if (!caseItem) {
+        return null
+    }
 
     const sharePointFileDropdownOptions = () => {
-        if (!driveItems) { return null }
+        if (!driveItems) {
+            return null
+        }
         const options: JSX.Element[] = []
 
         driveItems.forEach((item) => {
@@ -90,11 +103,28 @@ function PROSPTableRow({
         return options
     }
 
-    const onSharePointFileChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const onSharePointFileChange = async (event: ChangeEvent<HTMLSelectElement>) => {
         const newProspCase = { ...prospCase }
         newProspCase.sharePointFileId = event.currentTarget.selectedOptions[0].value
-        setProspCase(newProspCase)
-        setSharePointFileId(event.currentTarget.selectedOptions[0].value)
+        try {
+            if (caseItem.sharepointFileId === "" || caseItem.sharepointFileId === undefined) {
+                const newCase = caseItem
+                newCase.transportLink = EMPTY_GUID
+                newCase.surfLink = EMPTY_GUID
+                newCase.substructureLink = EMPTY_GUID
+                newCase.topsideLink = EMPTY_GUID
+                setTransport(ImportStatusEnum.NotSelected)
+                setSubstructure(ImportStatusEnum.NotSelected)
+                setSurf(ImportStatusEnum.NotSelected)
+                setTopside(ImportStatusEnum.NotSelected)
+                const caseResult = await (await GetCaseService()).updateCase(newCase)
+                setProject(caseResult)
+            }
+            setProspCase(newProspCase)
+            setSharePointFileId(event.currentTarget.selectedOptions[0].value)
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     return (
@@ -125,7 +155,6 @@ function PROSPTableRow({
                     value={prospCase.sharePointFileId}
                     // currentValue={caseItem.sharepointFileId}
                     onChange={onSharePointFileChange}
-                    disabled={!!caseItem.sharepointFileId}
                 >
                     {sharePointFileDropdownOptions()}
                     <option aria-label="empty value" key="" value="" />

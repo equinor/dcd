@@ -43,6 +43,7 @@ function PROSPCaseList({
                     setProspCases={setProspCases}
                     caseId={caseItem.id!}
                     driveItems={driveItems}
+                    setProject={setProject}
                 />
             ))
         })
