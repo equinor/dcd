@@ -40,11 +40,10 @@ public class PROSPController : ControllerBase
     [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
     public List<DriveItemDto> GetSharePointFileNamesAndId([FromBody] urlDto dto)
     {
-        var driveItemCollectionFromSite =
+        var deltaDriveItemCollection =
             _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(dto.url);
-        var filesFromSite = _prospSharepointImportService.GetFilesFromSite(driveItemCollectionFromSite);
 
-        return filesFromSite;
+        return ProspSharepointImportService.GetExcelDriveItemsFromSite(deltaDriveItemCollection.Result);
     }
 
     [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]

@@ -1,13 +1,11 @@
 /* eslint-disable import/no-import-module-exports */
 import { Context, ContextTypes, registerApp } from "@equinor/fusion"
-import createApp from "@equinor/fusion-framework-react-app"
+import createApp, { createLegacyApp } from "@equinor/fusion-framework-react-app"
+import { enableAgGrid } from "@equinor/fusion-framework-module-ag-grid"
 import App from "./app/App"
 
-export const render = createApp(App)
-
 registerApp("conceptapp", {
-    render,
-    AppComponent: App,
+    AppComponent: createLegacyApp(App, (config) => enableAgGrid(config)),
     context: {
         types: [ContextTypes.ProjectMaster],
         buildUrl: (context: Context | null) => (context ? `/${context.id}` : ""),
