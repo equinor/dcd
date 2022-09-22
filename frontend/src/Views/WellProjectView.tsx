@@ -4,7 +4,7 @@ import {
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
@@ -133,7 +133,7 @@ function WellProjectView() {
     }
 
     if (!project) return null
-    if (!wellProject) return null
+    if (!wellProject || !caseItem) return null
     return (
         <AssetViewDiv>
             <WellList project={project} wellProject={wellProject} setProject={setProject} />
@@ -220,15 +220,15 @@ function WellProjectView() {
                 />
             </Wrapper>
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                dG4Year={caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setCostProfile}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeries={[costProfile]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                profileName={["Cost profile"]}
+                profileEnum={project?.physUnit!}
+                profileType="Cost"
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules

@@ -51,7 +51,7 @@ public class TimeSeriesCost : TimeSeries<double>
     public string EPAVersion { get; set; } = string.Empty;
     public Currency Currency { get; set; }
 
-    public static TimeSeries<double>? MergeCostProfiles(TimeSeries<double> t1, TimeSeries<double> t2)
+    public static TimeSeries<double> MergeCostProfiles(TimeSeries<double> t1, TimeSeries<double> t2)
     {
         var t1Year = t1.StartYear;
         var t2Year = t2.StartYear;
@@ -61,7 +61,7 @@ public class TimeSeriesCost : TimeSeries<double>
         {
             if (t2.Values.Length == 0)
             {
-                return null;
+                return new TimeSeries<double>();
             }
             return t2;
         }
