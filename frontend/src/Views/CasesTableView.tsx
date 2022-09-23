@@ -18,6 +18,7 @@ import { Project } from "../models/Project"
 import { GetCaseService } from "../Services/CaseService"
 import { CasePath, unwrapCase } from "../Utils/common"
 import { ModalNoFocus } from "../Components/ModalNoFocus"
+import EditCaseModal from "../Components/Case/EditCaseModal"
 
 const EditCaseForm = styled.form`
     width: 30rem;
@@ -326,7 +327,7 @@ const CasesTableView = ({
                     </Menu.Item>
                 </Menu>
             </div>
-            <ModalNoFocus isOpen={editCaseModalIsOpen} title={`Edit case name and description for ${caseRowDataSelected?.name}`}>
+            {/* <ModalNoFocus isOpen={editCaseModalIsOpen} title={`Edit case name and description for ${caseRowDataSelected?.name}`}>
                 <EditCaseForm>
                     <TextField
                         label="Name"
@@ -361,7 +362,15 @@ const CasesTableView = ({
                         </Button>
                     </div>
                 </EditCaseForm>
-            </ModalNoFocus>
+            </ModalNoFocus> */}
+            <EditCaseModal
+                setProject={setProject}
+                caseItem={caseRowDataSelected}
+                isOpen={editCaseModalIsOpen}
+                project={project}
+                toggleModal={toggleEditCaseModal}
+                editMode
+            />
         </>
     )
 }

@@ -12,6 +12,7 @@ import {
     SetStateAction,
     ChangeEventHandler,
     MouseEventHandler,
+    useEffect,
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
@@ -32,6 +33,7 @@ interface Props {
     caseItem: Case | undefined,
     isOpen: boolean
     toggleModal: () => void
+    editMode: boolean
 }
 
 const EditCaseModal = ({
@@ -40,16 +42,31 @@ const EditCaseModal = ({
     caseItem,
     isOpen,
     toggleModal,
+    editMode,
 }: Props) => {
+    console.log("caseItem: ", caseItem)
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const [caseName, setCaseName] = useState<string>(caseItem?.name ?? "")
-    const dG4DefaultDate = new Date(Date.UTC(2030, 0, 1))
-    const [dG4Date, setDG4Date] = useState<Date>(dG4DefaultDate)
-    const [description, setDescription] = useState<string>()
-    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
-    const [producerCount, setProducerWells] = useState<number>(0)
-    const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
-    const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
+    const [caseName, setCaseName] = useState<string | undefined>()
+    const [dG4Date, setDG4Date] = useState<Date>()
+    const [description, setDescription] = useState<string | undefined>()
+    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>()
+    const [producerCount, setProducerWells] = useState<number>()
+    const [gasInjectorCount, setGasInjectorWells] = useState<number>()
+    const [waterInjectorCount, setWaterInjectorWells] = useState<number>()
+
+    useEffect(() => {
+        console.log("caseItem: ", caseItem)
+
+        const dG4DefaultDate = new Date(Date.UTC(2030, 0, 1))
+
+        setCaseName(caseItem?.name)
+        setDG4Date(caseItem?.DG4Date ?? dG4DefaultDate)
+        setDescription(caseItem?.description)
+        setProductionStrategy(caseItem?.productionStrategyOverview ?? 0)
+        setProducerWells(caseItem?.producerCount ?? 0)
+        setGasInjectorWells(caseItem?.gasInjectorCount ?? 0)
+        setWaterInjectorWells(caseItem?.waterInjectorCount ?? 0)
+    }, [caseItem])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setCaseName(e.currentTarget.value)
@@ -66,20 +83,35 @@ const EditCaseModal = ({
         }
     }
 
-    const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
         try {
-            const projectResult: Project = await (await GetCaseService()).createCase({
-                projectId: project.projectId,
-                name: caseName,
-                description,
-                dG4Date: dG4Date?.toJSON(),
-                producerCount,
-                gasInjectorCount,
-                waterInjectorCount,
-                productionStrategyOverview: productionStrategy,
-            })
+            let projectResult: Project
+            if (editMode && caseItem) {
+                const newCase = Case.Copy(caseItem)
+                newCase.name = caseName
+                newCase.description = description
+                newCase.DG4Date = dG4Date
+                newCase.producerCount = producerCount
+                newCase.gasInjectorCount = gasInjectorCount
+                newCase.waterInjectorCount = waterInjectorCount
+                newCase.productionStrategyOverview = productionStrategy ?? 0
+                projectResult = await (await GetCaseService()).updateCase(
+                    newCase,
+                )
+            } else {
+                projectResult = await (await GetCaseService()).createCase({
+                    projectId: project.projectId,
+                    name: caseName,
+                    description,
+                    dG4Date: dG4Date?.toJSON(),
+                    producerCount,
+                    gasInjectorCount,
+                    waterInjectorCount,
+                    productionStrategyOverview: productionStrategy,
+                })
+            }
             setProject(projectResult)
             toggleModal()
         } catch (error) {
@@ -90,7 +122,7 @@ const EditCaseModal = ({
     const disableCreateButton = () => caseName && caseName !== "" && description && description !== ""
 
     return (
-        <ModalNoFocus isOpen={isOpen} title="Add new case">
+        <ModalNoFocus isOpen={isOpen} title={editMode ? "Edit case" : "Add new case"}>
             <CreateCaseForm>
                 <TextField
                     label="Name"
@@ -98,18 +130,21 @@ const EditCaseModal = ({
                     name="name"
                     placeholder="Enter a name"
                     onChange={handleNameChange}
+                    value={caseName}
                 />
 
                 <Input
                     type="month"
-                    defaultValue={ToMonthDate(dG4Date)}
+                    // defaultValue={ToMonthDate(dG4Date)}
                     id="dgDate"
                     name="dgDate"
+                    value={ToMonthDate(dG4Date) ?? ToMonthDate(caseItem?.DG4Date)}
                     onChange={(e) => setDG4Date(new Date(e.currentTarget.value))}
                 />
                 <TextArea
                     placeholder="Enter a description"
                     onInput={handleDescriptionChange}
+                    value={description ?? ""}
                     cols={110}
                     rows={4}
                 />
@@ -117,7 +152,9 @@ const EditCaseModal = ({
                     id="productionStrategy"
                     label="Production strategy overview"
                     onChange={handleProductionStrategyChange}
+                    value={productionStrategy}
                 >
+                    <option key={undefined} value={undefined}> </option>
                     <option key={0} value={0}>Depletion</option>
                     <option key={1} value={1}>Water injection</option>
                     <option key={2} value={2}>Gas injection</option>
@@ -166,7 +203,7 @@ const EditCaseModal = ({
                 <div>
                     <Button
                         type="submit"
-                        onClick={submitCreateCaseForm}
+                        onClick={submitCaseForm}
                         disabled={!disableCreateButton()}
                     >
                         Create case

@@ -176,6 +176,7 @@ function OverviewView({
                 isOpen={createCaseModalIsOpen}
                 project={project}
                 toggleModal={toggleCreateCaseModal}
+                editMode={false}
             />
             {/* <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
                 <CreateCaseForm>
