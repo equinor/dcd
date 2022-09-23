@@ -1,8 +1,10 @@
+/* eslint-disable max-len */
 import {
     Button,
     TextField,
     Input,
     Label,
+    NativeSelect,
 } from "@equinor/eds-core-react"
 import {
     useState,
@@ -40,12 +42,13 @@ const EditCaseModal = ({
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string>(caseItem?.name ?? "")
-    const [dG4Date, setDG4Date] = useState<Date>()
+    const dG4DefaultDate = new Date(Date.UTC(2030, 0, 1))
+    const [dG4Date, setDG4Date] = useState<Date>(dG4DefaultDate)
     const [description, setDescription] = useState<string>()
-    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>()
-    const [producerCount, setProducerWells] = useState<number>()
-    const [gasInjectorCount, setGasInjectorWells] = useState<number>()
-    const [waterInjectorCount, setWaterInjectorWells] = useState<number>()
+    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
+    const [producerCount, setProducerWells] = useState<number>(0)
+    const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
+    const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setCaseName(e.currentTarget.value)
@@ -57,8 +60,8 @@ const EditCaseModal = ({
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
-            // const a: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value)
-            // setProductionStrategy(a)
+            const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
+            setProductionStrategy(newProductionStrategy)
         }
     }
 
@@ -74,6 +77,7 @@ const EditCaseModal = ({
                 producerCount,
                 gasInjectorCount,
                 waterInjectorCount,
+                productionStrategyOverview: productionStrategy,
             })
             setProject(projectResult)
             toggleModal()
@@ -81,6 +85,8 @@ const EditCaseModal = ({
             console.error("[ProjectView] error while submitting form data", error)
         }
     }
+
+    const disableCreateButton = () => caseName && caseName !== "" && description && description !== ""
 
     return (
         <ModalNoFocus isOpen={isOpen} title="Create a case">
@@ -108,6 +114,17 @@ const EditCaseModal = ({
                     placeholder="Enter a description"
                     onChange={handleDescriptionChange}
                 />
+                <NativeSelect
+                    id="productionStrategy"
+                    label="Production strategy overview"
+                    onChange={handleProductionStrategyChange}
+                >
+                    <option key={0} value={0}>Depletion</option>
+                    <option key={1} value={1}>Water injection</option>
+                    <option key={2} value={2}>Gas injection</option>
+                    <option key={3} value={3}>WAG</option>
+                    <option key={4} value={4}>Mixed</option>
+                </NativeSelect>
                 <Label htmlFor="producerWells" label="Producer wells" />
                 <Input
                     id="producerWells"
@@ -151,7 +168,7 @@ const EditCaseModal = ({
                     <Button
                         type="submit"
                         onClick={submitCreateCaseForm}
-                        disabled={false}
+                        disabled={!disableCreateButton()}
                     >
                         Create case
                     </Button>
