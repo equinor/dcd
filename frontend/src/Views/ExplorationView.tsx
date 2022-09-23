@@ -209,7 +209,7 @@ const ExplorationView = () => {
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
-                profileEnum={project?.physUnit!}
+                profileEnum={project?.currency!}
                 profileType="Cost"
             />
             <ReadOnlyCostProfile
