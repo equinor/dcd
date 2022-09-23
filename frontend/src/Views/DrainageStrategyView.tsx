@@ -5,7 +5,7 @@ import {
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { Project } from "../models/Project"

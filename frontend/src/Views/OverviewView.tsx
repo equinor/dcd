@@ -10,7 +10,7 @@ import {
     Button, Icon, TextField, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
-import { useHistory, useParams } from "react-router"
+import { useHistory, useParams } from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
 import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"

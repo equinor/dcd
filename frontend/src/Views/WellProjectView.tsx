@@ -4,7 +4,7 @@ import {
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
