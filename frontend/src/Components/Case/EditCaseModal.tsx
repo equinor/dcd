@@ -15,6 +15,7 @@ import {
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
+import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { ModalNoFocus } from "../ModalNoFocus"
@@ -89,7 +90,7 @@ const EditCaseModal = ({
     const disableCreateButton = () => caseName && caseName !== "" && description && description !== ""
 
     return (
-        <ModalNoFocus isOpen={isOpen} title="Create a case">
+        <ModalNoFocus isOpen={isOpen} title="Add new case">
             <CreateCaseForm>
                 <TextField
                     label="Name"
@@ -106,13 +107,11 @@ const EditCaseModal = ({
                     name="dgDate"
                     onChange={(e) => setDG4Date(new Date(e.currentTarget.value))}
                 />
-
-                <TextField
-                    label="Description"
-                    id="description"
-                    name="description"
+                <TextArea
                     placeholder="Enter a description"
-                    onChange={handleDescriptionChange}
+                    onInput={handleDescriptionChange}
+                    cols={110}
+                    rows={4}
                 />
                 <NativeSelect
                     id="productionStrategy"
