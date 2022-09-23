@@ -69,18 +69,18 @@ function DataTable({
 
     const rowDataToColumns = () => {
         const col = columns
-        const objKey: any = []
-        const objVal: any = []
-        const objValSum: any = []
-        const combinedObjArr: any = []
+        const objKey: string[] = []
+        const objVal: string[] = []
+        const objValSum: number[] = []
+        const combinedObjArr: object[] = []
 
-        const value: any = []
+        const value: object[] = []
 
         if (gridData.length === 0) {
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
                 const rowObj = objKey
-                    .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: objVal[index] }), {})
+                    .reduce((obj: object, element: string, index: number) => ({ ...obj, [element]: objVal[index] }), {})
                 combinedObjArr.push(rowObj)
 
                 const totalValueObj = { Total: 0 }
@@ -91,7 +91,7 @@ function DataTable({
         if (gridData.length >= 1 && col.length !== 0) {
             for (let j = 0; j < gridData.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
-                const totalValue: any = []
+                const totalValue: number[] = []
                 if (gridData[j] !== undefined) {
                     for (let i = 0; i < col.length; i += 1) {
                         if (gridData[j][0]) {
@@ -99,12 +99,13 @@ function DataTable({
                             objVal.push(`${gridData[j][0].map((v: any) => v.value)[i]}`)
                         }
                     }
-                    objValSum.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: any, y: any) => x + y))
+                    objValSum.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: number, y: number) => x + y))
                     totalValue.push(objValSum[j])
                 }
-                const objValToNumbers = objVal.map((x: any) => parseFloat(x))
+                const objValToNumbers = objVal.map((x: string) => parseFloat(x))
                 const rowObj = objKey
-                    .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: objValToNumbers[index] }), {})
+                    .reduce((obj: object, element: string, index: number) => (
+                        { ...obj, [element]: objValToNumbers[index] }), {})
                 combinedObjArr.push(rowObj)
 
                 const totalValueObj = { Total: Number(totalValue) }
@@ -158,23 +159,22 @@ function DataTable({
         const rowEventData = event.data
         const index = event.node.rowIndex
 
-        if (timeSeries !== undefined) {
-            const convertObj = {
-                convertObj:
-                    (delete rowEventData.Unit, delete rowEventData.Profile,
-                    delete rowEventData.Total),
-                rowEventData,
-            }
-            const changeKeysToValue = Object.keys(rowEventData)
-                .reduce((prev: any, curr: any, ind: any) => ({ ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
-            const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
-            newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
-            newTimeSeries.name = profileName[index!]
-            newTimeSeries.values = Object.values(changeKeysToValue)
-            setTimeSeries(newTimeSeries)
-            const newGridData = buildGridData(newTimeSeries)
-            combinedTimeseries.push(newGridData)
+        const convertObj = {
+            convertObj:
+                (delete rowEventData.Unit, delete rowEventData.Profile,
+                delete rowEventData.Total),
+            rowEventData,
         }
+        const changeKeysToValue = Object.keys(rowEventData)
+            .reduce((prev: object, curr: string, ind: number) => (
+                { ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
+        const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
+        newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+        newTimeSeries.name = profileName[index!]
+        newTimeSeries.values = Object.values(changeKeysToValue)
+        setTimeSeries(newTimeSeries)
+        const newGridData = buildGridData(newTimeSeries)
+        combinedTimeseries.push(newGridData)
         setHasChanges(true)
     }, [dG4Year])
 
@@ -183,25 +183,23 @@ function DataTable({
             Profile: "Total cost",
             Unit: setUnit(0),
         }
-        const totalValueArray: any = []
-        const valueArray = []
-        if (timeSeries !== undefined && timeSeries.length >= 1 && columns.length !== 0) {
+        const totalValueArray: number[] = []
+        const valueArray: number[][] = []
+        if (timeSeries.length >= 1 && columns.length !== 0) {
             for (let i = 0; i < columns.length; i += 1) {
                 if (timeSeries[i] !== undefined) {
-                    valueArray.push(timeSeries[i]?.values)
+                    valueArray.push(timeSeries[i]?.values ?? [])
                 }
             }
             for (let k = 0; k < columns.length; k += 1) {
-                if (timeSeries !== undefined) {
-                    totalValueArray.push(valueArray.reduce((prev, curr) => prev + curr![k], 0))
-                }
+                totalValueArray.push(valueArray.reduce((prev, curr) => prev + curr[k], 0))
             }
         }
         const value = columns
-            .reduce((obj: any, element: any, index: any) => ({ ...obj, [element]: totalValueArray[index] }), {})
-
+            .reduce((obj: object, element: string, index: number) => (
+                { ...obj, [element]: totalValueArray[index] }), {})
         const totalTotalCostArray = []
-        if (timeSeries !== undefined && timeSeries.length >= 1 && columns.length !== 0) {
+        if (timeSeries.length >= 1 && columns.length !== 0) {
             for (let j = 0; j < timeSeries.length; j += 1) {
                 if (timeSeries[j] !== undefined && gridData[j] !== undefined) {
                     totalTotalCostArray.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: any, y: any) => x + y))
@@ -237,20 +235,20 @@ function DataTable({
                     enableCharts
                 />
             </div>
-            { profileType === "Cost"
-                        && (
-                            <div style={{ flex: "none", height: "60px" }}>
-                                <AgGridReact
-                                    ref={bottomGrid}
-                                    alignedGrids={topGrid.current ? [topGrid.current] : undefined}
-                                    rowData={columnTotalsData()}
-                                    defaultColDef={footerColDef}
-                                    columnDefs={columnsArrayToColDef()}
-                                    headerHeight={0}
-                                    rowStyle={{ fontWeight: "bold" }}
-                                />
-                            </div>
-                        )}
+            {profileType === "Cost"
+                && (
+                    <div style={{ flex: "none", height: "60px" }}>
+                        <AgGridReact
+                            ref={bottomGrid}
+                            alignedGrids={topGrid.current ? [topGrid.current] : undefined}
+                            rowData={columnTotalsData()}
+                            defaultColDef={footerColDef}
+                            columnDefs={columnsArrayToColDef()}
+                            headerHeight={0}
+                            rowStyle={{ fontWeight: "bold" }}
+                        />
+                    </div>
+                )}
         </div>
     )
 }
