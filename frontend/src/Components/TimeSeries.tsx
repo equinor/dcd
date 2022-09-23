@@ -230,6 +230,7 @@ const TimeSeries = ({
                     setHasChanges={setHasChanges}
                     setTimeSeries={setTimeSeries}
                     timeSeries={timeSeries}
+                    profileType={profileType}
                 />
             </WrapperColumn>
         </>
