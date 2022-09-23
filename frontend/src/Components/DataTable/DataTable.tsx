@@ -158,7 +158,7 @@ function DataTable({
         const rowEventData = event.data
         const index = event.node.rowIndex
 
-        if (timeSeries! !== undefined) {
+        if (timeSeries !== undefined) {
             const convertObj = {
                 convertObj:
                     (delete rowEventData.Unit, delete rowEventData.Profile,
@@ -167,9 +167,9 @@ function DataTable({
             }
             const changeKeysToValue = Object.keys(rowEventData)
                 .reduce((prev: any, curr: any, ind: any) => ({ ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
-            const newTimeSeries: ITimeSeries = { ...timeSeries![index!] }
-            newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year!))
-            newTimeSeries.name = profileName![index!]
+            const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
+            newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+            newTimeSeries.name = profileName[index!]
             newTimeSeries.values = Object.values(changeKeysToValue)
             setTimeSeries(newTimeSeries)
             const newGridData = buildGridData(newTimeSeries)
@@ -234,7 +234,7 @@ function DataTable({
                     enableRangeSelection
                     suppressCopySingleCellRanges
                     suppressMovableColumns
-                    suppressHorizontalScroll
+                    enableCharts
                 />
             </div>
             { profileType === "Cost"
