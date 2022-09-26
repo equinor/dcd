@@ -82,7 +82,7 @@ function PROSPTableRow({
 
     const checkBoxStatus = (status: ImportStatusEnum, changeStatus: Dispatch<SetStateAction<ImportStatusEnum | undefined>>) => {
         if (status === ImportStatusEnum.PROSP) {
-            return <Checkbox disabled defaultChecked />
+            return <Checkbox disabled checked />
         }
         if (status === ImportStatusEnum.Selected) {
             return <Checkbox checked onChange={() => changeStatus(ImportStatusEnum.NotSelected)} />
