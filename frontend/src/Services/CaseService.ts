@@ -50,6 +50,12 @@ class __CaseService extends __BaseService {
         const costProfile: Components.Schemas.StudyCostProfileDto = await this.post<Components.Schemas.StudyCostProfileDto>(`/${id}/calculateStudy`)
         return StudyCostProfile.fromJSON(costProfile)
     }
+
+    async generateCessationCost(id: string) {
+        // eslint-disable-next-line max-len
+        const costProfile: Components.Schemas.StudyCostProfileDto = await this.post<Components.Schemas.StudyCostProfileDto>(`/${id}/generateCessation`)
+        return StudyCostProfile.fromJSON(costProfile)
+    }
 }
 
 export const CaseService = new __CaseService({

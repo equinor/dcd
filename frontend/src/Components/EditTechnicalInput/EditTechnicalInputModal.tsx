@@ -46,7 +46,7 @@ type Props = {
     toggleEditTechnicalInputModal: any
     isOpen: boolean
     setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project
+    project: Project,
 }
 
 export const EditTechnicalInputModal: FunctionComponent<Props> = ({
