@@ -22,6 +22,8 @@ interface Props {
     profileName: string[]
     profileEnum: number
     profileType: string
+    readOnlyTimeSeries: (ITimeSeries | undefined)[]
+    readOnlyName: string[]
 }
 
 const TimeSeries = ({
@@ -34,6 +36,8 @@ const TimeSeries = ({
     profileName,
     profileEnum,
     profileType,
+    readOnlyTimeSeries,
+    readOnlyName,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -115,9 +119,26 @@ const TimeSeries = ({
 
         setTimeSeries(newTimeSeries)
         if (newTimeSeries !== undefined) {
-            const newGridData = buildGridData(newTimeSeries)
-            const alignedAssetGridData = new Array(newGridData[0])
-            combinedEmptyTimeseries.push(alignedAssetGridData)
+            const zeroesAtStart: Number[] = Array.from({
+                length: Number(timeSeries[0]?.startYear!)
+                    + Number(dG4Year) - Number(firstYear),
+            }, (() => 0))
+
+            const zeroesAtEnd: Number[] = Array.from({
+                length: Number(lastYear)
+                    - (Number(timeSeries[0]?.startYear!)
+                        + Number(dG4Year)
+                        + Number(timeSeries[0]?.values!.length!)),
+            }, (() => 0))
+
+            const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
+            const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
+            const newGridData = buildGridData(timeSeries[0])
+
+            const alignedAssetGridData = new Array(
+                assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
+            )
+            combinedTimeseries.push(alignedAssetGridData)
         }
         setGridData(combinedEmptyTimeseries)
         setHasChanges(true)
@@ -183,8 +204,10 @@ const TimeSeries = ({
             }
             setColumns(colYears)
 
+            console.log(readOnlyTimeSeries)
+
             if (timeSeries[0] === undefined) {
-                for (let i = 0; i < timeSeries?.length!; i += 1) {
+                for (let i = 0; i <= timeSeries?.length!; i += 1) {
                     createEmptyGrid(i)
                 }
             }
@@ -193,6 +216,35 @@ const TimeSeries = ({
                     createNewGridWithData(i)
                 }
             }
+
+            // if (readOnlyTimeSeries[0] !== undefined) {
+            //     const timeSeriesWithoutReadOnly = timeSeries.filter((item) => !readOnlyTimeSeries.includes(item))
+            //     console.log(timeSeriesWithoutReadOnly)
+            //     if (timeSeriesWithoutReadOnly[0] === undefined) {
+            //         for (let i = 0; i < timeSeriesWithoutReadOnly?.length!; i += 1) {
+            //             createEmptyGrid(i)
+            //         }
+            //         // buildAlignedGrid(readOnlyTimeSeries[0])
+            //     }
+            //     if (timeSeriesWithoutReadOnly[0] !== undefined) {
+            //         for (let i = 0; i < timeSeriesWithoutReadOnly?.length!; i += 1) {
+            //             createNewGridWithData(i)
+            //         }
+            //     }
+            // }
+
+            // if (readOnlyTimeSeries === undefined) {
+            //     if (timeSeries[0] === undefined) {
+            //         for (let i = 1; i <= timeSeries?.length!; i += 1) {
+            //             createEmptyGrid(i)
+            //         }
+            //     }
+            //     if (timeSeries[0] !== undefined) {
+            //         for (let i = 0; i < timeSeries?.length!; i += 1) {
+            //             createNewGridWithData(i)
+            //         }
+            //     }
+            // }
         }
     }
 
@@ -231,6 +283,8 @@ const TimeSeries = ({
                     setTimeSeries={setTimeSeries}
                     timeSeries={timeSeries}
                     profileType={profileType}
+                    readOnlyTimeSeries={readOnlyTimeSeries}
+                    readOnlyName={readOnlyName}
                 />
             </WrapperColumn>
         </>

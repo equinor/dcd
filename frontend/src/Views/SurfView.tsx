@@ -350,6 +350,8 @@ const SurfView = () => {
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={currency}
                 profileType="Cost"
+                readOnlyTimeSeries={[]}
+                readOnlyName={[]}
             />
         </AssetViewDiv>
     )

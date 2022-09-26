@@ -26,10 +26,22 @@ interface Props {
     setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     timeSeries: (ITimeSeries | undefined)[]
     profileType: string
+    readOnlyTimeSeries: (ITimeSeries | undefined)[]
+    readOnlyName: string[]
 }
 
 function DataTable({
-    columns, gridData, dG4Year, profileName, profileEnum, setHasChanges, setTimeSeries, timeSeries, profileType,
+    columns,
+    gridData,
+    dG4Year,
+    profileName,
+    profileEnum,
+    setHasChanges,
+    setTimeSeries,
+    timeSeries,
+    profileType,
+    readOnlyTimeSeries,
+    readOnlyName,
 }: Props) {
     const topGrid = useRef<AgGridReact>(null)
     const bottomGrid = useRef<AgGridReact>(null)
@@ -76,7 +88,21 @@ function DataTable({
 
         const value: object[] = []
 
+        if (readOnlyName.length >= 1) {
+            console.log(readOnlyTimeSeries)
+            for (let i = 0; i < readOnlyName.length; i += 1) {
+                const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: 0 }
+                value.push(readOnly)
+            }
+        }
+
         if (gridData.length === 0) {
+            // if (readOnlyName.length >= 1) {
+            //     for (let i = 0; i < readOnlyName.length; i += 1) {
+            //         const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: 0 }
+            //         value.push(readOnly)
+            //     }
+            // }
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
                 const rowObj = objKey
@@ -89,6 +115,7 @@ function DataTable({
         }
 
         if (gridData.length >= 1 && col.length !== 0) {
+            console.log(gridData)
             for (let j = 0; j < gridData.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
                 const totalValue: number[] = []
