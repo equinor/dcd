@@ -36,7 +36,6 @@ function PROSPTableRow({
     useEffect(() => {
         const selectedCase = project.cases.find((c) => c.id === caseId)
         setCaseItem(selectedCase)
-        console.log("prospcases", prospCases)
         if (prospCases && prospCases.length > 0) {
             const selectedProspCase = prospCases.find((pc) => pc.id === caseId)
             setProspCase(selectedProspCase)
@@ -46,7 +45,6 @@ function PROSPTableRow({
             setTransport(selectedProspCase?.transportState)
             setSelected(selectedProspCase?.selected)
             setSharePointFileId(selectedProspCase?.sharePointFileId!)
-            console.log("sharepointfileId in useEffect:", selectedProspCase?.sharePointFileId)
             setSharePointFileName(selectedProspCase?.sharePointFileName!)
         }
     }, [project, prospCases])
@@ -59,7 +57,6 @@ function PROSPTableRow({
             return pc
         })
         setProspCases(newProspCases)
-        console.log("New prospCASES IN UPDATEPROSPCASES:", newProspCases)
     }
 
     useEffect(() => {
@@ -131,14 +128,11 @@ function PROSPTableRow({
                 const unlinkedCase = unlinkAssetsOnCase(caseItem)
                 unlinkedCase.sharepointFileId = sharePointFileId
                 const caseResult = await (await GetCaseService()).updateCase(unlinkedCase)
-                console.log("Im in try getting new Case REsult")
                 setProject(caseResult)
                 setCaseItem(caseResult.cases.find((i) => i.id === caseItem.id))
             }
             setSharePointFileId(newProspCase.sharePointFileId)
-            console.log("Sharepointfile has been set to", newProspCase.sharePointFileId)
             setProspCase(newProspCase)
-            console.log("new prospcase is set as:", newProspCase)
         } catch (e) {
             console.error(e)
         }
@@ -148,7 +142,7 @@ function PROSPTableRow({
 
         <Table.Row key={1}>
             <Table.Cell>
-                Checkbox
+                checkbox
             </Table.Cell>
             <Table.Cell>
                 {caseItem.name}
@@ -170,7 +164,6 @@ function PROSPTableRow({
                     id="sharePointFile"
                     label=""
                     value={prospCase.sharePointFileId}
-                    // currentValue={caseItem.sharepointFileId}
                     onChange={onSharePointFileChange}
                 >
                     {sharePointFileDropdownOptions()}
