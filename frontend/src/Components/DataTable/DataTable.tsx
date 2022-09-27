@@ -99,7 +99,7 @@ function DataTable({
                 const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: 0 }
                 if (readOnlyTimeSeries[i] !== undefined) {
                     for (let j = 0; j < col.length; j += 1) {
-                        readOnlyObjKey.push(`${col[j]}`)
+                        readOnlyObjKey.push(`${col[j + Math.abs(Number(readOnlyTimeSeries[i]?.startYear!)) - 1]}`)
                     }
                 }
                 const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values ?? []
@@ -112,12 +112,6 @@ function DataTable({
         }
 
         if (gridData.length === 0) {
-            // if (readOnlyName.length >= 1) {
-            //     for (let i = 0; i < readOnlyName.length; i += 1) {
-            //         const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: 0 }
-            //         value.push(readOnly)
-            //     }
-            // }
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
                 const rowObj = objKey
@@ -222,6 +216,7 @@ function DataTable({
         newTimeSeries.values = Object.values(changeKeysToValue)
         setTimeSeries(newTimeSeries)
         const newGridData = buildGridData(newTimeSeries)
+        console.log(newTimeSeries.startYear)
         combinedTimeseries.push(newGridData)
         setHasChanges(true)
     }, [dG4Year])
