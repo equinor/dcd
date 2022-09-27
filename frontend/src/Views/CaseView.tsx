@@ -28,6 +28,9 @@ import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { GetCaseService } from "../Services/CaseService"
 import { StudyCostProfile } from "../models/case/StudyCostProfile"
+import TimeSeries from "../Components/TimeSeries"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -79,12 +82,16 @@ function CaseView() {
     const currentProject = useCurrentContext()
     const [opex, setOpex] = useState<OpexCostProfile>()
     const [study, setStudy] = useState<StudyCostProfile>()
-    const [cessation, setCessation] = useState<StudyCostProfile>()
+    const [cessation, setCessation] = useState<CaseCessationCostProfile>()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
     const [element, setElement] = useState<HTMLButtonElement>()
+
+    const [hasChanges, setHasChanges] = useState(false)
+    const [firstTSYear, setFirstTSYear] = useState<number>()
+    const [lastTSYear, setLastTSYear] = useState<number>()
 
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
@@ -125,9 +132,37 @@ function CaseView() {
                 } catch (error) {
                     console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
                 }
+                if (caseResult?.DG4Date) {
+                    initializeFirstAndLastYear(
+                        caseResult?.DG4Date?.getFullYear(),
+                        [cessation,
+                            opex,
+                            study],
+                        setFirstTSYear,
+                        setLastTSYear,
+                    )
+                }
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        if (caseItem?.DG4Date) {
+            initializeFirstAndLastYear(
+                caseItem?.DG4Date?.getFullYear(),
+                [cessation,
+                    opex,
+                    study],
+                setFirstTSYear,
+                setLastTSYear,
+            )
+        }
+        console.log(cessation)
+        console.log(opex)
+        console.log(study)
+        console.log(firstTSYear)
+        console.log(lastTSYear)
+    }, [caseItem, cessation, opex, study])
 
     const onMoreClick = (target: any) => {
         setElement(target)
@@ -258,6 +293,19 @@ function CaseView() {
                     dG4Year={caseItem.DG4Date?.getFullYear()}
                     timeSeries={study}
                     title="Study cost profile"
+                />
+                <TimeSeries
+                    dG4Year={caseItem.DG4Date!.getFullYear()}
+                    setTimeSeries={setCessation}
+                    setHasChanges={setHasChanges}
+                    timeSeries={[]}
+                    firstYear={firstTSYear!}
+                    lastYear={lastTSYear!}
+                    profileName={[]}
+                    profileEnum={project?.currency!}
+                    profileType="Cost"
+                    readOnlyTimeSeries={[cessation, opex, study]}
+                    readOnlyName={["Cessation cost profile", "OPEX cost profile", "Study cost profile"]}
                 />
                 <DividerLine />
                 <CaseAsset

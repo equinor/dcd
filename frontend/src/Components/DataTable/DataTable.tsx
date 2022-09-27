@@ -91,17 +91,23 @@ function DataTable({
         const combinedObjArr: object[] = []
         const readOnlyObjKey: string[] = []
         const readOnlyCombinedObjArr: object[] = []
+        const readOnlyObjValSum: number[] = []
 
         const value: object[] = []
 
         if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined) {
             for (let i = 0; i < readOnlyName.length; i += 1) {
-                const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: 0 }
+                const totalValue: number[] = []
+                const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
                 if (readOnlyTimeSeries[i] !== undefined) {
-                    for (let j = 0; j < col.length; j += 1) {
+                    for (let j = 0; j < Number(readOnlyTimeSeries[i]?.values?.length); j += 1) {
                         readOnlyObjKey.push(`${col[j + Math.abs(Number(readOnlyTimeSeries[i]?.startYear!)) - 1]}`)
                     }
+                    readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values ?? [])
+                        .reduce((x: number, y: number) => x + y))
+                    totalValue.push(readOnlyObjValSum[i])
                 }
+                console.log(col)
                 const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values ?? []
                 const rowObj = readOnlyObjKey
                     .reduce((obj: object, element: string, index: number) => (
@@ -109,6 +115,7 @@ function DataTable({
                 readOnlyCombinedObjArr.push(rowObj)
                 value.push({ ...readOnlyCombinedObjArr[i], ...readOnly })
             }
+            console.log(value)
         }
 
         if (gridData.length === 0) {
