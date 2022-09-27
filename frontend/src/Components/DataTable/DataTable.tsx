@@ -8,6 +8,8 @@ import "./style.css"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { CellValueChangedEvent, ColDef } from "ag-grid-community"
+import { Icon } from "@equinor/eds-core-react"
+import { lock } from "@equinor/eds-icons"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
 import "ag-grid-enterprise"
@@ -79,20 +81,33 @@ function DataTable({
         return CurrencyEnum[profileEnum]
     }
 
+    // const lockIcon = () => <Icon data={lock} color="green" />
+
     const rowDataToColumns = () => {
         const col = columns
         const objKey: string[] = []
         const objVal: string[] = []
         const objValSum: number[] = []
         const combinedObjArr: object[] = []
+        const readOnlyObjKey: string[] = []
+        const readOnlyCombinedObjArr: object[] = []
 
         const value: object[] = []
 
-        if (readOnlyName.length >= 1) {
-            console.log(readOnlyTimeSeries)
+        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined) {
             for (let i = 0; i < readOnlyName.length; i += 1) {
                 const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: 0 }
-                value.push(readOnly)
+                if (readOnlyTimeSeries[i] !== undefined) {
+                    for (let j = 0; j < col.length; j += 1) {
+                        readOnlyObjKey.push(`${col[j]}`)
+                    }
+                }
+                const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values ?? []
+                const rowObj = readOnlyObjKey
+                    .reduce((obj: object, element: string, index: number) => (
+                        { ...obj, [element]: objValToNumbers[index] }), {})
+                readOnlyCombinedObjArr.push(rowObj)
+                value.push({ ...readOnlyCombinedObjArr[i], ...readOnly })
             }
         }
 
@@ -148,7 +163,11 @@ function DataTable({
             const columnToColDef = []
             const columnPinned = [
                 {
-                    field: "Profile", pinned: "left", width: "autoWidth", aggFunc: "",
+                    field: "Profile",
+                    pinned: "left",
+                    width: "autoWidth",
+                    aggFunc: "",
+                    // cellRenderer: <Icon data={lock} color="green" />,
                 },
                 {
                     field: "Unit", pinned: "left", width: "autoWidth", aggFunc: "",
@@ -186,6 +205,8 @@ function DataTable({
         const rowEventData = event.data
         const index = event.node.rowIndex
 
+        console.log(rowEventData)
+        console.log(index)
         const convertObj = {
             convertObj:
                 (delete rowEventData.Unit, delete rowEventData.Profile,
