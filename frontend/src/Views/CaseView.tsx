@@ -31,6 +31,7 @@ import { StudyCostProfile } from "../models/case/StudyCostProfile"
 import TimeSeries from "../Components/TimeSeries"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
+import ReadOnlyTimeSeries from "../Components/ReadOnlyTimeSeries"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -294,7 +295,7 @@ function CaseView() {
                     timeSeries={study}
                     title="Study cost profile"
                 />
-                <TimeSeries
+                {/* <TimeSeries
                     dG4Year={caseItem.DG4Date!.getFullYear()}
                     setTimeSeries={setCessation}
                     setHasChanges={setHasChanges}
@@ -302,6 +303,15 @@ function CaseView() {
                     firstYear={firstTSYear!}
                     lastYear={lastTSYear!}
                     profileName={[]}
+                    profileEnum={project?.currency!}
+                    profileType="Cost"
+                    readOnlyTimeSeries={[cessation, opex, study]}
+                    readOnlyName={["Cessation cost profile", "OPEX cost profile", "Study cost profile"]}
+                /> */}
+                <ReadOnlyTimeSeries
+                    dG4Year={caseItem.DG4Date!.getFullYear()}
+                    firstYear={firstTSYear!}
+                    lastYear={lastTSYear!}
                     profileEnum={project?.currency!}
                     profileType="Cost"
                     readOnlyTimeSeries={[cessation, opex, study]}

@@ -20,35 +20,23 @@ export interface CellValue {
 }
 interface Props {
     columns: string[]
-    gridData: any[]
     dG4Year: string
-    profileName: string[]
     profileEnum: number
-    setHasChanges: Dispatch<SetStateAction<boolean>>,
-    setTimeSeries: Dispatch<SetStateAction<ITimeSeries | undefined>>,
-    timeSeries: (ITimeSeries | undefined)[]
     profileType: string
     readOnlyTimeSeries: (ITimeSeries | undefined)[]
     readOnlyName: string[]
 }
 
-function DataTable({
+function DataTableReadOnly({
     columns,
-    gridData,
     dG4Year,
-    profileName,
     profileEnum,
-    setHasChanges,
-    setTimeSeries,
-    timeSeries,
     profileType,
     readOnlyTimeSeries,
     readOnlyName,
 }: Props) {
     const topGrid = useRef<AgGridReact>(null)
     const bottomGrid = useRef<AgGridReact>(null)
-
-    const combinedTimeseries: any = []
 
     useAgGridStyles()
 
@@ -68,14 +56,14 @@ function DataTable({
     }
 
     const setUnit = (j: number) => {
-        if (["CO2 emissions", "Production profile NGL"].includes(profileName[j])) {
+        if (["CO2 emissions", "Production profile NGL"].includes(readOnlyName[j])) {
             return "MTPA"
         }
-        if (["Net sales gas", "Fuel flaring and losses", "Production profile gas"].includes(profileName[j])) {
+        if (["Net sales gas", "Fuel flaring and losses", "Production profile gas"].includes(readOnlyName[j])) {
             return GSM3Enum[profileEnum]
         }
         if (["Production profile oil", "Production profile water",
-            "Production profile water injection"].includes(profileName[j])) {
+            "Production profile water injection"].includes(readOnlyName[j])) {
             return MSM3Enum[profileEnum]
         }
         return CurrencyEnum[profileEnum]
@@ -98,10 +86,6 @@ function DataTable({
 
     const rowDataToColumns = () => {
         const col = columns
-        const objKey: string[] = []
-        const objVal: string[] = []
-        const objValSum: number[] = []
-        const combinedObjArr: object[] = []
         const readOnlyCombinedObjArr: object[] = []
         const readOnlyObjValSum: number[] = []
 
@@ -126,45 +110,6 @@ function DataTable({
                 value.push({ ...readOnlyCombinedObjArr[i], ...readOnly })
             }
         }
-
-        if (gridData.length === 0) {
-            for (let j = 0; j < profileName.length; j += 1) {
-                const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
-                const rowObj = objKey
-                    .reduce((obj: object, element: string, index: number) => ({ ...obj, [element]: objVal[index] }), {})
-                combinedObjArr.push(rowObj)
-
-                const totalValueObj = { Total: 0 }
-                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
-            }
-        }
-
-        if (gridData.length >= 1 && col.length !== 0) {
-            console.log(gridData)
-            for (let j = 0; j < gridData.length; j += 1) {
-                const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
-                const totalValue: number[] = []
-                if (gridData[j] !== undefined) {
-                    for (let i = 0; i < col.length; i += 1) {
-                        if (gridData[j][0]) {
-                            objKey.push(`${col[i]}`)
-                            objVal.push(`${gridData[j][0].map((v: any) => v.value)[i]}`)
-                        }
-                    }
-                    objValSum.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: number, y: number) => x + y))
-                    totalValue.push(objValSum[j])
-                }
-                const objValToNumbers = objVal.map((x: string) => parseFloat(x))
-                const rowObj = objKey
-                    .reduce((obj: object, element: string, index: number) => (
-                        { ...obj, [element]: objValToNumbers[index] }), {})
-                combinedObjArr.push(rowObj)
-
-                const totalValueObj = { Total: Number(totalValue) }
-                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
-            }
-        }
-        console.log(value)
         return value
     }
 
@@ -210,37 +155,7 @@ function DataTable({
     }), [])
 
     useEffect(() => {
-        // if (dG4Year !== undefined) {
-        //     console.log(dG4Year)
-        // }
-        // console.log(dG4Year)
-    }, [timeSeries, profileName, gridData, dG4Year])
-
-    const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
-        const rowEventData = event.data
-        const index = event.node.rowIndex
-
-        console.log(rowEventData)
-        console.log(index)
-        const convertObj = {
-            convertObj:
-                (delete rowEventData.Unit, delete rowEventData.Profile,
-                delete rowEventData.Total),
-            rowEventData,
-        }
-        const changeKeysToValue = Object.keys(rowEventData)
-            .reduce((prev: object, curr: string, ind: number) => (
-                { ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
-        const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
-        newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
-        newTimeSeries.name = profileName[index!]
-        newTimeSeries.values = Object.values(changeKeysToValue)
-        setTimeSeries(newTimeSeries)
-        const newGridData = buildGridData(newTimeSeries)
-        console.log(newTimeSeries.startYear)
-        combinedTimeseries.push(newGridData)
-        setHasChanges(true)
-    }, [dG4Year])
+    }, [readOnlyTimeSeries, dG4Year])
 
     const columnTotalsData = () => {
         const footerGridData = {
@@ -249,10 +164,10 @@ function DataTable({
         }
         const totalValueArray: number[] = []
         const valueArray: number[][] = []
-        if (timeSeries.length >= 1 && columns.length !== 0) {
+        if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
             for (let i = 0; i < columns.length; i += 1) {
-                if (timeSeries[i] !== undefined) {
-                    valueArray.push(timeSeries[i]?.values ?? [])
+                if (readOnlyTimeSeries[i] !== undefined) {
+                    valueArray.push(readOnlyTimeSeries[i]?.values ?? [])
                 }
             }
             for (let k = 0; k < columns.length; k += 1) {
@@ -263,10 +178,11 @@ function DataTable({
             .reduce((obj: object, element: string, index: number) => (
                 { ...obj, [element]: totalValueArray[index] }), {})
         const totalTotalCostArray = []
-        if (timeSeries.length >= 1 && columns.length !== 0) {
-            for (let j = 0; j < timeSeries.length; j += 1) {
-                if (timeSeries[j] !== undefined && gridData[j] !== undefined) {
-                    totalTotalCostArray.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: any, y: any) => x + y))
+        if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < readOnlyTimeSeries.length; j += 1) {
+                if (readOnlyTimeSeries[j] !== undefined) {
+                    totalTotalCostArray.push((readOnlyTimeSeries[j]?.values ?? [])
+                        .reduce((x: number, y: number) => x + y))
                 }
             }
         }
@@ -291,7 +207,6 @@ function DataTable({
                     animateRows
                     domLayout="autoHeight"
                     enableCellChangeFlash
-                    onCellValueChanged={onCellValueChanged}
                     rowSelection="multiple"
                     enableRangeSelection
                     suppressCopySingleCellRanges
@@ -317,4 +232,4 @@ function DataTable({
     )
 }
 
-export default DataTable
+export default DataTableReadOnly
