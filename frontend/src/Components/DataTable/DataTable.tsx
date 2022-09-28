@@ -83,6 +83,20 @@ function DataTable({
 
     // const lockIcon = () => <Icon data={lock} color="green" />
 
+    const generateTimeSeriesYears = (index: number, dg4: string) => {
+        const years = []
+        if (dg4) {
+            const profileStartYear: number = Number(readOnlyTimeSeries[index]?.startYear) + Number(dG4Year)
+            const maxYear: number = Number(readOnlyTimeSeries[index]?.values?.length) + profileStartYear
+
+            for (let i = profileStartYear; i < maxYear; i += 1) {
+                years.push(i.toString())
+            }
+        }
+        console.log(years)
+        return years
+    }
+
     const rowDataToColumns = () => {
         const col = columns
         const objKey: string[] = []
@@ -95,21 +109,28 @@ function DataTable({
 
         const value: object[] = []
 
-        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined) {
+        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined && col.length > 1 && dG4Year) {
             for (let i = 0; i < readOnlyName.length; i += 1) {
                 const totalValue: number[] = []
                 const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
-                if (readOnlyTimeSeries[i] !== undefined) {
-                    for (let j = 0; j < Number(readOnlyTimeSeries[i]?.values?.length); j += 1) {
-                        readOnlyObjKey.push(`${col[j + Math.abs(Number(readOnlyTimeSeries[i]?.startYear!)) - 1]}`)
+                if (readOnlyTimeSeries[i] !== undefined && dG4Year) {
+                    for (let j = 0; j < col.length; j += 1) {
+                        // eslint-disable-next-line max-len
+                        const profileStartYear: number = Number(dG4Year) + Number(readOnlyTimeSeries[i]?.startYear!) - Number(col[0]) + j
+                        // eslint-disable-next-line max-len
+                        readOnlyObjKey.push(`${col[j]}`)
+                        // console.log(col[j + Math.abs(Number(readOnlyTimeSeries[i]?.startYear!)) - 1])
                     }
+                    console.log(readOnlyObjKey)
                     readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values ?? [])
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
                 }
                 console.log(col)
+
                 const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values ?? []
-                const rowObj = readOnlyObjKey
+                console.log(objValToNumbers)
+                const rowObj = generateTimeSeriesYears(i, dG4Year)
                     .reduce((obj: object, element: string, index: number) => (
                         { ...obj, [element]: objValToNumbers[index] }), {})
                 readOnlyCombinedObjArr.push(rowObj)
@@ -118,7 +139,7 @@ function DataTable({
             console.log(value)
         }
 
-        if (gridData.length === 0) {
+        if (gridData.length === 0 && readOnlyName.length === 0) {
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
                 const rowObj = objKey
@@ -130,7 +151,7 @@ function DataTable({
             }
         }
 
-        if (gridData.length >= 1 && col.length !== 0) {
+        if (gridData.length >= 1 && col.length !== 0 && readOnlyName.length === 0) {
             console.log(gridData)
             for (let j = 0; j < gridData.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
@@ -155,6 +176,7 @@ function DataTable({
                 value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
             }
         }
+        console.log(value)
         return value
     }
 
@@ -200,6 +222,10 @@ function DataTable({
     }), [])
 
     useEffect(() => {
+        // if (dG4Year !== undefined) {
+        //     console.log(dG4Year)
+        // }
+        // console.log(dG4Year)
     }, [timeSeries, profileName, gridData, dG4Year])
 
     const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {

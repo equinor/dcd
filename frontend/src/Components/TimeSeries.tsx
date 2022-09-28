@@ -94,20 +94,28 @@ const TimeSeries = ({
     useEffect(() => {
         buildAlignedGrid(combinedTimeseries!)
 
+        if (timeSeries[0] === undefined && readOnlyTimeSeries[0] !== undefined) {
+            console.log(readOnlyTimeSeries?.length)
+            for (let i = 0; i < readOnlyTimeSeries?.length!; i += 1) {
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                createNewGridWithReadOnlyData(i)
+            }
+        }
+
         // console.log(readOnlyTimeSeries)
         // console.log(timeSeries)
-        if (readOnlyTimeSeries[0] !== undefined && timeSeries[0] === undefined) {
-            const columnTitles: string[] = []
-            // console.log(firstYear)
-            // console.log(lastYear)
-            if (firstYear !== undefined && lastYear !== undefined && isValidYear(firstYear) && isValidYear(lastYear)) {
-                for (let j = firstYear; j < lastYear; j += 1) {
-                    columnTitles.push(j.toString())
-                }
-            }
-            // console.log(columnTitles)
-            setColumns(columnTitles)
-        }
+        // if (readOnlyTimeSeries[0] !== undefined && timeSeries[0] === undefined) {
+        //     const columnTitles: string[] = []
+        //     // console.log(firstYear)
+        //     // console.log(lastYear)
+        //     if (firstYear !== undefined && lastYear !== undefined && isValidYear(firstYear) && isValidYear(lastYear)) {
+        //         for (let j = firstYear; j < lastYear; j += 1) {
+        //             columnTitles.push(j.toString())
+        //         }
+        //     }
+        //     // console.log(columnTitles)
+        //     setColumns(columnTitles)
+        // }
 
         if (gridData !== undefined && isValidYear(firstYear) && isValidYear(lastYear)
             && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER) {
@@ -213,42 +221,14 @@ const TimeSeries = ({
 
     const createNewGridWithReadOnlyData = (j: any) => {
         if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
-            const newTimeSeries: ITimeSeries = { ...readOnlyTimeSeries[j] }
             const colYears = []
             for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
                 colYears.push(c.toString())
             }
             setColumns(colYears)
-            newTimeSeries.name = profileName[j]
-            newTimeSeries.startYear = timeSeries[j]?.startYear
-
-            if (NewTableFirstYearSmallerThanProfileFirstYear(j)) {
-                newTimeSeries.startYear = tableFirstYear - dG4Year
-                newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length)
-                    .fill(0).concat(newTimeSeries.values) ?? []
-            }
-
-            if (NewTableLastYearGreaterThanProfileLastYear(colYears, newTimeSeries)) {
-                newTimeSeries.values = (newTimeSeries.values)
-                    ?.concat(new Array(colYears.length - Number(timeSeries[j]?.values!.length)).fill(0)) ?? []
-            }
-
-            if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
-                const yearDifference = (Number(colYears[0]) + Number(timeSeries[j]?.values!.length) - 1) - tableLastYear
-                newTimeSeries.values = timeSeries[j]?.values?.slice(0, -yearDifference) ?? []
-            }
-
-            if (NewTableFirstYearGreaterThanProfileFirstYear(j)) {
-                newTimeSeries.startYear = tableFirstYear - dG4Year
-                const yearDifference = tableFirstYear - (Number(timeSeries[j]?.startYear!) + dG4Year)
-                newTimeSeries.values = timeSeries[j]?.values?.slice(yearDifference) ?? []
-            }
-            setTimeSeries(newTimeSeries)
-            if (newTimeSeries !== undefined) {
-                const newGridData = buildGridData(newTimeSeries)
-                const alignedAssetGridData = new Array(newGridData[0])
-                combinedEmptyTimeseries.push(alignedAssetGridData)
-            }
+            const newGridData = buildGridData(readOnlyTimeSeries[j])
+            const alignedAssetGridData = new Array(newGridData[0])
+            combinedEmptyTimeseries.push(alignedAssetGridData)
             setGridData(combinedEmptyTimeseries)
             setHasChanges(true)
         }
