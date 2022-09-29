@@ -95,13 +95,13 @@ function DataTableReadOnly({
             for (let i = 0; i < readOnlyName.length; i += 1) {
                 const totalValue: number[] = []
                 const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
-                if (readOnlyTimeSeries[i] !== undefined && dG4Year) {
+                if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length !== 0) {
                     readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values ?? [])
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
                 }
 
-                const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values ?? []
+                const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values!
                 const rowObj = generateTimeSeriesYears(i, dG4Year)
                     .reduce((obj: object, element: string, index: number) => (
                         { ...obj, [element]: objValToNumbers[index] }), {})
@@ -165,7 +165,7 @@ function DataTableReadOnly({
                     }, (() => 0))
 
                     const zeroesAtEnd: number[] = Array.from({
-                        length: Number(columns.slice(-1)[0] + 1)
+                        length: Number(columns.slice(-1)[0]) + 1
                             - (Number(readOnlyTimeSeries[i]?.startYear!)
                                 + Number(dG4Year)
                                 + Number(readOnlyTimeSeries[i]?.values!.length!)),
@@ -190,7 +190,7 @@ function DataTableReadOnly({
         const totalTotalCostArray = []
         if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
             for (let j = 0; j < readOnlyTimeSeries.length; j += 1) {
-                if (readOnlyTimeSeries[j] !== undefined) {
+                if (readOnlyTimeSeries[j] !== undefined && readOnlyTimeSeries[j]?.values?.length !== 0) {
                     totalTotalCostArray.push((readOnlyTimeSeries[j]?.values ?? [])
                         .reduce((x: number, y: number) => x + y))
                 }

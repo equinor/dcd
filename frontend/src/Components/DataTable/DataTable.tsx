@@ -111,7 +111,7 @@ function DataTable({
             for (let i = 0; i < readOnlyName.length; i += 1) {
                 const totalValue: number[] = []
                 const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
-                if (readOnlyTimeSeries[i] !== undefined && dG4Year) {
+                if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length !== 0) {
                     readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values ?? [])
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
@@ -249,20 +249,76 @@ function DataTable({
         }
         const totalValueArray: number[] = []
         const valueArray: number[][] = []
+        const readOnlyValueArray: number[][] = []
+        const readOnlyTotalValueArray: number[] = []
+        if (readOnlyTimeSeries.length >= 1 && columns.length > 1) {
+            for (let i = 0; i < columns.length; i += 1) {
+                if (readOnlyTimeSeries[i] !== undefined) {
+                    const zeroesAtStart: number[] = Array.from({
+                        length: Number(readOnlyTimeSeries[i]?.startYear!)
+                            + Number(dG4Year) - Number(columns[0]),
+                    }, (() => 0))
+
+                    const zeroesAtEnd: number[] = Array.from({
+                        length: Number(columns.slice(-1)[0]) + 1
+                            - (Number(readOnlyTimeSeries[i]?.startYear!)
+                                + Number(dG4Year)
+                                + Number(readOnlyTimeSeries[i]?.values!.length!)),
+                    }, (() => 0))
+
+                    // eslint-disable-next-line max-len
+                    const alignedAssetGridData: number[] = zeroesAtStart.concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
+                    console.log(alignedAssetGridData)
+                    readOnlyValueArray.push(alignedAssetGridData)
+                    console.log(readOnlyValueArray)
+                }
+            }
+            for (let k = 0; k < columns.length; k += 1) {
+                readOnlyTotalValueArray.push(readOnlyValueArray.reduce((prev, curr) => prev + curr[k], 0))
+            }
+        }
         if (timeSeries.length >= 1 && columns.length !== 0) {
             for (let i = 0; i < columns.length; i += 1) {
-                if (timeSeries[i] !== undefined) {
+                if (timeSeries[i] !== undefined && timeSeries[i]?.values?.length === columns.length) {
                     valueArray.push(timeSeries[i]?.values ?? [])
+                }
+                if (timeSeries[i] !== undefined && timeSeries[i]?.values?.length !== columns.length) {
+                    const zeroesAtStart: number[] = Array.from({
+                        length: Number(timeSeries[i]?.startYear!)
+                            + Number(dG4Year) - Number(columns[0]),
+                    }, (() => 0))
+
+                    const zeroesAtEnd: number[] = Array.from({
+                        length: Number(columns.slice(-1)[0]) + 1
+                            - (Number(timeSeries[i]?.startYear!)
+                                + Number(dG4Year)
+                                + Number(timeSeries[i]?.values!.length!)),
+                    }, (() => 0))
+
+                    // eslint-disable-next-line max-len
+                    const alignedAssetGridData: number[] = zeroesAtStart.concat(timeSeries[i]?.values!, zeroesAtEnd)
+                    console.log(alignedAssetGridData)
+                    valueArray.push(alignedAssetGridData)
                 }
             }
             for (let k = 0; k < columns.length; k += 1) {
                 totalValueArray.push(valueArray.reduce((prev, curr) => prev + curr[k], 0))
             }
         }
+        const mergedTimeSeries = totalValueArray.map((a:number, i:number) => a + readOnlyTotalValueArray[i])
+
         const value = columns
             .reduce((obj: object, element: string, index: number) => (
-                { ...obj, [element]: totalValueArray[index] }), {})
+                { ...obj, [element]: mergedTimeSeries[index] }), {})
         const totalTotalCostArray = []
+        if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < readOnlyTimeSeries.length; j += 1) {
+                if (readOnlyTimeSeries[j] !== undefined && readOnlyTimeSeries[j]?.values?.length !== 0) {
+                    totalTotalCostArray.push((readOnlyTimeSeries[j]?.values ?? [])
+                        .reduce((x: number, y: number) => x + y))
+                }
+            }
+        }
         if (timeSeries.length >= 1 && columns.length !== 0) {
             for (let j = 0; j < timeSeries.length; j += 1) {
                 if (timeSeries[j] !== undefined && gridData[j] !== undefined) {
@@ -272,7 +328,9 @@ function DataTable({
         }
         const sum = totalTotalCostArray.reduce((prev, curr) => prev + curr, 0)
         const totalTotalObj = { Total: Number(sum) }
-        const combinedFooterRow = [{ ...value, ...footerGridData, ...totalTotalObj }]
+        const combinedFooterRow = [{
+            ...value, ...footerGridData, ...totalTotalObj,
+        }]
         return combinedFooterRow
     }
 
