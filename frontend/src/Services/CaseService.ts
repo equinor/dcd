@@ -7,6 +7,7 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { StudyCostProfile } from "../models/case/StudyCostProfile"
+import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
 
 class __CaseService extends __BaseService {
     public async createCase(data: Components.Schemas.CaseDto): Promise<Project> {
@@ -53,8 +54,8 @@ class __CaseService extends __BaseService {
 
     async generateCessationCost(id: string) {
         // eslint-disable-next-line max-len
-        const costProfile: Components.Schemas.StudyCostProfileDto = await this.post<Components.Schemas.StudyCostProfileDto>(`/${id}/generateCessation`)
-        return StudyCostProfile.fromJSON(costProfile)
+        const costProfile: Components.Schemas.CessationCostDto = await this.post<Components.Schemas.CessationCostDto>(`/${id}/generateCessation`)
+        return CaseCessationCostProfile.fromJSON(costProfile)
     }
 }
 

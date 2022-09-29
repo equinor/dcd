@@ -11,7 +11,7 @@ import { CellValueChangedEvent, ColDef } from "ag-grid-community"
 import { Icon } from "@equinor/eds-core-react"
 import { lock } from "@equinor/eds-icons"
 import { ITimeSeries } from "../../models/ITimeSeries"
-import { buildGridData } from "./helpers"
+import { buildGridData, buildZeroGridData } from "./helpers"
 import "ag-grid-enterprise"
 
 export interface CellValue {
@@ -100,7 +100,6 @@ function DataTableReadOnly({
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
                 }
-                console.log(col)
 
                 const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values ?? []
                 const rowObj = generateTimeSeriesYears(i, dG4Year)
@@ -143,13 +142,6 @@ function DataTableReadOnly({
     const defaultColDef = useMemo<ColDef>(() => ({
         resizable: true,
         sortable: true,
-        editable: true,
-        flex: 1,
-    }), [])
-
-    const footerColDef = useMemo<ColDef>(() => ({
-        resizable: true,
-        sortable: true,
         editable: false,
         flex: 1,
     }), [])
@@ -164,10 +156,25 @@ function DataTableReadOnly({
         }
         const totalValueArray: number[] = []
         const valueArray: number[][] = []
-        if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
+        if (readOnlyTimeSeries.length >= 1 && columns.length > 1) {
             for (let i = 0; i < columns.length; i += 1) {
                 if (readOnlyTimeSeries[i] !== undefined) {
-                    valueArray.push(readOnlyTimeSeries[i]?.values ?? [])
+                    const zeroesAtStart: number[] = Array.from({
+                        length: Number(readOnlyTimeSeries[i]?.startYear!)
+                            + Number(dG4Year) - Number(columns[0]),
+                    }, (() => 0))
+
+                    const zeroesAtEnd: number[] = Array.from({
+                        length: Number(columns.slice(-1)[0] + 1)
+                            - (Number(readOnlyTimeSeries[i]?.startYear!)
+                                + Number(dG4Year)
+                                + Number(readOnlyTimeSeries[i]?.values!.length!)),
+                    }, (() => 0))
+
+                    // eslint-disable-next-line max-len
+                    const alignedAssetGridData: number[] = zeroesAtStart.concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
+                    console.log(alignedAssetGridData)
+                    valueArray.push(alignedAssetGridData)
                 }
             }
             for (let k = 0; k < columns.length; k += 1) {
@@ -177,6 +184,9 @@ function DataTableReadOnly({
         const value = columns
             .reduce((obj: object, element: string, index: number) => (
                 { ...obj, [element]: totalValueArray[index] }), {})
+        console.log(value)
+        console.log(valueArray)
+        console.log(totalValueArray)
         const totalTotalCostArray = []
         if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
             for (let j = 0; j < readOnlyTimeSeries.length; j += 1) {
@@ -221,7 +231,7 @@ function DataTableReadOnly({
                             ref={bottomGrid}
                             alignedGrids={topGrid.current ? [topGrid.current] : undefined}
                             rowData={columnTotalsData()}
-                            defaultColDef={footerColDef}
+                            defaultColDef={defaultColDef}
                             columnDefs={columnsArrayToColDef()}
                             headerHeight={0}
                             rowStyle={{ fontWeight: "bold" }}

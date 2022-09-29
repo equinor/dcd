@@ -89,8 +89,6 @@ function CaseView() {
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
     const [element, setElement] = useState<HTMLButtonElement>()
-
-    const [hasChanges, setHasChanges] = useState(false)
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
 
@@ -148,7 +146,7 @@ function CaseView() {
     }, [project])
 
     useEffect(() => {
-        if (caseItem?.DG4Date) {
+        if (caseItem?.DG4Date && cessation) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
                 [cessation,
@@ -310,8 +308,8 @@ function CaseView() {
                 /> */}
                 <ReadOnlyTimeSeries
                     dG4Year={caseItem.DG4Date!.getFullYear()}
-                    firstYear={firstTSYear!}
-                    lastYear={lastTSYear!}
+                    firstYear={firstTSYear}
+                    lastYear={lastTSYear}
                     profileEnum={project?.currency!}
                     profileType="Cost"
                     readOnlyTimeSeries={[cessation, opex, study]}

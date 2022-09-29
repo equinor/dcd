@@ -55,15 +55,18 @@ const ReadOnlyTimeSeries = ({
             setTableFirstYear(firstYear!)
             setTableLastYear(lastYear! - 1)
         }
-    }, [readOnlyTimeSeries, lastYear, firstYear])
 
-    const createNewGridWithReadOnlyData = (j: any) => {
-        if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
+        if (tableFirstYear && tableLastYear) {
             const colYears = []
             for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
                 colYears.push(c.toString())
             }
             setColumns(colYears)
+        }
+    }, [readOnlyTimeSeries, lastYear, firstYear])
+
+    const createNewGridWithReadOnlyData = (j: any) => {
+        if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
             const newGridData = buildGridData(readOnlyTimeSeries[j])
             const alignedAssetGridData = new Array(newGridData[0])
             combinedEmptyTimeseries.push(alignedAssetGridData)
