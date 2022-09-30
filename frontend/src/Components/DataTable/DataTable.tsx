@@ -110,7 +110,9 @@ function DataTable({
         if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined && col.length !== 0 && dG4Year) {
             for (let i = 0; i < readOnlyName.length; i += 1) {
                 const totalValue: number[] = []
-                const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
+                const readOnly = {
+                    Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue, ReadOnly: true,
+                }
                 if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length !== 0) {
                     // eslint-disable-next-line max-len
                     readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values?.map((v) => Math.round((v + Number.EPSILON) * 10) / 10) ?? [])
@@ -130,7 +132,7 @@ function DataTable({
 
         if (gridData.length === 0) {
             for (let j = 0; j < profileName.length; j += 1) {
-                const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
+                const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
                 const rowObj = objKey
                     .reduce((obj: object, element: string, index: number) => ({ ...obj, [element]: objVal[index] }), {})
                 combinedObjArr.push(rowObj)
@@ -142,7 +144,7 @@ function DataTable({
 
         if (gridData.length >= 1 && col.length !== 0) {
             for (let j = 0; j < gridData.length; j += 1) {
-                const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
+                const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
                 const totalValue: number[] = []
                 if (gridData[j] !== undefined) {
                     for (let i = 0; i < col.length; i += 1) {
@@ -177,13 +179,26 @@ function DataTable({
                     pinned: "left",
                     width: "autoWidth",
                     aggFunc: "",
+                    editable: false,
                     // cellRenderer: <Icon data={lock} color="green" />,
                 },
                 {
-                    field: "Unit", pinned: "left", width: "autoWidth", aggFunc: "",
+                    field: "Unit", pinned: "left", width: "autoWidth", aggFunc: "", editable: false,
                 },
                 {
-                    field: "Total", pinned: "right", aggFunc: "sum", cellStyle: { fontWeight: "bold" },
+                    field: "Total",
+                    pinned: "right",
+                    aggFunc: "sum",
+                    cellStyle: { fontWeight: "bold" },
+                    editable: false,
+                },
+                {
+                    field: "ReadOnly",
+                    pinned: "right",
+                    aggFunc: "",
+                    cellStyle: { fontWeight: "normal" },
+                    editable: false,
+                    hide: true,
                 }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i], aggFunc: "sum" })
@@ -197,7 +212,7 @@ function DataTable({
     const defaultColDef = useMemo<ColDef>(() => ({
         resizable: true,
         sortable: true,
-        editable: true,
+        editable: (params) => (params.data.ReadOnly !== true) === true,
         flex: 1,
     }), [])
 
@@ -221,7 +236,7 @@ function DataTable({
         const convertObj = {
             convertObj:
                 (delete rowEventData.Unit, delete rowEventData.Profile,
-                delete rowEventData.Total),
+                delete rowEventData.Total, delete rowEventData.ReadOnly),
             rowEventData,
         }
         const changeKeysToValue = Object.keys(rowEventData)
