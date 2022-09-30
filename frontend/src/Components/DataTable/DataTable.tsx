@@ -112,12 +112,14 @@ function DataTable({
                 const totalValue: number[] = []
                 const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
                 if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length !== 0) {
-                    readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values ?? [])
+                    // eslint-disable-next-line max-len
+                    readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values?.map((v) => Math.round((v + Number.EPSILON) * 10) / 10) ?? [])
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
                 }
 
-                const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values ?? []
+                // eslint-disable-next-line max-len
+                const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values?.map((v) => Math.round((v + Number.EPSILON) * 10) / 10) ?? []
                 const rowObj = generateTimeSeriesYears(i, dG4Year)
                     .reduce((obj: object, element: string, index: number) => (
                         { ...obj, [element]: objValToNumbers[index] }), {})
@@ -286,7 +288,7 @@ function DataTable({
                     // eslint-disable-next-line max-len
                     const alignedAssetGridData: number[] = zeroesAtStart.concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
                     // console.log(alignedAssetGridData)
-                    readOnlyValueArray.push(alignedAssetGridData)
+                    readOnlyValueArray.push(alignedAssetGridData.map((v) => Math.round((v + Number.EPSILON) * 10) / 10))
                     // console.log(readOnlyValueArray)
                 }
             }
@@ -348,7 +350,8 @@ function DataTable({
                 }
             }
         }
-        const sum = totalTotalCostArray.reduce((prev, curr) => prev + curr, 0)
+        // eslint-disable-next-line max-len
+        const sum: number = totalTotalCostArray.map((v) => Math.round((v + Number.EPSILON) * 10) / 10).reduce((prev, curr) => prev + curr, 0)
         const totalTotalObj = { Total: Number(sum) }
         const combinedFooterRow = [{
             ...value, ...footerGridData, ...totalTotalObj,
