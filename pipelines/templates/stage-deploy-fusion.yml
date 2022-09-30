@@ -17,18 +17,6 @@ stages:
     - stage: ${{ parameters.appName }}
       displayName: "Deploy  ${{ parameters.envshortname }}"
       jobs:
-          - job: "Application_Version_Bump"
-            steps:
-              - powershell: |
-                  cd $(System.DefaultWorkingDirectory)
-                  $last_tag =  & 'git' 'describe' '--tags' '--abbrev=0'
-                  Write-Host "Version is $($last_tag)"
-                  Write-Host "##vso[task.setvariable variable=version;]$($last_tag)"
-              - task: FileTransform@1
-                inputs:
-                  folderPath: '$(Build.SourcesDirectory)/frontend'
-                  fileType: 'json'
-                  targetFiles: '**/package.json'
           - deployment: "Deploy_${{ parameters.envshortname }}_Frontend"
             environment: ${{ parameters.envfullname }}
             strategy:
