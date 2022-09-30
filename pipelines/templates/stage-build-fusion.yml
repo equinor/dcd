@@ -17,25 +17,14 @@ stages:
           - powershell: |
               cd $(System.DefaultWorkingDirectory)
               $last_tag =  & 'git' 'describe' '--tags' '--abbrev=0'
-              Write-Host "Version is $($last_tag)"
-              Write-Host "##vso[task.setvariable variable=version;]$($last_tag)"
+              $modifiedTag = $last_tag.SubString(1)
+              Write-Host "Version is $($modifiedTag)"
+              Write-Host "##vso[task.setvariable variable=version;]$($modifiedTag)"
           - task: FileTransform@1
             inputs:
               folderPath: '$(Build.SourcesDirectory)/frontend'
               fileType: 'json'
               targetFiles: '**/package.json'
-          - task: UseDotNet@2
-            displayName: "Install Dotnet"
-            inputs:
-                packageType: "sdk"
-                version: "6.0.x"
-
-          - task: DotNetCoreCLI@2
-            displayName: Install dotnet-ef
-            inputs:
-                command: "custom"
-                custom: "tool"
-                arguments: "install --global --version 6.0 dotnet-ef"
           - task: NodeTool@0
             inputs:
                 versionSpec: "16.x"
