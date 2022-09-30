@@ -322,11 +322,16 @@ function DataTable({
                 totalValueArray.push(valueArray.reduce((prev, curr) => prev + curr[k], 0))
             }
         }
-        const mergedTimeSeries = totalValueArray.map((a:number, i:number) => a + readOnlyTotalValueArray[i])
-
+        const yearTotals = () => {
+            if (readOnlyTimeSeries.length >= 1) {
+                const mergedTimeSeries = totalValueArray.map((a:number, i:number) => a + readOnlyTotalValueArray[i])
+                return mergedTimeSeries
+            }
+            return totalValueArray
+        }
         const value = columns
             .reduce((obj: object, element: string, index: number) => (
-                { ...obj, [element]: mergedTimeSeries[index] }), {})
+                { ...obj, [element]: yearTotals()[index] }), {})
         const totalTotalCostArray = []
         if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
             for (let j = 0; j < readOnlyTimeSeries.length; j += 1) {
