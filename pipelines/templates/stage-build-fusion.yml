@@ -12,7 +12,7 @@ stages:
   - stage: ${{ parameters.name }}
     displayName: "Build App"
     jobs:
-      - job: "Application_Version_Bump"
+      - job: "Build_Fusion_App"
         steps:
           - powershell: |
               cd $(System.DefaultWorkingDirectory)
@@ -24,8 +24,6 @@ stages:
               folderPath: '$(Build.SourcesDirectory)/frontend'
               fileType: 'json'
               targetFiles: '**/package.json'
-      - job: "Build_Fusion_App"
-        steps:
           - task: UseDotNet@2
             displayName: "Install Dotnet"
             inputs:
