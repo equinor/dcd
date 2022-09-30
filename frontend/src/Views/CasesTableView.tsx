@@ -167,8 +167,6 @@ interface CasesTableViewProps {
 const CasesTableView = ({
     project, setProject,
 }: CasesTableViewProps) => {
-    console.log("Rendered table")
-    console.log("Project.cases: ", project.cases)
     const [tableData, setTableData] = useState(createDataTable(project))
     const [sortField, setSortField] = useState("")
     const [order, setOrder] = useState("asc")
@@ -327,42 +325,6 @@ const CasesTableView = ({
                     </Menu.Item>
                 </Menu>
             </div>
-            {/* <ModalNoFocus isOpen={editCaseModalIsOpen} title={`Edit case name and description for ${caseRowDataSelected?.name}`}>
-                <EditCaseForm>
-                    <TextField
-                        label="Name"
-                        id="name"
-                        name="name"
-                        placeholder={caseRowDataSelected?.name ?? "Enter a name"}
-                        onChange={handleCaseNameChange}
-                    />
-
-                    <TextField
-                        label="Description"
-                        id="description"
-                        name="description"
-                        placeholder={caseRowDataSelected?.description ?? "Enter a description"}
-                        onChange={handleDescriptionChange}
-                    />
-                    <div>
-                        <Button
-                            type="submit"
-                            onClick={submitEditCaseForm}
-                            // disabled={caseName === "" || caseDescription === ""}
-                        >
-                            Update case
-                        </Button>
-                        <Button
-                            type="button"
-                            color="secondary"
-                            variant="ghost"
-                            onClick={toggleEditCaseModal}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </EditCaseForm>
-            </ModalNoFocus> */}
             <EditCaseModal
                 setProject={setProject}
                 caseItem={caseRowDataSelected}

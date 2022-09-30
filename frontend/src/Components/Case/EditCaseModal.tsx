@@ -44,7 +44,7 @@ const EditCaseModal = ({
     toggleModal,
     editMode,
 }: Props) => {
-    console.log("caseItem: ", caseItem)
+    // console.log("caseItem: ", caseItem)
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string | undefined>()
     const [dG4Date, setDG4Date] = useState<Date>()
@@ -63,10 +63,11 @@ const EditCaseModal = ({
         setDG4Date(caseItem?.DG4Date ?? dG4DefaultDate)
         setDescription(caseItem?.description)
         setProductionStrategy(caseItem?.productionStrategyOverview ?? 0)
+        console.log("Production strategy overview", caseItem?.productionStrategyOverview)
         setProducerWells(caseItem?.producerCount ?? 0)
         setGasInjectorWells(caseItem?.gasInjectorCount ?? 0)
         setWaterInjectorWells(caseItem?.waterInjectorCount ?? 0)
-    }, [caseItem])
+    }, [isOpen])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setCaseName(e.currentTarget.value)
@@ -80,6 +81,7 @@ const EditCaseModal = ({
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
             setProductionStrategy(newProductionStrategy)
+            console.log("In handle", productionStrategy)
         }
     }
 
@@ -148,6 +150,7 @@ const EditCaseModal = ({
                     cols={110}
                     rows={4}
                 />
+                {console.log("In JSX", productionStrategy?.valueOf())}
                 <NativeSelect
                     id="productionStrategy"
                     label="Production strategy overview"
@@ -206,7 +209,7 @@ const EditCaseModal = ({
                         onClick={submitCaseForm}
                         disabled={!disableCreateButton()}
                     >
-                        Create case
+                        {editMode ? "Save changes" : "Create case"}
                     </Button>
                     <Button
                         type="button"

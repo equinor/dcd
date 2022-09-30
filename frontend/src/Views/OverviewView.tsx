@@ -12,6 +12,7 @@ import {
 import { add, archive } from "@equinor/eds-icons"
 import { useHistory, useParams } from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
+import { AgGridReact } from "ag-grid-react"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
 import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
 import { Project } from "../models/Project"
@@ -21,6 +22,7 @@ import { Modal } from "../Components/Modal"
 import { GetCaseService } from "../Services/CaseService"
 import CasesTableView from "./CasesTableView"
 import EditCaseModal from "../Components/Case/EditCaseModal"
+import CasesTable from "../Components/Case/CasesTable"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -222,7 +224,8 @@ function OverviewView({
                 </StyledButton>
 
             </RowWrapper>
-            <CasesTableView project={project} setProject={setProject} />
+            <CasesTable cases={project.cases} />
+            {/* <CasesTableView project={project} setProject={setProject} /> */}
         </Wrapper>
     )
 }
