@@ -116,7 +116,6 @@ function DataTable({
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
                 }
-                console.log(col)
 
                 const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values ?? []
                 const rowObj = generateTimeSeriesYears(i, dG4Year)
@@ -140,7 +139,6 @@ function DataTable({
         }
 
         if (gridData.length >= 1 && col.length !== 0) {
-            console.log(gridData)
             for (let j = 0; j < gridData.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j) }
                 const totalValue: number[] = []
@@ -164,7 +162,6 @@ function DataTable({
                 value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
             }
         }
-        console.log(value)
         return value
     }
 
@@ -219,9 +216,6 @@ function DataTable({
     const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
         const rowEventData = event.data
         const index = event.node.rowIndex
-
-        console.log(rowEventData)
-        console.log(index)
         const convertObj = {
             convertObj:
                 (delete rowEventData.Unit, delete rowEventData.Profile,
@@ -231,15 +225,38 @@ function DataTable({
         const changeKeysToValue = Object.keys(rowEventData)
             .reduce((prev: object, curr: string, ind: number) => (
                 { ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
-        const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
-        newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
-        newTimeSeries.name = profileName[index!]
-        newTimeSeries.values = Object.values(changeKeysToValue)
-        setTimeSeries(newTimeSeries)
-        const newGridData = buildGridData(newTimeSeries)
-        console.log(newTimeSeries.startYear)
-        combinedTimeseries.push(newGridData)
-        setHasChanges(true)
+
+        if (readOnlyTimeSeries.length !== 0) {
+            const newTimeSeries: ITimeSeries = { ...timeSeries[Number(index! - readOnlyTimeSeries.length)] }
+            newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+            newTimeSeries.name = profileName[Number(index! - readOnlyTimeSeries.length)]
+            newTimeSeries.values = Object.values(changeKeysToValue)
+            setTimeSeries(newTimeSeries)
+            const newGridData = buildGridData(newTimeSeries)
+            console.log(newTimeSeries.startYear)
+            combinedTimeseries.push(newGridData)
+            setHasChanges(true)
+        }
+        if (readOnlyTimeSeries.length === 0) {
+            const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
+            newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+            newTimeSeries.name = profileName[index!]
+            newTimeSeries.values = Object.values(changeKeysToValue)
+            setTimeSeries(newTimeSeries)
+            const newGridData = buildGridData(newTimeSeries)
+            console.log(newTimeSeries.startYear)
+            combinedTimeseries.push(newGridData)
+            setHasChanges(true)
+        }
+        // const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
+        // newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+        // newTimeSeries.name = profileName[index!]
+        // newTimeSeries.values = Object.values(changeKeysToValue)
+        // setTimeSeries(newTimeSeries)
+        // const newGridData = buildGridData(newTimeSeries)
+        // console.log(newTimeSeries.startYear)
+        // combinedTimeseries.push(newGridData)
+        // setHasChanges(true)
     }, [dG4Year])
 
     const columnTotalsData = () => {
@@ -268,9 +285,9 @@ function DataTable({
 
                     // eslint-disable-next-line max-len
                     const alignedAssetGridData: number[] = zeroesAtStart.concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
-                    console.log(alignedAssetGridData)
+                    // console.log(alignedAssetGridData)
                     readOnlyValueArray.push(alignedAssetGridData)
-                    console.log(readOnlyValueArray)
+                    // console.log(readOnlyValueArray)
                 }
             }
             for (let k = 0; k < columns.length; k += 1) {
@@ -297,7 +314,7 @@ function DataTable({
 
                     // eslint-disable-next-line max-len
                     const alignedAssetGridData: number[] = zeroesAtStart.concat(timeSeries[i]?.values!, zeroesAtEnd)
-                    console.log(alignedAssetGridData)
+                    // console.log(alignedAssetGridData)
                     valueArray.push(alignedAssetGridData)
                 }
             }
