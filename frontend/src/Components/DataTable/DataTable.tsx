@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
     Dispatch,
     SetStateAction,
@@ -9,7 +10,7 @@ import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { CellValueChangedEvent, ColDef } from "ag-grid-community"
 import { Icon } from "@equinor/eds-core-react"
-import { lock } from "@equinor/eds-icons"
+import { lock, lock_off, lock_open } from "@equinor/eds-icons"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
 import "ag-grid-enterprise"
@@ -81,7 +82,12 @@ function DataTable({
         return CurrencyEnum[profileEnum]
     }
 
-    // const lockIcon = () => <Icon data={lock} color="green" />
+    const lockIcon = (params:any) => {
+        if (params.data.ReadOnly === true) {
+            return <Icon data={lock} color="#007079" />
+        }
+        return <Icon data={lock_off} color="grey" />
+    }
 
     const generateTimeSeriesYears = (index: number, dg4: string) => {
         const years = []
@@ -193,12 +199,15 @@ function DataTable({
                     editable: false,
                 },
                 {
+                    headerName: "",
+                    width: 60,
                     field: "ReadOnly",
                     pinned: "right",
                     aggFunc: "",
                     cellStyle: { fontWeight: "normal" },
                     editable: false,
-                    hide: true,
+                    hide: readOnlyTimeSeries.length === 0,
+                    cellRenderer: lockIcon,
                 }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i], aggFunc: "sum" })
