@@ -20,7 +20,6 @@ stages:
           - job: "Application_Version_Bump"
             steps:
               - powershell: |
-                  Write-Host "Hello World"
                   cd $(System.DefaultWorkingDirectory)
                   $last_tag =  & 'git' 'describe' '--tags' '--abbrev=0'
                   Write-Host "Version is $($last_tag)"
