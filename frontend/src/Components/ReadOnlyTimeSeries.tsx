@@ -1,16 +1,15 @@
 import { Typography } from "@equinor/eds-core-react"
 import {
-    Dispatch, SetStateAction, useEffect, useState,
+    useEffect, useState,
 } from "react"
-import DataTable, { CellValue } from "./DataTable/DataTable"
+import { CellValue } from "./DataTable/DataTable"
 import {
-    buildGridData, buildZeroGridData,
+    buildGridData,
 } from "./DataTable/helpers"
 import { ITimeSeries } from "../models/ITimeSeries"
 import {
-    ImportButton, WrapperColumn, WrapperTablePeriod,
+    WrapperColumn,
 } from "../Views/Asset/StyledAssetComponents"
-import NumberInputTable from "./NumberInputTable"
 import DataTableReadOnly from "./DataTable/DataTableReadOnly"
 
 interface Props {
@@ -41,11 +40,18 @@ const ReadOnlyTimeSeries = ({
 
     const isValidYear = (year: number | undefined) => year?.toString().length === 4
 
+    const createNewGridWithReadOnlyData = (j: any) => {
+        if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
+            const newGridData = buildGridData(readOnlyTimeSeries[j])
+            const alignedAssetGridData = new Array(newGridData[0])
+            combinedEmptyTimeseries.push(alignedAssetGridData)
+            setGridData(combinedEmptyTimeseries)
+        }
+    }
+
     useEffect(() => {
         if (readOnlyTimeSeries[0] !== undefined) {
-            console.log(readOnlyTimeSeries?.length)
             for (let i = 0; i < readOnlyTimeSeries?.length!; i += 1) {
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 createNewGridWithReadOnlyData(i)
             }
         }
@@ -64,15 +70,6 @@ const ReadOnlyTimeSeries = ({
             setColumns(colYears)
         }
     }, [readOnlyTimeSeries, lastYear, firstYear])
-
-    const createNewGridWithReadOnlyData = (j: any) => {
-        if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
-            const newGridData = buildGridData(readOnlyTimeSeries[j])
-            const alignedAssetGridData = new Array(newGridData[0])
-            combinedEmptyTimeseries.push(alignedAssetGridData)
-            setGridData(combinedEmptyTimeseries)
-        }
-    }
 
     return (
         <>

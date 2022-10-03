@@ -32,7 +32,6 @@ import { ExplorationWell } from "../models/ExplorationWell"
 import { SeismicAcquisitionAndProcessing } from "../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../models/assets/exploration/CountryOfficeCost"
 import { GetCaseService } from "../Services/CaseService"
-import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -200,6 +199,20 @@ const ExplorationView = () => {
                     checked={costProfile?.override ?? false}
                 />
             </Wrapper>
+            <TimeSeries
+                dG4Year={caseItem.DG4Date!.getFullYear()}
+                setTimeSeries={setAllStates}
+                setHasChanges={setHasChanges}
+                timeSeries={[costProfile, seismicAcquisitionAndProcessing,
+                    countryOfficeCost]}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
+                profileEnum={project?.currency!}
+                profileType="Cost"
+                readOnlyTimeSeries={[gAndGAdminCost]}
+                readOnlyName={["G & G and admin cost"]}
+            />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules
                 setProject={setProject}
@@ -211,26 +224,6 @@ const ExplorationView = () => {
                 setFirstYear={setFirstTSYear}
                 setLastYear={setLastTSYear}
             />
-            <TimeSeries
-                dG4Year={caseItem.DG4Date!.getFullYear()}
-                setTimeSeries={setAllStates}
-                setHasChanges={setHasChanges}
-                timeSeries={[costProfile, seismicAcquisitionAndProcessing,
-                    countryOfficeCost]}
-                // timeSeriesReadOnly={[gAndGAdminCost]}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
-                profileEnum={project?.currency!}
-                profileType="Cost"
-                readOnlyTimeSeries={[gAndGAdminCost]}
-                readOnlyName={["G & G and admin cost"]}
-            />
-            {/* <ReadOnlyCostProfile
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                timeSeries={gAndGAdminCost}
-                title="G &amp; G and admin cost (MUSD)"
-            /> */}
         </AssetViewDiv>
     )
 }

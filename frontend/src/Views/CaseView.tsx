@@ -24,11 +24,9 @@ import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import DefinitionView from "./DefinitionView"
 import ExplorationViewTab from "./ExplorationViewTab"
 import { EditCaseInputModal } from "./EditCaseInputModal"
-import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { GetCaseService } from "../Services/CaseService"
 import { StudyCostProfile } from "../models/case/StudyCostProfile"
-import TimeSeries from "../Components/TimeSeries"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
 import ReadOnlyTimeSeries from "../Components/ReadOnlyTimeSeries"
@@ -156,11 +154,6 @@ function CaseView() {
                 setLastTSYear,
             )
         }
-        console.log(cessation)
-        console.log(opex)
-        console.log(study)
-        console.log(firstTSYear)
-        console.log(lastTSYear)
     }, [caseItem, cessation, opex, study])
 
     const onMoreClick = (target: any) => {
@@ -278,34 +271,6 @@ function CaseView() {
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
-                <ReadOnlyCostProfile
-                    dG4Year={caseItem.DG4Date?.getFullYear()}
-                    timeSeries={cessation}
-                    title="Cessation cost profile"
-                />
-                <ReadOnlyCostProfile
-                    dG4Year={caseItem.DG4Date?.getFullYear()}
-                    timeSeries={opex}
-                    title="OPEX cost profile"
-                />
-                <ReadOnlyCostProfile
-                    dG4Year={caseItem.DG4Date?.getFullYear()}
-                    timeSeries={study}
-                    title="Study cost profile"
-                />
-                {/* <TimeSeries
-                    dG4Year={caseItem.DG4Date!.getFullYear()}
-                    setTimeSeries={setCessation}
-                    setHasChanges={setHasChanges}
-                    timeSeries={[]}
-                    firstYear={firstTSYear!}
-                    lastYear={lastTSYear!}
-                    profileName={[]}
-                    profileEnum={project?.currency!}
-                    profileType="Cost"
-                    readOnlyTimeSeries={[cessation, opex, study]}
-                    readOnlyName={["Cessation cost profile", "OPEX cost profile", "Study cost profile"]}
-                /> */}
                 <ReadOnlyTimeSeries
                     dG4Year={caseItem.DG4Date!.getFullYear()}
                     firstYear={firstTSYear}

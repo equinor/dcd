@@ -91,31 +91,29 @@ const TimeSeries = ({
         }
     }
 
+    const createNewGridWithReadOnlyData = (j: any) => {
+        if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
+            const colYears = []
+            for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
+                colYears.push(c.toString())
+            }
+            setColumns(colYears)
+            const newGridData = buildGridData(readOnlyTimeSeries[j])
+            const alignedAssetGridData = new Array(newGridData[0])
+            combinedEmptyTimeseries.push(alignedAssetGridData)
+            setGridData(combinedEmptyTimeseries)
+            setHasChanges(true)
+        }
+    }
+
     useEffect(() => {
         buildAlignedGrid(combinedTimeseries!)
 
         if (timeSeries[0] === undefined && readOnlyTimeSeries[0] !== undefined) {
-            console.log(readOnlyTimeSeries?.length)
             for (let i = 0; i < readOnlyTimeSeries?.length!; i += 1) {
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 createNewGridWithReadOnlyData(i)
             }
         }
-
-        // console.log(readOnlyTimeSeries)
-        // console.log(timeSeries)
-        // if (readOnlyTimeSeries[0] !== undefined && timeSeries[0] === undefined) {
-        //     const columnTitles: string[] = []
-        //     // console.log(firstYear)
-        //     // console.log(lastYear)
-        //     if (firstYear !== undefined && lastYear !== undefined && isValidYear(firstYear) && isValidYear(lastYear)) {
-        //         for (let j = firstYear; j < lastYear; j += 1) {
-        //             columnTitles.push(j.toString())
-        //         }
-        //     }
-        //     // console.log(columnTitles)
-        //     setColumns(columnTitles)
-        // }
 
         if (gridData !== undefined && isValidYear(firstYear) && isValidYear(lastYear)
             && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER) {
@@ -219,21 +217,6 @@ const TimeSeries = ({
         }
     }
 
-    const createNewGridWithReadOnlyData = (j: any) => {
-        if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
-            const colYears = []
-            for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
-                colYears.push(c.toString())
-            }
-            setColumns(colYears)
-            const newGridData = buildGridData(readOnlyTimeSeries[j])
-            const alignedAssetGridData = new Array(newGridData[0])
-            combinedEmptyTimeseries.push(alignedAssetGridData)
-            setGridData(combinedEmptyTimeseries)
-            setHasChanges(true)
-        }
-    }
-
     const addTimeSeries = () => {
         const colYears = []
         if (isValidYear(tableFirstYear) && isValidYear(tableLastYear)) {
@@ -241,8 +224,6 @@ const TimeSeries = ({
                 colYears.push(j!.toString())
             }
             setColumns(colYears)
-
-            console.log(readOnlyTimeSeries)
 
             if (timeSeries[0] === undefined) {
                 for (let i = 0; i <= timeSeries?.length!; i += 1) {
@@ -254,35 +235,6 @@ const TimeSeries = ({
                     createNewGridWithData(i)
                 }
             }
-
-            // if (readOnlyTimeSeries[0] !== undefined) {
-            //     const timeSeriesWithoutReadOnly = timeSeries.filter((item) => !readOnlyTimeSeries.includes(item))
-            //     console.log(timeSeriesWithoutReadOnly)
-            //     if (timeSeriesWithoutReadOnly[0] === undefined) {
-            //         for (let i = 0; i < timeSeriesWithoutReadOnly?.length!; i += 1) {
-            //             createEmptyGrid(i)
-            //         }
-            //         // buildAlignedGrid(readOnlyTimeSeries[0])
-            //     }
-            //     if (timeSeriesWithoutReadOnly[0] !== undefined) {
-            //         for (let i = 0; i < timeSeriesWithoutReadOnly?.length!; i += 1) {
-            //             createNewGridWithData(i)
-            //         }
-            //     }
-            // }
-
-            // if (readOnlyTimeSeries === undefined) {
-            //     if (timeSeries[0] === undefined) {
-            //         for (let i = 1; i <= timeSeries?.length!; i += 1) {
-            //             createEmptyGrid(i)
-            //         }
-            //     }
-            //     if (timeSeries[0] !== undefined) {
-            //         for (let i = 0; i < timeSeries?.length!; i += 1) {
-            //             createNewGridWithData(i)
-            //         }
-            //     }
-            // }
         }
     }
 

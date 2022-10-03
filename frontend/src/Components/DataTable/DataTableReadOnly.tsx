@@ -69,7 +69,7 @@ function DataTableReadOnly({
         return CurrencyEnum[profileEnum]
     }
 
-    const lockIcon = (params:any) => {
+    const lockIcon = (params: any) => {
         if (params.data.Profile === "Total cost") {
             return ""
         }
@@ -185,8 +185,8 @@ function DataTableReadOnly({
                                 + Number(readOnlyTimeSeries[i]?.values!.length!)),
                     }, (() => 0))
 
-                    // eslint-disable-next-line max-len
-                    const alignedAssetGridData: number[] = zeroesAtStart.concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
+                    const alignedAssetGridData: number[] = zeroesAtStart
+                        .concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
                     console.log(alignedAssetGridData)
                     valueArray.push(alignedAssetGridData)
                 }
@@ -198,9 +198,6 @@ function DataTableReadOnly({
         const value = columns
             .reduce((obj: object, element: string, index: number) => (
                 { ...obj, [element]: totalValueArray[index] }), {})
-        console.log(value)
-        console.log(valueArray)
-        console.log(totalValueArray)
         const totalTotalCostArray = []
         if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
             for (let j = 0; j < readOnlyTimeSeries.length; j += 1) {
@@ -218,7 +215,9 @@ function DataTableReadOnly({
 
     return (
         <div
-            style={{ display: "flex", flexDirection: "column", height: 150 }}
+            style={{
+                display: "flex", flexDirection: "column", height: 150, marginBottom: 100,
+            }}
             className="ag-theme-alpine"
         >
             <div style={{ flex: "1 1 auto" }}>

@@ -82,7 +82,7 @@ function DataTable({
         return CurrencyEnum[profileEnum]
     }
 
-    const lockIcon = (params:any) => {
+    const lockIcon = (params: any) => {
         if (params.data.ReadOnly === true) {
             return <Icon data={lock} color="#007079" />
         }
@@ -123,14 +123,16 @@ function DataTable({
                     Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue, ReadOnly: true,
                 }
                 if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length !== 0) {
-                    // eslint-disable-next-line max-len
-                    readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values?.map((v) => Math.round((v + Number.EPSILON) * 10) / 10) ?? [])
+                    readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values?.map(
+                        (v) => Math.round((v + Number.EPSILON) * 10) / 10,
+                    ) ?? [])
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
                 }
 
-                // eslint-disable-next-line max-len
-                const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values?.map((v) => Math.round((v + Number.EPSILON) * 10) / 10) ?? []
+                const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values?.map(
+                    (v) => Math.round((v + Number.EPSILON) * 10) / 10,
+                ) ?? []
                 const rowObj = generateTimeSeriesYears(i, dG4Year)
                     .reduce((obj: object, element: string, index: number) => (
                         { ...obj, [element]: objValToNumbers[index] }), {})
@@ -236,10 +238,6 @@ function DataTable({
     }), [])
 
     useEffect(() => {
-        // if (dG4Year !== undefined) {
-        //     console.log(dG4Year)
-        // }
-        // console.log(dG4Year)
     }, [timeSeries, profileName, gridData, dG4Year])
 
     const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
@@ -277,15 +275,6 @@ function DataTable({
             combinedTimeseries.push(newGridData)
             setHasChanges(true)
         }
-        // const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
-        // newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
-        // newTimeSeries.name = profileName[index!]
-        // newTimeSeries.values = Object.values(changeKeysToValue)
-        // setTimeSeries(newTimeSeries)
-        // const newGridData = buildGridData(newTimeSeries)
-        // console.log(newTimeSeries.startYear)
-        // combinedTimeseries.push(newGridData)
-        // setHasChanges(true)
     }, [dG4Year])
 
     const columnTotalsData = () => {
@@ -312,11 +301,9 @@ function DataTable({
                                 + Number(readOnlyTimeSeries[i]?.values!.length!)),
                     }, (() => 0))
 
-                    // eslint-disable-next-line max-len
-                    const alignedAssetGridData: number[] = zeroesAtStart.concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
-                    // console.log(alignedAssetGridData)
+                    const alignedAssetGridData: number[] = zeroesAtStart
+                        .concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
                     readOnlyValueArray.push(alignedAssetGridData.map((v) => Math.round((v + Number.EPSILON) * 10) / 10))
-                    // console.log(readOnlyValueArray)
                 }
             }
             for (let k = 0; k < columns.length; k += 1) {
@@ -341,9 +328,7 @@ function DataTable({
                                 + Number(timeSeries[i]?.values!.length!)),
                     }, (() => 0))
 
-                    // eslint-disable-next-line max-len
                     const alignedAssetGridData: number[] = zeroesAtStart.concat(timeSeries[i]?.values!, zeroesAtEnd)
-                    // console.log(alignedAssetGridData)
                     valueArray.push(alignedAssetGridData)
                 }
             }
@@ -353,7 +338,7 @@ function DataTable({
         }
         const yearTotals = () => {
             if (readOnlyTimeSeries.length >= 1) {
-                const mergedTimeSeries = totalValueArray.map((a:number, i:number) => a + readOnlyTotalValueArray[i])
+                const mergedTimeSeries = totalValueArray.map((a: number, i: number) => a + readOnlyTotalValueArray[i])
                 return mergedTimeSeries
             }
             return totalValueArray
@@ -377,8 +362,9 @@ function DataTable({
                 }
             }
         }
-        // eslint-disable-next-line max-len
-        const sum: number = totalTotalCostArray.map((v) => Math.round((v + Number.EPSILON) * 10) / 10).reduce((prev, curr) => prev + curr, 0)
+        const sum: number = totalTotalCostArray.map((v) => Math.round(
+            (v + Number.EPSILON) * 10,
+        ) / 10).reduce((prev, curr) => prev + curr, 0)
         const totalTotalObj = { Total: Number(sum) }
         const combinedFooterRow = [{
             ...value, ...footerGridData, ...totalTotalObj,
@@ -388,7 +374,9 @@ function DataTable({
 
     return (
         <div
-            style={{ display: "flex", flexDirection: "column", height: 150 }}
+            style={{
+                display: "flex", flexDirection: "column", height: 150, marginBottom: 150,
+            }}
             className="ag-theme-alpine"
         >
             <div style={{ flex: "1 1 auto" }}>
