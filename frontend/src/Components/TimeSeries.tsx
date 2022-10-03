@@ -226,7 +226,7 @@ const TimeSeries = ({
             setColumns(colYears)
 
             if (timeSeries[0] === undefined) {
-                for (let i = 0; i <= timeSeries?.length!; i += 1) {
+                for (let i = 0; i < timeSeries?.length!; i += 1) {
                     createEmptyGrid(i)
                 }
             }

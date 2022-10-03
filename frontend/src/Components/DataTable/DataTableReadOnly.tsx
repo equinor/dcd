@@ -1,17 +1,14 @@
 import {
-    Dispatch,
-    SetStateAction,
-    useCallback, useEffect, useMemo, useRef,
+    useEffect, useMemo, useRef,
 } from "react"
 import "react-datasheet/lib/react-datasheet.css"
 import "./style.css"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
-import { CellValueChangedEvent, ColDef } from "ag-grid-community"
+import { ColDef } from "ag-grid-community"
 import { Icon } from "@equinor/eds-core-react"
 import { lock } from "@equinor/eds-icons"
 import { ITimeSeries } from "../../models/ITimeSeries"
-import { buildGridData, buildZeroGridData } from "./helpers"
 import "ag-grid-enterprise"
 
 export interface CellValue {
@@ -187,7 +184,6 @@ function DataTableReadOnly({
 
                     const alignedAssetGridData: number[] = zeroesAtStart
                         .concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
-                    console.log(alignedAssetGridData)
                     valueArray.push(alignedAssetGridData)
                 }
             }

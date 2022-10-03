@@ -10,7 +10,7 @@ import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { CellValueChangedEvent, ColDef } from "ag-grid-community"
 import { Icon } from "@equinor/eds-core-react"
-import { lock, lock_off, lock_open } from "@equinor/eds-icons"
+import { lock, lock_off } from "@equinor/eds-icons"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
 import "ag-grid-enterprise"
@@ -260,7 +260,6 @@ function DataTable({
             newTimeSeries.values = Object.values(changeKeysToValue)
             setTimeSeries(newTimeSeries)
             const newGridData = buildGridData(newTimeSeries)
-            console.log(newTimeSeries.startYear)
             combinedTimeseries.push(newGridData)
             setHasChanges(true)
         }
@@ -271,7 +270,6 @@ function DataTable({
             newTimeSeries.values = Object.values(changeKeysToValue)
             setTimeSeries(newTimeSeries)
             const newGridData = buildGridData(newTimeSeries)
-            console.log(newTimeSeries.startYear)
             combinedTimeseries.push(newGridData)
             setHasChanges(true)
         }

@@ -32,7 +32,7 @@ const ReadOnlyTimeSeries = ({
     readOnlyName,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
-    const [gridData, setGridData] = useState<CellValue[][]>([[]])
+    const [, setGridData] = useState<CellValue[][]>([[]])
     const [tableFirstYear, setTableFirstYear] = useState<number>(Number.MAX_SAFE_INTEGER)
     const [tableLastYear, setTableLastYear] = useState<number>(Number.MIN_SAFE_INTEGER)
 
