@@ -1,14 +1,13 @@
 using api.Context;
-using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
 
+using Api.Authorization;
 using Api.Services.FusionIntegration;
-
 using Azure.Identity;
-
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -132,7 +131,7 @@ builder.Services.AddFusionIntegration(options =>
         opts.ClientId = config["AzureAd:ClientId"];
         opts.ClientSecret = config["AzureAd:ClientSecret"];
     });
-
+    options.AddFusionRoles();
     options.ApplicationMode = true;
 });
 
@@ -158,7 +157,9 @@ builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
+
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
@@ -166,6 +167,8 @@ builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
@@ -177,6 +180,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ClaimsMiddelware>();
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();

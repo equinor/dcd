@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Api.Authorization;
 
-public enum ApplicationRole 
+public enum ApplicationRole
 {
     /// <summary>
     /// For everyone not associated with the application.
@@ -14,17 +14,17 @@ public enum ApplicationRole
     /// ...
     /// </summary>
     [Display(Name = "User")]
-    External,
+    User,
 
     /// <summary>
     /// ...
     /// </summary>
     [Display(Name = "ReadOnly")]
-    Consultant,
+    ReadOnlyUser,
 
     /// <summary>
     /// ...
     /// </summary>
     [Display(Name = "Admin")]
-    EquinorEmployee,
+    Admin,
 }
