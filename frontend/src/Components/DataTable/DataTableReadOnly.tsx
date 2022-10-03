@@ -69,8 +69,12 @@ function DataTableReadOnly({
         return CurrencyEnum[profileEnum]
     }
 
-    // const lockIcon = () => <Icon data={lock} color="green" />
-
+    const lockIcon = (params:any) => {
+        if (params.data.Profile === "Total cost") {
+            return ""
+        }
+        return <Icon data={lock} color="#007079" />
+    }
     const generateTimeSeriesYears = (index: number, dg4: string) => {
         const years = []
         if (dg4) {
@@ -122,13 +126,23 @@ function DataTableReadOnly({
                     pinned: "left",
                     width: "autoWidth",
                     aggFunc: "",
-                    // cellRenderer: <Icon data={lock} color="green" />,
                 },
                 {
-                    field: "Unit", pinned: "left", width: "autoWidth", aggFunc: "",
+                    field: "Unit", pinned: "left", width: "120", aggFunc: "",
                 },
                 {
-                    field: "Total", pinned: "right", aggFunc: "sum", cellStyle: { fontWeight: "bold" },
+                    field: "Total", pinned: "right", aggFunc: "sum", cellStyle: { fontWeight: "bold" }, width: 100,
+                },
+                {
+                    headerName: "",
+                    width: 60,
+                    field: "ReadOnly",
+                    pinned: "right",
+                    aggFunc: "",
+                    cellStyle: { fontWeight: "normal" },
+                    editable: false,
+                    hide: readOnlyTimeSeries.length === 0,
+                    cellRenderer: lockIcon,
                 }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i], aggFunc: "sum" })

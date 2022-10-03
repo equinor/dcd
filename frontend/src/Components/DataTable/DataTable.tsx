@@ -86,6 +86,9 @@ function DataTable({
         if (params.data.ReadOnly === true) {
             return <Icon data={lock} color="#007079" />
         }
+        if (params.data.Profile === "Total cost") {
+            return ""
+        }
         return <Icon data={lock_off} color="grey" />
     }
 
@@ -186,13 +189,13 @@ function DataTable({
                     width: "autoWidth",
                     aggFunc: "",
                     editable: false,
-                    // cellRenderer: <Icon data={lock} color="green" />,
                 },
                 {
-                    field: "Unit", pinned: "left", width: "autoWidth", aggFunc: "", editable: false,
+                    field: "Unit", pinned: "left", width: "120", aggFunc: "", editable: false,
                 },
                 {
                     field: "Total",
+                    width: 100,
                     pinned: "right",
                     aggFunc: "sum",
                     cellStyle: { fontWeight: "bold" },
