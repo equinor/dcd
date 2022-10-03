@@ -174,7 +174,7 @@ const TimeSeries = ({
     const NewTableFirstYearGreaterThanProfileFirstYear = (j: any) => tableFirstYear
         > (Number(timeSeries[j]?.startYear!) + Number(dG4Year))
 
-    const createNewGridWithData = (j: any) => {
+    const createNewGridWithData = (j: number) => {
         if (tableFirstYear && tableLastYear && timeSeries !== undefined) {
             const newTimeSeries: ITimeSeries = { ...timeSeries[j] }
             const colYears = []
@@ -193,17 +193,17 @@ const TimeSeries = ({
 
             if (NewTableLastYearGreaterThanProfileLastYear(colYears, newTimeSeries)) {
                 newTimeSeries.values = (newTimeSeries.values)
-                    ?.concat(new Array(colYears.length - Number(timeSeries[j]?.values!.length)).fill(0)) ?? []
+                    ?.concat(new Array(colYears.length - Number(timeSeries[j]?.values?.length)).fill(0)) ?? []
             }
 
             if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
-                const yearDifference = (Number(colYears[0]) + Number(timeSeries[j]?.values!.length) - 1) - tableLastYear
+                const yearDifference = (Number(colYears[0]) + Number(timeSeries[j]?.values?.length) - 1) - tableLastYear
                 newTimeSeries.values = timeSeries[j]?.values?.slice(0, -yearDifference) ?? []
             }
 
             if (NewTableFirstYearGreaterThanProfileFirstYear(j)) {
                 newTimeSeries.startYear = tableFirstYear - dG4Year
-                const yearDifference = tableFirstYear - (Number(timeSeries[j]?.startYear!) + dG4Year)
+                const yearDifference = tableFirstYear - (Number(timeSeries[j]?.startYear) + dG4Year)
                 newTimeSeries.values = timeSeries[j]?.values?.slice(yearDifference) ?? []
             }
             setTimeSeries(newTimeSeries)
@@ -220,8 +220,8 @@ const TimeSeries = ({
     const addTimeSeries = () => {
         const colYears = []
         if (isValidYear(tableFirstYear) && isValidYear(tableLastYear)) {
-            for (let j = tableFirstYear; j! < tableLastYear!; j! += 1) {
-                colYears.push(j!.toString())
+            for (let j = tableFirstYear; j < tableLastYear; j += 1) {
+                colYears.push(j.toString())
             }
             setColumns(colYears)
 

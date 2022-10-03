@@ -171,15 +171,15 @@ function DataTableReadOnly({
             for (let i = 0; i < columns.length; i += 1) {
                 if (readOnlyTimeSeries[i] !== undefined) {
                     const zeroesAtStart: number[] = Array.from({
-                        length: Number(readOnlyTimeSeries[i]?.startYear!)
+                        length: Number(readOnlyTimeSeries[i]?.startYear)
                             + Number(dG4Year) - Number(columns[0]),
                     }, (() => 0))
 
                     const zeroesAtEnd: number[] = Array.from({
                         length: Number(columns.slice(-1)[0]) + 1
-                            - (Number(readOnlyTimeSeries[i]?.startYear!)
+                            - (Number(readOnlyTimeSeries[i]?.startYear)
                                 + Number(dG4Year)
-                                + Number(readOnlyTimeSeries[i]?.values!.length!)),
+                                + Number(readOnlyTimeSeries[i]?.values?.length)),
                     }, (() => 0))
 
                     const alignedAssetGridData: number[] = zeroesAtStart

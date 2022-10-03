@@ -242,7 +242,7 @@ function DataTable({
 
     const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
         const rowEventData = event.data
-        const index = event.node.rowIndex
+        const index = event.node.rowIndex ?? 0
         const convertObj = {
             convertObj:
                 (delete rowEventData.Unit, delete rowEventData.Profile,
@@ -254,9 +254,9 @@ function DataTable({
                 { ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
 
         if (readOnlyTimeSeries.length !== 0) {
-            const newTimeSeries: ITimeSeries = { ...timeSeries[Number(index! - readOnlyTimeSeries.length)] }
+            const newTimeSeries: ITimeSeries = { ...timeSeries[Number(index - readOnlyTimeSeries.length)] }
             newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
-            newTimeSeries.name = profileName[Number(index! - readOnlyTimeSeries.length)]
+            newTimeSeries.name = profileName[Number(index - readOnlyTimeSeries.length)]
             newTimeSeries.values = Object.values(changeKeysToValue)
             setTimeSeries(newTimeSeries)
             const newGridData = buildGridData(newTimeSeries)
@@ -264,9 +264,9 @@ function DataTable({
             setHasChanges(true)
         }
         if (readOnlyTimeSeries.length === 0) {
-            const newTimeSeries: ITimeSeries = { ...timeSeries[index!] }
+            const newTimeSeries: ITimeSeries = { ...timeSeries[index] }
             newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
-            newTimeSeries.name = profileName[index!]
+            newTimeSeries.name = profileName[index]
             newTimeSeries.values = Object.values(changeKeysToValue)
             setTimeSeries(newTimeSeries)
             const newGridData = buildGridData(newTimeSeries)
@@ -288,15 +288,15 @@ function DataTable({
             for (let i = 0; i < columns.length; i += 1) {
                 if (readOnlyTimeSeries[i] !== undefined) {
                     const zeroesAtStart: number[] = Array.from({
-                        length: Number(readOnlyTimeSeries[i]?.startYear!)
+                        length: Number(readOnlyTimeSeries[i]?.startYear)
                             + Number(dG4Year) - Number(columns[0]),
                     }, (() => 0))
 
                     const zeroesAtEnd: number[] = Array.from({
                         length: Number(columns.slice(-1)[0]) + 1
-                            - (Number(readOnlyTimeSeries[i]?.startYear!)
+                            - (Number(readOnlyTimeSeries[i]?.startYear)
                                 + Number(dG4Year)
-                                + Number(readOnlyTimeSeries[i]?.values!.length!)),
+                                + Number(readOnlyTimeSeries[i]?.values?.length)),
                     }, (() => 0))
 
                     const alignedAssetGridData: number[] = zeroesAtStart
@@ -315,15 +315,15 @@ function DataTable({
                 }
                 if (timeSeries[i] !== undefined && timeSeries[i]?.values?.length !== columns.length) {
                     const zeroesAtStart: number[] = Array.from({
-                        length: Number(timeSeries[i]?.startYear!)
+                        length: Number(timeSeries[i]?.startYear)
                             + Number(dG4Year) - Number(columns[0]),
                     }, (() => 0))
 
                     const zeroesAtEnd: number[] = Array.from({
                         length: Number(columns.slice(-1)[0]) + 1
-                            - (Number(timeSeries[i]?.startYear!)
+                            - (Number(timeSeries[i]?.startYear)
                                 + Number(dG4Year)
-                                + Number(timeSeries[i]?.values!.length!)),
+                                + Number(timeSeries[i]?.values?.length)),
                     }, (() => 0))
 
                     const alignedAssetGridData: number[] = zeroesAtStart.concat(timeSeries[i]?.values!, zeroesAtEnd)

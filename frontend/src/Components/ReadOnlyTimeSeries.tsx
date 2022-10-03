@@ -40,7 +40,7 @@ const ReadOnlyTimeSeries = ({
 
     const isValidYear = (year: number | undefined) => year?.toString().length === 4
 
-    const createNewGridWithReadOnlyData = (j: any) => {
+    const createNewGridWithReadOnlyData = (j: number) => {
         if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
             const newGridData = buildGridData(readOnlyTimeSeries[j])
             const alignedAssetGridData = new Array(newGridData[0])
@@ -51,15 +51,16 @@ const ReadOnlyTimeSeries = ({
 
     useEffect(() => {
         if (readOnlyTimeSeries[0] !== undefined) {
-            for (let i = 0; i < readOnlyTimeSeries?.length!; i += 1) {
+            for (let i = 0; i < readOnlyTimeSeries?.length; i += 1) {
                 createNewGridWithReadOnlyData(i)
             }
         }
 
         if (isValidYear(firstYear) && isValidYear(lastYear)
-            && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER) {
-            setTableFirstYear(firstYear!)
-            setTableLastYear(lastYear! - 1)
+            && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER
+            && firstYear && lastYear) {
+            setTableFirstYear(firstYear)
+            setTableLastYear(lastYear - 1)
         }
 
         if (tableFirstYear && tableLastYear) {
