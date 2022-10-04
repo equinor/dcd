@@ -85,14 +85,25 @@ function DataTableReadOnly({
         return years
     }
 
-    const rowDataToColumns = () => {
-        const col = columns
+    const setEmptyProfilesIfNoData = (value: object[]) => {
+        if ((columns.length === 0 && readOnlyTimeSeries.length !== 0) || columns[0] === "") {
+            for (let j = 0; j < readOnlyName.length; j += 1) {
+                if (readOnlyTimeSeries[j]?.values?.length === 0) {
+                    const readOnly = {
+                        Profile: readOnlyName[j], Unit: setUnit(j), Total: 0, ReadOnly: true,
+                    }
+                    value.push({ ...readOnly })
+                }
+            }
+        }
+    }
+
+    const setProfilesWithData = (value: object[]) => {
         const readOnlyCombinedObjArr: object[] = []
         const readOnlyObjValSum: number[] = []
 
-        const value: object[] = []
-
-        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined && col.length !== 0 && dG4Year) {
+        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined
+            && dG4Year && columns.length !== 0 && columns[0] !== "") {
             for (let i = 0; i < readOnlyName.length; i += 1) {
                 const totalValue: number[] = []
                 const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
@@ -110,6 +121,13 @@ function DataTableReadOnly({
                 value.push({ ...readOnlyCombinedObjArr[i], ...readOnly })
             }
         }
+    }
+
+    const rowDataToColumns = () => {
+        const value: object[] = []
+
+        setEmptyProfilesIfNoData(value)
+        setProfilesWithData(value)
         return value
     }
 

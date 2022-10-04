@@ -49,26 +49,30 @@ const ReadOnlyTimeSeries = ({
         }
     }
 
-    useEffect(() => {
-        if (readOnlyTimeSeries[0] !== undefined) {
-            for (let i = 0; i < readOnlyTimeSeries?.length; i += 1) {
-                createNewGridWithReadOnlyData(i)
+    const setYearsIfTableHasData = (i: number) => {
+        if (readOnlyTimeSeries[i]?.values?.length !== 0) {
+            if (tableFirstYear && tableLastYear && isValidYear(tableFirstYear) && isValidYear(tableLastYear)) {
+                const colYears = []
+                for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
+                    colYears.push(c.toString())
+                }
+                setColumns(colYears)
             }
-        }
-
-        if (isValidYear(firstYear) && isValidYear(lastYear)
+            if (isValidYear(firstYear) && isValidYear(lastYear)
             && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER
             && firstYear && lastYear) {
-            setTableFirstYear(firstYear)
-            setTableLastYear(lastYear - 1)
-        }
-
-        if (tableFirstYear && tableLastYear) {
-            const colYears = []
-            for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
-                colYears.push(c.toString())
+                setTableFirstYear(firstYear)
+                setTableLastYear(lastYear - 1)
             }
-            setColumns(colYears)
+        }
+    }
+
+    useEffect(() => {
+        for (let i = 0; i < readOnlyTimeSeries?.length; i += 1) {
+            if (readOnlyTimeSeries[i] !== undefined) {
+                createNewGridWithReadOnlyData(i)
+            }
+            setYearsIfTableHasData(i)
         }
     }, [readOnlyTimeSeries, lastYear, firstYear])
 

@@ -107,11 +107,28 @@ const TimeSeries = ({
     }
 
     useEffect(() => {
+        // need to do something about building here with readonly
+        // buildAlignedGrid(combinedTimeseries!)
+
+        // if (timeSeries[0] === undefined && readOnlyTimeSeries[0] !== undefined) {
+        //     for (let i = 0; i < readOnlyTimeSeries?.length!; i += 1) {
+        //         createNewGridWithReadOnlyData(i)
+        //     }
+        // }
         buildAlignedGrid(combinedTimeseries!)
 
-        if (timeSeries[0] === undefined && readOnlyTimeSeries[0] !== undefined) {
-            for (let i = 0; i < readOnlyTimeSeries?.length!; i += 1) {
-                createNewGridWithReadOnlyData(i)
+        // console.log(readOnlyTimeSeries[0]?.values)
+        // console.log(readOnlyTimeSeries[0]?.values?.length)
+        // console.log(timeSeries[0])
+        // console.log(timeSeries[0] === undefined && readOnlyTimeSeries[0]?.values?.length !== 0)
+        // this needs fixing for empty initializing
+        if (timeSeries[0] === undefined && readOnlyTimeSeries.length !== 0) {
+            console.log(readOnlyTimeSeries[0]?.values?.length)
+            for (let i = 0; i < readOnlyTimeSeries?.length; i += 1) {
+                if (readOnlyTimeSeries[i] !== undefined && readOnlyTimeSeries[i]?.values?.length !== 0) {
+                    console.log(readOnlyTimeSeries[i]?.values?.length)
+                    createNewGridWithReadOnlyData(i)
+                }
             }
         }
 

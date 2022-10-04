@@ -10,7 +10,7 @@ import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { CellValueChangedEvent, ColDef } from "ag-grid-community"
 import { Icon } from "@equinor/eds-core-react"
-import { lock, lock_off } from "@equinor/eds-icons"
+import { lock, lock_open } from "@equinor/eds-icons"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { buildGridData } from "./helpers"
 import "ag-grid-enterprise"
@@ -89,7 +89,7 @@ function DataTable({
         if (params.data.Profile === "Total cost") {
             return ""
         }
-        return <Icon data={lock_off} color="grey" />
+        return <Icon data={lock_open} color="#A8CED1" />
     }
 
     const generateTimeSeriesYears = (index: number, dg4: string) => {
@@ -105,18 +105,90 @@ function DataTable({
         return years
     }
 
-    const rowDataToColumns = () => {
-        const col = columns
-        const objKey: string[] = []
-        const objVal: string[] = []
-        const objValSum: number[] = []
-        const combinedObjArr: object[] = []
-        const readOnlyCombinedObjArr: object[] = []
-        const readOnlyObjValSum: number[] = []
+    const setEmptyTableWithoutReadOnly = (
+        objKey: string[],
+        combinedObjArr: object[],
+        objVal: string[],
+        value: object[],
+    ) => {
+        if (gridData.length === 0 && readOnlyTimeSeries.length === 0) {
+            for (let j = 0; j < profileName.length; j += 1) {
+                const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
+                const rowObj = objKey
+                    .reduce((obj: object, element: string, index: number) => ({ ...obj, [element]: objVal[index] }), {})
+                combinedObjArr.push(rowObj)
 
-        const value: object[] = []
+                const totalValueObj = { Total: 0 }
+                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
+            }
+        }
+    }
 
-        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined && col.length !== 0 && dG4Year) {
+    const setEmptyTableWithReadOnly = (
+        objKey: string[],
+        combinedObjArr: object[],
+        objVal: string[],
+        value: object[],
+    ) => {
+        if ((gridData.length === 0 || gridData.length === 1) && readOnlyTimeSeries.length !== 0) {
+            // for (let j = 0; j < readOnlyName.length; j += 1) {
+            //     // const totalValue: number[] = []
+            //     const readOnly = {
+            //         Total: 0, Profile: readOnlyName[j], Unit: setUnit(j), ReadOnly: true,
+            //     }
+            //     value.push({ ...readOnly })
+            // }
+            for (let j = 0; j < profileName.length; j += 1) {
+                const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
+                const rowObj = objKey
+                    .reduce((obj: object, element: string, index: number) => ({ ...obj, [element]: objVal[index] }), {})
+                combinedObjArr.push(rowObj)
+
+                const totalValueObj = { Total: 0 }
+                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
+            }
+        }
+    }
+
+    const setNonReadOnlyDataToTable = (
+        objKey: string[],
+        combinedObjArr: object[],
+        objVal: string[],
+        value: object[],
+        objValSum: number[],
+    ) => {
+        if (gridData.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < gridData.length; j += 1) {
+                const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
+                const totalValue: number[] = []
+                if (gridData[j] !== undefined) {
+                    for (let i = 0; i < columns.length; i += 1) {
+                        if (gridData[j][0]) {
+                            objKey.push(`${columns[i]}`)
+                            objVal.push(`${gridData[j][0].map((v: any) => v.value)[i]}`)
+                        }
+                    }
+                    objValSum.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: number, y: number) => x + y))
+                    totalValue.push(objValSum[j])
+                }
+                const objValToNumbers = objVal.map((x: string) => parseFloat(x))
+                const rowObj = objKey
+                    .reduce((obj: object, element: string, index: number) => (
+                        { ...obj, [element]: objValToNumbers[index] }), {})
+                combinedObjArr.push(rowObj)
+
+                const totalValueObj = { Total: Number(totalValue) }
+                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
+            }
+        }
+    }
+
+    const setReadOnlyDataToTable = (
+        readOnlyCombinedObjArr: object[],
+        value: object[],
+        readOnlyObjValSum: number[],
+    ) => {
+        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined && columns.length !== 0 && dG4Year) {
             for (let i = 0; i < readOnlyName.length; i += 1) {
                 const totalValue: number[] = []
                 const readOnly = {
@@ -140,43 +212,23 @@ function DataTable({
                 value.push({ ...readOnlyCombinedObjArr[i], ...readOnly })
             }
         }
+    }
 
-        if (gridData.length === 0) {
-            for (let j = 0; j < profileName.length; j += 1) {
-                const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
-                const rowObj = objKey
-                    .reduce((obj: object, element: string, index: number) => ({ ...obj, [element]: objVal[index] }), {})
-                combinedObjArr.push(rowObj)
+    const rowDataToColumns = () => {
+        const objKey: string[] = []
+        const objVal: string[] = []
+        const objValSum: number[] = []
+        const combinedObjArr: object[] = []
+        const readOnlyCombinedObjArr: object[] = []
+        const readOnlyObjValSum: number[] = []
 
-                const totalValueObj = { Total: 0 }
-                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
-            }
-        }
+        const value: object[] = []
 
-        if (gridData.length >= 1 && col.length !== 0) {
-            for (let j = 0; j < gridData.length; j += 1) {
-                const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
-                const totalValue: number[] = []
-                if (gridData[j] !== undefined) {
-                    for (let i = 0; i < col.length; i += 1) {
-                        if (gridData[j][0]) {
-                            objKey.push(`${col[i]}`)
-                            objVal.push(`${gridData[j][0].map((v: any) => v.value)[i]}`)
-                        }
-                    }
-                    objValSum.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: number, y: number) => x + y))
-                    totalValue.push(objValSum[j])
-                }
-                const objValToNumbers = objVal.map((x: string) => parseFloat(x))
-                const rowObj = objKey
-                    .reduce((obj: object, element: string, index: number) => (
-                        { ...obj, [element]: objValToNumbers[index] }), {})
-                combinedObjArr.push(rowObj)
-
-                const totalValueObj = { Total: Number(totalValue) }
-                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
-            }
-        }
+        setReadOnlyDataToTable(readOnlyCombinedObjArr, value, readOnlyObjValSum)
+        setEmptyTableWithReadOnly(objKey, combinedObjArr, objVal, value)
+        setEmptyTableWithoutReadOnly(objKey, combinedObjArr, objVal, value)
+        setNonReadOnlyDataToTable(objKey, combinedObjArr, objVal, value, objValSum)
+        // console.log(value)
         return value
     }
 
