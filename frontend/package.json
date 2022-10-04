@@ -53,6 +53,8 @@
         "styled-components": "^5.3.3"
     },
     "scripts": {
+        "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
+        "prebuild": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
         "start": "fusion start-app",
         "build": "fusion build-app",
         "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
