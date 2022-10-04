@@ -14,7 +14,7 @@ import {
     MouseEventHandler,
     useEffect,
 } from "react"
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import styled from "styled-components"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
@@ -30,7 +30,7 @@ const CreateCaseForm = styled.form`
 interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project
-    caseItem: Case | undefined,
+    caseId?: string,
     isOpen: boolean
     toggleModal: () => void
     editMode: boolean
@@ -39,7 +39,7 @@ interface Props {
 const EditCaseModal = ({
     setProject,
     project,
-    caseItem,
+    caseId,
     isOpen,
     toggleModal,
     editMode,
@@ -54,8 +54,12 @@ const EditCaseModal = ({
     const [gasInjectorCount, setGasInjectorWells] = useState<number>()
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>()
 
+    const [caseItem, setCaseItem] = useState<Case>()
+
+    const history = useHistory()
+
     useEffect(() => {
-        console.log("caseItem: ", caseItem)
+        console.log("EditCaseModal useEffect caseItem: ", project)
 
         const dG4DefaultDate = new Date(Date.UTC(2030, 0, 1))
 
@@ -63,11 +67,15 @@ const EditCaseModal = ({
         setDG4Date(caseItem?.DG4Date ?? dG4DefaultDate)
         setDescription(caseItem?.description)
         setProductionStrategy(caseItem?.productionStrategyOverview ?? 0)
-        console.log("Production strategy overview", caseItem?.productionStrategyOverview)
         setProducerWells(caseItem?.producerCount ?? 0)
         setGasInjectorWells(caseItem?.gasInjectorCount ?? 0)
         setWaterInjectorWells(caseItem?.waterInjectorCount ?? 0)
-    }, [isOpen])
+    }, [isOpen, caseId])
+
+    useEffect(() => {
+        const newCase = project.cases.find((c) => c.id === caseId)
+        setCaseItem(newCase)
+    }, [project, caseId])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setCaseName(e.currentTarget.value)
@@ -81,7 +89,6 @@ const EditCaseModal = ({
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
             setProductionStrategy(newProductionStrategy)
-            console.log("In handle", productionStrategy)
         }
     }
 
@@ -113,8 +120,13 @@ const EditCaseModal = ({
                     waterInjectorCount,
                     productionStrategyOverview: productionStrategy,
                 })
+                history.push(`/${fusionContextId}/case/${projectResult.cases.find((o) => (
+                    o.name === caseName
+                ))?.id}`)
             }
+            console.log("submitCaseForm projectResult: ", projectResult)
             setProject(projectResult)
+
             toggleModal()
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -150,7 +162,6 @@ const EditCaseModal = ({
                     cols={110}
                     rows={4}
                 />
-                {console.log("In JSX", productionStrategy?.valueOf())}
                 <NativeSelect
                     id="productionStrategy"
                     label="Production strategy overview"

@@ -325,14 +325,14 @@ const CasesTableView = ({
                     </Menu.Item>
                 </Menu>
             </div>
-            <EditCaseModal
+            {/* <EditCaseModal
                 setProject={setProject}
                 caseItem={caseRowDataSelected}
                 isOpen={editCaseModalIsOpen}
                 project={project}
                 toggleModal={toggleEditCaseModal}
                 editMode
-            />
+            /> */}
         </>
     )
 }

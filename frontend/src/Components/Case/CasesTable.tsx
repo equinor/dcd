@@ -41,7 +41,6 @@ const CreateCaseForm = styled.form`
 `
 
 interface Props {
-    cases: Case[]
     project: Project
     setProject: Dispatch<SetStateAction<Project | undefined>>
 }
@@ -50,17 +49,17 @@ interface TableCase {
     id: string,
     name: string,
     description: string,
-    productionStrategy: Components.Schemas.ProductionStrategyOverview,
+    productionStrategyOverview: Components.Schemas.ProductionStrategyOverview,
     producerCount: number,
     gasInjectorCount: number,
     waterInjectorCount: number,
 }
 
-const CasesTable = ({ cases, project, setProject }: Props) => {
+const CasesTable = ({ project, setProject }: Props) => {
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
-    const [caseRowDataSelected, setCaseRowDataSelected] = useState<Case>()
+    const [selectedCaseId, setSelectedCaseId] = useState<string>()
 
     const history = useHistory()
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
@@ -74,10 +73,14 @@ const CasesTable = ({ cases, project, setProject }: Props) => {
         return <div>{stringValue}</div>
     }
 
+    useEffect(() => {
+        console.log("CaseTable useEffect project.cases", project.cases)
+    }, [project, project.cases])
+
     const onMoreClick = (data: any, target: HTMLElement) => {
         console.log("data: ", data)
-        console.log("target: ", target)
-        setCaseRowDataSelected(data)
+        console.log("selectedCaseId: ", data.id)
+        setSelectedCaseId(data.id)
         setMenuAnchorEl(target)
         setIsMenuOpen(true)
     }
@@ -89,12 +92,12 @@ const CasesTable = ({ cases, project, setProject }: Props) => {
         >
             <Icon data={more_vertical} />
         </Button>
-)
+    )
 
     const [columnDefs, setColumnDefs] = useState([
         { field: "name" },
         { field: "description" },
-        { field: "productionStrategy", cellRenderer: productionStrategyToString },
+        { field: "productionStrategyOverview", cellRenderer: productionStrategyToString },
         { field: "producerCount" },
         { field: "gasInjectorCount" },
         { field: "waterInjectorCount" },
@@ -102,22 +105,17 @@ const CasesTable = ({ cases, project, setProject }: Props) => {
     ])
 
     const [rowData, setRowData] = useState<TableCase[]>()
-    //     [
-    //     {
-    //         name: "test", description: "testDesc", productionStrategy: 1, producerCount: 2, gasInjectorCount: 2, waterInjectorCount: 5,
-    //     },
-    // ]
 
     const casesToRowData = () => {
-        console.log(cases)
-        if (cases) {
+        console.log(project.cases)
+        if (project.cases) {
             const tableCases: TableCase[] = []
-            cases.forEach((c) => {
+            project.cases.forEach((c) => {
                 const tableCase: TableCase = {
                     id: c.id!,
                     name: c.name ?? "",
                     description: c.description ?? "",
-                    productionStrategy: c.productionStrategyOverview,
+                    productionStrategyOverview: c.productionStrategyOverview,
                     producerCount: c.producerCount ?? 0,
                     waterInjectorCount: c.waterInjectorCount ?? 0,
                     gasInjectorCount: c.gasInjectorCount ?? 0,
@@ -130,7 +128,7 @@ const CasesTable = ({ cases, project, setProject }: Props) => {
 
     useEffect(() => {
         casesToRowData()
-    }, cases)
+    }, project.cases)
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -139,8 +137,8 @@ const CasesTable = ({ cases, project, setProject }: Props) => {
 
     const duplicateCase = async () => {
         try {
-            if (caseRowDataSelected && caseRowDataSelected.id) {
-                const newProject = await (await GetCaseService()).duplicateCase(caseRowDataSelected.id, {})
+            if (selectedCaseId) {
+                const newProject = await (await GetCaseService()).duplicateCase(selectedCaseId, {})
                 setProject(newProject)
             }
         } catch (error) {
@@ -150,8 +148,8 @@ const CasesTable = ({ cases, project, setProject }: Props) => {
 
     const deleteCase = async () => {
         try {
-            if (caseRowDataSelected && caseRowDataSelected.id) {
-                const newProject = await (await GetCaseService()).deleteCase(caseRowDataSelected.id)
+            if (selectedCaseId) {
+                const newProject = await (await GetCaseService()).deleteCase(selectedCaseId)
                 setProject(newProject)
             }
         } catch (error) {
@@ -161,21 +159,13 @@ const CasesTable = ({ cases, project, setProject }: Props) => {
 
     const openCase = async () => {
         try {
-            if (caseRowDataSelected && caseRowDataSelected.id) {
-                history.push(CasePath(fusionContextId!, caseRowDataSelected.id))
+            if (selectedCaseId) {
+                history.push(CasePath(fusionContextId!, selectedCaseId))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
     }
-
-    // const onCellClicked = (params: CellClickedEvent) => {
-    //     console.log("Params: ", params)
-    //     const selectedCase = cases.find((c) => c.id === params.data.id)
-    //     setCaseRowDataSelected(selectedCase)
-    //     // setElement()
-    //     setIsMenuOpen(!isMenuOpen)
-    // }
 
     return (
         <div
@@ -231,9 +221,9 @@ const CasesTable = ({ cases, project, setProject }: Props) => {
             </Menu>
             <EditCaseModal
                 setProject={setProject}
-                caseItem={caseRowDataSelected}
-                isOpen={editCaseModalIsOpen}
                 project={project}
+                caseId={selectedCaseId}
+                isOpen={editCaseModalIsOpen}
                 toggleModal={toggleEditCaseModal}
                 editMode
             />

@@ -1,26 +1,19 @@
 /* eslint-disable camelcase */
 import {
     MouseEventHandler, useState,
-    ChangeEventHandler,
     Dispatch,
     SetStateAction,
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Icon, TextField, Typography,
+    Button, Icon, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
-import { useHistory, useParams } from "react-router-dom"
-import { useCurrentContext } from "@equinor/fusion"
-import { AgGridReact } from "ag-grid-react"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
 import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetSTEAService } from "../Services/STEAService"
-import { Modal } from "../Components/Modal"
-import { GetCaseService } from "../Services/CaseService"
-import CasesTableView from "./CasesTableView"
 import EditCaseModal from "../Components/Case/EditCaseModal"
 import CasesTable from "../Components/Case/CasesTable"
 
@@ -87,23 +80,8 @@ function OverviewView({
     project, setProject,
 }: Props) {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
-    const [caseName, setCaseName] = useState<string>("")
-    const [caseDescription, setCaseDescription] = useState<string>("")
-    const history = useHistory()
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const currentProject = useCurrentContext()
-
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const handleCaseNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const { value } = e.target
-        setCaseName(value)
-    }
-
-    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const { value } = e.target
-        setCaseDescription(value)
-    }
     const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
@@ -111,24 +89,6 @@ function OverviewView({
             const projectId: string = unwrapProjectId(project.projectId)
             const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
             const result = (await GetSTEAService()).excelToSTEA(projectResult)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    const submitCreateCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
-        e.preventDefault()
-
-        try {
-            const projectResult: Project = await (await GetCaseService()).createCase({
-                description: caseDescription,
-                name: caseName,
-                projectId: project.projectId,
-            })
-            toggleCreateCaseModal()
-            history.push(`/${fusionContextId}/case/${projectResult.cases.find((o) => (
-                o.name === caseName
-            ))?.id}`)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -174,48 +134,11 @@ function OverviewView({
             </RowWrapper>
             <EditCaseModal
                 setProject={setProject}
-                caseItem={undefined}
                 isOpen={createCaseModalIsOpen}
                 project={project}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
             />
-            {/* <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
-                <CreateCaseForm>
-                    <TextField
-                        label="Name"
-                        id="name"
-                        name="name"
-                        placeholder="Enter a name"
-                        onChange={handleCaseNameChange}
-                    />
-
-                    <TextField
-                        label="Description"
-                        id="description"
-                        name="description"
-                        placeholder="Enter a description"
-                        onChange={handleDescriptionChange}
-                    />
-                    <div>
-                        <Button
-                            type="submit"
-                            onClick={submitCreateCaseForm}
-                            disabled={caseName === "" || caseDescription === ""}
-                        >
-                            Create case
-                        </Button>
-                        <Button
-                            type="button"
-                            color="secondary"
-                            variant="ghost"
-                            onClick={toggleCreateCaseModal}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </CreateCaseForm>
-            </Modal> */}
             <RowWrapper>
                 <Typography variant="h2">Cases</Typography>
                 <StyledButton onClick={toggleCreateCaseModal}>
@@ -224,8 +147,7 @@ function OverviewView({
                 </StyledButton>
 
             </RowWrapper>
-            <CasesTable cases={project.cases} project={project} setProject={setProject} />
-            {/* <CasesTableView project={project} setProject={setProject} /> */}
+            <CasesTable project={project} setProject={setProject} />
         </Wrapper>
     )
 }

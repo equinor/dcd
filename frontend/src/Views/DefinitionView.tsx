@@ -9,7 +9,7 @@ import styled from "styled-components"
 import {
     Button, Switch, Typography,
 } from "@equinor/eds-core-react"
-import { useParams } from "react-router"
+import { useParams } from "react-router-dom"
 import { Project } from "../models/Project"
 import CaseArtificialLift from "../Components/Case/CaseArtificialLift"
 import CaseDescription from "../Components/Case/CaseDescription"
