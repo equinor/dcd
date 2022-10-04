@@ -108,7 +108,9 @@ function DataTableReadOnly({
                 const totalValue: number[] = []
                 const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
                 if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length !== 0) {
-                    readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values ?? [])
+                    readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values?.map(
+                        (v) => Math.round((v + Number.EPSILON) * 10) / 10,
+                    ) ?? [])
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
                 }
@@ -118,7 +120,8 @@ function DataTableReadOnly({
                     .reduce((obj: object, element: string, index: number) => (
                         { ...obj, [element]: objValToNumbers[index] }), {})
                 readOnlyCombinedObjArr.push(rowObj)
-                value.push({ ...readOnlyCombinedObjArr[i], ...readOnly })
+                const totalValueObj = { Total: Number(totalValue) }
+                value.push({ ...readOnlyCombinedObjArr[i], ...readOnly, ...totalValueObj })
             }
         }
     }
