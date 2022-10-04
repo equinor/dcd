@@ -59,8 +59,8 @@ const ReadOnlyTimeSeries = ({
                 setColumns(colYears)
             }
             if (isValidYear(firstYear) && isValidYear(lastYear)
-            && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER
-            && firstYear && lastYear) {
+                && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER
+                && firstYear && lastYear) {
                 setTableFirstYear(firstYear)
                 setTableLastYear(lastYear - 1)
             }

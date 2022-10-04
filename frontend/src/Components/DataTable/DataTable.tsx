@@ -131,13 +131,6 @@ function DataTable({
         value: object[],
     ) => {
         if ((gridData.length === 0 || gridData.length === 1) && readOnlyTimeSeries.length !== 0) {
-            // for (let j = 0; j < readOnlyName.length; j += 1) {
-            //     // const totalValue: number[] = []
-            //     const readOnly = {
-            //         Total: 0, Profile: readOnlyName[j], Unit: setUnit(j), ReadOnly: true,
-            //     }
-            //     value.push({ ...readOnly })
-            // }
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
                 const rowObj = objKey
@@ -228,7 +221,6 @@ function DataTable({
         setEmptyTableWithReadOnly(objKey, combinedObjArr, objVal, value)
         setEmptyTableWithoutReadOnly(objKey, combinedObjArr, objVal, value)
         setNonReadOnlyDataToTable(objKey, combinedObjArr, objVal, value, objValSum)
-        // console.log(value)
         return value
     }
 
