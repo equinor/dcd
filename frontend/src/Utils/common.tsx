@@ -110,3 +110,20 @@ export const IsInvalidDate = (date?: Date | null): boolean => {
     }
     return false
 }
+
+export const ProductionStrategyOverviewToString = (value: Components.Schemas.ProductionStrategyOverview): string => {
+    let name: string = ""
+    switch (value) {
+        case 1: name = "Water injection"
+            break
+        case 2: name = "Gas injection"
+            break
+        case 3: name = "WAG"
+            break
+        case 4: name = "Mixed"
+            break
+        default:
+            name = "Depletion"
+    }
+    return name
+    }

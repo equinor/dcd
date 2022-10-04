@@ -224,7 +224,7 @@ function OverviewView({
                 </StyledButton>
 
             </RowWrapper>
-            <CasesTable cases={project.cases} />
+            <CasesTable cases={project.cases} project={project} setProject={setProject} />
             {/* <CasesTableView project={project} setProject={setProject} /> */}
         </Wrapper>
     )
