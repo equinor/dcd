@@ -44,7 +44,6 @@ const EditCaseModal = ({
     toggleModal,
     editMode,
 }: Props) => {
-    // console.log("caseItem: ", caseItem)
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string | undefined>()
     const [dG4Date, setDG4Date] = useState<Date>()
@@ -59,8 +58,6 @@ const EditCaseModal = ({
     const history = useHistory()
 
     useEffect(() => {
-        console.log("EditCaseModal useEffect caseItem: ", project)
-
         const dG4DefaultDate = new Date(Date.UTC(2030, 0, 1))
 
         setCaseName(caseItem?.name)
@@ -124,9 +121,7 @@ const EditCaseModal = ({
                     o.name === caseName
                 ))?.id}`)
             }
-            console.log("submitCaseForm projectResult: ", projectResult)
             setProject(projectResult)
-
             toggleModal()
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)

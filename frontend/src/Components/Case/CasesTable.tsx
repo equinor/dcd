@@ -2,10 +2,6 @@
 /* eslint-disable max-len */
 import {
     Button,
-    TextField,
-    Input,
-    Label,
-    NativeSelect,
     Menu,
     Icon,
     Typography,
@@ -14,31 +10,20 @@ import {
     useState,
     Dispatch,
     SetStateAction,
-    ChangeEventHandler,
-    MouseEventHandler,
     useEffect,
     useMemo,
 } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import styled from "styled-components"
-import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
-import { CellClickedEvent } from "ag-grid-community"
 import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
-import { ModalNoFocus } from "../ModalNoFocus"
 import { CasePath, ProductionStrategyOverviewToString, ToMonthDate } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 import "ag-grid-enterprise"
 import EditCaseModal from "./EditCaseModal"
-
-const CreateCaseForm = styled.form`
-    width: 50rem;
-`
 
 interface Props {
     project: Project
@@ -53,6 +38,7 @@ interface TableCase {
     producerCount: number,
     gasInjectorCount: number,
     waterInjectorCount: number,
+    createdAt?: string
 }
 
 const CasesTable = ({ project, setProject }: Props) => {
@@ -73,16 +59,10 @@ const CasesTable = ({ project, setProject }: Props) => {
         return <div>{stringValue}</div>
     }
 
-    useEffect(() => {
-        console.log("CaseTable useEffect project.cases", project.cases)
-    }, [project, project.cases])
-
     const onMoreClick = (data: any, target: HTMLElement) => {
-        console.log("data: ", data)
-        console.log("selectedCaseId: ", data.id)
         setSelectedCaseId(data.id)
         setMenuAnchorEl(target)
-        setIsMenuOpen(true)
+        setIsMenuOpen(!isMenuOpen)
     }
 
     const menuButton = (p: any) => (
@@ -94,20 +74,19 @@ const CasesTable = ({ project, setProject }: Props) => {
         </Button>
     )
 
-    const [columnDefs, setColumnDefs] = useState([
+    const [columnDefs] = useState([
         { field: "name" },
-        { field: "description" },
         { field: "productionStrategyOverview", cellRenderer: productionStrategyToString },
         { field: "producerCount" },
         { field: "gasInjectorCount" },
         { field: "waterInjectorCount" },
-        { field: "menu", cellRenderer: menuButton },
+        { field: "createdAt" },
+        { field: "", cellRenderer: menuButton },
     ])
 
     const [rowData, setRowData] = useState<TableCase[]>()
 
     const casesToRowData = () => {
-        console.log(project.cases)
         if (project.cases) {
             const tableCases: TableCase[] = []
             project.cases.forEach((c) => {
@@ -119,6 +98,7 @@ const CasesTable = ({ project, setProject }: Props) => {
                     producerCount: c.producerCount ?? 0,
                     waterInjectorCount: c.waterInjectorCount ?? 0,
                     gasInjectorCount: c.gasInjectorCount ?? 0,
+                    createdAt: c.createdAt?.toISOString().substring(0, 10),
                 }
                 tableCases.push(tableCase)
             })
@@ -169,15 +149,17 @@ const CasesTable = ({ project, setProject }: Props) => {
 
     return (
         <div
-            style={{ display: "flex", flexDirection: "column", height: 500 }}
+            style={{
+                display: "flex", flexDirection: "column", width: "90%",
+            }}
             className="ag-theme-alpine"
         >
             <AgGridReact
                 rowData={rowData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
-                // onCellClicked={onCellClicked}
                 animateRows
+                domLayout="autoHeight"
             />
             <Menu
                 id="menu-complex"

@@ -63,14 +63,6 @@ const ProjectDataFieldLabel = styled(Typography)`
     white-space: pre-wrap;
 `
 
-const CreateCaseForm = styled.form`
-    width: 30rem;
-
-    > * {
-        margin-bottom: 1.5rem;
-    }
-`
-
 interface Props {
     project: Project,
     setProject: Dispatch<SetStateAction<Project | undefined>>
