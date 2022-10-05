@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
     Button,
     TextField,
@@ -84,6 +83,7 @@ const EditCaseModal = ({
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
+            // eslint-disable-next-line max-len
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
             setProductionStrategy(newProductionStrategy)
         }
@@ -144,7 +144,6 @@ const EditCaseModal = ({
 
                 <Input
                     type="month"
-                    // defaultValue={ToMonthDate(dG4Date)}
                     id="dgDate"
                     name="dgDate"
                     value={ToMonthDate(dG4Date) ?? ToMonthDate(caseItem?.DG4Date)}

@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-/* eslint-disable max-len */
 import {
     Button,
     Menu,
@@ -12,6 +11,7 @@ import {
     SetStateAction,
     useEffect,
     useMemo,
+    useRef,
 } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { AgGridReact } from "ag-grid-react"
@@ -20,7 +20,7 @@ import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
-import { CasePath, ProductionStrategyOverviewToString, ToMonthDate } from "../../Utils/common"
+import { CasePath, ProductionStrategyOverviewToString } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 import "ag-grid-enterprise"
 import EditCaseModal from "./EditCaseModal"
@@ -42,6 +42,7 @@ interface TableCase {
 }
 
 const CasesTable = ({ project, setProject }: Props) => {
+    const gridRef = useRef(null)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
@@ -74,14 +75,23 @@ const CasesTable = ({ project, setProject }: Props) => {
         </Button>
     )
 
+    type SortOrder = "desc" | "asc" | null
+    const order: SortOrder = "desc"
+
     const [columnDefs] = useState([
-        { field: "name" },
-        { field: "productionStrategyOverview", cellRenderer: productionStrategyToString },
-        { field: "producerCount" },
-        { field: "gasInjectorCount" },
-        { field: "waterInjectorCount" },
-        { field: "createdAt" },
-        { field: "", cellRenderer: menuButton },
+        { field: "name", sort: order },
+        {
+            field: "productionStrategyOverview",
+            cellRenderer: productionStrategyToString,
+            autoHeight: true,
+            wrapText: true,
+            width: 205,
+        },
+        { field: "producerCount", headerName: "Producers", width: 90 },
+        { field: "gasInjectorCount", headerName: "Gas injectors", width: 110 },
+        { field: "waterInjectorCount", headerName: "Water injectors", width: 120 },
+        { field: "createdAt", headerName: "Created", width: 130 },
+        { field: "", cellRenderer: menuButton, width: 95 },
     ])
 
     const [rowData, setRowData] = useState<TableCase[]>()
@@ -113,6 +123,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     const defaultColDef = useMemo(() => ({
         sortable: true,
         filter: true,
+        resizable: true,
     }), [])
 
     const duplicateCase = async () => {
@@ -150,11 +161,12 @@ const CasesTable = ({ project, setProject }: Props) => {
     return (
         <div
             style={{
-                display: "flex", flexDirection: "column", width: "90%",
+                display: "flex", flexDirection: "column", width: "65%",
             }}
             className="ag-theme-alpine"
         >
             <AgGridReact
+                ref={gridRef}
                 rowData={rowData}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
