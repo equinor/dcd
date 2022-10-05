@@ -12,24 +12,21 @@ import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-import {
-    AssetViewDiv, Wrapper,
-} from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import { unwrapCase } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
-import ExplorationCaseAsset from "./ExplorationCaseAsset"
 import { IAssetService } from "../Services/IAssetService"
-import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { GetCaseService } from "../Services/CaseService"
 import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { AssetViewDiv, Wrapper } from "./Asset/StyledAssetComponents"
+import ExplorationCaseAsset from "./ExplorationCaseAsset"
 
 const RowWrapper = styled.div`
     margin: 1rem;

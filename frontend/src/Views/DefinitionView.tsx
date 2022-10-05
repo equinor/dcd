@@ -9,6 +9,7 @@ import styled from "styled-components"
 import {
     Button, Switch, Typography,
 } from "@equinor/eds-core-react"
+import { useParams } from "react-router-dom"
 import { Project } from "../models/Project"
 import CaseArtificialLift from "../Components/Case/CaseArtificialLift"
 import CaseDescription from "../Components/Case/CaseDescription"
@@ -57,6 +58,7 @@ function DefinitionView({
     caseItem,
     setCase,
 }: Props) {
+    const { caseId } = useParams<Record<string, string | undefined>>()
     const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
     const [producerCount, setProducerCount] = useState<number>()
     const [gasInjectorCount, setGasInjectorCount] = useState<number>()
@@ -68,7 +70,7 @@ function DefinitionView({
 
     useEffect(() => {
         if (project !== undefined) {
-            const caseResult = project.cases.find((o) => o.id === caseItem?.id)
+            const caseResult = project.cases.find((o) => o.id === caseId)
             if (caseResult !== undefined) {
                 setArtificialLift(caseResult.artificialLift)
                 setProductionStrategyOverview(caseResult.productionStrategyOverview)
@@ -81,7 +83,7 @@ function DefinitionView({
             setWaterInjectorCount(caseResult?.waterInjectorCount)
             setFacilitiesAvailability(caseResult?.facilitiesAvailability)
         }
-    }, [project])
+    }, [project, caseId])
 
     useEffect(() => {
         (async () => {
