@@ -4,6 +4,7 @@ import { ITimeSeries } from "../../ITimeSeries"
 export class ExplorationCostProfile implements Components.Schemas.ExplorationCostProfileDto, ITimeSeries {
     id?: string
     startYear?: number
+    name?: string
     values?: number []
     epaVersion?: string
     currency?: Components.Schemas.Currency
@@ -14,6 +15,7 @@ export class ExplorationCostProfile implements Components.Schemas.ExplorationCos
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
+            this.name = "Cost profile"
             this.values = data.values ?? []
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
@@ -22,6 +24,7 @@ export class ExplorationCostProfile implements Components.Schemas.ExplorationCos
         } else {
             this.id = EMPTY_GUID
             this.startYear = 0
+            this.name = "Cost profile"
             this.values = []
         }
     }

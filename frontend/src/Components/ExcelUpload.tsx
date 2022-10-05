@@ -3,7 +3,7 @@ import { useCurrentContext } from "@equinor/fusion"
 import {
     Dispatch, SetStateAction, useRef, useState,
 } from "react"
-import { useParams } from "react-router"
+import { useParams } from "react-router-dom"
 import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProspService } from "../Services/ProspService"

@@ -31,6 +31,7 @@ export class Project implements Components.Schemas.ProjectDto {
     currency: Components.Schemas.Currency
     physUnit: Components.Schemas.PhysUnit
     wells?: Well[] | undefined
+    sharepointSiteUrl?: string | null
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
@@ -54,6 +55,7 @@ export class Project implements Components.Schemas.ProjectDto {
         this.currency = data.currency ?? 1
         this.physUnit = data.physUnit ?? 0
         this.wells = data.wells?.map(Well.fromJSON) ?? []
+        this.sharepointSiteUrl = data.sharepointSiteUrl
     }
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {

@@ -4,7 +4,7 @@ import {
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import styled from "styled-components"
 import { useCurrentContext } from "@equinor/fusion"
 import { Exploration } from "../models/assets/exploration/Exploration"
@@ -156,7 +156,7 @@ const ExplorationViewTab = ({
         }
     }, [rigMobDemob, costProfile, gAndGAdminCost, currency])
 
-    if (!project) { return null }
+    if (!project || !exploration || !caseItem) { return null }
 
     return (
         <RowWrapper>
@@ -192,15 +192,15 @@ const ExplorationViewTab = ({
                     />
                 </Wrapper>
                 <TimeSeries
-                    dG4Year={caseItem?.DG4Date?.getFullYear()}
+                    dG4Year={caseItem.DG4Date!.getFullYear()}
                     setTimeSeries={setCostProfile}
                     setHasChanges={setHasChanges}
-                    timeSeries={costProfile}
-                    timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                    timeSeries={[costProfile]}
                     firstYear={firstTSYear!}
                     lastYear={lastTSYear!}
-                    setFirstYear={setFirstTSYear!}
-                    setLastYear={setLastTSYear}
+                    profileName={["Cost profile"]}
+                    profileEnum={project?.currency!}
+                    profileType="Cost"
                 />
                 <ReadOnlyCostProfile
                     dG4Year={caseItem?.DG4Date?.getFullYear()}

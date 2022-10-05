@@ -4,7 +4,7 @@ import {
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Case } from "../models/case/Case"
@@ -101,8 +101,8 @@ const ExplorationView = () => {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
                         [newExploration.costProfile,
-                        newExploration.seismicAcquisitionAndProcessing,
-                        newExploration.countryOfficeCost],
+                            newExploration.seismicAcquisitionAndProcessing,
+                            newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -139,8 +139,22 @@ const ExplorationView = () => {
         }
     }
 
+    const setAllStates = (timeSeries: any) => {
+        if (timeSeries) {
+            if (timeSeries.name === "Cost profile") {
+                setCostProfile(timeSeries)
+            }
+            if (timeSeries.name === "Seismic acquisition and processing") {
+                setSeismicAcquisitionAndProcessing(timeSeries)
+            }
+            if (timeSeries.name === "Country office cost") {
+                setCountryOfficeCost(timeSeries)
+            }
+        }
+    }
+
     if (!project) return null
-    if (!exploration) return null
+    if (!exploration || !caseItem) return null
 
     return (
         <AssetViewDiv>
@@ -187,37 +201,16 @@ const ExplorationView = () => {
                 />
             </Wrapper>
             <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
+                dG4Year={caseItem.DG4Date!.getFullYear()}
+                setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeries={[costProfile, seismicAcquisitionAndProcessing,
+                    countryOfficeCost]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setSeismicAcquisitionAndProcessing}
-                setHasChanges={setHasChanges}
-                timeSeries={seismicAcquisitionAndProcessing}
-                timeSeriesTitle={`Seismic acquisition and processing ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCountryOfficeCost}
-                setHasChanges={setHasChanges}
-                timeSeries={countryOfficeCost}
-                timeSeriesTitle={`Country office cost ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
+                profileEnum={project?.currency!}
+                profileType="Cost"
             />
             <ReadOnlyCostProfile
                 dG4Year={caseItem?.DG4Date?.getFullYear()}

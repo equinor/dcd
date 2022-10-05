@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
 import { Checkbox, NativeSelect, Table } from "@equinor/eds-core-react"
 import React, {
-    ChangeEvent,
-    Dispatch, SetStateAction, useEffect, useState,
+    ChangeEvent, Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import { Case } from "../../models/case/Case"
 import { Project } from "../../models/Project"

@@ -3,6 +3,7 @@ import { ITimeSeries } from "../../ITimeSeries"
 export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto, ITimeSeries {
     id?: string
     startYear?: number
+    name?: string
     values?: number []
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
@@ -12,6 +13,7 @@ export class SurfCostProfile implements Components.Schemas.SurfCostProfileDto, I
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
+            this.name = "Cost profile"
             this.values = data.values ?? []
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
