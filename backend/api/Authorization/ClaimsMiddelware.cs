@@ -17,7 +17,10 @@ public class ClaimsMiddelware
     }
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        Console.WriteLine(httpContext.User.GetUserMail());
+        Console.WriteLine(httpContext.User.Identity.Name);
+        if(httpContext.User == null) {
+            Console.WriteLine("User null");
+        }
         var userId = httpContext.User.GetAzureUniqueId();
         if (userId != null)
         {
@@ -25,13 +28,14 @@ public class ClaimsMiddelware
         }
         else
         {
+            Console.WriteLine(httpContext.Request.Host);
             Console.WriteLine("Unauthenticated access attempted on: " +httpContext.Request.Path);
             // logger.LogInformation("Unauthenticated access attempted on '{Path}'", httpContext.Request.Path);
         }
 
     }
 
-        private void SetAppRoleClaims(HttpContext httpContext)
+    private void SetAppRoleClaims(HttpContext httpContext)
     {
         
 
@@ -54,7 +58,7 @@ public class ClaimsMiddelware
         claimsIdentity.AddClaims(applicationRoleClaims);
     }
 
-        private ApplicationRole? RoleForAccountType(HttpContext httpContext)
+    private ApplicationRole? RoleForAccountType(HttpContext httpContext)
     {
         // Check if we have Fusion claims available. If it is not present the Fusion extensions might throw exceptions on missing data.
         // This can happen when requests come in that do not have "Fusion-tokens" but general "Equinor tokens".
