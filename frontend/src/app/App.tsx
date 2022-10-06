@@ -3,6 +3,7 @@ import { ErrorBoundary } from "@equinor/fusion-components"
 import ConceptAppAuthProvider from "../auth/ConceptAppAuthProvider"
 import { buildConfig } from "../Services/config"
 import { StoreAppId, StoreAppScope } from "../Utils/common"
+import { APP_VERSION } from "../version"
 import { AppRouter } from "./AppRouter"
 import { FusionRouterBootstrap } from "./FusionRouterBootstrap"
 
@@ -28,6 +29,9 @@ function App(): JSX.Element {
         StoreAppId(values.APP_ID)
         StoreAppScope(values.BACKEND_APP_SCOPE)
     }
+
+    console.log("Concept App version: ", APP_VERSION)
+
     return (
         <ErrorBoundary>
             <ConceptAppAuthProvider>

@@ -14,20 +14,32 @@ import WellProjectView from "../Views/WellProjectView"
 export function AppRouter(): JSX.Element {
     return (
         <Switch>
-            <Route exact path="/">
+            <Route
+                path="/"
+                exact
+            >
                 <Welcome />
             </Route>
-            <Route exact path="/:fusionContextId">
+            <Route
+                path="/:fusionContextId"
+                exact
+            >
                 <SideMenu>
                     <ProjectView />
                 </SideMenu>
             </Route>
-            <Route path="/:fusionContextId/case/:caseId" exact>
+            <Route
+                path="/:fusionContextId/case/:caseId"
+                exact
+            >
                 <SideMenu>
                     <CaseView />
                 </SideMenu>
             </Route>
-            <Route path="/:fusionContextId/case/:caseId/surf/:surfId" exact>
+            <Route
+                path="/:fusionContextId/case/:caseId/surf/:surfId"
+                exact
+            >
                 <SideMenu>
                     <SurfView />
                 </SideMenu>
