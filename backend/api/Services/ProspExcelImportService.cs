@@ -66,7 +66,7 @@ public class ProspExcelImportService
             return value;
         }
 
-        return -1;
+        return 0;
     }
 
     private static double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
