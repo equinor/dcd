@@ -13,7 +13,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
     sharePointFileId?: string | undefined
     sharePointSiteUrl?: string | undefined
 
-    constructor(caseItem: Case, project: Project, data:Components.Schemas.SharePointImportDto | undefined) {
+    constructor(caseItem: Case, project: Project, data: Components.Schemas.SharePointImportDto | undefined) {
         this.id = caseItem.id!
         this.selected = false
         this.surfState = SharePointImport.surfStatus(caseItem, project)

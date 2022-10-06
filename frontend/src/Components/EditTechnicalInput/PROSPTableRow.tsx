@@ -34,6 +34,7 @@ function PROSPTableRow({
     const [selected, setSelected] = useState<boolean>()
 
     useEffect(() => {
+        console.log("DriveItems in table row useEffect: ", driveItems)
         const selectedCase = project.cases.find((c) => c.id === caseId)
         setCaseItem(selectedCase)
         if (prospCases && prospCases.length > 0) {
@@ -99,7 +100,7 @@ function PROSPTableRow({
             return null
         }
         const options: JSX.Element[] = []
-
+        console.log("driveItems in dropdown table row: ", driveItems)
         driveItems.forEach((item) => {
             options.push((<option key={item.id} value={item.id!}>{item.name}</option>))
         })

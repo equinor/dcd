@@ -9,6 +9,7 @@ import PROSPCaseList from "./PROSPCaseList"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
+import PROSPCaseListNew from "./PROSPCaseListNew"
 
 const ProspFieldWrapper = styled.div`
     margin-bottom: 2.5rem;
@@ -86,6 +87,11 @@ function PROSPTab({
             <PROSPCaseList
                 project={project}
                 setProject={setProject}
+                driveItems={driveItems}
+            />
+
+            <PROSPCaseListNew
+                project={project}
                 driveItems={driveItems}
             />
 
