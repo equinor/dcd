@@ -87,7 +87,7 @@ export const EditCaseInputModal: FunctionComponent<Props> = ({
                     <TopWrapper>
                         <Typography variant="h2">Edit case input</Typography>
                         <InvisibleButton
-                            onClick={(e) => toggleEditCaseModal()}
+                            onClick={() => toggleEditCaseModal()}
                         >
                             <Icon
                                 color="gray"
@@ -112,7 +112,7 @@ export const EditCaseInputModal: FunctionComponent<Props> = ({
                     <ButtonsDiv>
                         <TransparentButton
                             style={{ marginRight: "1.5rem" }}
-                            onClick={(e) => toggleEditCaseModal()}
+                            onClick={() => toggleEditCaseModal()}
                         >
                             Cancel
                         </TransparentButton>

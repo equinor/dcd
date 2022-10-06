@@ -83,12 +83,12 @@ function CaseView() {
     const [study, setStudy] = useState<StudyCostProfile>()
     const [cessation, setCessation] = useState<CaseCessationCostProfile>()
 
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
-    const [element, setElement] = useState<HTMLButtonElement>()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
@@ -156,11 +156,6 @@ function CaseView() {
         }
     }, [caseItem, cessation, opex, study])
 
-    const onMoreClick = (target: any) => {
-        setElement(target)
-        setIsMenuOpen(!isMenuOpen)
-    }
-
     if (!project) return null
     if (!caseItem) return null
 
@@ -174,7 +169,8 @@ function CaseView() {
                     Edit Case input
                 </TransparentButton>
                 <InvisibleButton
-                    onClick={(e) => onMoreClick(e.target)}
+                    ref={setMenuAnchorEl}
+                    onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
                 >
                     <Icon data={more_vertical} />
                 </InvisibleButton>
@@ -182,7 +178,7 @@ function CaseView() {
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}
-                anchorEl={element}
+                anchorEl={menuAnchorEl}
                 onClose={() => setIsMenuOpen(false)}
                 placement="bottom"
             >
