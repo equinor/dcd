@@ -2,6 +2,8 @@ using api.Dtos;
 using api.Excel;
 using api.Services;
 
+using Api.Authorization;
+
 using ClosedXML.Excel;
 
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +17,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class STEAController : ControllerBase
 {
     private STEAService _sTEAService;

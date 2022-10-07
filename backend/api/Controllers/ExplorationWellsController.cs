@@ -2,6 +2,8 @@
 using api.Dtos;
 using api.Services;
 
+using Api.Authorization;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -12,6 +14,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class ExplorationWellsController : ControllerBase
 {
 
