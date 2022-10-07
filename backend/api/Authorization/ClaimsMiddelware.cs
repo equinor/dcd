@@ -9,10 +9,13 @@ namespace Api.Authorization;
 public class ClaimsMiddelware
 {
 
-    public ClaimsMiddelware(RequestDelegate nextMiddleware,
+    
+    private readonly RequestDelegate nextMiddleware;
+    public ClaimsMiddelware(RequestDelegate nextMiddleware,        
         ILogger<ClaimsMiddelware> logger,
         IConfiguration configuration) {
                 var InvestmentArenaOrgChartId = new Guid();
+                this.nextMiddleware = nextMiddleware;
 
     }
     public async Task InvokeAsync(HttpContext httpContext)
@@ -33,6 +36,8 @@ public class ClaimsMiddelware
             // logger.LogInformation("Unauthenticated access attempted on '{Path}'", httpContext.Request.Path);
         }
 
+        await nextMiddleware(httpContext);
+
     }
 
     private void SetAppRoleClaims(HttpContext httpContext)
@@ -46,14 +51,15 @@ public class ClaimsMiddelware
 
         var fusionApplicationRole = RoleForAccountType(httpContext);
         if (fusionApplicationRole != null)
-            applicationRoles.Add(fusionApplicationRole.Value);
+            Console.WriteLine(fusionApplicationRole.Value);
 
 
-        var claim = ClaimsIdentity.DefaultRoleClaimType;
+            
         var applicationRoleClaims = applicationRoles
             .DefaultIfEmpty(ApplicationRole.None)
-            .Select(role => new Claim(claim, role.ToString()));
+            .Select(role => new Claim("ClaimText", role.ToString()));
         
+        Console.WriteLine(applicationRoleClaims);
         var claimsIdentity = httpContext.User.Identity as ClaimsIdentity;
         claimsIdentity.AddClaims(applicationRoleClaims);
     }
@@ -73,7 +79,7 @@ public class ClaimsMiddelware
             return ApplicationRole.Admin;
 
         if (httpContext.User.IsAccountType(FusionAccountType.Consultant))
-            return ApplicationRole.ReadOnlyUser;
+            return ApplicationRole.ReadOnly;
 
         return null;
     }

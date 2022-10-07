@@ -78,13 +78,12 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder.AllowAnyHeader();
-            builder.AllowAnyMethod();
-            builder.AllowAnyOrigin();
+            builder.AllowAnyMethod();            
             builder.WithExposedHeaders("Location");
             builder.WithOrigins(
                 "http://localhost:3000",                
                 "https://fusion.equinor.com",
-                "https://pro-s-portal-ci.azurewebsites.net/",
+                "https://pro-s-portal-ci.azurewebsites.net",
                 "https://pro-s-portal-fqa.azurewebsites.net",
                 "https://pro-s-portal-fprd.azurewebsites.net"
             ).SetIsOriginAllowedToAllowWildcardSubdomains();
@@ -157,6 +156,7 @@ builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 
 builder.Services.AddControllers(
@@ -170,6 +170,7 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
+app.UseRouting();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Fom Program, running the host now");
 if (app.Environment.IsDevelopment())
@@ -178,10 +179,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseMiddleware<ClaimsMiddelware>();
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
+app.UseMiddleware<ClaimsMiddelware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
