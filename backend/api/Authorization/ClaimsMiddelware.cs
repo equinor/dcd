@@ -49,7 +49,7 @@ public class ClaimsMiddelware
         var fusionApplicationRole = RoleForAccountType(httpContext);
         if (fusionApplicationRole != null)
             Console.WriteLine(fusionApplicationRole.Value);
-            
+
         var applicationRoleClaims = applicationRoles
             .DefaultIfEmpty(ApplicationRole.None)
             .Select(role => new Claim(ApplicationRoleClaimType, role.ToString()));
