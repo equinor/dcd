@@ -4,7 +4,9 @@ using api.Services;
 
 using Api.Authorization;
 using Api.Services.FusionIntegration;
+
 using Azure.Identity;
+
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -78,10 +80,10 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder.AllowAnyHeader();
-            builder.AllowAnyMethod();            
+            builder.AllowAnyMethod();
             builder.WithExposedHeaders("Location");
             builder.WithOrigins(
-                "http://localhost:3000",                
+                "http://localhost:3000",
                 "https://fusion.equinor.com",
                 "https://pro-s-portal-ci.azurewebsites.net",
                 "https://pro-s-portal-fqa.azurewebsites.net",

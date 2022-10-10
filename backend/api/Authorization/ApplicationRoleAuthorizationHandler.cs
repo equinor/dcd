@@ -50,7 +50,6 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 )
     {
         context.Fail();
-        var username = context.User.Identity!.Name;
     }
 
     private void HandleUnauthenticatedRequest(AuthorizationHandlerContext context, PathString? requestPath)

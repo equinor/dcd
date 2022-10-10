@@ -6,7 +6,7 @@ namespace Api.Authorization;
 
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
-{ 
+{
     private const string PolicyPrefix = "ApplicationRoles:";
     private const string PolicyDivider = "|";
 
@@ -15,7 +15,7 @@ public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
     {
         return PolicyPrefix + string.Join(PolicyDivider, applicationRoles);
     }
-    
+
     public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => Task.FromResult(DefaultApplicationRole());
 
     public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() =>
@@ -35,9 +35,12 @@ public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
     private static IEnumerable<ApplicationRole> PolicyToApplicationRoles(string policy)
     {
         if (!policy.StartsWith(PolicyPrefix, StringComparison.OrdinalIgnoreCase))
+        {
             throw new InvalidOperationException(
                 $"{nameof(ApplicationRolePolicyProvider)} received an unknown policy: \"{policy}\""
             );
+        }
+
 
         return policy[PolicyPrefix.Length..]
             .Split(PolicyDivider)
