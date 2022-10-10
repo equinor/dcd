@@ -10,7 +10,7 @@ public static class ClaimsPrincipalExtensions
     public static List<ApplicationRole> AssignedApplicationRoles(this ClaimsPrincipal principal)
     {
         return principal.Claims
-            .Where(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType)
+            .Where(claim => claim.Type == ClaimsMiddelware.ApplicationRoleClaimType)
             .Select(roleClaim => Enum.Parse<ApplicationRole>(roleClaim.Value))
             .ToList();
     }

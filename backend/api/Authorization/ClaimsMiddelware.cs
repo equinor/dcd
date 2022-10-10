@@ -9,7 +9,7 @@ namespace Api.Authorization;
 public class ClaimsMiddelware
 {
 
-    
+    public const string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
     private readonly RequestDelegate nextMiddleware;
     public ClaimsMiddelware(RequestDelegate nextMiddleware,        
         ILogger<ClaimsMiddelware> logger,
@@ -20,7 +20,6 @@ public class ClaimsMiddelware
     }
     public async Task InvokeAsync(HttpContext httpContext)
     {
-        Console.WriteLine(httpContext.User.Identity.Name);
         if(httpContext.User == null) {
             Console.WriteLine("User null");
         }
@@ -28,10 +27,10 @@ public class ClaimsMiddelware
         if (userId != null)
         {
             SetAppRoleClaims(httpContext);
+
         }
         else
         {
-            Console.WriteLine(httpContext.Request.Host);
             Console.WriteLine("Unauthenticated access attempted on: " +httpContext.Request.Path);
             // logger.LogInformation("Unauthenticated access attempted on '{Path}'", httpContext.Request.Path);
         }
@@ -42,8 +41,6 @@ public class ClaimsMiddelware
 
     private void SetAppRoleClaims(HttpContext httpContext)
     {
-        
-
         var applicationRoles = new HashSet<ApplicationRole>();
 
         var applicationRolesFromAzure = RolesFromAzure(httpContext.User.Claims);
@@ -52,12 +49,10 @@ public class ClaimsMiddelware
         var fusionApplicationRole = RoleForAccountType(httpContext);
         if (fusionApplicationRole != null)
             Console.WriteLine(fusionApplicationRole.Value);
-
-
             
         var applicationRoleClaims = applicationRoles
             .DefaultIfEmpty(ApplicationRole.None)
-            .Select(role => new Claim("ClaimText", role.ToString()));
+            .Select(role => new Claim(ApplicationRoleClaimType, role.ToString()));
         
         Console.WriteLine(applicationRoleClaims);
         var claimsIdentity = httpContext.User.Identity as ClaimsIdentity;
