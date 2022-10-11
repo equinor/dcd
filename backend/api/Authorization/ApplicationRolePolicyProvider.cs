@@ -29,7 +29,7 @@ public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
 
     private string GetDebuggerDisplay()
     {
-        return ToString();
+        return ToString() ?? "";
     }
 
     private static IEnumerable<ApplicationRole> PolicyToApplicationRoles(string policy)
