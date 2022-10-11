@@ -30,13 +30,12 @@ const InvisibleButton = styled(Button)`
 `
 
 const ModalDiv = styled.div`
-    height: 85%;
+    height: 80%;
     width: 90%;
     position: fixed;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 10px;
+    top: 80px;
+    left: 3%;
+    padding: 50px;
     z-index: 1000;
     background-color: white;
     border: 2px solid gray;
