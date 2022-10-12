@@ -1,5 +1,4 @@
 using api.Context;
-using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
 
@@ -27,7 +26,7 @@ configBuilder.AddAzureAppConfiguration(options =>
     options
         .Connect(azureAppConfigConnectionString)
         .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions
-        { ExcludeSharedTokenCacheCredential = true })))
+            { ExcludeSharedTokenCacheCredential = true })))
         .Select(KeyFilter.Any)
         .Select(KeyFilter.Any, environment)
 );
@@ -51,7 +50,7 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
     {
         DbContextOptionsBuilder<DcdDbContext> dBbuilder = new();
         _sqlConnectionString = new SqliteConnectionStringBuilder
-        { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }
+                { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }
             .ToString();
 
         SqliteConnection _connectionToInMemorySqlite = new(_sqlConnectionString);
@@ -101,7 +100,7 @@ var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 if (environment == "localdev")
 {
     builder.Services.AddDbContext<DcdDbContext>(options =>
-            options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+        options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
 }
 else
 {
@@ -152,6 +151,7 @@ builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
+builder.Services.AddScoped<GenerateCO2EmissionCostProfile>();
 builder.Services.AddScoped<GenerateGAndGAdminCostProfile>();
 builder.Services.AddScoped<GenerateCessationCostProfile>();
 builder.Services.AddScoped<STEAService>();

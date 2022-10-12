@@ -43,6 +43,7 @@ public enum ArtificialLift
     ElectricalSubmergedPumps,
     SubseaBoosterPumps
 }
+
 public enum ProductionStrategyOverview
 {
     Depletion,
@@ -51,10 +52,10 @@ public enum ProductionStrategyOverview
     WAG,
     Mixed
 }
+
 public class CessationCost : TimeSeriesCost
 {
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    [ForeignKey("Case.Id")] public Case Case { get; set; } = null!;
 }
 
 public class OpexCostProfile : TimeSeriesCost
@@ -62,5 +63,9 @@ public class OpexCostProfile : TimeSeriesCost
 }
 
 public class StudyCostProfile : TimeSeriesCost
+{
+}
+
+public class CO2EmissionCostProfile : TimeSeriesCost
 {
 }

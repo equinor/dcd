@@ -35,7 +35,7 @@ public static class CaseDtoAdapter
             WaterInjectorCount = case_.WaterInjectorCount,
             FacilitiesAvailability = case_.FacilitiesAvailability,
             SharepointFileId = case_.SharepointFileId,
-            SharepointFileName = case_.SharepointFileName,
+            SharepointFileName = case_.SharepointFileName
         };
 
         return caseDto;
@@ -47,13 +47,14 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new CessationCostDto
         {
             Id = opexCost.Id,
             Currency = opexCost.Currency,
             EPAVersion = opexCost.EPAVersion,
             StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
+            Values = opexCost.Values
         };
     }
 
@@ -63,13 +64,14 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new OpexCostProfileDto
         {
             Id = opexCost.Id,
             Currency = opexCost.Currency,
             EPAVersion = opexCost.EPAVersion,
             StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
+            Values = opexCost.Values
         };
     }
 
@@ -79,13 +81,31 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new StudyCostProfileDto
         {
             Id = studyCost.Id,
             Currency = studyCost.Currency,
             EPAVersion = studyCost.EPAVersion,
             StartYear = studyCost.StartYear,
-            Values = studyCost.Values,
+            Values = studyCost.Values
+        };
+    }
+
+    public static CO2EmissionCostProfileDto Convert(CO2EmissionCostProfile? co2Emission)
+    {
+        if (co2Emission == null)
+        {
+            return null!;
+        }
+
+        return new CO2EmissionCostProfileDto
+        {
+            Id = co2Emission.Id,
+            Currency = co2Emission.Currency,
+            EPAVersion = co2Emission.EPAVersion,
+            StartYear = co2Emission.StartYear,
+            Values = co2Emission.Values
         };
     }
 }
