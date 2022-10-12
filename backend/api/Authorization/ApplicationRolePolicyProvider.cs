@@ -27,18 +27,7 @@ public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
         return Task.FromResult((AuthorizationPolicy?)PolicyWithRequiredRole(applicationRoles));
     }
 
-    private string GetDebuggerDisplay()
-    {
-        if (ToString() is null)
-        {
-            return "";
-        }
-        else
-        {
-            return ToString(); // No warning
-        }
-
-    }
+    private string GetDebuggerDisplay() => ToString() ?? "";
 
     private static IEnumerable<ApplicationRole> PolicyToApplicationRoles(string policy)
     {
