@@ -31,6 +31,10 @@ interface Props {
     profileType: string
     readOnlyTimeSeries: (ITimeSeries | undefined)[]
     readOnlyName: string[]
+    yearsBeforeStartYear: boolean
+    yearsAfterEndYear: boolean
+    tableFirstYear: number
+    tableLastYear: number
 }
 
 function DataTable({
@@ -45,6 +49,10 @@ function DataTable({
     profileType,
     readOnlyTimeSeries,
     readOnlyName,
+    yearsBeforeStartYear,
+    yearsAfterEndYear,
+    tableFirstYear,
+    tableLastYear,
 }: Props) {
     const topGrid = useRef<AgGridReact>(null)
     const bottomGrid = useRef<AgGridReact>(null)
@@ -92,16 +100,56 @@ function DataTable({
         return <Icon data={lock_open} color="#A8CED1" />
     }
 
-    const generateTimeSeriesYears = (index: number, dg4: string) => {
+    const generateReadOnlyTimeSeriesYears = (index: number, dg4: string) => {
         const years = []
         if (dg4) {
             const profileStartYear: number = Number(readOnlyTimeSeries[index]?.startYear) + Number(dG4Year)
-            const maxYear: number = Number(readOnlyTimeSeries[index]?.values?.length) + profileStartYear
+            console.log(`Profile start year${profileStartYear}`)
+            const maxYear: number = (Number(readOnlyTimeSeries[index]?.values?.length) + profileStartYear) ?? profileStartYear
+            console.log(`Max year${maxYear}`)
 
             for (let i = profileStartYear; i < maxYear; i += 1) {
                 years.push(i.toString())
             }
         }
+        return years
+    }
+
+    const generateTimeSeriesYears = (index: number, dg4: string) => {
+        const years = []
+        // if (yearsAfterEndYear) {
+        //     console.log(tableLastYear)
+        // }
+        if (dg4) {
+            const profileStartYear: number = Number(timeSeries[index]?.startYear) + Number(dG4Year)
+            const maxYear: number = Number(timeSeries[index]?.values?.length) + profileStartYear
+
+            const yearsAfterEndYear2 = maxYear < (tableLastYear + 1)
+            const yearsBeforeStartYear2 = profileStartYear > tableFirstYear
+            console.log(profileStartYear)
+            console.log(tableFirstYear)
+            console.log(maxYear)
+            console.log(tableLastYear)
+            // if (yearsAfterEndYear2 && !yearsBeforeStartYear2) {
+            //     for (let i = profileStartYear; i < (tableLastYear + 1); i += 1) {
+            //         years.push(i.toString())
+            //     }
+            // }
+            // if (yearsBeforeStartYear2 && !yearsAfterEndYear2) {
+            //     for (let i = tableFirstYear; i < maxYear; i += 1) {
+            //         years.push(i.toString())
+            //     }
+            // }
+            // if (!yearsBeforeStartYear2 && !yearsAfterEndYear2) {
+            //     for (let i = profileStartYear; i < maxYear; i += 1) {
+            //         years.push(i.toString())
+            //     }
+            // }
+            for (let i = profileStartYear; i < maxYear; i += 1) {
+                years.push(i.toString())
+            }
+        }
+        console.log(years)
         return years
     }
 
@@ -111,7 +159,7 @@ function DataTable({
         objVal: string[],
         value: object[],
     ) => {
-        if (gridData.length === 0 && readOnlyTimeSeries.length === 0) {
+        if (timeSeries[0] === undefined && readOnlyTimeSeries.length === 0) {
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
                 const rowObj = objKey
@@ -130,7 +178,7 @@ function DataTable({
         objVal: string[],
         value: object[],
     ) => {
-        if ((gridData.length === 0 || gridData.length === 1) && readOnlyTimeSeries.length !== 0) {
+        if (gridData.length === 0 && readOnlyTimeSeries.length !== 0) {
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
                 const rowObj = objKey
@@ -143,38 +191,38 @@ function DataTable({
         }
     }
 
-    const setNonReadOnlyDataToTable = (
-        objKey: string[],
-        combinedObjArr: object[],
-        objVal: string[],
-        value: object[],
-        objValSum: number[],
-    ) => {
-        if (gridData.length >= 1 && columns.length !== 0) {
-            for (let j = 0; j < gridData.length; j += 1) {
-                const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
-                const totalValue: number[] = []
-                if (gridData[j] !== undefined) {
-                    for (let i = 0; i < columns.length; i += 1) {
-                        if (gridData[j][0]) {
-                            objKey.push(`${columns[i]}`)
-                            objVal.push(`${gridData[j][0].map((v: any) => v.value)[i]}`)
-                        }
-                    }
-                    objValSum.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: number, y: number) => x + y))
-                    totalValue.push(objValSum[j])
-                }
-                const objValToNumbers = objVal.map((x: string) => parseFloat(x))
-                const rowObj = objKey
-                    .reduce((obj: object, element: string, index: number) => (
-                        { ...obj, [element]: objValToNumbers[index] }), {})
-                combinedObjArr.push(rowObj)
+    // const setNonReadOnlyDataToTable = (
+    //     objKey: string[],
+    //     combinedObjArr: object[],
+    //     objVal: string[],
+    //     value: object[],
+    //     objValSum: number[],
+    // ) => {
+    //     if (gridData.length >= 1 && columns.length !== 0) {
+    //         for (let j = 0; j < gridData.length; j += 1) {
+    //             const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
+    //             const totalValue: number[] = []
+    //             if (gridData[j] !== undefined) {
+    //                 for (let i = 0; i < columns.length; i += 1) {
+    //                     if (gridData[j][0]) {
+    //                         objKey.push(`${columns[i]}`)
+    //                         objVal.push(`${gridData[j][0].map((v: any) => v.value)[i]}`)
+    //                     }
+    //                 }
+    //                 objValSum.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: number, y: number) => x + y))
+    //                 totalValue.push(objValSum[j])
+    //             }
+    //             const objValToNumbers = objVal.map((x: string) => parseFloat(x))
+    //             const rowObj = objKey
+    //                 .reduce((obj: object, element: string, index: number) => (
+    //                     { ...obj, [element]: objValToNumbers[index] }), {})
+    //             combinedObjArr.push(rowObj)
 
-                const totalValueObj = { Total: Number(totalValue) }
-                value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
-            }
-        }
-    }
+    //             const totalValueObj = { Total: Number(totalValue) }
+    //             value.push({ ...combinedObjArr[j], ...totalValueObj, ...rowPinned })
+    //         }
+    //     }
+    // }
 
     const setReadOnlyDataToTable = (
         readOnlyCombinedObjArr: object[],
@@ -198,11 +246,48 @@ function DataTable({
                 const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values?.map(
                     (v) => Math.round((v + Number.EPSILON) * 10) / 10,
                 ) ?? []
-                const rowObj = generateTimeSeriesYears(i, dG4Year)
+                const rowObj = generateReadOnlyTimeSeriesYears(i, dG4Year)
                     .reduce((obj: object, element: string, index: number) => (
                         { ...obj, [element]: objValToNumbers[index] }), {})
                 readOnlyCombinedObjArr.push(rowObj)
                 value.push({ ...readOnlyCombinedObjArr[i], ...readOnly })
+            }
+        }
+    }
+
+    const setProfilesWithData = (value: object[]) => {
+        const combinedObjArr: object[] = []
+        const objValSum: number[] = []
+
+        if (timeSeries[0] !== undefined) {
+            for (let i = 0; i < profileName.length; i += 1) {
+                const totalValue: number[] = []
+                const readOnly = { Profile: profileName[i], Unit: setUnit(i) }
+                console.log(timeSeries)
+                if (timeSeries[i] !== undefined && dG4Year && timeSeries[i]?.values?.length !== 0) {
+                    objValSum.push((timeSeries[i]?.values?.map(
+                        (v) => Math.round((v + Number.EPSILON) * 10) / 10,
+                    ) ?? [])
+                        .reduce((x: number, y: number) => x + y))
+                    totalValue.push(objValSum[i])
+                }
+                if (timeSeries[i] !== undefined && dG4Year && timeSeries[i]?.values?.length === 0) {
+                    objValSum.push(0)
+                    totalValue.push(objValSum[i])
+                }
+
+                // if (yearsAfterEndYear) {
+                //     console.log(tableLastYear)
+                // }
+
+                const objValToNumbers: number[] = timeSeries[i]?.values!
+                const rowObj = generateTimeSeriesYears(i, dG4Year)
+                    .reduce((obj: object, element: string, index: number) => (
+                        { ...obj, [element]: objValToNumbers[index] }), {})
+                console.log(rowObj)
+                combinedObjArr.push(rowObj)
+                const totalValueObj = { Total: Number(totalValue) }
+                value.push({ ...combinedObjArr[i], ...readOnly, ...totalValueObj })
             }
         }
     }
@@ -220,13 +305,15 @@ function DataTable({
         setReadOnlyDataToTable(readOnlyCombinedObjArr, value, readOnlyObjValSum)
         setEmptyTableWithReadOnly(objKey, combinedObjArr, objVal, value)
         setEmptyTableWithoutReadOnly(objKey, combinedObjArr, objVal, value)
-        setNonReadOnlyDataToTable(objKey, combinedObjArr, objVal, value, objValSum)
+        setProfilesWithData(value)
+        // setNonReadOnlyDataToTable(objKey, combinedObjArr, objVal, value, objValSum)
         return value
     }
 
     const columnsArrayToColDef = () => {
         if (columns.length !== 0) {
             const col = columns
+            console.log(col)
             const columnToColDef = []
             const columnPinned = [
                 {
@@ -258,6 +345,15 @@ function DataTable({
                     hide: readOnlyTimeSeries.length === 0,
                     cellRenderer: lockIcon,
                 }]
+            // const yearColumns: string[] = []
+            // if (tableFirstYear && tableLastYear) {
+            //     for (let i = tableFirstYear; i < (tableLastYear + 1); i += 1) {
+            //         yearColumns.push(i.toString())
+            //     }
+            //     for (let i = 0; i < yearColumns.length; i += 1) {
+            //         columnToColDef.push({ field: yearColumns[i], aggFunc: "sum" })
+            //     }
+            // }
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i], aggFunc: "sum" })
             }
@@ -282,7 +378,7 @@ function DataTable({
     }), [])
 
     useEffect(() => {
-    }, [timeSeries, profileName, gridData, dG4Year])
+    }, [timeSeries, profileName, gridData, dG4Year, yearsAfterEndYear, yearsBeforeStartYear])
 
     const onCellValueChanged = useCallback((event: CellValueChangedEvent) => {
         const rowEventData = event.data
@@ -293,29 +389,150 @@ function DataTable({
                 delete rowEventData.Total, delete rowEventData.ReadOnly),
             rowEventData,
         }
-        const changeKeysToValue = Object.keys(rowEventData)
-            .reduce((prev: object, curr: string, ind: number) => (
-                { ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
 
-        if (readOnlyTimeSeries.length !== 0) {
-            const newTimeSeries: ITimeSeries = { ...timeSeries[Number(index - readOnlyTimeSeries.length)] }
-            newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
-            newTimeSeries.name = profileName[Number(index - readOnlyTimeSeries.length)]
-            newTimeSeries.values = Object.values(changeKeysToValue)
-            setTimeSeries(newTimeSeries)
-            const newGridData = buildGridData(newTimeSeries)
-            combinedTimeseries.push(newGridData)
-            setHasChanges(true)
+        const newValueYear = Number(event.column.getColId())
+
+        const yearBeforeNewValueYear = Number(Object.keys(rowEventData)[Object.keys(rowEventData).length - 2])
+        const valueYearDifference = newValueYear - yearBeforeNewValueYear
+
+        const yearAfterNewValueYear = Number(Object.keys(rowEventData)[1])
+        const afterValueYearDifference = yearAfterNewValueYear - newValueYear
+
+        const keyYears = Object.keys(rowEventData)
+        const eventValues: number[] = Object.values(rowEventData)
+        const beforeValues: number[] = eventValues.slice(0, (Number(eventValues.length) - 1))
+        const afterValues: number[] = eventValues.slice(1)
+
+        const { newValue } = event
+        const combinedValueArray: any[] = []
+        const combinedYearArray: any[] = []
+
+        const valueBeforeLowestCurrentYear: boolean = newValueYear < yearAfterNewValueYear - 1
+        const valueAfterLastCurrentYear: boolean = newValueYear > yearBeforeNewValueYear + 1
+
+        if (valueAfterLastCurrentYear && !valueBeforeLowestCurrentYear) {
+            console.log(valueYearDifference)
+            const beforeYears = keyYears.slice(0, (Number(keyYears.length) - 1))
+            console.log(beforeYears)
+            if (yearBeforeNewValueYear < newValueYear) {
+                const addBetweenYears: any[] = []
+                for (let c = (yearBeforeNewValueYear + 1); c < newValueYear; c += 1) {
+                    addBetweenYears.push(c.toString())
+                }
+                combinedYearArray.push(beforeYears.concat(addBetweenYears, keyYears.slice(-1)))
+                console.log(combinedYearArray)
+            }
+            console.log(Number(beforeYears[beforeYears.length - 1]))
+            const zeroesBetween: number[] = Array.from({
+                length: Number(newValueYear) - Number(beforeYears[beforeYears.length - 1]) - 1,
+            }, (() => 0))
+            console.log(zeroesBetween)
+            combinedValueArray.push(beforeValues.concat(zeroesBetween, Number(newValue)))
+            console.log(combinedValueArray)
+            const changeKeysToValue = combinedYearArray
+                .reduce((prev: object, curr: number, ind: number) => (
+                    { ...prev, [(ind)]: combinedValueArray[curr] }), {})
+            if (readOnlyTimeSeries.length !== 0) {
+                const newTimeSeries: ITimeSeries = { ...timeSeries[Number(index - readOnlyTimeSeries.length)] }
+                newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+                newTimeSeries.name = profileName[Number(index - readOnlyTimeSeries.length)]
+                // eslint-disable-next-line prefer-destructuring
+                newTimeSeries.values = combinedValueArray[0]
+                setTimeSeries(newTimeSeries)
+                const newGridData = buildGridData(newTimeSeries)
+                combinedTimeseries.push(newGridData)
+                setHasChanges(true)
+            }
+            if (readOnlyTimeSeries.length === 0) {
+                const newTimeSeries: ITimeSeries = { ...timeSeries[index] }
+                newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+                newTimeSeries.name = profileName[index]
+                // eslint-disable-next-line prefer-destructuring
+                newTimeSeries.values = combinedValueArray[0]
+                setTimeSeries(newTimeSeries)
+                const newGridData = buildGridData(newTimeSeries)
+                combinedTimeseries.push(newGridData)
+                setHasChanges(true)
+            }
         }
-        if (readOnlyTimeSeries.length === 0) {
-            const newTimeSeries: ITimeSeries = { ...timeSeries[index] }
-            newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
-            newTimeSeries.name = profileName[index]
-            newTimeSeries.values = Object.values(changeKeysToValue)
-            setTimeSeries(newTimeSeries)
-            const newGridData = buildGridData(newTimeSeries)
-            combinedTimeseries.push(newGridData)
-            setHasChanges(true)
+
+        if (valueBeforeLowestCurrentYear && !valueAfterLastCurrentYear) {
+            const afterYears = keyYears.slice(1)
+            const firstYear: string[] = [newValueYear.toString()]
+            const firstValue: number[] = [Number(newValue)]
+            if (yearAfterNewValueYear > newValueYear) {
+                const addBetweenYears: any[] = []
+                for (let c = (newValueYear + 1); c < yearAfterNewValueYear; c += 1) {
+                    addBetweenYears.push(c.toString())
+                }
+                console.log(addBetweenYears)
+                combinedYearArray.push(firstYear.concat(addBetweenYears, afterYears))
+                console.log(combinedYearArray)
+            }
+            const zeroesBetween: number[] = Array.from({
+                length: Number(afterYears[0]) - Number(newValueYear) - 1,
+            }, (() => 0))
+            combinedValueArray.push(firstValue.concat(zeroesBetween, afterValues))
+
+            if (readOnlyTimeSeries.length !== 0) {
+                const newTimeSeries: ITimeSeries = { ...timeSeries[Number(index - readOnlyTimeSeries.length)] }
+                newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+                newTimeSeries.name = profileName[Number(index - readOnlyTimeSeries.length)]
+                // eslint-disable-next-line prefer-destructuring
+                newTimeSeries.values = combinedValueArray[0]
+                setTimeSeries(newTimeSeries)
+                const newGridData = buildGridData(newTimeSeries)
+                combinedTimeseries.push(newGridData)
+                setHasChanges(true)
+            }
+            if (readOnlyTimeSeries.length === 0) {
+                const newTimeSeries: ITimeSeries = { ...timeSeries[index] }
+                newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+                newTimeSeries.name = profileName[index]
+                // eslint-disable-next-line prefer-destructuring
+                newTimeSeries.values = combinedValueArray[0]
+                setTimeSeries(newTimeSeries)
+                const newGridData = buildGridData(newTimeSeries)
+                combinedTimeseries.push(newGridData)
+                setHasChanges(true)
+            }
+        }
+
+        console.log(afterValueYearDifference)
+        console.log(valueYearDifference)
+        if (!valueBeforeLowestCurrentYear && !valueAfterLastCurrentYear) {
+            const changeKeysToValue = Object.keys(rowEventData)
+                .reduce((prev: object, curr: string, ind: number) => (
+                    { ...prev, [(ind)]: Number(rowEventData[curr]) }), {})
+
+            console.log(changeKeysToValue)
+            // console.log(rowEventData)
+            // console.log(Number(event.column.getColId()))
+            // console.log(Number(Object.keys(rowEventData)[Object.keys(rowEventData).length - 2]))
+            // console.log(Number(Object.keys(rowEventData)[Object.keys(rowEventData).length]))
+            // console.log(Number(event.column.getColId()) - Number(Object.keys(rowEventData)[Object.keys(rowEventData).length - 2]))
+
+            if (readOnlyTimeSeries.length !== 0) {
+                const newTimeSeries: ITimeSeries = { ...timeSeries[Number(index - readOnlyTimeSeries.length)] }
+                newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+                newTimeSeries.name = profileName[Number(index - readOnlyTimeSeries.length)]
+                newTimeSeries.values = Object.values(changeKeysToValue)
+                setTimeSeries(newTimeSeries)
+                const newGridData = buildGridData(newTimeSeries)
+                combinedTimeseries.push(newGridData)
+                setHasChanges(true)
+            }
+            if (readOnlyTimeSeries.length === 0) {
+                const newTimeSeries: ITimeSeries = { ...timeSeries[index] }
+                newTimeSeries.startYear = (Number(Object.keys(rowEventData)[0]) - Number(dG4Year))
+                newTimeSeries.name = profileName[index]
+                newTimeSeries.values = Object.values(changeKeysToValue)
+                console.log(newTimeSeries.values)
+                setTimeSeries(newTimeSeries)
+                const newGridData = buildGridData(newTimeSeries)
+                combinedTimeseries.push(newGridData)
+                setHasChanges(true)
+            }
         }
     }, [dG4Year])
 
@@ -399,7 +616,7 @@ function DataTable({
         }
         if (timeSeries.length >= 1 && columns.length !== 0) {
             for (let j = 0; j < timeSeries.length; j += 1) {
-                if (timeSeries[j] !== undefined && gridData[j] !== undefined) {
+                if (timeSeries[j] !== undefined && gridData[j] !== undefined && timeSeries[j]?.values?.length !== 0) {
                     totalTotalCostArray.push(gridData[j][0]?.map((v: any) => v.value).reduce((x: any, y: any) => x + y))
                 }
             }

@@ -43,6 +43,8 @@ const TimeSeries = ({
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [tableFirstYear, setTableFirstYear] = useState<number>(Number.MAX_SAFE_INTEGER)
     const [tableLastYear, setTableLastYear] = useState<number>(Number.MIN_SAFE_INTEGER)
+    const [yearsBeforeStartYear, setYearsBeforeStartYear] = useState<boolean>(false)
+    const [yearsAfterEndYear, setYearsAfterEndYear] = useState<boolean>(false)
 
     const combinedTimeseries: any = []
     const combinedEmptyTimeseries: any = []
@@ -57,7 +59,7 @@ const TimeSeries = ({
                         if (updatedTimeSeries !== undefined && timeSeries[i] !== undefined) {
                             const columnTitles: string[] = []
                             if (firstYear !== undefined && lastYear !== undefined) {
-                                for (let j = firstYear; j < lastYear; j += 1) {
+                                for (let j = tableFirstYear; j <= tableLastYear; j += 1) {
                                     columnTitles.push(j.toString())
                                 }
                             }
@@ -79,9 +81,7 @@ const TimeSeries = ({
                             const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
                             const newGridData = buildGridData(timeSeries[i])
 
-                            const alignedAssetGridData = new Array(
-                                assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
-                            )
+                            const alignedAssetGridData = new Array(newGridData[0])
                             combinedTimeseries.push(alignedAssetGridData)
                         }
                     }
@@ -101,6 +101,7 @@ const TimeSeries = ({
             const newGridData = buildGridData(readOnlyTimeSeries[j])
             const alignedAssetGridData = new Array(newGridData[0])
             combinedEmptyTimeseries.push(alignedAssetGridData)
+            console.log(combinedEmptyTimeseries)
             setGridData(combinedEmptyTimeseries)
             setHasChanges(true)
         }
@@ -118,7 +119,8 @@ const TimeSeries = ({
         }
 
         if (gridData !== undefined && isValidYear(firstYear) && isValidYear(lastYear) && firstYear && lastYear
-            && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER) {
+            && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER
+            && (firstYear !== lastYear)) {
             setTableFirstYear(firstYear)
             setTableLastYear(lastYear - 1)
         }
@@ -137,32 +139,17 @@ const TimeSeries = ({
         setColumns(colYears)
 
         newTimeSeries.name = profileName[j]
-        newTimeSeries.startYear = tableFirstYear - dG4Year
-        newTimeSeries.values = new Array(colYears.length).fill(0)
+        newTimeSeries.startYear = Number(colYears[0]) - dG4Year
+        newTimeSeries.values = []
 
         setTimeSeries(newTimeSeries)
         if (newTimeSeries !== undefined) {
-            const zeroesAtStart: Number[] = Array.from({
-                length: Number(timeSeries[0]?.startYear!)
-                    + Number(dG4Year) - Number(firstYear),
-            }, (() => 0))
+            const newGridData = buildGridData(timeSeries[j])
 
-            const zeroesAtEnd: Number[] = Array.from({
-                length: Number(lastYear)
-                    - (Number(timeSeries[0]?.startYear!)
-                        + Number(dG4Year)
-                        + Number(timeSeries[0]?.values!.length!)),
-            }, (() => 0))
-
-            const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
-            const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
-            const newGridData = buildGridData(timeSeries[0])
-
-            const alignedAssetGridData = new Array(
-                assetZeroesStartGrid[0].concat(newGridData[0], assetZeroesEndGrid[0]),
-            )
+            const alignedAssetGridData = new Array(newGridData)
             combinedTimeseries.push(alignedAssetGridData)
         }
+        console.log(combinedEmptyTimeseries)
         setGridData(combinedEmptyTimeseries)
         setHasChanges(true)
     }
@@ -187,15 +174,19 @@ const TimeSeries = ({
             newTimeSeries.name = profileName[j]
             newTimeSeries.startYear = timeSeries[j]?.startYear
 
+            console.log(columns)
+
             if (NewTableFirstYearSmallerThanProfileFirstYear(j)) {
-                newTimeSeries.startYear = tableFirstYear - dG4Year
-                newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length)
-                    .fill(0).concat(newTimeSeries.values) ?? []
+                setYearsBeforeStartYear(true)
+                // newTimeSeries.startYear = tableFirstYear - dG4Year
+                // newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length)
+                //     .fill(null).concat(newTimeSeries.values) ?? []
             }
 
             if (NewTableLastYearGreaterThanProfileLastYear(colYears, newTimeSeries)) {
-                newTimeSeries.values = (newTimeSeries.values)
-                    ?.concat(new Array(colYears.length - Number(timeSeries[j]?.values?.length)).fill(0)) ?? []
+                setYearsAfterEndYear(true)
+                // newTimeSeries.values = (newTimeSeries.values)
+                //     ?.concat(new Array(colYears.length - Number(timeSeries[j]?.values?.length)).fill(null)) ?? []
             }
 
             if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
@@ -227,6 +218,7 @@ const TimeSeries = ({
             }
             setColumns(colYears)
 
+            console.log(timeSeries)
             if (timeSeries[0] === undefined) {
                 for (let i = 0; i < timeSeries?.length!; i += 1) {
                     createEmptyGrid(i)
@@ -277,6 +269,10 @@ const TimeSeries = ({
                     profileType={profileType}
                     readOnlyTimeSeries={readOnlyTimeSeries}
                     readOnlyName={readOnlyName}
+                    yearsBeforeStartYear={yearsBeforeStartYear}
+                    yearsAfterEndYear={yearsAfterEndYear}
+                    tableFirstYear={tableFirstYear}
+                    tableLastYear={tableLastYear}
                 />
             </WrapperColumn>
         </>
