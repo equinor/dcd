@@ -7,7 +7,6 @@ import {
     Button, Icon, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { clear } from "@equinor/eds-icons"
-import _, { isEqual } from "underscore"
 import WellCostsTab from "./WellCostsTab"
 import { Project } from "../../models/Project"
 import PROSPTab from "./PROSPTab"
@@ -18,6 +17,10 @@ import { WellProjectWell } from "../../models/WellProjectWell"
 import { GetExplorationOperationalWellCostsService } from "../../Services/ExplorationOperationalWellCostsService"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { GetDevelopmentOperationalWellCostsService } from "../../Services/DevelopmentOperationalWellCostsService"
+import { Well } from "../../models/Well"
+import { IsExplorationWell } from "../../Utils/common"
+import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
+import { GetWellService } from "../../Services/WellService"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -44,7 +47,7 @@ const ModalDiv = styled.div`
     position: fixed;
     top: 80px;
     left: 3%;
-    padding: 50px;
+    padding: 20px;
     z-index: 1000;
     background-color: white;
     border: 2px solid gray;
@@ -57,16 +60,15 @@ type Props = {
     project: Project,
 }
 
-export const EditTechnicalInputModal: FunctionComponent<Props> = ({
+const EditTechnicalInputModal = ({
     toggleEditTechnicalInputModal, isOpen, setProject, project,
-}) => {
+}: Props) => {
     const [activeTab, setActiveTab] = useState<number>(0)
-    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
-    const [wellProjectWell, setWellProjectWell] = useState<WellProjectWell[]>()
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts | undefined>(project.developmentWellCosts)
-
-    if (!isOpen) return null
+    const [wellProjectWells, setWellProjectWells] = useState<Well[]>([])
+    const [explorationWells, setExplorationWells] = useState<Well[] | undefined>([])
+    // const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
 
     useEffect(() => {
         (async () => {
@@ -88,21 +90,45 @@ export const EditTechnicalInputModal: FunctionComponent<Props> = ({
         })()
     }, [])
 
+    useEffect(() => {
+        if (project.wells) {
+            const a = project.wells.filter((w) => !IsExplorationWell(w))
+            setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
+            setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
+        }
+    }, [project])
+
+    if (!isOpen) return null
+
     if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
         return null
     }
 
+    const wellsToWellsDto = (wells: Well[] | undefined) => {
+        debugger
+        const wellsDto: Components.Schemas.WellDto[] = wells?.map((w) => Well.toDto(w)) ?? []
+        return wellsDto
+    }
+
     const handleSave = async () => {
-        if (!_.isEqual(project.explorationWellCosts, explorationOperationalWellCosts)) {
-            const res = await (await GetExplorationOperationalWellCostsService()).update({ ...explorationOperationalWellCosts })
-            setExplorationOperationalWellCosts(res)
-            console.log(res)
-        }
-        if (!_.isEqual(project.developmentWellCosts, developmentOperationalWellCosts)) {
-            const res = await (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
-            setDevelopmentOperationalWellCosts(res)
-            console.log(res)
-        }
+        console.log(wellProjectWells)
+        // if (!_.isEqual(project.explorationWellCosts, explorationOperationalWellCosts)) {
+        const res1 = await (await GetExplorationOperationalWellCostsService()).update({ ...explorationOperationalWellCosts })
+        setExplorationOperationalWellCosts(res1)
+        console.log(res1)
+        // }
+        // if (!_.isEqual(project.developmentWellCosts, developmentOperationalWellCosts)) {
+        const res = await (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
+        setDevelopmentOperationalWellCosts(res)
+        console.log(res)
+        // }
+        const wellProjectWellsResult = await (await GetWellService()).updateMultipleWells(wellsToWellsDto(wellProjectWells))
+        setWellProjectWells(wellProjectWellsResult)
+        console.log(wellProjectWellsResult)
+
+        const explorationWellsResult = await (await GetWellService()).updateMultipleWells(wellsToWellsDto(explorationWells))
+        setWellProjectWells(explorationWellsResult)
+        console.log(explorationWellsResult)
     }
 
     return (
@@ -143,6 +169,10 @@ export const EditTechnicalInputModal: FunctionComponent<Props> = ({
                                 setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
                                 explorationOperationalWellCosts={explorationOperationalWellCosts}
                                 setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
+                                explorationWells={explorationWells}
+                                setExplorationWells={setExplorationWells}
+                                wellProjectWells={wellProjectWells}
+                                setWellProjectWells={setWellProjectWells}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
@@ -155,3 +185,5 @@ export const EditTechnicalInputModal: FunctionComponent<Props> = ({
         </>
     )
 }
+
+export default EditTechnicalInputModal

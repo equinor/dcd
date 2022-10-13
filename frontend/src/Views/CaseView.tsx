@@ -24,10 +24,10 @@ import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import DefinitionView from "./DefinitionView"
 import ExplorationViewTab from "./ExplorationViewTab"
 import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
-import { EditTechnicalInputModal } from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { GetCaseService } from "../Services/CaseService"
 import { StudyCostProfile } from "../models/case/StudyCostProfile"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -71,7 +71,7 @@ const StyledTabPanel = styled(Panel)`
     border-top: 1px solid LightGray;
 `
 
-function CaseView() {
+const CaseView = () => {
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
 
     const [project, setProject] = useState<Project>()

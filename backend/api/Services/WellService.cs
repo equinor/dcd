@@ -63,6 +63,20 @@ public class WellService
         return _projectService.GetProjectDto(existing.ProjectId);
     }
 
+    public WellDto[] UpdateMultipleWells(WellDto[] updatedWellDtos)
+    {
+        ProjectDto? projectDto = null;
+        foreach (var wellDto in updatedWellDtos)
+        {
+            projectDto = UpdateWell(wellDto);
+        }
+        if (projectDto != null)
+        {
+            return projectDto.Wells?.ToArray();
+        }
+        return null;
+    }
+
     public Well GetWell(Guid wellId)
     {
         var well = _context.Wells!

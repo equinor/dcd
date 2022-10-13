@@ -5,18 +5,21 @@ import {
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { GetWellService } from "../../Services/WellService"
+import { IsExplorationWell } from "../../Utils/common"
 import WellTableRowEditTechnicalInput from "./WellTableRowEditTechnicalInput"
 
 interface Props {
     project: Project
     setProject: Dispatch<SetStateAction<Project | undefined>>
+    wells: Well[] | undefined
+    setWells: Dispatch<SetStateAction<Well[] | undefined>>
     explorationWells: boolean
 }
 
 function WellListEditTechnicalInput({
-    project, setProject, explorationWells,
+    project, setProject, explorationWells, wells, setWells,
 }: Props) {
-    const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
+    // const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
 
     const CreateWell = async () => {
         const newWell = new Well()
@@ -28,32 +31,29 @@ function WellListEditTechnicalInput({
         setWells(newProject?.wells ?? [])
     }
 
-    // eslint-disable-next-line max-len
-    const isExplorationWell = (category: Components.Schemas.WellCategory | undefined) => [4, 5, 6].indexOf(category ?? -1) > -1
-
     const GenerateWellTableRows = () => {
         const tableRows: JSX.Element[] = []
         if (!explorationWells) {
-            wells?.filter((w) => !isExplorationWell(w.wellCategory)).forEach((w) => {
+            wells?.filter((w) => !IsExplorationWell(w)).forEach((w) => {
                 tableRows.push((
                     <WellTableRowEditTechnicalInput
                         key={w.id}
                         setProject={setProject}
                         wellId={w.id!}
                         project={project}
-                        explorationWell={isExplorationWell(w.wellCategory)}
+                        explorationWell={IsExplorationWell(w)}
                     />
                 ))
             })
         } else {
-            wells?.filter((w) => isExplorationWell(w.wellCategory)).forEach((w) => {
+            wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
                 tableRows.push((
                     <WellTableRowEditTechnicalInput
                         key={w.id}
                         setProject={setProject}
                         wellId={w.id!}
                         project={project}
-                        explorationWell={isExplorationWell(w.wellCategory)}
+                        explorationWell={IsExplorationWell(w)}
                     />
                 ))
             })

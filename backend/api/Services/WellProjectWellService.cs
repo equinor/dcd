@@ -57,6 +57,20 @@ public class WellProjectWellService
         throw new NotFoundInDBException();
     }
 
+    public WellDto[]? UpdateWellMultipleProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos)
+    {
+        ProjectDto? projectDto = null;
+        foreach (var wellDto in updatedWellProjectWellDtos)
+        {
+            projectDto = UpdateWellProjectWell(wellDto);
+        }
+        if (projectDto != null)
+        {
+            return projectDto.Wells?.ToArray();
+        }
+        return null;
+    }
+
     public WellProjectWell GetWellProjectWell(Guid wellId, Guid caseId)
     {
         var wellProjectWell = _context.WellProjectWell!

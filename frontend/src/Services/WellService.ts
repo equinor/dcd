@@ -32,6 +32,11 @@ class __WellService extends __BaseService {
         const res: Components.Schemas.ProjectDto = await this.put("", { body })
         return Project.fromJSON(res)
     }
+
+    public async updateMultipleWells(body: Components.Schemas.WellDto[]): Promise<any> {
+        const res: any = await this.put("/multiple", { body })
+        return res
+    }
 }
 
 export const WellService = new __WellService({

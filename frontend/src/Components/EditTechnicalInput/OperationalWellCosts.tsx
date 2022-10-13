@@ -3,9 +3,14 @@ import { Table } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
+import styled from "styled-components"
 import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
 import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
 import OperationalWellCost from "./OperationalWellCost"
+
+const TableWrapper = styled(Table)`
+    width: 100%;
+`
 
 interface Props {
     title: string
@@ -64,7 +69,7 @@ function OperationalWellCosts({
         explorationProjectDrillingCosts, appraisalRigMobDemob, appraisalProjectDrillingCosts])
 
     return (
-        <Table>
+        <TableWrapper>
             <Table.Head>
                 <Table.Row>
                     <Table.Cell>
@@ -131,7 +136,7 @@ function OperationalWellCosts({
                 )}
 
             </Table.Body>
-        </Table>
+        </TableWrapper>
     )
 }
 

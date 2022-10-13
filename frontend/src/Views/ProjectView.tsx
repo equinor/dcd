@@ -22,7 +22,7 @@ import { Case } from "../models/case/Case"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
-import { EditTechnicalInputModal } from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -132,7 +132,7 @@ const ProjectView = () => {
             <TopWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
                 <TransparentButton
-                    onClick={toggleEditProjectModal}
+                    onClick={toggleEditTechnicalInputModal}
                 >
                     Edit technical input
                 </TransparentButton>
@@ -223,7 +223,7 @@ const ProjectView = () => {
             </Wrapper>
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
-                isOpen={editTechnicalInputModalIsOpen}
+                isOpen={editTechnicalInputModalIsOpen ?? false}
                 project={project}
                 setProject={setProject}
             />
