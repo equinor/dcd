@@ -113,7 +113,7 @@ const TimeSeries = ({
         if (timeSeries[0] === undefined && readOnlyTimeSeries.length !== 0) {
             for (let i = 0; i < readOnlyTimeSeries?.length; i += 1) {
                 if (readOnlyTimeSeries[i] !== undefined && readOnlyTimeSeries[i]?.values?.length !== 0) {
-                    createNewGridWithReadOnlyData(i)
+                    // createNewGridWithReadOnlyData(i)
                 }
             }
         }

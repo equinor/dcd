@@ -172,13 +172,25 @@ function DataTable({
         }
     }
 
+    const gridDataIsReadOnlyData = () => {
+        if (readOnlyTimeSeries[0] !== undefined && gridData[0] !== undefined) {
+            const readOnlyData = gridData[0][0]?.map((v: any) => v.value)
+            const compareArrays = readOnlyData.filter((e: number) => readOnlyTimeSeries[0]?.values?.includes(e))
+            console.log(compareArrays)
+            if (compareArrays.length === readOnlyData.length) {
+                return true
+            }
+        }
+        return false
+    }
+
     const setEmptyTableWithReadOnly = (
         objKey: string[],
         combinedObjArr: object[],
         objVal: string[],
         value: object[],
     ) => {
-        if (gridData.length === 0 && readOnlyTimeSeries.length !== 0) {
+        if (gridDataIsReadOnlyData() === false && readOnlyTimeSeries.length !== 0 && timeSeries[0] === undefined) {
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
                 const rowObj = objKey
@@ -229,7 +241,7 @@ function DataTable({
         value: object[],
         readOnlyObjValSum: number[],
     ) => {
-        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined && columns.length !== 0 && dG4Year) {
+        if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined && dG4Year) {
             for (let i = 0; i < readOnlyName.length; i += 1) {
                 const totalValue: number[] = []
                 const readOnly = {
@@ -302,12 +314,27 @@ function DataTable({
 
         const value: object[] = []
 
+        console.log(timeSeries)
+        console.log(readOnlyTimeSeries)
+
         setReadOnlyDataToTable(readOnlyCombinedObjArr, value, readOnlyObjValSum)
         setEmptyTableWithReadOnly(objKey, combinedObjArr, objVal, value)
         setEmptyTableWithoutReadOnly(objKey, combinedObjArr, objVal, value)
         setProfilesWithData(value)
         // setNonReadOnlyDataToTable(objKey, combinedObjArr, objVal, value, objValSum)
         return value
+    }
+
+    const addColumnsBasedOnReadOnlyData = () => {
+        const newColumns: string[] = []
+        if (columns[0] === "" && readOnlyTimeSeries[0] !== undefined) {
+            const columnStartYear = Number(dG4Year) + Number(readOnlyTimeSeries[0].startYear)
+            const columnLength = Number(readOnlyTimeSeries[0]?.values?.length!)
+            for (let i = columnStartYear; i < (columnStartYear + columnLength); i += 1) {
+                newColumns.push(i.toString())
+            }
+        }
+        return newColumns
     }
 
     const columnsArrayToColDef = () => {
@@ -354,10 +381,24 @@ function DataTable({
             //         columnToColDef.push({ field: yearColumns[i], aggFunc: "sum" })
             //     }
             // }
-            for (let i = 0; i < col.length; i += 1) {
-                columnToColDef.push({ field: col[i], aggFunc: "sum" })
+            addColumnsBasedOnReadOnlyData()
+            if (col[0] !== "") {
+                for (let i = 0; i < col.length; i += 1) {
+                    columnToColDef.push({ field: col[i], aggFunc: "sum" })
+                }
             }
+            if (col[0] === "" || col.length === 0) {
+                for (let i = 0; i < addColumnsBasedOnReadOnlyData().length; i += 1) {
+                    columnToColDef.push({ field: addColumnsBasedOnReadOnlyData()[i], aggFunc: "sum" })
+                }
+            }
+            console.log(col)
+            console.log(addColumnsBasedOnReadOnlyData())
+            // for (let i = 0; i < col.length; i += 1) {
+            //     columnToColDef.push({ field: col[i], aggFunc: "sum" })
+            // }
             const columnWithProfile = columnToColDef.concat([...columnPinned])
+            console.log(columnWithProfile)
             return columnWithProfile
         }
         return undefined
