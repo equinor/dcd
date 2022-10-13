@@ -171,6 +171,13 @@ const TimeSeries = ({
         }
     }
 
+    const disableApplyButton = () => {
+        if (firstYear === tableFirstYear && lastYear === (tableLastYear + 1)) {
+            return true
+        }
+        return false
+    }
+
     return (
         <>
             <WrapperTablePeriod>
@@ -189,6 +196,7 @@ const TimeSeries = ({
                 />
                 <ImportButton
                     onClick={addTimeSeries}
+                    disabled={disableApplyButton()}
                 >
                     Apply
                 </ImportButton>
