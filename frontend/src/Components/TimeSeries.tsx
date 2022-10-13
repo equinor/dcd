@@ -4,7 +4,7 @@ import {
 } from "react"
 import DataTable, { CellValue } from "./DataTable/DataTable"
 import {
-    buildGridData, buildZeroGridData,
+    buildGridData,
 } from "./DataTable/helpers"
 import { ITimeSeries } from "../models/ITimeSeries"
 import {
@@ -43,8 +43,6 @@ const TimeSeries = ({
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
     const [tableFirstYear, setTableFirstYear] = useState<number>(Number.MAX_SAFE_INTEGER)
     const [tableLastYear, setTableLastYear] = useState<number>(Number.MIN_SAFE_INTEGER)
-    const [yearsBeforeStartYear, setYearsBeforeStartYear] = useState<boolean>(false)
-    const [yearsAfterEndYear, setYearsAfterEndYear] = useState<boolean>(false)
 
     const combinedTimeseries: any = []
     const combinedEmptyTimeseries: any = []
@@ -65,20 +63,6 @@ const TimeSeries = ({
                             }
                             setColumns(columnTitles)
 
-                            const zeroesAtStart: Number[] = Array.from({
-                                length: Number(timeSeries[i]?.startYear!)
-                                    + Number(dG4Year) - Number(firstYear),
-                            }, (() => 0))
-
-                            const zeroesAtEnd: Number[] = Array.from({
-                                length: Number(lastYear)
-                                    - (Number(timeSeries[i]?.startYear!)
-                                        + Number(dG4Year)
-                                        + Number(timeSeries[i]?.values!.length!)),
-                            }, (() => 0))
-
-                            const assetZeroesStartGrid = buildZeroGridData(zeroesAtStart)
-                            const assetZeroesEndGrid = buildZeroGridData(zeroesAtEnd)
                             const newGridData = buildGridData(timeSeries[i])
 
                             const alignedAssetGridData = new Array(newGridData[0])
@@ -91,32 +75,8 @@ const TimeSeries = ({
         }
     }
 
-    const createNewGridWithReadOnlyData = (j: any) => {
-        if (tableFirstYear && tableLastYear && readOnlyTimeSeries !== undefined) {
-            const colYears = []
-            for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
-                colYears.push(c.toString())
-            }
-            setColumns(colYears)
-            const newGridData = buildGridData(readOnlyTimeSeries[j])
-            const alignedAssetGridData = new Array(newGridData[0])
-            combinedEmptyTimeseries.push(alignedAssetGridData)
-            console.log(combinedEmptyTimeseries)
-            setGridData(combinedEmptyTimeseries)
-            setHasChanges(true)
-        }
-    }
-
     useEffect(() => {
         buildAlignedGrid(combinedTimeseries!)
-
-        if (timeSeries[0] === undefined && readOnlyTimeSeries.length !== 0) {
-            for (let i = 0; i < readOnlyTimeSeries?.length; i += 1) {
-                if (readOnlyTimeSeries[i] !== undefined && readOnlyTimeSeries[i]?.values?.length !== 0) {
-                    // createNewGridWithReadOnlyData(i)
-                }
-            }
-        }
 
         if (gridData !== undefined && isValidYear(firstYear) && isValidYear(lastYear) && firstYear && lastYear
             && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER
@@ -149,15 +109,10 @@ const TimeSeries = ({
             const alignedAssetGridData = new Array(newGridData)
             combinedTimeseries.push(alignedAssetGridData)
         }
-        console.log(combinedEmptyTimeseries)
         setGridData(combinedEmptyTimeseries)
         setHasChanges(true)
     }
 
-    const NewTableFirstYearSmallerThanProfileFirstYear = (j: any) => tableFirstYear
-        < (Number(timeSeries[j]?.startYear!) + Number(dG4Year))
-    const NewTableLastYearGreaterThanProfileLastYear = (colYears: any, newTimeSeries: ITimeSeries) => (tableLastYear)
-        > (Number(colYears[0]) + Number(newTimeSeries.values!.length))
     const NewTableLastYearSmallerThanProfileLastYear = (j: any, colYears: any) => tableLastYear
         < (Number(colYears[0]) + Number(timeSeries[j]?.values!.length))
     const NewTableFirstYearGreaterThanProfileFirstYear = (j: any) => tableFirstYear
@@ -173,21 +128,6 @@ const TimeSeries = ({
             setColumns(colYears)
             newTimeSeries.name = profileName[j]
             newTimeSeries.startYear = timeSeries[j]?.startYear
-
-            console.log(columns)
-
-            if (NewTableFirstYearSmallerThanProfileFirstYear(j)) {
-                setYearsBeforeStartYear(true)
-                // newTimeSeries.startYear = tableFirstYear - dG4Year
-                // newTimeSeries.values = new Array(colYears.length - newTimeSeries.values!.length)
-                //     .fill(null).concat(newTimeSeries.values) ?? []
-            }
-
-            if (NewTableLastYearGreaterThanProfileLastYear(colYears, newTimeSeries)) {
-                setYearsAfterEndYear(true)
-                // newTimeSeries.values = (newTimeSeries.values)
-                //     ?.concat(new Array(colYears.length - Number(timeSeries[j]?.values?.length)).fill(null)) ?? []
-            }
 
             if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
                 const yearDifference = (Number(colYears[0]) + Number(timeSeries[j]?.values?.length) - 1) - tableLastYear
@@ -218,7 +158,6 @@ const TimeSeries = ({
             }
             setColumns(colYears)
 
-            console.log(timeSeries)
             if (timeSeries[0] === undefined) {
                 for (let i = 0; i < timeSeries?.length!; i += 1) {
                     createEmptyGrid(i)
@@ -269,10 +208,6 @@ const TimeSeries = ({
                     profileType={profileType}
                     readOnlyTimeSeries={readOnlyTimeSeries}
                     readOnlyName={readOnlyName}
-                    yearsBeforeStartYear={yearsBeforeStartYear}
-                    yearsAfterEndYear={yearsAfterEndYear}
-                    tableFirstYear={tableFirstYear}
-                    tableLastYear={tableLastYear}
                 />
             </WrapperColumn>
         </>
