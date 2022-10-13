@@ -27,4 +27,5 @@ public class ProjectDto
     public ICollection<TransportDto>? Transports { get; set; }
     public ICollection<DrainageStrategyDto>? DrainageStrategies { get; set; }
     public ICollection<WellProjectDto>? WellProjects { get; set; }
+    public string? SharepointSiteUrl { get; set; }
 }

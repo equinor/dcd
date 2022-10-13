@@ -35,6 +35,7 @@ export class Project implements Components.Schemas.ProjectDto {
     wells?: Well[] | undefined
     explorationWellCosts?: ExplorationOperationalWellCosts
     developmentWellCosts?: DevelopmentOperationalWellCosts
+    sharepointSiteUrl?: string | null
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
@@ -60,6 +61,7 @@ export class Project implements Components.Schemas.ProjectDto {
         this.wells = data.wells?.map(Well.fromJSON) ?? []
         this.explorationWellCosts = ExplorationOperationalWellCosts.fromJSON(data.explorationOperationalWellCosts)
         this.developmentWellCosts = DevelopmentOperationalWellCosts.fromJSON(data.developmentOperationalWellCosts)
+        this.sharepointSiteUrl = data.sharepointSiteUrl
     }
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {

@@ -44,7 +44,7 @@ public class ExplorationWellService
             _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
         }
 
-        var exploration = _context.Explorations!.Include(wp => wp.CostProfile).Include(wp => wp.ExplorationWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.ExplorationId);
+        var exploration = _context.Explorations!.Include(wp => wp.CostProfile).Include(wp => wp.CountryOfficeCost).Include(wp => wp.SeismicAcquisitionAndProcessing).Include(wp => wp.ExplorationWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.ExplorationId);
         _explorationService.CalculateCostProfile(exploration, existing, null);
 
         _context.ExplorationWell!.Update(existing);

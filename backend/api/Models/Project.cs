@@ -27,6 +27,7 @@ public class Project
     public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
     public ICollection<WellProject>? WellProjects { get; set; }
     public ICollection<Exploration>? Explorations { get; set; }
+    public string? SharepointSiteUrl { get; set; }
 }
 
 public enum PhysUnit
@@ -34,12 +35,13 @@ public enum PhysUnit
     SI,
     OilField
 }
+
 public enum Currency
 {
     NOK = 1,
-    USD = 2,
-
+    USD = 2
 }
+
 public enum ProjectPhase
 {
     Null,

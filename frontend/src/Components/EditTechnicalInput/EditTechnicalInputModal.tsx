@@ -39,12 +39,11 @@ const InvisibleButton = styled(Button)`
 `
 
 const ModalDiv = styled.div`
-    height: 90%;
+    height: 80%;
     width: 90%;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 80px;
+    left: 3%;
     padding: 50px;
     z-index: 1000;
     background-color: white;
@@ -55,7 +54,7 @@ type Props = {
     toggleEditTechnicalInputModal: any
     isOpen: boolean
     setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project
+    project: Project,
 }
 
 export const EditTechnicalInputModal: FunctionComponent<Props> = ({

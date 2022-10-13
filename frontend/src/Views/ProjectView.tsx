@@ -22,7 +22,7 @@ import { Case } from "../models/case/Case"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
-import { EditProjectInputModal } from "../Components/EditProjectInput/EditProjectInputModal"
+import { EditTechnicalInputModal } from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -65,17 +65,18 @@ const ProjectView = () => {
 
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
+    const [caseItem, setCase] = useState<Case>()
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
-
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const [element, setElement] = useState<HTMLButtonElement>()
 
     const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
 
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(true)
+
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     useEffect(() => {
         (async () => {
@@ -120,11 +121,6 @@ const ProjectView = () => {
 
     const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
-    const onMoreClick = (target: any) => {
-        setElement(target)
-        setIsMenuOpen(!isMenuOpen)
-    }
-
     if (!project || project.id === "") {
         return (
             <p>Retrieving project</p>
@@ -136,12 +132,13 @@ const ProjectView = () => {
             <TopWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
                 <TransparentButton
-                    onClick={() => toggleEditTechnicalInputModal()}
+                    onClick={toggleEditProjectModal}
                 >
                     Edit technical input
                 </TransparentButton>
                 <InvisibleButton
-                    onClick={(e) => onMoreClick(e.target)}
+                    ref={setMenuAnchorEl}
+                    onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
                 >
                     <Icon data={more_vertical} />
                 </InvisibleButton>
@@ -149,7 +146,7 @@ const ProjectView = () => {
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}
-                anchorEl={element}
+                anchorEl={menuAnchorEl}
                 onClose={() => setIsMenuOpen(false)}
                 placement="bottom"
             >

@@ -3,7 +3,7 @@ import styled from "styled-components"
 import {
     Button, Dialog, Input, Typography,
 } from "@equinor/eds-core-react"
-import { useParams } from "react-router"
+import { useParams } from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import { Case } from "../../models/case/Case"
 import { Project } from "../../models/Project"
@@ -104,7 +104,7 @@ function Import({ onClose, onImport }: Props) {
     }
 
     return (
-        <StyledDialog>
+        <StyledDialog open>
             <Dialog.Title>Import tab separated data from Excel</Dialog.Title>
             <Main>
                 <Typography>Start year relative to DG4</Typography>

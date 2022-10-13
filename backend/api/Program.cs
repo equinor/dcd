@@ -7,16 +7,14 @@ using Api.Services.FusionIntegration;
 
 using Azure.Identity;
 
-using Equinor.TI.CommonLibrary.Client;
-
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -35,14 +33,7 @@ configBuilder.AddAzureAppConfiguration(options =>
 );
 var config = configBuilder.Build();
 builder.Configuration.AddConfiguration(config);
-
-var commonLibTokenConnection = CommonLibraryService.BuildTokenConnectionString(
-    config["AzureAd:ClientId"],
-    config["AzureAd:TenantId"],
-    config["AzureAd:ClientSecret"]);
-
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"))
     .EnableTokenAcquisitionToCallDownstreamApi()
@@ -108,10 +99,14 @@ var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 };
 
 if (environment == "localdev")
+{
     builder.Services.AddDbContext<DcdDbContext>(options =>
-        options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+            options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+}
 else
+{
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
+}
 
 builder.Services.AddFusionIntegration(options =>
 {
@@ -120,6 +115,9 @@ builder.Services.AddFusionIntegration(options =>
         "dev" => "CI",
         "qa" => "FQA",
         "prod" => "FPRD",
+        "radix-prod" => "FPRD",
+        "radix-qa" => "FQA",
+        "radix-dev" => "CI",
         _ => "CI"
     };
 
@@ -154,9 +152,10 @@ builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
 builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
-builder.Services.AddScoped(_ => new CommonLibraryClientOptions
-{ TokenProviderConnectionString = commonLibTokenConnection });
-builder.Services.AddScoped<CommonLibraryService>();
+builder.Services.AddScoped<GenerateOpexCostProfile>();
+builder.Services.AddScoped<GenerateStudyCostProfile>();
+builder.Services.AddScoped<GenerateGAndGAdminCostProfile>();
+builder.Services.AddScoped<GenerateCessationCostProfile>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
@@ -167,16 +166,15 @@ builder.Services.AddControllers(
 );
 builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Fom Program, running the host now");
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -184,7 +182,5 @@ if (app.Environment.IsDevelopment())
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

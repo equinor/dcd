@@ -2,7 +2,7 @@ import { Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
@@ -195,6 +195,21 @@ const TopsideView = () => {
         cO2OnMaxWaterInjectionProfile, approvedBy, facilitiesAvailability, artificialLift,
         producerCount, gasInjectorCount, waterInjectorCount, fuelConsumption, flaredGas, dG3Date, dG4Date,
         facilityOpex])
+
+    const setAllStates = (timeSeries: any) => {
+        if (timeSeries) {
+            if (timeSeries.name === "Cost profile") {
+                setCostProfile(timeSeries)
+            }
+            if (timeSeries.name === "Cessation cost profile") {
+                setCessationCostProfile(timeSeries)
+            }
+        }
+    }
+
+    if (!topside || !caseItem) {
+        return null
+    }
 
     return (
         <AssetViewDiv>
@@ -406,26 +421,15 @@ const TopsideView = () => {
                 setHasChanges={setHasChanges}
             />
             <TimeSeries
-                dG4Year={topside?.source === 1 ? topside.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
+                dG4Year={topside.source === 1 ? topside.DG4Date!.getFullYear() : caseItem.DG4Date!.getFullYear()}
+                setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                timeSeries={[costProfile, cessationCostProfile]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={topside?.source === 1 ? topside.DG4Date?.getFullYear() : caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
+                profileName={["Cost profile", "Cessation cost profile"]}
+                profileEnum={project?.currency!}
+                profileType="Cost"
             />
         </AssetViewDiv>
     )

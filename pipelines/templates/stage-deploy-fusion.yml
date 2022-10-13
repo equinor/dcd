@@ -151,6 +151,12 @@ stages:
           - job: AddDbMigrations_${{ parameters.envshortname }}
             dependsOn: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             steps:
+              - task: PowerShell@2
+                displayName: Update env variabel in Azure Devops to ${{ parameters.envshortname }}
+                inputs:
+                    targetType: "inline"
+                    script: |
+                        Write-Host "##vso[task.setvariable variable=AppConfiguration.Environment;]${{ parameters.envshortname }}"
               - task: FileTransform@1
                 inputs:
                   folderPath: '$(Build.SourcesDirectory)/backend/api' 

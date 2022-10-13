@@ -4,7 +4,7 @@ import {
 import { useEffect, useState } from "react"
 import {
     useParams,
-} from "react-router"
+} from "react-router-dom"
 import styled from "styled-components"
 import { useCurrentContext } from "@equinor/fusion"
 import { Exploration } from "../models/assets/exploration/Exploration"
@@ -12,24 +12,21 @@ import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-import {
-    AssetViewDiv, Wrapper,
-} from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import { unwrapCase } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
-import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
 import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
-import ExplorationCaseAsset from "./ExplorationCaseAsset"
 import { IAssetService } from "../Services/IAssetService"
-import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { GetCaseService } from "../Services/CaseService"
 import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { AssetViewDiv, Wrapper } from "./Asset/StyledAssetComponents"
+import ExplorationCaseAsset from "./ExplorationCaseAsset"
 
 const RowWrapper = styled.div`
     margin: 1rem;
@@ -156,7 +153,7 @@ const ExplorationViewTab = ({
         }
     }, [rigMobDemob, costProfile, gAndGAdminCost, currency])
 
-    if (!project) { return null }
+    if (!project || !exploration || !caseItem) { return null }
 
     return (
         <RowWrapper>
@@ -192,15 +189,15 @@ const ExplorationViewTab = ({
                     />
                 </Wrapper>
                 <TimeSeries
-                    dG4Year={caseItem?.DG4Date?.getFullYear()}
+                    dG4Year={caseItem.DG4Date!.getFullYear()}
                     setTimeSeries={setCostProfile}
                     setHasChanges={setHasChanges}
-                    timeSeries={costProfile}
-                    timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                    timeSeries={[costProfile]}
                     firstYear={firstTSYear!}
                     lastYear={lastTSYear!}
-                    setFirstYear={setFirstTSYear!}
-                    setLastYear={setLastTSYear}
+                    profileName={["Cost profile"]}
+                    profileEnum={project?.currency!}
+                    profileType="Cost"
                 />
                 <ReadOnlyCostProfile
                     dG4Year={caseItem?.DG4Date?.getFullYear()}

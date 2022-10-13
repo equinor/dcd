@@ -21,6 +21,7 @@ public static class ProjectAdapter
             Currency = projectDto.Currency,
             PhysicalUnit = projectDto.PhysUnit,
             Id = projectDto.ProjectId,
+            SharepointSiteUrl = projectDto.SharepointSiteUrl
         };
 
         project.ExplorationOperationalWellCosts = ExplorationOperationalWellCostsAdapter.Convert(projectDto.ExplorationOperationalWellCosts);

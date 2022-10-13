@@ -81,11 +81,12 @@ function CaseView() {
     const currentProject = useCurrentContext()
     const [opex, setOpex] = useState<OpexCostProfile>()
     const [study, setStudy] = useState<StudyCostProfile>()
+    const [cessation, setCessation] = useState<StudyCostProfile>()
 
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
-    const [element, setElement] = useState<HTMLButtonElement>()
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
@@ -108,18 +109,27 @@ function CaseView() {
             if (project !== undefined) {
                 const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
                 setCase(caseResult)
-                const generatedGAndGAdminCost = await (await GetCaseService()).generateOpexCost(caseResult.id!)
-                setOpex(generatedGAndGAdminCost)
-                const generateStudy = await (await GetCaseService()).generateStudyCost(caseResult.id!)
-                setStudy(generateStudy)
+                try {
+                    const generatedOpexCost = await (await GetCaseService()).generateOpexCost(caseResult.id!)
+                    setOpex(generatedOpexCost)
+                } catch (error) {
+                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                }
+                try {
+                    const generateStudy = await (await GetCaseService()).generateStudyCost(caseResult.id!)
+                    setStudy(generateStudy)
+                } catch (error) {
+                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                }
+                try {
+                    const generateCessation = await (await GetCaseService()).generateCessationCost(caseResult.id!)
+                    setCessation(generateCessation)
+                } catch (error) {
+                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                }
             }
         })()
     }, [project])
-
-    const onMoreClick = (target: any) => {
-        setElement(target)
-        setIsMenuOpen(!isMenuOpen)
-    }
 
     if (!project) return null
     if (!caseItem) return null
@@ -134,7 +144,8 @@ function CaseView() {
                     Edit technical input
                 </TransparentButton>
                 <InvisibleButton
-                    onClick={(e) => onMoreClick(e.target)}
+                    ref={setMenuAnchorEl}
+                    onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
                 >
                     <Icon data={more_vertical} />
                 </InvisibleButton>
@@ -142,7 +153,7 @@ function CaseView() {
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}
-                anchorEl={element}
+                anchorEl={menuAnchorEl}
                 onClose={() => setIsMenuOpen(false)}
                 placement="bottom"
             >
@@ -233,7 +244,7 @@ function CaseView() {
                 </Tabs>
                 <ReadOnlyCostProfile
                     dG4Year={caseItem.DG4Date?.getFullYear()}
-                    timeSeries={caseItem.cessationCost}
+                    timeSeries={cessation}
                     title="Cessation cost profile"
                 />
                 <ReadOnlyCostProfile
