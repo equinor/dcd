@@ -1,14 +1,14 @@
 import { Typography } from "@material-ui/core"
-import React, {
+import {
     Dispatch, MouseEventHandler, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
 import { Button, Input, Label } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
-import PROSPCaseList from "./PROSPCaseList"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
+import PROSPCaseList from "./PROSPCaseList"
 
 const ProspFieldWrapper = styled.div`
     margin-bottom: 2.5rem;
@@ -67,6 +67,7 @@ function PROSPTab({
             console.error("[PROSPTab] error while submitting form data", error)
         }
     }
+
     return (
         <div color="yellow">
             <TopWrapper color="danger">
@@ -82,7 +83,6 @@ function PROSPTab({
                 />
                 <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
             </ProspFieldWrapper>
-
             <PROSPCaseList
                 project={project}
                 setProject={setProject}
