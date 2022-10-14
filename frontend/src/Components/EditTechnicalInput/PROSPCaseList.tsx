@@ -186,7 +186,7 @@ function PROSPCaseList({
         gridRef.current = params.api
     }
 
-    const gridDataToDtos = () => {
+    const gridDataToDtos = (p: Project) => {
         const dtos: any[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
             const dto: any = {}
@@ -196,7 +196,7 @@ function PROSPCaseList({
                 (di) => di.sharepointIds === dto.sharePointFileId,
             )?.name ?? ""
 
-            dto.sharePointSiteUrl = project.sharepointSiteUrl
+            dto.sharePointSiteUrl = p.sharepointSiteUrl
             dto.id = node.data?.id
             dto.surf = node.data?.surfState === ImportStatusEnum.Selected
             dto.substructure = node.data?.substructureState === ImportStatusEnum.Selected
@@ -207,9 +207,9 @@ function PROSPCaseList({
         return dtos
     }
 
-    const save = useCallback(async () => {
-        const dtos = gridDataToDtos()
-        const newProject = await (await GetProspService()).importFromSharepoint(project.id!, dtos)
+    const save = useCallback(async (p: Project) => {
+        const dtos = gridDataToDtos(p)
+        const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
         setProject(newProject)
     }, [])
 
@@ -232,7 +232,7 @@ function PROSPCaseList({
                 />
             </div>
             <Button
-                onClick={save}
+                onClick={() => save(project)}
             >
                 Save
             </Button>
