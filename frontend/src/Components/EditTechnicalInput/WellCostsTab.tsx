@@ -19,13 +19,14 @@ const RowWrapper = styled.div`
 `
 
 const ColumnWrapper = styled.div`
+    width: 50%;
     display: flex;
     flex-direction: column;
 `
 
 const WellListWrapper = styled.div`
     margin-bottom: 20px;
-    width: 500px;
+    margin-right: 50px;
 `
 
 interface Props {
@@ -45,12 +46,9 @@ interface Props {
 }
 
 const WellCostsTab = ({
-    project,
-    setProject,
-    developmentOperationalWellCosts,
-    setDevelopmentOperationalWellCosts,
-    explorationOperationalWellCosts,
-    setExplorationOperationalWellCosts,
+    project, setProject,
+    developmentOperationalWellCosts, setDevelopmentOperationalWellCosts,
+    explorationOperationalWellCosts, setExplorationOperationalWellCosts,
     wellProjectWells, setWellProjectWells,
     explorationWells, setExplorationWells,
 }: Props) => (

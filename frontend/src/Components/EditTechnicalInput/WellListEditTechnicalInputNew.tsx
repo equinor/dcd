@@ -7,6 +7,12 @@ import { AgGridReact } from "ag-grid-react"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import "ag-grid-enterprise"
+import styled from "styled-components"
+
+const ButtonWrapper = styled.div`
+    margin-top: 20px;
+    margin-bottom: 40px;
+`
 
 interface Props {
     project: Project
@@ -134,7 +140,7 @@ function WellListEditTechnicalInputNew({
             field: "name", sort: order, width: 110,
         },
         {
-            field: "wellCategory", headerName: "Well type", cellRenderer: wellCategoryRenderer, width: 180,
+            field: "wellCategory", headerName: "Well type", cellRenderer: wellCategoryRenderer, width: 250,
         },
         {
             field: "drillingDays", width: 110,
@@ -175,10 +181,12 @@ function WellListEditTechnicalInputNew({
                     onGridReady={onGridReady}
                 />
             </div>
-            <Button onClick={CreateWell} variant="outlined">
-                {explorationWells
-                    ? "Add new exploration well type" : "Add new development/drilling well type"}
-            </Button>
+            <ButtonWrapper>
+                <Button onClick={CreateWell} variant="outlined">
+                    {explorationWells
+                        ? "+   Add new exploration well type" : "+   Add new development/drilling well type"}
+                </Button>
+            </ButtonWrapper>
         </>
     )
 }

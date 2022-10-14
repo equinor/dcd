@@ -48,6 +48,23 @@ const ModalDiv = styled.div`
     z-index: 1000;
     background-color: white;
     border: 2px solid gray;
+    overflow-y: auto;
+`
+
+const Wrapper = styled.div`
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+`
+
+const ButtonsWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+`
+
+const CancelButton = styled(Button)`
+    margin-right: 20px;
 `
 
 type Props = {
@@ -160,7 +177,7 @@ const EditTechnicalInputModal = ({
                 <TopWrapper>
                     <Typography variant="h2">Edit Technical Input</Typography>
                     <InvisibleButton
-                        onClick={() => toggleEditTechnicalInputModal()}
+                        onClick={toggleEditTechnicalInputModal}
                     >
                         <Icon
                             color="gray"
@@ -193,7 +210,18 @@ const EditTechnicalInputModal = ({
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
-                <Button onClick={handleSave}>Save</Button>
+                <Wrapper>
+                    <ButtonsWrapper>
+                        <CancelButton
+                            type="button"
+                            variant="outlined"
+                            onClick={toggleEditTechnicalInputModal}
+                        >
+                            Cancel
+                        </CancelButton>
+                        <Button onClick={handleSave}>Save</Button>
+                    </ButtonsWrapper>
+                </Wrapper>
             </ModalDiv>
         </>
     )
