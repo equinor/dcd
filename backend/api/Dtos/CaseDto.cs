@@ -48,10 +48,6 @@ public class StudyCostProfileDto : TimeSeriesCostDto
 {
 }
 
-public class CO2EmissionCostProfileDto : TimeSeriesCostDto
-{
-}
-
 public class CapexYear
 {
     public double[]? Values { get; set; }

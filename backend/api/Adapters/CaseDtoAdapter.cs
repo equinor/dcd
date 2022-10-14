@@ -91,21 +91,4 @@ public static class CaseDtoAdapter
             Values = studyCost.Values
         };
     }
-
-    public static CO2EmissionCostProfileDto Convert(CO2EmissionCostProfile? co2Emission)
-    {
-        if (co2Emission == null)
-        {
-            return null!;
-        }
-
-        return new CO2EmissionCostProfileDto
-        {
-            Id = co2Emission.Id,
-            Currency = co2Emission.Currency,
-            EPAVersion = co2Emission.EPAVersion,
-            StartYear = co2Emission.StartYear,
-            Values = co2Emission.Values
-        };
-    }
 }

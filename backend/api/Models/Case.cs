@@ -65,7 +65,3 @@ public class OpexCostProfile : TimeSeriesCost
 public class StudyCostProfile : TimeSeriesCost
 {
 }
-
-public class CO2EmissionCostProfile : TimeSeriesCost
-{
-}
