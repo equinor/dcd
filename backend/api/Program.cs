@@ -1,6 +1,7 @@
 using api.Context;
 using api.SampleData.Generators;
 using api.Services;
+using api.Services.GenerateCostProfiles;
 
 using Api.Services.FusionIntegration;
 
@@ -26,7 +27,7 @@ configBuilder.AddAzureAppConfiguration(options =>
     options
         .Connect(azureAppConfigConnectionString)
         .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential(new DefaultAzureCredentialOptions
-            { ExcludeSharedTokenCacheCredential = true })))
+        { ExcludeSharedTokenCacheCredential = true })))
         .Select(KeyFilter.Any)
         .Select(KeyFilter.Any, environment)
 );
@@ -50,7 +51,7 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
     {
         DbContextOptionsBuilder<DcdDbContext> dBbuilder = new();
         _sqlConnectionString = new SqliteConnectionStringBuilder
-                { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }
+        { DataSource = "file::memory:", Mode = SqliteOpenMode.ReadWriteCreate, Cache = SqliteCacheMode.Shared }
             .ToString();
 
         SqliteConnection _connectionToInMemorySqlite = new(_sqlConnectionString);
@@ -151,7 +152,7 @@ builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
-builder.Services.AddScoped<GenerateCO2EmissionCostProfile>();
+builder.Services.AddScoped<GenerateEmissionsProfile>();
 builder.Services.AddScoped<GenerateGAndGAdminCostProfile>();
 builder.Services.AddScoped<GenerateCessationCostProfile>();
 builder.Services.AddScoped<STEAService>();
