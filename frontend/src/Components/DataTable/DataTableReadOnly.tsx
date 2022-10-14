@@ -114,6 +114,10 @@ function DataTableReadOnly({
                         .reduce((x: number, y: number) => x + y))
                     totalValue.push(readOnlyObjValSum[i])
                 }
+                if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length === 0) {
+                    readOnlyObjValSum.push(0)
+                    totalValue.push(readOnlyObjValSum[i])
+                }
 
                 const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values!
                 const rowObj = generateTimeSeriesYears(i, dG4Year)

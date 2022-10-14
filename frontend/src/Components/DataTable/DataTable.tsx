@@ -123,7 +123,7 @@ function DataTable({
         objVal: string[],
         value: object[],
     ) => {
-        if (timeSeries[0] === undefined && readOnlyTimeSeries.length === 0) {
+        if (timeSeries.every((x) => x === undefined) && readOnlyTimeSeries.length === 0) {
             for (let j = 0; j < profileName.length; j += 1) {
                 const rowPinned = { Profile: profileName[j], Unit: setUnit(j), ReadOnly: false }
                 const rowObj = objKey
