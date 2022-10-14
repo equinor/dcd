@@ -35,6 +35,7 @@ public class Case
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
 }
+
 public enum ArtificialLift
 {
     NoArtificialLift,
