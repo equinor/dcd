@@ -1,5 +1,6 @@
 import { Typography } from "@material-ui/core"
 import {
+    ChangeEventHandler,
     Dispatch, MouseEventHandler, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
@@ -56,7 +57,7 @@ function PROSPTab({
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
             if (sharepointUrl !== project.sharepointSiteUrl) {
-                const newProject:Project = { ...project }
+                const newProject: Project = { ...project }
                 newProject.sharepointSiteUrl = sharepointUrl
                 const projectResult = await (await GetProjectService()).updateProject(newProject)
                 setProject(projectResult)
@@ -66,6 +67,10 @@ function PROSPTab({
         } catch (error) {
             console.error("[PROSPTab] error while submitting form data", error)
         }
+    }
+
+    const handleSharePointUrl: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setSharepointUrl(e.currentTarget.value)
     }
 
     return (
@@ -78,7 +83,7 @@ function PROSPTab({
                 <Input
                     id="textfield-normal"
                     placeholder="Paste Uri here"
-                    onChange={(e) => setSharepointUrl(e.currentTarget.value)}
+                    onChange={handleSharePointUrl}
                     value={sharepointUrl}
                 />
                 <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
