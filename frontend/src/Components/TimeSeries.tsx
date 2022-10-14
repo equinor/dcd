@@ -52,7 +52,7 @@ const TimeSeries = ({
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
         if (timeSeries !== undefined) {
             if (timeSeries[0] !== undefined && updatedTimeSeries !== undefined) {
-                for (let i = 0; i < timeSeries[i]?.values?.length!; i += 1) {
+                for (let i = 0; i < timeSeries.length; i += 1) {
                     if (timeSeries[i] !== undefined) {
                         if (updatedTimeSeries !== undefined && timeSeries[i] !== undefined) {
                             const columnTitles: string[] = []
@@ -113,8 +113,8 @@ const TimeSeries = ({
         setHasChanges(true)
     }
 
-    const NewTableLastYearSmallerThanProfileLastYear = (j: any, colYears: any) => tableLastYear
-        < (Number(colYears[0]) + Number(timeSeries[j]?.values!.length))
+    const NewTableLastYearSmallerThanProfileLastYear = (j: any) => tableLastYear
+        < (Number(dG4Year) + Number(timeSeries[j]?.startYear) + Number(timeSeries[j]?.values!.length))
     const NewTableFirstYearGreaterThanProfileFirstYear = (j: any) => tableFirstYear
         > (Number(timeSeries[j]?.startYear!) + Number(dG4Year))
 
@@ -129,8 +129,9 @@ const TimeSeries = ({
             newTimeSeries.name = profileName[j]
             newTimeSeries.startYear = timeSeries[j]?.startYear
 
-            if (NewTableLastYearSmallerThanProfileLastYear(j, colYears)) {
-                const yearDifference = (Number(colYears[0]) + Number(timeSeries[j]?.values?.length) - 1) - tableLastYear
+            if (NewTableLastYearSmallerThanProfileLastYear(j)) {
+                const yearDifference = (Number(dG4Year) + Number(timeSeries[j]?.startYear)
+                + Number(timeSeries[j]?.values!.length) - 1) - tableLastYear
                 newTimeSeries.values = timeSeries[j]?.values?.slice(0, -yearDifference) ?? []
             }
 
