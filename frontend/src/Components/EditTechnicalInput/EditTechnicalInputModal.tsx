@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import {
-    Dispatch, FunctionComponent, SetStateAction, useEffect, useState,
+    Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
 import {
@@ -12,14 +12,11 @@ import { Project } from "../../models/Project"
 import PROSPTab from "./PROSPTab"
 import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
 import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
-import { ExplorationWell } from "../../models/ExplorationWell"
-import { WellProjectWell } from "../../models/WellProjectWell"
 import { GetExplorationOperationalWellCostsService } from "../../Services/ExplorationOperationalWellCostsService"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { GetDevelopmentOperationalWellCostsService } from "../../Services/DevelopmentOperationalWellCostsService"
 import { Well } from "../../models/Well"
 import { IsExplorationWell } from "../../Utils/common"
-import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
 import { GetWellService } from "../../Services/WellService"
 
 const { Panel } = Tabs
@@ -67,8 +64,7 @@ const EditTechnicalInputModal = ({
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts | undefined>(project.developmentWellCosts)
     const [wellProjectWells, setWellProjectWells] = useState<Well[] | undefined>(project?.wells?.filter((w) => !IsExplorationWell(w)))
-    const [explorationWells, setExplorationWells] = useState<Well[] | undefined>([])
-    // const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
+    const [explorationWells, setExplorationWells] = useState<Well[] | undefined>(project?.wells?.filter((w) => IsExplorationWell(w)))
 
     useEffect(() => {
         (async () => {
@@ -84,7 +80,6 @@ const EditTechnicalInputModal = ({
                     setDevelopmentOperationalWellCosts(res)
                 }
             } catch (error) {
-                // eslint-disable-next-line max-len
                 console.error()
             }
         })()
@@ -108,9 +103,30 @@ const EditTechnicalInputModal = ({
         if (!wells || wells.length === 0) {
             return []
         }
-        // console.log("wells in wellsToWellsDto: ", wells)
         const wellsDto: Components.Schemas.WellDto[] = wells?.map((w) => Well.toDto(w)) ?? []
         return wellsDto
+    }
+
+    const saveWellProjectWells = async () => {
+        const newWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id === EMPTY_GUID)
+        const updatedWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id !== EMPTY_GUID)
+
+        const newWellProjectWellsResult = await (await GetWellService()).createMultipleWells(newWellProjectWells)
+
+        const wellProjectWellsResult = await (await GetWellService()).updateMultipleWells(updatedWellProjectWells)
+        const filteredWellProjectWellsResult = wellProjectWellsResult.filter((w: any) => !IsExplorationWell(w))
+        setWellProjectWells(filteredWellProjectWellsResult)
+    }
+
+    const saveExplorationWells = async () => {
+        const newExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id === EMPTY_GUID)
+        const updatedExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id !== EMPTY_GUID)
+
+        const newExplorationWellsResult = await (await GetWellService()).createMultipleWells(newExplorationWells)
+
+        const explorationWellsResult = await (await GetWellService()).updateMultipleWells(updatedExplorationWells)
+        const filteredExplorationWellsResult = explorationWellsResult.filter((w: any) => IsExplorationWell(w))
+        setExplorationWells(filteredExplorationWellsResult)
     }
 
     const handleSave = async () => {
@@ -123,21 +139,9 @@ const EditTechnicalInputModal = ({
         setDevelopmentOperationalWellCosts(res)
         // }
 
-        const newWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id === EMPTY_GUID)
-        const updatedWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id !== EMPTY_GUID)
+        await saveWellProjectWells()
 
-        const newWellProjectWellsResult = await (await GetWellService()).createMultipleWells(newWellProjectWells)
-
-        const wellProjectWellsResult = await (await GetWellService()).updateMultipleWells(updatedWellProjectWells)
-        setWellProjectWells(wellProjectWellsResult)
-
-        const newExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id === EMPTY_GUID)
-        const updatedExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id !== EMPTY_GUID)
-
-        const newExplorationWellsResult = await (await GetWellService()).createMultipleWells(newExplorationWells)
-
-        const explorationWellsResult = await (await GetWellService()).updateMultipleWells(updatedExplorationWells)
-        setWellProjectWells(explorationWellsResult)
+        await saveExplorationWells()
     }
 
     return (

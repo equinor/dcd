@@ -1,14 +1,10 @@
-import { Typography } from "@material-ui/core"
-import React, { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from "react"
 import styled from "styled-components"
 import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
 import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
-// import DevelopmentOperationalWellCost from "./DevelopmentOperationalWellCost"
-// import DevelopmentOperationalWellCosts from "./DevelopmentOperationalWellCosts"
 import OperationalWellCosts from "./OperationalWellCosts"
-import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
 import WellListEditTechnicalInputNew from "./WellListEditTechnicalInputNew"
 
 const TopWrapper = styled.div`
@@ -58,20 +54,18 @@ const WellCostsTab = ({
     wellProjectWells, setWellProjectWells,
     explorationWells, setExplorationWells,
 }: Props) => (
-
-    <div>
-        <TopWrapper color="danger" />
+    <>
+        <TopWrapper />
         <RowWrapper>
             <ColumnWrapper>
                 <WellListWrapper>
-                    <WellListEditTechnicalInput
+                    <WellListEditTechnicalInputNew
                         project={project}
                         setProject={setProject}
                         explorationWells
                         setWells={setExplorationWells}
                         wells={explorationWells}
                     />
-
                 </WellListWrapper>
             </ColumnWrapper>
             <ColumnWrapper>
@@ -80,9 +74,7 @@ const WellCostsTab = ({
                     developmentOperationalWellCosts={developmentOperationalWellCosts}
                     setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
                 />
-
             </ColumnWrapper>
-
         </RowWrapper>
         <RowWrapper>
             <ColumnWrapper>
@@ -94,25 +86,17 @@ const WellCostsTab = ({
                         setWells={setWellProjectWells}
                         wells={wellProjectWells}
                     />
-
                 </WellListWrapper>
-
             </ColumnWrapper>
-
             <ColumnWrapper>
                 <OperationalWellCosts
                     title="Development costs"
                     explorationOperationalWellCosts={explorationOperationalWellCosts}
                     setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
                 />
-
             </ColumnWrapper>
-
         </RowWrapper>
-        {/* <DevelopmentOperationalWellCosts project={project} setProject={setProject} title="Exploration costs" /> */}
-
-    </div>
-
+    </>
 )
 
 export default WellCostsTab

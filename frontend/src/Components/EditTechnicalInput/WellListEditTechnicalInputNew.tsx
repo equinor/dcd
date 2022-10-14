@@ -1,16 +1,11 @@
-import { Button, NativeSelect, Table } from "@equinor/eds-core-react"
+import { Button, NativeSelect } from "@equinor/eds-core-react"
 import {
     ChangeEvent,
-    ChangeEventHandler,
     Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
-import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
-import { GetWellService } from "../../Services/WellService"
-import { IsExplorationWell } from "../../Utils/common"
-import WellTableRowEditTechnicalInput from "./WellTableRowEditTechnicalInput"
 import "ag-grid-enterprise"
 
 interface Props {
@@ -42,18 +37,18 @@ function WellListEditTechnicalInputNew({
     const [rowData, setRowData] = useState<TableWell[]>()
 
     const wellsToRowData = () => {
-        debugger
         if (wells) {
             const tableWells: TableWell[] = []
             wells.forEach((w) => {
                 const tableWell: TableWell = {
                     id: w.id!,
                     name: w.name ?? "",
-                    wellCategory: w.wellCategory ?? 0,
+                    wellCategory: explorationWells ? 4 : 0,
                     drillingDays: w.drillingDays ?? 0,
                     wellCost: w.wellCost ?? 0,
                     well: w,
                 }
+                if (w.wellCategory) { tableWell.wellCategory = w.wellCategory }
                 tableWells.push(tableWell)
             })
             setRowData(tableWells)
@@ -61,25 +56,20 @@ function WellListEditTechnicalInputNew({
     }
 
     useEffect(() => {
-        console.log("useEffect", wells)
         wellsToRowData()
     }, [wells])
 
     const updateWells = (p: any) => {
         if (wells) {
             const { field } = p.colDef
-            console.log("updateWells p: ", p)
             const index = wells.findIndex((w) => w === p.data.well)
             if (index > -1) {
-                debugger
                 const well = wells[index]
-                const updatedWell = { ...well }
+                const updatedWell = well
                 updatedWell[field as keyof typeof updatedWell] = field === "name" ? p.newValue : Number(p.newValue)
-                console.log(updatedWell)
                 const updatedWells = [...wells]
                 updatedWells[index] = updatedWell
                 setWells(updatedWells)
-                console.log("updatedWells: ", updatedWells)
             }
         }
     }
@@ -98,7 +88,9 @@ function WellListEditTechnicalInputNew({
     }
 
     const wellCategoryRenderer = (p: any) => {
-        const { value } = p
+        debugger
+        const value = Number(p.value)
+        console.log(value)
 
         return (
             <NativeSelect
@@ -153,7 +145,6 @@ function WellListEditTechnicalInputNew({
     ])
 
     const CreateWell = async () => {
-        console.log("Wells in createWell: ", wells)
         const newWell = new Well()
         newWell.wellCategory = !explorationWells ? 0 : 4
         newWell.name = "New well"
