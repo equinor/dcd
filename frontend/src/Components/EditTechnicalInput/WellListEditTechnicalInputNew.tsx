@@ -1,5 +1,7 @@
-import { Button, Table } from "@equinor/eds-core-react"
+import { Button, NativeSelect, Table } from "@equinor/eds-core-react"
 import {
+    ChangeEvent,
+    ChangeEventHandler,
     Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
@@ -14,8 +16,8 @@ import "ag-grid-enterprise"
 interface Props {
     project: Project
     setProject: Dispatch<SetStateAction<Project | undefined>>
-    wells: Well[]
-    setWells: Dispatch<SetStateAction<Well[]>>
+    wells: Well[] | undefined
+    setWells: Dispatch<SetStateAction<Well[] | undefined>>
     explorationWells: boolean
 }
 
@@ -25,6 +27,7 @@ interface TableWell {
     wellCategory: Components.Schemas.WellCategory,
     drillingDays: number,
     wellCost: number,
+    well: Well
 }
 
 function WellListEditTechnicalInputNew({
@@ -39,16 +42,17 @@ function WellListEditTechnicalInputNew({
     const [rowData, setRowData] = useState<TableWell[]>()
 
     const wellsToRowData = () => {
+        debugger
         if (wells) {
             const tableWells: TableWell[] = []
-            wells.forEach((c) => {
+            wells.forEach((w) => {
                 const tableWell: TableWell = {
-                    id: c.id!,
-                    name: c.name ?? "",
-                    wellCategory: c.wellCategory ?? 0,
-                    drillingDays: c.drillingDays ?? 0,
-                    wellCost: c.wellCost ?? 0,
-
+                    id: w.id!,
+                    name: w.name ?? "",
+                    wellCategory: w.wellCategory ?? 0,
+                    drillingDays: w.drillingDays ?? 0,
+                    wellCost: w.wellCost ?? 0,
+                    well: w,
                 }
                 tableWells.push(tableWell)
             })
@@ -61,6 +65,67 @@ function WellListEditTechnicalInputNew({
         wellsToRowData()
     }, [wells])
 
+    const updateWells = (p: any) => {
+        if (wells) {
+            const { field } = p.colDef
+            console.log("updateWells p: ", p)
+            const index = wells.findIndex((w) => w === p.data.well)
+            if (index > -1) {
+                debugger
+                const well = wells[index]
+                const updatedWell = { ...well }
+                updatedWell[field as keyof typeof updatedWell] = field === "name" ? p.newValue : Number(p.newValue)
+                console.log(updatedWell)
+                const updatedWells = [...wells]
+                updatedWells[index] = updatedWell
+                setWells(updatedWells)
+                console.log("updatedWells: ", updatedWells)
+            }
+        }
+    }
+
+    const handleWellCategoryChange = async (
+        e: ChangeEvent<HTMLSelectElement>,
+        p: any,
+    ) => {
+        if ([0, 1, 2, 3, 4, 5, 6, 7].indexOf(Number(e.currentTarget.value)) !== -1) {
+            const newProductionStrategy: Components.Schemas.WellCategory = Number(
+                e.currentTarget.value,
+            ) as Components.Schemas.WellCategory
+
+            p.setValue(newProductionStrategy)
+        }
+    }
+
+    const wellCategoryRenderer = (p: any) => {
+        const { value } = p
+
+        return (
+            <NativeSelect
+                id="wellCategory"
+                label=""
+                value={value}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleWellCategoryChange(e, p)}
+            >
+                {!explorationWells ? (
+                    <>
+                        <option key="0" value={0}>Oil producer</option>
+                        <option key="1" value={1}>Gas producer</option>
+                        <option key="2" value={2}>Water injector</option>
+                        <option key="3" value={3}>Gas Injector</option>
+                    </>
+                )
+                    : (
+                        <>
+                            <option key="4" value={4}>Exploration well</option>
+                            <option key="5" value={5}>Appraisal well</option>
+                            <option key="6" value={6}>Sidetrack</option>
+                        </>
+                    )}
+            </NativeSelect>
+        )
+    }
+
     type SortOrder = "desc" | "asc" | null
     const order: SortOrder = "asc"
 
@@ -68,12 +133,16 @@ function WellListEditTechnicalInputNew({
         sortable: true,
         filter: true,
         resizable: true,
+        editable: true,
+        onCellValueChanged: updateWells,
     }), [])
 
     const [columnDefs] = useState([
-        { field: "name", sort: order },
         {
-            field: "wellCategory", headerName: "Well type", width: 90,
+            field: "name", sort: order, width: 110,
+        },
+        {
+            field: "wellCategory", headerName: "Well type", cellRenderer: wellCategoryRenderer, width: 180,
         },
         {
             field: "drillingDays", width: 110,
@@ -89,15 +158,19 @@ function WellListEditTechnicalInputNew({
         newWell.wellCategory = !explorationWells ? 0 : 4
         newWell.name = "New well"
         newWell.projectId = project.projectId
-        const newWells = [...wells, newWell]
-        setWells(newWells)
+        if (wells) {
+            const newWells = [...wells, newWell]
+            setWells(newWells)
+        } else {
+            setWells([newWell])
+        }
     }
 
     return (
         <>
             <div
                 style={{
-                    display: "flex", flexDirection: "column", width: "45%",
+                    display: "flex", flexDirection: "column", width: "100%",
                 }}
                 className="ag-theme-alpine"
             >

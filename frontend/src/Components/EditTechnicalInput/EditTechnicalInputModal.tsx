@@ -66,7 +66,7 @@ const EditTechnicalInputModal = ({
     const [activeTab, setActiveTab] = useState<number>(0)
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts | undefined>(project.developmentWellCosts)
-    const [wellProjectWells, setWellProjectWells] = useState<Well[]>([])
+    const [wellProjectWells, setWellProjectWells] = useState<Well[] | undefined>(project?.wells?.filter((w) => !IsExplorationWell(w)))
     const [explorationWells, setExplorationWells] = useState<Well[] | undefined>([])
     // const [wells, setWells] = useState<Well[]>(project?.wells ?? [])
 
@@ -104,31 +104,40 @@ const EditTechnicalInputModal = ({
         return null
     }
 
-    const wellsToWellsDto = (wells: Well[] | undefined) => {
-        debugger
+    const wellsToWellsDto = (wells: Well[] | undefined): Components.Schemas.WellDto[] => {
+        if (!wells || wells.length === 0) {
+            return []
+        }
+        // console.log("wells in wellsToWellsDto: ", wells)
         const wellsDto: Components.Schemas.WellDto[] = wells?.map((w) => Well.toDto(w)) ?? []
         return wellsDto
     }
 
     const handleSave = async () => {
-        console.log(wellProjectWells)
         // if (!_.isEqual(project.explorationWellCosts, explorationOperationalWellCosts)) {
         const res1 = await (await GetExplorationOperationalWellCostsService()).update({ ...explorationOperationalWellCosts })
         setExplorationOperationalWellCosts(res1)
-        console.log(res1)
         // }
         // if (!_.isEqual(project.developmentWellCosts, developmentOperationalWellCosts)) {
         const res = await (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
         setDevelopmentOperationalWellCosts(res)
-        console.log(res)
         // }
-        const wellProjectWellsResult = await (await GetWellService()).updateMultipleWells(wellsToWellsDto(wellProjectWells))
-        setWellProjectWells(wellProjectWellsResult)
-        console.log(wellProjectWellsResult)
 
-        const explorationWellsResult = await (await GetWellService()).updateMultipleWells(wellsToWellsDto(explorationWells))
+        const newWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id === EMPTY_GUID)
+        const updatedWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id !== EMPTY_GUID)
+
+        const newWellProjectWellsResult = await (await GetWellService()).createMultipleWells(newWellProjectWells)
+
+        const wellProjectWellsResult = await (await GetWellService()).updateMultipleWells(updatedWellProjectWells)
+        setWellProjectWells(wellProjectWellsResult)
+
+        const newExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id === EMPTY_GUID)
+        const updatedExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id !== EMPTY_GUID)
+
+        const newExplorationWellsResult = await (await GetWellService()).createMultipleWells(newExplorationWells)
+
+        const explorationWellsResult = await (await GetWellService()).updateMultipleWells(updatedExplorationWells)
         setWellProjectWells(explorationWellsResult)
-        console.log(explorationWellsResult)
     }
 
     return (

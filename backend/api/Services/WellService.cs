@@ -77,6 +77,20 @@ public class WellService
         return null;
     }
 
+    public WellDto[] CreateMultipleWells(WellDto[] wellDtos)
+    {
+        ProjectDto? projectDto = null;
+        foreach (var wellDto in wellDtos)
+        {
+            projectDto = CreateWell(wellDto);
+        }
+        if (projectDto != null)
+        {
+            return projectDto.Wells?.ToArray();
+        }
+        return null;
+    }
+
     public Well GetWell(Guid wellId)
     {
         var well = _context.Wells!

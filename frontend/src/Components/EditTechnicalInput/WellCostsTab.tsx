@@ -41,8 +41,8 @@ interface Props {
     explorationOperationalWellCosts: ExplorationOperationalWellCosts
     setExplorationOperationalWellCosts: Dispatch<SetStateAction<ExplorationOperationalWellCosts | undefined>>
 
-    wellProjectWells: Well[]
-    setWellProjectWells: Dispatch<SetStateAction<Well[]>>
+    wellProjectWells: Well[] | undefined
+    setWellProjectWells: Dispatch<SetStateAction<Well[] | undefined>>
 
     explorationWells: Well[] | undefined
     setExplorationWells: Dispatch<SetStateAction<Well[] | undefined>>

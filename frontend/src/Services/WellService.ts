@@ -37,6 +37,11 @@ class __WellService extends __BaseService {
         const res: any = await this.put("/multiple", { body })
         return res
     }
+
+    public async createMultipleWells(body: Components.Schemas.WellDto[]): Promise<any> {
+        const res: any = await this.post("/multiple", { body })
+        return res
+    }
 }
 
 export const WellService = new __WellService({
