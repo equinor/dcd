@@ -23,7 +23,52 @@ import { ToMonthDate } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 
 const CreateCaseForm = styled.form`
-    width: 50rem;
+    width: 596px;
+`
+
+const NameField = styled.div`
+    width: 412px;
+    margin-bottom: 21px;
+    margin-right: 20px;
+`
+
+const DateField = styled.div`
+    width: 120;
+    margin-top: 16px;
+`
+
+const RowWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+`
+
+const ColumnWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const ProductionStrategyOverviewField = styled.div`
+    margin-top: 27px;
+    margin-bottom: 34px;
+`
+
+const WellCountField = styled.div`
+    margin-right: 25px;
+    margin-bottom: 45px;
+`
+
+const CreateButton = styled(Button)`
+    width: 150px;
+`
+
+const CreateButtonWrapper = styled.div`
+    margin-left: 20px;
+`
+
+const ButtonsWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-left: 350px;
 `
 
 interface Props {
@@ -133,98 +178,120 @@ const EditCaseModal = ({
     return (
         <ModalNoFocus isOpen={isOpen} title={editMode ? "Edit case" : "Add new case"}>
             <CreateCaseForm>
-                <TextField
-                    label="Name"
-                    id="name"
-                    name="name"
-                    placeholder="Enter a name"
-                    onChange={handleNameChange}
-                    value={caseName}
-                />
-
-                <Input
-                    type="month"
-                    id="dgDate"
-                    name="dgDate"
-                    value={ToMonthDate(dG4Date) ?? ToMonthDate(caseItem?.DG4Date)}
-                    onChange={(e) => setDG4Date(new Date(e.currentTarget.value))}
-                />
+                <RowWrapper>
+                    <NameField>
+                        <TextField
+                            label="Name"
+                            id="name"
+                            name="name"
+                            placeholder="Enter a name"
+                            onChange={handleNameChange}
+                            value={caseName}
+                        />
+                    </NameField>
+                    <DateField>
+                        <Input
+                            type="month"
+                            id="dgDate"
+                            name="dgDate"
+                            value={ToMonthDate(dG4Date) ?? ToMonthDate(caseItem?.DG4Date)}
+                            onChange={(e) => setDG4Date(new Date(e.currentTarget.value))}
+                        />
+                    </DateField>
+                </RowWrapper>
+                <Label htmlFor="description" label="Description" />
                 <TextArea
+                    id="description"
                     placeholder="Enter a description"
                     onInput={handleDescriptionChange}
                     value={description ?? ""}
                     cols={110}
                     rows={4}
                 />
-                <NativeSelect
-                    id="productionStrategy"
-                    label="Production strategy overview"
-                    onChange={handleProductionStrategyChange}
-                    value={productionStrategy}
-                >
-                    <option key={undefined} value={undefined}> </option>
-                    <option key={0} value={0}>Depletion</option>
-                    <option key={1} value={1}>Water injection</option>
-                    <option key={2} value={2}>Gas injection</option>
-                    <option key={3} value={3}>WAG</option>
-                    <option key={4} value={4}>Mixed</option>
-                </NativeSelect>
-                <Label htmlFor="producerWells" label="Producer wells" />
-                <Input
-                    id="producerWells"
-                    type="number"
-                    value={producerCount}
-                    disabled={false}
-                    onChange={(e) => setProducerWells(Number(e.currentTarget.value))}
-                    onKeyPress={(e) => {
-                        if (!/\d/.test(e.key)) {
-                            e.preventDefault()
-                        }
-                    }}
-                />
-                <Label htmlFor="gasInjector" label="Gas injector wells" />
-                <Input
-                    id="gasInjector"
-                    type="number"
-                    value={gasInjectorCount}
-                    disabled={false}
-                    onChange={(e) => setGasInjectorWells(Number(e.currentTarget.value))}
-                    onKeyPress={(e) => {
-                        if (!/\d/.test(e.key)) {
-                            e.preventDefault()
-                        }
-                    }}
-                />
-                <Label htmlFor="waterInjector" label="Water injector wells" />
-                <Input
-                    id="waterInjector"
-                    type="number"
-                    value={waterInjectorCount}
-                    disabled={false}
-                    onChange={(e) => setWaterInjectorWells(Number(e.currentTarget.value))}
-                    onKeyPress={(e) => {
-                        if (!/\d/.test(e.key)) {
-                            e.preventDefault()
-                        }
-                    }}
-                />
-                <div>
-                    <Button
-                        type="submit"
-                        onClick={submitCaseForm}
-                        disabled={!disableCreateButton()}
+                <ProductionStrategyOverviewField>
+                    <NativeSelect
+                        id="productionStrategy"
+                        label="Production strategy overview"
+                        onChange={handleProductionStrategyChange}
+                        value={productionStrategy}
                     >
-                        {editMode ? "Save changes" : "Create case"}
-                    </Button>
+                        <option key={undefined} value={undefined}> </option>
+                        <option key={0} value={0}>Depletion</option>
+                        <option key={1} value={1}>Water injection</option>
+                        <option key={2} value={2}>Gas injection</option>
+                        <option key={3} value={3}>WAG</option>
+                        <option key={4} value={4}>Mixed</option>
+                    </NativeSelect>
+                </ProductionStrategyOverviewField>
+                <RowWrapper>
+                    <WellCountField>
+                        <ColumnWrapper>
+                            <Label htmlFor="producerWells" label="Producer wells" />
+                            <Input
+                                id="producerWells"
+                                type="number"
+                                value={producerCount}
+                                disabled={false}
+                                onChange={(e) => setProducerWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e) => {
+                                    if (!/\d/.test(e.key)) {
+                                        e.preventDefault()
+                                    }
+                                }}
+                            />
+                        </ColumnWrapper>
+                    </WellCountField>
+                    <WellCountField>
+                        <ColumnWrapper>
+                            <Label htmlFor="gasInjector" label="Gas injector wells" />
+                            <Input
+                                id="gasInjector"
+                                type="number"
+                                value={gasInjectorCount}
+                                disabled={false}
+                                onChange={(e) => setGasInjectorWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e) => {
+                                    if (!/\d/.test(e.key)) {
+                                        e.preventDefault()
+                                    }
+                                }}
+                            />
+                        </ColumnWrapper>
+                    </WellCountField>
+                    <ColumnWrapper>
+                        <Label htmlFor="waterInjector" label="Water injector wells" />
+                        <Input
+                            id="waterInjector"
+                            type="number"
+                            value={waterInjectorCount}
+                            disabled={false}
+                            onChange={(e) => setWaterInjectorWells(Number(e.currentTarget.value))}
+                            onKeyPress={(e) => {
+                                if (!/\d/.test(e.key)) {
+                                    e.preventDefault()
+                                }
+                            }}
+                        />
+                    </ColumnWrapper>
+                </RowWrapper>
+                <ButtonsWrapper>
                     <Button
                         type="button"
-                        color="secondary"
-                        variant="ghost"
+                        variant="outlined"
                         onClick={toggleModal}
                     >
                         Cancel
                     </Button>
-                </div>
+                    <CreateButtonWrapper>
+                        <CreateButton
+                            type="submit"
+                            onClick={submitCaseForm}
+                            disabled={!disableCreateButton()}
+                        >
+                            {editMode ? "Save changes" : "Create case"}
+                        </CreateButton>
+                    </CreateButtonWrapper>
+                </ButtonsWrapper>
             </CreateCaseForm>
         </ModalNoFocus>
     )
