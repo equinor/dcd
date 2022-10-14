@@ -145,8 +145,7 @@ function PROSPCaseList({
                     const unlinkedCase = unlinkAssetsOnCase(caseItem)
                     // eslint-disable-next-line prefer-destructuring
                     unlinkedCase.sharepointFileId = p.newValue[1]
-                    const caseResult = await (await GetCaseService()).updateCase(unlinkedCase)
-                    // setProject(caseResult)
+                    await (await GetCaseService()).updateCase(unlinkedCase)
                 }
             } catch (e) {
                 console.error(e)
