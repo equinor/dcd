@@ -36,17 +36,9 @@ public class CaseDto
     public string? SharepointFileName { get; set; }
 }
 
-public class CessationCostDto : TimeSeriesCostDto
-{
-}
-
-public class OpexCostProfileDto : TimeSeriesCostDto
-{
-}
-
-public class StudyCostProfileDto : TimeSeriesCostDto
-{
-}
+public class CessationCostDto : TimeSeriesCostDto { }
+public class OpexCostProfileDto : TimeSeriesCostDto { }
+public class StudyCostProfileDto : TimeSeriesCostDto { }
 
 public class CapexYear
 {
