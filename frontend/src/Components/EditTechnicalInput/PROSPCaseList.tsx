@@ -157,7 +157,9 @@ function PROSPCaseList({
     const order: SortOrder = "asc"
 
     const [columnDefs] = useState([
-        { field: "name", sort: order },
+        {
+            field: "name", sort: order,
+        },
         {
             field: "surfState", headerName: "Surf", width: 90, cellRenderer: checkBoxStatus,
         },
