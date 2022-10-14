@@ -34,7 +34,6 @@ const NameField = styled.div`
 
 const DateField = styled.div`
     width: 120;
-    margin-top: 16px;
 `
 
 const RowWrapper = styled.div`
@@ -190,6 +189,8 @@ const EditCaseModal = ({
                         />
                     </NameField>
                     <DateField>
+                        <Label htmlFor="dgDate" label="DG4" />
+
                         <Input
                             type="month"
                             id="dgDate"
