@@ -14,12 +14,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
+// [RequiresApplicationRoles(
+//         ApplicationRole.Admin,
+//         ApplicationRole.ReadOnly,
+//         ApplicationRole.User
 
-    )]
+//     )]
 public class CasesController : ControllerBase
 {
     private readonly CaseService _caseService;
@@ -53,6 +53,12 @@ public class CasesController : ControllerBase
     public ProjectDto UpdateCase([FromBody] CaseDto caseDto)
     {
         return _caseService.UpdateCase(caseDto);
+    }
+
+    [HttpPut("new", Name = "NewUpdateCase")]
+    public CaseDto NewUpdateCase([FromBody] CaseDto caseDto)
+    {
+        return _caseService.NewUpdateCase(caseDto);
     }
 
     [HttpDelete("{caseId}", Name = "DeleteCase")]

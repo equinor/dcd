@@ -5,7 +5,7 @@ namespace api.Adapters;
 
 public static class CaseDtoAdapter
 {
-    public static CaseDto Convert(Case case_, ProjectDto projectDto)
+    public static CaseDto Convert(Case case_)
     {
         var caseDto = new CaseDto
         {
