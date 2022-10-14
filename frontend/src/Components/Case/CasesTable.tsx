@@ -76,7 +76,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     )
 
     type SortOrder = "desc" | "asc" | null
-    const order: SortOrder = "desc"
+    const order: SortOrder = "asc"
 
     const [columnDefs] = useState([
         { field: "name", sort: order },
