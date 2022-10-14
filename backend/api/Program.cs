@@ -1,14 +1,15 @@
 using api.Context;
-using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
 
+using Api.Authorization;
 using Api.Services.FusionIntegration;
 
 using Azure.Identity;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -80,12 +81,10 @@ builder.Services.AddCors(options =>
         {
             builder.AllowAnyHeader();
             builder.AllowAnyMethod();
+            builder.WithExposedHeaders("Location");
             builder.WithOrigins(
-                "http://localhost:3000/",
                 "http://localhost:3000",
-                "https://*.equinor.com",
-                "https://ase-dcd-frontend-dev.azurewebsites.net/",
-                "https://ase-dcd-frontend-qa.azurewebsites.net/",
+                "https://fusion.equinor.com",
                 "https://pro-s-portal-ci.azurewebsites.net",
                 "https://pro-s-portal-fqa.azurewebsites.net",
                 "https://pro-s-portal-fprd.azurewebsites.net"
@@ -132,7 +131,7 @@ builder.Services.AddFusionIntegration(options =>
         opts.ClientId = config["AzureAd:ClientId"];
         opts.ClientSecret = config["AzureAd:ClientSecret"];
     });
-
+    options.AddFusionRoles();
     options.ApplicationMode = true;
 });
 
@@ -160,7 +159,10 @@ builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
+
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
@@ -169,7 +171,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 var app = builder.Build();
+app.UseRouting();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Fom Program, running the host now");
 if (app.Environment.IsDevelopment())
@@ -178,9 +183,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
+app.UseMiddleware<ClaimsMiddelware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
