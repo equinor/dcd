@@ -190,7 +190,7 @@ function CaseView() {
                         <Tab>Facilities</Tab>
                         <Tab>Cost</Tab>
                         <Tab>CO2 Emissions</Tab>
-                        <Tab>  </Tab>
+                        <Tab>Summary</Tab>
                     </List>
                     <Panels>
                         <StyledTabPanel>

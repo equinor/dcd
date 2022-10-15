@@ -2,6 +2,8 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
+    useState,
+    useEffect,
 } from "react"
 import styled from "styled-components"
 
@@ -13,6 +15,14 @@ import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import { GetDrainageStrategyService } from "../../Services/DrainageStrategyService"
+import CaseProductionProfilesTabTable from "./CaseProductionProfilesTabTable"
+import { NetSalesGas } from "../../models/assets/drainagestrategy/NetSalesGas"
+import { FuelFlaringAndLosses } from "../../models/assets/drainagestrategy/FuelFlaringAndLosses"
+import { ProductionProfileGas } from "../../models/assets/drainagestrategy/ProductionProfileGas"
+import { ProductionProfileOil } from "../../models/assets/drainagestrategy/ProductionProfileOil"
+import { ProductionProfileWater } from "../../models/assets/drainagestrategy/ProductionProfileWater"
+import { ProductionProfileNGL } from "../../models/assets/drainagestrategy/ProductionProfileNGL"
+import { ProductionProfileWaterInjection } from "../../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -33,7 +43,7 @@ const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
 const NativeSelectField = styled(NativeSelect)`
-    width: 250px;
+    width: 200px;
     padding-right: 20px;
 `
 const NumberInputField = styled.div`
@@ -54,15 +64,85 @@ function CaseProductionProfilesTab({
     caseItem, setCase,
     drainageStrategy, setDrainageStrategy,
 }: Props) {
-    const handleDrainageStrategyNGLYieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        newDrainageStrategy.nglYield = Number(e.currentTarget.value)
+    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
+    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
+    const [gas, setGas] = useState<ProductionProfileGas>()
+    const [oil, setOil] = useState<ProductionProfileOil>()
+    const [water, setWater] = useState<ProductionProfileWater>()
+    const [nGL, setNGL] = useState<ProductionProfileNGL>()
+    const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
+
+    const [firstYear, setFirstYear] = useState<number>(2020)
+    const [lastYear, setLastYear] = useState<number>(2030)
+
+    const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainage }
+        newDrainageStrategy.netSalesGas = netSalesGas
+        newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
+        newDrainageStrategy.productionProfileGas = gas
+        newDrainageStrategy.productionProfileOil = oil
+        newDrainageStrategy.productionProfileWater = water
+        newDrainageStrategy.productionProfileNGL = nGL
+        newDrainageStrategy.productionProfileWaterInjection = waterInjection
         setDrainageStrategy(newDrainageStrategy)
     }
 
+    const handleDrainageStrategyNGLYieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        newDrainageStrategy.nglYield = Number(e.currentTarget.value)
+        updateAndSetDraiangeStrategy(newDrainageStrategy)
+    }
+
+    const timeSerieses = [
+        {
+            profileName: "Net sales gas", unit: "Yee", set: setNetSalesGas, profile: netSalesGas,
+        },
+        {
+            profileName: "Fuel flaring and losses",
+            unit: "Yee",
+            set: setFuelFlaringAndLosses,
+            profile: fuelFlaringAndLosses,
+        },
+        {
+            profileName: "Gas production", unit: "Yee", set: setGas, profile: gas,
+        },
+        {
+            profileName: "Oil production", unit: "Yee", set: setOil, profile: oil,
+        },
+        {
+            profileName: "Water production", unit: "Yee", set: setWater, profile: water,
+        },
+        {
+            profileName: "NGL production", unit: "Yee", set: setNGL, profile: nGL,
+        },
+        {
+            profileName: "Water injection", unit: "Yee", set: setWaterInjection, profile: waterInjection,
+        },
+    ]
+
+    useEffect(() => {
+        if (drainageStrategy) {
+            setNetSalesGas(drainageStrategy.netSalesGas)
+            setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
+            setGas(drainageStrategy.productionProfileGas)
+            setOil(drainageStrategy.productionProfileOil)
+            setWater(drainageStrategy.productionProfileWater)
+            setNGL(drainageStrategy.productionProfileNGL)
+            setWaterInjection(drainageStrategy.productionProfileWaterInjection)
+        }
+    }, [drainageStrategy])
+
     const handleSave = async () => {
         if (drainageStrategy) {
-            const result = await (await GetDrainageStrategyService()).newUpdate(drainageStrategy)
+            const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+            newDrainageStrategy.netSalesGas = netSalesGas
+            newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
+            newDrainageStrategy.productionProfileGas = gas
+            newDrainageStrategy.productionProfileOil = oil
+            newDrainageStrategy.productionProfileWater = water
+            newDrainageStrategy.productionProfileNGL = nGL
+            newDrainageStrategy.productionProfileWaterInjection = waterInjection
+            const result = await (await GetDrainageStrategyService()).newUpdate(newDrainageStrategy)
             setDrainageStrategy(result)
         }
     }
@@ -131,6 +211,18 @@ function CaseProductionProfilesTab({
                     />
                 </RowWrapper>
             </ColumnWrapper>
+            {drainageStrategy && (
+                <CaseProductionProfilesTabTable
+                    caseItem={caseItem}
+                    project={project}
+                    setCase={setCase}
+                    setProject={setProject}
+                    timeSerieses={timeSerieses}
+                    dg4Year={caseItem.DG4Date.getFullYear()}
+                    firstYear={firstYear}
+                    lastYear={lastYear}
+                />
+            )}
         </>
     )
 }
