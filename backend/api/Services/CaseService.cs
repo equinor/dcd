@@ -75,7 +75,7 @@ public class CaseService
         return _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-        public CaseDto NewUpdateCase(CaseDto updatedCaseDto)
+    public CaseDto NewUpdateCase(CaseDto updatedCaseDto)
     {
         var caseItem = GetCase(updatedCaseDto.Id);
         CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);

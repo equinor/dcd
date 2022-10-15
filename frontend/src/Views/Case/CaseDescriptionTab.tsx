@@ -1,26 +1,16 @@
 import {
-    MouseEventHandler, useState,
     Dispatch,
     SetStateAction,
-    useEffect,
     ChangeEventHandler,
 } from "react"
 import styled from "styled-components"
 
 import {
-    Button, Label, NativeSelect, Switch, Typography,
+    Button, Label, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { useParams } from "react-router-dom"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
-import CaseArtificialLift from "../../Components/Case/CaseArtificialLift"
-import CaseDescription from "../../Components/Case/CaseDescription"
-import CaseDGDate from "../../Components/Case/CaseDGDate"
-import ExcelUpload from "../../Components/ExcelUpload"
-import ProductionStrategyOverview from "../../Components/ProductionStrategyOverview"
-import DGEnum from "../../models/DGEnum"
 import { Case } from "../../models/case/Case"
-import NumberInput from "../../Components/NumberInput"
 import { GetCaseService } from "../../Services/CaseService"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 
@@ -28,17 +18,12 @@ const ColumnWrapper = styled.div`
     display: flex;
     flex-direction: column;
 `
-
 const RowWrapper = styled.div`
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 78px;
 `
-
-const StyledButton = styled(Button)`
-    color: white;
-    background-color: #007079;
-`
-
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -46,6 +31,12 @@ const TopWrapper = styled.div`
 `
 const PageTitle = styled(Typography)`
     flex-grow: 1;
+`
+const DescriptionField = styled(TextArea)`
+    margin-bottom: 50px;
+`
+const NativeSelectField = styled(NativeSelect)`
+    width: 250px;
 `
 
 interface Props {
@@ -61,18 +52,6 @@ function CaseDescriptionTab({
     caseItem,
     setCase,
 }: Props) {
-    const { caseId } = useParams<Record<string, string | undefined>>()
-
-    // const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift>(0)
-    // const [producerCount, setProducerCount] = useState<number>()
-    // const [gasInjectorCount, setGasInjectorCount] = useState<number>()
-    // const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
-    // const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
-    // const [productionStrategyOverview,
-    //     setProductionStrategyOverview] = useState<Components.Schemas.ProductionStrategyOverview>(0)
-
-    // const [description, setDescription] = useState<string | undefined>()
-
     /*
     Description - Case
     ------------------
@@ -126,6 +105,12 @@ function CaseDescriptionTab({
         setCase(newCase)
     }
 
+    const handleTemplateCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newCase = { ...caseItem }
+        newCase.templateCount = Number(e.currentTarget.value)
+        setCase(newCase)
+    }
+
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
@@ -160,7 +145,7 @@ function CaseDescriptionTab({
             <ColumnWrapper>
 
                 <Label htmlFor="description" label="Case description" />
-                <TextArea
+                <DescriptionField
                     id="description"
                     placeholder="Enter a description"
                     onInput={handleDescriptionChange}
@@ -169,18 +154,6 @@ function CaseDescriptionTab({
                     rows={8}
                 />
                 <RowWrapper>
-                    {/* <ProductionStrategyOverview
-                    currentValue={productionStrategyOverview}
-                    setProductionStrategyOverview={setProductionStrategyOverview}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                />
-                <CaseArtificialLift
-                    currentValue={artificialLift}
-                    setArtificialLift={setArtificialLift}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                /> */}
                     <CaseNumberInput
                         onChange={handleWellsChange}
                         value={caseItem.producerCount}
@@ -221,18 +194,13 @@ function CaseDescriptionTab({
 
                 </RowWrapper>
                 <RowWrapper>
-                    <NativeSelect
-                        id="productionStrategy"
-                        label="Production strategy overview"
-                        onChange={handleProductionStrategyChange}
-                        value={caseItem.artificialLift}
-                    >
-                        <option key="0" value={0}>No lift</option>
-                        <option key="1" value={1}>Gas lift</option>
-                        <option key="2" value={2}>Electrical submerged pumps</option>
-                        <option key="3" value={3}>Subsea booster pumps</option>
-                    </NativeSelect>
-                    <NativeSelect
+                    <CaseNumberInput
+                        onChange={handleTemplateCountChange}
+                        value={caseItem.templateCount}
+                        integer
+                        label="Templates"
+                    />
+                    <NativeSelectField
                         id="productionStrategy"
                         label="Production strategy overview"
                         onChange={handleProductionStrategyChange}
@@ -244,7 +212,19 @@ function CaseDescriptionTab({
                         <option key={2} value={2}>Gas injection</option>
                         <option key={3} value={3}>WAG</option>
                         <option key={4} value={4}>Mixed</option>
-                    </NativeSelect>
+                    </NativeSelectField>
+                    <NativeSelectField
+                        id="artificialLift"
+                        label="Artificial lidt"
+                        onChange={handleArtificialLiftChange}
+                        value={caseItem.artificialLift}
+                    >
+                        <option key="0" value={0}>No lift</option>
+                        <option key="1" value={1}>Gas lift</option>
+                        <option key="2" value={2}>Electrical submerged pumps</option>
+                        <option key="3" value={3}>Subsea booster pumps</option>
+                    </NativeSelectField>
+
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}
                         value={caseItem.facilitiesAvailability}
@@ -252,14 +232,6 @@ function CaseDescriptionTab({
                         label="Facilities availability (%)"
                     />
                 </RowWrapper>
-
-                {/* <Switch
-                onClick={switchReference}
-                label="Reference case"
-                readOnly
-                checked={isReferenceCase ?? false}
-            /> */}
-                {/* <ExcelUpload setProject={setProject} setCase={setCase} /> */}
             </ColumnWrapper>
         </>
     )
