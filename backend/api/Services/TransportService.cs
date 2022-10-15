@@ -34,6 +34,18 @@ public class TransportService
         return _projectService.GetProjectDto(transport.ProjectId);
     }
 
+    public Transport NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
+    {
+        var transport = TransportAdapter.Convert(transportDto);
+        var project = _projectService.GetProject(transport.ProjectId);
+        transport.Project = project;
+        transport.LastChangedDate = DateTimeOffset.Now;
+        var createdTransport = _context.Transports!.Add(transport);
+        _context.SaveChanges();
+        SetCaseLink(transport, sourceCaseId, project);
+        return createdTransport.Entity;
+    }
+
     private void SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases?.FirstOrDefault(o => o.Id == sourceCaseId);

@@ -56,6 +56,17 @@ public class ExplorationService
         return _projectService.GetProjectDto(exploration.ProjectId);
     }
 
+    public Exploration NewCreateExploration(ExplorationDto eplorationDto, Guid sourceCaseId)
+    {
+        var exploration = ExplorationAdapter.Convert(eplorationDto);
+        var project = _projectService.GetProject(exploration.ProjectId);
+        exploration.Project = project;
+        var createdExploration = _context.Explorations!.Add(exploration);
+        _context.SaveChanges();
+        SetCaseLink(exploration, sourceCaseId, project);
+        return createdExploration.Entity;
+    }
+
     private void SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);

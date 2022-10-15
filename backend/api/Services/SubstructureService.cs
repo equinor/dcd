@@ -47,6 +47,18 @@ public class SubstructureService
         return _projectService.GetProjectDto(project.Id);
     }
 
+    public Substructure NewCreateSubstructure(SubstructureDto substructureDto, Guid sourceCaseId)
+    {
+        var substructure = SubstructureAdapter.Convert(substructureDto);
+        var project = _projectService.GetProject(substructure.ProjectId);
+        substructure.Project = project;
+        substructure.LastChangedDate = DateTimeOffset.Now;
+        var createdSubstructure = _context.Substructures!.Add(substructure);
+        _context.SaveChanges();
+        SetCaseLink(substructure, sourceCaseId, project);
+        return createdSubstructure.Entity;
+    }
+
     private void SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);

@@ -48,6 +48,19 @@ public class TopsideService
         return _projectService.GetProjectDto(project.Id);
     }
 
+        public Topside NewCreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
+    {
+        var topside = TopsideAdapter.Convert(topsideDto);
+        var project = _projectService.GetProject(topsideDto.ProjectId);
+        topside.Project = project;
+        topside.LastChangedDate = DateTimeOffset.Now;
+        topside.ProspVersion = topsideDto.ProspVersion;
+        var createdTopside = _context.Topsides!.Add(topside);
+        _context.SaveChanges();
+        SetCaseLink(topside, sourceCaseId, project);
+        return createdTopside.Entity;
+    }
+
     private void SetCaseLink(Topside topside, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);

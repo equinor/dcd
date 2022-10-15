@@ -80,6 +80,19 @@ public class SurfService
         return _projectService.GetProjectDto(surf.ProjectId);
     }
 
+    public Surf NewCreateSurf(SurfDto surfDto, Guid sourceCaseId)
+    {
+        var surf = SurfAdapter.Convert(surfDto);
+        var project = _projectService.GetProject(surf.ProjectId);
+        surf.Project = project;
+        surf.ProspVersion = surfDto.ProspVersion;
+        surf.LastChangedDate = DateTimeOffset.Now;
+        var createdSurf = _context.Surfs!.Add(surf);
+        _context.SaveChanges();
+        SetCaseLink(surf, sourceCaseId, project);
+        return createdSurf.Entity;
+    }
+
     private void SetCaseLink(Surf surf, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
