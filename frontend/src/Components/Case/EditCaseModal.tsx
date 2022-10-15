@@ -151,7 +151,7 @@ const EditCaseModal = ({
                     newCase,
                 )
             } else {
-                projectResult = await (await GetCaseService()).createCase({
+                projectResult = await (await GetCaseService()).create({
                     projectId: project.projectId,
                     name: caseName,
                     description,

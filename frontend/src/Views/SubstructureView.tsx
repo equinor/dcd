@@ -93,7 +93,7 @@ const SubstructureView = () => {
                 }
                 setSubstructureName(newSubstructure?.name!)
                 setMaturity(newSubstructure.maturity)
-                setDryWeight(newSubstructure.dryweight)
+                setDryWeight(newSubstructure.dryWeight)
                 setCurrency(newSubstructure.currency ?? 1)
                 setApprovedBy(newSubstructure?.approvedBy!)
                 setCostYear(newSubstructure?.costYear)
@@ -124,7 +124,7 @@ const SubstructureView = () => {
         if (substructure !== undefined) {
             const newSubstructure: Substructure = { ...substructure }
             newSubstructure.maturity = maturity
-            newSubstructure.dryweight = dryWeight
+            newSubstructure.dryWeight = dryWeight
             newSubstructure.costProfile = costProfile
             newSubstructure.cessationCostProfile = cessationCostProfile
             newSubstructure.currency = currency

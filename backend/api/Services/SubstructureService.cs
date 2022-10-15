@@ -111,6 +111,28 @@ public class SubstructureService
         return _projectService.GetProjectDto(existing.ProjectId);
     }
 
+    public SubstructureDto NewUpdateSubstructure(SubstructureDto updatedSubstructureDto)
+    {
+        var existing = GetSubstructure(updatedSubstructureDto.Id);
+
+        SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
+
+        if (updatedSubstructureDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
+        }
+
+        if (updatedSubstructureDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+        {
+            _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
+        }
+        existing.LastChangedDate = DateTimeOffset.Now;
+        var createdSubstructure = _context.Substructures!.Update(existing);
+        _context.SaveChanges();
+        return SubstructureDtoAdapter.Convert(createdSubstructure.Entity);
+    }
+
+
     public Substructure GetSubstructure(Guid substructureId)
     {
         var substructure = _context.Substructures!

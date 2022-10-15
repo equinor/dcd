@@ -125,4 +125,25 @@ public class TransportService
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedTransportDto.ProjectId);
     }
+
+    public TransportDto NewUpdateTransport(TransportDto updatedTransportDto)
+    {
+        var existing = GetTransport(updatedTransportDto.Id);
+        TransportAdapter.ConvertExisting(existing, updatedTransportDto);
+
+        if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.TransportCostProfile!.Remove(existing.CostProfile);
+        }
+
+        if (updatedTransportDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+        {
+            _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
+        }
+
+        existing.LastChangedDate = DateTimeOffset.Now;
+        var updatedTransport = _context.Transports!.Update(existing);
+        _context.SaveChanges();
+        return TransportDtoAdapter.Convert(updatedTransport.Entity);
+    }
 }

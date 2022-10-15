@@ -216,7 +216,7 @@ function CaseDescriptionTab({
                     </NativeSelectField>
                     <NativeSelectField
                         id="artificialLift"
-                        label="Artificial lidt"
+                        label="Artificial lift"
                         onChange={handleArtificialLiftChange}
                         value={caseItem.artificialLift}
                     >

@@ -54,6 +54,27 @@ public class SurfService
         _context.SaveChanges();
         return _projectService.GetProjectDto(existing.ProjectId);
     }
+
+    public SurfDto NewUpdateSurf(SurfDto updatedSurfDto)
+    {
+        var existing = GetSurf(updatedSurfDto.Id);
+        SurfAdapter.ConvertExisting(existing, updatedSurfDto);
+
+        if (updatedSurfDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.SurfCostProfile!.Remove(existing.CostProfile);
+        }
+
+        if (updatedSurfDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+        {
+            _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
+        }
+        existing.LastChangedDate = DateTimeOffset.Now;
+        var createdSurf = _context.Surfs!.Update(existing);
+        _context.SaveChanges();
+        return SurfDtoAdapter.Convert(createdSurf.Entity);
+    }
+
     public Surf GetSurf(Guid surfId)
     {
         var surf = _context.Surfs!
