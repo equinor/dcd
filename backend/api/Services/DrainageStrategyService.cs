@@ -142,6 +142,51 @@ public class DrainageStrategyService
         return _projectService.GetProjectDto(existing.ProjectId);
     }
 
+    public DrainageStrategyDto NewUpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
+    {
+        var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
+        var unit = _projectService.GetProject(existing.ProjectId).PhysicalUnit;
+
+        DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
+
+        if (updatedDrainageStrategyDto.ProductionProfileOil == null && existing.ProductionProfileOil != null)
+        {
+            _context.ProductionProfileOil!.Remove(existing.ProductionProfileOil);
+        }
+        if (updatedDrainageStrategyDto.ProductionProfileGas == null && existing.ProductionProfileGas != null)
+        {
+            _context.ProductionProfileGas!.Remove(existing.ProductionProfileGas);
+        }
+        if (updatedDrainageStrategyDto.ProductionProfileWater == null && existing.ProductionProfileWater != null)
+        {
+            _context.ProductionProfileWater!.Remove(existing.ProductionProfileWater);
+        }
+        if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null && existing.ProductionProfileWaterInjection != null)
+        {
+            _context.ProductionProfileWaterInjection!.Remove(existing.ProductionProfileWaterInjection);
+        }
+        if (updatedDrainageStrategyDto.FuelFlaringAndLosses == null && existing.FuelFlaringAndLosses != null)
+        {
+            _context.FuelFlaringAndLosses!.Remove(existing.FuelFlaringAndLosses);
+        }
+        if (updatedDrainageStrategyDto.NetSalesGas == null && existing.NetSalesGas != null)
+        {
+            _context.NetSalesGas!.Remove(existing.NetSalesGas);
+        }
+        if (updatedDrainageStrategyDto.Co2Emissions == null && existing.Co2Emissions != null)
+        {
+            _context.Co2Emissions!.Remove(existing.Co2Emissions);
+        }
+        if (updatedDrainageStrategyDto.ProductionProfileNGL == null && existing.ProductionProfileNGL != null)
+        {
+            _context.ProductionProfileNGL!.Remove(existing.ProductionProfileNGL);
+        }
+
+        var updatedDrainageStrategy = _context.DrainageStrategies!.Update(existing);
+        _context.SaveChanges();
+        return DrainageStrategyDtoAdapter.Convert(updatedDrainageStrategy.Entity, unit);
+    }
+
     public DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
     {
         var drainageStrategy = _context.DrainageStrategies!

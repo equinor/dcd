@@ -6,12 +6,10 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, Label, NativeSelect, Typography,
+    Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
-import { GetCaseService } from "../../Services/CaseService"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { Topside } from "../../models/assets/topside/Topside"
 import { Substructure } from "../../models/assets/substructure/Substructure"

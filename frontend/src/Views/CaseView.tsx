@@ -21,14 +21,9 @@ import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/Case/CaseAsset"
-import { unwrapCase, unwrapProjectId } from "../Utils/common"
+import { unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
-import ExplorationViewTab from "./ExplorationViewTab"
 import { EditCaseInputModal } from "./EditCaseInputModal"
-import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
-import { OpexCostProfile } from "../models/case/OpexCostProfile"
-import { GetCaseService } from "../Services/CaseService"
-import { StudyCostProfile } from "../models/case/StudyCostProfile"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { WellProject } from "../models/assets/wellproject/WellProject"
 import { Surf } from "../models/assets/surf/Surf"
@@ -38,6 +33,7 @@ import { Exploration } from "../models/assets/exploration/Exploration"
 import { Transport } from "../models/assets/transport/Transport"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
+import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -84,7 +80,7 @@ const StyledTabPanel = styled(Panel)`
 function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
-    const [activeTab, setActiveTab] = useState<number>(4)
+    const [activeTab, setActiveTab] = useState<number>(1)
     const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
@@ -206,7 +202,14 @@ function CaseView() {
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Production Profiles</p>
+                            <CaseProductionProfilesTab
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                                drainageStrategy={drainageStrategy}
+                                setDrainageStrategy={setDrainageStrategy}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <CaseScheduleTab
