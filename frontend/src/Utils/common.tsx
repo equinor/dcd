@@ -29,7 +29,7 @@ export function StoreAppScope(appScope: string) {
 }
 
 export function GetToken(keyName: string) {
-    const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
+    const scopes = [["api://9b125a0c-4907-43b9-8db2-ff405d6b0524/.default"][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
@@ -109,6 +109,11 @@ export const IsInvalidDate = (date?: Date | null): boolean => {
         return true
     }
     return false
+}
+
+export const DefaultDate = () => {
+    const date = new Date("0001-01-01")
+    return date
 }
 
 export const ProductionStrategyOverviewToString = (value: Components.Schemas.ProductionStrategyOverview): string => {

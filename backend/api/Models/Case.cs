@@ -11,6 +11,11 @@ public class Case
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; }
     public bool ReferenceCase { get; set; }
+    public DateTimeOffset DGADate { get; set; }
+    public DateTimeOffset DGBDate { get; set; }
+    public DateTimeOffset DGCDate { get; set; }
+    public DateTimeOffset APXDate { get; set; }
+    public DateTimeOffset APZDate { get; set; }
     public DateTimeOffset DG0Date { get; set; }
     public DateTimeOffset DG1Date { get; set; }
     public DateTimeOffset DG2Date { get; set; }

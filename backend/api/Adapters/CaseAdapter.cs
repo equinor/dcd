@@ -14,6 +14,11 @@ public static class CaseAdapter
             Name = caseDto.Name,
             Description = caseDto.Description,
             ReferenceCase = caseDto.ReferenceCase,
+            DGADate = caseDto.DGADate,
+            DGBDate = caseDto.DGBDate,
+            DGCDate = caseDto.DGCDate,
+            APXDate = caseDto.APXDate,
+            APZDate = caseDto.APZDate,
             DG0Date = caseDto.DG0Date,
             DG1Date = caseDto.DG1Date,
             DG2Date = caseDto.DG2Date,
@@ -47,6 +52,11 @@ public static class CaseAdapter
         existing.Name = caseDto.Name;
         existing.Description = caseDto.Description;
         existing.ReferenceCase = caseDto.ReferenceCase;
+        existing.DGADate = caseDto.DGADate;
+        existing.DGBDate = caseDto.DGBDate;
+        existing.DGCDate = caseDto.DGCDate;
+        existing.APXDate = caseDto.APXDate;
+        existing.APZDate = caseDto.APZDate;
         existing.DG0Date = caseDto.DG0Date;
         existing.DG1Date = caseDto.DG1Date;
         existing.DG2Date = caseDto.DG2Date;

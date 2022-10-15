@@ -27,8 +27,14 @@ declare namespace Components {
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
-            dG0Date?: string; // date-time
             facilitiesAvailability?: number; // double
+            templateCount?: number; // int32
+            dgaDate?: string; // date-time
+            dgbDate?: string; // date-time
+            dgcDate?: string; // date-time
+            apxDate?: string; // date-time
+            apzDate?: string; // date-time
+            dG0Date?: string; // date-time
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
             dG3Date?: string; // date-time
@@ -491,6 +497,9 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
+        export interface UrlDto {
+            url?: string | null;
+        }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
         export interface WellDto {
             id?: string; // uuid
@@ -790,6 +799,17 @@ declare namespace Paths {
             }
         }
     }
+    namespace GenerateCessation {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.CessationCostDto;
+        }
+    }
     namespace GenerateGAndGAdminCost {
         namespace Parameters {
             export type CaseId = string; // uuid
@@ -845,7 +865,7 @@ declare namespace Paths {
         }
     }
     namespace GetSharePointFileNamesAndId {
-        export type RequestBody = string;
+        export type RequestBody = Components.Schemas.UrlDto;
         namespace Responses {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
@@ -896,6 +916,12 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.SharePointImportDto[];
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace NewUpdateCase {
+        export type RequestBody = Components.Schemas.CaseDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.CaseDto;
         }
     }
     namespace UpdateCase {

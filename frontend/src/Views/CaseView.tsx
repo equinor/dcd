@@ -36,6 +36,7 @@ import { Topside } from "../models/assets/topside/Topside"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Transport } from "../models/assets/transport/Transport"
+import CaseScheduleTab from "./Case/CaseScheduleTab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -207,7 +208,12 @@ function CaseView() {
                             <p>Production Profiles</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Schedule</p>
+                            <CaseScheduleTab
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Drilling Schedule</p>

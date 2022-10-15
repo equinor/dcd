@@ -19,7 +19,7 @@ import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { ModalNoFocus } from "../ModalNoFocus"
-import { ToMonthDate } from "../../Utils/common"
+import { DefaultDate, ToMonthDate } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 
 const CreateCaseForm = styled.form`
@@ -89,7 +89,7 @@ const EditCaseModal = ({
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string | undefined>()
-    const [dG4Date, setDG4Date] = useState<Date>()
+    const [dG4Date, setDG4Date] = useState<Date>(DefaultDate())
     const [description, setDescription] = useState<string | undefined>()
     const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>()
     const [producerCount, setProducerWells] = useState<number>()
@@ -155,7 +155,7 @@ const EditCaseModal = ({
                     projectId: project.projectId,
                     name: caseName,
                     description,
-                    dG4Date: dG4Date?.toJSON(),
+                    dG4Date: dG4Date.toJSON(),
                     producerCount,
                     gasInjectorCount,
                     waterInjectorCount,

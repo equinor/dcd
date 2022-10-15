@@ -14,9 +14,14 @@ public class CaseDto
     public int ProducerCount { get; set; }
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
-    public DateTimeOffset DG0Date { get; set; }
     public double FacilitiesAvailability { get; set; }
     public int TemplateCount { get; set; }
+    public DateTimeOffset DGADate { get; set; }
+    public DateTimeOffset DGBDate { get; set; }
+    public DateTimeOffset DGCDate { get; set; }
+    public DateTimeOffset APXDate { get; set; }
+    public DateTimeOffset APZDate { get; set; }
+    public DateTimeOffset DG0Date { get; set; }
     public DateTimeOffset DG1Date { get; set; }
     public DateTimeOffset DG2Date { get; set; }
     public DateTimeOffset DG3Date { get; set; }

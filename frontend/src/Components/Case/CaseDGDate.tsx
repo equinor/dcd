@@ -69,7 +69,7 @@ const CaseDGDate = ({
         try {
             const unwrappedCase: Case = unwrapCase(caseItem)
             const caseDto = Case.Copy(unwrappedCase)
-            caseDto[dGType] = caseDgDate
+            caseDto[dGType] = caseDgDate!
             const newProject = await (await GetCaseService()).updateCase(caseDto)
             setProject(newProject)
             const caseResult = newProject.cases.find((o) => o.id === caseId)

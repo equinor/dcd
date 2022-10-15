@@ -1,3 +1,4 @@
+import { DefaultDate } from "../../Utils/common"
 import { CaseCessationCostProfile } from "./CaseCessationCostProfile"
 
 export class Case implements Components.Schemas.CaseDto {
@@ -5,11 +6,16 @@ export class Case implements Components.Schemas.CaseDto {
     capexYear?: Components.Schemas.CapexYear
     createdAt?: Date | null
     description?: string
-    DG0Date?: Date | null
-    DG1Date?: Date | null
-    DG2Date?: Date | null
-    DG3Date?: Date | null
-    DG4Date?: Date | null
+    DGADate: Date // date-time
+    DGBDate: Date // date-time
+    DGCDate: Date // date-time
+    APXDate: Date // date-time
+    APZDate: Date // date-time
+    DG0Date: Date
+    DG1Date: Date
+    DG2Date: Date
+    DG3Date: Date
+    DG4Date: Date
     id?: string
     projectId?: string
     updatedAt?: Date | null
@@ -38,11 +44,16 @@ export class Case implements Components.Schemas.CaseDto {
         this.capexYear = data.capexYear
         this.createdAt = data.createTime ? new Date(data.createTime) : null
         this.description = data.description ?? ""
-        this.DG0Date = data.dG0Date ? new Date(data.dG0Date) : null
-        this.DG1Date = data.dG1Date ? new Date(data.dG1Date) : null
-        this.DG2Date = data.dG2Date ? new Date(data.dG2Date) : null
-        this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : null
-        this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : null
+        this.DGADate = data.dgaDate ? new Date(data.dgaDate) : DefaultDate()
+        this.DGBDate = data.dgbDate ? new Date(data.dgbDate) : DefaultDate()
+        this.DGCDate = data.dgcDate ? new Date(data.dgcDate) : DefaultDate()
+        this.APXDate = data.apxDate ? new Date(data.apxDate) : DefaultDate()
+        this.APZDate = data.apzDate ? new Date(data.apzDate) : DefaultDate()
+        this.DG0Date = data.dG0Date ? new Date(data.dG0Date) : DefaultDate()
+        this.DG1Date = data.dG1Date ? new Date(data.dG1Date) : DefaultDate()
+        this.DG2Date = data.dG2Date ? new Date(data.dG2Date) : DefaultDate()
+        this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : DefaultDate()
+        this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : DefaultDate()
         this.id = data.id
         this.projectId = data.projectId
         this.updatedAt = data.modifyTime ? new Date(data.modifyTime) : null
