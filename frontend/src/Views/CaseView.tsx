@@ -37,6 +37,7 @@ import { Substructure } from "../models/assets/substructure/Substructure"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Transport } from "../models/assets/transport/Transport"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
+import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -83,17 +84,17 @@ const StyledTabPanel = styled(Panel)`
 function CaseView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
-    const [activeTab, setActiveTab] = useState<number>(0)
+    const [activeTab, setActiveTab] = useState<number>(4)
     const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
-    // const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
-    // const [exploration, setExploration] = useState<Exploration>()
-    // const [wellProject, setWellProject] = useState<WellProject>()
-    // const [surf, setSurf] = useState<Surf>()
-    // const [topside, setTopside] = useState<Topside>()
-    // const [substructure, setSubstructure] = useState<Substructure>()
-    // const [transport, setTransport] = useState<Transport>()
+    const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
+    const [exploration, setExploration] = useState<Exploration>()
+    const [wellProject, setWellProject] = useState<WellProject>()
+    const [surf, setSurf] = useState<Surf>()
+    const [topside, setTopside] = useState<Topside>()
+    const [substructure, setSubstructure] = useState<Substructure>()
+    const [transport, setTransport] = useState<Transport>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
@@ -110,13 +111,13 @@ function CaseView() {
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === caseId)
                 setCase(caseResult)
-                // setDrainageStrategy(project?.drainageStrategies.find((ds) => ds.id === caseResult?.drainageStrategyLink))
-                // setExploration(project?.explorations.find((e) => e.id === caseResult?.explorationLink))
-                // setWellProject(project?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink))
-                // setSurf(project?.surfs.find((s) => s.id === caseResult?.surfLink))
-                // setTopside(project?.topsides.find((t) => t.id === caseResult?.topsideLink))
-                // setSubstructure(project?.substructures.find((s) => s.id === caseResult?.substructureLink))
-                // setTransport(project?.transports.find((t) => t.id === caseResult?.transportLink))
+                setDrainageStrategy(project?.drainageStrategies.find((ds) => ds.id === caseResult?.drainageStrategyLink))
+                setExploration(project?.explorations.find((e) => e.id === caseResult?.explorationLink))
+                setWellProject(project?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink))
+                setSurf(project?.surfs.find((s) => s.id === caseResult?.surfLink))
+                setTopside(project?.topsides.find((t) => t.id === caseResult?.topsideLink))
+                setSubstructure(project?.substructures.find((s) => s.id === caseResult?.substructureLink))
+                setTransport(project?.transports.find((t) => t.id === caseResult?.transportLink))
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
@@ -219,7 +220,20 @@ function CaseView() {
                             <p>Drilling Schedule</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Facilities</p>
+                            <CaseFacilitiesTab
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                                topside={topside}
+                                setTopside={setTopside}
+                                surf={surf}
+                                setSurf={setSurf}
+                                substructure={substructure}
+                                setSubstrucutre={setSubstructure}
+                                transport={transport}
+                                setTransport={setTransport}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Cost</p>

@@ -27,7 +27,8 @@ const RowWrapper = styled.div`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    padding: 1.5rem 2rem;
+    margin-top: 20px;
+    margin-bottom: 20px;
 `
 const PageTitle = styled(Typography)`
     flex-grow: 1;

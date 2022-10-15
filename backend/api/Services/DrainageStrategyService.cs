@@ -54,6 +54,18 @@ public class DrainageStrategyService
         return _projectService.GetProjectDto(drainageStrategy.ProjectId);
     }
 
+    public DrainageStrategy NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
+    {
+        var unit = _projectService.GetProject(drainageStrategyDto.ProjectId).PhysicalUnit;
+        var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
+        var project = _projectService.GetProject(drainageStrategy.ProjectId);
+        drainageStrategy.Project = project;
+        var createdDrainageStrategy = _context.DrainageStrategies!.Add(drainageStrategy);
+        _context.SaveChanges();
+        SetCaseLink(drainageStrategy, sourceCaseId, project);
+        return createdDrainageStrategy.Entity;
+    }
+
     private void SetCaseLink(DrainageStrategy drainageStrategy, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);

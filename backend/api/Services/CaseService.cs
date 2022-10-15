@@ -16,6 +16,7 @@ public class CaseService
     private readonly ProjectService _projectService;
     private readonly ILogger<CaseService> _logger;
     private readonly IServiceProvider _serviceProvider;
+    private readonly DrainageStrategyService _drainageStrategyService;
 
     public CaseService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
@@ -23,6 +24,7 @@ public class CaseService
         _projectService = projectService;
         _serviceProvider = serviceProvider;
         _logger = loggerFactory.CreateLogger<CaseService>();
+        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
     }
 
     public ProjectDto CreateCase(CaseDto caseDto)
@@ -37,6 +39,29 @@ public class CaseService
         case_.Project = project;
         _context.Cases!.Add(case_);
         _context.SaveChanges();
+        return _projectService.GetProjectDto(project.Id);
+    }
+
+    public ProjectDto NewCreateCase(CaseDto caseDto)
+    {
+        var case_ = CaseAdapter.Convert(caseDto);
+        case_.CreateTime = DateTime.UtcNow;
+        var project = _projectService.GetProject(case_.ProjectId);
+        case_.Project = project;
+
+        var createdCase = _context.Cases!.Add(case_);
+        _context.SaveChanges();
+
+        var drainageStrategyDto = new DrainageStrategyDto
+        {
+            ProjectId = createdCase.Entity.ProjectId,
+            Name = "new drainy",
+            Description = "description"
+        };
+
+        var draiangeStrategy = _drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
+        case_.DrainageStrategyLink = draiangeStrategy.Id;
+
         return _projectService.GetProjectDto(project.Id);
     }
 

@@ -43,6 +43,12 @@ public class CasesController : ControllerBase
         return _caseService.CreateCase(caseDto);
     }
 
+    [HttpPost("new", Name = "NewCreateCase")]
+    public ProjectDto NewCreateCase([FromBody] CaseDto caseDto)
+    {
+        return _caseService.NewCreateCase(caseDto);
+    }
+
     [HttpPost("copy", Name = "Duplicate")]
     public ProjectDto DuplicateCase([FromQuery] Guid copyCaseId)
     {
