@@ -20,7 +20,7 @@ import styled from "styled-components"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { GetCaseService } from "../../Services/CaseService"
-import { IsInvalidDate, ToMonthDate, unwrapCase } from "../../Utils/common"
+import { IsDefaultDate, ToMonthDate, unwrapCase } from "../../Utils/common"
 import DGEnum from "../../models/DGEnum"
 
 const DgField = styled.div`
@@ -80,38 +80,38 @@ const CaseDGDate = ({
         }
     }
 
-    const dgReturnDate = () => (IsInvalidDate(caseItem?.[dGType])
+    const dgReturnDate = () => (IsDefaultDate(caseItem?.[dGType])
         ? undefined
         : ToMonthDate(caseItem?.[dGType]))
 
     const inputMaxDate = () => {
         if (dGType === DGEnum.DG0) {
-            return IsInvalidDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
+            return IsDefaultDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
         }
         if (dGType === DGEnum.DG1) {
-            return IsInvalidDate(caseItem?.DG2Date) ? undefined : ToMonthDate(caseItem?.DG2Date)
+            return IsDefaultDate(caseItem?.DG2Date) ? undefined : ToMonthDate(caseItem?.DG2Date)
         }
         if (dGType === DGEnum.DG2) {
-            return IsInvalidDate(caseItem?.DG3Date) ? undefined : ToMonthDate(caseItem?.DG3Date)
+            return IsDefaultDate(caseItem?.DG3Date) ? undefined : ToMonthDate(caseItem?.DG3Date)
         }
         if (dGType === DGEnum.DG3) {
-            return IsInvalidDate(caseItem?.DG4Date) ? undefined : ToMonthDate(caseItem?.DG4Date)
+            return IsDefaultDate(caseItem?.DG4Date) ? undefined : ToMonthDate(caseItem?.DG4Date)
         }
         return undefined
     }
 
     const inputMinDate = () => {
         if (dGType === DGEnum.DG1) {
-            return IsInvalidDate(caseItem?.DG0Date) ? undefined : ToMonthDate(caseItem?.DG0Date)
+            return IsDefaultDate(caseItem?.DG0Date) ? undefined : ToMonthDate(caseItem?.DG0Date)
         }
         if (dGType === DGEnum.DG2) {
-            return IsInvalidDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
+            return IsDefaultDate(caseItem?.DG1Date) ? undefined : ToMonthDate(caseItem?.DG1Date)
         }
         if (dGType === DGEnum.DG3) {
-            return IsInvalidDate(caseItem?.DG2Date) ? undefined : ToMonthDate(caseItem?.DG2Date)
+            return IsDefaultDate(caseItem?.DG2Date) ? undefined : ToMonthDate(caseItem?.DG2Date)
         }
         if (dGType === DGEnum.DG4) {
-            return IsInvalidDate(caseItem?.DG3Date) ? undefined : ToMonthDate(caseItem?.DG3Date)
+            return IsDefaultDate(caseItem?.DG3Date) ? undefined : ToMonthDate(caseItem?.DG3Date)
         }
         return undefined
     }
