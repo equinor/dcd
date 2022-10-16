@@ -30,6 +30,7 @@ import { StudyCostProfile } from "../models/case/StudyCostProfile"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
 import ReadOnlyTimeSeries from "../Components/ReadOnlyTimeSeries"
+import DrillingScheduleViewTab from "./DrillingScheduleViewTab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -223,6 +224,7 @@ function CaseView() {
                         <Tab>Facilities </Tab>
                         <Tab>Exploration</Tab>
                         <Tab>Development </Tab>
+                        <Tab>Drilling Schedule </Tab>
                         <Tab>Production Profiles</Tab>
                         <Tab>Cost</Tab>
                         <Tab>CO2 Emissions </Tab>
@@ -252,6 +254,13 @@ function CaseView() {
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Development</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <p><Typography variant="h3">Drilling Schedule</Typography></p>
+                            <DrillingScheduleViewTab
+                                _case={caseItem}
+                                _project={project}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Production profiles</p>
