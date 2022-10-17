@@ -5,7 +5,7 @@ import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperati
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import OperationalWellCosts from "./OperationalWellCosts"
-import WellListEditTechnicalInputNew from "./WellListEditTechnicalInputNew"
+import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -57,7 +57,7 @@ const WellCostsTab = ({
         <RowWrapper>
             <ColumnWrapper>
                 <WellListWrapper>
-                    <WellListEditTechnicalInputNew
+                    <WellListEditTechnicalInput
                         project={project}
                         setProject={setProject}
                         explorationWells
@@ -77,7 +77,7 @@ const WellCostsTab = ({
         <RowWrapper>
             <ColumnWrapper>
                 <WellListWrapper>
-                    <WellListEditTechnicalInputNew
+                    <WellListEditTechnicalInput
                         project={project}
                         setProject={setProject}
                         explorationWells={false}
