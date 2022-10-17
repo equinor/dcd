@@ -139,7 +139,11 @@ function WellListEditTechnicalInput({
             field: "name", sort: order, width: 110,
         },
         {
-            field: "wellCategory", headerName: "Well type", cellRenderer: wellCategoryRenderer, width: 250,
+            field: "wellCategory",
+            headerName: "Well type",
+            cellRenderer: wellCategoryRenderer,
+            width: 250,
+            editable: false,
         },
         {
             field: "drillingDays", headerName: "Drilling days", width: 110, flex: 1,
