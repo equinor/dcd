@@ -6,7 +6,7 @@ using Api.Authorization;
 using Api.Services.FusionIntegration;
 
 using Azure.Identity;
-
+using Serilog;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -162,7 +162,18 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
-
+builder.Services.AddSingleton<ILoggerFactory>(sp =>
+{
+    var factory = new LoggerFactory();
+    var logger = new LoggerConfiguration();
+    Serilog.Events.LogEventLevel level = Serilog.Events.LogEventLevel.Debug;
+    var configuration = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json")
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+        .Build();
+    return factory;
+});
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
@@ -176,6 +187,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 app.UseRouting();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
 logger.LogInformation("Fom Program, running the host now");
 if (app.Environment.IsDevelopment())
 {
