@@ -1,4 +1,5 @@
 import { Case } from "../models/case/Case"
+import { Well } from "../models/Well"
 
 export const LoginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -111,19 +112,15 @@ export const IsInvalidDate = (date?: Date | null): boolean => {
     return false
 }
 
-export const ProductionStrategyOverviewToString = (value: Components.Schemas.ProductionStrategyOverview): string => {
-    let name: string = ""
-    switch (value) {
-    case 1: name = "Water injection"
-        break
-    case 2: name = "Gas injection"
-        break
-    case 3: name = "WAG"
-        break
-    case 4: name = "Mixed"
-        break
-    default:
-        name = "Depletion"
-    }
-    return name
+export const ProductionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
+    if (value === undefined) { return "" }
+    return {
+        0: "Depletion",
+        1: "Water injection",
+        2: "Gas injection",
+        3: "WAG",
+        4: "Mixed",
+    }[value]
 }
+
+export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1

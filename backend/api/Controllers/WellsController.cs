@@ -57,4 +57,16 @@ public class WellsController : ControllerBase
     {
         return _wellService.UpdateWell(wellDto);
     }
+
+    [HttpPut("multiple", Name = "UpdateMultipleWells")]
+    public WellDto[]? UpdateMultipleWells([FromBody] WellDto[] wellDtos)
+    {
+        return _wellService.UpdateMultipleWells(wellDtos);
+    }
+
+    [HttpPost("multiple", Name = "UpdateMultipleWells")]
+    public WellDto[]? CreateMultipleWells([FromBody] WellDto[] wellDtos)
+    {
+        return _wellService.CreateMultipleWells(wellDtos);
+    }
 }

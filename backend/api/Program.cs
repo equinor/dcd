@@ -149,6 +149,8 @@ builder.Services.AddScoped<WellProjectWellService>();
 builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
+builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
+builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
 builder.Services.AddScoped<GenerateGAndGAdminCostProfile>();
