@@ -49,7 +49,6 @@ function OperationalWellCosts({
             newDevelopmentOperationalWellCosts.annualWellInterventionCostPerWell = developmentAnnualWellInterventionCost
             newDevelopmentOperationalWellCosts.pluggingAndAbandonment = developmentPluggingAndAbandonment
             setDevelopmentOperationalWellCosts(newDevelopmentOperationalWellCosts)
-            console.log(newDevelopmentOperationalWellCosts)
         }
     }, [developmentRigUpgrading, developmentRigMobDemob,
         developmentAnnualWellInterventionCost, developmentPluggingAndAbandonment])
@@ -63,7 +62,6 @@ function OperationalWellCosts({
             newExplorationOperationalWellCosts.appraisalRigMobDemob = appraisalRigMobDemob
             newExplorationOperationalWellCosts.appraisalProjectDrillingCosts = appraisalProjectDrillingCosts
             setExplorationOperationalWellCosts(newExplorationOperationalWellCosts)
-            console.log(newExplorationOperationalWellCosts)
         }
     }, [explorationRigUpgrading, explorationRigMobDemob,
         explorationProjectDrillingCosts, appraisalRigMobDemob, appraisalProjectDrillingCosts])

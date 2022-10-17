@@ -29,6 +29,7 @@ interface TableWell {
     drillingDays: number,
     wellCost: number,
     well: Well
+    wells: Well[]
 }
 
 function WellListEditTechnicalInput({
@@ -53,6 +54,7 @@ function WellListEditTechnicalInput({
                     drillingDays: w.drillingDays ?? 0,
                     wellCost: w.wellCost ?? 0,
                     well: w,
+                    wells,
                 }
                 if (w.wellCategory) { tableWell.wellCategory = w.wellCategory }
                 tableWells.push(tableWell)
@@ -66,14 +68,15 @@ function WellListEditTechnicalInput({
     }, [wells])
 
     const updateWells = (p: any) => {
-        if (wells) {
+        const rowWells: Well[] = p.data.wells
+        if (rowWells) {
             const { field } = p.colDef
-            const index = wells.findIndex((w) => w === p.data.well)
+            const index = rowWells.findIndex((w) => w === p.data.well)
             if (index > -1) {
-                const well = wells[index]
+                const well = rowWells[index]
                 const updatedWell = well
                 updatedWell[field as keyof typeof updatedWell] = field === "name" ? p.newValue : Number(p.newValue)
-                const updatedWells = [...wells]
+                const updatedWells = [...rowWells]
                 updatedWells[index] = updatedWell
                 setWells(updatedWells)
             }
