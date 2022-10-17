@@ -1,7 +1,7 @@
 import { Input, Table } from "@equinor/eds-core-react"
 import {
     ChangeEventHandler,
-    Dispatch, SetStateAction, useState,
+    Dispatch, SetStateAction,
 } from "react"
 
 interface Props {

@@ -190,7 +190,6 @@ const EditTechnicalInputModal = ({
                         <StyledTabPanel>
                             <WellCostsTab
                                 project={project}
-                                setProject={setProject}
                                 developmentOperationalWellCosts={developmentOperationalWellCosts}
                                 setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
                                 explorationOperationalWellCosts={explorationOperationalWellCosts}

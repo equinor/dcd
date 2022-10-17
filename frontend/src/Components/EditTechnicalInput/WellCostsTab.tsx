@@ -30,7 +30,6 @@ const WellListWrapper = styled.div`
 `
 
 interface Props {
-    setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project
     developmentOperationalWellCosts: DevelopmentOperationalWellCosts
     setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<DevelopmentOperationalWellCosts | undefined>>
@@ -46,7 +45,7 @@ interface Props {
 }
 
 const WellCostsTab = ({
-    project, setProject,
+    project,
     developmentOperationalWellCosts, setDevelopmentOperationalWellCosts,
     explorationOperationalWellCosts, setExplorationOperationalWellCosts,
     wellProjectWells, setWellProjectWells,
@@ -59,7 +58,6 @@ const WellCostsTab = ({
                 <WellListWrapper>
                     <WellListEditTechnicalInput
                         project={project}
-                        setProject={setProject}
                         explorationWells
                         setWells={setExplorationWells}
                         wells={explorationWells}
@@ -79,7 +77,6 @@ const WellCostsTab = ({
                 <WellListWrapper>
                     <WellListEditTechnicalInput
                         project={project}
-                        setProject={setProject}
                         explorationWells={false}
                         setWells={setWellProjectWells}
                         wells={wellProjectWells}

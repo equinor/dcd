@@ -113,8 +113,6 @@ export const IsInvalidDate = (date?: Date | null): boolean => {
 }
 
 export const ProductionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
-    debugger
-    console.log(value)
     if (value === undefined) { return "" }
     return {
         0: "Depletion",

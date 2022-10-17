@@ -16,7 +16,6 @@ const ButtonWrapper = styled.div`
 
 interface Props {
     project: Project
-    setProject: Dispatch<SetStateAction<Project | undefined>>
     wells: Well[] | undefined
     setWells: Dispatch<SetStateAction<Well[] | undefined>>
     explorationWells: boolean
@@ -33,7 +32,7 @@ interface TableWell {
 }
 
 function WellListEditTechnicalInput({
-    project, setProject, explorationWells, wells, setWells,
+    project, explorationWells, wells, setWells,
 }: Props) {
     const gridRef = useRef(null)
 
