@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
@@ -12,7 +11,8 @@ export class __ExplorationOperationalWellCostsService extends __BaseService {
         return ExplorationOperationalWellCosts.fromJSON(res)
     }
 
-    public async update(body: Components.Schemas.ExplorationOperationalWellCostsDto): Promise<Components.Schemas.ExplorationOperationalWellCostsDto> {
+    public async update(body: Components.Schemas.ExplorationOperationalWellCostsDto):
+        Promise<Components.Schemas.ExplorationOperationalWellCostsDto> {
         const res: Components.Schemas.ExplorationOperationalWellCostsDto = await this.put("", { body })
         return ExplorationOperationalWellCosts.fromJSON(res)
     }
