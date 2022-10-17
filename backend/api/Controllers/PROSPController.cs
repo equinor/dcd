@@ -2,6 +2,8 @@ using api.Dtos;
 using api.Models;
 using api.Services;
 
+using Api.Authorization;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
@@ -11,6 +13,12 @@ namespace api.Controllers;
 [Route("[controller]")]
 [ApiController]
 [Authorize]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class PROSPController : ControllerBase
 {
     private const string isCheckedAsset = "true";

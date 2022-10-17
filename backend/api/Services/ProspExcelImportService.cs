@@ -66,7 +66,7 @@ public class ProspExcelImportService
             return value;
         }
 
-        return -1;
+        return 0;
     }
 
     private static double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
@@ -118,7 +118,7 @@ public class ProspExcelImportService
         var producerCount = ReadIntValue(cellData, _prospConfig.Surf.producerCount);
         var waterInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.waterInjectorCount);
         var gasInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.gasInjectorCount);
-
+        var cessationCost = ReadIntValue(cellData, _prospConfig.Surf.cessationCost);
         //TODO: Add cessation cost from PROSP after feedback from PO
         // var cessationCost = ReadDoubleValue(parsedData, "K88");
         var costProfile = new SurfCostProfile
@@ -153,7 +153,8 @@ public class ProspExcelImportService
             DG4Date = dG4Date,
             ProducerCount = producerCount,
             GasInjectorCount = gasInjectorCount,
-            WaterInjectorCount = waterInjectorCount
+            WaterInjectorCount = waterInjectorCount,
+            CessationCost = cessationCost
         };
         var dto = SurfDtoAdapter.Convert(newSurf);
         _surfService.CreateSurf(dto, sourceCaseId);
