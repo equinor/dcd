@@ -181,14 +181,9 @@ const DrillingScheduleViewTab = ({
                     dG4Year={caseItem.DG4Date!.getFullYear()}
                     setTimeSeries={setCostProfile}
                     setHasChanges={setHasChanges}
-                    timeSeries={[costProfile]}
                     firstYear={firstTSYear!}
                     lastYear={lastTSYear!}
-                    profileName={["Cost profile"]}
-                    profileEnum={project?.currency!}
-                    profileType=""
-                    readOnlyTimeSeries={[]}
-                    readOnlyName={[]}
+                    wellsTimeSeries={[]}
                 />
             </AssetViewDiv>
         </RowWrapper>

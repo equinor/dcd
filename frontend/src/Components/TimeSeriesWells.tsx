@@ -19,26 +19,16 @@ interface Props {
     setHasChanges: Dispatch<SetStateAction<boolean>>,
     firstYear: number | undefined,
     lastYear: number | undefined,
-    timeSeries: (ITimeSeries | undefined)[]
-    profileName: string[]
-    profileEnum: number
-    profileType: string
-    readOnlyTimeSeries: (ITimeSeries | undefined)[]
-    readOnlyName: string[]
+    wellsTimeSeries: (ITimeSeries | undefined)[]
 }
 
 const TimeSeriesWells = ({
     dG4Year,
     setTimeSeries,
     setHasChanges,
-    timeSeries,
+    wellsTimeSeries,
     firstYear,
     lastYear,
-    profileName,
-    profileEnum,
-    profileType,
-    readOnlyTimeSeries,
-    readOnlyName,
 }: Props) => {
     const [columns, setColumns] = useState<string[]>([""])
     const [gridData, setGridData] = useState<CellValue[][]>([[]])
@@ -51,11 +41,11 @@ const TimeSeriesWells = ({
     const isValidYear = (year: number | undefined) => year?.toString().length === 4
 
     const buildAlignedGrid = (updatedTimeSeries: ITimeSeries) => {
-        if (timeSeries !== undefined) {
-            if (timeSeries[0] !== undefined && updatedTimeSeries !== undefined) {
-                for (let i = 0; i < timeSeries.length; i += 1) {
-                    if (timeSeries[i] !== undefined) {
-                        if (updatedTimeSeries !== undefined && timeSeries[i] !== undefined) {
+        if (wellsTimeSeries !== undefined) {
+            if (wellsTimeSeries[0] !== undefined && updatedTimeSeries !== undefined) {
+                for (let i = 0; i < wellsTimeSeries.length; i += 1) {
+                    if (wellsTimeSeries[i] !== undefined) {
+                        if (updatedTimeSeries !== undefined && wellsTimeSeries[i] !== undefined) {
                             const columnTitles: string[] = []
                             if (firstYear !== undefined && lastYear !== undefined) {
                                 for (let j = tableFirstYear; j <= tableLastYear; j += 1) {
@@ -64,7 +54,7 @@ const TimeSeriesWells = ({
                             }
                             setColumns(columnTitles)
 
-                            const newGridData = buildGridData(timeSeries[i])
+                            const newGridData = buildGridData(wellsTimeSeries[i])
 
                             const alignedAssetGridData = new Array(newGridData[0])
                             combinedTimeseries.push(alignedAssetGridData)
@@ -85,27 +75,27 @@ const TimeSeriesWells = ({
             setTableFirstYear(firstYear)
             setTableLastYear(lastYear - 1)
         }
-    }, [timeSeries, lastYear, firstYear])
+    }, [wellsTimeSeries, lastYear, firstYear])
 
     const createEmptyGrid = (j: any) => {
         if (gridData !== undefined && isValidYear(firstYear) && isValidYear(lastYear)) {
             setTableFirstYear(firstYear!)
             setTableLastYear(lastYear! - 1)
         }
-        const newTimeSeries: ITimeSeries = { ...timeSeries[j] }
+        const newTimeSeries: ITimeSeries = { ...wellsTimeSeries[j] }
         const colYears = []
         for (let c = tableFirstYear; c <= (tableLastYear ?? Number.MIN_SAFE_INTEGER); c += 1) {
             colYears.push(c.toString())
         }
         setColumns(colYears)
 
-        newTimeSeries.name = profileName[j]
+        newTimeSeries.name = ""
         newTimeSeries.startYear = Number(colYears[0]) - dG4Year
         newTimeSeries.values = []
 
         setTimeSeries(newTimeSeries)
         if (newTimeSeries !== undefined) {
-            const newGridData = buildGridData(timeSeries[j])
+            const newGridData = buildGridData(wellsTimeSeries[j])
 
             const alignedAssetGridData = new Array(newGridData)
             combinedTimeseries.push(alignedAssetGridData)
@@ -115,31 +105,31 @@ const TimeSeriesWells = ({
     }
 
     const NewTableLastYearSmallerThanProfileLastYear = (j: any) => tableLastYear
-        < (Number(dG4Year) + Number(timeSeries[j]?.startYear) + Number(timeSeries[j]?.values!.length))
+        < (Number(dG4Year) + Number(wellsTimeSeries[j]?.startYear) + Number(wellsTimeSeries[j]?.values!.length))
     const NewTableFirstYearGreaterThanProfileFirstYear = (j: any) => tableFirstYear
-        > (Number(timeSeries[j]?.startYear!) + Number(dG4Year))
+        > (Number(wellsTimeSeries[j]?.startYear!) + Number(dG4Year))
 
     const createNewGridWithData = (j: number) => {
-        if (tableFirstYear && tableLastYear && timeSeries !== undefined) {
-            const newTimeSeries: ITimeSeries = { ...timeSeries[j] }
+        if (tableFirstYear && tableLastYear && wellsTimeSeries !== undefined) {
+            const newTimeSeries: ITimeSeries = { ...wellsTimeSeries[j] }
             const colYears = []
             for (let c = tableFirstYear; c <= tableLastYear; c += 1) {
                 colYears.push(c.toString())
             }
             setColumns(colYears)
-            newTimeSeries.name = profileName[j]
-            newTimeSeries.startYear = timeSeries[j]?.startYear
+            newTimeSeries.name = ""
+            newTimeSeries.startYear = wellsTimeSeries[j]?.startYear
 
             if (NewTableLastYearSmallerThanProfileLastYear(j)) {
-                const yearDifference = (Number(dG4Year) + Number(timeSeries[j]?.startYear)
-                + Number(timeSeries[j]?.values!.length) - 1) - tableLastYear
-                newTimeSeries.values = timeSeries[j]?.values?.slice(0, -yearDifference) ?? []
+                const yearDifference = (Number(dG4Year) + Number(wellsTimeSeries[j]?.startYear)
+                + Number(wellsTimeSeries[j]?.values!.length) - 1) - tableLastYear
+                newTimeSeries.values = wellsTimeSeries[j]?.values?.slice(0, -yearDifference) ?? []
             }
 
             if (NewTableFirstYearGreaterThanProfileFirstYear(j)) {
                 newTimeSeries.startYear = tableFirstYear - dG4Year
-                const yearDifference = tableFirstYear - (Number(timeSeries[j]?.startYear) + dG4Year)
-                newTimeSeries.values = timeSeries[j]?.values?.slice(yearDifference) ?? []
+                const yearDifference = tableFirstYear - (Number(wellsTimeSeries[j]?.startYear) + dG4Year)
+                newTimeSeries.values = wellsTimeSeries[j]?.values?.slice(yearDifference) ?? []
             }
             setTimeSeries(newTimeSeries)
             if (newTimeSeries !== undefined) {
@@ -160,13 +150,13 @@ const TimeSeriesWells = ({
             }
             setColumns(colYears)
 
-            if (timeSeries[0] === undefined) {
-                for (let i = 0; i < timeSeries?.length!; i += 1) {
+            if (wellsTimeSeries[0] === undefined) {
+                for (let i = 0; i < wellsTimeSeries?.length!; i += 1) {
                     createEmptyGrid(i)
                 }
             }
-            if (timeSeries[0] !== undefined) {
-                for (let i = 0; i < timeSeries?.length!; i += 1) {
+            if (wellsTimeSeries[0] !== undefined) {
+                for (let i = 0; i < wellsTimeSeries?.length!; i += 1) {
                     createNewGridWithData(i)
                 }
             }
@@ -203,16 +193,12 @@ const TimeSeriesWells = ({
                     Apply
                 </ImportButton>
             </WrapperTablePeriod>
-            <Typography variant="h2">{profileType}</Typography>
 
             <WrapperColumn>
                 <DataTableWell
                     columns={columns}
                     dG4Year={dG4Year.toString()}
-                    profileEnum={profileEnum}
-                    profileType={profileType}
-                    readOnlyTimeSeries={readOnlyTimeSeries}
-                    readOnlyName={readOnlyName}
+                    wellsTimeSeries={[]}
                 />
             </WrapperColumn>
         </>

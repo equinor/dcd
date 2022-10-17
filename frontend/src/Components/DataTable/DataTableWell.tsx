@@ -18,19 +18,13 @@ export interface CellValue {
 interface Props {
     columns: string[]
     dG4Year: string
-    profileEnum: number
-    profileType: string
-    readOnlyTimeSeries: (ITimeSeries | undefined)[]
-    readOnlyName: string[]
+    wellsTimeSeries: (ITimeSeries | undefined)[]
 }
 
 function DataTableWell({
     columns,
     dG4Year,
-    profileEnum,
-    profileType,
-    readOnlyTimeSeries,
-    readOnlyName,
+    wellsTimeSeries,
 }: Props) {
     const topGrid = useRef<AgGridReact>(null)
     const bottomGrid = useRef<AgGridReact>(null)
@@ -43,25 +37,13 @@ function DataTableWell({
         }
         return <Icon data={lock} color="#007079" />
     }
-    // const generateTimeSeriesYears = (index: number, dg4: string) => {
-    //     const years = []
-    //     if (dg4) {
-    //         const profileStartYear: number = Number(readOnlyTimeSeries[index]?.startYear) + Number(dG4Year)
-    //         const maxYear: number = Number(readOnlyTimeSeries[index]?.values?.length) + profileStartYear
 
-    //         for (let i = profileStartYear; i < maxYear; i += 1) {
-    //             years.push(i.toString())
-    //         }
-    //     }
-    //     return years
-    // }
-
-    const setEmptyProfilesIfNoData = (value: object[]) => {
-        if ((columns.length === 0 && readOnlyTimeSeries.length !== 0) || columns[0] === "") {
-            for (let j = 0; j < readOnlyName.length; j += 1) {
-                if (readOnlyTimeSeries[j]?.values?.length === 0) {
+    const setEmptyWellsIfNoData = (value: object[]) => {
+        if ((columns.length === 0 && wellsTimeSeries.length !== 0) || columns[0] === "") {
+            for (let j = 0; j < wellsTimeSeries.length; j += 1) {
+                if (wellsTimeSeries[j]?.values?.length === 0) {
                     const readOnly = {
-                        "Exploration wells": readOnlyName[j], Unit: "Well", "Total wells": 0, ReadOnly: true,
+                        "Exploration wells": "", Unit: "Well", "Total wells": 0, ReadOnly: true,
                     }
                     value.push({ ...readOnly })
                 }
@@ -69,43 +51,10 @@ function DataTableWell({
         }
     }
 
-    // const setProfilesWithData = (value: object[]) => {
-    //     const readOnlyCombinedObjArr: object[] = []
-    //     const readOnlyObjValSum: number[] = []
-
-    //     if (readOnlyName.length >= 1 && readOnlyTimeSeries !== undefined
-    //         && dG4Year && columns.length !== 0 && columns[0] !== "") {
-    //         for (let i = 0; i < readOnlyName.length; i += 1) {
-    //             const totalValue: number[] = []
-    //             const readOnly = { Profile: readOnlyName[i], Unit: setUnit(i), Total: totalValue }
-    //             if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length !== 0) {
-    //                 readOnlyObjValSum.push((readOnlyTimeSeries[i]?.values?.map(
-    //                     (v) => Math.round((v + Number.EPSILON) * 10) / 10,
-    //                 ) ?? [])
-    //                     .reduce((x: number, y: number) => x + y))
-    //                 totalValue.push(readOnlyObjValSum[i])
-    //             }
-    //             if (readOnlyTimeSeries[i] !== undefined && dG4Year && readOnlyTimeSeries[i]?.values?.length === 0) {
-    //                 readOnlyObjValSum.push(0)
-    //                 totalValue.push(readOnlyObjValSum[i])
-    //             }
-
-    //             const objValToNumbers: number[] = readOnlyTimeSeries[i]?.values!
-    //             const rowObj = generateTimeSeriesYears(i, dG4Year)
-    //                 .reduce((obj: object, element: string, index: number) => (
-    //                     { ...obj, [element]: objValToNumbers[index] }), {})
-    //             readOnlyCombinedObjArr.push(rowObj)
-    //             const totalValueObj = { Total: Number(totalValue) }
-    //             value.push({ ...readOnlyCombinedObjArr[i], ...readOnly, ...totalValueObj })
-    //         }
-    //     }
-    // }
-
     const rowDataToColumns = () => {
         const value: object[] = []
 
-        setEmptyProfilesIfNoData(value)
-        // setProfilesWithData(value)
+        setEmptyWellsIfNoData(value)
         return value
     }
 
@@ -138,7 +87,7 @@ function DataTableWell({
                     aggFunc: "",
                     cellStyle: { fontWeight: "normal" },
                     editable: false,
-                    hide: readOnlyTimeSeries.length === 0,
+                    hide: wellsTimeSeries.length === 0,
                     cellRenderer: lockIcon,
                 }]
             for (let i = 0; i < col.length; i += 1) {
@@ -179,7 +128,7 @@ function DataTableWell({
                     aggFunc: "",
                     cellStyle: { fontWeight: "normal" },
                     editable: false,
-                    hide: readOnlyTimeSeries.length === 0,
+                    hide: wellsTimeSeries.length === 0,
                     cellRenderer: lockIcon,
                 }]
             for (let i = 0; i < col.length; i += 1) {
@@ -194,12 +143,12 @@ function DataTableWell({
     const defaultColDef = useMemo<ColDef>(() => ({
         resizable: true,
         sortable: true,
-        editable: false,
+        editable: true,
         flex: 1,
     }), [])
 
     useEffect(() => {
-    }, [readOnlyTimeSeries, dG4Year])
+    }, [wellsTimeSeries, dG4Year])
 
     const columnTotalsDataExpWells = () => {
         const footerGridData = {
@@ -208,23 +157,23 @@ function DataTableWell({
         }
         const totalValueArray: number[] = []
         const valueArray: number[][] = []
-        if (readOnlyTimeSeries.length >= 1 && columns.length > 1) {
+        if (wellsTimeSeries.length >= 1 && columns.length > 1) {
             for (let i = 0; i < columns.length; i += 1) {
-                if (readOnlyTimeSeries[i] !== undefined) {
+                if (wellsTimeSeries[i] !== undefined) {
                     const zeroesAtStart: number[] = Array.from({
-                        length: Number(readOnlyTimeSeries[i]?.startYear)
+                        length: Number(wellsTimeSeries[i]?.startYear)
                             + Number(dG4Year) - Number(columns[0]),
                     }, (() => 0))
 
                     const zeroesAtEnd: number[] = Array.from({
                         length: Number(columns.slice(-1)[0]) + 1
-                            - (Number(readOnlyTimeSeries[i]?.startYear)
+                            - (Number(wellsTimeSeries[i]?.startYear)
                                 + Number(dG4Year)
-                                + Number(readOnlyTimeSeries[i]?.values?.length)),
+                                + Number(wellsTimeSeries[i]?.values?.length)),
                     }, (() => 0))
 
                     const alignedAssetGridData: number[] = zeroesAtStart
-                        .concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
+                        .concat(wellsTimeSeries[i]?.values!, zeroesAtEnd)
                     valueArray.push(alignedAssetGridData)
                 }
             }
@@ -236,10 +185,10 @@ function DataTableWell({
             .reduce((obj: object, element: string, index: number) => (
                 { ...obj, [element]: totalValueArray[index] }), {})
         const totalTotalCostArray = []
-        if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
-            for (let j = 0; j < readOnlyTimeSeries.length; j += 1) {
-                if (readOnlyTimeSeries[j] !== undefined && readOnlyTimeSeries[j]?.values?.length !== 0) {
-                    totalTotalCostArray.push((readOnlyTimeSeries[j]?.values ?? [])
+        if (wellsTimeSeries.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < wellsTimeSeries.length; j += 1) {
+                if (wellsTimeSeries[j] !== undefined && wellsTimeSeries[j]?.values?.length !== 0) {
+                    totalTotalCostArray.push((wellsTimeSeries[j]?.values ?? [])
                         .reduce((x: number, y: number) => x + y))
                 }
             }
@@ -257,23 +206,23 @@ function DataTableWell({
         }
         const totalValueArray: number[] = []
         const valueArray: number[][] = []
-        if (readOnlyTimeSeries.length >= 1 && columns.length > 1) {
+        if (wellsTimeSeries.length >= 1 && columns.length > 1) {
             for (let i = 0; i < columns.length; i += 1) {
-                if (readOnlyTimeSeries[i] !== undefined) {
+                if (wellsTimeSeries[i] !== undefined) {
                     const zeroesAtStart: number[] = Array.from({
-                        length: Number(readOnlyTimeSeries[i]?.startYear)
+                        length: Number(wellsTimeSeries[i]?.startYear)
                             + Number(dG4Year) - Number(columns[0]),
                     }, (() => 0))
 
                     const zeroesAtEnd: number[] = Array.from({
                         length: Number(columns.slice(-1)[0]) + 1
-                            - (Number(readOnlyTimeSeries[i]?.startYear)
+                            - (Number(wellsTimeSeries[i]?.startYear)
                                 + Number(dG4Year)
-                                + Number(readOnlyTimeSeries[i]?.values?.length)),
+                                + Number(wellsTimeSeries[i]?.values?.length)),
                     }, (() => 0))
 
                     const alignedAssetGridData: number[] = zeroesAtStart
-                        .concat(readOnlyTimeSeries[i]?.values!, zeroesAtEnd)
+                        .concat(wellsTimeSeries[i]?.values!, zeroesAtEnd)
                     valueArray.push(alignedAssetGridData)
                 }
             }
@@ -285,10 +234,10 @@ function DataTableWell({
             .reduce((obj: object, element: string, index: number) => (
                 { ...obj, [element]: totalValueArray[index] }), {})
         const totalTotalCostArray = []
-        if (readOnlyTimeSeries.length >= 1 && columns.length !== 0) {
-            for (let j = 0; j < readOnlyTimeSeries.length; j += 1) {
-                if (readOnlyTimeSeries[j] !== undefined && readOnlyTimeSeries[j]?.values?.length !== 0) {
-                    totalTotalCostArray.push((readOnlyTimeSeries[j]?.values ?? [])
+        if (wellsTimeSeries.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < wellsTimeSeries.length; j += 1) {
+                if (wellsTimeSeries[j] !== undefined && wellsTimeSeries[j]?.values?.length !== 0) {
+                    totalTotalCostArray.push((wellsTimeSeries[j]?.values ?? [])
                         .reduce((x: number, y: number) => x + y))
                 }
             }
