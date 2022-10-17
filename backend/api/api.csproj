@@ -22,6 +22,8 @@
         <PackageReference Include="Microsoft.Graph" Version="4.34.0" />
         <PackageReference Include="Microsoft.Identity.Web" Version="1.25.2" />
         <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.25.2" />
+        <PackageReference Include="Serilog" Version="2.12.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
         <PackageReference Include="ClosedXML" Version="0.95.4" />
         <PackageReference Include="Fusion.Integration" Version="5.4.3" />
