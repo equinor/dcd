@@ -22,7 +22,7 @@ import { Case } from "../models/case/Case"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
-import { EditTechnicalInputModal } from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -73,7 +73,7 @@ const ProjectView = () => {
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
 
-    const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState<boolean>(false)
+    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -119,7 +119,7 @@ const ProjectView = () => {
         })()
     }, [physicalUnit, currency])
 
-    const toggleEditProjectModal = () => setEditProjectModalIsOpen(!editProjectModalIsOpen)
+    const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
     if (!project || project.id === "") {
         return (
@@ -132,9 +132,9 @@ const ProjectView = () => {
             <TopWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
                 <TransparentButton
-                    onClick={toggleEditProjectModal}
+                    onClick={toggleEditTechnicalInputModal}
                 >
-                    Edit project input
+                    Edit technical input
                 </TransparentButton>
                 <InvisibleButton
                     ref={setMenuAnchorEl}
@@ -222,8 +222,8 @@ const ProjectView = () => {
                 </Tabs>
             </Wrapper>
             <EditTechnicalInputModal
-                toggleEditTechnicalInputModal={toggleEditProjectModal}
-                isOpen={editProjectModalIsOpen}
+                toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
+                isOpen={editTechnicalInputModalIsOpen ?? false}
                 project={project}
                 setProject={setProject}
             />

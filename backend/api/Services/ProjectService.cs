@@ -22,6 +22,9 @@ public class ProjectService
     private readonly TransportService _transportService;
     private readonly ExplorationService _explorationService;
     private readonly WellService _wellService;
+    private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
+    private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
+
 
     private readonly ILogger<ProjectService> _logger;
 
@@ -37,6 +40,8 @@ public class ProjectService
         _explorationService = new ExplorationService(_context, this, loggerFactory);
         _transportService = new TransportService(_context, this, loggerFactory);
         _wellService = new WellService(_context, this, _wellProjectService, _explorationService, loggerFactory);
+        _explorationOperationalWellCostsService = new ExplorationOperationalWellCostsService(_context, this, loggerFactory);
+        _developmentOperationalWellCostsService = new DevelopmentOperationalWellCostsService(_context, this, loggerFactory);
     }
 
     public ProjectDto UpdateProject(ProjectDto projectDto)
@@ -144,6 +149,8 @@ public class ProjectService
             var project = _context.Projects!
                 .Include(p => p.Cases)
                 .Include(p => p.Wells)
+                .Include(p => p.ExplorationOperationalWellCosts)
+                .Include(p => p.DevelopmentOperationalWellCosts)
                 .FirstOrDefault(p => p.Id.Equals(projectId));
 
             if (project == null)
