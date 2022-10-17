@@ -1,4 +1,5 @@
 import { Case } from "../models/case/Case"
+import { Well } from "../models/Well"
 
 export const LoginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -29,7 +30,7 @@ export function StoreAppScope(appScope: string) {
 }
 
 export function GetToken(keyName: string) {
-    const scopes = [["api://9b125a0c-4907-43b9-8db2-ff405d6b0524/.default"][0]]
+    const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
@@ -113,21 +114,17 @@ export const IsDefaultDate = (date?: Date | null): boolean => {
 
 export const DefaultDate = () => new Date("0001-01-01")
 
-export const ProductionStrategyOverviewToString = (value: Components.Schemas.ProductionStrategyOverview): string => {
-    let name: string = ""
-    switch (value) {
-        case 1: name = "Water injection"
-            break
-        case 2: name = "Gas injection"
-            break
-        case 3: name = "WAG"
-            break
-        case 4: name = "Mixed"
-            break
-        default:
-            name = "Depletion"
-    }
-    return name
+export const isInteger = (value: string) => /^-?\d+$/.test(value)
+
+export const ProductionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
+    if (value === undefined) { return "" }
+    return {
+        0: "Depletion",
+        1: "Water injection",
+        2: "Gas injection",
+        3: "WAG",
+        4: "Mixed",
+    }[value]
 }
 
-export const isInteger = (value: string) => /^-?\d+$/.test(value)
+export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1

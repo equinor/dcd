@@ -430,6 +430,8 @@ const TopsideView = () => {
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={project?.currency!}
                 profileType="Cost"
+                readOnlyTimeSeries={[]}
+                readOnlyName={[]}
             />
         </AssetViewDiv>
     )

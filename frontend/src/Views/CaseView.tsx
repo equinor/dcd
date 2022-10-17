@@ -34,6 +34,15 @@ import { Transport } from "../models/assets/transport/Transport"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
+import DefinitionView from "./DefinitionView"
+import ExplorationViewTab from "./ExplorationViewTab"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import { OpexCostProfile } from "../models/case/OpexCostProfile"
+import { GetCaseService } from "../Services/CaseService"
+import { StudyCostProfile } from "../models/case/StudyCostProfile"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
+import ReadOnlyTimeSeries from "../Components/ReadOnlyTimeSeries"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -77,7 +86,9 @@ const StyledTabPanel = styled(Panel)`
     border-top: 1px solid LightGray;
 `
 
-function CaseView() {
+const CaseView = () => {
+    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
+
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(1)
@@ -94,10 +105,12 @@ function CaseView() {
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
+    const [firstTSYear, setFirstTSYear] = useState<number>()
+    const [lastTSYear, setLastTSYear] = useState<number>()
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
-    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
+    const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
     useEffect(() => {
         (async () => {
@@ -128,9 +141,9 @@ function CaseView() {
             <TopWrapper>
                 <PageTitle variant="h4">{caseItem.name}</PageTitle>
                 <TransparentButton
-                    onClick={() => toggleEditCaseModal()}
+                    onClick={() => toggleTechnicalInputModal()}
                 >
-                    Edit Case input
+                    Edit technical input
                 </TransparentButton>
                 <InvisibleButton
                     variant="outlined"
@@ -259,11 +272,11 @@ function CaseView() {
                 />
 
             </CaseViewDiv>
-            <EditCaseInputModal
-                toggleEditCaseModal={toggleEditCaseModal}
-                caseItem={caseItem}
-                isOpen={editCaseModalIsOpen}
-                shards={[]}
+            <EditTechnicalInputModal
+                toggleEditTechnicalInputModal={toggleTechnicalInputModal}
+                isOpen={editTechnicalInputModalIsOpen}
+                project={project}
+                setProject={setProject}
             />
         </div>
     )
