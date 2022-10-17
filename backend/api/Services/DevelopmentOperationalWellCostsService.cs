@@ -40,15 +40,10 @@ namespace api.Services
             _context.SaveChanges();
             return DevelopmentOperationalWellCostsDtoAdapter.Convert(explorationOperationalWellCosts);
         }
-        public DevelopmentOperationalWellCosts GetOperationalWellCosts(Guid id)
+        public DevelopmentOperationalWellCosts? GetOperationalWellCosts(Guid id)
         {
             var operationalWellCosts = _context.DevelopmentOperationalWellCosts!
                 .FirstOrDefault(o => o.ProjectId == id);
-            if (operationalWellCosts == null)
-            {
-                return null!;
-                // throw new ArgumentException(string.Format("OperationalWellCosts {0} not found.", id));
-            }
             return operationalWellCosts;
         }
     }

@@ -102,7 +102,6 @@ const EditTechnicalInputModal = ({
 
     useEffect(() => {
         if (project.wells) {
-            const a = project.wells.filter((w) => !IsExplorationWell(w))
             setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
             setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
         }
@@ -120,28 +119,6 @@ const EditTechnicalInputModal = ({
         }
         const wellsDto: Components.Schemas.WellDto[] = wells?.map((w) => Well.toDto(w)) ?? []
         return wellsDto
-    }
-
-    const saveWellProjectWells = async () => {
-        const newWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id === EMPTY_GUID)
-        const updatedWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id !== EMPTY_GUID)
-
-        const newWellProjectWellsResult = await (await GetWellService()).createMultipleWells(newWellProjectWells)
-
-        const wellProjectWellsResult = await (await GetWellService()).updateMultipleWells(updatedWellProjectWells)
-        const filteredWellProjectWellsResult = wellProjectWellsResult.filter((w: any) => !IsExplorationWell(w))
-        setWellProjectWells(filteredWellProjectWellsResult)
-    }
-
-    const saveExplorationWells = async () => {
-        const newExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id === EMPTY_GUID)
-        const updatedExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id !== EMPTY_GUID)
-
-        const newExplorationWellsResult = await (await GetWellService()).createMultipleWells(newExplorationWells)
-
-        const explorationWellsResult = await (await GetWellService()).updateMultipleWells(updatedExplorationWells)
-        const filteredExplorationWellsResult = explorationWellsResult.filter((w: any) => IsExplorationWell(w))
-        setExplorationWells(filteredExplorationWellsResult)
     }
 
     const setExplorationWellProjectWellsFromWells = (wells: Well[]) => {
