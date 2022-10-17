@@ -198,6 +198,8 @@ const ExplorationViewTab = ({
                     profileName={["Cost profile"]}
                     profileEnum={project?.currency!}
                     profileType="Cost"
+                    readOnlyTimeSeries={[]}
+                    readOnlyName={[]}
                 />
                 <ReadOnlyCostProfile
                     dG4Year={caseItem?.DG4Date?.getFullYear()}
