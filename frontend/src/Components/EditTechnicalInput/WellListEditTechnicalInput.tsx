@@ -109,7 +109,7 @@ function WellListEditTechnicalInput({
                         <option key="0" value={0}>Oil producer</option>
                         <option key="1" value={1}>Gas producer</option>
                         <option key="2" value={2}>Water injector</option>
-                        <option key="3" value={3}>Gas Injector</option>
+                        <option key="3" value={3}>Gas injector</option>
                     </>
                 )
                     : (
@@ -142,7 +142,7 @@ function WellListEditTechnicalInput({
             field: "wellCategory", headerName: "Well type", cellRenderer: wellCategoryRenderer, width: 250,
         },
         {
-            field: "drillingDays", width: 110, flex: 1,
+            field: "drillingDays", headerName: "Drilling days", width: 110, flex: 1,
         },
         {
             field: "wellCost", headerName: "Cost", width: 90, flex: 1,

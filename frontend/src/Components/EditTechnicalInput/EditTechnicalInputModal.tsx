@@ -68,7 +68,7 @@ const CancelButton = styled(Button)`
 `
 
 type Props = {
-    toggleEditTechnicalInputModal: any
+    toggleEditTechnicalInputModal: () => void
     isOpen: boolean
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project,
@@ -155,6 +155,8 @@ const EditTechnicalInputModal = ({
         setDevelopmentOperationalWellCosts(developmentResult)
 
         await saveWells()
+
+        toggleEditTechnicalInputModal()
     }
 
     return (
@@ -214,7 +216,7 @@ const EditTechnicalInputModal = ({
                         >
                             Cancel
                         </CancelButton>
-                        <Button onClick={handleSave}>Save</Button>
+                        <Button onClick={handleSave}>Save and close</Button>
                     </ButtonsWrapper>
                 </Wrapper>
             </ModalDiv>
