@@ -106,12 +106,6 @@ function CaseDescriptionTab({
         setCase(newCase)
     }
 
-    const handleTemplateCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
-        newCase.templateCount = Number(e.currentTarget.value)
-        setCase(newCase)
-    }
-
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
@@ -195,12 +189,6 @@ function CaseDescriptionTab({
 
                 </RowWrapper>
                 <RowWrapper>
-                    <CaseNumberInput
-                        onChange={handleTemplateCountChange}
-                        value={caseItem.templateCount}
-                        integer
-                        label="Templates"
-                    />
                     <NativeSelectField
                         id="productionStrategy"
                         label="Production strategy overview"

@@ -15,7 +15,6 @@ public class CaseDto
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
     public double FacilitiesAvailability { get; set; }
-    public int TemplateCount { get; set; }
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }

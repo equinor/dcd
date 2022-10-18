@@ -39,7 +39,6 @@ public static class CaseDtoAdapter
             GasInjectorCount = case_.GasInjectorCount,
             WaterInjectorCount = case_.WaterInjectorCount,
             FacilitiesAvailability = case_.FacilitiesAvailability,
-            TemplateCount = case_.TemplateCount,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
         };

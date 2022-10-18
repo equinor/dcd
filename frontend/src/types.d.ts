@@ -28,7 +28,6 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             facilitiesAvailability?: number; // double
-            templateCount?: number; // int32
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time
@@ -949,10 +948,46 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace NewCreateCase {
+        export type RequestBody = Components.Schemas.CaseDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
     namespace NewUpdateCase {
         export type RequestBody = Components.Schemas.CaseDto;
         namespace Responses {
             export type $200 = Components.Schemas.CaseDto;
+        }
+    }
+    namespace NewUpdateDrainageStrategy {
+        export type RequestBody = Components.Schemas.DrainageStrategyDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.DrainageStrategyDto;
+        }
+    }
+    namespace NewUpdateSubstructure {
+        export type RequestBody = Components.Schemas.SubstructureDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.SubstructureDto;
+        }
+    }
+    namespace NewUpdateSurf {
+        export type RequestBody = Components.Schemas.SurfDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.SurfDto;
+        }
+    }
+    namespace NewUpdateTopside {
+        export type RequestBody = Components.Schemas.TopsideDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.TopsideDto;
+        }
+    }
+    namespace NewUpdateTransport {
+        export type RequestBody = Components.Schemas.TransportDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.TransportDto;
         }
     }
     namespace UpdateCase {
@@ -989,6 +1024,12 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.ExplorationWellDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateMultipleWells {
+        export type RequestBody = Components.Schemas.WellDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.WellDto[];
         }
     }
     namespace UpdateProject {

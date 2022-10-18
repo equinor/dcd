@@ -33,7 +33,6 @@ export class Case implements Components.Schemas.CaseDto {
     gasInjectorCount?: number
     waterInjectorCount?: number
     facilitiesAvailability?: number
-    templateCount?: number // int32
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
     cessationCost?: CaseCessationCostProfile
     sharepointFileId?: string
@@ -71,7 +70,6 @@ export class Case implements Components.Schemas.CaseDto {
         this.gasInjectorCount = data.gasInjectorCount
         this.waterInjectorCount = data.waterInjectorCount
         this.facilitiesAvailability = data.facilitiesAvailability
-        this.templateCount = data.templateCount
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
         this.cessationCost = CaseCessationCostProfile.fromJSON(data.cessationCost)
         this.sharepointFileId = data.sharepointFileId ?? ""

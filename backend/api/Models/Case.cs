@@ -28,7 +28,6 @@ public class Case
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
     public double FacilitiesAvailability { get; set; }
-    public int TemplateCount { get; set; }
     public double CapexFactorFeasibilityStudies { get; set; } = 0.015;
     public double CapexFactorFEEDStudies { get; set; } = 0.015;
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
