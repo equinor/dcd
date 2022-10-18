@@ -36,6 +36,12 @@ public class TransportsController : ControllerBase
         return _transportService.UpdateTransport(transportDto);
     }
 
+    [HttpPut("new", Name = "NewUpdateTransport")]
+    public TransportDto NewUpdateTransport([FromBody] TransportDto transportDto)
+    {
+        return _transportService.NewUpdateTransport(transportDto);
+    }
+
     [HttpPost(Name = "CreateTransport")]
     public ProjectDto CreateTransport([FromQuery] Guid sourceCaseId, [FromBody] TransportDto transportDto)
     {

@@ -416,7 +416,7 @@ public class ProspExcelImportService
 
             var caseItem = _caseService.GetCase(sourceCaseId);
             caseItem.SharepointFileId = sharepointFileId;
-            var caseDto = CaseDtoAdapter.Convert(caseItem, _projectService.GetProjectDto(projectId));
+            var caseDto = CaseDtoAdapter.Convert(caseItem);
             return _caseService.UpdateCase(caseDto);
         }
 

@@ -46,4 +46,10 @@ public class DrainageStrategiesController : ControllerBase
     {
         return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategyDto);
     }
+
+    [HttpPut("new", Name = "NewUpdateDrainageStrategy")]
+    public DrainageStrategyDto NewUpdateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
+    {
+        return _drainageStrategyService.NewUpdateDrainageStrategy(drainageStrategyDto);
+    }
 }

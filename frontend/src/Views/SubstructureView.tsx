@@ -17,7 +17,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
-import { IsInvalidDate, unwrapCase, unwrapProjectId } from "../Utils/common"
+import { IsDefaultDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import Maturity from "../Components/Maturity"
@@ -76,11 +76,11 @@ const SubstructureView = () => {
                 let newSubstructure = project.substructures.find((s) => s.id === substructureId)
                 if (newSubstructure !== undefined) {
                     if (newSubstructure.DG3Date === null
-                        || IsInvalidDate(newSubstructure.DG3Date)) {
+                        || IsDefaultDate(newSubstructure.DG3Date)) {
                         newSubstructure.DG3Date = caseResult?.DG3Date
                     }
                     if (newSubstructure.DG4Date === null
-                        || IsInvalidDate(newSubstructure.DG4Date)) {
+                        || IsDefaultDate(newSubstructure.DG4Date)) {
                         newSubstructure.DG4Date = caseResult?.DG4Date
                     }
                     setSubstructure(newSubstructure)
@@ -93,7 +93,7 @@ const SubstructureView = () => {
                 }
                 setSubstructureName(newSubstructure?.name!)
                 setMaturity(newSubstructure.maturity)
-                setDryWeight(newSubstructure.dryweight)
+                setDryWeight(newSubstructure.dryWeight)
                 setCurrency(newSubstructure.currency ?? 1)
                 setApprovedBy(newSubstructure?.approvedBy!)
                 setCostYear(newSubstructure?.costYear)
@@ -124,7 +124,7 @@ const SubstructureView = () => {
         if (substructure !== undefined) {
             const newSubstructure: Substructure = { ...substructure }
             newSubstructure.maturity = maturity
-            newSubstructure.dryweight = dryWeight
+            newSubstructure.dryWeight = dryWeight
             newSubstructure.costProfile = costProfile
             newSubstructure.cessationCostProfile = cessationCostProfile
             newSubstructure.currency = currency

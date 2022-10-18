@@ -85,7 +85,7 @@ public static class ProjectDtoAdapter
         {
             foreach (var caseItem in project.Cases)
             {
-                projectDto.Cases!.Add(CaseDtoAdapter.Convert(caseItem, projectDto));
+                projectDto.Cases!.Add(CaseDtoAdapter.Convert(caseItem));
             }
         }
 

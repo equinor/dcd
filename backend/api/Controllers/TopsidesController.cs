@@ -47,4 +47,10 @@ public class TopsidesController : ControllerBase
     {
         return _topsideService.UpdateTopside(topsideDto);
     }
+
+    [HttpPut("new", Name = "NewUpdateTopside")]
+    public TopsideDto NewUpdateTopside([FromBody] TopsideDto topsideDto)
+    {
+        return _topsideService.NewUpdateTopside(topsideDto);
+    }
 }
