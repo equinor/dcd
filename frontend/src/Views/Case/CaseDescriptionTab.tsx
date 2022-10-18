@@ -21,7 +21,6 @@ const ColumnWrapper = styled.div`
 const RowWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     margin-bottom: 78px;
 `
 const TopWrapper = styled.div`
@@ -38,6 +37,9 @@ const DescriptionField = styled(TextArea)`
 `
 const NativeSelectField = styled(NativeSelect)`
     width: 250px;
+`
+const InputWrapper = styled.div`
+    margin-right: 20px;
 `
 
 interface Props {
@@ -126,53 +128,59 @@ function CaseDescriptionTab({
                     rows={8}
                 />
                 <RowWrapper>
-                    <CaseNumberInput
-                        onChange={handleProducerCountChange}
-                        value={caseItem.producerCount}
-                        integer
-                        label="Oil producer wells"
-                    />
-                    <CaseNumberInput
-                        onChange={handletWaterInjectorCountChange}
-                        value={caseItem.waterInjectorCount}
-                        integer
-                        disabled={false}
-                        label="Water injector count"
-                    />
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={handleProducerCountChange}
+                            value={caseItem.producerCount}
+                            integer
+                            label="Oil producer wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={handletWaterInjectorCountChange}
+                            value={caseItem.waterInjectorCount}
+                            integer
+                            disabled={false}
+                            label="Water injector count"
+                        />
+                    </InputWrapper>
                     <CaseNumberInput
                         onChange={handleGasInjectorCountChange}
                         value={caseItem.gasInjectorCount}
                         integer
                         label="Gas injector count"
                     />
-
                 </RowWrapper>
                 <RowWrapper>
-                    <NativeSelectField
-                        id="productionStrategy"
-                        label="Production strategy overview"
-                        onChange={handleProductionStrategyChange}
-                        value={caseItem.productionStrategyOverview}
-                    >
-                        <option key={undefined} value={undefined}> </option>
-                        <option key={0} value={0}>Depletion</option>
-                        <option key={1} value={1}>Water injection</option>
-                        <option key={2} value={2}>Gas injection</option>
-                        <option key={3} value={3}>WAG</option>
-                        <option key={4} value={4}>Mixed</option>
-                    </NativeSelectField>
-                    <NativeSelectField
-                        id="artificialLift"
-                        label="Artificial lift"
-                        onChange={handleArtificialLiftChange}
-                        value={caseItem.artificialLift}
-                    >
-                        <option key="0" value={0}>No lift</option>
-                        <option key="1" value={1}>Gas lift</option>
-                        <option key="2" value={2}>Electrical submerged pumps</option>
-                        <option key="3" value={3}>Subsea booster pumps</option>
-                    </NativeSelectField>
-
+                    <InputWrapper>
+                        <NativeSelectField
+                            id="productionStrategy"
+                            label="Production strategy overview"
+                            onChange={handleProductionStrategyChange}
+                            value={caseItem.productionStrategyOverview}
+                        >
+                            <option key={undefined} value={undefined}> </option>
+                            <option key={0} value={0}>Depletion</option>
+                            <option key={1} value={1}>Water injection</option>
+                            <option key={2} value={2}>Gas injection</option>
+                            <option key={3} value={3}>WAG</option>
+                            <option key={4} value={4}>Mixed</option>
+                        </NativeSelectField>
+                    </InputWrapper>
+                    <InputWrapper>
+                        <NativeSelectField
+                            id="artificialLift"
+                            label="Artificial lift"
+                            onChange={handleArtificialLiftChange}
+                            value={caseItem.artificialLift}
+                        >
+                            <option key="0" value={0}>No lift</option>
+                            <option key="1" value={1}>Gas lift</option>
+                            <option key="2" value={2}>Electrical submerged pumps</option>
+                            <option key="3" value={3}>Subsea booster pumps</option>
+                        </NativeSelectField>
+                    </InputWrapper>
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}
                         value={caseItem.facilitiesAvailability}
