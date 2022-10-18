@@ -28,8 +28,8 @@ public class RequestLoggingMiddleware
         {
 
             _logger.LogInformation(
-            "Request {session} {method} {url} => {statusCode}",
-            context.Session?.Id,
+            "Request {trace} {method} {url} => {statusCode}",
+            context.TraceIdentifier,
             context.Request?.Method,
             context.Request?.Path.Value,
             context.Response?.StatusCode);
