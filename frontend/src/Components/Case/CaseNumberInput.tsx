@@ -26,12 +26,12 @@ const CaseNumberInput = ({
             disabled={disabled}
             onChange={onChange}
             onKeyPress={(event) => {
-                    if (integer && !/\d/.test(event.key)) {
-                        event.preventDefault()
-                    }
-                }}
+                if (integer && !/\d/.test(event.key)) {
+                    event.preventDefault()
+                }
+            }}
         />
     </WrapperColumn>
-    )
+)
 
 export default CaseNumberInput

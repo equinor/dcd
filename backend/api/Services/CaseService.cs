@@ -20,7 +20,6 @@ public class CaseService
         _projectService = projectService;
         _serviceProvider = serviceProvider;
         _logger = loggerFactory.CreateLogger<CaseService>();
-
     }
 
     public ProjectDto CreateCase(CaseDto caseDto)

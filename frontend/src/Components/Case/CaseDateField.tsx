@@ -40,6 +40,6 @@ const CaseDateField = ({
             min={min}
         />
     </ColumnWrapper>
-    )
+)
 
 export default CaseDateField

@@ -1,50 +1,18 @@
 import {
     Dispatch,
     SetStateAction,
-    ChangeEventHandler,
     useMemo,
     useState,
     useRef,
     useEffect,
 } from "react"
-import styled from "styled-components"
 
-import {
-    Button, NativeSelect, Typography,
-} from "@equinor/eds-core-react"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
-import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import "ag-grid-enterprise"
 import { isInteger } from "../../Utils/common"
-
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 78px;
-`
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    margin-bottom: 20px;
-`
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
-`
-const NativeSelectField = styled(NativeSelect)`
-    width: 250px;
-    padding-right: 20px;
-`
-const NumberInputField = styled.div`
-    padding-right: 20px;
-`
 
 interface Props {
     project: Project,
@@ -142,7 +110,7 @@ function CaseProductionProfilesTabTable({
 
     const generateTableYearColDefs = () => {
         const profileNameDef = { field: "profileName", headerName: "Production profiles", width: 250 }
-        const unitDef = { field: "unit", width: 70 }
+        const unitDef = { field: "unit", width: 100 }
         const yearDefs = []
         for (let index = firstYear; index <= lastYear; index += 1) {
             yearDefs.push({ field: index.toString(), flex: 1 })
