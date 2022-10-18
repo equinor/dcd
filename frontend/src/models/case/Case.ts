@@ -11,11 +11,11 @@ export class Case implements Components.Schemas.CaseDto {
     DGCDate: Date // date-time
     APXDate: Date // date-time
     APZDate: Date // date-time
-    DG0Date: Date
-    DG1Date: Date
-    DG2Date: Date
-    DG3Date: Date
-    DG4Date: Date
+    DG0Date: Date // date-time
+    DG1Date: Date // date-time
+    DG2Date: Date // date-time
+    DG3Date: Date // date-time
+    DG4Date: Date // date-time
     id?: string
     projectId?: string
     updatedAt?: Date | null

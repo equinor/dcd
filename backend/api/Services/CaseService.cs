@@ -62,8 +62,8 @@ public class CaseService
             Name = "Drainage strategy",
             Description = ""
         };
-        var draiangeStrategy = drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
-        case_.DrainageStrategyLink = draiangeStrategy.Id;
+        var drainageStrategy = drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
+        case_.DrainageStrategyLink = drainageStrategy.Id;
 
         var topsideDto = new TopsideDto
         {

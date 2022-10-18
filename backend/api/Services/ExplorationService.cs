@@ -40,9 +40,9 @@ public class ExplorationService
         }
     }
 
-    public ProjectDto CreateExploration(ExplorationDto eplorationDto, Guid sourceCaseId)
+    public ProjectDto CreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
     {
-        var exploration = ExplorationAdapter.Convert(eplorationDto);
+        var exploration = ExplorationAdapter.Convert(explorationDto);
         var project = _projectService.GetProject(exploration.ProjectId);
         exploration.Project = project;
         _context.Explorations!.Add(exploration);
@@ -51,9 +51,9 @@ public class ExplorationService
         return _projectService.GetProjectDto(exploration.ProjectId);
     }
 
-    public Exploration NewCreateExploration(ExplorationDto eplorationDto, Guid sourceCaseId)
+    public Exploration NewCreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
     {
-        var exploration = ExplorationAdapter.Convert(eplorationDto);
+        var exploration = ExplorationAdapter.Convert(explorationDto);
         var project = _projectService.GetProject(exploration.ProjectId);
         exploration.Project = project;
         var createdExploration = _context.Explorations!.Add(exploration);

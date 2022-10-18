@@ -127,9 +127,9 @@ public class TopsideService
             _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
         existing.LastChangedDate = DateTimeOffset.Now;
-        var createdTopside = _context.Topsides!.Update(existing);
+        var updatedTopside = _context.Topsides!.Update(existing);
         _context.SaveChanges();
-        return TopsideDtoAdapter.Convert(createdTopside.Entity);
+        return TopsideDtoAdapter.Convert(updatedTopside.Entity);
     }
 
     public Topside GetTopside(Guid topsideId)

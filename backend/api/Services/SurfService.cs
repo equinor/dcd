@@ -70,9 +70,9 @@ public class SurfService
             _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
         existing.LastChangedDate = DateTimeOffset.Now;
-        var createdSurf = _context.Surfs!.Update(existing);
+        var updatedSurf = _context.Surfs!.Update(existing);
         _context.SaveChanges();
-        return SurfDtoAdapter.Convert(createdSurf.Entity);
+        return SurfDtoAdapter.Convert(updatedSurf.Entity);
     }
 
     public Surf GetSurf(Guid surfId)
@@ -106,7 +106,6 @@ public class SurfService
         var surf = SurfAdapter.Convert(surfDto);
         var project = _projectService.GetProject(surf.ProjectId);
         surf.Project = project;
-        surf.ProspVersion = surfDto.ProspVersion;
         surf.LastChangedDate = DateTimeOffset.Now;
         var createdSurf = _context.Surfs!.Add(surf);
         _context.SaveChanges();

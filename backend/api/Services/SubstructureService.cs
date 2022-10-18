@@ -127,11 +127,10 @@ public class SubstructureService
             _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
         existing.LastChangedDate = DateTimeOffset.Now;
-        var createdSubstructure = _context.Substructures!.Update(existing);
+        var updatedSubstructure = _context.Substructures!.Update(existing);
         _context.SaveChanges();
-        return SubstructureDtoAdapter.Convert(createdSubstructure.Entity);
+        return SubstructureDtoAdapter.Convert(updatedSubstructure.Entity);
     }
-
 
     public Substructure GetSubstructure(Guid substructureId)
     {

@@ -254,7 +254,7 @@ function CaseFacilitiesTab({
                     </NumberInputField>
                     <NativeSelectField
                         id="productionFlowline"
-                        label="Production Flowline"
+                        label="Production flowline"
                         onChange={handleProductionFlowlineChange}
                         value={surf?.productionFlowline}
                     >

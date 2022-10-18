@@ -93,7 +93,7 @@ function CaseProductionProfilesTab({
         updateAndSetDraiangeStrategy(newDrainageStrategy)
     }
 
-    const timeSerieses = [
+    const timeSeriesData = [
         {
             profileName: "Net sales gas", unit: "GSm3/yr", set: setNetSalesGas, profile: netSalesGas,
         },
@@ -187,7 +187,7 @@ function CaseProductionProfilesTab({
                     project={project}
                     setCase={setCase}
                     setProject={setProject}
-                    timeSerieses={timeSerieses}
+                    timeSeriesData={timeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     firstYear={firstYear}
                     lastYear={lastYear}

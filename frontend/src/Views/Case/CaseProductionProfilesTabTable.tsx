@@ -19,7 +19,7 @@ interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
-    timeSerieses: any[]
+    timeSeriesData: any[]
     dg4Year: number
     firstYear: number
     lastYear: number
@@ -28,7 +28,7 @@ interface Props {
 function CaseProductionProfilesTabTable({
     project, setProject,
     caseItem, setCase,
-    timeSerieses, dg4Year,
+    timeSeriesData, dg4Year,
     firstYear, lastYear,
 }: Props) {
     useAgGridStyles()
@@ -42,7 +42,7 @@ function CaseProductionProfilesTabTable({
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
-        timeSerieses.forEach((ts) => {
+        timeSeriesData.forEach((ts) => {
             const rowObject: any = {}
             const { profileName, unit } = ts
             rowObject.profileName = profileName
@@ -64,10 +64,9 @@ function CaseProductionProfilesTabTable({
 
     useEffect(() => {
         setRowData(profilesToRowData())
-    }, [timeSerieses])
+    }, [timeSeriesData])
 
     const handleCellValueChange = (p: any) => {
-        console.log(p)
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
         properties.forEach((prop) => {
@@ -79,7 +78,6 @@ function CaseProductionProfilesTabTable({
             }
         })
         tableTimeSeriesValues.sort((a, b) => a.year - b.year)
-        console.log(tableTimeSeriesValues)
         if (tableTimeSeriesValues.length > 0) {
             const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
             const tableTimeSerieslastYear = tableTimeSeriesValues.at(-1).year
