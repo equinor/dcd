@@ -5,7 +5,7 @@ namespace api.Adapters;
 
 public static class CaseDtoAdapter
 {
-    public static CaseDto Convert(Case case_, ProjectDto projectDto)
+    public static CaseDto Convert(Case case_)
     {
         var caseDto = new CaseDto
         {
@@ -14,6 +14,11 @@ public static class CaseDtoAdapter
             Name = case_.Name,
             Description = case_.Description,
             ReferenceCase = case_.ReferenceCase,
+            DGADate = case_.DGADate,
+            DGBDate = case_.DGBDate,
+            DGCDate = case_.DGCDate,
+            APXDate = case_.APXDate,
+            APZDate = case_.APZDate,
             DG0Date = case_.DG0Date,
             DG1Date = case_.DG1Date,
             DG2Date = case_.DG2Date,
