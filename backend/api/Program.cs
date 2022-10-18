@@ -193,7 +193,6 @@ app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
 app.UseMiddleware<ClaimsMiddelware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
