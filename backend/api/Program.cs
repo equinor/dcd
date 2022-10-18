@@ -141,7 +141,7 @@ builder.Services.AddFusionIntegration(options =>
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
-    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("logs/log_.txt", rollingInterval: RollingInterval.Day)
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
