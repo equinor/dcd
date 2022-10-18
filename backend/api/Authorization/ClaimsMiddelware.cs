@@ -1,5 +1,4 @@
 using System.Security.Claims;
-
 using Fusion;
 using Fusion.Integration.Authentication;
 using Fusion.Integration.Profile;
@@ -10,12 +9,14 @@ public class ClaimsMiddelware
 {
 
     public static string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+    public ILogger<ClaimsMiddelware> _logger;
     private readonly RequestDelegate nextMiddleware;
     public ClaimsMiddelware(RequestDelegate nextMiddleware,
         ILogger<ClaimsMiddelware> logger,
         IConfiguration configuration)
     {
         this.nextMiddleware = nextMiddleware;
+        _logger = logger;
 
     }
     public async Task InvokeAsync(HttpContext httpContext)
@@ -32,6 +33,7 @@ public class ClaimsMiddelware
         }
         else
         {
+            _logger.LogError("Aloha");
             Console.WriteLine("Unauthenticated access attempted on: " + httpContext.Request.Path);
         }
 

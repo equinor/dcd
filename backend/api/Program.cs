@@ -134,7 +134,9 @@ builder.Services.AddFusionIntegration(options =>
     options.AddFusionRoles();
     options.ApplicationMode = true;
 });
-
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
@@ -162,18 +164,18 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
-builder.Services.AddSingleton<ILoggerFactory>(sp =>
-{
-    var factory = new LoggerFactory();
-    var logger = new LoggerConfiguration();
-    Serilog.Events.LogEventLevel level = Serilog.Events.LogEventLevel.Debug;
-    var configuration = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json")
-        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
-        .Build();
-    return factory;
-});
+// builder.Services.AddSingleton<ILoggerFactory>(sp =>
+// {
+//     var factory = new LoggerFactory();
+//     var logger = new LoggerConfiguration();
+//     Serilog.Events.LogEventLevel level = Serilog.Events.LogEventLevel.Debug;
+//     var configuration = new ConfigurationBuilder()
+//         .SetBasePath(Directory.GetCurrentDirectory())
+//         .AddJsonFile("appsettings.json")
+//         .
+//         .Build();
+//     return factory;
+// });
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
@@ -181,20 +183,22 @@ builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Host.UseSerilog();
 
 
 var app = builder.Build();
 app.UseRouting();
-var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
-logger.LogInformation("Fom Program, running the host now");
+// var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+// logger.LogInformation("Fom Program, running the host now");
 if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
 app.UseMiddleware<ClaimsMiddelware>();
