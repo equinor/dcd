@@ -23,21 +23,14 @@ import CaseAsset from "../Components/Case/CaseAsset"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import DefinitionView from "./DefinitionView"
 import ExplorationViewTab from "./ExplorationViewTab"
-<<<<<<< HEAD
-import { EditCaseInputModal } from "./EditCaseInputModal"
-=======
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
->>>>>>> 35ea078aca5b508fa721cbceef61348a000d338e
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { GetCaseService } from "../Services/CaseService"
 import { StudyCostProfile } from "../models/case/StudyCostProfile"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
 import ReadOnlyTimeSeries from "../Components/ReadOnlyTimeSeries"
-<<<<<<< HEAD
 import DrillingScheduleViewTab from "./DrillingScheduleViewTab"
-=======
->>>>>>> 35ea078aca5b508fa721cbceef61348a000d338e
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
