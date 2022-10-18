@@ -24,18 +24,16 @@ namespace api.Controllers;
 public class WellProjectsController : ControllerBase
 {
     private readonly WellProjectService _wellProjectService;
-    private readonly WellProjectAdapter _wellProjectAdapter;
 
     public WellProjectsController(WellProjectService wellProjectService)
     {
         _wellProjectService = wellProjectService;
-        _wellProjectAdapter = new WellProjectAdapter();
     }
 
     [HttpPost(Name = "CreateWellProject")]
     public ProjectDto CreateWellProject([FromQuery] Guid sourceCaseId, [FromBody] WellProjectDto wellProjectDto)
     {
-        var wellProject = _wellProjectAdapter.Convert(wellProjectDto);
+        var wellProject = WellProjectAdapter.Convert(wellProjectDto);
         return _wellProjectService.CreateWellProject(wellProject, sourceCaseId);
     }
 

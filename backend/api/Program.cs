@@ -3,6 +3,7 @@ using api.SampleData.Generators;
 using api.Services;
 
 using Api.Authorization;
+using Api.Helpers;
 using Api.Services.FusionIntegration;
 
 using Azure.Identity;
@@ -16,6 +17,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
+
+using Serilog;
+using Serilog.Events;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -134,7 +138,11 @@ builder.Services.AddFusionIntegration(options =>
     options.AddFusionRoles();
     options.ApplicationMode = true;
 });
-
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
@@ -162,7 +170,6 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
-
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
@@ -170,22 +177,22 @@ builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Host.UseSerilog();
 
 
 var app = builder.Build();
 app.UseRouting();
-var logger = app.Services.GetRequiredService<ILogger<Program>>();
-logger.LogInformation("Fom Program, running the host now");
 if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
 app.UseMiddleware<ClaimsMiddelware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

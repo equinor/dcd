@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable camelcase */
 import {
     Button,
@@ -20,10 +21,20 @@ import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/Case/CaseAsset"
-import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import DefinitionView from "./DefinitionView"
-import ExplorationViewTab from "./ExplorationViewTab"
+import { unwrapProjectId } from "../Utils/common"
+import CaseDescriptionTab from "./Case/CaseDescriptionTab"
+import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
+import { WellProject } from "../models/assets/wellproject/WellProject"
+import { Surf } from "../models/assets/surf/Surf"
+import { Topside } from "../models/assets/topside/Topside"
+import { Substructure } from "../models/assets/substructure/Substructure"
+import { Exploration } from "../models/assets/exploration/Exploration"
+import { Transport } from "../models/assets/transport/Transport"
+import CaseScheduleTab from "./Case/CaseScheduleTab"
+import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
+import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+<<<<<<< HEAD
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { GetCaseService } from "../Services/CaseService"
 import { StudyCostProfile } from "../models/case/StudyCostProfile"
@@ -31,6 +42,8 @@ import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
 import ReadOnlyTimeSeries from "../Components/ReadOnlyTimeSeries"
 import DrillingScheduleViewTab from "./DrillingScheduleViewTab"
+=======
+>>>>>>> a2a5d213e1bcb96150c0e10d1f723f1d97c42aac
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -80,11 +93,16 @@ const CaseView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
-    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
+    const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
-    const [opex, setOpex] = useState<OpexCostProfile>()
-    const [study, setStudy] = useState<StudyCostProfile>()
-    const [cessation, setCessation] = useState<CaseCessationCostProfile>()
+
+    const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
+    const [exploration, setExploration] = useState<Exploration>()
+    const [wellProject, setWellProject] = useState<WellProject>()
+    const [surf, setSurf] = useState<Surf>()
+    const [topside, setTopside] = useState<Topside>()
+    const [substructure, setSubstructure] = useState<Substructure>()
+    const [transport, setTransport] = useState<Transport>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
@@ -103,61 +121,18 @@ const CaseView = () => {
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === caseId)
                 setCase(caseResult)
+                setDrainageStrategy(projectResult?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink))
+                setExploration(projectResult?.explorations.find((exp) => exp.id === caseResult?.explorationLink))
+                setWellProject(projectResult?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink))
+                setSurf(projectResult?.surfs.find((sur) => sur.id === caseResult?.surfLink))
+                setTopside(projectResult?.topsides.find((top) => top.id === caseResult?.topsideLink))
+                setSubstructure(projectResult?.substructures.find((sub) => sub.id === caseResult?.substructureLink))
+                setTransport(projectResult?.transports.find((tran) => tran.id === caseResult?.transportLink))
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
     }, [currentProject?.externalId, caseId])
-
-    useEffect(() => {
-        (async () => {
-            if (project !== undefined) {
-                const caseResult = unwrapCase(project.cases.find((o) => o.id === caseId))
-                setCase(caseResult)
-                try {
-                    const generatedOpexCost = await (await GetCaseService()).generateOpexCost(caseResult.id!)
-                    setOpex(generatedOpexCost)
-                } catch (error) {
-                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
-                }
-                try {
-                    const generateStudy = await (await GetCaseService()).generateStudyCost(caseResult.id!)
-                    setStudy(generateStudy)
-                } catch (error) {
-                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
-                }
-                try {
-                    const generateCessation = await (await GetCaseService()).generateCessationCost(caseResult.id!)
-                    setCessation(generateCessation)
-                } catch (error) {
-                    console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
-                }
-                if (caseResult?.DG4Date) {
-                    initializeFirstAndLastYear(
-                        caseResult?.DG4Date?.getFullYear(),
-                        [cessation,
-                            opex,
-                            study],
-                        setFirstTSYear,
-                        setLastTSYear,
-                    )
-                }
-            }
-        })()
-    }, [project])
-
-    useEffect(() => {
-        if (caseItem?.DG4Date && cessation) {
-            initializeFirstAndLastYear(
-                caseItem?.DG4Date?.getFullYear(),
-                [cessation,
-                    opex,
-                    study],
-                setFirstTSYear,
-                setLastTSYear,
-            )
-        }
-    }, [caseItem, cessation, opex, study])
 
     if (!project) return null
     if (!caseItem) return null
@@ -165,13 +140,14 @@ const CaseView = () => {
     return (
         <div>
             <TopWrapper>
-                <PageTitle variant="h2">{caseItem.name}</PageTitle>
+                <PageTitle variant="h4">{caseItem.name}</PageTitle>
                 <TransparentButton
                     onClick={() => toggleTechnicalInputModal()}
                 >
                     Edit technical input
                 </TransparentButton>
                 <InvisibleButton
+                    variant="outlined"
                     ref={setMenuAnchorEl}
                     onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
                 >
@@ -221,20 +197,27 @@ const CaseView = () => {
             <CaseViewDiv>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>
+<<<<<<< HEAD
                         <Tab>Definition </Tab>
                         <Tab>Schedule </Tab>
                         <Tab>Facilities </Tab>
                         <Tab>Exploration</Tab>
                         <Tab>Development </Tab>
                         <Tab>Drilling Schedule </Tab>
+=======
+                        <Tab>Description</Tab>
+>>>>>>> a2a5d213e1bcb96150c0e10d1f723f1d97c42aac
                         <Tab>Production Profiles</Tab>
+                        <Tab>Schedule</Tab>
+                        <Tab>Drilling Schedule</Tab>
+                        <Tab>Facilities</Tab>
                         <Tab>Cost</Tab>
-                        <Tab>CO2 Emissions </Tab>
-                        <Tab>Summary </Tab>
+                        <Tab>CO2 Emissions</Tab>
+                        <Tab>Summary</Tab>
                     </List>
                     <Panels>
                         <StyledTabPanel>
-                            <DefinitionView
+                            <CaseDescriptionTab
                                 project={project}
                                 setProject={setProject}
                                 caseItem={caseItem}
@@ -242,22 +225,25 @@ const CaseView = () => {
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Schedule</p>
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <p>Facilities</p>
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            Exploration
-                            <ExplorationViewTab
-                                _case={caseItem}
-                                _project={project}
+                            <CaseProductionProfilesTab
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                                drainageStrategy={drainageStrategy}
+                                setDrainageStrategy={setDrainageStrategy}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Development</p>
+                            <CaseScheduleTab
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
+<<<<<<< HEAD
                             <p><Typography variant="h3">Drilling Schedule</Typography></p>
                             <DrillingScheduleViewTab
                                 _case={caseItem}
@@ -266,6 +252,25 @@ const CaseView = () => {
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Production profiles</p>
+=======
+                            <p>Drilling Schedule</p>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <CaseFacilitiesTab
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                                topside={topside}
+                                setTopside={setTopside}
+                                surf={surf}
+                                setSurf={setSurf}
+                                substructure={substructure}
+                                setSubstrucutre={setSubstructure}
+                                transport={transport}
+                                setTransport={setTransport}
+                            />
+>>>>>>> a2a5d213e1bcb96150c0e10d1f723f1d97c42aac
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Cost</p>
@@ -278,15 +283,6 @@ const CaseView = () => {
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
-                <ReadOnlyTimeSeries
-                    dG4Year={caseItem.DG4Date!.getFullYear()}
-                    firstYear={firstTSYear}
-                    lastYear={lastTSYear}
-                    profileEnum={project?.currency!}
-                    profileType="Cost"
-                    readOnlyTimeSeries={[cessation, opex, study]}
-                    readOnlyName={["Cessation cost profile", "OPEX cost profile", "Study cost profile"]}
-                />
                 <DividerLine />
                 <CaseAsset
                     caseItem={caseItem}

@@ -3,9 +3,9 @@ using api.Models;
 
 namespace api.Adapters;
 
-public class WellProjectAdapter
+public static class WellProjectAdapter
 {
-    public WellProject Convert(WellProjectDto wellProjectDto)
+    public static WellProject Convert(WellProjectDto wellProjectDto)
     {
         var wellProject = new WellProject
         {

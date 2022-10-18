@@ -46,6 +46,17 @@ public class WellProjectService
         return _projectService.GetProjectDto(project.Id);
     }
 
+    public WellProject NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId)
+    {
+        var wellProject = WellProjectAdapter.Convert(wellProjectDto);
+        var project = _projectService.GetProject(wellProject.ProjectId);
+        wellProject.Project = project;
+        var createdWellProject = _context.WellProjects!.Add(wellProject);
+        _context.SaveChanges();
+        SetCaseLink(wellProject, sourceCaseId, project);
+        return createdWellProject.Entity;
+    }
+
     private void SetCaseLink(WellProject wellProject, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
