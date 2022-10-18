@@ -290,6 +290,8 @@ const DrainageStrategyView = () => {
                     "Production profile water injection", "Production profile NGL"]}
                 profileEnum={project?.physUnit!}
                 profileType="Production"
+                readOnlyTimeSeries={[]}
+                readOnlyName={[]}
             />
         </AssetViewDiv>
     )

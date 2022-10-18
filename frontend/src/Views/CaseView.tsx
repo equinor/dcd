@@ -23,11 +23,13 @@ import CaseAsset from "../Components/Case/CaseAsset"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
 import DefinitionView from "./DefinitionView"
 import ExplorationViewTab from "./ExplorationViewTab"
-import { EditCaseInputModal } from "./EditCaseInputModal"
-import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { GetCaseService } from "../Services/CaseService"
 import { StudyCostProfile } from "../models/case/StudyCostProfile"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
+import ReadOnlyTimeSeries from "../Components/ReadOnlyTimeSeries"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -71,7 +73,9 @@ const StyledTabPanel = styled(Panel)`
     border-top: 1px solid LightGray;
 `
 
-function CaseView() {
+const CaseView = () => {
+    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
+
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
@@ -79,14 +83,16 @@ function CaseView() {
     const currentProject = useCurrentContext()
     const [opex, setOpex] = useState<OpexCostProfile>()
     const [study, setStudy] = useState<StudyCostProfile>()
-    const [cessation, setCessation] = useState<StudyCostProfile>()
+    const [cessation, setCessation] = useState<CaseCessationCostProfile>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
+    const [firstTSYear, setFirstTSYear] = useState<number>()
+    const [lastTSYear, setLastTSYear] = useState<number>()
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
-    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
+    const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
     useEffect(() => {
         (async () => {
@@ -125,9 +131,32 @@ function CaseView() {
                 } catch (error) {
                     console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
                 }
+                if (caseResult?.DG4Date) {
+                    initializeFirstAndLastYear(
+                        caseResult?.DG4Date?.getFullYear(),
+                        [cessation,
+                            opex,
+                            study],
+                        setFirstTSYear,
+                        setLastTSYear,
+                    )
+                }
             }
         })()
     }, [project])
+
+    useEffect(() => {
+        if (caseItem?.DG4Date && cessation) {
+            initializeFirstAndLastYear(
+                caseItem?.DG4Date?.getFullYear(),
+                [cessation,
+                    opex,
+                    study],
+                setFirstTSYear,
+                setLastTSYear,
+            )
+        }
+    }, [caseItem, cessation, opex, study])
 
     if (!project) return null
     if (!caseItem) return null
@@ -137,9 +166,9 @@ function CaseView() {
             <TopWrapper>
                 <PageTitle variant="h2">{caseItem.name}</PageTitle>
                 <TransparentButton
-                    onClick={() => toggleEditCaseModal()}
+                    onClick={() => toggleTechnicalInputModal()}
                 >
-                    Edit Case input
+                    Edit technical input
                 </TransparentButton>
                 <InvisibleButton
                     ref={setMenuAnchorEl}
@@ -240,20 +269,14 @@ function CaseView() {
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
-                <ReadOnlyCostProfile
-                    dG4Year={caseItem.DG4Date?.getFullYear()}
-                    timeSeries={cessation}
-                    title="Cessation cost profile"
-                />
-                <ReadOnlyCostProfile
-                    dG4Year={caseItem.DG4Date?.getFullYear()}
-                    timeSeries={opex}
-                    title="OPEX cost profile"
-                />
-                <ReadOnlyCostProfile
-                    dG4Year={caseItem.DG4Date?.getFullYear()}
-                    timeSeries={study}
-                    title="Study cost profile"
+                <ReadOnlyTimeSeries
+                    dG4Year={caseItem.DG4Date!.getFullYear()}
+                    firstYear={firstTSYear}
+                    lastYear={lastTSYear}
+                    profileEnum={project?.currency!}
+                    profileType="Cost"
+                    readOnlyTimeSeries={[cessation, opex, study]}
+                    readOnlyName={["Cessation cost profile", "OPEX cost profile", "Study cost profile"]}
                 />
                 <DividerLine />
                 <CaseAsset
@@ -265,11 +288,11 @@ function CaseView() {
                 />
 
             </CaseViewDiv>
-            <EditCaseInputModal
-                toggleEditCaseModal={toggleEditCaseModal}
-                caseItem={caseItem}
-                isOpen={editCaseModalIsOpen}
-                shards={[]}
+            <EditTechnicalInputModal
+                toggleEditTechnicalInputModal={toggleTechnicalInputModal}
+                isOpen={editTechnicalInputModalIsOpen}
+                project={project}
+                setProject={setProject}
             />
         </div>
     )
