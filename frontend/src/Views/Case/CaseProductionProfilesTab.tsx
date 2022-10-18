@@ -113,9 +113,6 @@ function CaseProductionProfilesTab({
             profileName: "Water production", unit: "????", set: setWater, profile: water,
         },
         {
-            profileName: "NGL production", unit: "MTPA", set: setNGL, profile: nGL,
-        },
-        {
             profileName: "Water injection", unit: "MSm3/yr", set: setWaterInjection, profile: waterInjection,
         },
     ]
@@ -172,7 +169,7 @@ function CaseProductionProfilesTab({
                     >
                         <option key={undefined} value={undefined}> </option>
                         <option key={0} value={0}>Export</option>
-                        <option key={1} value={1}>Water injection</option>
+                        <option key={1} value={1}>Injection</option>
                     </NativeSelectField>
                     <NumberInputField>
                         <CaseNumberInput
@@ -182,33 +179,6 @@ function CaseProductionProfilesTab({
                             label="NGL yield"
                         />
                     </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={() => console.log("Condensate yield")}
-                            value={drainageStrategy?.nglYield}
-                            integer={false}
-                            label="Condensate yield"
-                        />
-                    </NumberInputField>
-                    <NativeSelectField
-                        id="gasShrinkageFactor"
-                        label="Gas shrinkage factor"
-                        onChange={() => console.log("Gas shrinkage factor")}
-                        disabled
-                        value={0}
-                    >
-                        <option key={undefined} value={undefined}> </option>
-                        <option key={0} value={0}>0</option>
-                        <option key={1} value={1}>Water injection</option>
-                    </NativeSelectField>
-                </RowWrapper>
-                <RowWrapper>
-                    <CaseNumberInput
-                        onChange={() => console.log("Sales gas GCV (gross calorific value)")}
-                        value={drainageStrategy?.nglYield}
-                        integer={false}
-                        label="Sales gas GCV (gross calorific value)"
-                    />
                 </RowWrapper>
             </ColumnWrapper>
             {drainageStrategy && (

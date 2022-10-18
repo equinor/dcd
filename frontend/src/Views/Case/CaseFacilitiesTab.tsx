@@ -69,41 +69,9 @@ function CaseFacilitiesTab({
     substructure, setSubstrucutre,
     transport, setTransport,
 }: Props) {
-    /*
-    Topside
-    Dry weight
-    facilities availability
-    oil capacity
-    gas capacity
-    water injection cap
-    produced water treatment cap
-
-    SURF
-    drilling centres
-    templates
-    risers
-    production lines length
-    umbilical length
-    production flowline
-
-    Substructure
-    dry weight
-    substructure concept
-
-    Transport
-    oil export pipeline length
-    gas export pipeline length
-    */
-
     const handleTopsideDryWeightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
         newTopside.dryWeight = Number(e.currentTarget.value)
-        setTopside(newTopside)
-    }
-
-    const handleTopsideFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside: Topside = { ...topside }
-        newTopside.facilitiesAvailability = Number(e.currentTarget.value)
         setTopside(newTopside)
     }
 
@@ -222,8 +190,8 @@ function CaseFacilitiesTab({
                         />
                     </NumberInputField>
                     <CaseNumberInput
-                        onChange={handleTopsideFacilitiesAvailabilityChange}
-                        value={topside?.facilitiesAvailability}
+                        onChange={() => {}}
+                        value={caseItem?.facilitiesAvailability}
                         integer
                         disabled
                         label="Facilities availability"
@@ -246,36 +214,12 @@ function CaseFacilitiesTab({
                             label="Gas capacity"
                         />
                     </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={() => console.log("Water injection capacity change")}
-                            value={topside?.dryWeight}
-                            integer={false}
-                            label="Water injection capacity"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={() => console.log("Produced water treatment capacity change")}
-                            value={topside?.dryWeight}
-                            integer={false}
-                            label="Produced water treatment capacity"
-                        />
-                    </NumberInputField>
                 </RowWrapper>
             </ColumnWrapper>
 
             <ColumnWrapper>
                 <Typography variant="h4">SURF</Typography>
                 <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={() => console.log("Drilling centres")}
-                            value={surf?.templateCount}
-                            integer
-                            label="Drilling centres"
-                        />
-                    </NumberInputField>
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfTemplateCountChange}

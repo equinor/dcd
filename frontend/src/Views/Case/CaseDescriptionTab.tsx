@@ -53,33 +53,10 @@ function CaseDescriptionTab({
     caseItem,
     setCase,
 }: Props) {
-    /*
-    Description - Case
-    ------------------
-    Exploration wells - Exploration -> explorationWell -> well
-    appraisal wells - Exploration -> explorationWell -> well
-    oil producer wells - WellProject -> wellProjectWell -> well
-    gas producer wells - WellProject -> wellprojectWll -> well
-    ------------------
-    water injector wells - case
-    gas injector wells - case
-    templates - case
-    production strategy overview - case
-    artificial lift - case
-     facilities availability - case
-    */
-
     const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
         newCase.description = e.currentTarget.value
         setCase(newCase)
-    }
-
-    const handleWellsChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        console.log("Wells changed")
-        // const newCase = { ...caseItem }
-        // newCase.facilitiesAvailability = Number(e.currentTarget.value)
-        // setCase(newCase)
     }
 
     const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -150,28 +127,10 @@ function CaseDescriptionTab({
                 />
                 <RowWrapper>
                     <CaseNumberInput
-                        onChange={handleWellsChange}
-                        value={caseItem.producerCount}
-                        integer
-                        label="Exploration wells"
-                    />
-                    <CaseNumberInput
-                        onChange={handleWellsChange}
-                        value={caseItem.producerCount}
-                        integer
-                        label="Appraisal wells"
-                    />
-                    <CaseNumberInput
                         onChange={handleProducerCountChange}
                         value={caseItem.producerCount}
                         integer
-                        label="Producer count"
-                    />
-                    <CaseNumberInput
-                        onChange={handleWellsChange}
-                        value={caseItem.producerCount}
-                        integer
-                        label="Gas producer wells"
+                        label="Oil producer wells"
                     />
                     <CaseNumberInput
                         onChange={handletWaterInjectorCountChange}
