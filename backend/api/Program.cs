@@ -6,7 +6,7 @@ using Api.Authorization;
 using Api.Services.FusionIntegration;
 
 using Azure.Identity;
-using Serilog;
+
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +16,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
+
+using Serilog;
+using Serilog.Events;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -135,7 +138,9 @@ builder.Services.AddFusionIntegration(options =>
     options.ApplicationMode = true;
 });
 Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
+    .MinimumLevel.Debug()
+    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
@@ -164,18 +169,6 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
-// builder.Services.AddSingleton<ILoggerFactory>(sp =>
-// {
-//     var factory = new LoggerFactory();
-//     var logger = new LoggerConfiguration();
-//     Serilog.Events.LogEventLevel level = Serilog.Events.LogEventLevel.Debug;
-//     var configuration = new ConfigurationBuilder()
-//         .SetBasePath(Directory.GetCurrentDirectory())
-//         .AddJsonFile("appsettings.json")
-//         .
-//         .Build();
-//     return factory;
-// });
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
@@ -188,10 +181,6 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 app.UseRouting();
-
-// var logger = app.Services.GetRequiredService<ILogger<Program>>();
-
-// logger.LogInformation("Fom Program, running the host now");
 if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;

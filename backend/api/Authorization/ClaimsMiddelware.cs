@@ -1,4 +1,5 @@
 using System.Security.Claims;
+
 using Fusion;
 using Fusion.Integration.Authentication;
 using Fusion.Integration.Profile;
@@ -23,18 +24,16 @@ public class ClaimsMiddelware
     {
         if (httpContext.User == null)
         {
-            Console.WriteLine("User null");
+            _logger.LogError("User null");
         }
         var userId = httpContext.User.GetAzureUniqueId();
         if (userId != null)
         {
             SetAppRoleClaims(httpContext);
-
         }
         else
         {
-            _logger.LogError("Aloha");
-            Console.WriteLine("Unauthenticated access attempted on: " + httpContext.Request.Path);
+            _logger.LogError("Unauthenticated access attempted on: " + httpContext.Request.Path);
         }
 
         await nextMiddleware(httpContext);
@@ -51,14 +50,14 @@ public class ClaimsMiddelware
         var fusionApplicationRole = RoleForAccountType(httpContext);
         if (fusionApplicationRole != null)
         {
-            Console.WriteLine(fusionApplicationRole.Value);
+            _logger.LogInformation("Fusion Application Role: " + fusionApplicationRole.Value);
         }
 
         var applicationRoleClaims = applicationRoles
             .DefaultIfEmpty(ApplicationRole.None)
             .Select(role => new Claim(ApplicationRoleClaimType, role.ToString()));
 
-        Console.WriteLine(applicationRoleClaims);
+        _logger.LogInformation("Application Roles: " + applicationRoleClaims);
         var claimsIdentity = httpContext.User.Identity as ClaimsIdentity;
         claimsIdentity.AddClaims(applicationRoleClaims);
     }
@@ -72,23 +71,25 @@ public class ClaimsMiddelware
         {
             return null;
         }
-
         if (httpContext.User.IsAccountType(FusionAccountType.Employee))
         {
+            _logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
             return ApplicationRole.User;
         }
 
         if (httpContext.User.IsAccountType(FusionAccountType.External))
         {
+            _logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
             return ApplicationRole.Admin;
         }
 
         if (httpContext.User.IsAccountType(FusionAccountType.Consultant))
         {
+            _logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
             return ApplicationRole.ReadOnly;
         }
 
-
+        _logger.LogInformation("Check for Fusion Account Type: null");
         return null;
     }
 
