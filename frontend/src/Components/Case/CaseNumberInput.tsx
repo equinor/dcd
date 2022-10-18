@@ -1,5 +1,5 @@
 import { Input, Label } from "@equinor/eds-core-react"
-import { ChangeEventHandler, Dispatch, SetStateAction } from "react"
+import { ChangeEventHandler } from "react"
 import { WrapperColumn } from "../../Views/Asset/StyledAssetComponents"
 
 interface Props {

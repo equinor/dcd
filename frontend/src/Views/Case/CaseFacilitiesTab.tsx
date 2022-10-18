@@ -153,22 +153,18 @@ function CaseFacilitiesTab({
         if (topside) {
             const result = await (await GetTopsideService()).newUpdate(topside)
             setTopside(result)
-            console.log(result)
         }
         if (surf) {
             const result = await (await GetSurfService()).newUpdate(surf)
             setSurf(result)
-            console.log(result)
         }
         if (substructure) {
             const result = await (await GetSubstructureService()).newUpdate(substructure)
             setSubstrucutre(result)
-            console.log(result)
         }
         if (transport) {
             const result = await (await GetTransportService()).newUpdate(transport)
             setTransport(result)
-            console.log(result)
         }
     }
 
