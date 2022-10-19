@@ -62,7 +62,6 @@ const configuration = {
 }
 
 export const buildConfig = (baseUrl: string) => {
-    baseUrl = "http://localhost:5000"
     configuration.CaseService.BASE_URL = `${baseUrl}/cases`
     configuration.CommonLibraryService.BASE_URL = `${baseUrl}/common-library`
     configuration.ProjectService.BASE_URL = `${baseUrl}/projects`
