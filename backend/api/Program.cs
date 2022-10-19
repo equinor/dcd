@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Logging;
 
 using Serilog;
 using Serilog.Events;
+using Serilog.Settings.Configuration;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -138,10 +139,14 @@ builder.Services.AddFusionIntegration(options =>
     options.AddFusionRoles();
     options.ApplicationMode = true;
 });
+var serilogConfiguration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
-    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
-    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .ReadFrom.Configuration(serilogConfiguration)
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
@@ -178,7 +183,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog();
-
 
 var app = builder.Build();
 app.UseRouting();
