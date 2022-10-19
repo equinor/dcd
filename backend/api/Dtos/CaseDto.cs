@@ -17,6 +17,8 @@ public class CaseDto
     public double FacilitiesAvailability { get; set; }
     public double CapexFactorFeasibilityStudies { get; set; }
     public double CapexFactorFEEDStudies { get; set; }
+    public double NPV { get; set; }
+    public double BreakEven { get; set; }
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }

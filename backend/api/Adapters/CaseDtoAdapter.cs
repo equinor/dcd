@@ -41,6 +41,8 @@ public static class CaseDtoAdapter
             FacilitiesAvailability = case_.FacilitiesAvailability,
             CapexFactorFeasibilityStudies = case_.CapexFactorFeasibilityStudies,
             CapexFactorFEEDStudies = case_.CapexFactorFEEDStudies,
+            NPV = case_.NPV,
+            BreakEven = case_.BreakEven,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
         };

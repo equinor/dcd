@@ -36,6 +36,8 @@ export class Case implements Components.Schemas.CaseDto {
     facilitiesAvailability?: number
     capexFactorFeasibilityStudies: number // double
     capexFactorFEEDStudies: number // double
+    npv: number // double
+    breakEven: number // double
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
     cessationCost?: CaseCessationCostProfile
     sharepointFileId?: string
@@ -75,6 +77,8 @@ export class Case implements Components.Schemas.CaseDto {
         this.facilitiesAvailability = data.facilitiesAvailability
         this.capexFactorFeasibilityStudies = data.capexFactorFeasibilityStudies ?? 0
         this.capexFactorFEEDStudies = data.capexFactorFEEDStudies ?? 0
+        this.npv = data.npv ?? 0
+        this.breakEven = data.breakEven ?? 0
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
         this.cessationCost = CaseCessationCostProfile.fromJSON(data.cessationCost)
         this.sharepointFileId = data.sharepointFileId ?? ""

@@ -34,6 +34,7 @@ import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
+import CaseSummaryTab from "./Case/CaseSummaryTab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -267,7 +268,25 @@ const CaseView = () => {
                             <p>CO2 Emissions</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Summary</p>
+                            <CaseSummaryTab
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                                exploration={exploration}
+                                setExploration={setExploration}
+                                wellProject={wellProject}
+                                setWellProject={setWellProject}
+                                topside={topside}
+                                setTopside={setTopside}
+                                surf={surf}
+                                setSurf={setSurf}
+                                substructure={substructure}
+                                setSubstrucutre={setSubstructure}
+                                transport={transport}
+                                setTransport={setTransport}
+                                drainageStrategy={drainageStrategy}
+                            />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>

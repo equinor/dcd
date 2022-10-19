@@ -30,6 +30,8 @@ declare namespace Components {
             facilitiesAvailability?: number; // double
             capexFactorFeasibilityStudies?: number; // double
             capexFactorFEEDStudies?: number; // double
+            npv?: number; // double
+            breakEven?: number; // double
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time

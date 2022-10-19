@@ -41,6 +41,8 @@ public static class CaseAdapter
             FacilitiesAvailability = caseDto.FacilitiesAvailability,
             CapexFactorFeasibilityStudies = caseDto.CapexFactorFeasibilityStudies,
             CapexFactorFEEDStudies = caseDto.CapexFactorFEEDStudies,
+            NPV = caseDto.NPV,
+            BreakEven = caseDto.BreakEven,
             SharepointFileId = caseDto.SharepointFileId,
             SharepointFileName = caseDto.SharepointFileName
         };
@@ -79,6 +81,8 @@ public static class CaseAdapter
         existing.FacilitiesAvailability = caseDto.FacilitiesAvailability;
         existing.CapexFactorFeasibilityStudies = caseDto.CapexFactorFeasibilityStudies;
         existing.CapexFactorFEEDStudies = caseDto.CapexFactorFEEDStudies;
+        existing.NPV = caseDto.NPV;
+        existing.BreakEven = caseDto.BreakEven;
         existing.SharepointFileId = caseDto.SharepointFileId;
         existing.SharepointFileName = caseDto.SharepointFileName;
     }

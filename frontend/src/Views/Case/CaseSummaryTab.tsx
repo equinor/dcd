@@ -111,7 +111,7 @@ interface Props {
     drainageStrategy: DrainageStrategy
 }
 
-function CaseCostTab({
+function CaseSummaryTab({
     project, setProject,
     caseItem, setCase,
     exploration, setExploration,
@@ -235,46 +235,16 @@ function CaseCostTab({
     //     setDrainageStrategy(newDrainageStrategy)
     // }
 
-    const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        const newCapexFactorFeasibilityStudies = Number(e.currentTarget.value)
-        newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
+        newCase.npv = Number(e.currentTarget.value)
         setCase(newCase)
     }
 
-    const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        const newCapexFactorFEEDStudies = Number(e.currentTarget.value)
-        newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
+        newCase.breakEven = Number(e.currentTarget.value)
         setCase(newCase)
-    }
-
-    const handleSurfMaturityChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
-            // eslint-disable-next-line max-len
-            const newMaturity: Components.Schemas.Maturity = Number(e.currentTarget.value) as Components.Schemas.Maturity
-            const newSurf: Surf = { ...surf }
-            newSurf.maturity = newMaturity
-            setSurf(newSurf)
-        }
-    }
-
-    const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newStartYear = Number(e.currentTarget.value)
-        if (newStartYear < 2010) {
-            setStartYear(2010)
-            return
-        }
-        setStartYear(newStartYear)
-    }
-
-    const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newEndYear = Number(e.currentTarget.value)
-        if (newEndYear > 2050) {
-            setEndYear(2050)
-            return
-        }
-        setEndYear(newEndYear)
     }
 
     interface ITimeSeriesData {
@@ -371,77 +341,28 @@ function CaseCostTab({
     return (
         <>
             <TopWrapper>
-                <PageTitle variant="h3">Cost</PageTitle>
+                <PageTitle variant="h3">Summary</PageTitle>
                 <Button onClick={handleSave}>Save</Button>
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>
                     <NumberInputField>
                         <CaseNumberInput
-                            onChange={handleCaseFeasibilityChange}
-                            value={caseItem.capexFactorFeasibilityStudies * 100}
+                            onChange={handleCaseNPVChange}
+                            value={caseItem.npv}
                             integer={false}
-                            label="CAPEX factor feasibility studies (%)"
+                            label="NPV before tax"
                         />
                     </NumberInputField>
                     <NumberInputField>
                         <CaseNumberInput
-                            onChange={handleCaseFEEDChange}
-                            value={caseItem.capexFactorFEEDStudies * 100}
+                            onChange={handleCaseBreakEvenChange}
+                            value={caseItem.breakEven}
                             integer={false}
-                            label="CAPEX factor FEED studies (%)"
+                            label="B/E before tax"
                         />
                     </NumberInputField>
-                    <NativeSelectField
-                        id="maturity"
-                        label="Maturity"
-                        onChange={handleSurfMaturityChange}
-                        value={surf.maturity}
-                    >
-                        <option key="0" value={0}>A</option>
-                        <option key="1" value={1}>B</option>
-                        <option key="2" value={2}>C</option>
-                        <option key="3" value={3}>D</option>
-                    </NativeSelectField>
                 </RowWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
-                <TableYearWrapper>
-                    <NativeSelectField
-                        id="currency"
-                        label="Currency"
-                        onChange={() => { }}
-                        value={project.currency}
-                        disabled
-                    >
-                        <option key="1" value={1}>MNOK</option>
-                        <option key="2" value={2}>MUSD</option>
-                    </NativeSelectField>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleStartYearChange}
-                            value={startYear}
-                            integer
-                            label="Start year"
-                        />
-                    </YearInputWrapper>
-                    <YearDashWrapper>
-                        <Typography variant="h2">-</Typography>
-                    </YearDashWrapper>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleEndYearChange}
-                            value={endYear}
-                            integer
-                            label="End year"
-                        />
-                    </YearInputWrapper>
-                    <Button
-                        onClick={handleTableYearsClick}
-                    >
-                        Apply
-                    </Button>
-                </TableYearWrapper>
             </ColumnWrapper>
             <TableWrapper>
                 <CaseTabTable
@@ -493,4 +414,4 @@ function CaseCostTab({
     )
 }
 
-export default CaseCostTab
+export default CaseSummaryTab
