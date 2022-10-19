@@ -25,7 +25,6 @@ public class CaseService
     public ProjectDto CreateCase(CaseDto caseDto)
     {
         var case_ = CaseAdapter.Convert(caseDto);
-        case_.CreateTime = DateTime.UtcNow;
         if (case_.DG4Date == DateTimeOffset.MinValue)
         {
             case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
@@ -39,7 +38,6 @@ public class CaseService
 
     public ProjectDto NewCreateCase(CaseDto caseDto)
     {
-
         var drainageStrategyService = _serviceProvider.GetRequiredService<DrainageStrategyService>();
         var topsideService = _serviceProvider.GetRequiredService<TopsideService>();
         var surfService = _serviceProvider.GetRequiredService<SurfService>();
@@ -49,7 +47,6 @@ public class CaseService
         var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
 
         var case_ = CaseAdapter.Convert(caseDto);
-        case_.CreateTime = DateTime.UtcNow;
         var project = _projectService.GetProject(case_.ProjectId);
         case_.Project = project;
         case_.CapexFactorFeasibilityStudies = 0.015;
