@@ -21,7 +21,6 @@ public class DrainageStrategyDto
     public NetSalesGasDto? NetSalesGas { get; set; }
     public Co2EmissionsDto? Co2Emissions { get; set; }
     public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
-    public double FacilitiesAvailability { get; set; }
 }
 public class ProductionProfileOilDto : TimeSeriesVolumeDto
 {

@@ -106,7 +106,6 @@ public static class DrainageStrategyAdapter
                 ProducerCount = drainageStrategyDto.ProducerCount,
                 GasInjectorCount = drainageStrategyDto.GasInjectorCount,
                 WaterInjectorCount = drainageStrategyDto.WaterInjectorCount,
-                FacilitiesAvailability = drainageStrategyDto.FacilitiesAvailability
             };
         }
         existing.Id = drainageStrategyDto.Id;
@@ -118,7 +117,6 @@ public static class DrainageStrategyAdapter
         existing.ProducerCount = drainageStrategyDto.ProducerCount;
         existing.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
         existing.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;
-        existing.FacilitiesAvailability = drainageStrategyDto.FacilitiesAvailability;
 
         return existing;
     }

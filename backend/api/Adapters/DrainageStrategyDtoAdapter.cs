@@ -18,7 +18,6 @@ public static class DrainageStrategyDtoAdapter
             ProducerCount = drainageStrategy.ProducerCount,
             GasInjectorCount = drainageStrategy.GasInjectorCount,
             WaterInjectorCount = drainageStrategy.WaterInjectorCount,
-            FacilitiesAvailability = drainageStrategy.FacilitiesAvailability,
             ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil, unit),
             ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas, unit),
             ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater, unit),
