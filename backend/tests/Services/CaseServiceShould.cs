@@ -54,7 +54,6 @@ public class CaseShould : IDisposable
         Assert.Equal(expected.Description, actual.Description);
         Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
         Assert.Equal(expected.DG4Date, actual.DG4Date);
-        Assert.Equal(expected.ModifyTime, actual.ModifyTime);
         Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
     }
 

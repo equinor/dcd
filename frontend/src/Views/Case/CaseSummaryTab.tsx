@@ -133,15 +133,6 @@ function CaseSummaryTab({
     const [substructureCost, setSubstructureCost] = useState<SubstructureCostProfile>()
     const [transportCost, setTransportCost] = useState<TransportCostProfile>()
 
-    // Development
-    const [wellProjectCost, setWellProjectCost] = useState<WellProjectCostProfile>()
-
-    // Exploration
-    const [explorationCost, setExplorationCost] = useState<ExplorationCostProfile>()
-    const [seismicAcqAndProcCost, setseismicAcqAndProcCost] = useState<SeismicAcquisitionAndProcessing>()
-    const [countryOfficeCost, setCountryOfficeCost] = useState<CountryOfficeCost>()
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
-
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -192,22 +183,7 @@ function CaseSummaryTab({
                 const transportCostProfile = transport.costProfile
                 setTransportCost(transportCostProfile)
 
-                // Development
-                const wellProjectCostProfile = wellProject.costProfile
-                setWellProjectCost(wellProjectCostProfile)
-
-                // Exploration
-                const explorationCostProfile = exploration.costProfile
-                setExplorationCost(explorationCostProfile)
-                const seismicAcqAndProc = exploration.seismicAcquisitionAndProcessing
-                setseismicAcqAndProcCost(seismicAcqAndProc)
-                const countryOffice = exploration.countryOfficeCost
-                setCountryOfficeCost(countryOffice)
-                const gAndGAdmin = await (await GetCaseService()).generateGAndGAdminCost(caseItem.id)
-                setGAndGAdminCost(gAndGAdmin)
-
                 setTableYearsFromProfiles([study, opex, cessation,
-                    explorationCostProfile, seismicAcqAndProc, countryOffice, gAndGAdmin,
                 ])
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -278,30 +254,6 @@ function CaseSummaryTab({
         },
         {
             profileName: "Transport cost", unit: "MNOK", profile: transportCost, set: setTransportCost,
-        },
-    ]
-
-    const developmentTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Development cost", unit: "MNOK", profile: wellProjectCost, set: setWellProjectCost,
-        },
-    ]
-
-    const explorationTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "G&G and admin costs", unit: "MNOK", profile: gAndGAdminCost,
-        },
-        {
-            profileName: "Seismic acquisition and processing",
-            unit: "MNOK",
-            profile: seismicAcqAndProcCost,
-            set: setseismicAcqAndProcCost,
-        },
-        {
-            profileName: "Country office cost", unit: "MNOK", profile: countryOfficeCost, set: setCountryOfficeCost,
-        },
-        {
-            profileName: "Exploration cost", unit: "MNOK", profile: explorationCost, set: setExplorationCost,
         },
     ]
 
@@ -388,28 +340,6 @@ function CaseSummaryTab({
                     tableName="CAPEX"
                 />
             </TableWrapper>
-            <TableWrapper>
-                <CaseTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
-                    timeSeriesData={developmentTimeSeriesData}
-                    dg4Year={caseItem.DG4Date.getFullYear()}
-                    tableYears={tableYears}
-                    tableName="Development well costs"
-                />
-            </TableWrapper>
-            <CaseTabTable
-                caseItem={caseItem}
-                project={project}
-                setCase={setCase}
-                setProject={setProject}
-                timeSeriesData={explorationTimeSeriesData}
-                dg4Year={caseItem.DG4Date.getFullYear()}
-                tableYears={tableYears}
-                tableName="Exploration well costs"
-            />
         </>
     )
 }

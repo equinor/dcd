@@ -155,7 +155,17 @@ function CaseProductionProfilesTab({
 
     const timeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Net sales gas", unit: "GSm3/yr", set: setNetSalesGas, profile: netSalesGas,
+            profileName: "Oil production", unit: "MSm3/yr", set: setOil, profile: oil,
+        },
+        {
+            profileName: "Gas production", unit: "GSm3/yr", set: setGas, profile: gas,
+        },
+        {
+            profileName: "Water production", unit: "????", set: setWater, profile: water,
+        },
+
+        {
+            profileName: "Water injection", unit: "MSm3/yr", set: setWaterInjection, profile: waterInjection,
         },
         {
             profileName: "Fuel flaring and losses",
@@ -164,16 +174,7 @@ function CaseProductionProfilesTab({
             profile: fuelFlaringAndLosses,
         },
         {
-            profileName: "Gas production", unit: "GSm3/yr", set: setGas, profile: gas,
-        },
-        {
-            profileName: "Oil production", unit: "MSm3/yr", set: setOil, profile: oil,
-        },
-        {
-            profileName: "Water production", unit: "????", set: setWater, profile: water,
-        },
-        {
-            profileName: "Water injection", unit: "MSm3/yr", set: setWaterInjection, profile: waterInjection,
+            profileName: "Net sales gas", unit: "GSm3/yr", set: setNetSalesGas, profile: netSalesGas,
         },
     ]
 
