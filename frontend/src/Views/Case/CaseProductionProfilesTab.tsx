@@ -15,7 +15,7 @@ import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import { GetDrainageStrategyService } from "../../Services/DrainageStrategyService"
-import CaseProductionProfilesTabTable from "./CaseProductionProfilesTabTable"
+import CaseTabTable from "./CaseTabTable"
 import { NetSalesGas } from "../../models/assets/drainagestrategy/NetSalesGas"
 import { FuelFlaringAndLosses } from "../../models/assets/drainagestrategy/FuelFlaringAndLosses"
 import { ProductionProfileGas } from "../../models/assets/drainagestrategy/ProductionProfileGas"
@@ -311,7 +311,7 @@ function CaseProductionProfilesTab({
                     </Button>
                 </TableYearWrapper>
             </ColumnWrapper>
-            <CaseProductionProfilesTabTable
+            <CaseTabTable
                 caseItem={caseItem}
                 project={project}
                 setCase={setCase}
@@ -319,6 +319,7 @@ function CaseProductionProfilesTab({
                 timeSeriesData={timeSeriesData}
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}
+                tableName="Production profiles"
             />
         </>
     )

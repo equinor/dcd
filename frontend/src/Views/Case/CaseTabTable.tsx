@@ -22,13 +22,14 @@ interface Props {
     timeSeriesData: any[]
     dg4Year: number
     tableYears: [number, number]
+    tableName: string
 }
 
-function CaseProductionProfilesTabTable({
+function CaseTabTable({
     project, setProject,
     caseItem, setCase,
     timeSeriesData, dg4Year,
-    tableYears,
+    tableYears, tableName,
 }: Props) {
     useAgGridStyles()
     const gridRef = useRef(null)
@@ -62,13 +63,19 @@ function CaseProductionProfilesTabTable({
     }
 
     const generateTableYearColDefs = () => {
-        const profileNameDef = { field: "profileName", headerName: "Production profiles", width: 250 }
-        const unitDef = { field: "unit", width: 100 }
+        const profileNameDef = {
+            field: "profileName", headerName: tableName, width: 250, editable: false,
+        }
+        const unitDef = { field: "unit", width: 100, editable: false }
         const yearDefs = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
-            yearDefs.push({ field: index.toString(), flex: 1 })
+            yearDefs.push({
+                field: index.toString(),
+                flex: 1,
+                editable: (params: any) => params.data.set !== undefined,
+            })
         }
-        const totalDef = { field: "total", flex: 2 }
+        const totalDef = { field: "total", flex: 2, editable: false }
         return [profileNameDef, unitDef, ...yearDefs, totalDef]
     }
 
@@ -140,4 +147,4 @@ function CaseProductionProfilesTabTable({
     )
 }
 
-export default CaseProductionProfilesTabTable
+export default CaseTabTable

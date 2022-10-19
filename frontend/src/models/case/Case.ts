@@ -1,4 +1,5 @@
 import { DefaultDate } from "../../Utils/common"
+import { EMPTY_GUID } from "../../Utils/constants"
 import { CaseCessationCostProfile } from "./CaseCessationCostProfile"
 
 export class Case implements Components.Schemas.CaseDto {
@@ -16,7 +17,7 @@ export class Case implements Components.Schemas.CaseDto {
     DG2Date: Date // date-time
     DG3Date: Date // date-time
     DG4Date: Date // date-time
-    id?: string
+    id: string
     projectId?: string
     updatedAt?: Date | null
     name?: string
@@ -33,6 +34,8 @@ export class Case implements Components.Schemas.CaseDto {
     gasInjectorCount?: number
     waterInjectorCount?: number
     facilitiesAvailability?: number
+    capexFactorFeasibilityStudies: number // double
+    capexFactorFEEDStudies: number // double
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
     cessationCost?: CaseCessationCostProfile
     sharepointFileId?: string
@@ -53,7 +56,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.DG2Date = data.dG2Date ? new Date(data.dG2Date) : DefaultDate()
         this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : DefaultDate()
         this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : DefaultDate()
-        this.id = data.id
+        this.id = data.id ?? EMPTY_GUID
         this.projectId = data.projectId
         this.updatedAt = data.modifyTime ? new Date(data.modifyTime) : null
         this.name = data.name ?? ""
@@ -70,6 +73,8 @@ export class Case implements Components.Schemas.CaseDto {
         this.gasInjectorCount = data.gasInjectorCount
         this.waterInjectorCount = data.waterInjectorCount
         this.facilitiesAvailability = data.facilitiesAvailability
+        this.capexFactorFeasibilityStudies = data.capexFactorFeasibilityStudies ?? 0
+        this.capexFactorFEEDStudies = data.capexFactorFEEDStudies ?? 0
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
         this.cessationCost = CaseCessationCostProfile.fromJSON(data.cessationCost)
         this.sharepointFileId = data.sharepointFileId ?? ""

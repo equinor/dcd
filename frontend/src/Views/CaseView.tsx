@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
 import {
     Button,
@@ -22,7 +21,6 @@ import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/Case/CaseAsset"
 import { unwrapProjectId } from "../Utils/common"
-import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { WellProject } from "../models/assets/wellproject/WellProject"
 import { Surf } from "../models/assets/surf/Surf"
@@ -30,10 +28,12 @@ import { Topside } from "../models/assets/topside/Topside"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Transport } from "../models/assets/transport/Transport"
-import CaseScheduleTab from "./Case/CaseScheduleTab"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import CaseCostTab from "./Case/CaseCostTab"
+import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
-import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import CaseScheduleTab from "./Case/CaseScheduleTab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -82,7 +82,7 @@ const CaseView = () => {
 
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
-    const [activeTab, setActiveTab] = useState<number>(0)
+    const [activeTab, setActiveTab] = useState<number>(5)
     const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
@@ -94,10 +94,6 @@ const CaseView = () => {
     const [substructure, setSubstructure] = useState<Substructure>()
     const [transport, setTransport] = useState<Transport>()
 
-    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
-
-    const [firstTSYear, setFirstTSYear] = useState<number>()
-    const [lastTSYear, setLastTSYear] = useState<number>()
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
@@ -111,7 +107,9 @@ const CaseView = () => {
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === caseId)
                 setCase(caseResult)
-                setDrainageStrategy(projectResult?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink))
+                setDrainageStrategy(
+                    projectResult?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink),
+                )
                 setExploration(projectResult?.explorations.find((exp) => exp.id === caseResult?.explorationLink))
                 setWellProject(projectResult?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink))
                 setSurf(projectResult?.surfs.find((sur) => sur.id === caseResult?.surfLink))
@@ -124,9 +122,10 @@ const CaseView = () => {
         })()
     }, [currentProject?.externalId, caseId])
 
-    if (!project) return null
-    if (!caseItem) return null
-    if (!drainageStrategy || !exploration || !wellProject || !surf || !topside || !substructure || !transport) { return null }
+    if (!project || !caseItem
+        || !drainageStrategy || !exploration
+        || !wellProject || !surf || !topside
+        || !substructure || !transport) { return null }
 
     return (
         <div>
@@ -244,7 +243,25 @@ const CaseView = () => {
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Cost</p>
+                            <CaseCostTab
+                                project={project}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                                setCase={setCase}
+                                exploration={exploration}
+                                setExploration={setExploration}
+                                wellProject={wellProject}
+                                setWellProject={setWellProject}
+                                topside={topside}
+                                setTopside={setTopside}
+                                surf={surf}
+                                setSurf={setSurf}
+                                substructure={substructure}
+                                setSubstrucutre={setSubstructure}
+                                transport={transport}
+                                setTransport={setTransport}
+                                drainageStrategy={drainageStrategy}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>CO2 Emissions</p>

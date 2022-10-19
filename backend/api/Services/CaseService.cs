@@ -52,6 +52,8 @@ public class CaseService
         case_.CreateTime = DateTime.UtcNow;
         var project = _projectService.GetProject(case_.ProjectId);
         case_.Project = project;
+        case_.CapexFactorFeasibilityStudies = 0.015;
+        case_.CapexFactorFEEDStudies = 0.015;
 
         var createdCase = _context.Cases!.Add(case_);
         _context.SaveChanges();

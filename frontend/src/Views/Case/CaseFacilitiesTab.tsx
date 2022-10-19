@@ -51,13 +51,13 @@ interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
-    topside: Topside | undefined,
+    topside: Topside,
     setTopside: Dispatch<SetStateAction<Topside | undefined>>,
-    surf: Surf | undefined,
+    surf: Surf,
     setSurf: Dispatch<SetStateAction<Surf | undefined>>,
-    substructure: Substructure | undefined,
+    substructure: Substructure,
     setSubstrucutre: Dispatch<SetStateAction<Substructure | undefined>>,
-    transport: Transport | undefined,
+    transport: Transport,
     setTransport: Dispatch<SetStateAction<Transport | undefined>>,
 }
 

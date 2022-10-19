@@ -39,6 +39,8 @@ public static class CaseDtoAdapter
             GasInjectorCount = case_.GasInjectorCount,
             WaterInjectorCount = case_.WaterInjectorCount,
             FacilitiesAvailability = case_.FacilitiesAvailability,
+            CapexFactorFeasibilityStudies = case_.CapexFactorFeasibilityStudies,
+            CapexFactorFEEDStudies = case_.CapexFactorFEEDStudies,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
         };

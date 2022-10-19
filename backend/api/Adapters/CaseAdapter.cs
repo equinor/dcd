@@ -39,6 +39,8 @@ public static class CaseAdapter
             GasInjectorCount = caseDto.GasInjectorCount,
             WaterInjectorCount = caseDto.WaterInjectorCount,
             FacilitiesAvailability = caseDto.FacilitiesAvailability,
+            CapexFactorFeasibilityStudies = caseDto.CapexFactorFeasibilityStudies,
+            CapexFactorFEEDStudies = caseDto.CapexFactorFEEDStudies,
             SharepointFileId = caseDto.SharepointFileId,
             SharepointFileName = caseDto.SharepointFileName
         };
@@ -76,6 +78,8 @@ public static class CaseAdapter
         existing.GasInjectorCount = caseDto.GasInjectorCount;
         existing.WaterInjectorCount = caseDto.WaterInjectorCount;
         existing.FacilitiesAvailability = caseDto.FacilitiesAvailability;
+        existing.CapexFactorFeasibilityStudies = caseDto.CapexFactorFeasibilityStudies;
+        existing.CapexFactorFEEDStudies = caseDto.CapexFactorFEEDStudies;
         existing.SharepointFileId = caseDto.SharepointFileId;
         existing.SharepointFileName = caseDto.SharepointFileName;
     }
