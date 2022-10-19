@@ -130,11 +130,19 @@ function CaseProductionProfilesTab({
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
+        if (newStartYear < 2010) {
+            setStartYear(2010)
+            return
+        }
         setStartYear(newStartYear)
     }
 
     const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newEndYear = Number(e.currentTarget.value)
+        if (newEndYear > 2050) {
+            setEndYear(2050)
+            return
+        }
         setEndYear(newEndYear)
     }
 
@@ -267,6 +275,16 @@ function CaseProductionProfilesTab({
             </ColumnWrapper>
             <ColumnWrapper>
                 <TableYearWrapper>
+                    <NativeSelectField
+                        id="unit"
+                        label="Units"
+                        onChange={() => { }}
+                        value={project.physUnit}
+                        disabled
+                    >
+                        <option key={0} value={0}>SI</option>
+                        <option key={1} value={1}>Oil field</option>
+                    </NativeSelectField>
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleStartYearChange}
