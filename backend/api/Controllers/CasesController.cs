@@ -1,4 +1,3 @@
-
 using api.Dtos;
 using api.Services;
 
@@ -15,26 +14,21 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class CasesController : ControllerBase
 {
     private readonly CaseService _caseService;
-    private readonly GenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly GenerateStudyCostProfile _generateStudyCostProfile;
-    private readonly GenerateOpexCostProfile _generateOpexCostProfile;
     private readonly GenerateCessationCostProfile _generateCessationCostProfile;
+    private readonly GenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
+    private readonly GenerateOpexCostProfile _generateOpexCostProfile;
+    private readonly GenerateStudyCostProfile _generateStudyCostProfile;
 
-    public CasesController(CaseService caseService, IServiceProvider serviceProvider)
+    public CasesController(CaseService caseService)
     {
         _caseService = caseService;
-        _generateGAndGAdminCostProfile = serviceProvider.GetRequiredService<GenerateGAndGAdminCostProfile>();
-        _generateStudyCostProfile = serviceProvider.GetRequiredService<GenerateStudyCostProfile>();
-        _generateOpexCostProfile = serviceProvider.GetRequiredService<GenerateOpexCostProfile>();
-        _generateCessationCostProfile = serviceProvider.GetRequiredService<GenerateCessationCostProfile>();
     }
 
     [HttpPost(Name = "CreateCase")]
@@ -59,29 +53,5 @@ public class CasesController : ControllerBase
     public ProjectDto DeleteTransport(Guid caseId)
     {
         return _caseService.DeleteCase(caseId);
-    }
-
-    [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
-    public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
-    {
-        return _generateGAndGAdminCostProfile.Generate(caseId);
-    }
-
-    [HttpPost("{caseId}/calculateOpex", Name = "CalculateOpex")]
-    public OpexCostProfileDto CalculateOPEX(Guid caseId)
-    {
-        return _generateOpexCostProfile.Generate(caseId);
-    }
-
-    [HttpPost("{caseId}/calculateStudy", Name = "CalculateStudy")]
-    public StudyCostProfileDto CalculateStudyCost(Guid caseId)
-    {
-        return _generateStudyCostProfile.Generate(caseId);
-    }
-
-    [HttpPost("{caseId}/generateCessation", Name = "GenerateCessation")]
-    public CessationCostDto GenerateCessation(Guid caseId)
-    {
-        return _generateCessationCostProfile.Generate(caseId);
     }
 }

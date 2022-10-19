@@ -9,12 +9,17 @@ public class GenerateEmissionsProfile
     private const double Co2EmissionRemovedFromGas = 0;
     private const double FlaredGasPerProducedVolume = 1.321;
     private const double Co2EmissionFromFuelGas = 2.34;
+    private const double Co2EmissionFromFlaredGas = 3.74;
+    private const double Co2Vented = 1.96;
+    private const int AvereageDevelopmentWellDrillingDays = 50;
+    private const int DailyEmissionFromDrillingRig = 100;
     private const int DaysInLeapYear = 366;
     private const int DaysInYear = 365;
     private readonly CaseService _caseService;
     private readonly DrainageStrategyService _drainageStrategyService;
     private readonly ProjectService _projectService;
     private readonly TopsideService _topsideService;
+    private readonly WellProjectService _wellProjectService;
 
     public GenerateEmissionsProfile(IServiceProvider serviceProvider)
     {
@@ -22,6 +27,28 @@ public class GenerateEmissionsProfile
         _projectService = serviceProvider.GetRequiredService<ProjectService>();
         _topsideService = serviceProvider.GetRequiredService<TopsideService>();
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
+        _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
+    }
+
+    public NetSalesGasDto GenerateNetSaleGas(Guid caseId)
+    {
+        var caseItem = _caseService.GetCase(caseId);
+        var topside = _topsideService.GetTopside(caseItem.TopsideLink);
+        var project = _projectService.GetProject(caseItem.ProjectId);
+        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var fuelConsumptions = CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
+        var flarings = CalculateFlaring(drainageStrategy);
+        var losses = CalculateLosses(drainageStrategy);
+        var calculateNetSaleGas = CalculateNetSaleGas(drainageStrategy, fuelConsumptions, flarings, losses);
+
+        var netSaleGas = new NetSalesGas
+        {
+            StartYear = calculateNetSaleGas.StartYear,
+            Values = calculateNetSaleGas.Values
+        };
+
+        var dto = DrainageStrategyDtoAdapter.Convert(netSaleGas, project.PhysicalUnit);
+        return dto;
     }
 
     public FuelFlaringAndLossesDto GenerateFuelFlaringAndLosses(Guid caseId)
@@ -54,6 +81,7 @@ public class GenerateEmissionsProfile
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
         var project = _projectService.GetProject(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
         var fuelConsumptions = CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
 
         var fuelConsumptionWithCfg = Array.Empty<double>();
@@ -69,12 +97,41 @@ public class GenerateEmissionsProfile
             Values = fuelConsumptionWithCfg
         };
 
+
         var flarings = CalculateFlaring(drainageStrategy);
+        var flaringsWithCFF = Array.Empty<double>();
+        for (var i = 0; i < flarings.Values.Length; i++)
+        {
+            var calculatedFlaringsWithCFF = flarings.Values[i] * Co2EmissionFromFlaredGas;
+            flaringsWithCFF[i] = calculatedFlaringsWithCFF;
+        }
+
+        var flaringsProfile = new TimeSeriesVolume
+        {
+            StartYear = flarings.StartYear,
+            Values = flaringsWithCFF
+        };
+
+        var lossesWithCV = Array.Empty<double>();
         var losses = CalculateLosses(drainageStrategy);
+        for (var i = 0; i < losses.Values.Length; i++)
+        {
+            var calculatedLossesWithCV = losses.Values[i] * Co2Vented;
+            lossesWithCV[i] = calculatedLossesWithCV;
+        }
+
+        var lossesProfile = new TimeSeriesVolume
+        {
+            StartYear = losses.StartYear,
+            Values = lossesWithCV
+        };
+
+        var drillingEmissionsProfile = CalculateDrillingEmissions(drainageStrategy, wellProject);
 
         var totalProfile =
-            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(fuelConsumptionsProfile, flarings),
-                losses);
+            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(
+                TimeSeriesCost.MergeCostProfiles(fuelConsumptionsProfile, flaringsProfile),
+                lossesProfile), drillingEmissionsProfile);
         var co2Emission = new Co2Emissions
         {
             StartYear = totalProfile.StartYear,
@@ -83,6 +140,69 @@ public class GenerateEmissionsProfile
 
         var dto = DrainageStrategyDtoAdapter.Convert(co2Emission, project.PhysicalUnit);
         return dto;
+    }
+
+    private static TimeSeriesVolume CalculateDrillingEmissions(DrainageStrategy drainageStrategy,
+        WellProject wellProject)
+    {
+        var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory))
+            .ToList();
+        if (linkedWells == null)
+        {
+            return new TimeSeriesVolume();
+        }
+
+        var wellDrillingSchedules = new TimeSeries<double>();
+        foreach (var linkedWell in linkedWells)
+        {
+            if (linkedWell.DrillingSchedule == null)
+            {
+                continue;
+            }
+
+            var timeSeries = new TimeSeries<double>
+            {
+                StartYear = linkedWell.DrillingSchedule.StartYear,
+                Values = linkedWell.DrillingSchedule.Values.Select(v => (double)v).ToArray()
+            };
+            wellDrillingSchedules = TimeSeriesCost.MergeCostProfiles(wellDrillingSchedules, timeSeries);
+        }
+
+        var sumOfWellsDrilledInYear = Array.Empty<double>();
+        for (var i = 0; i < wellDrillingSchedules.Values.Length; i++)
+        {
+            var calculatedDrillingEmissions = wellDrillingSchedules.Values[i] *
+                AvereageDevelopmentWellDrillingDays * DailyEmissionFromDrillingRig / 1000000;
+            sumOfWellsDrilledInYear[i] = calculatedDrillingEmissions;
+        }
+
+        var drillingEmission = new ProductionProfileGas
+        {
+            StartYear = drainageStrategy.ProductionProfileGas.StartYear,
+            Values = sumOfWellsDrilledInYear
+        };
+
+        return drillingEmission;
+    }
+
+    private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,
+        TimeSeries<double> fuelConsumption, TimeSeries<double> flarings, TimeSeries<double> losses)
+    {
+        if (drainageStrategy.ProductionProfileGas == null)
+        {
+            return null!;
+        }
+
+        var fuelFlaringLosses =
+            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(fuelConsumption, flarings), losses);
+
+        var negativeFuelFlaringLosses = new TimeSeriesVolume
+        {
+            StartYear = fuelFlaringLosses.StartYear,
+            Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray()
+        };
+
+        return TimeSeriesCost.MergeCostProfiles(drainageStrategy.ProductionProfileGas, negativeFuelFlaringLosses);
     }
 
     private TimeSeries<double> CalculateFlaring(DrainageStrategy drainageStrategy)
@@ -162,7 +282,7 @@ public class GenerateEmissionsProfile
         DrainageStrategy drainageStrategy)
     {
         var totalUseOfPower = CalculateTotalUseOfPower(topside, drainageStrategy);
-        var productionEfficiency = drainageStrategy.FacilitiesAvailability;
+        var productionEfficiency = caseItem.FacilitiesAvailability;
         var fuelGasConsumptionMax = topside.FuelConsumption; //Confirm with A if this is the correct value
 
         var valuesList = new List<double>();
