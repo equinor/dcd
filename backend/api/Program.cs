@@ -139,9 +139,14 @@ builder.Services.AddFusionIntegration(options =>
     options.AddFusionRoles();
     options.ApplicationMode = true;
 });
+var serilogConfiguration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
-    .ReadFrom.Configuration(builder.Configuration.GetSection("Serilog"))
+    .ReadFrom.Configuration(serilogConfiguration)
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
