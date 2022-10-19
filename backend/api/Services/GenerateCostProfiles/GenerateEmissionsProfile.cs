@@ -190,7 +190,7 @@ public class GenerateEmissionsProfile
     {
         if (drainageStrategy.ProductionProfileGas == null)
         {
-            return null!;
+            return new TimeSeries<double>();
         }
 
         var fuelFlaringLosses =
@@ -218,7 +218,7 @@ public class GenerateEmissionsProfile
     {
         if (drainageStrategy.ProductionProfileOil == null)
         {
-            return null!;
+            return new TimeSeriesVolume()!;
         }
 
         var oilRates = drainageStrategy.ProductionProfileOil.Values;
@@ -239,7 +239,7 @@ public class GenerateEmissionsProfile
     {
         if (drainageStrategy.ProductionProfileGas == null)
         {
-            return null!;
+            return new TimeSeriesVolume();
         }
 
         var gasRates = drainageStrategy.ProductionProfileGas.Values;
@@ -261,7 +261,7 @@ public class GenerateEmissionsProfile
         var gasValues = Array.Empty<double>();
         if (drainageStrategy.ProductionProfileGas == null)
         {
-            return null!;
+            return new TimeSeries<double>();
         }
 
         var gasRates = drainageStrategy.ProductionProfileGas.Values;
