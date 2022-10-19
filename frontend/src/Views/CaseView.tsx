@@ -34,16 +34,8 @@ import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
-<<<<<<< HEAD
-import { OpexCostProfile } from "../models/case/OpexCostProfile"
-import { GetCaseService } from "../Services/CaseService"
-import { StudyCostProfile } from "../models/case/StudyCostProfile"
-import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
-import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
-import ReadOnlyTimeSeries from "../Components/ReadOnlyTimeSeries"
 import DrillingScheduleViewTab from "./DrillingScheduleViewTab"
-=======
->>>>>>> a2a5d213e1bcb96150c0e10d1f723f1d97c42aac
+import { Well } from "../models/Well"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -92,7 +84,7 @@ const CaseView = () => {
 
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
-    const [activeTab, setActiveTab] = useState<number>(0)
+    const [activeTab, setActiveTab] = useState<number>(3)
     const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
@@ -103,6 +95,7 @@ const CaseView = () => {
     const [topside, setTopside] = useState<Topside>()
     const [substructure, setSubstructure] = useState<Substructure>()
     const [transport, setTransport] = useState<Transport>()
+    const [wells, setWells] = useState<Well[]>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
 
@@ -128,6 +121,7 @@ const CaseView = () => {
                 setTopside(projectResult?.topsides.find((top) => top.id === caseResult?.topsideLink))
                 setSubstructure(projectResult?.substructures.find((sub) => sub.id === caseResult?.substructureLink))
                 setTransport(projectResult?.transports.find((tran) => tran.id === caseResult?.transportLink))
+                setWells(projectResult?.wells)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
@@ -197,16 +191,7 @@ const CaseView = () => {
             <CaseViewDiv>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>
-<<<<<<< HEAD
-                        <Tab>Definition </Tab>
-                        <Tab>Schedule </Tab>
-                        <Tab>Facilities </Tab>
-                        <Tab>Exploration</Tab>
-                        <Tab>Development </Tab>
-                        <Tab>Drilling Schedule </Tab>
-=======
                         <Tab>Description</Tab>
->>>>>>> a2a5d213e1bcb96150c0e10d1f723f1d97c42aac
                         <Tab>Production Profiles</Tab>
                         <Tab>Schedule</Tab>
                         <Tab>Drilling Schedule</Tab>
@@ -243,17 +228,13 @@ const CaseView = () => {
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-<<<<<<< HEAD
-                            <p><Typography variant="h3">Drilling Schedule</Typography></p>
                             <DrillingScheduleViewTab
                                 _case={caseItem}
                                 _project={project}
+                                _exploration={exploration}
+                                _wellProject={wellProject}
+                                _wells={wells}
                             />
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <p>Production profiles</p>
-=======
-                            <p>Drilling Schedule</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <CaseFacilitiesTab
@@ -270,7 +251,6 @@ const CaseView = () => {
                                 transport={transport}
                                 setTransport={setTransport}
                             />
->>>>>>> a2a5d213e1bcb96150c0e10d1f723f1d97c42aac
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <p>Cost</p>

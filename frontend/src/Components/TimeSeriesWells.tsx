@@ -172,28 +172,6 @@ const TimeSeriesWells = ({
 
     return (
         <>
-            <WrapperTablePeriod>
-                <NumberInputTable
-                    value={isValidYear(tableFirstYear) ? tableFirstYear : 2020}
-                    setValue={setTableFirstYear}
-                    integer
-                    label="Start year"
-                />
-                <Typography variant="h2">-</Typography>
-                <NumberInputTable
-                    value={isValidYear(tableLastYear) ? tableLastYear : 2030}
-                    setValue={setTableLastYear}
-                    integer
-                    label="End year"
-                />
-                <ImportButton
-                    onClick={addTimeSeries}
-                    disabled={disableApplyButton()}
-                >
-                    Apply
-                </ImportButton>
-            </WrapperTablePeriod>
-
             <WrapperColumn>
                 <DataTableWell
                     columns={columns}
