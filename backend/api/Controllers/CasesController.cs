@@ -1,7 +1,7 @@
+using Api.Authorization;
+
 using api.Dtos;
 using api.Services;
-
-using Api.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +21,6 @@ namespace api.Controllers;
 public class CasesController : ControllerBase
 {
     private readonly CaseService _caseService;
-    private readonly GenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly GenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly GenerateOpexCostProfile _generateOpexCostProfile;
-    private readonly GenerateStudyCostProfile _generateStudyCostProfile;
 
     public CasesController(CaseService caseService)
     {
