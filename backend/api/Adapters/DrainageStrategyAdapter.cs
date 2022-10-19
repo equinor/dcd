@@ -103,6 +103,7 @@ public static class DrainageStrategyAdapter
                 ProjectId = drainageStrategyDto.ProjectId,
                 NGLYield = drainageStrategyDto.NGLYield,
                 ArtificialLift = drainageStrategyDto.ArtificialLift,
+                GasSolution = drainageStrategyDto.GasSolution,
                 ProducerCount = drainageStrategyDto.ProducerCount,
                 GasInjectorCount = drainageStrategyDto.GasInjectorCount,
                 WaterInjectorCount = drainageStrategyDto.WaterInjectorCount,
@@ -114,6 +115,7 @@ public static class DrainageStrategyAdapter
         existing.ProjectId = drainageStrategyDto.ProjectId;
         existing.NGLYield = drainageStrategyDto.NGLYield;
         existing.ArtificialLift = drainageStrategyDto.ArtificialLift;
+        existing.GasSolution = drainageStrategyDto.GasSolution;
         existing.ProducerCount = drainageStrategyDto.ProducerCount;
         existing.GasInjectorCount = drainageStrategyDto.GasInjectorCount;
         existing.WaterInjectorCount = drainageStrategyDto.WaterInjectorCount;

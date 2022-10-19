@@ -21,15 +21,14 @@ interface Props {
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     timeSeriesData: any[]
     dg4Year: number
-    firstYear: number
-    lastYear: number
+    tableYears: [number, number]
 }
 
 function CaseProductionProfilesTabTable({
     project, setProject,
     caseItem, setCase,
     timeSeriesData, dg4Year,
-    firstYear, lastYear,
+    tableYears,
 }: Props) {
     useAgGridStyles()
     const gridRef = useRef(null)
@@ -62,9 +61,24 @@ function CaseProductionProfilesTabTable({
         return tableRows
     }
 
+    const generateTableYearColDefs = () => {
+        const profileNameDef = { field: "profileName", headerName: "Production profiles", width: 250 }
+        const unitDef = { field: "unit", width: 100 }
+        const yearDefs = []
+        for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
+            yearDefs.push({ field: index.toString(), flex: 1 })
+        }
+        const totalDef = { field: "total", flex: 2 }
+        return [profileNameDef, unitDef, ...yearDefs, totalDef]
+    }
+
+    const [columnDefs, setColumnDefs] = useState(generateTableYearColDefs())
+
     useEffect(() => {
         setRowData(profilesToRowData())
-    }, [timeSeriesData])
+        const newColDefs = generateTableYearColDefs()
+        setColumnDefs(newColDefs)
+    }, [timeSeriesData, tableYears])
 
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
@@ -105,19 +119,6 @@ function CaseProductionProfilesTabTable({
         editable: true,
         onCellValueChanged: handleCellValueChange,
     }), [])
-
-    const generateTableYearColDefs = () => {
-        const profileNameDef = { field: "profileName", headerName: "Production profiles", width: 250 }
-        const unitDef = { field: "unit", width: 100 }
-        const yearDefs = []
-        for (let index = firstYear; index <= lastYear; index += 1) {
-            yearDefs.push({ field: index.toString(), flex: 1 })
-        }
-        const totalDef = { field: "total", flex: 2 }
-        return [profileNameDef, unitDef, ...yearDefs, totalDef]
-    }
-
-    const [columnDefs] = useState(generateTableYearColDefs())
 
     return (
         <div

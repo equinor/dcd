@@ -116,6 +116,7 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             artificialLift?: ArtificialLift /* int32 */;
+            gasSolution?: GasSolution /* int32 */;
             productionProfileOil?: ProductionProfileOilDto;
             productionProfileGas?: ProductionProfileGasDto;
             productionProfileWater?: ProductionProfileWaterDto;
@@ -192,6 +193,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export type GasSolution = 0 | 1; // int32
         export interface Identity {
             [name: string]: any;
             displayName?: string | null;

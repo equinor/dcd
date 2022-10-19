@@ -15,6 +15,7 @@ public static class DrainageStrategyDtoAdapter
             ProjectId = drainageStrategy.ProjectId,
             NGLYield = drainageStrategy.NGLYield,
             ArtificialLift = drainageStrategy.ArtificialLift,
+            GasSolution = drainageStrategy.GasSolution,
             ProducerCount = drainageStrategy.ProducerCount,
             GasInjectorCount = drainageStrategy.GasInjectorCount,
             WaterInjectorCount = drainageStrategy.WaterInjectorCount,

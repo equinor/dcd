@@ -126,6 +126,7 @@ const CaseView = () => {
 
     if (!project) return null
     if (!caseItem) return null
+    if (!drainageStrategy || !exploration || !wellProject || !surf || !topside || !substructure || !transport) { return null }
 
     return (
         <div>
