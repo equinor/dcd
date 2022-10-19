@@ -37,6 +37,12 @@ public class SurfsController : ControllerBase
         return _surfService.UpdateSurf(surfDto);
     }
 
+    [HttpPut("new", Name = "NewUpdateSurf")]
+    public SurfDto NewUpdateSurf([FromBody] SurfDto surfDto)
+    {
+        return _surfService.NewUpdateSurf(surfDto);
+    }
+
     [HttpPost(Name = "CreateSurf")]
     public ProjectDto CreateSurf([FromQuery] Guid sourceCaseId, [FromBody] SurfDto surfDto)
     {

@@ -4,6 +4,7 @@ using api.Services;
 using api.Services.GenerateCostProfiles;
 
 using Api.Authorization;
+using Api.Helpers;
 using Api.Services.FusionIntegration;
 
 using Azure.Identity;
@@ -193,6 +194,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
 app.UseMiddleware<ClaimsMiddelware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
