@@ -48,4 +48,10 @@ public class SubstructuresController : ControllerBase
     {
         return _substructureService.UpdateSubstructure(substructureDto);
     }
+
+    [HttpPut("new", Name = "NewUpdateSubstructure")]
+    public SubstructureDto NewUpdateSubstructure([FromBody] SubstructureDto substructureDto)
+    {
+        return _substructureService.NewUpdateSubstructure(substructureDto);
+    }
 }
