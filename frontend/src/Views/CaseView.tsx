@@ -40,7 +40,6 @@ const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
 
 const CaseViewDiv = styled.div`
-    margin: 2rem;
     display: flex;
     flex-direction: column;
 `
@@ -48,56 +47,71 @@ const CaseViewDiv = styled.div`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    padding: 1.5rem 2rem;
+    z-index: 1000;
 `
 
 const PageTitle = styled(Typography)`
     flex-grow: 1;
+    padding-left: 30px;
 `
 
 const InvisibleButton = styled(Button)`
     border: 1px solid #007079;
+
 `
 
 const TransparentButton = styled(Button)`
     color: #007079;
     background-color: white;
     border: 1px solid #007079;
+
 `
 
 const DividerLine = styled.div`
-    background: gray;
-    height: 0.05rem;
-    width: 50rem;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
 `
 
 const StyledTabPanel = styled(Panel)`
+    margin-left: 40px;
+    margin-right: 40px;
     padding-top: 0px;
-    border-top: 1px solid LightGray;
 `
 const HeaderWrapper = styled.div`
     background-color: white;
+    width: calc(100% - 16rem);
     position: fixed;
-    z-index: 1000;
+    z-index: 100;
+    padding-top: 30px;
 `
-
-const HeaderWrapper2 = styled.div`
-    background-color: white;
-    position: relative;
-    z-index: 1000;
-`
-
 const TabMenuWrapper = styled.div`
-    background-color: white;
     position: fixed;
     z-index: 1000;
-    margin-top: 100px;
+    width: calc(100% - 16rem);
+    border-bottom: 1px solid LightGray;
+    margin-top: 95px;
 `
 
 const TabContentWrapper = styled.div`
-    margin-top: 100px;
+    margin-top: 145px;
+`
+
+const CaseButtonsWrapper = styled.div`
+    align-items: flex-end;
+    display: flex;
+    flex-direction: row;
+    align-content: right;
+    margin-left: auto;
+    z-index: 110;
+`
+
+const ColumnWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const RowWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 78px;
 `
 
 const CaseView = () => {
@@ -153,63 +167,65 @@ const CaseView = () => {
     return (
         <div>
             <HeaderWrapper>
-                <HeaderWrapper2>
-                    <TopWrapper>
-                        <PageTitle variant="h4">{caseItem.name}</PageTitle>
-                        <TransparentButton
-                            onClick={() => toggleTechnicalInputModal()}
-                        >
-                            Edit technical input
-                        </TransparentButton>
-                        <InvisibleButton
-                            variant="outlined"
-                            ref={setMenuAnchorEl}
-                            onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
-                        >
-                            <Icon data={more_vertical} />
-                        </InvisibleButton>
-                    </TopWrapper>
-                    <Menu
-                        id="menu-complex"
-                        open={isMenuOpen}
-                        anchorEl={menuAnchorEl}
-                        onClose={() => setIsMenuOpen(false)}
-                        placement="bottom"
+                <RowWrapper>
+                    <PageTitle variant="h4">{caseItem.name}</PageTitle>
+                    <ColumnWrapper>
+                        <CaseButtonsWrapper>
+                            <TransparentButton
+                                onClick={() => toggleTechnicalInputModal()}
+                            >
+                                Edit technical input
+                            </TransparentButton>
+                            <InvisibleButton
+                                variant="outlined"
+                                ref={setMenuAnchorEl}
+                                onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
+                            >
+                                <Icon data={more_vertical} />
+                            </InvisibleButton>
+                        </CaseButtonsWrapper>
+                    </ColumnWrapper>
+                </RowWrapper>
+                <Menu
+                    id="menu-complex"
+                    open={isMenuOpen}
+                    anchorEl={menuAnchorEl}
+                    onClose={() => setIsMenuOpen(false)}
+                    placement="bottom"
+                >
+                    <Menu.Item
+                        onClick={() => console.log("Add new case clicked")}
                     >
-                        <Menu.Item
-                            onClick={() => console.log("Add new case clicked")}
-                        >
-                            <Icon data={add} size={16} />
-                            <Typography group="navigation" variant="menu_title" as="span">
-                                Add New Case
-                            </Typography>
-                        </Menu.Item>
-                        <Menu.Item
-                            onClick={() => console.log("Duplicate clicked")}
-                        >
-                            <Icon data={library_add} size={16} />
-                            <Typography group="navigation" variant="menu_title" as="span">
-                                Duplicate
-                            </Typography>
-                        </Menu.Item>
-                        <Menu.Item
-                            onClick={() => console.log("Rename clicked")}
-                        >
-                            <Icon data={edit} size={16} />
-                            <Typography group="navigation" variant="menu_title" as="span">
-                                Rename
-                            </Typography>
-                        </Menu.Item>
-                        <Menu.Item
-                            onClick={() => console.log("Delete clicked")}
-                        >
-                            <Icon data={delete_to_trash} size={16} />
-                            <Typography group="navigation" variant="menu_title" as="span">
-                                Delete
-                            </Typography>
-                        </Menu.Item>
-                    </Menu>
-                </HeaderWrapper2>
+                        <Icon data={add} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Add New Case
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={() => console.log("Duplicate clicked")}
+                    >
+                        <Icon data={library_add} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Duplicate
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={() => console.log("Rename clicked")}
+                    >
+                        <Icon data={edit} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Rename
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={() => console.log("Delete clicked")}
+                    >
+                        <Icon data={delete_to_trash} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Delete
+                        </Typography>
+                    </Menu.Item>
+                </Menu>
             </HeaderWrapper>
             <CaseViewDiv>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>

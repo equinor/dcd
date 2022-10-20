@@ -139,8 +139,8 @@ function CaseProductionProfilesTab({
 
     const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newEndYear = Number(e.currentTarget.value)
-        if (newEndYear > 2050) {
-            setEndYear(2050)
+        if (newEndYear > 2100) {
+            setEndYear(2100)
             return
         }
         setEndYear(newEndYear)
