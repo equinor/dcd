@@ -10,6 +10,7 @@ import { Icon } from "@equinor/eds-core-react"
 import { lock } from "@equinor/eds-icons"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import "ag-grid-enterprise"
+import { DrillingSchedule } from "../../models/assets/wellproject/DrillingSchedule"
 
 export interface CellValue {
     value: number | string
@@ -19,12 +20,18 @@ interface Props {
     columns: string[]
     dG4Year: string
     wellsTimeSeries: (ITimeSeries | undefined)[]
+    timeSeriesData: any[]
+    expDrillingSchedules: (DrillingSchedule | undefined)[]
+    devDrillingSchedules: (DrillingSchedule | undefined)[]
 }
 
 function DataTableWell({
     columns,
     dG4Year,
     wellsTimeSeries,
+    timeSeriesData,
+    expDrillingSchedules,
+    devDrillingSchedules,
 }: Props) {
     const topGrid = useRef<AgGridReact>(null)
     const bottomGrid = useRef<AgGridReact>(null)
@@ -39,27 +46,114 @@ function DataTableWell({
     }
 
     const setEmptyWellsIfNoData = (value: object[]) => {
-        if ((columns.length === 0 && wellsTimeSeries.length !== 0) || columns[0] === "") {
-            for (let j = 0; j < wellsTimeSeries.length; j += 1) {
-                if (wellsTimeSeries[j]?.values?.length === 0) {
-                    const readOnly = {
-                        "Exploration wells": "", Unit: "Well", "Total wells": 0, ReadOnly: true,
-                    }
-                    value.push({ ...readOnly })
-                }
-            }
-        }
+        value.push(timeSeriesData!)
+        console.log(value)
     }
 
-    const rowDataToColumns = () => {
-        const value: object[] = []
+    // const setEmptyWellsIfNoData = (value: object[]) => {
+    //     if ((columns.length === 0 && wellsTimeSeries.length !== 0) || columns[0] === "") {
+    //         for (let j = 0; j < wellsTimeSeries.length; j += 1) {
+    //             if (wellsTimeSeries[j]?.values?.length === 0) {
+    //                 const readOnly = {
+    //                     "Exploration wells": "", Unit: "Well", "Total wells": 0, ReadOnly: true,
+    //                 }
+    //                 value.push({ ...readOnly })
+    //             }
+    //         }
+    //     }
+    // }
 
-        setEmptyWellsIfNoData(value)
+    const generateExpTimeSeriesYears = (index: number, dg4: string) => {
+        const years = []
+        if (dg4) {
+            const profileStartYear: number = Number(expDrillingSchedules[index]?.startYear) + Number(dG4Year)
+            const maxYear: number = Number(expDrillingSchedules[index]?.values?.length) + profileStartYear
+            for (let i = profileStartYear; i < maxYear; i += 1) {
+                years.push(i.toString())
+            }
+        }
+        return years
+    }
+
+    const generateDevTimeSeriesYears = (index: number, dg4: string) => {
+        const years = []
+        if (dg4) {
+            const profileStartYear: number = Number(devDrillingSchedules[index]?.startYear) + Number(dG4Year)
+            const maxYear: number = Number(devDrillingSchedules[index]?.values?.length) + profileStartYear
+            for (let i = profileStartYear; i < maxYear; i += 1) {
+                years.push(i.toString())
+            }
+        }
+        return years
+    }
+
+    const rowDataToColumnsExpWell = () => {
+        const combinedObjArr: object[] = []
+        const objValSum: number[] = []
+        const value: object[] = []
+        if (timeSeriesData[0] !== undefined) {
+            for (let i = 0; i < timeSeriesData.length; i += 1) {
+                const totalValue: number[] = []
+                if (expDrillingSchedules[i] !== undefined && dG4Year && expDrillingSchedules[i]?.values?.length !== 0) {
+                    objValSum.push((expDrillingSchedules[i]?.values?.map(
+                        (v) => Math.round((v + Number.EPSILON) * 10) / 10,
+                    ) ?? [])
+                        .reduce((x: number, y: number) => x + y))
+                    totalValue.push(objValSum[i])
+                }
+                if (expDrillingSchedules[i] !== undefined && dG4Year && expDrillingSchedules[i]?.values?.length === 0) {
+                    objValSum.push(0)
+                    totalValue.push(objValSum[i])
+                }
+
+                const objValToNumbers: number[] = expDrillingSchedules[i]?.values!
+                const rowObj = generateExpTimeSeriesYears(i, dG4Year)
+                    .reduce((obj: object, element: string, index: number) => (
+                        { ...obj, [element]: objValToNumbers[index] }), {})
+                combinedObjArr.push(rowObj)
+                const totalValueObj = { Total: Number(totalValue) }
+                value.push({ ...combinedObjArr[i], ...timeSeriesData[0][i] })
+            }
+        }
+        console.log(value)
+        return value
+    }
+
+    const rowDataToColumnsDevWell = () => {
+        const combinedObjArr: object[] = []
+        const objValSum: number[] = []
+        const value: object[] = []
+        if (timeSeriesData[1] !== undefined) {
+            for (let i = 0; i < timeSeriesData.length; i += 1) {
+                const totalValue: number[] = []
+                if (devDrillingSchedules[i] !== undefined && dG4Year && devDrillingSchedules[i]?.values?.length !== 0) {
+                    objValSum.push((devDrillingSchedules[i]?.values?.map(
+                        (v) => Math.round((v + Number.EPSILON) * 10) / 10,
+                    ) ?? [])
+                        .reduce((x: number, y: number) => x + y))
+                    totalValue.push(objValSum[i])
+                }
+                if (devDrillingSchedules[i] !== undefined && dG4Year && devDrillingSchedules[i]?.values?.length === 0) {
+                    objValSum.push(0)
+                    totalValue.push(objValSum[i])
+                }
+
+                const objValToNumbers: number[] = devDrillingSchedules[i]?.values!
+                const rowObj = generateDevTimeSeriesYears(i, dG4Year)
+                    .reduce((obj: object, element: string, index: number) => (
+                        { ...obj, [element]: objValToNumbers[index] }), {})
+                combinedObjArr.push(rowObj)
+                const totalValueObj = { Total: Number(totalValue) }
+                value.push({ ...combinedObjArr[i], ...timeSeriesData[1][i] })
+            }
+        }
+        console.log(value)
         return value
     }
 
     const expWellsColDef = () => {
         if (columns.length !== 0) {
+            console.log(columns)
             const col = columns
             const columnToColDef = []
             const columnPinned = [
@@ -148,7 +242,7 @@ function DataTableWell({
     }), [])
 
     useEffect(() => {
-    }, [wellsTimeSeries, dG4Year])
+    }, [wellsTimeSeries, dG4Year, columns])
 
     const columnTotalsDataExpWells = () => {
         const footerGridData = {
@@ -260,7 +354,7 @@ function DataTableWell({
                     <AgGridReact
                         ref={topGrid}
                         alignedGrids={bottomGrid.current ? [bottomGrid.current] : undefined}
-                        rowData={rowDataToColumns()}
+                        rowData={rowDataToColumnsExpWell()}
                         columnDefs={expWellsColDef()}
                         defaultColDef={defaultColDef}
                         animateRows
@@ -295,7 +389,7 @@ function DataTableWell({
                     <AgGridReact
                         ref={topGrid}
                         alignedGrids={bottomGrid.current ? [bottomGrid.current] : undefined}
-                        rowData={rowDataToColumns()}
+                        rowData={rowDataToColumnsDevWell()}
                         columnDefs={devWellsColDef()}
                         defaultColDef={defaultColDef}
                         animateRows

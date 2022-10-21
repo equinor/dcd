@@ -29,6 +29,7 @@ import { WellProjectWell } from "../models/WellProjectWell"
 import { WellProject } from "../models/assets/wellproject/WellProject"
 import NumberInputTable from "../Components/NumberInputTable"
 import { Well } from "../models/Well"
+import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 
 const RowWrapper = styled.div`
     display: flex;
@@ -120,15 +121,6 @@ const DrillingScheduleViewTab = ({
                     newExploration.currency = project.currency
                     setExploration(newExploration)
                 }
-
-                if (caseItem?.DG4Date) {
-                    initializeFirstAndLastYear(
-                        caseItem?.DG4Date?.getFullYear(),
-                        [_exploration?.explorationWells![0].drillingSchedule],
-                        setFirstTSYear,
-                        setLastTSYear,
-                    )
-                }
             }
         })()
     }, [project])
@@ -146,15 +138,6 @@ const DrillingScheduleViewTab = ({
                     newExploration.currency = project.currency
                     setExploration(newExploration)
                 }
-
-                if (caseItem?.DG4Date) {
-                    initializeFirstAndLastYear(
-                        caseItem?.DG4Date?.getFullYear(),
-                        [_exploration?.explorationWells![0].drillingSchedule],
-                        setFirstTSYear,
-                        setLastTSYear,
-                    )
-                }
             }
         })()
     }, [_project, _case, project])
@@ -169,6 +152,21 @@ const DrillingScheduleViewTab = ({
         console.log(_exploration, _wellProject)
     }, [_exploration, _wellProject])
 
+    const allDrillingSchedules = () => {
+        const dS: DrillingSchedule[] = []
+        if (_exploration?.explorationWells![0] !== undefined) {
+            for (let i = 0; i < _exploration?.explorationWells.length; i += 1) {
+                dS.push(_exploration?.explorationWells![i]?.drillingSchedule!)
+            }
+        }
+        if (_wellProject?.wellProjectWells![0] !== undefined) {
+            for (let i = 0; i < _wellProject?.wellProjectWells.length; i += 1) {
+                dS.push(_wellProject?.wellProjectWells![i]?.drillingSchedule!)
+            }
+        }
+        return dS
+    }
+
     useEffect(() => {
         const newExploration: Exploration = { ...exploration }
         setExploration(newExploration)
@@ -178,19 +176,27 @@ const DrillingScheduleViewTab = ({
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [_exploration?.explorationWells![0]?.drillingSchedule, _wellProject?.wellProjectWells![0]?.drillingSchedule],
+                allDrillingSchedules(),
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
 
-        console.log(_exploration?.explorationWells![0].drillingSchedule)
+        console.log(_exploration?.explorationWells![0]?.drillingSchedule)
 
         if (isValidYear(firstTSYear) && isValidYear(lastTSYear) && firstTSYear && lastTSYear
             && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER
             && (firstTSYear !== lastTSYear)) {
             setTableFirstYear(firstTSYear)
             setTableLastYear(lastTSYear - 1)
+        }
+
+        const colYears = []
+        if (isValidYear(firstTSYear) && isValidYear(lastTSYear) && firstTSYear && lastTSYear) {
+            for (let j = firstTSYear; j < lastTSYear; j += 1) {
+                colYears.push(j.toString())
+            }
+            setColumns(colYears)
         }
     }, [explorationWells, developmentWells, firstTSYear, lastTSYear, caseItem])
 
@@ -209,7 +215,7 @@ const DrillingScheduleViewTab = ({
     const addTimeSeries = () => {
         const colYears = []
         if (isValidYear(tableFirstYear) && isValidYear(tableLastYear)) {
-            for (let j = tableFirstYear; j < tableLastYear; j += 1) {
+            for (let j = tableFirstYear; j < tableLastYear + 1; j += 1) {
                 colYears.push(j.toString())
             }
             setColumns(colYears)
@@ -241,6 +247,97 @@ const DrillingScheduleViewTab = ({
             // }
         }
     }
+
+    const expWellNames: string[] = []
+    const explorationWellName = (i: number) => {
+        if (_wells !== undefined) {
+            console.log(_wells)
+            expWellNames.push(_wells[i]?.name!)
+        }
+    }
+
+    const devWellNames: string[] = []
+    const developmentWellName = (i: number) => {
+        if (_wells !== undefined) {
+            console.log(_wells)
+            devWellNames.push(_wells[i]?.name!)
+        }
+    }
+
+    console.log(explorationWells)
+
+    const expWellTimeSeries: DrillingSchedule[] = []
+    const devWellTimeSeries: DrillingSchedule[] = []
+
+    const explorationAndDevlopmentWellTimeSeries = () => {
+        if (explorationWells !== undefined) {
+            for (let i = 0; i < Number(explorationWells?.length); i += 1) {
+                expWellTimeSeries.push(explorationWells![i]?.drillingSchedule!)
+            }
+        }
+        if (developmentWells !== undefined) {
+            for (let i = 0; i < Number(developmentWells?.length); i += 1) {
+                devWellTimeSeries.push(developmentWells![i]?.drillingSchedule!)
+            }
+        }
+    }
+    explorationAndDevlopmentWellTimeSeries()
+
+    const timeSeriesDataExpWellLoop = () => {
+        if (_wells !== undefined && _wells[0] !== undefined) {
+            for (let i = 0; i < _wells.length; i += 1) {
+                if (_wells[i]?.wellCategory! > 3) {
+                    explorationWellName(i)
+                }
+                if (_wells[i]?.wellCategory! <= 3) {
+                    developmentWellName(i)
+                }
+            }
+        }
+        return expWellNames
+    }
+    timeSeriesDataExpWellLoop()
+
+    const expWellObjects: object[] = []
+
+    const timeSeriesDataExpWellObjLoop = () => {
+        if (expWellNames !== undefined) {
+            for (let i = 0; i < expWellNames.length; i += 1) {
+                const timeSeriesDataExpWellObj = {
+                    "Exploration wells": expWellNames[i], Unit: "Wells", set: setExplorationWells, "Total wells": 0,
+                }
+                expWellObjects.push(timeSeriesDataExpWellObj)
+            }
+        }
+    }
+    timeSeriesDataExpWellObjLoop()
+    console.log(expWellObjects)
+
+    const devWellObjects: object[] = []
+
+    const timeSeriesDataDevWellObjLoop = () => {
+        if (devWellNames !== undefined) {
+            for (let i = 0; i < devWellNames.length; i += 1) {
+                const timeSeriesDataDevWellObj = {
+                    "Development wells": devWellNames[i], Unit: "Wells", set: setExplorationWells, "Total wells": 0,
+                }
+                devWellObjects.push(timeSeriesDataDevWellObj)
+            }
+        }
+    }
+    timeSeriesDataDevWellObjLoop()
+
+    // const timeSeriesDataExpWellObj = {
+    //     "Exploration well": expWellNames, unit: "Wells", set: setExplorationWells,
+    // }
+
+    // console.log(timeSeriesDataExpWell)
+    // const timeSeriesDataDevWell = [
+    //     {
+    //         "Development well": developmentWellName(), unit: "Wells", set: setDevelopmentWells,
+    //     },
+    // ]
+    // console.log(timeSeriesDataDevWell)
 
     if (!project || !exploration || !caseItem) { return null }
 
@@ -280,9 +377,14 @@ const DrillingScheduleViewTab = ({
                         dG4Year={caseItem.DG4Date!.getFullYear()}
                         setTimeSeries={tempSetTimeSeries}
                         setHasChanges={setHasChanges}
-                        firstYear={firstTSYear}
-                        lastYear={lastTSYear}
-                        wellsTimeSeries={[]} />
+                        firstYear={tableFirstYear}
+                        lastYear={tableLastYear}
+                        wellsTimeSeries={[]}
+                        timeSeriesData={[expWellObjects, devWellObjects]}
+                        columnsFromTableYears={columns}
+                        expDrillingSchedules={expWellTimeSeries}
+                        devDrillingSchedules={devWellTimeSeries}
+                    />
                 </AssetViewDiv>
             </ColumnWrapper>
         </>
