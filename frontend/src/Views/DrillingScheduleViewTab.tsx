@@ -21,8 +21,9 @@ import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import { IAssetService } from "../Services/IAssetService"
 import { GetCaseService } from "../Services/CaseService"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
-import { AssetViewDiv, ImportButton, WrapperTablePeriod } from "./Asset/StyledAssetComponents"
-import TimeSeriesWells from "../Components/TimeSeriesWells"
+import {
+    AssetViewDiv, ImportButton, WrapperColumn, WrapperTablePeriod,
+} from "./Asset/StyledAssetComponents"
 import { ITimeSeries } from "../models/ITimeSeries"
 import { ExplorationWell } from "../models/ExplorationWell"
 import { WellProjectWell } from "../models/WellProjectWell"
@@ -30,6 +31,7 @@ import { WellProject } from "../models/assets/wellproject/WellProject"
 import NumberInputTable from "../Components/NumberInputTable"
 import { Well } from "../models/Well"
 import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
+import DataTableWell from "../Components/DataTable/DataTableWell"
 
 const RowWrapper = styled.div`
     display: flex;
@@ -71,15 +73,10 @@ const DrillingScheduleViewTab = ({
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [hasChanges, setHasChanges] = useState(false)
-    const [name, setName] = useState<string>("")
     const { fusionContextId, caseId, explorationId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
-    const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
-    const [rigMobDemob, setRigMobDemob] = useState<number>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
 
     const [explorationService, setExplorationService] = useState<IAssetService>()
 
@@ -149,7 +146,6 @@ const DrillingScheduleViewTab = ({
         if (_wellProject) {
             setDevelopmentWells(_wellProject?.wellProjectWells!)
         }
-        console.log(_exploration, _wellProject)
     }, [_exploration, _wellProject])
 
     const allDrillingSchedules = () => {
@@ -182,8 +178,6 @@ const DrillingScheduleViewTab = ({
             )
         }
 
-        console.log(_exploration?.explorationWells![0]?.drillingSchedule)
-
         if (isValidYear(firstTSYear) && isValidYear(lastTSYear) && firstTSYear && lastTSYear
             && tableFirstYear === Number.MAX_SAFE_INTEGER && tableLastYear === Number.MIN_SAFE_INTEGER
             && (firstTSYear !== lastTSYear)) {
@@ -200,11 +194,6 @@ const DrillingScheduleViewTab = ({
         }
     }, [explorationWells, developmentWells, firstTSYear, lastTSYear, caseItem])
 
-    const tempSetTimeSeries = () => {
-        const newTimeSeries: ITimeSeries = {}
-        return newTimeSeries
-    }
-
     const disableApplyButton = () => {
         if (firstTSYear === tableFirstYear && lastTSYear === (tableLastYear + 1)) {
             return true
@@ -219,32 +208,6 @@ const DrillingScheduleViewTab = ({
                 colYears.push(j.toString())
             }
             setColumns(colYears)
-
-            // add columns as props to timeSeriesWells
-            // check in timeSeriesWells if column (first and last years)
-            // doesn't match firstYear and lastYear. if unmatch => create grids
-
-            // if (explorationWells![0] === undefined) {
-            //     for (let i = 0; i < explorationWells?.length!; i += 1) {
-            //         // createEmptyGrid(i)
-            //     }
-            // }
-            // if (explorationWells![0] !== undefined) {
-            //     for (let i = 0; i < explorationWells?.length!; i += 1) {
-            //         // createNewGridWithData(i)
-            //     }
-            // }
-
-            // if (developmentWells![0] === undefined) {
-            //     for (let i = 0; i < developmentWells?.length!; i += 1) {
-            //         // createEmptyGrid(i)
-            //     }
-            // }
-            // if (developmentWells![0] !== undefined) {
-            //     for (let i = 0; i < developmentWells?.length!; i += 1) {
-            //         // createNewGridWithData(i)
-            //     }
-            // }
         }
     }
 
@@ -327,18 +290,6 @@ const DrillingScheduleViewTab = ({
     }
     timeSeriesDataDevWellObjLoop()
 
-    // const timeSeriesDataExpWellObj = {
-    //     "Exploration well": expWellNames, unit: "Wells", set: setExplorationWells,
-    // }
-
-    // console.log(timeSeriesDataExpWell)
-    // const timeSeriesDataDevWell = [
-    //     {
-    //         "Development well": developmentWellName(), unit: "Wells", set: setDevelopmentWells,
-    //     },
-    // ]
-    // console.log(timeSeriesDataDevWell)
-
     if (!project || !exploration || !caseItem) { return null }
 
     return (
@@ -348,44 +299,39 @@ const DrillingScheduleViewTab = ({
                 {/* <Button onClick={handleSave}>Save</Button> */}
             </TopWrapper>
             <ColumnWrapper>
-                <AssetViewDiv>
-                    <Typography>
-                        To edit the well costs, go to Edit technical input
-                    </Typography>
-                    <WrapperTablePeriod>
-                        <NumberInputTable
-                            value={isValidYear(tableFirstYear) ? tableFirstYear : 2020}
-                            setValue={setTableFirstYear}
-                            integer
-                            label="Start year"
-                        />
-                        <Typography variant="h2">-</Typography>
-                        <NumberInputTable
-                            value={isValidYear(tableLastYear) ? tableLastYear : 2030}
-                            setValue={setTableLastYear}
-                            integer
-                            label="End year"
-                        />
-                        <ImportButton
-                            onClick={addTimeSeries}
-                            disabled={disableApplyButton()}
-                        >
-                            Apply
-                        </ImportButton>
-                    </WrapperTablePeriod>
-                    <TimeSeriesWells
-                        dG4Year={caseItem.DG4Date!.getFullYear()}
-                        setTimeSeries={tempSetTimeSeries}
-                        setHasChanges={setHasChanges}
-                        firstYear={tableFirstYear}
-                        lastYear={tableLastYear}
-                        wellsTimeSeries={[]}
+                <Typography>
+                    To edit the well costs, go to Edit technical input
+                </Typography>
+                <WrapperTablePeriod>
+                    <NumberInputTable
+                        value={isValidYear(tableFirstYear) ? tableFirstYear : 2020}
+                        setValue={setTableFirstYear}
+                        integer
+                        label="Start year"
+                    />
+                    <Typography variant="h2">-</Typography>
+                    <NumberInputTable
+                        value={isValidYear(tableLastYear) ? tableLastYear : 2030}
+                        setValue={setTableLastYear}
+                        integer
+                        label="End year"
+                    />
+                    <ImportButton
+                        onClick={addTimeSeries}
+                        disabled={disableApplyButton()}
+                    >
+                        Apply
+                    </ImportButton>
+                </WrapperTablePeriod>
+                <WrapperColumn>
+                    <DataTableWell
+                        columns={columns}
+                        dG4Year={caseItem.DG4Date!.getFullYear().toString()}
                         timeSeriesData={[expWellObjects, devWellObjects]}
-                        columnsFromTableYears={columns}
                         expDrillingSchedules={expWellTimeSeries}
                         devDrillingSchedules={devWellTimeSeries}
                     />
-                </AssetViewDiv>
+                </WrapperColumn>
             </ColumnWrapper>
         </>
     )

@@ -19,7 +19,6 @@ export interface CellValue {
 interface Props {
     columns: string[]
     dG4Year: string
-    wellsTimeSeries: (ITimeSeries | undefined)[]
     timeSeriesData: any[]
     expDrillingSchedules: (DrillingSchedule | undefined)[]
     devDrillingSchedules: (DrillingSchedule | undefined)[]
@@ -28,7 +27,6 @@ interface Props {
 function DataTableWell({
     columns,
     dG4Year,
-    wellsTimeSeries,
     timeSeriesData,
     expDrillingSchedules,
     devDrillingSchedules,
@@ -37,31 +35,6 @@ function DataTableWell({
     const bottomGrid = useRef<AgGridReact>(null)
 
     useAgGridStyles()
-
-    const lockIcon = (params: any) => {
-        if (params.data.Profile === "Total cost") {
-            return ""
-        }
-        return <Icon data={lock} color="#007079" />
-    }
-
-    const setEmptyWellsIfNoData = (value: object[]) => {
-        value.push(timeSeriesData!)
-        console.log(value)
-    }
-
-    // const setEmptyWellsIfNoData = (value: object[]) => {
-    //     if ((columns.length === 0 && wellsTimeSeries.length !== 0) || columns[0] === "") {
-    //         for (let j = 0; j < wellsTimeSeries.length; j += 1) {
-    //             if (wellsTimeSeries[j]?.values?.length === 0) {
-    //                 const readOnly = {
-    //                     "Exploration wells": "", Unit: "Well", "Total wells": 0, ReadOnly: true,
-    //                 }
-    //                 value.push({ ...readOnly })
-    //             }
-    //         }
-    //     }
-    // }
 
     const generateExpTimeSeriesYears = (index: number, dg4: string) => {
         const years = []
@@ -111,11 +84,10 @@ function DataTableWell({
                     .reduce((obj: object, element: string, index: number) => (
                         { ...obj, [element]: objValToNumbers[index] }), {})
                 combinedObjArr.push(rowObj)
-                const totalValueObj = { Total: Number(totalValue) }
-                value.push({ ...combinedObjArr[i], ...timeSeriesData[0][i] })
+                const totalValueObj = { "Total wells": Number(totalValue) }
+                value.push({ ...combinedObjArr[i], ...timeSeriesData[0][i], ...totalValueObj })
             }
         }
-        console.log(value)
         return value
     }
 
@@ -143,11 +115,10 @@ function DataTableWell({
                     .reduce((obj: object, element: string, index: number) => (
                         { ...obj, [element]: objValToNumbers[index] }), {})
                 combinedObjArr.push(rowObj)
-                const totalValueObj = { Total: Number(totalValue) }
-                value.push({ ...combinedObjArr[i], ...timeSeriesData[1][i] })
+                const totalValueObj = { "Total wells": Number(totalValue) }
+                value.push({ ...combinedObjArr[i], ...timeSeriesData[1][i], ...totalValueObj })
             }
         }
-        console.log(value)
         return value
     }
 
@@ -172,17 +143,6 @@ function DataTableWell({
                     aggFunc: "sum",
                     cellStyle: { fontWeight: "bold" },
                     width: 100,
-                },
-                {
-                    headerName: "",
-                    width: 60,
-                    field: "ReadOnly",
-                    pinned: "right",
-                    aggFunc: "",
-                    cellStyle: { fontWeight: "normal" },
-                    editable: false,
-                    hide: wellsTimeSeries.length === 0,
-                    cellRenderer: lockIcon,
                 }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i], aggFunc: "sum" })
@@ -213,17 +173,6 @@ function DataTableWell({
                     aggFunc: "sum",
                     cellStyle: { fontWeight: "bold" },
                     width: 100,
-                },
-                {
-                    headerName: "",
-                    width: 60,
-                    field: "ReadOnly",
-                    pinned: "right",
-                    aggFunc: "",
-                    cellStyle: { fontWeight: "normal" },
-                    editable: false,
-                    hide: wellsTimeSeries.length === 0,
-                    cellRenderer: lockIcon,
                 }]
             for (let i = 0; i < col.length; i += 1) {
                 columnToColDef.push({ field: col[i], aggFunc: "sum" })
@@ -242,7 +191,7 @@ function DataTableWell({
     }), [])
 
     useEffect(() => {
-    }, [wellsTimeSeries, dG4Year, columns])
+    }, [dG4Year, columns, expDrillingSchedules, devDrillingSchedules, timeSeriesData])
 
     const columnTotalsDataExpWells = () => {
         const footerGridData = {
@@ -251,23 +200,23 @@ function DataTableWell({
         }
         const totalValueArray: number[] = []
         const valueArray: number[][] = []
-        if (wellsTimeSeries.length >= 1 && columns.length > 1) {
+        if (expDrillingSchedules.length >= 1 && columns.length > 1) {
             for (let i = 0; i < columns.length; i += 1) {
-                if (wellsTimeSeries[i] !== undefined) {
+                if (expDrillingSchedules[i] !== undefined) {
                     const zeroesAtStart: number[] = Array.from({
-                        length: Number(wellsTimeSeries[i]?.startYear)
+                        length: Number(expDrillingSchedules[i]?.startYear)
                             + Number(dG4Year) - Number(columns[0]),
                     }, (() => 0))
 
                     const zeroesAtEnd: number[] = Array.from({
                         length: Number(columns.slice(-1)[0]) + 1
-                            - (Number(wellsTimeSeries[i]?.startYear)
+                            - (Number(expDrillingSchedules[i]?.startYear)
                                 + Number(dG4Year)
-                                + Number(wellsTimeSeries[i]?.values?.length)),
+                                + Number(expDrillingSchedules[i]?.values?.length)),
                     }, (() => 0))
 
                     const alignedAssetGridData: number[] = zeroesAtStart
-                        .concat(wellsTimeSeries[i]?.values!, zeroesAtEnd)
+                        .concat(expDrillingSchedules[i]?.values!, zeroesAtEnd)
                     valueArray.push(alignedAssetGridData)
                 }
             }
@@ -279,16 +228,16 @@ function DataTableWell({
             .reduce((obj: object, element: string, index: number) => (
                 { ...obj, [element]: totalValueArray[index] }), {})
         const totalTotalCostArray = []
-        if (wellsTimeSeries.length >= 1 && columns.length !== 0) {
-            for (let j = 0; j < wellsTimeSeries.length; j += 1) {
-                if (wellsTimeSeries[j] !== undefined && wellsTimeSeries[j]?.values?.length !== 0) {
-                    totalTotalCostArray.push((wellsTimeSeries[j]?.values ?? [])
+        if (expDrillingSchedules.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < expDrillingSchedules.length; j += 1) {
+                if (expDrillingSchedules[j] !== undefined && expDrillingSchedules[j]?.values?.length !== 0) {
+                    totalTotalCostArray.push((expDrillingSchedules[j]?.values ?? [])
                         .reduce((x: number, y: number) => x + y))
                 }
             }
         }
         const sum = totalTotalCostArray.reduce((prev, curr) => prev + curr, 0)
-        const totalTotalObj = { Total: Number(sum) }
+        const totalTotalObj = { "Total wells": Number(sum) }
         const combinedFooterRow = [{ ...value, ...footerGridData, ...totalTotalObj }]
         return combinedFooterRow
     }
@@ -300,23 +249,23 @@ function DataTableWell({
         }
         const totalValueArray: number[] = []
         const valueArray: number[][] = []
-        if (wellsTimeSeries.length >= 1 && columns.length > 1) {
+        if (devDrillingSchedules.length >= 1 && columns.length > 1) {
             for (let i = 0; i < columns.length; i += 1) {
-                if (wellsTimeSeries[i] !== undefined) {
+                if (devDrillingSchedules[i] !== undefined) {
                     const zeroesAtStart: number[] = Array.from({
-                        length: Number(wellsTimeSeries[i]?.startYear)
+                        length: Number(devDrillingSchedules[i]?.startYear)
                             + Number(dG4Year) - Number(columns[0]),
                     }, (() => 0))
 
                     const zeroesAtEnd: number[] = Array.from({
                         length: Number(columns.slice(-1)[0]) + 1
-                            - (Number(wellsTimeSeries[i]?.startYear)
+                            - (Number(devDrillingSchedules[i]?.startYear)
                                 + Number(dG4Year)
-                                + Number(wellsTimeSeries[i]?.values?.length)),
+                                + Number(devDrillingSchedules[i]?.values?.length)),
                     }, (() => 0))
 
                     const alignedAssetGridData: number[] = zeroesAtStart
-                        .concat(wellsTimeSeries[i]?.values!, zeroesAtEnd)
+                        .concat(devDrillingSchedules[i]?.values!, zeroesAtEnd)
                     valueArray.push(alignedAssetGridData)
                 }
             }
@@ -328,16 +277,16 @@ function DataTableWell({
             .reduce((obj: object, element: string, index: number) => (
                 { ...obj, [element]: totalValueArray[index] }), {})
         const totalTotalCostArray = []
-        if (wellsTimeSeries.length >= 1 && columns.length !== 0) {
-            for (let j = 0; j < wellsTimeSeries.length; j += 1) {
-                if (wellsTimeSeries[j] !== undefined && wellsTimeSeries[j]?.values?.length !== 0) {
-                    totalTotalCostArray.push((wellsTimeSeries[j]?.values ?? [])
+        if (devDrillingSchedules.length >= 1 && columns.length !== 0) {
+            for (let j = 0; j < devDrillingSchedules.length; j += 1) {
+                if (devDrillingSchedules[j] !== undefined && devDrillingSchedules[j]?.values?.length !== 0) {
+                    totalTotalCostArray.push((devDrillingSchedules[j]?.values ?? [])
                         .reduce((x: number, y: number) => x + y))
                 }
             }
         }
         const sum = totalTotalCostArray.reduce((prev, curr) => prev + curr, 0)
-        const totalTotalObj = { Total: Number(sum) }
+        const totalTotalObj = { "Total wells": Number(sum) }
         const combinedFooterRow = [{ ...value, ...footerGridData, ...totalTotalObj }]
         return combinedFooterRow
     }
