@@ -23,6 +23,7 @@ interface Props {
     dg4Year: number
     tableYears: [number, number]
     tableName: string
+    alignedGridsRef?: any
 }
 
 function CaseTabTable({
@@ -30,6 +31,7 @@ function CaseTabTable({
     caseItem, setCase,
     timeSeriesData, dg4Year,
     tableYears, tableName,
+    alignedGridsRef,
 }: Props) {
     useAgGridStyles()
     const gridRef = useRef(null)
@@ -73,6 +75,7 @@ function CaseTabTable({
                 field: index.toString(),
                 flex: 1,
                 editable: (params: any) => params.data.set !== undefined,
+                minWidth: 100,
             })
         }
         const totalDef = { field: "total", flex: 2, editable: false }
@@ -142,6 +145,7 @@ function CaseTabTable({
                 animateRows
                 domLayout="autoHeight"
                 onGridReady={onGridReady}
+                alignedGrids={alignedGridsRef}
             />
         </div>
     )
