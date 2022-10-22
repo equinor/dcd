@@ -19,7 +19,7 @@ COPY --from=build /app ./
 EXPOSE 5000
 
 COPY --from=dynatrace_repo / /
-RUN mkdir -p /var/lib/dynatrace/oneagent/agent/config/ && touch /var/lib/dynatrace/oneagent/agent/config/hostname.conf ; echo "CONCEPTAPP-${environment}" > /var/lib/dynatrace/oneagent/agent/config/hostname.conf && mkdir /var/log/dcd && chown -R 1000:1000 /var/log/dcd
+RUN mkdir -p /var/lib/dynatrace/oneagent/agent/config/ && touch /var/lib/dynatrace/oneagent/agent/config/hostname.conf ; echo "CONCEPTAPP-${environment}" > /var/lib/dynatrace/oneagent/agent/config/hostname.conf && mkdir /var/log/dcd && chown -R 1001:1001 /var/log/dcd
 ENV LD_PRELOAD /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so
 
 #Dynatrace config
