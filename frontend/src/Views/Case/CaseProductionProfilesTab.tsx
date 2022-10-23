@@ -110,7 +110,7 @@ function CaseProductionProfilesTab({
             profileName: "Oil production", unit: "MSm3/yr", set: setOil, profile: oil,
         },
         {
-            profileName: "Water production", unit: "????", set: setWater, profile: water,
+            profileName: "Water production", unit: "MSm3/yr", set: setWater, profile: water,
         },
         {
             profileName: "Water injection", unit: "MSm3/yr", set: setWaterInjection, profile: waterInjection,
