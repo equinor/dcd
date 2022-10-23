@@ -1,14 +1,15 @@
 import { Typography } from "@material-ui/core"
-import React, {
+import {
+    ChangeEventHandler,
     Dispatch, MouseEventHandler, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
 import { Button, Input, Label } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
-import PROSPCaseList from "./PROSPCaseList"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
+import PROSPCaseList from "./PROSPCaseList"
 
 const ProspFieldWrapper = styled.div`
     margin-bottom: 2.5rem;
@@ -56,7 +57,7 @@ function PROSPTab({
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
             if (sharepointUrl !== project.sharepointSiteUrl) {
-                const newProject:Project = { ...project }
+                const newProject: Project = { ...project }
                 newProject.sharepointSiteUrl = sharepointUrl
                 const projectResult = await (await GetProjectService()).updateProject(newProject)
                 setProject(projectResult)
@@ -67,6 +68,11 @@ function PROSPTab({
             console.error("[PROSPTab] error while submitting form data", error)
         }
     }
+
+    const handleSharePointUrl: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setSharepointUrl(e.currentTarget.value)
+    }
+
     return (
         <div color="yellow">
             <TopWrapper color="danger">
@@ -77,12 +83,11 @@ function PROSPTab({
                 <Input
                     id="textfield-normal"
                     placeholder="Paste Uri here"
-                    onChange={(e) => setSharepointUrl(e.currentTarget.value)}
+                    onChange={handleSharePointUrl}
                     value={sharepointUrl}
                 />
                 <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
             </ProspFieldWrapper>
-
             <PROSPCaseList
                 project={project}
                 setProject={setProject}

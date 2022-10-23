@@ -20,6 +20,7 @@ stages:
               $modifiedTag = $last_tag.SubString(1)
               Write-Host "Version is $($modifiedTag)"
               Write-Host "##vso[task.setvariable variable=version;]$($modifiedTag)"
+            
           - task: FileTransform@1
             inputs:
               folderPath: '$(Build.SourcesDirectory)/frontend'

@@ -22,8 +22,7 @@ import { Case } from "../models/case/Case"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
-import { EditProjectInputModal } from "../Components/EditProjectInput/EditProjectInputModal"
-import { EditTechnicalInputModal } from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -70,14 +69,14 @@ const ProjectView = () => {
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
 
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const [element, setElement] = useState<HTMLButtonElement>()
-
     const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
 
-    const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState<boolean>(false)
+    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
+
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     useEffect(() => {
         (async () => {
@@ -120,12 +119,7 @@ const ProjectView = () => {
         })()
     }, [physicalUnit, currency])
 
-    const toggleEditProjectModal = () => setEditProjectModalIsOpen(!editProjectModalIsOpen)
-
-    const onMoreClick = (target: any) => {
-        setElement(target)
-        setIsMenuOpen(!isMenuOpen)
-    }
+    const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
     if (!project || project.id === "") {
         return (
@@ -138,12 +132,13 @@ const ProjectView = () => {
             <TopWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
                 <TransparentButton
-                    onClick={() => toggleEditProjectModal()}
+                    onClick={toggleEditTechnicalInputModal}
                 >
-                    Edit project input
+                    Edit technical input
                 </TransparentButton>
                 <InvisibleButton
-                    onClick={(e) => onMoreClick(e.target)}
+                    ref={setMenuAnchorEl}
+                    onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
                 >
                     <Icon data={more_vertical} />
                 </InvisibleButton>
@@ -151,7 +146,7 @@ const ProjectView = () => {
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}
-                anchorEl={element}
+                anchorEl={menuAnchorEl}
                 onClose={() => setIsMenuOpen(false)}
                 placement="bottom"
             >
@@ -227,8 +222,8 @@ const ProjectView = () => {
                 </Tabs>
             </Wrapper>
             <EditTechnicalInputModal
-                toggleEditTechnicalInputModal={toggleEditProjectModal}
-                isOpen={editProjectModalIsOpen}
+                toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
+                isOpen={editTechnicalInputModalIsOpen ?? false}
                 project={project}
                 setProject={setProject}
             />
