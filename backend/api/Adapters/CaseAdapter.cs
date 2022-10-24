@@ -40,7 +40,8 @@ public static class CaseAdapter
             WaterInjectorCount = caseDto.WaterInjectorCount,
             FacilitiesAvailability = caseDto.FacilitiesAvailability,
             SharepointFileId = caseDto.SharepointFileId,
-            SharepointFileName = caseDto.SharepointFileName
+            SharepointFileName = caseDto.SharepointFileName,
+            SharepointFileUrl = caseDto.SharepointFileUrl
         };
     }
 

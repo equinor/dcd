@@ -41,6 +41,7 @@ public static class CaseDtoAdapter
             FacilitiesAvailability = case_.FacilitiesAvailability,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
+            SharepointFileUrl = case_.SharepointFileUrl
         };
 
         return caseDto;
@@ -52,13 +53,14 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new CessationCostDto
         {
             Id = opexCost.Id,
             Currency = opexCost.Currency,
             EPAVersion = opexCost.EPAVersion,
             StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
+            Values = opexCost.Values
         };
     }
 
@@ -68,13 +70,14 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new OpexCostProfileDto
         {
             Id = opexCost.Id,
             Currency = opexCost.Currency,
             EPAVersion = opexCost.EPAVersion,
             StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
+            Values = opexCost.Values
         };
     }
 
@@ -84,13 +87,14 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new StudyCostProfileDto
         {
             Id = studyCost.Id,
             Currency = studyCost.Currency,
             EPAVersion = studyCost.EPAVersion,
             StartYear = studyCost.StartYear,
-            Values = studyCost.Values,
+            Values = studyCost.Values
         };
     }
 }

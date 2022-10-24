@@ -39,6 +39,7 @@ public class Case
     public Guid ExplorationLink { get; set; } = Guid.Empty;
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
+    public string? SharepointFileUrl { get; set; }
 }
 
 public enum ArtificialLift
@@ -48,6 +49,7 @@ public enum ArtificialLift
     ElectricalSubmergedPumps,
     SubseaBoosterPumps
 }
+
 public enum ProductionStrategyOverview
 {
     Depletion,
@@ -56,10 +58,10 @@ public enum ProductionStrategyOverview
     WAG,
     Mixed
 }
+
 public class CessationCost : TimeSeriesCost
 {
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    [ForeignKey("Case.Id")] public Case Case { get; set; } = null!;
 }
 
 public class OpexCostProfile : TimeSeriesCost

@@ -52,6 +52,7 @@ declare namespace Components {
             cessationCost?: CessationCostDto;
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
+            sharepointFileUrl?: string | null;
         }
         export interface CessationCostDto {
             id?: string; // uuid
@@ -323,7 +324,6 @@ declare namespace Components {
             substructure?: boolean;
             topside?: boolean;
             transport?: boolean;
-            sharePointFileName?: string | null;
             sharePointFileId?: string | null;
             sharePointSiteUrl?: string | null;
         }

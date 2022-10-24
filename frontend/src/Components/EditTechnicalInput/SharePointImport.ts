@@ -33,7 +33,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         if (!surf) { return ImportStatusEnum.NotSelected }
         if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
 
-        return ImportStatusEnum.NotSelected
+        return ImportStatusEnum.Selected
     }
 
     static substructureStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
@@ -42,7 +42,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         if (!substructure) { return ImportStatusEnum.NotSelected }
         if (SharePointImport.mapSource(substructure.source) === "PROSP") { return ImportStatusEnum.PROSP }
 
-        return ImportStatusEnum.NotSelected
+        return ImportStatusEnum.Selected
     }
 
     static topsideStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
@@ -51,7 +51,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         if (!topside) { return ImportStatusEnum.NotSelected }
         if (SharePointImport.mapSource(topside.source) === "PROSP") { return ImportStatusEnum.PROSP }
 
-        return ImportStatusEnum.NotSelected
+        return ImportStatusEnum.Selected
     }
 
     static transportStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
@@ -60,7 +60,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         if (!transport) { return ImportStatusEnum.NotSelected }
         if (SharePointImport.mapSource(transport.source) === "PROSP") { return ImportStatusEnum.PROSP }
 
-        return ImportStatusEnum.NotSelected
+        return ImportStatusEnum.Selected
     }
 
     static toDto = (value: SharePointImport): Components.Schemas.SharePointImportDto => {
