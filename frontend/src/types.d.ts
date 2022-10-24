@@ -52,6 +52,7 @@ declare namespace Components {
             cessationCost?: CessationCostDto;
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
+            sharepointFileUrl?: string | null;
         }
         export interface CessationCostDto {
             id?: string; // uuid
@@ -134,7 +135,7 @@ declare namespace Components {
         export interface DriveItemDto {
             name?: string | null;
             id?: string | null;
-            webUrl?: string | null;
+            sharepointFileUrl?: string | null;
             createdDateTime?: string | null; // date-time
             content?: Stream;
             size?: number | null; // int64
@@ -323,7 +324,6 @@ declare namespace Components {
             substructure?: boolean;
             topside?: boolean;
             transport?: boolean;
-            sharePointFileName?: string | null;
             sharePointFileId?: string | null;
             sharePointSiteUrl?: string | null;
         }
@@ -1076,19 +1076,6 @@ declare namespace Paths {
     }
     namespace UpdateWellProjectWell {
         export type RequestBody = Components.Schemas.WellProjectWellDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
-    namespace Upload {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-            export type SourceCaseId = string; // uuid
-        }
-        export interface QueryParameters {
-            projectId?: Parameters.ProjectId /* uuid */;
-            sourceCaseId?: Parameters.SourceCaseId /* uuid */;
-        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
