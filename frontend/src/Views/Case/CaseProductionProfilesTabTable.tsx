@@ -134,6 +134,12 @@ function CaseProductionProfilesTabTable({
                 animateRows
                 domLayout="autoHeight"
                 onGridReady={onGridReady}
+                enableCellChangeFlash
+                rowSelection="multiple"
+                enableRangeSelection
+                suppressCopySingleCellRanges
+                suppressMovableColumns
+                enableCharts
             />
         </div>
     )
