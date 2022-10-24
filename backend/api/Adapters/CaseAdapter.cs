@@ -41,7 +41,7 @@ public static class CaseAdapter
             FacilitiesAvailability = caseDto.FacilitiesAvailability,
             SharepointFileId = caseDto.SharepointFileId,
             SharepointFileName = caseDto.SharepointFileName,
-            SharepointFileUrl = caseDto.SharepointFileUrl
+            SharepointFileUrl = caseDto.SharepointFileUrl,
         };
     }
 

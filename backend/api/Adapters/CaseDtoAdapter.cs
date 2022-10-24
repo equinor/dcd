@@ -41,7 +41,7 @@ public static class CaseDtoAdapter
             FacilitiesAvailability = case_.FacilitiesAvailability,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
-            SharepointFileUrl = case_.SharepointFileUrl
+            SharepointFileUrl = case_.SharepointFileUrl,
         };
 
         return caseDto;
@@ -60,7 +60,7 @@ public static class CaseDtoAdapter
             Currency = opexCost.Currency,
             EPAVersion = opexCost.EPAVersion,
             StartYear = opexCost.StartYear,
-            Values = opexCost.Values
+            Values = opexCost.Values,
         };
     }
 
@@ -77,7 +77,7 @@ public static class CaseDtoAdapter
             Currency = opexCost.Currency,
             EPAVersion = opexCost.EPAVersion,
             StartYear = opexCost.StartYear,
-            Values = opexCost.Values
+            Values = opexCost.Values,
         };
     }
 
@@ -94,7 +94,7 @@ public static class CaseDtoAdapter
             Currency = studyCost.Currency,
             EPAVersion = studyCost.EPAVersion,
             StartYear = studyCost.StartYear,
-            Values = studyCost.Values
+            Values = studyCost.Values,
         };
     }
 }
