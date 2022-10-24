@@ -146,6 +146,12 @@ function CaseTabTable({
                 domLayout="autoHeight"
                 onGridReady={onGridReady}
                 alignedGrids={alignedGridsRef}
+                enableCellChangeFlash
+                rowSelection="multiple"
+                enableRangeSelection
+                suppressCopySingleCellRanges
+                suppressMovableColumns
+                enableCharts
             />
         </div>
     )

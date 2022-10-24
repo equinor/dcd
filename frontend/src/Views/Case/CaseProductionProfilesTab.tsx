@@ -155,26 +155,40 @@ function CaseProductionProfilesTab({
 
     const timeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Oil production", unit: "MSm3/yr", set: setOil, profile: oil,
-        },
-        {
-            profileName: "Gas production", unit: "GSm3/yr", set: setGas, profile: gas,
-        },
-        {
-            profileName: "Water production", unit: "????", set: setWater, profile: water,
-        },
-
-        {
-            profileName: "Water injection", unit: "MSm3/yr", set: setWaterInjection, profile: waterInjection,
+            profileName: "Net sales gas",
+            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            set: setNetSalesGas,
+            profile: netSalesGas,
         },
         {
             profileName: "Fuel flaring and losses",
-            unit: "GSm3/yr",
+            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             set: setFuelFlaringAndLosses,
             profile: fuelFlaringAndLosses,
         },
         {
-            profileName: "Net sales gas", unit: "GSm3/yr", set: setNetSalesGas, profile: netSalesGas,
+            profileName: "Gas production",
+            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            set: setGas,
+            profile: gas,
+        },
+        {
+            profileName: "Oil production",
+            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            set: setOil,
+            profile: oil,
+        },
+        {
+            profileName: "Water production",
+            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            set: setWater,
+            profile: water,
+        },
+        {
+            profileName: "Water injection",
+            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            set: setWaterInjection,
+            profile: waterInjection,
         },
     ]
 
