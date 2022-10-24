@@ -26,8 +26,8 @@ interface RowData {
     transportState: ImportStatusEnum
     sharePointFileName?: string | null
     sharePointFileId?: string | null
-    sharepointFileUrl?: string | null;
-    driveItem: [DriveItem[] | undefined, string | undefined | null],
+    sharepointFileUrl?: string | null
+    driveItem: [DriveItem[] | undefined, string | undefined | null]
     fileLink?:string |null
 }
 
