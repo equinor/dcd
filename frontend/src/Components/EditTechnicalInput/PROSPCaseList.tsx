@@ -13,8 +13,8 @@ import { GetProspService } from "../../Services/ProspService"
 interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project
-    driveItems: DriveItem[] | undefined,
-    check: boolean,
+    driveItems: DriveItem[] | undefined
+    check: boolean
 }
 
 interface RowData {
