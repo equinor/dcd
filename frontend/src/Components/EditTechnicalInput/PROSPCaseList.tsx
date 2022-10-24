@@ -26,6 +26,7 @@ interface RowData {
     transportState: ImportStatusEnum
     sharePointFileName?: string | null
     sharePointFileId?: string | null
+    sharepointFileUrl?: string | null;
     driveItem: [DriveItem[] | undefined, string | undefined | null],
     fileLink?:string |null
 }
@@ -52,6 +53,7 @@ function PROSPCaseList({
                     transportState: SharePointImport.transportStatus(c, project),
                     sharePointFileId: c.sharepointFileId,
                     sharePointFileName: c.sharepointFileName,
+                    sharepointFileUrl: c.sharepointFileUrl,
                     fileLink: c.sharepointFileUrl,
                     driveItem: [driveItems, c.sharepointFileId],
                 }

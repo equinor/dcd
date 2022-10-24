@@ -260,7 +260,7 @@ public class ProspSharepointImportService
             SharepointIds = driveItem.SharepointIds,
             LastModifiedBy = driveItem.LastModifiedBy,
             LastModifiedDateTime = driveItem.LastModifiedDateTime,
-            WebUrl = driveItem.WebUrl
+            SharepointFileUrl = driveItem.WebUrl
         };
         dto.Add(item);
     }
