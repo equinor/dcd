@@ -28,7 +28,7 @@ interface RowData {
     sharePointFileId?: string | null
     sharepointFileUrl?: string | null
     driveItem: [DriveItem[] | undefined, string | undefined | null]
-    fileLink?:string |null
+    fileLink?: string | null
 }
 
 function PROSPCaseList({
@@ -160,7 +160,7 @@ function PROSPCaseList({
     useEffect(() => {
         const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
         const newColumnDefs = [...columnDefs]
-        const columnData:any = []
+        const columnData: any = []
         newColumnDefs.forEach((cd) => {
             if (assetFields.indexOf(cd.field) > -1) {
                 const colDef = { ...cd }
