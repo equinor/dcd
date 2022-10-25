@@ -209,6 +209,8 @@ function CaseCostTab({
                 setGAndGAdminCost(gAndGAdmin)
 
                 setTableYearsFromProfiles([study, opex, cessation,
+                    surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
+                    wellProjectCostProfile,
                     explorationCostProfile, seismicAcqAndProc, countryOffice, gAndGAdmin,
                 ])
             } catch (error) {

@@ -157,6 +157,7 @@ function CaseSummaryTab({
                 setTransportCost(transportCostProfile)
 
                 setTableYearsFromProfiles([study, opex, cessation,
+                    topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
                 ])
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
