@@ -35,6 +35,8 @@ import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseSummaryTab from "./Case/CaseSummaryTab"
+import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
+import { Well } from "../models/Well"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -119,7 +121,7 @@ const CaseView = () => {
 
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
-    const [activeTab, setActiveTab] = useState<number>(0)
+    const [activeTab, setActiveTab] = useState<number>(3)
     const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
@@ -130,6 +132,8 @@ const CaseView = () => {
     const [topside, setTopside] = useState<Topside>()
     const [substructure, setSubstructure] = useState<Substructure>()
     const [transport, setTransport] = useState<Transport>()
+
+    const [wells, setWells] = useState<Well[]>()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
@@ -153,6 +157,8 @@ const CaseView = () => {
                 setTopside(projectResult?.topsides.find((top) => top.id === caseResult?.topsideLink))
                 setSubstructure(projectResult?.substructures.find((sub) => sub.id === caseResult?.substructureLink))
                 setTransport(projectResult?.transports.find((tran) => tran.id === caseResult?.transportLink))
+
+                setWells(projectResult.wells)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
@@ -293,7 +299,17 @@ const CaseView = () => {
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
-                                <p>Drilling Schedule</p>
+                                <CaseDrillingScheduleTab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                    exploration={exploration}
+                                    setExploration={setExploration}
+                                    wellProject={wellProject}
+                                    setWellProject={setWellProject}
+                                    wells={wells}
+                                />
                             </StyledTabPanel>
                             <StyledTabPanel>
                                 <CaseFacilitiesTab

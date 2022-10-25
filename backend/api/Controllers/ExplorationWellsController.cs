@@ -37,7 +37,7 @@ public class ExplorationWellsController : ControllerBase
     }
 
     [HttpPost(Name = "CreateExplorationWell")]
-    public ProjectDto CreateWExplorationWell([FromBody] ExplorationWellDto wellDto)
+    public ProjectDto CreateExplorationWell([FromBody] ExplorationWellDto wellDto)
     {
         return _explorationWellService.CreateExplorationWell(wellDto);
     }
@@ -46,5 +46,17 @@ public class ExplorationWellsController : ControllerBase
     public ProjectDto UpdateExplorationWell([FromBody] ExplorationWellDto wellDto)
     {
         return _explorationWellService.UpdateExplorationWell(wellDto);
+    }
+
+    [HttpPost("multiple", Name = "CreateMultipleExplorationWells")]
+    public ExplorationWellDto[]? CreateMultipleExplorationWell([FromBody] ExplorationWellDto[] wellDtos)
+    {
+        return _explorationWellService.CreateMultpleExplorationWells(wellDtos);
+    }
+
+    [HttpPut("multiple", Name = "UpdateMultipleExplorationWells")]
+    public ExplorationWellDto[]? UpdateMultipleExplorationWell([FromBody] ExplorationWellDto[] wellDtos)
+    {
+        return _explorationWellService.UpdateMultpleExplorationWells(wellDtos);
     }
 }
