@@ -11,6 +11,11 @@ public class Case
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; }
     public bool ReferenceCase { get; set; }
+    public DateTimeOffset DGADate { get; set; }
+    public DateTimeOffset DGBDate { get; set; }
+    public DateTimeOffset DGCDate { get; set; }
+    public DateTimeOffset APXDate { get; set; }
+    public DateTimeOffset APZDate { get; set; }
     public DateTimeOffset DG0Date { get; set; }
     public DateTimeOffset DG1Date { get; set; }
     public DateTimeOffset DG2Date { get; set; }
@@ -34,6 +39,7 @@ public class Case
     public Guid ExplorationLink { get; set; } = Guid.Empty;
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
+    public string? SharepointFileUrl { get; set; }
 }
 
 public enum ArtificialLift
@@ -43,6 +49,7 @@ public enum ArtificialLift
     ElectricalSubmergedPumps,
     SubseaBoosterPumps
 }
+
 public enum ProductionStrategyOverview
 {
     Depletion,
@@ -51,6 +58,7 @@ public enum ProductionStrategyOverview
     WAG,
     Mixed
 }
+
 public class CessationCost : TimeSeriesCost
 {
     [ForeignKey("Case.Id")]

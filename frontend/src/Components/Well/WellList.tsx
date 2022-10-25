@@ -11,6 +11,7 @@ import { WellProject } from "../../models/assets/wellproject/WellProject"
 import WellTableRow from "./WellTableRow"
 import { Exploration } from "../../models/assets/exploration/Exploration"
 import { ExplorationWell } from "../../models/ExplorationWell"
+import { IsExplorationWell } from "../../Utils/common"
 
 interface Props {
     project: Project
@@ -44,12 +45,10 @@ function WellList({
         setWells(newProject?.wells ?? [])
     }
 
-    const isExplorationWell = (category: Components.Schemas.WellCategory | undefined) => [4, 5, 6].indexOf(category ?? -1) > -1
-
     const GenerateWellTableRows = () => {
         const tableRows: JSX.Element[] = []
         if (wellProject) {
-            wells?.filter((w) => !isExplorationWell(w.wellCategory)).forEach((w) => {
+            wells?.filter((w) => !IsExplorationWell(w)).forEach((w) => {
                 const wpw = wellProjectWells?.find((x) => x.wellId === w.id && x.wellProjectId === wellProject.id)
 
                 tableRows.push((
@@ -57,7 +56,7 @@ function WellList({
                 ))
             })
         } else if (exploration) {
-            wells?.filter((w) => isExplorationWell(w.wellCategory)).forEach((w) => {
+            wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
                 const ew = explorationWells?.find((x) => x.wellId === w.id && x.explorationId === exploration.id)
 
                 tableRows.push((

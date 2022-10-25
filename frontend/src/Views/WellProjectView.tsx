@@ -229,6 +229,8 @@ function WellProjectView() {
                 profileName={["Cost profile"]}
                 profileEnum={project?.currency!}
                 profileType="Cost"
+                readOnlyTimeSeries={[]}
+                readOnlyName={[]}
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules

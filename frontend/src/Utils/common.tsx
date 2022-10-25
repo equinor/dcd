@@ -1,4 +1,5 @@
 import { Case } from "../models/case/Case"
+import { Well } from "../models/Well"
 
 export const LoginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -104,9 +105,26 @@ export function GetProjectPhaseName(key?: Components.Schemas.ProjectPhase): stri
 
 export const ToMonthDate = (date?: Date | null): string | undefined => date?.toISOString().substring(0, 7)
 
-export const IsInvalidDate = (date?: Date | null): boolean => {
+export const IsDefaultDate = (date?: Date | null): boolean => {
     if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
         return true
     }
     return false
 }
+
+export const DefaultDate = () => new Date("0001-01-01")
+
+export const isInteger = (value: string) => /^-?\d+$/.test(value)
+
+export const ProductionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
+    if (value === undefined) { return "" }
+    return {
+        0: "Depletion",
+        1: "Water injection",
+        2: "Gas injection",
+        3: "WAG",
+        4: "Mixed",
+    }[value]
+}
+
+export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1

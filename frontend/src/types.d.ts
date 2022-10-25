@@ -27,8 +27,13 @@ declare namespace Components {
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
-            dG0Date?: string; // date-time
             facilitiesAvailability?: number; // double
+            dgaDate?: string; // date-time
+            dgbDate?: string; // date-time
+            dgcDate?: string; // date-time
+            apxDate?: string; // date-time
+            apzDate?: string; // date-time
+            dG0Date?: string; // date-time
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
             dG3Date?: string; // date-time
@@ -47,6 +52,7 @@ declare namespace Components {
             cessationCost?: CessationCostDto;
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
+            sharepointFileUrl?: string | null;
         }
         export interface CessationCostDto {
             id?: string; // uuid
@@ -93,6 +99,14 @@ declare namespace Components {
             sum?: number; // double
         }
         export type Currency = 1 | 2; // int32
+        export interface DevelopmentOperationalWellCostsDto {
+            id?: string; // uuid
+            projectId?: string; // uuid
+            rigUpgrading?: number; // double
+            rigMobDemob?: number; // double
+            annualWellInterventionCostPerWell?: number; // double
+            pluggingAndAbandonment?: number; // double
+        }
         export interface DrainageStrategyDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -121,7 +135,7 @@ declare namespace Components {
         export interface DriveItemDto {
             name?: string | null;
             id?: string | null;
-            webUrl?: string | null;
+            sharepointFileUrl?: string | null;
             createdDateTime?: string | null; // date-time
             content?: Stream;
             size?: number | null; // int64
@@ -150,6 +164,15 @@ declare namespace Components {
             rigMobDemob?: number; // double
             currency?: Currency /* int32 */;
             explorationWells?: ExplorationWellDto[] | null;
+        }
+        export interface ExplorationOperationalWellCostsDto {
+            id?: string; // uuid
+            projectId?: string; // uuid
+            rigUpgrading?: number; // double
+            explorationRigMobDemob?: number; // double
+            explorationProjectDrillingCosts?: number; // double
+            appraisalRigMobDemob?: number; // double
+            appraisalProjectDrillingCosts?: number; // double
         }
         export interface ExplorationWellDto {
             count?: number; // int32
@@ -260,6 +283,8 @@ declare namespace Components {
             createDate?: string; // date-time
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
+            explorationOperationalWellCosts?: ExplorationOperationalWellCostsDto;
+            developmentOperationalWellCosts?: DevelopmentOperationalWellCostsDto;
             cases?: CaseDto[] | null;
             wells?: WellDto[] | null;
             explorations?: ExplorationDto[] | null;
@@ -299,7 +324,6 @@ declare namespace Components {
             substructure?: boolean;
             topside?: boolean;
             transport?: boolean;
-            sharePointFileName?: string | null;
             sharePointFileId?: string | null;
             sharePointSiteUrl?: string | null;
         }
@@ -491,6 +515,9 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
+        export interface UrlDto {
+            url?: string | null;
+        }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
         export interface WellDto {
             id?: string; // uuid
@@ -560,6 +587,12 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace CreateDevelopmentOperationalWellCosts {
+        export type RequestBody = Components.Schemas.DevelopmentOperationalWellCostsDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
+        }
+    }
     namespace CreateDrainageStrategy {
         namespace Parameters {
             export type SourceCaseId = string; // uuid
@@ -582,6 +615,12 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.ExplorationDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace CreateExplorationOperationalWellCosts {
+        export type RequestBody = Components.Schemas.ExplorationOperationalWellCostsDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ExplorationOperationalWellCostsDto;
         }
     }
     namespace CreateExplorationWell {
@@ -790,6 +829,17 @@ declare namespace Paths {
             }
         }
     }
+    namespace GenerateCessation {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.CessationCostDto;
+        }
+    }
     namespace GenerateGAndGAdminCost {
         namespace Parameters {
             export type CaseId = string; // uuid
@@ -845,7 +895,7 @@ declare namespace Paths {
         }
     }
     namespace GetSharePointFileNamesAndId {
-        export type RequestBody = string;
+        export type RequestBody = Components.Schemas.UrlDto;
         namespace Responses {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
@@ -898,10 +948,58 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace NewCreateCase {
+        export type RequestBody = Components.Schemas.CaseDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace NewUpdateCase {
+        export type RequestBody = Components.Schemas.CaseDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.CaseDto;
+        }
+    }
+    namespace NewUpdateDrainageStrategy {
+        export type RequestBody = Components.Schemas.DrainageStrategyDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.DrainageStrategyDto;
+        }
+    }
+    namespace NewUpdateSubstructure {
+        export type RequestBody = Components.Schemas.SubstructureDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.SubstructureDto;
+        }
+    }
+    namespace NewUpdateSurf {
+        export type RequestBody = Components.Schemas.SurfDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.SurfDto;
+        }
+    }
+    namespace NewUpdateTopside {
+        export type RequestBody = Components.Schemas.TopsideDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.TopsideDto;
+        }
+    }
+    namespace NewUpdateTransport {
+        export type RequestBody = Components.Schemas.TransportDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.TransportDto;
+        }
+    }
     namespace UpdateCase {
         export type RequestBody = Components.Schemas.CaseDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateDevelopmentOperationalWellCosts {
+        export type RequestBody = Components.Schemas.DevelopmentOperationalWellCostsDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
         }
     }
     namespace UpdateDrainageStrategy {
@@ -916,10 +1014,22 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace UpdateExplorationOperationalWellCosts {
+        export type RequestBody = Components.Schemas.ExplorationOperationalWellCostsDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ExplorationOperationalWellCostsDto;
+        }
+    }
     namespace UpdateExplorationWell {
         export type RequestBody = Components.Schemas.ExplorationWellDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateMultipleWells {
+        export type RequestBody = Components.Schemas.WellDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.WellDto[];
         }
     }
     namespace UpdateProject {
@@ -966,19 +1076,6 @@ declare namespace Paths {
     }
     namespace UpdateWellProjectWell {
         export type RequestBody = Components.Schemas.WellProjectWellDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
-    namespace Upload {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-            export type SourceCaseId = string; // uuid
-        }
-        export interface QueryParameters {
-            projectId?: Parameters.ProjectId /* uuid */;
-            sourceCaseId?: Parameters.SourceCaseId /* uuid */;
-        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

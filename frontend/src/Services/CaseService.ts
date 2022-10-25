@@ -7,6 +7,8 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import { OpexCostProfile } from "../models/case/OpexCostProfile"
 import { StudyCostProfile } from "../models/case/StudyCostProfile"
+import { Case } from "../models/case/Case"
+import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
 
 class __CaseService extends __BaseService {
     public async createCase(data: Components.Schemas.CaseDto): Promise<Project> {
@@ -14,9 +16,19 @@ class __CaseService extends __BaseService {
         return Project.fromJSON(res)
     }
 
+    public async create(data: Components.Schemas.CaseDto): Promise<Project> {
+        const res: Components.Schemas.ProjectDto = await this.post("/new", { body: data })
+        return Project.fromJSON(res)
+    }
+
     public async updateCase(body: Components.Schemas.CaseDto): Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.put("", { body })
         return Project.fromJSON(res)
+    }
+
+    public async update(body: Components.Schemas.CaseDto): Promise<Case> {
+        const res: Components.Schemas.ProjectDto = await this.put("/new", { body })
+        return new Case(res)
     }
 
     public async duplicateCase(copyCaseId: string, data: Components.Schemas.CaseDto): Promise<Project> {
@@ -53,8 +65,8 @@ class __CaseService extends __BaseService {
 
     async generateCessationCost(id: string) {
         // eslint-disable-next-line max-len
-        const costProfile: Components.Schemas.StudyCostProfileDto = await this.post<Components.Schemas.StudyCostProfileDto>(`/${id}/generateCessation`)
-        return StudyCostProfile.fromJSON(costProfile)
+        const costProfile: Components.Schemas.CessationCostDto = await this.post<Components.Schemas.CessationCostDto>(`/${id}/generateCessation`)
+        return CaseCessationCostProfile.fromJSON(costProfile)
     }
 }
 

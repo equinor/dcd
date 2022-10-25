@@ -3,6 +3,8 @@ using api.Dtos;
 using api.Models;
 using api.Services;
 
+using Api.Authorization;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -13,21 +15,25 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class WellProjectsController : ControllerBase
 {
     private readonly WellProjectService _wellProjectService;
-    private readonly WellProjectAdapter _wellProjectAdapter;
 
     public WellProjectsController(WellProjectService wellProjectService)
     {
         _wellProjectService = wellProjectService;
-        _wellProjectAdapter = new WellProjectAdapter();
     }
 
     [HttpPost(Name = "CreateWellProject")]
     public ProjectDto CreateWellProject([FromQuery] Guid sourceCaseId, [FromBody] WellProjectDto wellProjectDto)
     {
-        var wellProject = _wellProjectAdapter.Convert(wellProjectDto);
+        var wellProject = WellProjectAdapter.Convert(wellProjectDto);
         return _wellProjectService.CreateWellProject(wellProject, sourceCaseId);
     }
 

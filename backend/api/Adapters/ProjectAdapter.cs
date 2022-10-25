@@ -24,6 +24,9 @@ public static class ProjectAdapter
             SharepointSiteUrl = projectDto.SharepointSiteUrl
         };
 
+        project.ExplorationOperationalWellCosts = ExplorationOperationalWellCostsAdapter.Convert(projectDto.ExplorationOperationalWellCosts);
+        project.DevelopmentOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(projectDto.DevelopmentOperationalWellCosts);
+
         return project;
     }
 }

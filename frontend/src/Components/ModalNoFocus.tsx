@@ -7,7 +7,7 @@ const ModalDiv = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 50px;
+    padding: 30px;
     z-index: 1000;
     background-color: white;
     border: 2px solid gray;
