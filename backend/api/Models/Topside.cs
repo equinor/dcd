@@ -35,6 +35,7 @@ public class Topside
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
     public double FacilityOpex { get; set; }
+    public double PeakElectricityImported { get; set; }
 }
 
 public class TopsideCostProfile : TimeSeriesCost
