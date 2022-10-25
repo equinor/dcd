@@ -15,15 +15,7 @@ import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
-import { GetDrainageStrategyService } from "../../Services/DrainageStrategyService"
 import CaseTabTable from "./CaseTabTable"
-import { NetSalesGas } from "../../models/assets/drainagestrategy/NetSalesGas"
-import { FuelFlaringAndLosses } from "../../models/assets/drainagestrategy/FuelFlaringAndLosses"
-import { ProductionProfileGas } from "../../models/assets/drainagestrategy/ProductionProfileGas"
-import { ProductionProfileOil } from "../../models/assets/drainagestrategy/ProductionProfileOil"
-import { ProductionProfileWater } from "../../models/assets/drainagestrategy/ProductionProfileWater"
-import { ProductionProfileNGL } from "../../models/assets/drainagestrategy/ProductionProfileNGL"
-import { ProductionProfileWaterInjection } from "../../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
@@ -225,26 +217,6 @@ function CaseCostTab({
         })()
     }, [])
 
-    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
-    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
-    const [gas, setGas] = useState<ProductionProfileGas>()
-    const [oil, setOil] = useState<ProductionProfileOil>()
-    const [water, setWater] = useState<ProductionProfileWater>()
-    const [nGL, setNGL] = useState<ProductionProfileNGL>()
-    const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
-
-    // const updateAndSetExploration = (drainage: DrainageStrategy) => {
-    //     const newDrainageStrategy: DrainageStrategy = { ...drainage }
-    //     newDrainageStrategy.netSalesGas = netSalesGas
-    //     newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
-    //     newDrainageStrategy.productionProfileGas = gas
-    //     newDrainageStrategy.productionProfileOil = oil
-    //     newDrainageStrategy.productionProfileWater = water
-    //     newDrainageStrategy.productionProfileNGL = nGL
-    //     newDrainageStrategy.productionProfileWaterInjection = waterInjection
-    //     setDrainageStrategy(newDrainageStrategy)
-    // }
-
     const updatedAndSetSurf = (surfItem: Surf) => {
         const newSurf: Surf = { ...surfItem }
         newSurf.costProfile = surfCost
@@ -393,29 +365,7 @@ function CaseCostTab({
         setExploration(newExploration)
     }, [explorationCost, seismicAcqAndProcCost, countryOfficeCost])
 
-    // useEffect(() => {
-    //     setNetSalesGas(drainageStrategy.netSalesGas)
-    //     setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
-    //     setGas(drainageStrategy.productionProfileGas)
-    //     setOil(drainageStrategy.productionProfileOil)
-    //     setWater(drainageStrategy.productionProfileWater)
-    //     setNGL(drainageStrategy.productionProfileNGL)
-    //     setWaterInjection(drainageStrategy.productionProfileWaterInjection)
-    // }, [])
-
     const handleSave = async () => {
-        // if (drainageStrategy) {
-        //     const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        //     newDrainageStrategy.netSalesGas = netSalesGas
-        //     newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
-        //     newDrainageStrategy.productionProfileGas = gas
-        //     newDrainageStrategy.productionProfileOil = oil
-        //     newDrainageStrategy.productionProfileWater = water
-        //     newDrainageStrategy.productionProfileNGL = nGL
-        //     newDrainageStrategy.productionProfileWaterInjection = waterInjection
-        //     const result = await (await GetDrainageStrategyService()).newUpdate(newDrainageStrategy)
-        //     setDrainageStrategy(result)
-        // }
         const updatedSurfResult = await (await GetSurfService()).newUpdate(surf)
         setSurf(updatedSurfResult)
         const updatedTopsideResult = await (await GetTopsideService()).newUpdate(topside)

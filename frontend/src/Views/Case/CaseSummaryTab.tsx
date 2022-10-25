@@ -14,7 +14,6 @@ import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
-import { GetDrainageStrategyService } from "../../Services/DrainageStrategyService"
 import CaseTabTable from "./CaseTabTable"
 import { NetSalesGas } from "../../models/assets/drainagestrategy/NetSalesGas"
 import { FuelFlaringAndLosses } from "../../models/assets/drainagestrategy/FuelFlaringAndLosses"
@@ -28,15 +27,9 @@ import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
 import { OpexCostProfile } from "../../models/case/OpexCostProfile"
 import { CaseCessationCostProfile } from "../../models/case/CaseCessationCostProfile"
-import { SeismicAcquisitionAndProcessing } from "../../models/assets/exploration/SeismicAcquisitionAndProcessing"
-import { CountryOfficeCost } from "../../models/assets/exploration/CountryOfficeCost"
-import { GAndGAdminCost } from "../../models/assets/exploration/GAndGAdminCost"
 import { Exploration } from "../../models/assets/exploration/Exploration"
-import { GetExplorationService } from "../../Services/ExplorationService"
 import { Surf } from "../../models/assets/surf/Surf"
 import { GetSurfService } from "../../Services/SurfService"
-import { ExplorationCostProfile } from "../../models/assets/exploration/ExplorationCostProfile"
-import { WellProjectCostProfile } from "../../models/assets/wellproject/WellProjectCostProfile"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Substructure } from "../../models/assets/substructure/Substructure"
 import { Topside } from "../../models/assets/topside/Topside"
@@ -64,28 +57,8 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
-const NativeSelectField = styled(NativeSelect)`
-    width: 200px;
-    padding-right: 20px;
-`
 const NumberInputField = styled.div`
     padding-right: 20px;
-`
-
-const TableYearWrapper = styled.div`
-    align-items: flex-end;
-    display: flex;
-    flex-direction: row;
-    align-content: right;
-    margin-left: auto;
-    margin-bottom: 20px;
-`
-const YearInputWrapper = styled.div`
-    width: 80px;
-    padding-right: 10px;
-`
-const YearDashWrapper = styled.div`
-    padding-right: 5px;
 `
 const TableWrapper = styled.div`
     margin-bottom: 50px;
@@ -191,26 +164,6 @@ function CaseSummaryTab({
         })()
     }, [])
 
-    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
-    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
-    const [gas, setGas] = useState<ProductionProfileGas>()
-    const [oil, setOil] = useState<ProductionProfileOil>()
-    const [water, setWater] = useState<ProductionProfileWater>()
-    const [nGL, setNGL] = useState<ProductionProfileNGL>()
-    const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
-
-    // const updateAndSetExploration = (drainage: DrainageStrategy) => {
-    //     const newDrainageStrategy: DrainageStrategy = { ...drainage }
-    //     newDrainageStrategy.netSalesGas = netSalesGas
-    //     newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
-    //     newDrainageStrategy.productionProfileGas = gas
-    //     newDrainageStrategy.productionProfileOil = oil
-    //     newDrainageStrategy.productionProfileWater = water
-    //     newDrainageStrategy.productionProfileNGL = nGL
-    //     newDrainageStrategy.productionProfileWaterInjection = waterInjection
-    //     setDrainageStrategy(newDrainageStrategy)
-    // }
-
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
         newCase.npv = Number(e.currentTarget.value)
@@ -261,29 +214,7 @@ function CaseSummaryTab({
         setTableYears([startYear, endYear])
     }
 
-    // useEffect(() => {
-    //     setNetSalesGas(drainageStrategy.netSalesGas)
-    //     setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
-    //     setGas(drainageStrategy.productionProfileGas)
-    //     setOil(drainageStrategy.productionProfileOil)
-    //     setWater(drainageStrategy.productionProfileWater)
-    //     setNGL(drainageStrategy.productionProfileNGL)
-    //     setWaterInjection(drainageStrategy.productionProfileWaterInjection)
-    // }, [])
-
     const handleSave = async () => {
-        // if (drainageStrategy) {
-        //     const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        //     newDrainageStrategy.netSalesGas = netSalesGas
-        //     newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
-        //     newDrainageStrategy.productionProfileGas = gas
-        //     newDrainageStrategy.productionProfileOil = oil
-        //     newDrainageStrategy.productionProfileWater = water
-        //     newDrainageStrategy.productionProfileNGL = nGL
-        //     newDrainageStrategy.productionProfileWaterInjection = waterInjection
-        //     const result = await (await GetDrainageStrategyService()).newUpdate(newDrainageStrategy)
-        //     setDrainageStrategy(result)
-        // }
         const updatedSurfResult = await (await GetSurfService()).newUpdate(surf)
         setSurf(updatedSurfResult)
         const updateedCaseResult = await (await GetCaseService()).update(caseItem)
