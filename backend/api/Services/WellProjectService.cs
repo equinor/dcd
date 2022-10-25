@@ -246,6 +246,21 @@ public class WellProjectService
         return _projectService.GetProjectDto(updatedWellProject.ProjectId);
     }
 
+    public WellProjectDto NewUpdateWellProject(WellProjectDto updatedWellProjectDto)
+    {
+        var existing = GetWellProject(updatedWellProjectDto.Id);
+        WellProjectAdapter.ConvertExisting(existing, updatedWellProjectDto);
+
+        if (updatedWellProjectDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.WellProjectCostProfile!.Remove(existing.CostProfile);
+        }
+
+        var updatedWellProject = _context.WellProjects!.Update(existing);
+        _context.SaveChanges();
+        return WellProjectDtoAdapter.Convert(updatedWellProject.Entity);
+    }
+
     public WellProject GetWellProject(Guid wellProjectId)
     {
         var wellProject = _context.WellProjects!

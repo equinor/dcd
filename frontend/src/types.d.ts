@@ -28,6 +28,10 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             facilitiesAvailability?: number; // double
+            capexFactorFeasibilityStudies?: number; // double
+            capexFactorFEEDStudies?: number; // double
+            npv?: number; // double
+            breakEven?: number; // double
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time
@@ -117,6 +121,7 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             artificialLift?: ArtificialLift /* int32 */;
+            gasSolution?: GasSolution /* int32 */;
             productionProfileOil?: ProductionProfileOilDto;
             productionProfileGas?: ProductionProfileGasDto;
             productionProfileWater?: ProductionProfileWaterDto;
@@ -125,7 +130,6 @@ declare namespace Components {
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
             productionProfileNGL?: ProductionProfileNGLDto;
-            facilitiesAvailability?: number; // double
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid
@@ -194,6 +198,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export type GasSolution = 0 | 1; // int32
         export interface Identity {
             [name: string]: any;
             displayName?: string | null;
@@ -458,7 +463,6 @@ declare namespace Components {
             dryWeight?: number; // double
             oilCapacity?: number; // double
             gasCapacity?: number; // double
-            facilitiesAvailability?: number; // double
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;

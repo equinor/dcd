@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable camelcase */
 import {
     Button,
@@ -22,7 +21,6 @@ import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/Case/CaseAsset"
 import { unwrapProjectId } from "../Utils/common"
-import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { WellProject } from "../models/assets/wellproject/WellProject"
 import { Surf } from "../models/assets/surf/Surf"
@@ -30,16 +28,18 @@ import { Topside } from "../models/assets/topside/Topside"
 import { Substructure } from "../models/assets/substructure/Substructure"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Transport } from "../models/assets/transport/Transport"
-import CaseScheduleTab from "./Case/CaseScheduleTab"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import CaseCostTab from "./Case/CaseCostTab"
+import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
-import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import CaseScheduleTab from "./Case/CaseScheduleTab"
+import CaseSummaryTab from "./Case/CaseSummaryTab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
 
 const CaseViewDiv = styled.div`
-    margin: 2rem;
     display: flex;
     flex-direction: column;
 `
@@ -47,34 +47,71 @@ const CaseViewDiv = styled.div`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    padding: 1.5rem 2rem;
+    z-index: 1000;
 `
 
 const PageTitle = styled(Typography)`
     flex-grow: 1;
+    padding-left: 30px;
 `
 
 const InvisibleButton = styled(Button)`
     border: 1px solid #007079;
+
 `
 
 const TransparentButton = styled(Button)`
     color: #007079;
     background-color: white;
     border: 1px solid #007079;
+
 `
 
 const DividerLine = styled.div`
-    background: gray;
-    height: 0.05rem;
-    width: 50rem;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
 `
 
 const StyledTabPanel = styled(Panel)`
+    margin-left: 40px;
+    margin-right: 40px;
     padding-top: 0px;
-    border-top: 1px solid LightGray;
+`
+const HeaderWrapper = styled.div`
+    background-color: white;
+    width: calc(100% - 16rem);
+    position: fixed;
+    z-index: 100;
+    padding-top: 30px;
+`
+const TabMenuWrapper = styled.div`
+    position: fixed;
+    z-index: 1000;
+    width: calc(100% - 16rem);
+    border-bottom: 1px solid LightGray;
+    margin-top: 95px;
+`
+
+const TabContentWrapper = styled.div`
+    margin-top: 145px;
+`
+
+const CaseButtonsWrapper = styled.div`
+    align-items: flex-end;
+    display: flex;
+    flex-direction: row;
+    align-content: right;
+    margin-left: auto;
+    z-index: 110;
+`
+
+const ColumnWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const RowWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 78px;
 `
 
 const CaseView = () => {
@@ -94,10 +131,6 @@ const CaseView = () => {
     const [substructure, setSubstructure] = useState<Substructure>()
     const [transport, setTransport] = useState<Transport>()
 
-    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
-
-    const [firstTSYear, setFirstTSYear] = useState<number>()
-    const [lastTSYear, setLastTSYear] = useState<number>()
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
@@ -111,7 +144,9 @@ const CaseView = () => {
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === caseId)
                 setCase(caseResult)
-                setDrainageStrategy(projectResult?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink))
+                setDrainageStrategy(
+                    projectResult?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink),
+                )
                 setExploration(projectResult?.explorations.find((exp) => exp.id === caseResult?.explorationLink))
                 setWellProject(projectResult?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink))
                 setSurf(projectResult?.surfs.find((sur) => sur.id === caseResult?.surfLink))
@@ -124,134 +159,205 @@ const CaseView = () => {
         })()
     }, [currentProject?.externalId, caseId])
 
-    if (!project) return null
-    if (!caseItem) return null
+    if (!project || !caseItem
+        || !drainageStrategy || !exploration
+        || !wellProject || !surf || !topside
+        || !substructure || !transport) {
+        return (
+            <p>
+                Case is missing data:
+                {project ? null : "project"}
+                <br />
+                {caseItem ? null : "case"}
+                <br />
+                {drainageStrategy ? null : "drainageStrategy"}
+                <br />
+                {exploration ? null : "exploration"}
+                <br />
+                {wellProject ? null : "wellProject"}
+                <br />
+                {surf ? null : "surf"}
+                <br />
+                {topside ? null : "topside"}
+                <br />
+                {substructure ? null : "substructure"}
+                <br />
+                {transport ? null : "transport"}
+            </p>
+        )
+    }
 
     return (
         <div>
-            <TopWrapper>
-                <PageTitle variant="h4">{caseItem.name}</PageTitle>
-                <TransparentButton
-                    onClick={() => toggleTechnicalInputModal()}
+            <HeaderWrapper>
+                <RowWrapper>
+                    <PageTitle variant="h4">{caseItem.name}</PageTitle>
+                    <ColumnWrapper>
+                        <CaseButtonsWrapper>
+                            <TransparentButton
+                                onClick={() => toggleTechnicalInputModal()}
+                            >
+                                Edit technical input
+                            </TransparentButton>
+                            <InvisibleButton
+                                variant="outlined"
+                                ref={setMenuAnchorEl}
+                                onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
+                            >
+                                <Icon data={more_vertical} />
+                            </InvisibleButton>
+                        </CaseButtonsWrapper>
+                    </ColumnWrapper>
+                </RowWrapper>
+                <Menu
+                    id="menu-complex"
+                    open={isMenuOpen}
+                    anchorEl={menuAnchorEl}
+                    onClose={() => setIsMenuOpen(false)}
+                    placement="bottom"
                 >
-                    Edit technical input
-                </TransparentButton>
-                <InvisibleButton
-                    variant="outlined"
-                    ref={setMenuAnchorEl}
-                    onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
-                >
-                    <Icon data={more_vertical} />
-                </InvisibleButton>
-            </TopWrapper>
-            <Menu
-                id="menu-complex"
-                open={isMenuOpen}
-                anchorEl={menuAnchorEl}
-                onClose={() => setIsMenuOpen(false)}
-                placement="bottom"
-            >
-                <Menu.Item
-                    onClick={() => console.log("Add new case clicked")}
-                >
-                    <Icon data={add} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Add New Case
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Duplicate clicked")}
-                >
-                    <Icon data={library_add} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Duplicate
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Rename clicked")}
-                >
-                    <Icon data={edit} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Rename
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Delete clicked")}
-                >
-                    <Icon data={delete_to_trash} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Delete
-                    </Typography>
-                </Menu.Item>
-            </Menu>
+                    <Menu.Item
+                        onClick={() => console.log("Add new case clicked")}
+                    >
+                        <Icon data={add} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Add New Case
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={() => console.log("Duplicate clicked")}
+                    >
+                        <Icon data={library_add} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Duplicate
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={() => console.log("Rename clicked")}
+                    >
+                        <Icon data={edit} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Rename
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={() => console.log("Delete clicked")}
+                    >
+                        <Icon data={delete_to_trash} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Delete
+                        </Typography>
+                    </Menu.Item>
+                </Menu>
+            </HeaderWrapper>
             <CaseViewDiv>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                    <List>
-                        <Tab>Description</Tab>
-                        <Tab>Production Profiles</Tab>
-                        <Tab>Schedule</Tab>
-                        <Tab>Drilling Schedule</Tab>
-                        <Tab>Facilities</Tab>
-                        <Tab>Cost</Tab>
-                        <Tab>CO2 Emissions</Tab>
-                        <Tab>Summary</Tab>
-                    </List>
-                    <Panels>
-                        <StyledTabPanel>
-                            <CaseDescriptionTab
-                                project={project}
-                                setProject={setProject}
-                                caseItem={caseItem}
-                                setCase={setCase}
-                            />
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <CaseProductionProfilesTab
-                                project={project}
-                                setProject={setProject}
-                                caseItem={caseItem}
-                                setCase={setCase}
-                                drainageStrategy={drainageStrategy}
-                                setDrainageStrategy={setDrainageStrategy}
-                            />
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <CaseScheduleTab
-                                project={project}
-                                setProject={setProject}
-                                caseItem={caseItem}
-                                setCase={setCase}
-                            />
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <p>Drilling Schedule</p>
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <CaseFacilitiesTab
-                                project={project}
-                                setProject={setProject}
-                                caseItem={caseItem}
-                                setCase={setCase}
-                                topside={topside}
-                                setTopside={setTopside}
-                                surf={surf}
-                                setSurf={setSurf}
-                                substructure={substructure}
-                                setSubstrucutre={setSubstructure}
-                                transport={transport}
-                                setTransport={setTransport}
-                            />
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <p>Cost</p>
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <p>CO2 Emissions</p>
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <p>Summary</p>
-                        </StyledTabPanel>
-                    </Panels>
+                    <TabMenuWrapper>
+                        <List>
+                            <Tab>Description</Tab>
+                            <Tab>Production Profiles</Tab>
+                            <Tab>Schedule</Tab>
+                            <Tab>Drilling Schedule</Tab>
+                            <Tab>Facilities</Tab>
+                            <Tab>Cost</Tab>
+                            <Tab>CO2 Emissions</Tab>
+                            <Tab>Summary</Tab>
+                        </List>
+                    </TabMenuWrapper>
+                    <TabContentWrapper>
+                        <Panels>
+                            <StyledTabPanel>
+                                <CaseDescriptionTab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                />
+                            </StyledTabPanel>
+                            <StyledTabPanel>
+                                <CaseProductionProfilesTab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                    drainageStrategy={drainageStrategy}
+                                    setDrainageStrategy={setDrainageStrategy}
+                                />
+                            </StyledTabPanel>
+                            <StyledTabPanel>
+                                <CaseScheduleTab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                />
+                            </StyledTabPanel>
+                            <StyledTabPanel>
+                                <p>Drilling Schedule</p>
+                            </StyledTabPanel>
+                            <StyledTabPanel>
+                                <CaseFacilitiesTab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                    topside={topside}
+                                    setTopside={setTopside}
+                                    surf={surf}
+                                    setSurf={setSurf}
+                                    substructure={substructure}
+                                    setSubstrucutre={setSubstructure}
+                                    transport={transport}
+                                    setTransport={setTransport}
+                                />
+                            </StyledTabPanel>
+                            <StyledTabPanel>
+                                <CaseCostTab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                    exploration={exploration}
+                                    setExploration={setExploration}
+                                    wellProject={wellProject}
+                                    setWellProject={setWellProject}
+                                    topside={topside}
+                                    setTopside={setTopside}
+                                    surf={surf}
+                                    setSurf={setSurf}
+                                    substructure={substructure}
+                                    setSubstructure={setSubstructure}
+                                    transport={transport}
+                                    setTransport={setTransport}
+                                    drainageStrategy={drainageStrategy}
+                                />
+                            </StyledTabPanel>
+                            <StyledTabPanel>
+                                <p>CO2 Emissions</p>
+                            </StyledTabPanel>
+                            <StyledTabPanel>
+                                <CaseSummaryTab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                    exploration={exploration}
+                                    setExploration={setExploration}
+                                    wellProject={wellProject}
+                                    setWellProject={setWellProject}
+                                    topside={topside}
+                                    setTopside={setTopside}
+                                    surf={surf}
+                                    setSurf={setSurf}
+                                    substructure={substructure}
+                                    setSubstrucutre={setSubstructure}
+                                    transport={transport}
+                                    setTransport={setTransport}
+                                    drainageStrategy={drainageStrategy}
+                                />
+                            </StyledTabPanel>
+                        </Panels>
+                    </TabContentWrapper>
                 </Tabs>
                 <DividerLine />
                 <CaseAsset

@@ -24,8 +24,8 @@ public static class CaseAdapter
             DG2Date = caseDto.DG2Date,
             DG3Date = caseDto.DG3Date,
             DG4Date = caseDto.DG4Date,
-            CreateTime = caseDto.CreateTime,
-            ModifyTime = caseDto.ModifyTime,
+            CreateTime = DateTimeOffset.Now,
+            ModifyTime = DateTimeOffset.Now,
             DrainageStrategyLink = caseDto.DrainageStrategyLink,
             ExplorationLink = caseDto.ExplorationLink,
             WellProjectLink = caseDto.WellProjectLink,
@@ -39,6 +39,10 @@ public static class CaseAdapter
             GasInjectorCount = caseDto.GasInjectorCount,
             WaterInjectorCount = caseDto.WaterInjectorCount,
             FacilitiesAvailability = caseDto.FacilitiesAvailability,
+            CapexFactorFeasibilityStudies = caseDto.CapexFactorFeasibilityStudies,
+            CapexFactorFEEDStudies = caseDto.CapexFactorFEEDStudies,
+            NPV = caseDto.NPV,
+            BreakEven = caseDto.BreakEven,
             SharepointFileId = caseDto.SharepointFileId,
             SharepointFileName = caseDto.SharepointFileName,
             SharepointFileUrl = caseDto.SharepointFileUrl,
@@ -62,8 +66,7 @@ public static class CaseAdapter
         existing.DG2Date = caseDto.DG2Date;
         existing.DG3Date = caseDto.DG3Date;
         existing.DG4Date = caseDto.DG4Date;
-        existing.CreateTime = caseDto.CreateTime;
-        existing.ModifyTime = caseDto.ModifyTime;
+        existing.ModifyTime = DateTimeOffset.Now;
         existing.DrainageStrategyLink = caseDto.DrainageStrategyLink;
         existing.ExplorationLink = caseDto.ExplorationLink;
         existing.WellProjectLink = caseDto.WellProjectLink;
@@ -77,6 +80,10 @@ public static class CaseAdapter
         existing.GasInjectorCount = caseDto.GasInjectorCount;
         existing.WaterInjectorCount = caseDto.WaterInjectorCount;
         existing.FacilitiesAvailability = caseDto.FacilitiesAvailability;
+        existing.CapexFactorFeasibilityStudies = caseDto.CapexFactorFeasibilityStudies;
+        existing.CapexFactorFEEDStudies = caseDto.CapexFactorFEEDStudies;
+        existing.NPV = caseDto.NPV;
+        existing.BreakEven = caseDto.BreakEven;
         existing.SharepointFileId = caseDto.SharepointFileId;
         existing.SharepointFileName = caseDto.SharepointFileName;
     }

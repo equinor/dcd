@@ -25,7 +25,6 @@ public class CaseService
     public ProjectDto CreateCase(CaseDto caseDto)
     {
         var case_ = CaseAdapter.Convert(caseDto);
-        case_.CreateTime = DateTime.UtcNow;
         if (case_.DG4Date == DateTimeOffset.MinValue)
         {
             case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
@@ -39,7 +38,6 @@ public class CaseService
 
     public ProjectDto NewCreateCase(CaseDto caseDto)
     {
-
         var drainageStrategyService = _serviceProvider.GetRequiredService<DrainageStrategyService>();
         var topsideService = _serviceProvider.GetRequiredService<TopsideService>();
         var surfService = _serviceProvider.GetRequiredService<SurfService>();
@@ -49,9 +47,10 @@ public class CaseService
         var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
 
         var case_ = CaseAdapter.Convert(caseDto);
-        case_.CreateTime = DateTime.UtcNow;
         var project = _projectService.GetProject(case_.ProjectId);
         case_.Project = project;
+        case_.CapexFactorFeasibilityStudies = 0.015;
+        case_.CapexFactorFEEDStudies = 0.015;
 
         var createdCase = _context.Cases!.Add(case_);
         _context.SaveChanges();
@@ -127,16 +126,7 @@ public class CaseService
         var project = _projectService.GetProject(case_.ProjectId);
         case_.Project = project;
 
-        List<Case> duplicateCaseNames = new List<Case>();
-        foreach (Case c in project.Cases!)
-        {
-            string copyNumber = c.Name.Substring(c.Name.Length - 1, 1);
-            if (c.Name.Equals(case_.Name) || c.Name.Equals(case_.Name + " - copy #" + copyNumber))
-            {
-                duplicateCaseNames.Add(c);
-            }
-        }
-        case_.Name = case_.Name + " - copy #" + duplicateCaseNames.Count();
+        case_.Name = case_.Name + " - copy";
         _context.Cases!.Add(case_);
         _context.SaveChanges();
         return _projectService.GetProjectDto(project.Id);
