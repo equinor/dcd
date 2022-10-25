@@ -56,31 +56,31 @@ function CaseDescriptionTab({
     setCase,
 }: Props) {
     const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase: Case = { ...caseItem }
         newCase.description = e.currentTarget.value
         setCase(newCase)
     }
 
     const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase: Case = { ...caseItem }
         newCase.facilitiesAvailability = Number(e.currentTarget.value)
         setCase(newCase)
     }
 
     const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase: Case = { ...caseItem }
         newCase.producerCount = Number(e.currentTarget.value)
         setCase(newCase)
     }
 
     const handleGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase: Case = { ...caseItem }
         newCase.gasInjectorCount = Number(e.currentTarget.value)
         setCase(newCase)
     }
 
     const handletWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase: Case = { ...caseItem }
         newCase.waterInjectorCount = Number(e.currentTarget.value)
         setCase(newCase)
     }
@@ -89,7 +89,7 @@ function CaseDescriptionTab({
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
-            const newCase = { ...caseItem }
+            const newCase: Case = { ...caseItem }
             newCase.productionStrategyOverview = newProductionStrategy
             setCase(newCase)
         }
@@ -99,14 +99,15 @@ function CaseDescriptionTab({
         if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
             const newArtificialLift: Components.Schemas.ArtificialLift = Number(e.currentTarget.value) as Components.Schemas.ArtificialLift
-            const newCase = { ...caseItem }
+            const newCase: Case = { ...caseItem }
             newCase.artificialLift = newArtificialLift
             setCase(newCase)
         }
     }
 
     const handleSave = async () => {
-        const result = await (await GetCaseService()).update(caseItem)
+        const updatedCase = Case.Copy(caseItem)
+        const result = await (await GetCaseService()).update(updatedCase)
         setCase(result)
     }
 
