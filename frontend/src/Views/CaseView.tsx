@@ -34,6 +34,7 @@ import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import { GetCaseService } from "../Services/CaseService"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -102,6 +103,7 @@ const CaseView = () => {
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
+    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
     useEffect(() => {
         (async () => {
@@ -123,6 +125,28 @@ const CaseView = () => {
             }
         })()
     }, [currentProject?.externalId, caseId])
+
+    const duplicateCase = async () => {
+        try {
+            if (caseItem?.id) {
+                const newProject = await (await GetCaseService()).duplicateCase(caseItem?.id, {})
+                setProject(newProject)
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
+    const deleteCase = async () => {
+        try {
+            if (caseItem?.id) {
+                const newProject = await (await GetCaseService()).deleteCase(caseItem?.id)
+                setProject(newProject)
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
 
     if (!project) return null
     if (!caseItem) return null
@@ -152,7 +176,7 @@ const CaseView = () => {
                 placement="bottom"
             >
                 <Menu.Item
-                    onClick={() => console.log("Add new case clicked")}
+                    onClick={() => console.log("Poopy")}
                 >
                     <Icon data={add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
@@ -160,7 +184,7 @@ const CaseView = () => {
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
-                    onClick={() => console.log("Duplicate clicked")}
+                    onClick={duplicateCase}
                 >
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
@@ -168,7 +192,7 @@ const CaseView = () => {
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
-                    onClick={() => console.log("Rename clicked")}
+                    onClick={toggleEditCaseModal}
                 >
                     <Icon data={edit} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
@@ -176,7 +200,7 @@ const CaseView = () => {
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
-                    onClick={() => console.log("Delete clicked")}
+                    onClick={deleteCase}
                 >
                     <Icon data={delete_to_trash} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
