@@ -40,8 +40,9 @@ export class Case implements Components.Schemas.CaseDto {
     breakEven: number // double
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
     cessationCost?: CaseCessationCostProfile
-    sharepointFileId?: string
-    sharepointFileName?: string
+    sharepointFileId?: string | null
+    sharepointFileName?: string | null
+    sharepointFileUrl?: string | null
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex

@@ -45,6 +45,7 @@ public static class CaseDtoAdapter
             BreakEven = case_.BreakEven,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
+            SharepointFileUrl = case_.SharepointFileUrl,
         };
 
         return caseDto;
@@ -56,6 +57,7 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new CessationCostDto
         {
             Id = opexCost.Id,
@@ -72,6 +74,7 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new OpexCostProfileDto
         {
             Id = opexCost.Id,
@@ -88,6 +91,7 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new StudyCostProfileDto
         {
             Id = studyCost.Id,

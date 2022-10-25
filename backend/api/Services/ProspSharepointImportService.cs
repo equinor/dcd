@@ -179,6 +179,7 @@ public class ProspSharepointImportService
             {
                 return projectDto;
             }
+
             var driveId = await GetDriveIdFromSharePointSiteUrl(dtos, siteId);
 
             var fileIdsOnCases = dtos.ToDictionary(dto => new Guid(dto.Id!), dto => dto.SharePointFileId);
@@ -207,6 +208,7 @@ public class ProspSharepointImportService
                 {
                     continue;
                 }
+
                 foreach (var iteminfo in dtos.Where(importDto =>
                              importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
                 {
@@ -257,7 +259,8 @@ public class ProspSharepointImportService
             Size = driveItem.Size,
             SharepointIds = driveItem.SharepointIds,
             LastModifiedBy = driveItem.LastModifiedBy,
-            LastModifiedDateTime = driveItem.LastModifiedDateTime
+            LastModifiedDateTime = driveItem.LastModifiedDateTime,
+            SharepointFileUrl = driveItem.WebUrl
         };
         dto.Add(item);
     }

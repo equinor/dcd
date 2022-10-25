@@ -44,7 +44,8 @@ public static class CaseAdapter
             NPV = caseDto.NPV,
             BreakEven = caseDto.BreakEven,
             SharepointFileId = caseDto.SharepointFileId,
-            SharepointFileName = caseDto.SharepointFileName
+            SharepointFileName = caseDto.SharepointFileName,
+            SharepointFileUrl = caseDto.SharepointFileUrl,
         };
     }
 
