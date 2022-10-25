@@ -146,6 +146,8 @@ const CaseView = () => {
 
     const history = useHistory()
 
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
+
     useEffect(() => {
         (async () => {
             try {
@@ -174,7 +176,7 @@ const CaseView = () => {
             if (caseItem?.id) {
                 const newProject = await (await GetCaseService()).duplicateCase(caseItem?.id, {})
                 setProject(newProject)
-                history.push(ProjectPath(newProject?.id))
+                history.push(ProjectPath(fusionContextId!))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -183,10 +185,10 @@ const CaseView = () => {
 
     const deleteCase = async () => {
         try {
-            if (caseItem?.id) {
+            if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).deleteCase(caseItem?.id)
                 setProject(newProject)
-                history.push(ProjectPath(newProject?.id))
+                history.push(ProjectPath(fusionContextId!))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -393,13 +395,16 @@ const CaseView = () => {
                 isOpen={editCaseModalIsOpen}
                 toggleModal={toggleEditCaseModal}
                 editMode
+                navigate
             />
-            <CreateCaseModal
+            <EditCaseModal
                 setProject={setProject}
-                isOpen={createCaseModalIsOpen}
                 project={project}
+                caseId={caseItem.id}
+                isOpen={createCaseModalIsOpen}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
+                navigate
             />
         </div>
     )
