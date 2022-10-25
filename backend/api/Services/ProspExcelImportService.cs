@@ -248,7 +248,7 @@ public class ProspExcelImportService
             CostYear = costYear,
             Maturity = Maturity.A,
             FacilityOpex = facilityOpex,
-            PeekElectricityImported = peekElectricityImported
+            PeakElectricityImported = peekElectricityImported
         };
         var dto = TopsideDtoAdapter.Convert(newTopside);
         if (topsideLink != Guid.Empty)
