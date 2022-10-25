@@ -46,6 +46,10 @@ import { TopsideCostProfile } from "../../models/assets/topside/TopsideCostProfi
 import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
 import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
 import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
+import { GetTopsideService } from "../../Services/TopsideService"
+import { GetSubstructureService } from "../../Services/SubstructureService"
+import { GetTransportService } from "../../Services/TransportService"
+import { GetWellProjectService } from "../../Services/WellProjectService"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -102,7 +106,7 @@ interface Props {
     surf: Surf,
     setSurf: Dispatch<SetStateAction<Surf | undefined>>,
     substructure: Substructure,
-    setSubstrucutre: Dispatch<SetStateAction<Substructure | undefined>>,
+    setSubstructure: Dispatch<SetStateAction<Substructure | undefined>>,
     transport: Transport,
     setTransport: Dispatch<SetStateAction<Transport | undefined>>,
     exploration: Exploration,
@@ -119,7 +123,7 @@ function CaseCostTab({
     wellProject, setWellProject,
     topside, setTopside,
     surf, setSurf,
-    substructure, setSubstrucutre,
+    substructure, setSubstructure,
     transport, setTransport,
     drainageStrategy,
 }: Props) {
@@ -145,7 +149,7 @@ function CaseCostTab({
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2100)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2100])
+    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const opexGridRef = useRef(null)
     const capexGridRef = useRef(null)
@@ -241,6 +245,12 @@ function CaseCostTab({
     //     setDrainageStrategy(newDrainageStrategy)
     // }
 
+    const updatedAndSetSurf = (surfItem: Surf) => {
+        const newSurf: Surf = { ...surfItem }
+        newSurf.costProfile = surfCost
+        setSurf(newSurf)
+    }
+
     const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
         const newCapexFactorFeasibilityStudies = Number(e.currentTarget.value)
@@ -261,7 +271,7 @@ function CaseCostTab({
             const newMaturity: Components.Schemas.Maturity = Number(e.currentTarget.value) as Components.Schemas.Maturity
             const newSurf: Surf = { ...surf }
             newSurf.maturity = newMaturity
-            setSurf(newSurf)
+            updatedAndSetSurf(newSurf)
         }
     }
 
@@ -304,16 +314,16 @@ function CaseCostTab({
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Topside cost", unit: "MNOK", profile: topsideCost, set: setTopsideCost,
+            profileName: "Subsea production system", unit: "MNOK", profile: surfCost, set: setSurfCost,
         },
         {
-            profileName: "SURF cost", unit: "MNOK", profile: surfCost, set: setSurfCost,
+            profileName: "Topside", unit: "MNOK", profile: topsideCost, set: setTopsideCost,
         },
         {
-            profileName: "Substructure cost", unit: "MNOK", profile: substructureCost, set: setSubstructureCost,
+            profileName: "Substructure", unit: "MNOK", profile: substructureCost, set: setSubstructureCost,
         },
         {
-            profileName: "Transport cost", unit: "MNOK", profile: transportCost, set: setTransportCost,
+            profileName: "Transport system", unit: "MNOK", profile: transportCost, set: setTransportCost,
         },
     ]
 
@@ -345,6 +355,44 @@ function CaseCostTab({
         setTableYears([startYear, endYear])
     }
 
+    useEffect(() => {
+        const newSurf: Surf = { ...surf }
+        newSurf.costProfile = surfCost
+        setSurf(newSurf)
+    }, [surfCost])
+
+    useEffect(() => {
+        const newTopside: Topside = { ...topside }
+        newTopside.costProfile = topsideCost
+        setTopside(newTopside)
+    }, [topsideCost])
+
+    useEffect(() => {
+        const newSubstructure: Substructure = { ...substructure }
+        newSubstructure.costProfile = substructureCost
+        setSubstructure(newSubstructure)
+    }, [substructureCost])
+
+    useEffect(() => {
+        const newTransport: Transport = { ...transport }
+        newTransport.costProfile = transportCost
+        setTransport(newTransport)
+    }, [transportCost])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
+        newWellProject.costProfile = wellProjectCost
+        setWellProject(newWellProject)
+    }, [wellProjectCost])
+
+    useEffect(() => {
+        const newExploration: Exploration = { ...exploration }
+        newExploration.costProfile = explorationCost
+        newExploration.seismicAcquisitionAndProcessing = seismicAcqAndProcCost
+        newExploration.countryOfficeCost = countryOfficeCost
+        setExploration(newExploration)
+    }, [explorationCost, seismicAcqAndProcCost, countryOfficeCost])
+
     // useEffect(() => {
     //     setNetSalesGas(drainageStrategy.netSalesGas)
     //     setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
@@ -370,6 +418,16 @@ function CaseCostTab({
         // }
         const updatedSurfResult = await (await GetSurfService()).newUpdate(surf)
         setSurf(updatedSurfResult)
+        const updatedTopsideResult = await (await GetTopsideService()).newUpdate(topside)
+        setTopside(updatedTopsideResult)
+        const updatedSubstructureResult = await (await GetSubstructureService()).newUpdate(substructure)
+        setSubstructure(updatedSubstructureResult)
+        const updatedTransportResult = await (await GetTransportService()).newUpdate(transport)
+        setTransport(updatedTransportResult)
+        const updatedWellProjectResult = await (await GetWellProjectService()).newUpdate(wellProject)
+        setWellProject(updatedWellProjectResult)
+        const updatedExplorationResult = await (await GetExplorationService()).newUpdate(exploration)
+        setExploration(updatedExplorationResult)
         const updateedCaseResult = await (await GetCaseService()).update(caseItem)
         setCase(updateedCaseResult)
     }

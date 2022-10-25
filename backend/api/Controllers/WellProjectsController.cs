@@ -48,4 +48,10 @@ public class WellProjectsController : ControllerBase
     {
         return _wellProjectService.UpdateWellProject(wellProjectDto);
     }
+
+    [HttpPut("new", Name = "NewUpdateWellProject")]
+    public WellProjectDto NewUpdateWellProject([FromBody] WellProjectDto wellProjectDto)
+    {
+        return _wellProjectService.NewUpdateWellProject(wellProjectDto);
+    }
 }

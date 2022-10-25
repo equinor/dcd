@@ -303,7 +303,7 @@ const CaseView = () => {
                                     surf={surf}
                                     setSurf={setSurf}
                                     substructure={substructure}
-                                    setSubstrucutre={setSubstructure}
+                                    setSubstructure={setSubstructure}
                                     transport={transport}
                                     setTransport={setTransport}
                                     drainageStrategy={drainageStrategy}

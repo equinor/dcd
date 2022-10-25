@@ -126,7 +126,6 @@ function CaseTabTable({
     }), [])
 
     const gridRefArrayToAlignedGrid = () => {
-        debugger
         if (alignedGridsRef && alignedGridsRef.length > 0) {
             const refArray: any[] = []
             alignedGridsRef.forEach((agr: any) => {
