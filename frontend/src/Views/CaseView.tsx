@@ -115,7 +115,7 @@ const CaseView = () => {
 
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
-    const [activeTab, setActiveTab] = useState<number>(5)
+    const [activeTab, setActiveTab] = useState<number>(0)
     const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
@@ -191,7 +191,30 @@ const CaseView = () => {
     if (!project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
-        || !substructure || !transport) { return null }
+        || !substructure || !transport) {
+        return (
+            <p>
+                Case is missing data:
+                {project ? null : "project"}
+                <br />
+                {caseItem ? null : "case"}
+                <br />
+                {drainageStrategy ? null : "drainageStrategy"}
+                <br />
+                {exploration ? null : "exploration"}
+                <br />
+                {wellProject ? null : "wellProject"}
+                <br />
+                {surf ? null : "surf"}
+                <br />
+                {topside ? null : "topside"}
+                <br />
+                {substructure ? null : "substructure"}
+                <br />
+                {transport ? null : "transport"}
+            </p>
+        )
+    }
 
     return (
         <div>
