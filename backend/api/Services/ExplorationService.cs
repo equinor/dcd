@@ -263,6 +263,36 @@ public class ExplorationService
         return _projectService.GetProjectDto(existing.ProjectId);
     }
 
+    public ExplorationDto NewUpdateExploration(ExplorationDto updatedExplorationDto)
+    {
+        var existing = GetExploration(updatedExplorationDto.Id);
+        ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
+
+        if (updatedExplorationDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.ExplorationCostProfile!.Remove(existing.CostProfile);
+        }
+
+        if (updatedExplorationDto.GAndGAdminCost == null && existing.GAndGAdminCost != null)
+        {
+            _context.GAndGAdminCost!.Remove(existing.GAndGAdminCost);
+        }
+
+        if (updatedExplorationDto.SeismicAcquisitionAndProcessing == null && existing.SeismicAcquisitionAndProcessing != null)
+        {
+            _context.SeismicAcquisitionAndProcessing!.Remove(existing.SeismicAcquisitionAndProcessing);
+        }
+
+        if (updatedExplorationDto.CountryOfficeCost == null && existing.CountryOfficeCost != null)
+        {
+            _context.CountryOfficeCost!.Remove(existing.CountryOfficeCost);
+        }
+
+        var updatedExploration = _context.Explorations!.Update(existing);
+        _context.SaveChanges();
+        return ExplorationDtoAdapter.Convert(updatedExploration.Entity);
+    }
+
     public Exploration GetExploration(Guid explorationId)
     {
 
