@@ -137,8 +137,6 @@ const CaseView = () => {
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
-    const [firstTSYear, setFirstTSYear] = useState<number>()
-    const [lastTSYear, setLastTSYear] = useState<number>()
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
@@ -195,8 +193,6 @@ const CaseView = () => {
         }
     }
 
-    if (!project) return null
-    if (!caseItem) return null
     if (!project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
