@@ -35,7 +35,6 @@ import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 import { GetCaseService } from "../Services/CaseService"
 import EditCaseModal from "../Components/Case/EditCaseModal"
-import CreateCaseModal from "../Components/Case/CreateCaseModal"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseSummaryTab from "./Case/CaseSummaryTab"
 
@@ -45,12 +44,6 @@ const { List, Tab, Panels } = Tabs
 const CaseViewDiv = styled.div`
     display: flex;
     flex-direction: column;
-`
-
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    z-index: 1000;
 `
 
 const PageTitle = styled(Typography)`
