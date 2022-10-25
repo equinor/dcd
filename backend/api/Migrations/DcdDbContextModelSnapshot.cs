@@ -1012,6 +1012,9 @@ namespace api.Migrations
                     b.Property<double>("OilCapacity")
                         .HasColumnType("float");
 
+                    b.Property<double>("PeakElectricityImported")
+                        .HasColumnType("float");
+
                     b.Property<int>("ProducerCount")
                         .HasColumnType("int");
 

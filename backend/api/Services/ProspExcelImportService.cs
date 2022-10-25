@@ -211,7 +211,7 @@ public class ProspExcelImportService
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year
         };
-        var peekElectricityImported = ReadDoubleValue(cellData, _prospConfig.TopSide.peekElectricityImported);
+        var peakElectricityImported = ReadDoubleValue(cellData, _prospConfig.TopSide.peakElectricityImported);
         // Prosp meta data
         var versionDate = ReadDateValue(cellData, _prospConfig.TopSide.versionDate);
         var costYear = ReadIntValue(cellData, _prospConfig.TopSide.costYear);
@@ -248,7 +248,7 @@ public class ProspExcelImportService
             CostYear = costYear,
             Maturity = Maturity.A,
             FacilityOpex = facilityOpex,
-            PeakElectricityImported = peekElectricityImported
+            PeakElectricityImported = peakElectricityImported
         };
         var dto = TopsideDtoAdapter.Convert(newTopside);
         if (topsideLink != Guid.Empty)
