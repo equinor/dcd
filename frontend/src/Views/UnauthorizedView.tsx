@@ -16,8 +16,12 @@ const StyledButton = styled(Button)`
     background-color: #007079;
 `
 const TextWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
     margin-top: 1.5rem;
     margin-bottom: 1.5rem;
+    justify-content: center;
+    align-items: center;
 `
 
 const openMailToPO = () => {
