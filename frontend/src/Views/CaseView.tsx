@@ -35,6 +35,7 @@ import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import { GetCaseService } from "../Services/CaseService"
+import EditCaseModal from "../Components/Case/EditCaseModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -96,6 +97,7 @@ const CaseView = () => {
     const [transport, setTransport] = useState<Transport>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
+    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
@@ -104,6 +106,7 @@ const CaseView = () => {
 
     const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
+    const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
     useEffect(() => {
         (async () => {
@@ -176,7 +179,7 @@ const CaseView = () => {
                 placement="bottom"
             >
                 <Menu.Item
-                    onClick={() => console.log("Poopy")}
+                    onClick={toggleCreateCaseModal}
                 >
                     <Icon data={add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
@@ -292,6 +295,21 @@ const CaseView = () => {
                 isOpen={editTechnicalInputModalIsOpen}
                 project={project}
                 setProject={setProject}
+            />
+            <EditCaseModal
+                setProject={setProject}
+                project={project}
+                caseId={caseItem.id}
+                isOpen={editCaseModalIsOpen}
+                toggleModal={toggleEditCaseModal}
+                editMode
+            />
+            <EditCaseModal
+                setProject={setProject}
+                isOpen={createCaseModalIsOpen}
+                project={project}
+                toggleModal={toggleCreateCaseModal}
+                editMode={false}
             />
         </div>
     )
