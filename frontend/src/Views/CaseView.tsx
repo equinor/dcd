@@ -94,7 +94,6 @@ const CaseButtonsWrapper = styled.div`
     align-items: flex-end;
     display: flex;
     flex-direction: row;
-    align-content: right;
     margin-left: auto;
     z-index: 110;
 `
