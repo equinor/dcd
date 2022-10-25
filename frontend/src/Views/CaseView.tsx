@@ -162,7 +162,30 @@ const CaseView = () => {
     if (!project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
-        || !substructure || !transport) { return null }
+        || !substructure || !transport) {
+        return (
+            <p>
+                Case is missing data:
+                {project ? null : "project"}
+                <br />
+                {caseItem ? null : "case"}
+                <br />
+                {drainageStrategy ? null : "drainageStrategy"}
+                <br />
+                {exploration ? null : "exploration"}
+                <br />
+                {wellProject ? null : "wellProject"}
+                <br />
+                {surf ? null : "surf"}
+                <br />
+                {topside ? null : "topside"}
+                <br />
+                {substructure ? null : "substructure"}
+                <br />
+                {transport ? null : "transport"}
+            </p>
+        )
+    }
 
     return (
         <div>
