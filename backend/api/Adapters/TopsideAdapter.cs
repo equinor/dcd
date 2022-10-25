@@ -15,7 +15,6 @@ public static class TopsideAdapter
             DryWeight = topsideDto.DryWeight,
             OilCapacity = topsideDto.OilCapacity,
             GasCapacity = topsideDto.GasCapacity,
-            FacilitiesAvailability = topsideDto.FacilitiesAvailability,
             ArtificialLift = topsideDto.ArtificialLift,
             Maturity = topsideDto.Maturity,
             Currency = topsideDto.Currency,
@@ -61,7 +60,6 @@ public static class TopsideAdapter
         existing.DryWeight = topsideDto.DryWeight;
         existing.OilCapacity = topsideDto.OilCapacity;
         existing.GasCapacity = topsideDto.GasCapacity;
-        existing.FacilitiesAvailability = topsideDto.FacilitiesAvailability;
         existing.ArtificialLift = topsideDto.ArtificialLift;
         existing.Maturity = topsideDto.Maturity;
         existing.Currency = topsideDto.Currency;

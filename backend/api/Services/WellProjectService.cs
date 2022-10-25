@@ -46,6 +46,17 @@ public class WellProjectService
         return _projectService.GetProjectDto(project.Id);
     }
 
+    public WellProject NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId)
+    {
+        var wellProject = WellProjectAdapter.Convert(wellProjectDto);
+        var project = _projectService.GetProject(wellProject.ProjectId);
+        wellProject.Project = project;
+        var createdWellProject = _context.WellProjects!.Add(wellProject);
+        _context.SaveChanges();
+        SetCaseLink(wellProject, sourceCaseId, project);
+        return createdWellProject.Entity;
+    }
+
     private void SetCaseLink(WellProject wellProject, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
@@ -233,6 +244,21 @@ public class WellProjectService
         _context.WellProjects!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedWellProject.ProjectId);
+    }
+
+    public WellProjectDto NewUpdateWellProject(WellProjectDto updatedWellProjectDto)
+    {
+        var existing = GetWellProject(updatedWellProjectDto.Id);
+        WellProjectAdapter.ConvertExisting(existing, updatedWellProjectDto);
+
+        if (updatedWellProjectDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.WellProjectCostProfile!.Remove(existing.CostProfile);
+        }
+
+        var updatedWellProject = _context.WellProjects!.Update(existing);
+        _context.SaveChanges();
+        return WellProjectDtoAdapter.Convert(updatedWellProject.Entity);
     }
 
     public WellProject GetWellProject(Guid wellProjectId)

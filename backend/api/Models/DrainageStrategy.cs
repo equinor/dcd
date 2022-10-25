@@ -15,6 +15,7 @@ public class DrainageStrategy
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
+    public GasSolution GasSolution { get; set; }
     public ProductionProfileOil? ProductionProfileOil { get; set; }
     public ProductionProfileGas? ProductionProfileGas { get; set; }
     public ProductionProfileWater? ProductionProfileWater { get; set; }
@@ -23,7 +24,11 @@ public class DrainageStrategy
     public NetSalesGas? NetSalesGas { get; set; }
     public Co2Emissions? Co2Emissions { get; set; }
     public ProductionProfileNGL? ProductionProfileNGL { get; set; }
-    public double FacilitiesAvailability { get; set; }
+}
+public enum GasSolution
+{
+    Export,
+    Injection,
 }
 public class ProductionProfileOil : TimeSeriesVolume
 {

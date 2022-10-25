@@ -1,12 +1,7 @@
-using System.Globalization;
-
 using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
-
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Wordprocessing;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -45,15 +40,26 @@ public class ExplorationService
         }
     }
 
-    public ProjectDto CreateExploration(ExplorationDto eplorationDto, Guid sourceCaseId)
+    public ProjectDto CreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
     {
-        var exploration = ExplorationAdapter.Convert(eplorationDto);
+        var exploration = ExplorationAdapter.Convert(explorationDto);
         var project = _projectService.GetProject(exploration.ProjectId);
         exploration.Project = project;
         _context.Explorations!.Add(exploration);
         _context.SaveChanges();
         SetCaseLink(exploration, sourceCaseId, project);
         return _projectService.GetProjectDto(exploration.ProjectId);
+    }
+
+    public Exploration NewCreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
+    {
+        var exploration = ExplorationAdapter.Convert(explorationDto);
+        var project = _projectService.GetProject(exploration.ProjectId);
+        exploration.Project = project;
+        var createdExploration = _context.Explorations!.Add(exploration);
+        _context.SaveChanges();
+        SetCaseLink(exploration, sourceCaseId, project);
+        return createdExploration.Entity;
     }
 
     private void SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
@@ -255,6 +261,36 @@ public class ExplorationService
         _context.Explorations!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(existing.ProjectId);
+    }
+
+    public ExplorationDto NewUpdateExploration(ExplorationDto updatedExplorationDto)
+    {
+        var existing = GetExploration(updatedExplorationDto.Id);
+        ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
+
+        if (updatedExplorationDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.ExplorationCostProfile!.Remove(existing.CostProfile);
+        }
+
+        if (updatedExplorationDto.GAndGAdminCost == null && existing.GAndGAdminCost != null)
+        {
+            _context.GAndGAdminCost!.Remove(existing.GAndGAdminCost);
+        }
+
+        if (updatedExplorationDto.SeismicAcquisitionAndProcessing == null && existing.SeismicAcquisitionAndProcessing != null)
+        {
+            _context.SeismicAcquisitionAndProcessing!.Remove(existing.SeismicAcquisitionAndProcessing);
+        }
+
+        if (updatedExplorationDto.CountryOfficeCost == null && existing.CountryOfficeCost != null)
+        {
+            _context.CountryOfficeCost!.Remove(existing.CountryOfficeCost);
+        }
+
+        var updatedExploration = _context.Explorations!.Update(existing);
+        _context.SaveChanges();
+        return ExplorationDtoAdapter.Convert(updatedExploration.Entity);
     }
 
     public Exploration GetExploration(Guid explorationId)

@@ -1,6 +1,7 @@
 using api.Dtos;
-using api.Models;
 using api.Services;
+
+using Api.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,11 @@ namespace api.Controllers;
 [Route("[controller]")]
 [ApiController]
 [Authorize]
+[RequiresApplicationRoles(
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class PROSPController : ControllerBase
 {
     private const string isCheckedAsset = "true";
@@ -58,45 +64,6 @@ public class PROSPController : ControllerBase
             return projectDto.ProjectId == projectId
                 ? projectDto
                 : _projectService.GetProjectDto(projectId);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e.Message);
-            return _projectService.GetProjectDto(projectId);
-        }
-    }
-
-    [HttpPost("local", Name = "Upload")]
-    [DisableRequestSizeLimit]
-    public async Task<ProjectDto?> Upload([FromQuery] Guid projectId, [FromQuery] Guid sourceCaseId)
-    {
-        try
-        {
-            var formCollection = await Request.ReadFormAsync();
-            var file = formCollection.Files.First();
-            var assets = new Dictionary<string, bool>
-            {
-                { nameof(Surf), false },
-                { nameof(Topside), false },
-                { nameof(Substructure), false },
-                { nameof(Transport), false }
-            };
-
-            if (file.Length > 0)
-            {
-                foreach (var item in assets)
-                {
-                    if (formCollection.TryGetValue(nameof(item.Key), out var asset) && asset == isCheckedAsset)
-                    {
-                        assets[nameof(asset)] = true;
-                    }
-                }
-
-                var dto = _prospExcelImportService.ImportProsp(file, sourceCaseId, projectId, assets);
-                return dto;
-            }
-
-            return null;
         }
         catch (Exception e)
         {
