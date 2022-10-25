@@ -77,6 +77,34 @@ public class ExplorationWellService
         return explorationWellDto;
     }
 
+    public ExplorationWellDto[]? CreateMultipleWells(ExplorationWellDto[] wellDtos)
+    {
+        ProjectDto? projectDto = null;
+        foreach (var wellDto in wellDtos)
+        {
+            projectDto = CreateExplorationWell(wellDto);
+        }
+        if (projectDto != null)
+        {
+            return projectDto.Explorations?.FirstOrDefault(e => e.Id == wellDtos[0].ExplorationId)?.ExplorationWells?.ToArray();
+        }
+        return null;
+    }
+
+    public ExplorationWellDto[]? UpdateMultipleWells(ExplorationWellDto[] updatedWellDtos)
+    {
+        ProjectDto? projectDto = null;
+        foreach (var wellDto in updatedWellDtos)
+        {
+            projectDto = UpdateExplorationWell(wellDto);
+        }
+        if (projectDto != null)
+        {
+            return projectDto.Explorations?.FirstOrDefault(e => e.Id == updatedWellDtos[0].ExplorationId)?.ExplorationWells?.ToArray();
+        }
+        return null;
+    }
+
     public IEnumerable<ExplorationWell> GetAll()
     {
         if (_context.ExplorationWell != null)

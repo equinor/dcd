@@ -6,11 +6,9 @@ import "./style.css"
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { ColDef } from "ag-grid-community"
-import { Icon } from "@equinor/eds-core-react"
-import { lock } from "@equinor/eds-icons"
-import { ITimeSeries } from "../../models/ITimeSeries"
 import "ag-grid-enterprise"
 import { DrillingSchedule } from "../../models/assets/wellproject/DrillingSchedule"
+import { isInteger } from "../../Utils/common"
 
 export interface CellValue {
     value: number | string
@@ -183,13 +181,6 @@ function DataTableWell({
         return undefined
     }
 
-    const defaultColDef = useMemo<ColDef>(() => ({
-        resizable: true,
-        sortable: true,
-        editable: true,
-        flex: 1,
-    }), [])
-
     useEffect(() => {
     }, [dG4Year, columns, expDrillingSchedules, devDrillingSchedules, timeSeriesData])
 
@@ -290,6 +281,49 @@ function DataTableWell({
         const combinedFooterRow = [{ ...value, ...footerGridData, ...totalTotalObj }]
         return combinedFooterRow
     }
+
+    const handleCellValueChange = (p: any) => {
+        const properties = Object.keys(p.data)
+        console.log(properties)
+        const tableTimeSeriesValues: any[] = []
+        properties.forEach((prop) => {
+            if (isInteger(prop)
+                && p.data[prop] !== ""
+                && p.data[prop] !== null
+                && !Number.isNaN(Number(p.data[prop]))) {
+                tableTimeSeriesValues.push({ year: parseInt(prop, 10), value: Number(p.data[prop]) })
+            }
+        })
+        tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+        console.log(tableTimeSeriesValues)
+        if (tableTimeSeriesValues.length > 0) {
+            const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
+            const tableTimeSerieslastYear = tableTimeSeriesValues.at(-1).year
+            const timeSeriesStartYear = tableTimeSeriesFirstYear - Number(dG4Year)
+            const values: number[] = []
+            for (let i = tableTimeSeriesFirstYear; i <= tableTimeSerieslastYear; i += 1) {
+                const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
+                if (tableTimeSeriesValue) {
+                    values.push(tableTimeSeriesValue.value)
+                } else {
+                    values.push(0)
+                }
+            }
+            const newProfile = { ...p.data.profile }
+            newProfile.startYear = timeSeriesStartYear
+            newProfile.values = values
+            console.log(newProfile)
+            p.data.set(newProfile)
+        }
+    }
+
+    const defaultColDef = useMemo<ColDef>(() => ({
+        resizable: true,
+        sortable: true,
+        editable: true,
+        flex: 1,
+        onCellValueChanged: handleCellValueChange,
+    }), [])
 
     return (
         <>

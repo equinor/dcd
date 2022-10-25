@@ -231,8 +231,10 @@ const CaseView = () => {
                             <DrillingScheduleViewTab
                                 _case={caseItem}
                                 _project={project}
-                                _exploration={exploration}
-                                _wellProject={wellProject}
+                                exploration={exploration}
+                                setExploration={setExploration}
+                                wellProject={wellProject}
+                                setWellProject={setWellProject}
                                 _wells={wells}
                             />
                         </StyledTabPanel>
