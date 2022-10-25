@@ -13,6 +13,7 @@ public class DrainageStrategyDto
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
+    public GasSolution GasSolution { get; set; }
     public ProductionProfileOilDto? ProductionProfileOil { get; set; }
     public ProductionProfileGasDto? ProductionProfileGas { get; set; }
     public ProductionProfileWaterDto? ProductionProfileWater { get; set; }
@@ -21,7 +22,6 @@ public class DrainageStrategyDto
     public NetSalesGasDto? NetSalesGas { get; set; }
     public Co2EmissionsDto? Co2Emissions { get; set; }
     public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
-    public double FacilitiesAvailability { get; set; }
 }
 public class ProductionProfileOilDto : TimeSeriesVolumeDto
 {

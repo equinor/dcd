@@ -536,7 +536,6 @@ public static class TestHelper
             Assert.Equal(expected.DryWeight, actual.DryWeight);
             Assert.Equal(expected.GasCapacity, actual.GasCapacity);
             Assert.Equal(expected.OilCapacity, actual.OilCapacity);
-            Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
             TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
         }
@@ -556,7 +555,6 @@ public static class TestHelper
             Assert.Equal(expected.DryWeight, actual.DryWeight);
             Assert.Equal(expected.GasCapacity, actual.GasCapacity);
             Assert.Equal(expected.OilCapacity, actual.OilCapacity);
-            Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
             TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
         }
