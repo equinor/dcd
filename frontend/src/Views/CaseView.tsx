@@ -11,7 +11,7 @@ import {
     useEffect,
     useState,
 } from "react"
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
     add, delete_to_trash, edit, library_add, more_vertical,
@@ -21,7 +21,7 @@ import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/Case/CaseAsset"
-import { unwrapProjectId } from "../Utils/common"
+import { ProjectPath, unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { WellProject } from "../models/assets/wellproject/WellProject"
@@ -36,6 +36,7 @@ import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import { GetCaseService } from "../Services/CaseService"
 import EditCaseModal from "../Components/Case/EditCaseModal"
+import CreateCaseModal from "../Components/Case/CreateCaseModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -108,6 +109,8 @@ const CaseView = () => {
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
+    const history = useHistory()
+
     useEffect(() => {
         (async () => {
             try {
@@ -134,6 +137,7 @@ const CaseView = () => {
             if (caseItem?.id) {
                 const newProject = await (await GetCaseService()).duplicateCase(caseItem?.id, {})
                 setProject(newProject)
+                history.push(ProjectPath(newProject?.id))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -145,6 +149,7 @@ const CaseView = () => {
             if (caseItem?.id) {
                 const newProject = await (await GetCaseService()).deleteCase(caseItem?.id)
                 setProject(newProject)
+                history.push(ProjectPath(newProject?.id))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -304,7 +309,7 @@ const CaseView = () => {
                 toggleModal={toggleEditCaseModal}
                 editMode
             />
-            <EditCaseModal
+            <CreateCaseModal
                 setProject={setProject}
                 isOpen={createCaseModalIsOpen}
                 project={project}
