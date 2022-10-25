@@ -23,7 +23,8 @@ interface Props {
     dg4Year: number
     tableYears: [number, number]
     tableName: string
-    alignedGridsRef?: any
+    alignedGridsRef?: any[]
+    gridRef?: any
 }
 
 function CaseTabTable({
@@ -31,15 +32,9 @@ function CaseTabTable({
     caseItem, setCase,
     timeSeriesData, dg4Year,
     tableYears, tableName,
-    alignedGridsRef,
+    alignedGridsRef, gridRef,
 }: Props) {
     useAgGridStyles()
-    const gridRef = useRef(null)
-
-    const onGridReady = (params: any) => {
-        gridRef.current = params.api
-    }
-
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
     const profilesToRowData = () => {
@@ -130,6 +125,22 @@ function CaseTabTable({
         onCellValueChanged: handleCellValueChange,
     }), [])
 
+    const gridRefArrayToAlignedGrid = () => {
+        debugger
+        if (alignedGridsRef && alignedGridsRef.length > 0) {
+            const refArray: any[] = []
+            alignedGridsRef.forEach((agr: any) => {
+                if (agr && agr.current) {
+                    refArray.push(agr.current)
+                }
+            })
+            if (refArray.length > 0) {
+                return refArray
+            }
+        }
+        return undefined
+    }
+
     return (
         <div
             style={{
@@ -144,14 +155,13 @@ function CaseTabTable({
                 defaultColDef={defaultColDef}
                 animateRows
                 domLayout="autoHeight"
-                onGridReady={onGridReady}
-                alignedGrids={alignedGridsRef}
                 enableCellChangeFlash
                 rowSelection="multiple"
                 enableRangeSelection
                 suppressCopySingleCellRanges
                 suppressMovableColumns
                 enableCharts
+                alignedGrids={gridRefArrayToAlignedGrid()}
             />
         </div>
     )

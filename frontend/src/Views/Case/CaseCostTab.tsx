@@ -4,6 +4,7 @@ import {
     ChangeEventHandler,
     useState,
     useEffect,
+    useRef,
 } from "react"
 import styled from "styled-components"
 
@@ -143,8 +144,13 @@ function CaseCostTab({
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
 
     const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2030)
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const [endYear, setEndYear] = useState<number>(2100)
+    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2100])
+
+    const opexGridRef = useRef(null)
+    const capexGridRef = useRef(null)
+    const developmentWellsGridRef = useRef(null)
+    const explorationWellsGridRef = useRef(null)
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
         if (timeSeries && timeSeries.startYear && timeSeries.values) {
@@ -453,6 +459,8 @@ function CaseCostTab({
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="OPEX"
+                    gridRef={opexGridRef}
+                    alignedGridsRef={[capexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -465,6 +473,8 @@ function CaseCostTab({
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="CAPEX"
+                    gridRef={capexGridRef}
+                    alignedGridsRef={[opexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -477,6 +487,8 @@ function CaseCostTab({
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="Development well costs"
+                    gridRef={developmentWellsGridRef}
+                    alignedGridsRef={[opexGridRef, capexGridRef, explorationWellsGridRef]}
                 />
             </TableWrapper>
             <CaseTabTable
@@ -488,6 +500,8 @@ function CaseCostTab({
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}
                 tableName="Exploration well costs"
+                gridRef={explorationWellsGridRef}
+                alignedGridsRef={[opexGridRef, capexGridRef, developmentWellsGridRef]}
             />
         </>
     )
