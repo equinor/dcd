@@ -10,7 +10,7 @@ public class GenerateCo2EmissionsProfile
     private const double Co2EmissionFromFuelGas = 2.34;
     private const double Co2EmissionFromFlaredGas = 3.74;
     private const double Co2Vented = 1.96;
-    private const int AvereageDevelopmentWellDrillingDays = 50;
+    private const int AverageDevelopmentWellDrillingDays = 50;
     private const int DailyEmissionFromDrillingRig = 100;
     private readonly CaseService _caseService;
     private readonly DrainageStrategyService _drainageStrategyService;
@@ -123,7 +123,7 @@ public class GenerateCo2EmissionsProfile
             {
                 StartYear = drainageStrategy.ProductionProfileGas.StartYear,
                 Values = wellDrillingSchedules.Values
-                    .Select(well => well * AvereageDevelopmentWellDrillingDays * DailyEmissionFromDrillingRig / 1000000)
+                    .Select(well => well * AverageDevelopmentWellDrillingDays * DailyEmissionFromDrillingRig / 1000000)
                     .ToArray(),
             };
 
