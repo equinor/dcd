@@ -50,7 +50,16 @@ const SideMenu: React.FC<Props> = ({ children }) => {
             (async () => {
                 try {
                     const fetchedProject = await (await GetProjectService()).getProjectByID(currentProject.externalId!)
-                    setProject(fetchedProject)
+                    if (!fetchedProject || fetchedProject.id === "") {
+                        // Workaround for retrieving project in sidemenu while project is created
+                        // eslint-disable-next-line no-promise-executor-return
+                        await new Promise((r) => setTimeout(r, 2000))
+                        const secondAttempt = await (await GetProjectService())
+                            .getProjectByID(currentProject.externalId!)
+                            setProject(secondAttempt)
+                    } else {
+                        setProject(fetchedProject)
+                    }
                 } catch (error) {
                     console.error()
                 }
