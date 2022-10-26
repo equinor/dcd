@@ -9,7 +9,7 @@ import React, {
     useEffect,
     useState,
 } from "react"
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
     add,
@@ -84,7 +84,7 @@ const ProjectView = () => {
                 if (currentProject?.externalId) {
                     let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
                     if (!res || res.id === "") {
-                        res = await (await GetProjectService()).createProjectFromContextId(fusionContextId!)
+                        res = await (await GetProjectService()).createProjectFromContextId(currentProject.id)
                     }
                     if (res !== undefined) {
                         setPhysicalUnit(res?.physUnit)
@@ -97,7 +97,7 @@ const ProjectView = () => {
                 console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentProject?.externalId}`, error)
             }
         })()
-    }, [fusionContextId])
+    }, [currentProject?.externalId])
 
     useEffect(() => {
         (async () => {
