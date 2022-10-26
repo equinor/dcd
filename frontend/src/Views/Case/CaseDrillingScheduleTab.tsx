@@ -26,7 +26,6 @@ import { GetWellProjectWellService } from "../../Services/WellProjectWellService
 import { GetExplorationWellService } from "../../Services/ExplorationWellService"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { IsExplorationWell } from "../../Utils/common"
-import { IAssetWell } from "../../models/IAssetWell"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -50,10 +49,6 @@ const NativeSelectField = styled(NativeSelect)`
     width: 200px;
     padding-right: 20px;
 `
-const NumberInputField = styled.div`
-    padding-right: 20px;
-`
-
 const TableYearWrapper = styled.div`
     align-items: flex-end;
     display: flex;
@@ -82,6 +77,10 @@ interface Props {
     setExploration: Dispatch<SetStateAction<Exploration | undefined>>,
     wellProject: WellProject,
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
+    explorationWells: ExplorationWell[],
+    setExplorationWells: Dispatch<SetStateAction<ExplorationWell[]>>,
+    wellProjectWells: WellProjectWell[],
+    setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[]>>,
     wells: Well[] | undefined
 }
 
@@ -90,24 +89,30 @@ function CaseDrillingScheduleTab({
     caseItem, setCase,
     exploration, setExploration,
     wellProject, setWellProject,
+    explorationWells, setExplorationWells,
+    wellProjectWells, setWellProjectWells,
     wells,
 }: Props) {
     // Development
     // eslint-disable-next-line max-len
-    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>(wellProject.wellProjectWells ?? [])
-    // Exploration
-    // eslint-disable-next-line max-len
-    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>(exploration.explorationWells ?? [])
+    // const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>(wellProject.wellProjectWells ?? [])
+    // // Exploration
+    // // eslint-disable-next-line max-len
+    // const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>(exploration.explorationWells ?? [])
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const developmentWellsGridRef = useRef(null)
+    const [developmentWellsGridData, setDevelopmentWellsGridData] = useState<any[]>([])
+
     const explorationWellsGridRef = useRef(null)
+    const [explorationWellsGridData, setExplorationWellsGridData] = useState<any[]>([])
+    const [tableExplorationWells, setTableExplorationWells] = useState<ExplorationWell[]>(explorationWells)
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear !== undefined && timeSeries.values) {
+        if (timeSeries && timeSeries.startYear !== undefined && timeSeries.values && timeSeries.values.length > 0) {
             return timeSeries.startYear + timeSeries.values.length - 1
         } return undefined
     }
@@ -182,7 +187,7 @@ function CaseDrillingScheduleTab({
 
     // 1. funksjon som lager tomme ExplorationWells fra wells av kategori exploration
     const createMissingExplorationWellsFromWells = (expWell: ExplorationWell[]) => {
-        const newExplorationWells: ExplorationWell[] = [...explorationWells]
+        const newExplorationWells: ExplorationWell[] = [...tableExplorationWells]
         wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
             const explorationWell = expWell.find((ew) => ew.wellId === w.id)
             if (!explorationWell) {
@@ -192,6 +197,8 @@ function CaseDrillingScheduleTab({
                 newExplorationWells.push(newExplorationWell)
             }
         })
+        setTableExplorationWells(newExplorationWells)
+
         return newExplorationWells
     }
 
@@ -203,20 +210,27 @@ function CaseDrillingScheduleTab({
         const data: any[] = []
 
         const expWells = createMissingExplorationWellsFromWells(expWell)
+        console.log("Hello")
 
         expWells.forEach((aw) => {
             const well = wells?.find((w) => w.id === aw.wellId)
             const name = well?.name
             const { drillingSchedule } = aw
             data.push({
-                profileName: name, profile: drillingSchedule, set: () => {}, unit: "Yee",
+                profileName: name, profile: drillingSchedule, set: () => { }, unit: "Yee",
             })
         })
-        // setExplorationWells(expWells)
+        console.log(expWells)
         return data
     }
 
-    const explorationWellsTableData = buildExplorationDrillingScheduleTableData(explorationWells)
+    useEffect(() => {
+        if (wells) {
+            const explorationWellsTableData = buildExplorationDrillingScheduleTableData(explorationWells)
+            console.log(explorationWellsTableData)
+            setExplorationWellsGridData(explorationWellsTableData)
+        }
+    }, [wells, explorationWells])
 
     // const developmentTimeSeriesData: ITimeSeriesData[] = [
     //     {
@@ -240,6 +254,7 @@ function CaseDrillingScheduleTab({
 
     const handleSave = async () => {
         // Exploration wells
+        // Table exploration wells => explorationwelldto[] => explorationwells => table exploration well
         const newExplorationWells = explorationWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
         const newExplorationWellsResult = await (await GetExplorationWellService()).createMultipleExplorationWells(newExplorationWells)
 
@@ -308,7 +323,7 @@ function CaseDrillingScheduleTab({
                     project={project}
                     setCase={setCase}
                     setProject={setProject}
-                    timeSeriesData={explorationWellsTableData}
+                    timeSeriesData={explorationWellsGridData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="Exploration wells"
