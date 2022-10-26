@@ -1,8 +1,8 @@
+using Api.Authorization;
+
 using api.Dtos;
 using api.Services;
 using api.Services.GenerateCostProfiles;
-
-using Api.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -76,5 +76,11 @@ public class GenerateProfileController : ControllerBase
     public Co2EmissionsDto GenerateCo2Emissions(Guid caseId)
     {
         return _generateEmissionsProfile.GenerateCo2Emissions(caseId);
+    }
+
+    [HttpPost("{caseId}generateImportedElectricity/", Name = "generateImportedElectricity")]
+    public ImportedElectricityDto GenerateImportedElectricity(Guid caseId)
+    {
+        return _generateEmissionsProfile.GenerateImportedElectricity(caseId);
     }
 }

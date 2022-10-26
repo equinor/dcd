@@ -26,7 +26,8 @@ public static class DrainageStrategyDtoAdapter
             FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses, unit),
             NetSalesGas = Convert(drainageStrategy.NetSalesGas, unit),
             Co2Emissions = Convert(drainageStrategy.Co2Emissions, unit),
-            ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit)
+            ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit),
+            ImportedElectricity = Convert(drainageStrategy.ImportedElectricity, unit),
         };
         return drainageStrategyDto;
     }
@@ -68,7 +69,7 @@ public static class DrainageStrategyDtoAdapter
         return values;
     }
 
-    private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
+    public static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
     {
         if (productionProfileOil != null)
         {
@@ -76,14 +77,14 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileOil.Id,
                 StartYear = productionProfileOil.StartYear,
-                Values = ConvertUnitValues(productionProfileOil.Values, unit, nameof(ProductionProfileOil))
+                Values = ConvertUnitValues(productionProfileOil.Values, unit, nameof(ProductionProfileOil)),
             };
         }
 
         return null;
     }
 
-    private static ProductionProfileGasDto? Convert(ProductionProfileGas? productionProfileGas, PhysUnit unit)
+    public static ProductionProfileGasDto? Convert(ProductionProfileGas? productionProfileGas, PhysUnit unit)
     {
         if (productionProfileGas != null)
         {
@@ -91,14 +92,14 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileGas.Id,
                 StartYear = productionProfileGas.StartYear,
-                Values = ConvertUnitValues(productionProfileGas.Values, unit, nameof(ProductionProfileGas))
+                Values = ConvertUnitValues(productionProfileGas.Values, unit, nameof(ProductionProfileGas)),
             };
         }
 
         return null;
     }
 
-    private static ProductionProfileWaterDto? Convert(ProductionProfileWater? productionProfileWater, PhysUnit unit)
+    public static ProductionProfileWaterDto? Convert(ProductionProfileWater? productionProfileWater, PhysUnit unit)
     {
         if (productionProfileWater != null)
         {
@@ -106,14 +107,14 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileWater.Id,
                 StartYear = productionProfileWater.StartYear,
-                Values = ConvertUnitValues(productionProfileWater.Values, unit, nameof(ProductionProfileWater))
+                Values = ConvertUnitValues(productionProfileWater.Values, unit, nameof(ProductionProfileWater)),
             };
         }
 
         return null;
     }
 
-    private static ProductionProfileWaterInjectionDto? Convert(
+    public static ProductionProfileWaterInjectionDto? Convert(
         ProductionProfileWaterInjection? productionProfileWaterInjection, PhysUnit unit)
     {
         if (productionProfileWaterInjection != null)
@@ -123,7 +124,7 @@ public static class DrainageStrategyDtoAdapter
                 Id = productionProfileWaterInjection.Id,
                 StartYear = productionProfileWaterInjection.StartYear,
                 Values = ConvertUnitValues(productionProfileWaterInjection.Values, unit,
-                    nameof(ProductionProfileWaterInjection))
+                    nameof(ProductionProfileWaterInjection)),
             };
         }
 
@@ -138,7 +139,7 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = fuelFlaringAndLosses.Id,
                 StartYear = fuelFlaringAndLosses.StartYear,
-                Values = ConvertUnitValues(fuelFlaringAndLosses.Values, unit, nameof(FuelFlaringAndLosses))
+                Values = ConvertUnitValues(fuelFlaringAndLosses.Values, unit, nameof(FuelFlaringAndLosses)),
             };
         }
 
@@ -153,7 +154,7 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = netSalesGas.Id,
                 StartYear = netSalesGas.StartYear,
-                Values = ConvertUnitValues(netSalesGas.Values, unit, nameof(NetSalesGas))
+                Values = ConvertUnitValues(netSalesGas.Values, unit, nameof(NetSalesGas)),
             };
         }
 
@@ -168,14 +169,14 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = co2Emissions.Id,
                 StartYear = co2Emissions.StartYear,
-                Values = ConvertUnitValues(co2Emissions.Values, unit, nameof(Co2Emissions))
+                Values = ConvertUnitValues(co2Emissions.Values, unit, nameof(Co2Emissions)),
             };
         }
 
         return null!;
     }
 
-    private static ProductionProfileNGLDto? Convert(ProductionProfileNGL? productionProfileNGL, PhysUnit unit)
+    public static ProductionProfileNGLDto? Convert(ProductionProfileNGL? productionProfileNGL, PhysUnit unit)
     {
         if (productionProfileNGL != null)
         {
@@ -183,7 +184,22 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileNGL.Id,
                 StartYear = productionProfileNGL.StartYear,
-                Values = ConvertUnitValues(productionProfileNGL.Values, unit, nameof(ProductionProfileNGL))
+                Values = ConvertUnitValues(productionProfileNGL.Values, unit, nameof(ProductionProfileNGL)),
+            };
+        }
+
+        return null;
+    }
+
+    public static ImportedElectricityDto? Convert(ImportedElectricity? importedElectricity, PhysUnit unit)
+    {
+        if (importedElectricity != null)
+        {
+            return new ImportedElectricityDto
+            {
+                Id = importedElectricity.Id,
+                StartYear = importedElectricity.StartYear,
+                Values = ConvertUnitValues(importedElectricity.Values, unit, nameof(importedElectricity)),
             };
         }
 

@@ -22,7 +22,9 @@ public class DrainageStrategyDto
     public NetSalesGasDto? NetSalesGas { get; set; }
     public Co2EmissionsDto? Co2Emissions { get; set; }
     public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
+    public ImportedElectricityDto? ImportedElectricity { get; set; }
 }
+
 public class ProductionProfileOilDto : TimeSeriesVolumeDto
 {
 }
@@ -30,19 +32,28 @@ public class ProductionProfileOilDto : TimeSeriesVolumeDto
 public class ProductionProfileGasDto : TimeSeriesVolumeDto
 {
 }
+
 public class ProductionProfileWaterDto : TimeSeriesVolumeDto
 {
 }
+
 public class ProductionProfileWaterInjectionDto : TimeSeriesVolumeDto
 {
 }
+
 public class FuelFlaringAndLossesDto : TimeSeriesVolumeDto
 {
 }
+
 public class NetSalesGasDto : TimeSeriesVolumeDto
 {
 }
+
 public class Co2EmissionsDto : TimeSeriesMassDto
+{
+}
+
+public class ImportedElectricityDto : TimeSeriesVolume
 {
 }
 
