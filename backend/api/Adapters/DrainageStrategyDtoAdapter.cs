@@ -203,6 +203,6 @@ public static class DrainageStrategyDtoAdapter
             };
         }
 
-        return null;
+        return null!;
     }
 }
