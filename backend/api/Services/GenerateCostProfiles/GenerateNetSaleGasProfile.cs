@@ -39,7 +39,7 @@ public class GenerateNetSaleGasProfile
         };
 
         var dto = DrainageStrategyDtoAdapter.Convert(netSaleGas, project.PhysicalUnit);
-        return dto;
+        return dto ?? new NetSalesGasDto();
     }
 
     private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,

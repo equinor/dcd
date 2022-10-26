@@ -69,7 +69,7 @@ public static class DrainageStrategyDtoAdapter
         return values;
     }
 
-    public static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
+    private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
     {
         if (productionProfileOil != null)
         {
@@ -84,7 +84,7 @@ public static class DrainageStrategyDtoAdapter
         return null;
     }
 
-    public static ProductionProfileGasDto? Convert(ProductionProfileGas? productionProfileGas, PhysUnit unit)
+    private static ProductionProfileGasDto? Convert(ProductionProfileGas? productionProfileGas, PhysUnit unit)
     {
         if (productionProfileGas != null)
         {
@@ -99,7 +99,7 @@ public static class DrainageStrategyDtoAdapter
         return null;
     }
 
-    public static ProductionProfileWaterDto? Convert(ProductionProfileWater? productionProfileWater, PhysUnit unit)
+    private static ProductionProfileWaterDto? Convert(ProductionProfileWater? productionProfileWater, PhysUnit unit)
     {
         if (productionProfileWater != null)
         {
@@ -114,7 +114,7 @@ public static class DrainageStrategyDtoAdapter
         return null;
     }
 
-    public static ProductionProfileWaterInjectionDto? Convert(
+    private static ProductionProfileWaterInjectionDto? Convert(
         ProductionProfileWaterInjection? productionProfileWaterInjection, PhysUnit unit)
     {
         if (productionProfileWaterInjection != null)
@@ -143,7 +143,7 @@ public static class DrainageStrategyDtoAdapter
             };
         }
 
-        return null!;
+        return null;
     }
 
     public static NetSalesGasDto? Convert(NetSalesGas? netSalesGas, PhysUnit unit)
@@ -158,7 +158,7 @@ public static class DrainageStrategyDtoAdapter
             };
         }
 
-        return null!;
+        return null;
     }
 
     public static Co2EmissionsDto? Convert(Co2Emissions? co2Emissions, PhysUnit unit)
@@ -173,10 +173,10 @@ public static class DrainageStrategyDtoAdapter
             };
         }
 
-        return null!;
+        return null;
     }
 
-    public static ProductionProfileNGLDto? Convert(ProductionProfileNGL? productionProfileNGL, PhysUnit unit)
+    private static ProductionProfileNGLDto? Convert(ProductionProfileNGL? productionProfileNGL, PhysUnit unit)
     {
         if (productionProfileNGL != null)
         {
@@ -203,6 +203,6 @@ public static class DrainageStrategyDtoAdapter
             };
         }
 
-        return null!;
+        return null;
     }
 }

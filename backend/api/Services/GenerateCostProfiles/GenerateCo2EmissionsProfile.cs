@@ -50,7 +50,7 @@ public class GenerateCo2EmissionsProfile
         };
 
         var dto = DrainageStrategyDtoAdapter.Convert(co2Emission, project.PhysicalUnit);
-        return dto;
+        return dto ?? new Co2EmissionsDto();
     }
 
     private static TimeSeriesVolume GetLossesProfile(DrainageStrategy drainageStrategy)

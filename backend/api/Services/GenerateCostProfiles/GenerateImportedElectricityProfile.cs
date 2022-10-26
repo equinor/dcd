@@ -40,7 +40,7 @@ public class GenerateImportedElectricityProfile
         };
 
         var dto = DrainageStrategyDtoAdapter.Convert(importedElectricity, project.PhysicalUnit);
-        return dto;
+        return dto ?? new ImportedElectricityDto();
     }
 
     private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported,

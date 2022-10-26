@@ -67,7 +67,7 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateNetSaleGas", Name = "GenerateNetSaleGas")]
-    public NetSalesGasDto GenerateNetSaleGas(Guid caseId)
+    public NetSalesGasDto? GenerateNetSaleGas(Guid caseId)
     {
         return _generateNetSaleGasProfile.Generate(caseId);
     }
