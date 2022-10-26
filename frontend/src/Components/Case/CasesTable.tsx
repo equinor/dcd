@@ -220,6 +220,7 @@ const CasesTable = ({ project, setProject }: Props) => {
                 isOpen={editCaseModalIsOpen}
                 toggleModal={toggleEditCaseModal}
                 editMode
+                navigate={false}
             />
         </div>
     )

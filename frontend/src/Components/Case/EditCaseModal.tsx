@@ -20,7 +20,7 @@ import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { ModalNoFocus } from "../ModalNoFocus"
-import { DefaultDate, ToMonthDate } from "../../Utils/common"
+import { DefaultDate, ProjectPath, ToMonthDate } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 
 const CreateCaseForm = styled.form`
@@ -78,6 +78,7 @@ interface Props {
     isOpen: boolean
     toggleModal: () => void
     editMode: boolean
+    navigate: boolean
 }
 
 const EditCaseModal = ({
@@ -87,6 +88,7 @@ const EditCaseModal = ({
     isOpen,
     toggleModal,
     editMode,
+    navigate,
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string | undefined>()
@@ -173,6 +175,9 @@ const EditCaseModal = ({
             }
             setProject(projectResult)
             toggleModal()
+            if (navigate) {
+                history.push(ProjectPath(fusionContextId!))
+            }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
             setIsLoading(false)
