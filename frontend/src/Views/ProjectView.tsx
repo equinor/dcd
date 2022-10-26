@@ -97,7 +97,7 @@ const ProjectView = () => {
                 console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentProject?.externalId}`, error)
             }
         })()
-    }, [currentProject?.externalId])
+    }, [fusionContextId])
 
     useEffect(() => {
         (async () => {
