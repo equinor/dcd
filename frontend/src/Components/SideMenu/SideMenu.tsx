@@ -44,6 +44,7 @@ interface Props {
 const SideMenu: React.FC<Props> = ({ children }) => {
     const [project, setProject] = useState<Project>()
     const currentProject = useCurrentContext()
+    const location = useLocation()
 
     useEffect(() => {
         if (currentProject?.externalId) {
@@ -65,7 +66,7 @@ const SideMenu: React.FC<Props> = ({ children }) => {
                 }
             })()
         }
-    }, [currentProject?.externalId])
+    }, [currentProject?.externalId, location.pathname])
 
     if (project) {
         return (
