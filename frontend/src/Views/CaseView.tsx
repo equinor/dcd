@@ -10,7 +10,7 @@ import {
     useEffect,
     useState,
 } from "react"
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
     add, delete_to_trash, edit, library_add, more_vertical,
@@ -20,7 +20,8 @@ import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseAsset from "../Components/Case/CaseAsset"
-import { unwrapProjectId } from "../Utils/common"
+import { ProjectPath, unwrapProjectId } from "../Utils/common"
+import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { WellProject } from "../models/assets/wellproject/WellProject"
 import { Surf } from "../models/assets/surf/Surf"
@@ -30,9 +31,10 @@ import { Exploration } from "../models/assets/exploration/Exploration"
 import { Transport } from "../models/assets/transport/Transport"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import CaseCostTab from "./Case/CaseCostTab"
-import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
+import { GetCaseService } from "../Services/CaseService"
+import EditCaseModal from "../Components/Case/EditCaseModal"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseSummaryTab from "./Case/CaseSummaryTab"
 import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
@@ -46,12 +48,6 @@ const { List, Tab, Panels } = Tabs
 const CaseViewDiv = styled.div`
     display: flex;
     flex-direction: column;
-`
-
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    z-index: 1000;
 `
 
 const PageTitle = styled(Typography)`
@@ -102,7 +98,6 @@ const CaseButtonsWrapper = styled.div`
     align-items: flex-end;
     display: flex;
     flex-direction: row;
-    align-content: right;
     margin-left: auto;
     z-index: 110;
 `
@@ -142,11 +137,19 @@ const CaseView = () => {
     // Exploration
     // eslint-disable-next-line max-len
     const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>([])
+    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
+    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
+    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
+    const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
+
+    const history = useHistory()
+
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
 
     useEffect(() => {
         (async () => {
@@ -178,6 +181,30 @@ const CaseView = () => {
             }
         })()
     }, [currentProject?.externalId, caseId])
+
+    const duplicateCase = async () => {
+        try {
+            if (caseItem?.id) {
+                const newProject = await (await GetCaseService()).duplicateCase(caseItem?.id, {})
+                setProject(newProject)
+                history.push(ProjectPath(fusionContextId!))
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
+    const deleteCase = async () => {
+        try {
+            if (caseItem?.id && project?.id) {
+                const newProject = await (await GetCaseService()).deleteCase(caseItem?.id)
+                setProject(newProject)
+                history.push(ProjectPath(fusionContextId!))
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
 
     if (!project || !caseItem
         || !drainageStrategy || !exploration
@@ -237,7 +264,7 @@ const CaseView = () => {
                     placement="bottom"
                 >
                     <Menu.Item
-                        onClick={() => console.log("Add new case clicked")}
+                        onClick={toggleCreateCaseModal}
                     >
                         <Icon data={add} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">
@@ -245,7 +272,7 @@ const CaseView = () => {
                         </Typography>
                     </Menu.Item>
                     <Menu.Item
-                        onClick={() => console.log("Duplicate clicked")}
+                        onClick={duplicateCase}
                     >
                         <Icon data={library_add} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">
@@ -253,7 +280,7 @@ const CaseView = () => {
                         </Typography>
                     </Menu.Item>
                     <Menu.Item
-                        onClick={() => console.log("Rename clicked")}
+                        onClick={toggleEditCaseModal}
                     >
                         <Icon data={edit} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">
@@ -261,7 +288,7 @@ const CaseView = () => {
                         </Typography>
                     </Menu.Item>
                     <Menu.Item
-                        onClick={() => console.log("Delete clicked")}
+                        onClick={deleteCase}
                     >
                         <Icon data={delete_to_trash} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">
@@ -408,6 +435,24 @@ const CaseView = () => {
                 isOpen={editTechnicalInputModalIsOpen}
                 project={project}
                 setProject={setProject}
+            />
+            <EditCaseModal
+                setProject={setProject}
+                project={project}
+                caseId={caseItem.id}
+                isOpen={editCaseModalIsOpen}
+                toggleModal={toggleEditCaseModal}
+                editMode
+                navigate
+            />
+            <EditCaseModal
+                setProject={setProject}
+                project={project}
+                caseId={caseItem.id}
+                isOpen={createCaseModalIsOpen}
+                toggleModal={toggleCreateCaseModal}
+                editMode={false}
+                navigate
             />
         </div>
     )
