@@ -2,7 +2,7 @@ using api.Models;
 
 namespace api.Helpers;
 
-public class EmissionCalculationHelper
+public static class EmissionCalculationHelper
 {
     private const double Co2EmissionRemovedFromGas = 0;
     private const double FlaredGasPerProducedVolume = 1.321;
