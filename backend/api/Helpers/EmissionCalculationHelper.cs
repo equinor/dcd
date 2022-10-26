@@ -9,7 +9,7 @@ public static class EmissionCalculationHelper
     private const double Co2EmissionFromFuelGas = 2.34;
     private const double Co2EmissionFromFlaredGas = 3.74;
     private const double Co2Vented = 1.96;
-    private const int AvereageDevelopmentWellDrillingDays = 50;
+    private const int AverageDevelopmentWellDrillingDays = 50;
     private const int DailyEmissionFromDrillingRig = 100;
     private const int DaysInLeapYear = 366;
     private const int DaysInYear = 365;
