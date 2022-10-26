@@ -1,7 +1,5 @@
-import React from "react"
 import styled from "styled-components"
-import { Button, Typography, Icon } from "@equinor/eds-core-react"
-import { lock } from "@equinor/eds-icons"
+import { Button, Typography } from "@equinor/eds-core-react"
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,14 +23,13 @@ const TextWrapper = styled.div`
 `
 
 const openMailToPO = () => {
-    window.open(`mailto:${"test@test.com"}`)
+    window.open(`mailto:${"atsv@equinor.com"}?subject=Concept App - Access Request`)
 }
 
 function UnauthorizedView() {
     return (
         <Wrapper>
-            <Icon data={lock} size={48} color="#007079" />
-            <Typography variant="h2"><strong>403 - Forbidden</strong></Typography>
+            <Typography variant="h2"><strong>We are sorry ...</strong></Typography>
             <TextWrapper>
                 <Typography variant="h5">The page you are trying to reach has restricted access.</Typography>
                 <Typography variant="h5">To request access, please contact your local administrator.</Typography>

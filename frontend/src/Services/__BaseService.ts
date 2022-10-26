@@ -1,5 +1,4 @@
 import axios, { AxiosRequestConfig, ResponseType } from "axios"
-
 import { ServiceConfig } from "./config"
 
 type RequestOptions = {
@@ -30,6 +29,11 @@ export class __BaseService {
             Authorization: `Bearer ${config.accessToken}`,
             ...this.config.headers,
         }
+        this.client.interceptors.response.use((response: any) => response, (error: any) => {
+            if (error.response.status === 403) {
+                window.location.href = "/403"
+            }
+        })
     }
 
     private async request(path: string, options?: RequestOptions): Promise<any> {

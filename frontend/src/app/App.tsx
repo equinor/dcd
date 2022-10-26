@@ -36,9 +36,6 @@ function App(): JSX.Element {
         <ErrorBoundary>
             <ConceptAppAuthProvider>
                 {(() => {
-                    if (!user) {
-                        return <p>Please login</p>
-                    }
                     // eslint-disable-next-line max-len
                     if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === null || runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === undefined) {
                         return <p>Fetching Fusion app config</p>
