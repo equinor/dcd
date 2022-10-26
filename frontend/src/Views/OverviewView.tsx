@@ -130,6 +130,7 @@ function OverviewView({
                 project={project}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
+                navigate={false}
             />
             <RowWrapper>
                 <Typography variant="h2">Cases</Typography>
