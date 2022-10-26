@@ -21,23 +21,20 @@ interface Props {
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     timeSeriesData: any[]
     dg4Year: number
-    firstYear: number
-    lastYear: number
+    tableYears: [number, number]
+    tableName: string
+    alignedGridsRef?: any[]
+    gridRef?: any
 }
 
-function CaseProductionProfilesTabTable({
+function CaseTabTable({
     project, setProject,
     caseItem, setCase,
     timeSeriesData, dg4Year,
-    firstYear, lastYear,
+    tableYears, tableName,
+    alignedGridsRef, gridRef,
 }: Props) {
     useAgGridStyles()
-    const gridRef = useRef(null)
-
-    const onGridReady = (params: any) => {
-        gridRef.current = params.api
-    }
-
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
     const profilesToRowData = () => {
@@ -62,9 +59,31 @@ function CaseProductionProfilesTabTable({
         return tableRows
     }
 
+    const generateTableYearColDefs = () => {
+        const profileNameDef = {
+            field: "profileName", headerName: tableName, width: 250, editable: false,
+        }
+        const unitDef = { field: "unit", width: 100, editable: false }
+        const yearDefs = []
+        for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
+            yearDefs.push({
+                field: index.toString(),
+                flex: 1,
+                editable: (params: any) => params.data.set !== undefined,
+                minWidth: 100,
+            })
+        }
+        const totalDef = { field: "total", flex: 2, editable: false }
+        return [profileNameDef, unitDef, ...yearDefs, totalDef]
+    }
+
+    const [columnDefs, setColumnDefs] = useState(generateTableYearColDefs())
+
     useEffect(() => {
         setRowData(profilesToRowData())
-    }, [timeSeriesData])
+        const newColDefs = generateTableYearColDefs()
+        setColumnDefs(newColDefs)
+    }, [timeSeriesData, tableYears])
 
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
@@ -106,18 +125,20 @@ function CaseProductionProfilesTabTable({
         onCellValueChanged: handleCellValueChange,
     }), [])
 
-    const generateTableYearColDefs = () => {
-        const profileNameDef = { field: "profileName", headerName: "Production profiles", width: 250 }
-        const unitDef = { field: "unit", width: 100 }
-        const yearDefs = []
-        for (let index = firstYear; index <= lastYear; index += 1) {
-            yearDefs.push({ field: index.toString(), flex: 1 })
+    const gridRefArrayToAlignedGrid = () => {
+        if (alignedGridsRef && alignedGridsRef.length > 0) {
+            const refArray: any[] = []
+            alignedGridsRef.forEach((agr: any) => {
+                if (agr && agr.current) {
+                    refArray.push(agr.current)
+                }
+            })
+            if (refArray.length > 0) {
+                return refArray
+            }
         }
-        const totalDef = { field: "total", flex: 2 }
-        return [profileNameDef, unitDef, ...yearDefs, totalDef]
+        return undefined
     }
-
-    const [columnDefs] = useState(generateTableYearColDefs())
 
     return (
         <div
@@ -133,10 +154,16 @@ function CaseProductionProfilesTabTable({
                 defaultColDef={defaultColDef}
                 animateRows
                 domLayout="autoHeight"
-                onGridReady={onGridReady}
+                enableCellChangeFlash
+                rowSelection="multiple"
+                enableRangeSelection
+                suppressCopySingleCellRanges
+                suppressMovableColumns
+                enableCharts
+                alignedGrids={gridRefArrayToAlignedGrid()}
             />
         </div>
     )
 }
 
-export default CaseProductionProfilesTabTable
+export default CaseTabTable

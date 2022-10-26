@@ -28,6 +28,10 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             facilitiesAvailability?: number; // double
+            capexFactorFeasibilityStudies?: number; // double
+            capexFactorFEEDStudies?: number; // double
+            npv?: number; // double
+            breakEven?: number; // double
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time
@@ -52,6 +56,7 @@ declare namespace Components {
             cessationCost?: CessationCostDto;
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
+            sharepointFileUrl?: string | null;
         }
         export interface CessationCostDto {
             id?: string; // uuid
@@ -116,6 +121,7 @@ declare namespace Components {
             gasInjectorCount?: number; // int32
             waterInjectorCount?: number; // int32
             artificialLift?: ArtificialLift /* int32 */;
+            gasSolution?: GasSolution /* int32 */;
             productionProfileOil?: ProductionProfileOilDto;
             productionProfileGas?: ProductionProfileGasDto;
             productionProfileWater?: ProductionProfileWaterDto;
@@ -124,7 +130,6 @@ declare namespace Components {
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
             productionProfileNGL?: ProductionProfileNGLDto;
-            facilitiesAvailability?: number; // double
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid
@@ -134,7 +139,7 @@ declare namespace Components {
         export interface DriveItemDto {
             name?: string | null;
             id?: string | null;
-            webUrl?: string | null;
+            sharepointFileUrl?: string | null;
             createdDateTime?: string | null; // date-time
             content?: Stream;
             size?: number | null; // int64
@@ -193,6 +198,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export type GasSolution = 0 | 1; // int32
         export interface Identity {
             [name: string]: any;
             displayName?: string | null;
@@ -323,7 +329,6 @@ declare namespace Components {
             substructure?: boolean;
             topside?: boolean;
             transport?: boolean;
-            sharePointFileName?: string | null;
             sharePointFileId?: string | null;
             sharePointSiteUrl?: string | null;
         }
@@ -458,7 +463,6 @@ declare namespace Components {
             dryWeight?: number; // double
             oilCapacity?: number; // double
             gasCapacity?: number; // double
-            facilitiesAvailability?: number; // double
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;
@@ -1076,19 +1080,6 @@ declare namespace Paths {
     }
     namespace UpdateWellProjectWell {
         export type RequestBody = Components.Schemas.WellProjectWellDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
-    namespace Upload {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-            export type SourceCaseId = string; // uuid
-        }
-        export interface QueryParameters {
-            projectId?: Parameters.ProjectId /* uuid */;
-            sourceCaseId?: Parameters.SourceCaseId /* uuid */;
-        }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

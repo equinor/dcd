@@ -19,7 +19,7 @@ const SidebarDiv = styled.div`
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
 `
 
@@ -34,6 +34,7 @@ const Body = styled.div`
 const MainView = styled.div`
     width: calc(100% - 15rem);
     overflow: scroll;
+    overflow-x: hidden;
 `
 
 interface Props {

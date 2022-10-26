@@ -47,4 +47,10 @@ public class ExplorationsController : ControllerBase
     {
         return _explorationService.UpdateExploration(eplorationDto);
     }
+
+    [HttpPut("new", Name = "NewUpdateExploration")]
+    public ExplorationDto NewUpdateExploration([FromBody] ExplorationDto eplorationDto)
+    {
+        return _explorationService.NewUpdateExploration(eplorationDto);
+    }
 }

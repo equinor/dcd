@@ -15,6 +15,10 @@ public class CaseDto
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
     public double FacilitiesAvailability { get; set; }
+    public double CapexFactorFeasibilityStudies { get; set; }
+    public double CapexFactorFEEDStudies { get; set; }
+    public double NPV { get; set; }
+    public double BreakEven { get; set; }
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }
@@ -39,11 +43,20 @@ public class CaseDto
     public CessationCostDto? CessationCost { get; set; }
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
+    public string? SharepointFileUrl { get; set; }
 }
 
-public class CessationCostDto : TimeSeriesCostDto { }
-public class OpexCostProfileDto : TimeSeriesCostDto { }
-public class StudyCostProfileDto : TimeSeriesCostDto { }
+public class CessationCostDto : TimeSeriesCostDto
+{
+}
+
+public class OpexCostProfileDto : TimeSeriesCostDto
+{
+}
+
+public class StudyCostProfileDto : TimeSeriesCostDto
+{
+}
 
 public class CapexYear
 {

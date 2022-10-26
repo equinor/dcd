@@ -136,53 +136,7 @@ const ProjectView = () => {
                 >
                     Edit technical input
                 </TransparentButton>
-                <InvisibleButton
-                    ref={setMenuAnchorEl}
-                    onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
-                >
-                    <Icon data={more_vertical} />
-                </InvisibleButton>
             </TopWrapper>
-            <Menu
-                id="menu-complex"
-                open={isMenuOpen}
-                anchorEl={menuAnchorEl}
-                onClose={() => setIsMenuOpen(false)}
-                placement="bottom"
-            >
-                <Menu.Item
-                    onClick={() => console.log("Add new case clicked")}
-                >
-                    <Icon data={add} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Add New Case
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Duplicate clicked")}
-                >
-                    <Icon data={library_add} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Duplicate
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Rename clicked")}
-                >
-                    <Icon data={edit} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Rename
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Delete clicked")}
-                >
-                    <Icon data={delete_to_trash} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Delete
-                    </Typography>
-                </Menu.Item>
-            </Menu>
             <Wrapper>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>

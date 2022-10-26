@@ -1,9 +1,6 @@
+import { Button, Checkbox, NativeSelect } from "@equinor/eds-core-react"
 import {
-    Button, Checkbox, NativeSelect,
-} from "@equinor/eds-core-react"
-import {
-    ChangeEvent,
-    Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
+    ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
 import { RowNode } from "ag-grid-enterprise"
@@ -12,14 +9,12 @@ import SharePointImport from "./SharePointImport"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
-import { EMPTY_GUID } from "../../Utils/constants"
-import { GetCaseService } from "../../Services/CaseService"
-import { Case } from "../../models/case/Case"
 
 interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project
     driveItems: DriveItem[] | undefined
+    check: boolean
 }
 
 interface RowData {
@@ -29,16 +24,18 @@ interface RowData {
     substructureState: ImportStatusEnum
     topsideState: ImportStatusEnum
     transportState: ImportStatusEnum
-    sharePointFileName?: string
-    sharePointFileId?: string
-    sharePointSiteUrl?: string
-    driveItem: [DriveItem[] | undefined, string | undefined]
+    sharePointFileName?: string | null
+    sharePointFileId?: string | null
+    sharepointFileUrl?: string | null
+    driveItem: [DriveItem[] | undefined, string | undefined | null]
+    fileLink?: string | null
 }
 
 function PROSPCaseList({
     setProject,
     project,
     driveItems,
+    check,
 }: Props) {
     const gridRef = useRef<any>(null)
     const [rowData, setRowData] = useState<RowData[]>()
@@ -55,6 +52,9 @@ function PROSPCaseList({
                     topsideState: SharePointImport.topsideStatus(c, project),
                     transportState: SharePointImport.transportStatus(c, project),
                     sharePointFileId: c.sharepointFileId,
+                    sharePointFileName: c.sharepointFileName,
+                    sharepointFileUrl: c.sharepointFileUrl,
+                    fileLink: c.sharepointFileUrl,
                     driveItem: [driveItems, c.sharepointFileId],
                 }
                 tableCases.push(tableCase)
@@ -123,64 +123,57 @@ function PROSPCaseList({
         )
     }
 
-    const unlinkAssetsOnCase = (newCase: Case) => {
-        const unlinkingCase = Case.Copy(newCase)
-        unlinkingCase.transportLink = EMPTY_GUID
-        unlinkingCase.surfLink = EMPTY_GUID
-        unlinkingCase.substructureLink = EMPTY_GUID
-        unlinkingCase.topsideLink = EMPTY_GUID
-        return unlinkingCase
-    }
-
-    const clearSelectedAssets = async (p: any) => {
-        if (p.newValue[1] !== p.oldValue[1]) {
-            p.node.setDataValue("surfState", 2)
-            p.node.setDataValue("substructureState", 2)
-            p.node.setDataValue("topsideState", 2)
-            p.node.setDataValue("transportState", 2)
-
-            try {
-                const caseItem = project.cases.find((c) => c.id === p.node.data.id)
-                if (caseItem) {
-                    const unlinkedCase = unlinkAssetsOnCase(caseItem)
-                    // eslint-disable-next-line prefer-destructuring
-                    unlinkedCase.sharepointFileId = p.newValue[1]
-                    await (await GetCaseService()).updateCase(unlinkedCase)
-                }
-            } catch (e) {
-                console.error(e)
-            }
-        }
-    }
-
     type SortOrder = "desc" | "asc" | null
     const order: SortOrder = "asc"
 
-    const [columnDefs] = useState([
+    const [columnDefs, setColumnDefs] = useState([
         {
-            field: "name", sort: order,
+            field: "name", sort: order, flex: 3,
         },
         {
-            field: "surfState", headerName: "Surf", width: 90, cellRenderer: checkBoxStatus,
+            field: "surfState", headerName: "Surf", flex: 1, cellRenderer: checkBoxStatus, hide: check,
         },
         {
-            field: "substructureState", headerName: "Substructure", width: 110, cellRenderer: checkBoxStatus,
+            field: "substructureState", headerName: "Substructure", flex: 1, cellRenderer: checkBoxStatus, hide: check,
         },
         {
-            field: "topsideState", headerName: "Topside", width: 90, cellRenderer: checkBoxStatus,
+            field: "topsideState", headerName: "Topside", flex: 1, cellRenderer: checkBoxStatus, hide: check,
         },
         {
-            field: "transportState", headerName: "Transport", width: 90, cellRenderer: checkBoxStatus,
+            field: "transportState", headerName: "Transport", flex: 1, cellRenderer: checkBoxStatus, hide: check,
         },
         {
             field: "driveItem",
             headerName: "SharePoint file",
             cellRenderer: fileIdDropDown,
-            onCellValueChanged: clearSelectedAssets,
             sortable: false,
-            width: 350,
+            flex: 5,
+        },
+        {
+            field: "fileLink",
+            headerName: "Link",
+            flex: 6,
+            hide: true,
         },
     ])
+
+    useEffect(() => {
+        const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
+        const newColumnDefs = [...columnDefs]
+        const columnData: any = []
+        newColumnDefs.forEach((cd) => {
+            if (assetFields.indexOf(cd.field) > -1) {
+                const colDef = { ...cd }
+                colDef.hide = !check
+                columnData.push(colDef)
+            } else {
+                columnData.push(cd)
+            }
+        })
+        if (columnData.length > 0) {
+            setColumnDefs(columnData)
+        }
+    }, [check])
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -198,6 +191,7 @@ function PROSPCaseList({
 
             dto.sharePointSiteUrl = p.sharepointSiteUrl
             dto.id = node.data?.id
+            dto.sharePointFileName = node.data?.sharePointFileName ?? ""
             dto.surf = node.data?.surfState === ImportStatusEnum.Selected
             dto.substructure = node.data?.substructureState === ImportStatusEnum.Selected
             dto.topside = node.data?.topsideState === ImportStatusEnum.Selected

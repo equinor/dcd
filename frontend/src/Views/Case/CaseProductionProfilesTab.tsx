@@ -15,7 +15,7 @@ import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import { GetDrainageStrategyService } from "../../Services/DrainageStrategyService"
-import CaseProductionProfilesTabTable from "./CaseProductionProfilesTabTable"
+import CaseTabTable from "./CaseTabTable"
 import { NetSalesGas } from "../../models/assets/drainagestrategy/NetSalesGas"
 import { FuelFlaringAndLosses } from "../../models/assets/drainagestrategy/FuelFlaringAndLosses"
 import { ProductionProfileGas } from "../../models/assets/drainagestrategy/ProductionProfileGas"
@@ -23,6 +23,8 @@ import { ProductionProfileOil } from "../../models/assets/drainagestrategy/Produ
 import { ProductionProfileWater } from "../../models/assets/drainagestrategy/ProductionProfileWater"
 import { ProductionProfileNGL } from "../../models/assets/drainagestrategy/ProductionProfileNGL"
 import { ProductionProfileWaterInjection } from "../../models/assets/drainagestrategy/ProductionProfileWaterInjection"
+import { GetCaseService } from "../../Services/CaseService"
+import { ITimeSeries } from "../../models/ITimeSeries"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -50,12 +52,28 @@ const NumberInputField = styled.div`
     padding-right: 20px;
 `
 
+const TableYearWrapper = styled.div`
+    align-items: flex-end;
+    display: flex;
+    flex-direction: row;
+    align-content: right;
+    margin-left: auto;
+    margin-bottom: 20px;
+`
+const YearInputWrapper = styled.div`
+    width: 80px;
+    padding-right: 10px;
+`
+const YearDashWrapper = styled.div`
+    padding-right: 5px;
+`
+
 interface Props {
     project: Project,
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
-    drainageStrategy: DrainageStrategy | undefined,
+    drainageStrategy: DrainageStrategy,
     setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
 }
 
@@ -72,8 +90,9 @@ function CaseProductionProfilesTab({
     const [nGL, setNGL] = useState<ProductionProfileNGL>()
     const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
 
-    const [firstYear, setFirstYear] = useState<number>(2020)
-    const [lastYear, setLastYear] = useState<number>(2030)
+    const [startYear, setStartYear] = useState<number>(2020)
+    const [endYear, setEndYear] = useState<number>(2030)
+    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
         const newDrainageStrategy: DrainageStrategy = { ...drainage }
@@ -93,41 +112,129 @@ function CaseProductionProfilesTab({
         updateAndSetDraiangeStrategy(newDrainageStrategy)
     }
 
-    const timeSeriesData = [
+    const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newCase = { ...caseItem }
+        newCase.facilitiesAvailability = Number(e.currentTarget.value)
+        setCase(newCase)
+    }
+
+    const handleDrainageStrategyGasSolutinChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+        if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1) {
+            // eslint-disable-next-line max-len
+            const newGasSolution: Components.Schemas.GasSolution = Number(e.currentTarget.value) as Components.Schemas.GasSolution
+            const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+            newDrainageStrategy.gasSolution = newGasSolution
+            updateAndSetDraiangeStrategy(newDrainageStrategy)
+        }
+    }
+
+    const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newStartYear = Number(e.currentTarget.value)
+        if (newStartYear < 2010) {
+            setStartYear(2010)
+            return
+        }
+        setStartYear(newStartYear)
+    }
+
+    const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newEndYear = Number(e.currentTarget.value)
+        if (newEndYear > 2100) {
+            setEndYear(2100)
+            return
+        }
+        setEndYear(newEndYear)
+    }
+
+    interface ITimeSeriesData {
+        profileName: string
+        unit: string,
+        set: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        profile: ITimeSeries | undefined
+    }
+
+    const timeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Net sales gas", unit: "GSm3/yr", set: setNetSalesGas, profile: netSalesGas,
+            profileName: "Oil production",
+            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            set: setOil,
+            profile: oil,
+        },
+        {
+            profileName: "Gas production",
+            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            set: setGas,
+            profile: gas,
+        },
+        {
+            profileName: "Water production",
+            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            set: setWater,
+            profile: water,
+        },
+        {
+            profileName: "Water injection",
+            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            set: setWaterInjection,
+            profile: waterInjection,
         },
         {
             profileName: "Fuel flaring and losses",
-            unit: "GSm3/yr",
+            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             set: setFuelFlaringAndLosses,
             profile: fuelFlaringAndLosses,
         },
         {
-            profileName: "Gas production", unit: "GSm3/yr", set: setGas, profile: gas,
-        },
-        {
-            profileName: "Oil production", unit: "MSm3/yr", set: setOil, profile: oil,
-        },
-        {
-            profileName: "Water production", unit: "????", set: setWater, profile: water,
-        },
-        {
-            profileName: "Water injection", unit: "MSm3/yr", set: setWaterInjection, profile: waterInjection,
+            profileName: "Net sales gas",
+            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            set: setNetSalesGas,
+            profile: netSalesGas,
         },
     ]
 
-    useEffect(() => {
-        if (drainageStrategy) {
-            setNetSalesGas(drainageStrategy.netSalesGas)
-            setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
-            setGas(drainageStrategy.productionProfileGas)
-            setOil(drainageStrategy.productionProfileOil)
-            setWater(drainageStrategy.productionProfileWater)
-            setNGL(drainageStrategy.productionProfileNGL)
-            setWaterInjection(drainageStrategy.productionProfileWaterInjection)
+    const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
+        if (timeSeries && timeSeries.startYear && timeSeries.values) {
+            return timeSeries.startYear + timeSeries.values.length - 1
+        } return undefined
+    }
+
+    const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
+        let firstYear = Number.MAX_SAFE_INTEGER
+        let lastYear = Number.MIN_SAFE_INTEGER
+        profiles.forEach((p) => {
+            if (p && p.startYear !== undefined && p.startYear < firstYear) {
+                firstYear = p.startYear
+            }
+            const profileLastYear = getTimeSeriesLastYear(p)
+            if (profileLastYear !== undefined && profileLastYear > lastYear) {
+                lastYear = profileLastYear
+            }
+        })
+        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER) {
+            setStartYear(firstYear + caseItem.DG4Date.getFullYear())
+            setEndYear(lastYear + caseItem.DG4Date.getFullYear())
+            setTableYears([firstYear + caseItem.DG4Date.getFullYear(), lastYear + caseItem.DG4Date.getFullYear()])
         }
-    }, [drainageStrategy])
+    }
+
+    const handleTableYearsClick = () => {
+        setTableYears([startYear, endYear])
+    }
+
+    useEffect(() => {
+        setTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
+        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+        drainageStrategy.productionProfileWaterInjection,
+        ])
+        setNetSalesGas(drainageStrategy.netSalesGas)
+        setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
+        setGas(drainageStrategy.productionProfileGas)
+        setOil(drainageStrategy.productionProfileOil)
+        setWater(drainageStrategy.productionProfileWater)
+        setNGL(drainageStrategy.productionProfileNGL)
+        setWaterInjection(drainageStrategy.productionProfileWaterInjection)
+    }, [])
 
     const handleSave = async () => {
         if (drainageStrategy) {
@@ -142,6 +249,8 @@ function CaseProductionProfilesTab({
             const result = await (await GetDrainageStrategyService()).newUpdate(newDrainageStrategy)
             setDrainageStrategy(result)
         }
+        const updateCaseResult = await (await GetCaseService()).update(caseItem)
+        setCase(updateCaseResult)
     }
 
     return (
@@ -154,20 +263,18 @@ function CaseProductionProfilesTab({
                 <RowWrapper>
                     <NumberInputField>
                         <CaseNumberInput
-                            onChange={() => console.log("Facilities availability")}
+                            onChange={handleCaseFacilitiesAvailabilityChange}
                             value={caseItem.facilitiesAvailability}
                             integer={false}
-                            disabled
                             label="Facilities availability (%)"
                         />
                     </NumberInputField>
                     <NativeSelectField
                         id="gasSolution"
                         label="Gas solution"
-                        onChange={() => console.log("Gas solution")}
-                        value={0}
+                        onChange={handleDrainageStrategyGasSolutinChange}
+                        value={drainageStrategy?.gasSolution}
                     >
-                        <option key={undefined} value={undefined}> </option>
                         <option key={0} value={0}>Export</option>
                         <option key={1} value={1}>Injection</option>
                     </NativeSelectField>
@@ -181,18 +288,54 @@ function CaseProductionProfilesTab({
                     </NumberInputField>
                 </RowWrapper>
             </ColumnWrapper>
-            {drainageStrategy && (
-                <CaseProductionProfilesTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
-                    timeSeriesData={timeSeriesData}
-                    dg4Year={caseItem.DG4Date.getFullYear()}
-                    firstYear={firstYear}
-                    lastYear={lastYear}
-                />
-            )}
+            <ColumnWrapper>
+                <TableYearWrapper>
+                    <NativeSelectField
+                        id="unit"
+                        label="Units"
+                        onChange={() => { }}
+                        value={project.physUnit}
+                        disabled
+                    >
+                        <option key={0} value={0}>SI</option>
+                        <option key={1} value={1}>Oil field</option>
+                    </NativeSelectField>
+                    <YearInputWrapper>
+                        <CaseNumberInput
+                            onChange={handleStartYearChange}
+                            value={startYear}
+                            integer
+                            label="Start year"
+                        />
+                    </YearInputWrapper>
+                    <YearDashWrapper>
+                        <Typography variant="h2">-</Typography>
+                    </YearDashWrapper>
+                    <YearInputWrapper>
+                        <CaseNumberInput
+                            onChange={handleEndYearChange}
+                            value={endYear}
+                            integer
+                            label="End year"
+                        />
+                    </YearInputWrapper>
+                    <Button
+                        onClick={handleTableYearsClick}
+                    >
+                        Apply
+                    </Button>
+                </TableYearWrapper>
+            </ColumnWrapper>
+            <CaseTabTable
+                caseItem={caseItem}
+                project={project}
+                setCase={setCase}
+                setProject={setProject}
+                timeSeriesData={timeSeriesData}
+                dg4Year={caseItem.DG4Date.getFullYear()}
+                tableYears={tableYears}
+                tableName="Production profiles"
+            />
         </>
     )
 }

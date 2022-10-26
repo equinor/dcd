@@ -4,6 +4,7 @@ import {
     Input,
     Label,
     NativeSelect,
+    Progress,
 } from "@equinor/eds-core-react"
 import {
     useState,
@@ -19,7 +20,7 @@ import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { ModalNoFocus } from "../ModalNoFocus"
-import { DefaultDate, ToMonthDate } from "../../Utils/common"
+import { DefaultDate, ProjectPath, ToMonthDate } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 
 const CreateCaseForm = styled.form`
@@ -77,6 +78,7 @@ interface Props {
     isOpen: boolean
     toggleModal: () => void
     editMode: boolean
+    navigate: boolean
 }
 
 const EditCaseModal = ({
@@ -86,6 +88,7 @@ const EditCaseModal = ({
     isOpen,
     toggleModal,
     editMode,
+    navigate,
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string | undefined>()
@@ -95,6 +98,7 @@ const EditCaseModal = ({
     const [producerCount, setProducerWells] = useState<number>()
     const [gasInjectorCount, setGasInjectorWells] = useState<number>()
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const [caseItem, setCaseItem] = useState<Case>()
 
@@ -137,6 +141,8 @@ const EditCaseModal = ({
         e.preventDefault()
 
         try {
+            setIsLoading(true)
+
             let projectResult: Project
             if (editMode && caseItem) {
                 const newCase = Case.Copy(caseItem)
@@ -150,6 +156,7 @@ const EditCaseModal = ({
                 projectResult = await (await GetCaseService()).updateCase(
                     newCase,
                 )
+                setIsLoading(false)
             } else {
                 projectResult = await (await GetCaseService()).create({
                     projectId: project.projectId,
@@ -161,14 +168,19 @@ const EditCaseModal = ({
                     waterInjectorCount,
                     productionStrategyOverview: productionStrategy,
                 })
+                setIsLoading(false)
                 history.push(`/${fusionContextId}/case/${projectResult.cases.find((o) => (
                     o.name === caseName
                 ))?.id}`)
             }
             setProject(projectResult)
             toggleModal()
+            if (navigate) {
+                history.push(ProjectPath(fusionContextId!))
+            }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
+            setIsLoading(false)
         }
     }
 
@@ -284,13 +296,20 @@ const EditCaseModal = ({
                         Cancel
                     </Button>
                     <CreateButtonWrapper>
-                        <CreateButton
-                            type="submit"
-                            onClick={submitCaseForm}
-                            disabled={!disableCreateButton()}
-                        >
-                            {editMode ? "Save changes" : "Create case"}
-                        </CreateButton>
+                        {isLoading ? (
+                            <CreateButton>
+                                <Progress.Dots />
+                            </CreateButton>
+                        ) : (
+                            <CreateButton
+                                type="submit"
+                                onClick={submitCaseForm}
+                                disabled={!disableCreateButton()}
+                            >
+                                {editMode ? "Save changes" : "Create case"}
+                            </CreateButton>
+                        )}
+
                     </CreateButtonWrapper>
                 </ButtonsWrapper>
             </CreateCaseForm>

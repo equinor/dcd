@@ -39,8 +39,13 @@ public static class CaseDtoAdapter
             GasInjectorCount = case_.GasInjectorCount,
             WaterInjectorCount = case_.WaterInjectorCount,
             FacilitiesAvailability = case_.FacilitiesAvailability,
+            CapexFactorFeasibilityStudies = case_.CapexFactorFeasibilityStudies,
+            CapexFactorFEEDStudies = case_.CapexFactorFEEDStudies,
+            NPV = case_.NPV,
+            BreakEven = case_.BreakEven,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
+            SharepointFileUrl = case_.SharepointFileUrl,
         };
 
         return caseDto;
@@ -52,6 +57,7 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new CessationCostDto
         {
             Id = opexCost.Id,
@@ -68,6 +74,7 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new OpexCostProfileDto
         {
             Id = opexCost.Id,
@@ -84,6 +91,7 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new StudyCostProfileDto
         {
             Id = studyCost.Id,
