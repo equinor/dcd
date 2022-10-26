@@ -216,8 +216,8 @@ declare namespace Components {
         export interface ImportedElectricityDto {
             id?: string; // uuid
             startYear?: number; // int32
-            internalData?: string | null;
             values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
@@ -862,7 +862,7 @@ declare namespace Paths {
             export type $200 = Components.Schemas.Co2EmissionsDto;
         }
     }
-    namespace GenerateFuelFlaringAndLosses {
+    namespace GenerateFuelFlaringLosses {
         namespace Parameters {
             export type CaseId = string; // uuid
         }
