@@ -99,26 +99,6 @@ const ProjectView = () => {
         })()
     }, [currentProject?.externalId])
 
-    useEffect(() => {
-        (async () => {
-            try {
-                if (project !== undefined) {
-                    const projectDto = Project.Copy(project)
-                    projectDto.physUnit = physicalUnit
-                    projectDto.currency = currency
-                    projectDto.projectId = currentProject?.externalId!
-                    const cases: Case[] = []
-                    project.cases.forEach((c) => cases.push(Case.Copy(c)))
-                    projectDto.cases = cases
-                    const res = await (await GetProjectService()).updateProject(projectDto)
-                    setProject(res)
-                }
-            } catch (error) {
-                console.error(`[ProjectView] Error while fetching project ${currentProject?.externalId}`, error)
-            }
-        })()
-    }, [physicalUnit, currency])
-
     const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
     if (!project || project.id === "") {
