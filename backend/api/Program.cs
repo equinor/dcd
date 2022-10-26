@@ -21,8 +21,6 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 
 using Serilog;
-using Serilog.Events;
-using Serilog.Settings.Configuration;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -101,7 +99,7 @@ builder.Services.AddCors(options =>
 
 var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 {
-    InstrumentationKey = config["ApplicationInsightInstrumentationKey"]
+    InstrumentationKey = config["ApplicationInsightInstrumentationKey"],
 };
 
 if (environment == "localdev")
@@ -124,7 +122,7 @@ builder.Services.AddFusionIntegration(options =>
         "radix-prod" => "FPRD",
         "radix-qa" => "FQA",
         "radix-dev" => "CI",
-        _ => "CI"
+        _ => "CI",
     };
 
     Console.WriteLine("Fusion environment: " + fusionEnvironment);
@@ -164,9 +162,12 @@ builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
 builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
-builder.Services.AddScoped<GenerateEmissionsProfile>();
+builder.Services.AddScoped<GenerateCo2EmissionsProfile>();
 builder.Services.AddScoped<GenerateGAndGAdminCostProfile>();
 builder.Services.AddScoped<GenerateCessationCostProfile>();
+builder.Services.AddScoped<GenerateImportedElectricityProfile>();
+builder.Services.AddScoped<GenerateFuelFlaringLossesProfile>();
+builder.Services.AddScoped<GenerateNetSaleGasProfile>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
@@ -185,27 +186,31 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "JWTToken_Auth_API",
-        Version = "v1"
+        Version = "v1",
     });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+        Description =
+            "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
-            new OpenApiSecurityScheme {
-                Reference = new OpenApiReference {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
                     Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                }
+                    Id = "Bearer",
+                },
             },
-            new string[] {}
-        }
+            new string[] { }
+        },
     });
 });
 builder.Host.UseSerilog();

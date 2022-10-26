@@ -22,8 +22,11 @@ namespace api.Controllers;
 public class GenerateProfileController : ControllerBase
 {
     private readonly GenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly GenerateEmissionsProfile _generateEmissionsProfile;
+    private readonly GenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly GenerateFuelFlaringLossesProfile _generateFuelFlaringLossessProfile;
     private readonly GenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
+    private readonly GenerateImportedElectricityProfile _generateImportedElectricityProfile;
+    private readonly GenerateNetSaleGasProfile _generateNetSaleGasProfile;
     private readonly GenerateOpexCostProfile _generateOpexCostProfile;
     private readonly GenerateStudyCostProfile _generateStudyCostProfile;
 
@@ -33,7 +36,10 @@ public class GenerateProfileController : ControllerBase
         _generateStudyCostProfile = serviceProvider.GetRequiredService<GenerateStudyCostProfile>();
         _generateOpexCostProfile = serviceProvider.GetRequiredService<GenerateOpexCostProfile>();
         _generateCessationCostProfile = serviceProvider.GetRequiredService<GenerateCessationCostProfile>();
-        _generateEmissionsProfile = serviceProvider.GetRequiredService<GenerateEmissionsProfile>();
+        _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
+        _generateNetSaleGasProfile = serviceProvider.GetRequiredService<GenerateNetSaleGasProfile>();
+        _generateFuelFlaringLossessProfile = serviceProvider.GetRequiredService<GenerateFuelFlaringLossesProfile>();
+        _generateImportedElectricityProfile = serviceProvider.GetRequiredService<GenerateImportedElectricityProfile>();
     }
 
     [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
@@ -63,24 +69,24 @@ public class GenerateProfileController : ControllerBase
     [HttpPost("{caseId}/generateNetSaleGas", Name = "GenerateNetSaleGas")]
     public NetSalesGasDto GenerateNetSaleGas(Guid caseId)
     {
-        return _generateEmissionsProfile.GenerateNetSaleGas(caseId);
+        return _generateNetSaleGasProfile.GenerateNetSaleGas(caseId);
     }
 
     [HttpPost("{caseId}/generateFuelFlaringAndLosses", Name = "GenerateFuelFlaringAndLosses")]
     public FuelFlaringAndLossesDto GenerateFuelFlaringAndLosses(Guid caseId)
     {
-        return _generateEmissionsProfile.GenerateFuelFlaringAndLosses(caseId);
+        return _generateFuelFlaringLossessProfile.GenerateFuelFlaringAndLosses(caseId);
     }
 
     [HttpPost("{caseId}/generateCo2Emissions", Name = "GenerateCo2Emissions")]
     public Co2EmissionsDto GenerateCo2Emissions(Guid caseId)
     {
-        return _generateEmissionsProfile.GenerateCo2Emissions(caseId);
+        return _generateCo2EmissionsProfile.GenerateCo2Emissions(caseId);
     }
 
     [HttpPost("{caseId}generateImportedElectricity/", Name = "generateImportedElectricity")]
     public ImportedElectricityDto GenerateImportedElectricity(Guid caseId)
     {
-        return _generateEmissionsProfile.GenerateImportedElectricity(caseId);
+        return _generateImportedElectricityProfile.GenerateImportedElectricity(caseId);
     }
 }
