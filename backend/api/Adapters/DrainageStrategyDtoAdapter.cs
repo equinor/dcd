@@ -131,7 +131,7 @@ public static class DrainageStrategyDtoAdapter
         return null;
     }
 
-    public static FuelFlaringAndLossesDto Convert(FuelFlaringAndLosses? fuelFlaringAndLosses, PhysUnit unit)
+    public static FuelFlaringAndLossesDto? Convert(FuelFlaringAndLosses? fuelFlaringAndLosses, PhysUnit unit)
     {
         if (fuelFlaringAndLosses != null)
         {
@@ -146,7 +146,7 @@ public static class DrainageStrategyDtoAdapter
         return null!;
     }
 
-    public static NetSalesGasDto Convert(NetSalesGas? netSalesGas, PhysUnit unit)
+    public static NetSalesGasDto? Convert(NetSalesGas? netSalesGas, PhysUnit unit)
     {
         if (netSalesGas != null)
         {
@@ -161,7 +161,7 @@ public static class DrainageStrategyDtoAdapter
         return null!;
     }
 
-    public static Co2EmissionsDto Convert(Co2Emissions? co2Emissions, PhysUnit unit)
+    public static Co2EmissionsDto? Convert(Co2Emissions? co2Emissions, PhysUnit unit)
     {
         if (co2Emissions != null)
         {
