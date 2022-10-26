@@ -53,7 +53,7 @@ public class Co2EmissionsDto : TimeSeriesMassDto
 {
 }
 
-public class ImportedElectricityDto : TimeSeriesVolume
+public class ImportedElectricityDto : TimeSeriesEnergyDto
 {
 }
 

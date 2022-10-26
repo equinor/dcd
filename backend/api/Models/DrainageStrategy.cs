@@ -72,7 +72,7 @@ public class ProductionProfileNGL : TimeSeriesVolume
     [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class ImportedElectricity : TimeSeriesVolume
+public class ImportedElectricity : TimeSeriesEnergy
 {
     [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
