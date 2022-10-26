@@ -20,7 +20,7 @@ public class GenerateImportedElectricityProfile
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
     }
 
-    public ImportedElectricityDto GenerateImportedElectricity(Guid caseId)
+    public ImportedElectricityDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);

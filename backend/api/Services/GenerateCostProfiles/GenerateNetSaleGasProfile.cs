@@ -20,7 +20,7 @@ public class GenerateNetSaleGasProfile
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
     }
 
-    public NetSalesGasDto GenerateNetSaleGas(Guid caseId)
+    public NetSalesGasDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);

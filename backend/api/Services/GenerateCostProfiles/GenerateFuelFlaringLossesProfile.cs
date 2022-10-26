@@ -20,7 +20,7 @@ public class GenerateFuelFlaringLossesProfile
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
     }
 
-    public FuelFlaringAndLossesDto GenerateFuelFlaringLosses(Guid caseId)
+    public FuelFlaringAndLossesDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);

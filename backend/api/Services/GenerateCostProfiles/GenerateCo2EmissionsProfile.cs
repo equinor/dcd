@@ -27,7 +27,7 @@ public class GenerateCo2EmissionsProfile
         _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
     }
 
-    public Co2EmissionsDto GenerateCo2Emissions(Guid caseId)
+    public Co2EmissionsDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
