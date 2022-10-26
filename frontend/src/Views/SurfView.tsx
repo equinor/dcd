@@ -14,7 +14,7 @@ import {
 } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
-import { IsInvalidDate, unwrapCase, unwrapProjectId } from "../Utils/common"
+import { IsDefaultDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
@@ -82,11 +82,11 @@ const SurfView = () => {
                 let newSurf = project.surfs.find((s) => s.id === surfId)
                 if (newSurf !== undefined) {
                     if (newSurf.DG3Date === null
-                        || IsInvalidDate(newSurf.DG3Date)) {
+                        || IsDefaultDate(newSurf.DG3Date)) {
                         newSurf.DG3Date = caseResult?.DG3Date
                     }
                     if (newSurf.DG4Date === null
-                        || IsInvalidDate(newSurf.DG4Date)) {
+                        || IsDefaultDate(newSurf.DG4Date)) {
                         newSurf.DG4Date = caseResult?.DG4Date
                     }
                     setSurf(newSurf)
@@ -350,6 +350,8 @@ const SurfView = () => {
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={currency}
                 profileType="Cost"
+                readOnlyTimeSeries={[]}
+                readOnlyName={[]}
             />
         </AssetViewDiv>
     )

@@ -32,7 +32,6 @@ import { ExplorationWell } from "../models/ExplorationWell"
 import { SeismicAcquisitionAndProcessing } from "../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../models/assets/exploration/CountryOfficeCost"
 import { GetCaseService } from "../Services/CaseService"
-import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -211,11 +210,8 @@ const ExplorationView = () => {
                 profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
                 profileEnum={project?.currency!}
                 profileType="Cost"
-            />
-            <ReadOnlyCostProfile
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                timeSeries={gAndGAdminCost}
-                title="G &amp; G and admin cost (MUSD)"
+                readOnlyTimeSeries={[gAndGAdminCost]}
+                readOnlyName={["G & G and admin cost"]}
             />
             <Typography>Drilling schedules:</Typography>
             <DrillingSchedules

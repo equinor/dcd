@@ -195,7 +195,6 @@ public class TopsideServiceShould : IDisposable
             DryWeight = 0.3e6,
             OilCapacity = 50e6,
             GasCapacity = 0,
-            FacilitiesAvailability = 0.2,
             ArtificialLift = ArtificialLift.GasLift,
             Maturity = Maturity.B
         }.WithCostProfile(new TopsideCostProfile()
@@ -223,7 +222,6 @@ public class TopsideServiceShould : IDisposable
             DryWeight = 5.3e6,
             OilCapacity = 52e6,
             GasCapacity = 7,
-            FacilitiesAvailability = 1.2,
             ArtificialLift = ArtificialLift.NoArtificialLift,
             Maturity = Maturity.C
         }.WithCostProfile(new TopsideCostProfile()
