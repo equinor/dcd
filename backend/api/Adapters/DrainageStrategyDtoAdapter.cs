@@ -199,7 +199,7 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = importedElectricity.Id,
                 StartYear = importedElectricity.StartYear,
-                Values = ConvertUnitValues(importedElectricity.Values, unit, nameof(importedElectricity)),
+                Values = ConvertUnitValues(importedElectricity.Values, unit, nameof(ImportedElectricity)),
             };
         }
 
