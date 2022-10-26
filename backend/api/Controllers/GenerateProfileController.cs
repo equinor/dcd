@@ -1,8 +1,8 @@
-using Api.Authorization;
-
 using api.Dtos;
 using api.Services;
 using api.Services.GenerateCostProfiles;
+
+using Api.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
