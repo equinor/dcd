@@ -1,19 +1,13 @@
-import {
-    Typography, Switch,
-} from "@equinor/eds-core-react"
+import { Switch, Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import {
-    useParams,
-} from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-import {
-    AssetViewDiv, Wrapper,
-} from "./Asset/StyledAssetComponents"
+import { AssetViewDiv, Wrapper } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import { unwrapCase } from "../Utils/common"
@@ -31,7 +25,7 @@ import WellList from "../Components/Well/WellList"
 import { ExplorationWell } from "../models/ExplorationWell"
 import { SeismicAcquisitionAndProcessing } from "../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../models/assets/exploration/CountryOfficeCost"
-import { GetCaseService } from "../Services/CaseService"
+import { GetGenerateProfileService } from "../Services/GenerateProfileService"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -92,7 +86,8 @@ const ExplorationView = () => {
                 setSeismicAcquisitionAndProcessing(newExploration.seismicAcquisitionAndProcessing)
                 setCountryOfficeCost(newExploration.countryOfficeCost)
 
-                const generatedGAndGAdminCost = await (await GetCaseService()).generateGAndGAdminCost(caseResult.id!)
+                // eslint-disable-next-line max-len
+                const generatedGAndGAdminCost = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseResult.id!)
 
                 setGAndGAdminCost(generatedGAndGAdminCost)
 
