@@ -72,10 +72,10 @@ public class GenerateProfileController : ControllerBase
         return _generateNetSaleGasProfile.GenerateNetSaleGas(caseId);
     }
 
-    [HttpPost("{caseId}/generateFuelFlaringAndLosses", Name = "GenerateFuelFlaringAndLosses")]
-    public FuelFlaringAndLossesDto GenerateFuelFlaringAndLosses(Guid caseId)
+    [HttpPost("{caseId}/generateFuelFlaringLosses", Name = "GenerateFuelFlaringLosses")]
+    public FuelFlaringAndLossesDto GenerateFuelFlaringLosses(Guid caseId)
     {
-        return _generateFuelFlaringLossessProfile.GenerateFuelFlaringAndLosses(caseId);
+        return _generateFuelFlaringLossessProfile.GenerateFuelFlaringLosses(caseId);
     }
 
     [HttpPost("{caseId}/generateCo2Emissions", Name = "GenerateCo2Emissions")]
@@ -84,7 +84,7 @@ public class GenerateProfileController : ControllerBase
         return _generateCo2EmissionsProfile.GenerateCo2Emissions(caseId);
     }
 
-    [HttpPost("{caseId}generateImportedElectricity/", Name = "generateImportedElectricity")]
+    [HttpPost("{caseId}/generateImportedElectricity", Name = "GenerateImportedElectricity")]
     public ImportedElectricityDto GenerateImportedElectricity(Guid caseId)
     {
         return _generateImportedElectricityProfile.GenerateImportedElectricity(caseId);
