@@ -29,7 +29,7 @@ interface Props {
     alignedGridsRef?: any[]
     gridRef?: any
     assetWells: ExplorationWell[] | WellProjectWell[]
-    setAssetWell: any
+    setAssetWells: Dispatch<SetStateAction<ExplorationWell[] | WellProjectWell[] | undefined>>
     wells: Well[] | undefined
     assetId: string
     isExplorationTable: boolean
@@ -41,7 +41,7 @@ function CaseDrillingScheduleTabTable({
     dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
-    assetWells, setAssetWell,
+    assetWells, setAssetWells,
     wells, assetId, isExplorationTable,
 }: Props) {
     useAgGridStyles()
@@ -91,7 +91,7 @@ function CaseDrillingScheduleTabTable({
                     let j = 0
                     for (let i = tableWell.drillingSchedule.startYear;
                         i < tableWell.drillingSchedule.startYear + tableWell.drillingSchedule.values.length; i += 1) {
-                            tableWell[(dg4Year + i).toString()] = tableWell.drillingSchedule.values[j]
+                        tableWell[(dg4Year + i).toString()] = tableWell.drillingSchedule.values[j]
                         j += 1
                     }
                 }
@@ -163,7 +163,7 @@ function CaseDrillingScheduleTabTable({
                     updatedWell.drillingSchedule = newProfile
                     const updatedWells = [...rowWells]
                     updatedWells[index] = updatedWell
-                    setAssetWell(updatedWells)
+                    setAssetWells(updatedWells)
                 }
             }
         }

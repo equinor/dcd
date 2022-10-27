@@ -15,8 +15,6 @@ import {
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
-import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../models/ITimeSeries"
 import { Exploration } from "../../models/assets/exploration/Exploration"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Well } from "../../models/Well"
@@ -25,7 +23,6 @@ import { WellProjectWell } from "../../models/WellProjectWell"
 import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
 import { GetExplorationWellService } from "../../Services/ExplorationWellService"
 import { EMPTY_GUID } from "../../Utils/constants"
-import { IsExplorationWell } from "../../Utils/common"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 
@@ -80,9 +77,9 @@ interface Props {
     wellProject: WellProject,
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
     explorationWells: ExplorationWell[],
-    setExplorationWells: Dispatch<SetStateAction<ExplorationWell[]>>,
+    setExplorationWells: Dispatch<SetStateAction<ExplorationWell[] | undefined>>,
     wellProjectWells: WellProjectWell[],
-    setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[]>>,
+    setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[] | undefined>>,
     wells: Well[] | undefined
 }
 
@@ -99,7 +96,7 @@ function CaseDrillingScheduleTab({
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const developmentWellsGridRef = useRef(null)
+    const wellProjectWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -214,7 +211,7 @@ function CaseDrillingScheduleTab({
                     caseItem={caseItem}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     project={project}
-                    setAssetWell={setExplorationWells}
+                    setAssetWells={setExplorationWells}
                     setCase={setCase}
                     setProject={setProject}
                     tableName="Exploration wells"
@@ -222,6 +219,8 @@ function CaseDrillingScheduleTab({
                     assetId={exploration.id!}
                     wells={wells}
                     isExplorationTable
+                    gridRef={explorationWellsGridRef}
+                    alignedGridsRef={[wellProjectWellsGridRef]}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -230,7 +229,7 @@ function CaseDrillingScheduleTab({
                     caseItem={caseItem}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     project={project}
-                    setAssetWell={setWellProjectWells}
+                    setAssetWells={setWellProjectWells}
                     setCase={setCase}
                     setProject={setProject}
                     tableName="Development wells"
@@ -238,20 +237,10 @@ function CaseDrillingScheduleTab({
                     assetId={wellProject.id!}
                     wells={wells}
                     isExplorationTable={false}
+                    gridRef={wellProjectWellsGridRef}
+                    alignedGridsRef={[explorationWellsGridRef]}
                 />
             </TableWrapper>
-            {/* <CaseTabTable
-                caseItem={caseItem}
-                project={project}
-                setCase={setCase}
-                setProject={setProject}
-                timeSeriesData={explorationTimeSeriesData}
-                dg4Year={caseItem.DG4Date.getFullYear()}
-                tableYears={tableYears}
-                tableName="Exploration well costs"
-                gridRef={explorationWellsGridRef}
-                alignedGridsRef={[developmentWellsGridRef]}
-            /> */}
         </>
     )
 }

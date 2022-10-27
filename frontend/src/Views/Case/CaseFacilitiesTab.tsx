@@ -244,10 +244,10 @@ function CaseFacilitiesTab({
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={() => { }}
-                        value={caseItem?.facilitiesAvailability}
+                        value={caseItem.facilitiesAvailability * 100}
                         integer
                         disabled
-                        label="Facilities availability"
+                        label="Facilities availability (%)"
                     />
                 </RowWrapper>
                 <RowWrapper>

@@ -33,7 +33,7 @@ export class Case implements Components.Schemas.CaseDto {
     producerCount?: number
     gasInjectorCount?: number
     waterInjectorCount?: number
-    facilitiesAvailability?: number
+    facilitiesAvailability: number
     capexFactorFeasibilityStudies: number // double
     capexFactorFEEDStudies: number // double
     npv: number // double
@@ -76,7 +76,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.producerCount = data.producerCount
         this.gasInjectorCount = data.gasInjectorCount
         this.waterInjectorCount = data.waterInjectorCount
-        this.facilitiesAvailability = data.facilitiesAvailability
+        this.facilitiesAvailability = data.facilitiesAvailability ?? 0
         this.capexFactorFeasibilityStudies = data.capexFactorFeasibilityStudies ?? 0
         this.capexFactorFEEDStudies = data.capexFactorFEEDStudies ?? 0
         this.npv = data.npv ?? 0

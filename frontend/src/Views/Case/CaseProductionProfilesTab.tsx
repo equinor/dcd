@@ -114,8 +114,9 @@ function CaseProductionProfilesTab({
     }
 
     const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
-        newCase.facilitiesAvailability = Number(e.currentTarget.value)
+        const newCase: Case = { ...caseItem }
+        const newfacilitiesAvailability = Number(e.currentTarget.value)
+        newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         setCase(newCase)
     }
 
@@ -240,7 +241,7 @@ function CaseProductionProfilesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFacilitiesAvailabilityChange}
-                            value={caseItem.facilitiesAvailability}
+                            value={caseItem.facilitiesAvailability * 100}
                             integer={false}
                             label="Facilities availability (%)"
                         />
