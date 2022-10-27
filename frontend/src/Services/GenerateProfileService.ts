@@ -63,7 +63,7 @@ export class __GenerateProfileService extends __BaseService {
 
 export async function GetGenerateProfileService() {
     return new __GenerateProfileService({
-        ...config.UploadService,
+        ...config.GenerateProfileService,
         accessToken: await GetToken(LoginAccessTokenKey)!,
     })
 }
