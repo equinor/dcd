@@ -27,6 +27,7 @@ import { GetExplorationWellService } from "../../Services/ExplorationWellService
 import { EMPTY_GUID } from "../../Utils/constants"
 import { IsExplorationWell } from "../../Utils/common"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
+import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -101,31 +102,6 @@ function CaseDrillingScheduleTab({
     const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
 
-    const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear !== undefined && timeSeries.values && timeSeries.values.length > 0) {
-            return timeSeries.startYear + timeSeries.values.length - 1
-        } return undefined
-    }
-
-    const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-        let firstYear = Number.MAX_SAFE_INTEGER
-        let lastYear = Number.MIN_SAFE_INTEGER
-        profiles.forEach((p) => {
-            if (p && p.startYear !== undefined && p.startYear < firstYear) {
-                firstYear = p.startYear
-            }
-            const profileLastYear = getTimeSeriesLastYear(p)
-            if (profileLastYear !== undefined && profileLastYear > lastYear) {
-                lastYear = profileLastYear
-            }
-        })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER) {
-            setStartYear(firstYear + caseItem.DG4Date.getFullYear())
-            setEndYear(lastYear + caseItem.DG4Date.getFullYear())
-            setTableYears([firstYear + caseItem.DG4Date.getFullYear(), lastYear + caseItem.DG4Date.getFullYear()])
-        }
-    }
-
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
         if (newStartYear < 2010) {
@@ -150,7 +126,13 @@ function CaseDrillingScheduleTab({
     useEffect(() => {
         const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
         const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
-        setTableYearsFromProfiles([...explorationDrillingSchedule, ...wellProjectDrillingSchedule])
+        SetTableYearsFromProfiles(
+            [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+            caseItem.DG4Date.getFullYear(),
+            setStartYear,
+            setEndYear,
+            setTableYears,
+        )
     }, [])
 
     const handleSave = async () => {

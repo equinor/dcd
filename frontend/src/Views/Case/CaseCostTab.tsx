@@ -16,6 +16,7 @@ import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import CaseTabTable from "./CaseTabTable"
+import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
@@ -140,38 +141,13 @@ function CaseCostTab({
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
 
     const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2100)
+    const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const opexGridRef = useRef(null)
     const capexGridRef = useRef(null)
     const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
-
-    const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear !== undefined && timeSeries.values) {
-            return timeSeries.startYear + timeSeries.values.length - 1
-        } return undefined
-    }
-
-    const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-        let firstYear = Number.MAX_SAFE_INTEGER
-        let lastYear = Number.MIN_SAFE_INTEGER
-        profiles.forEach((p) => {
-            if (p && p.startYear !== undefined && p.startYear < firstYear) {
-                firstYear = p.startYear
-            }
-            const profileLastYear = getTimeSeriesLastYear(p)
-            if (profileLastYear !== undefined && profileLastYear > lastYear) {
-                lastYear = profileLastYear
-            }
-        })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER) {
-            setStartYear(firstYear + caseItem.DG4Date.getFullYear())
-            setEndYear(lastYear + caseItem.DG4Date.getFullYear())
-            setTableYears([firstYear + caseItem.DG4Date.getFullYear(), lastYear + caseItem.DG4Date.getFullYear()])
-        }
-    }
 
     useEffect(() => {
         (async () => {
@@ -208,11 +184,11 @@ function CaseCostTab({
                 const gAndGAdmin = await (await GetCaseService()).generateGAndGAdminCost(caseItem.id)
                 setGAndGAdminCost(gAndGAdmin)
 
-                setTableYearsFromProfiles([study, opex, cessation,
+                SetTableYearsFromProfiles([study, opex, cessation,
                     surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                     wellProjectCostProfile,
                     explorationCostProfile, seismicAcqAndProc, countryOffice, gAndGAdmin,
-                ])
+                ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
