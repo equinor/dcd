@@ -149,7 +149,7 @@ function CaseCostTab({
     const explorationWellsGridRef = useRef(null)
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear && timeSeries.values) {
+        if (timeSeries && timeSeries.startYear !== undefined && timeSeries.values) {
             return timeSeries.startYear + timeSeries.values.length - 1
         } return undefined
     }
