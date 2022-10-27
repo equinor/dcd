@@ -1,20 +1,27 @@
 using api.Context;
-using api.Helpers;
 using api.SampleData.Generators;
 using api.Services;
 
+using Api.Authorization;
+using Api.Helpers;
 using Api.Services.FusionIntegration;
 
 using Azure.Identity;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.OpenApi.Models;
+
+using Serilog;
+using Serilog.Events;
+using Serilog.Settings.Configuration;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -80,12 +87,10 @@ builder.Services.AddCors(options =>
         {
             builder.AllowAnyHeader();
             builder.AllowAnyMethod();
+            builder.WithExposedHeaders("Location");
             builder.WithOrigins(
-                "http://localhost:3000/",
                 "http://localhost:3000",
-                "https://*.equinor.com",
-                "https://ase-dcd-frontend-dev.azurewebsites.net/",
-                "https://ase-dcd-frontend-qa.azurewebsites.net/",
+                "https://fusion.equinor.com",
                 "https://pro-s-portal-ci.azurewebsites.net",
                 "https://pro-s-portal-fqa.azurewebsites.net",
                 "https://pro-s-portal-fprd.azurewebsites.net"
@@ -132,10 +137,14 @@ builder.Services.AddFusionIntegration(options =>
         opts.ClientId = config["AzureAd:ClientId"];
         opts.ClientSecret = config["AzureAd:ClientSecret"];
     });
-
+    options.AddFusionRoles();
     options.ApplicationMode = true;
 });
 
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .ReadFrom.Configuration(config)
+    .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
@@ -150,6 +159,8 @@ builder.Services.AddScoped<WellProjectWellService>();
 builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
+builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
+builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
 builder.Services.AddScoped<GenerateGAndGAdminCostProfile>();
@@ -158,6 +169,8 @@ builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
@@ -165,11 +178,38 @@ builder.Services.AddControllers(
 builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "JWTToken_Auth_API",
+        Version = "v1"
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+builder.Host.UseSerilog();
 
 var app = builder.Build();
-var logger = app.Services.GetRequiredService<ILogger<Program>>();
-logger.LogInformation("Fom Program, running the host now");
+app.UseRouting();
 if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
@@ -179,6 +219,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
+app.UseMiddleware<ClaimsMiddelware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

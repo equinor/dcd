@@ -85,7 +85,7 @@ public static class ProjectDtoAdapter
         {
             foreach (var caseItem in project.Cases)
             {
-                projectDto.Cases!.Add(CaseDtoAdapter.Convert(caseItem, projectDto));
+                projectDto.Cases!.Add(CaseDtoAdapter.Convert(caseItem));
             }
         }
 
@@ -114,6 +114,8 @@ public static class ProjectDtoAdapter
             ProjectPhase = project.ProjectPhase,
             Currency = project.Currency,
             PhysUnit = project.PhysicalUnit,
+            ExplorationOperationalWellCosts = ExplorationOperationalWellCostsDtoAdapter.Convert(project.ExplorationOperationalWellCosts),
+            DevelopmentOperationalWellCosts = DevelopmentOperationalWellCostsDtoAdapter.Convert(project.DevelopmentOperationalWellCosts),
             Cases = new List<CaseDto>(),
             Wells = new List<WellDto>(),
             SharepointSiteUrl = project.SharepointSiteUrl

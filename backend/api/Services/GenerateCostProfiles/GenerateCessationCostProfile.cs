@@ -61,12 +61,10 @@ public class GenerateCessationCostProfile
         {
             surf = _surfService.GetSurf(caseItem.SurfLink);
             var surfCessationCost = surf.CessationCost;
-            if (surfCessationCost != null)
-            {
-                cessationOffshoreFacilities.StartYear = (int)lastYear + 1;
-                var cessationOffshoreFacilitiesValues = new double[] { (double)surfCessationCost / 2, (double)surfCessationCost / 2 };
-                cessationOffshoreFacilities.Values = cessationOffshoreFacilitiesValues;
-            }
+
+            cessationOffshoreFacilities.StartYear = (int)lastYear + 1;
+            var cessationOffshoreFacilitiesValues = new double[] { (double)surfCessationCost / 2, (double)surfCessationCost / 2 };
+            cessationOffshoreFacilities.Values = cessationOffshoreFacilitiesValues;
         }
         catch (ArgumentException)
         {
