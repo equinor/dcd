@@ -131,6 +131,7 @@ declare namespace Components {
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
             productionProfileNGL?: ProductionProfileNGLDto;
+            importedElectricity?: ImportedElectricityDto;
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid
@@ -212,6 +213,12 @@ declare namespace Components {
             device?: Identity;
             user?: Identity;
             "@odata.type"?: string | null;
+        }
+        export interface ImportedElectricityDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
         }
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
@@ -857,6 +864,28 @@ declare namespace Paths {
             export type $200 = Components.Schemas.CessationCostDto;
         }
     }
+    namespace GenerateCo2Emissions {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.Co2EmissionsDto;
+        }
+    }
+    namespace GenerateFuelFlaringLosses {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.FuelFlaringAndLossesDto;
+        }
+    }
     namespace GenerateGAndGAdminCost {
         namespace Parameters {
             export type CaseId = string; // uuid
@@ -866,6 +895,28 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.GAndGAdminCostDto;
+        }
+    }
+    namespace GenerateImportedElectricity {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.ImportedElectricityDto;
+        }
+    }
+    namespace GenerateNetSaleGas {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.NetSalesGasDto;
         }
     }
     namespace GetExplorationWells {
