@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useLocation, useParams } from "react-router-dom"
 
 import { useEffect, useState } from "react"
@@ -35,6 +36,12 @@ const MainView = styled.div`
     width: calc(100% - 15rem);
     overflow: scroll;
     overflow-x: hidden;
+`
+const SideMenuFooter = styled.div`
+    bottom: 10px;
+    left: 70px;
+    text-align: center;
+    position: fixed;
 `
 
 interface Props {
@@ -75,6 +82,15 @@ const SideMenu: React.FC<Props> = ({ children }) => {
                 <Body>
                     <SidebarDiv>
                         <ProjectMenu project={project} />
+                        <SideMenuFooter>
+                            <a
+                                href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Send feedback
+                            </a>
+                        </SideMenuFooter>
                     </SidebarDiv>
                     <MainView>
                         {children}

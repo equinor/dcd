@@ -12,80 +12,118 @@ import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import "ag-grid-enterprise"
-import { isInteger } from "../../Utils/common"
+import { IsExplorationWell, isInteger } from "../../Utils/common"
+import { DrillingSchedule } from "../../models/assets/wellproject/DrillingSchedule"
+import { WellProjectWell } from "../../models/WellProjectWell"
+import { ExplorationWell } from "../../models/ExplorationWell"
+import { Well } from "../../models/Well"
 
 interface Props {
     project: Project,
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
-    timeSeriesData: any[]
     dg4Year: number
     tableYears: [number, number]
     tableName: string
     alignedGridsRef?: any[]
     gridRef?: any
+    assetWells: ExplorationWell[] | WellProjectWell[]
+    setAssetWell: any
+    wells: Well[] | undefined
+    assetId: string
+    isExplorationTable: boolean
 }
 
-function CaseTabTable({
+function CaseDrillingScheduleTabTable({
     project, setProject,
     caseItem, setCase,
-    timeSeriesData, dg4Year,
+    dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
+    assetWells, setAssetWell,
+    wells, assetId, isExplorationTable,
 }: Props) {
     useAgGridStyles()
-    const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
+    const [rowData, setRowData] = useState<any[]>([])
 
-    const profilesToRowData = () => {
-        const tableRows: any[] = []
-        timeSeriesData.forEach((ts) => {
-            const rowObject: any = {}
-            const { profileName, unit } = ts
-            rowObject.profileName = profileName
-            rowObject.unit = unit
-            rowObject.set = ts.set
-            rowObject.profile = ts.profile
-            if (ts.profile && ts.profile.values.length > 0) {
-                let j = 0
-                for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {
-                    rowObject[(dg4Year + i).toString()] = ts.profile.values.map(
-                        (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
-                    )[j]
-                    j += 1
+    const createMissingAssetWellsFromWells = (assetWell: any[]) => {
+        const newAssetWells: ExplorationWell[] | WellProjectWell[] = [...assetWells]
+        if (isExplorationTable) {
+            wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
+                const explorationWell = assetWell.find((ew) => ew.wellId === w.id)
+                if (!explorationWell) {
+                    const newExplorationWell = new ExplorationWell()
+                    newExplorationWell.explorationId = assetId
+                    newExplorationWell.wellId = w.id
+                    newAssetWells.push(newExplorationWell)
                 }
-            }
+            })
+        } else {
+            wells?.filter((w) => !IsExplorationWell(w)).forEach((w) => {
+                const wellProjectWell = assetWell.find((wpw) => wpw.wellId === w.id)
+                if (!wellProjectWell) {
+                    const newWellProjectWell = new WellProjectWell()
+                    newWellProjectWell.wellProjectId = assetId
+                    newWellProjectWell.wellId = w.id
+                    newAssetWells.push(newWellProjectWell)
+                }
+            })
+        }
 
-            tableRows.push(rowObject)
-        })
-        return tableRows
+        return newAssetWells
+    }
+
+    const wellsToRowData = () => {
+        const existingAndNewAssetWells = createMissingAssetWellsFromWells(assetWells)
+        if (existingAndNewAssetWells) {
+            const tableWells: any[] = []
+            existingAndNewAssetWells.forEach((w) => {
+                const name = wells?.find((well) => well.id === w.wellId)?.name
+                const tableWell: any = {
+                    name: name ?? "",
+                    assetWell: w,
+                    assetWells: existingAndNewAssetWells,
+                    drillingSchedule: w.drillingSchedule ?? new DrillingSchedule(),
+                }
+                if (tableWell.drillingSchedule.values && tableWell.drillingSchedule.values.length > 0
+                    && tableWell.drillingSchedule.startYear !== undefined) {
+                    let j = 0
+                    for (let i = tableWell.drillingSchedule.startYear;
+                        i < tableWell.drillingSchedule.startYear + tableWell.drillingSchedule.values.length; i += 1) {
+                            tableWell[(dg4Year + i).toString()] = tableWell.drillingSchedule.values[j]
+                        j += 1
+                    }
+                }
+                tableWells.push(tableWell)
+            })
+            setRowData(tableWells)
+        }
     }
 
     const generateTableYearColDefs = () => {
         const profileNameDef = {
-            field: "profileName", headerName: tableName, width: 250, editable: false,
+            field: "name", headerName: tableName, width: 250, editable: false,
         }
-        const unitDef = { field: "unit", width: 100, editable: false }
         const yearDefs = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => params.data.set !== undefined,
                 minWidth: 100,
             })
         }
         const totalDef = { field: "total", flex: 2, editable: false }
-        return [profileNameDef, unitDef, ...yearDefs, totalDef]
+        return [profileNameDef, ...yearDefs, totalDef]
     }
 
     const [columnDefs, setColumnDefs] = useState(generateTableYearColDefs())
 
     useEffect(() => {
-        setRowData(profilesToRowData())
+        wellsToRowData()
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [timeSeriesData, tableYears])
+    }, [assetWells, tableYears])
 
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
@@ -112,10 +150,22 @@ function CaseTabTable({
                     values.push(0)
                 }
             }
-            const newProfile = { ...p.data.profile }
+            const newProfile = { ...p.data.drillingSchedule }
             newProfile.startYear = timeSeriesStartYear
             newProfile.values = values
-            p.data.set(newProfile)
+            const rowWells: ExplorationWell[] | WellProjectWell[] = p.data.assetWells
+            if (rowWells) {
+                const { field } = p.colDef
+                const index = rowWells.findIndex((w) => w === p.data.assetWell)
+                if (index > -1) {
+                    const well = rowWells[index]
+                    const updatedWell = well
+                    updatedWell.drillingSchedule = newProfile
+                    const updatedWells = [...rowWells]
+                    updatedWells[index] = updatedWell
+                    setAssetWell(updatedWells)
+                }
+            }
         }
     }
 
@@ -168,4 +218,4 @@ function CaseTabTable({
     )
 }
 
-export default CaseTabTable
+export default CaseDrillingScheduleTabTable

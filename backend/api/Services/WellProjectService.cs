@@ -13,7 +13,6 @@ public class WellProjectService
     private readonly ProjectService _projectService;
     private readonly ILogger<WellProjectService> _logger;
 
-
     public WellProjectService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
@@ -27,7 +26,7 @@ public class WellProjectService
         {
             return _context.WellProjects
                 .Include(c => c.CostProfile)
-                .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
+                .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
                 .Where(d => d.Project.Id.Equals(projectId));
         }
         else
@@ -95,8 +94,8 @@ public class WellProjectService
     {
         if (wellProject != null && wellProject?.CostProfile?.Override != true)
         {
-            var project = _context.Projects!.Include(p => p.Wells).FirstOrDefault(p => p.Id == wellProject.ProjectId);
-            if (wellProject.WellProjectWells != null && project?.Wells != null
+            var project = _context.Projects!.Include(p => p.Wells).FirstOrDefault(p => p.Id == wellProject!.ProjectId);
+            if (wellProject!.WellProjectWells != null && project?.Wells != null
                                                      && (wellProject.WellProjectWells.Any(wpw => wpw.DrillingSchedule != null
                                                          && wpw.WellId != wellProjectWell.WellId) || wellProjectWell.DrillingSchedule != null))
             {
@@ -122,75 +121,6 @@ public class WellProjectService
         }
     }
 
-    private static WellProjectCostProfile? MergeCostProfiles(WellProjectCostProfile t1, WellProjectCostProfile t2)
-    {
-        var t1Year = t1.StartYear;
-        var t2Year = t2.StartYear;
-        var t1Values = t1.Values;
-        var t2Values = t2.Values;
-        if (t1Values.Length == 0)
-        {
-            if (t2.Values.Length == 0)
-            {
-                return null;
-            }
-            return t2;
-        }
-        if (t2Values.Length == 0)
-        {
-            return t1;
-        }
-
-        var offset = t1Year < t2Year ? t2Year - t1Year : t1Year - t2Year;
-
-        var values = new List<double>();
-        if (t1Year < t2Year)
-        {
-            values = MergeTimeSeries(t1Values.ToList(), t2Values.ToList(), offset);
-        }
-        else
-        {
-            values = MergeTimeSeries(t2Values.ToList(), t1Values.ToList(), offset);
-        }
-
-        var timeSeries = new WellProjectCostProfile();
-        timeSeries.StartYear = Math.Min(t1Year, t2Year);
-        timeSeries.Values = values.ToArray();
-        return timeSeries;
-    }
-
-    private static List<double> MergeTimeSeries(List<double> t1, List<double> t2, int offset)
-    {
-        var doubleList = new List<double>();
-        if (offset > t1.Count)
-        {
-            doubleList.AddRange(t1);
-            var zeros = offset - t1.Count;
-            var zeroList = Enumerable.Repeat(0.0, zeros);
-            doubleList.AddRange(zeroList);
-            doubleList.AddRange(t2);
-            return doubleList;
-        }
-        doubleList.AddRange(t1.Take(offset));
-        if (t1.Count - offset == t2.Count)
-        {
-            doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
-        }
-        else if (t1.Count - offset > t2.Count)
-        {
-            doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
-            var remaining = t1.Count - offset - t2.Count;
-            doubleList.AddRange(t1.TakeLast(remaining));
-        }
-        else
-        {
-            doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
-            var remaining = t2.Count - (t1.Count - offset);
-            doubleList.AddRange(t2.TakeLast(remaining));
-        }
-        return doubleList;
-    }
-
     public void GenerateCostProfileFromDrillingSchedules(WellProject wellProject, List<WellProjectWell> wellProjectWells, List<Well> wells)
     {
         var costProfile = new WellProjectCostProfile();
@@ -213,13 +143,14 @@ public class WellProjectService
             costProfiles.Add(wellCostProfile);
         }
 
-        var tempCostProfile = new WellProjectCostProfile();
+        var tempCostProfile = new TimeSeries<double>();
         foreach (var profile in costProfiles)
         {
-            tempCostProfile = MergeCostProfiles(tempCostProfile, profile);
+            tempCostProfile = TimeSeriesCost.MergeCostProfiles(tempCostProfile, profile);
         }
 
-        costProfile = tempCostProfile;
+        costProfile.StartYear = tempCostProfile.StartYear;
+        costProfile.Values = tempCostProfile.Values;
         if (wellProject.CostProfile != null)
         {
             wellProject.CostProfile.StartYear = costProfile.StartYear;
@@ -265,8 +196,8 @@ public class WellProjectService
     {
         var wellProject = _context.WellProjects!
             .Include(c => c.CostProfile)
-            .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
-            .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.Well)
+            .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
+            .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.Well)
             .FirstOrDefault(o => o.Id == wellProjectId);
         if (wellProject == null)
         {

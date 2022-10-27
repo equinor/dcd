@@ -26,7 +26,7 @@ public class ClaimsMiddelware
         {
             _logger.LogError("User null");
         }
-        var userId = httpContext.User.GetAzureUniqueId();
+        var userId = httpContext.User?.GetAzureUniqueId();
         if (userId != null)
         {
             SetAppRoleClaims(httpContext);
