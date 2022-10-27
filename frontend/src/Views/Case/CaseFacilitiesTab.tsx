@@ -6,8 +6,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography, Input,
- Label,
+    Button, NativeSelect, Typography, Input, Label,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -20,7 +19,6 @@ import { GetTopsideService } from "../../Services/TopsideService"
 import { GetSurfService } from "../../Services/SurfService"
 import { GetSubstructureService } from "../../Services/SubstructureService"
 import { GetTransportService } from "../../Services/TransportService"
-import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { GetCaseService } from "../../Services/CaseService"
 
 const ColumnWrapper = styled.div`
