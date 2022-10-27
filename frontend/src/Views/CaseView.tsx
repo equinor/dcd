@@ -131,12 +131,9 @@ const CaseView = () => {
     const [transport, setTransport] = useState<Transport>()
 
     const [wells, setWells] = useState<Well[]>()
-    // Development
-    // eslint-disable-next-line max-len
     const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>()
-    // Exploration
-    // eslint-disable-next-line max-len
     const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
+
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
