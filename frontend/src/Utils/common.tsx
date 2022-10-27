@@ -103,7 +103,13 @@ export function GetProjectPhaseName(key?: Components.Schemas.ProjectPhase): stri
     }[key]
 }
 
-export const ToMonthDate = (date?: Date | null): string | undefined => date?.toISOString().substring(0, 7)
+export const ToMonthDate = (date?: Date | null): string | undefined => {
+    if (Number.isNaN(date?.getTime())) {
+        return undefined
+    }
+
+    return date?.toISOString().substring(0, 7)
+}
 
 export const IsDefaultDate = (date?: Date | null): boolean => {
     if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
