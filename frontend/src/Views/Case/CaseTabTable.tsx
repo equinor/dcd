@@ -39,11 +39,13 @@ function CaseTabTable({
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
+        const totalValue: number[] = []
         timeSeriesData.forEach((ts) => {
             const rowObject: any = {}
             const { profileName, unit } = ts
             rowObject.profileName = profileName
             rowObject.unit = unit
+            rowObject.total = 0
             rowObject.set = ts.set
             rowObject.profile = ts.profile
             if (ts.profile && ts.profile.values.length > 0) {
@@ -55,6 +57,16 @@ function CaseTabTable({
                     j += 1
                 }
             }
+            if (ts.profile && ts.profile.values.length > 0) {
+                let j = 0
+                for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {
+                    totalValue.push(ts.profile.values.map(
+                        (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
+                    ).reduce((x: number, y: number) => x + y))
+                }
+                rowObject.total = totalValue
+            }
+            console.log(rowObject)
 
             tableRows.push(rowObject)
         })
