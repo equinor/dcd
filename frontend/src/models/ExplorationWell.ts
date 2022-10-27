@@ -12,6 +12,8 @@ export class ExplorationWell implements Components.Schemas.ExplorationWellDto {
             this.drillingSchedule = DrillingSchedule.fromJSON(data.drillingSchedule)
             this.explorationId = data.explorationId
             this.wellId = data.wellId
+        } else {
+            this.drillingSchedule = new DrillingSchedule()
         }
     }
 

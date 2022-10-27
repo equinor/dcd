@@ -33,6 +33,7 @@ public class Surf
     public string versionDate { get; set; } = null!;
     public string costYear { get; set; } = null!;
     public string importedCurrency { get; set; } = null!;
+    public string cessationCost { get; set; } = null!;
 }
 
 public class TopSide
@@ -59,6 +60,7 @@ public class TopSide
     public string versionDate { get; set; } = null!;
     public string costYear { get; set; } = null!;
     public string importedCurrency { get; set; } = null!;
+    public string peakElectricityImported { get; set; } = null!;
 }
 
 public class SubStructure

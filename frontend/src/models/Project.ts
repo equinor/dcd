@@ -8,6 +8,8 @@ import { Topside } from "./assets/topside/Topside"
 import { Transport } from "./assets/transport/Transport"
 import { WellProject } from "./assets/wellproject/WellProject"
 import { Well } from "./Well"
+import { ExplorationOperationalWellCosts } from "./ExplorationOperationalWellCosts"
+import { DevelopmentOperationalWellCosts } from "./DevelopmentOperationalWellCosts"
 
 export class Project implements Components.Schemas.ProjectDto {
     cases: Case[]
@@ -31,6 +33,8 @@ export class Project implements Components.Schemas.ProjectDto {
     currency: Components.Schemas.Currency
     physUnit: Components.Schemas.PhysUnit
     wells?: Well[] | undefined
+    explorationWellCosts?: ExplorationOperationalWellCosts
+    developmentWellCosts?: DevelopmentOperationalWellCosts
     sharepointSiteUrl?: string | null
 
     constructor(data: Components.Schemas.ProjectDto) {
@@ -55,6 +59,8 @@ export class Project implements Components.Schemas.ProjectDto {
         this.currency = data.currency ?? 1
         this.physUnit = data.physUnit ?? 0
         this.wells = data.wells?.map(Well.fromJSON) ?? []
+        this.explorationWellCosts = ExplorationOperationalWellCosts.fromJSON(data.explorationOperationalWellCosts)
+        this.developmentWellCosts = DevelopmentOperationalWellCosts.fromJSON(data.developmentOperationalWellCosts)
         this.sharepointSiteUrl = data.sharepointSiteUrl
     }
 

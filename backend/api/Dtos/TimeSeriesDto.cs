@@ -95,6 +95,21 @@ public class TimeSeriesMassDto : TimeSeriesDto<double>
         }
     }
 }
+public class TimeSeriesEnergyDto : TimeSeriesDto<double>
+{
+    public double Sum
+    {
+        get
+        {
+            double s = 0.0;
+            if (Values != null)
+            {
+                Array.ForEach(Values, i => s += i);
+            }
+            return s;
+        }
+    }
+}
 
 public class TimeSeriesScheduleDto : TimeSeriesDto<int>
 {
