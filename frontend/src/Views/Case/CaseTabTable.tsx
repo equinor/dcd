@@ -44,6 +44,7 @@ function CaseTabTable({
             const { profileName, unit } = ts
             rowObject.profileName = profileName
             rowObject.unit = unit
+            rowObject.total = 0
             rowObject.set = ts.set
             rowObject.profile = ts.profile
             if (ts.profile && ts.profile.values.length > 0) {
@@ -53,6 +54,7 @@ function CaseTabTable({
                         (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
                     )[j]
                     j += 1
+                    rowObject.total = ts.profile.values.reduce((x: number, y: number) => x + y)
                 }
             }
 

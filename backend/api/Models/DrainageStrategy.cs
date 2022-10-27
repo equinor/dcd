@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api.Models;
@@ -24,12 +23,15 @@ public class DrainageStrategy
     public NetSalesGas? NetSalesGas { get; set; }
     public Co2Emissions? Co2Emissions { get; set; }
     public ProductionProfileNGL? ProductionProfileNGL { get; set; }
+    public ImportedElectricity? ImportedElectricity { get; set; }
 }
+
 public enum GasSolution
 {
     Export,
     Injection,
 }
+
 public class ProductionProfileOil : TimeSeriesVolume
 {
     [ForeignKey("DrainageStrategy.Id")]
@@ -41,32 +43,44 @@ public class ProductionProfileGas : TimeSeriesVolume
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
 public class ProductionProfileWater : TimeSeriesVolume
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
 public class ProductionProfileWaterInjection : TimeSeriesVolume
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
 public class FuelFlaringAndLosses : TimeSeriesVolume
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
 public class NetSalesGas : TimeSeriesVolume
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
 public class Co2Emissions : TimeSeriesMass
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
 public class ProductionProfileNGL : TimeSeriesVolume
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class ImportedElectricity : TimeSeriesEnergy
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;

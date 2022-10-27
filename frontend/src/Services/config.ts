@@ -59,6 +59,9 @@ const configuration = {
     DevelopmentOperationalWellCostsService: {
         BASE_URL: "",
     },
+    GenerateProfileService: {
+        BASE_URL: "",
+    },
 }
 
 export const buildConfig = (baseUrl: string) => {
@@ -79,6 +82,7 @@ export const buildConfig = (baseUrl: string) => {
     configuration.ExplorationWellService.BASE_URL = `${baseUrl}/exploration-wells`
     configuration.ExplorationOperationalWellCostsService.BASE_URL = `${baseUrl}/exploration-operational-well-costs`
     configuration.DevelopmentOperationalWellCostsService.BASE_URL = `${baseUrl}/development-operational-well-costs`
+    configuration.GenerateProfileService.BASE_URL = `${baseUrl}/generate-profile`
 }
 
 export const config = Object.freeze(configuration)
