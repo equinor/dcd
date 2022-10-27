@@ -31,7 +31,7 @@ export class __BaseService {
         }
         this.client.interceptors.response.use((response: any) => response, (error: any) => {
             if (error.response.status === 403) {
-                window.location.href = "/403"
+                window.location.href = "/apps/conceptapp/403"
             }
         })
     }
