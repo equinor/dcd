@@ -92,13 +92,9 @@ function CaseDrillingScheduleTabTable({
                     let j = 0
                     for (let i = tableWell.drillingSchedule.startYear;
                         i < tableWell.drillingSchedule.startYear + tableWell.drillingSchedule.values.length; i += 1) {
-                        tableWell[(dg4Year + i).toString()] = tableWell.drillingSchedule.values.map(
-                            (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
-                        )[j]
+                        tableWell[(dg4Year + i).toString()] = tableWell.drillingSchedule.values[j]
                         j += 1
-                        tableWell.total = tableWell.drillingSchedule.values.map(
-                            (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
-                        ).reduce((x: number, y: number) => x + y)
+                        tableWell.total = tableWell.drillingSchedule.values.reduce((x: number, y: number) => x + y)
                     }
                 }
                 tableWells.push(tableWell)
