@@ -49,7 +49,9 @@ function CaseTabTable({
             if (ts.profile && ts.profile.values.length > 0) {
                 let j = 0
                 for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {
-                    rowObject[(dg4Year + i).toString()] = ts.profile.values[j]
+                    rowObject[(dg4Year + i).toString()] = ts.profile.values.map(
+                        (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
+                    )[j]
                     j += 1
                 }
             }

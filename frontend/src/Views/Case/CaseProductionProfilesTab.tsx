@@ -25,6 +25,7 @@ import { ProductionProfileNGL } from "../../models/assets/drainagestrategy/Produ
 import { ProductionProfileWaterInjection } from "../../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
+import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -113,8 +114,9 @@ function CaseProductionProfilesTab({
     }
 
     const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
-        newCase.facilitiesAvailability = Number(e.currentTarget.value)
+        const newCase: Case = { ...caseItem }
+        const newfacilitiesAvailability = Number(e.currentTarget.value)
+        newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         setCase(newCase)
     }
 
@@ -192,41 +194,16 @@ function CaseProductionProfilesTab({
         },
     ]
 
-    const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear && timeSeries.values) {
-            return timeSeries.startYear + timeSeries.values.length - 1
-        } return undefined
-    }
-
-    const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-        let firstYear = Number.MAX_SAFE_INTEGER
-        let lastYear = Number.MIN_SAFE_INTEGER
-        profiles.forEach((p) => {
-            if (p && p.startYear !== undefined && p.startYear < firstYear) {
-                firstYear = p.startYear
-            }
-            const profileLastYear = getTimeSeriesLastYear(p)
-            if (profileLastYear !== undefined && profileLastYear > lastYear) {
-                lastYear = profileLastYear
-            }
-        })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER) {
-            setStartYear(firstYear + caseItem.DG4Date.getFullYear())
-            setEndYear(lastYear + caseItem.DG4Date.getFullYear())
-            setTableYears([firstYear + caseItem.DG4Date.getFullYear(), lastYear + caseItem.DG4Date.getFullYear()])
-        }
-    }
-
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
 
     useEffect(() => {
-        setTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
+        SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
         drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
         drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
         drainageStrategy.productionProfileWaterInjection,
-        ])
+        ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
         setNetSalesGas(drainageStrategy.netSalesGas)
         setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
         setGas(drainageStrategy.productionProfileGas)
@@ -264,7 +241,7 @@ function CaseProductionProfilesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFacilitiesAvailabilityChange}
-                            value={caseItem.facilitiesAvailability}
+                            value={caseItem.facilitiesAvailability * 100}
                             integer={false}
                             label="Facilities availability (%)"
                         />

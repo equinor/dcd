@@ -15,8 +15,6 @@ import {
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
-import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../models/ITimeSeries"
 import { Exploration } from "../../models/assets/exploration/Exploration"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Well } from "../../models/Well"
@@ -25,8 +23,8 @@ import { WellProjectWell } from "../../models/WellProjectWell"
 import { GetWellProjectWellService } from "../../Services/WellProjectWellService"
 import { GetExplorationWellService } from "../../Services/ExplorationWellService"
 import { EMPTY_GUID } from "../../Utils/constants"
-import { IsExplorationWell } from "../../Utils/common"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
+import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -79,9 +77,9 @@ interface Props {
     wellProject: WellProject,
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
     explorationWells: ExplorationWell[],
-    setExplorationWells: Dispatch<SetStateAction<ExplorationWell[]>>,
+    setExplorationWells: Dispatch<SetStateAction<ExplorationWell[] | undefined>>,
     wellProjectWells: WellProjectWell[],
-    setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[]>>,
+    setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[] | undefined>>,
     wells: Well[] | undefined
 }
 
@@ -98,33 +96,8 @@ function CaseDrillingScheduleTab({
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const developmentWellsGridRef = useRef(null)
+    const wellProjectWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
-
-    const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear !== undefined && timeSeries.values && timeSeries.values.length > 0) {
-            return timeSeries.startYear + timeSeries.values.length - 1
-        } return undefined
-    }
-
-    const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-        let firstYear = Number.MAX_SAFE_INTEGER
-        let lastYear = Number.MIN_SAFE_INTEGER
-        profiles.forEach((p) => {
-            if (p && p.startYear !== undefined && p.startYear < firstYear) {
-                firstYear = p.startYear
-            }
-            const profileLastYear = getTimeSeriesLastYear(p)
-            if (profileLastYear !== undefined && profileLastYear > lastYear) {
-                lastYear = profileLastYear
-            }
-        })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER) {
-            setStartYear(firstYear + caseItem.DG4Date.getFullYear())
-            setEndYear(lastYear + caseItem.DG4Date.getFullYear())
-            setTableYears([firstYear + caseItem.DG4Date.getFullYear(), lastYear + caseItem.DG4Date.getFullYear()])
-        }
-    }
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -150,7 +123,13 @@ function CaseDrillingScheduleTab({
     useEffect(() => {
         const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
         const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
-        setTableYearsFromProfiles([...explorationDrillingSchedule, ...wellProjectDrillingSchedule])
+        SetTableYearsFromProfiles(
+            [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+            caseItem.DG4Date.getFullYear(),
+            setStartYear,
+            setEndYear,
+            setTableYears,
+        )
     }, [])
 
     const handleSave = async () => {
@@ -232,7 +211,7 @@ function CaseDrillingScheduleTab({
                     caseItem={caseItem}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     project={project}
-                    setAssetWell={setExplorationWells}
+                    setAssetWells={setExplorationWells}
                     setCase={setCase}
                     setProject={setProject}
                     tableName="Exploration wells"
@@ -240,6 +219,8 @@ function CaseDrillingScheduleTab({
                     assetId={exploration.id!}
                     wells={wells}
                     isExplorationTable
+                    gridRef={explorationWellsGridRef}
+                    alignedGridsRef={[wellProjectWellsGridRef]}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -248,7 +229,7 @@ function CaseDrillingScheduleTab({
                     caseItem={caseItem}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     project={project}
-                    setAssetWell={setWellProjectWells}
+                    setAssetWells={setWellProjectWells}
                     setCase={setCase}
                     setProject={setProject}
                     tableName="Development wells"
@@ -256,20 +237,10 @@ function CaseDrillingScheduleTab({
                     assetId={wellProject.id!}
                     wells={wells}
                     isExplorationTable={false}
+                    gridRef={wellProjectWellsGridRef}
+                    alignedGridsRef={[explorationWellsGridRef]}
                 />
             </TableWrapper>
-            {/* <CaseTabTable
-                caseItem={caseItem}
-                project={project}
-                setCase={setCase}
-                setProject={setProject}
-                timeSeriesData={explorationTimeSeriesData}
-                dg4Year={caseItem.DG4Date.getFullYear()}
-                tableYears={tableYears}
-                tableName="Exploration well costs"
-                gridRef={explorationWellsGridRef}
-                alignedGridsRef={[developmentWellsGridRef]}
-            /> */}
         </>
     )
 }
