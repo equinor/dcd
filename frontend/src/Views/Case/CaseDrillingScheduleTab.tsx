@@ -26,6 +26,7 @@ import { GetWellProjectWellService } from "../../Services/WellProjectWellService
 import { GetExplorationWellService } from "../../Services/ExplorationWellService"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { IsExplorationWell } from "../../Utils/common"
+import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -185,52 +186,69 @@ function CaseDrillingScheduleTab({
     //     return data
     // }
 
-    // 1. funksjon som lager tomme ExplorationWells fra wells av kategori exploration
-    const createMissingExplorationWellsFromWells = (expWell: ExplorationWell[]) => {
-        const newExplorationWells: ExplorationWell[] = [...tableExplorationWells]
-        wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
-            const explorationWell = expWell.find((ew) => ew.wellId === w.id)
-            if (!explorationWell) {
-                const newExplorationWell = new ExplorationWell()
-                newExplorationWell.explorationId = exploration.id
-                newExplorationWell.wellId = w.id
-                newExplorationWells.push(newExplorationWell)
-            }
-        })
-        setTableExplorationWells(newExplorationWells)
+    // // 1. funksjon som lager tomme ExplorationWells fra wells av kategori exploration
+    // const createMissingExplorationWellsFromWells = (expWell: ExplorationWell[]) => {
+    //     const newExplorationWells: ExplorationWell[] = [...explorationWells]
+    //     wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
+    //         const explorationWell = expWell.find((ew) => ew.wellId === w.id)
+    //         if (!explorationWell) {
+    //             const newExplorationWell = new ExplorationWell()
+    //             newExplorationWell.explorationId = exploration.id
+    //             newExplorationWell.wellId = w.id
+    //             newExplorationWells.push(newExplorationWell)
+    //         }
+    //     })
+    //     setTableExplorationWells(newExplorationWells)
 
-        return newExplorationWells
-    }
+    //     return newExplorationWells
+    // }
 
-    // 2. funskjon som bygger tabledata basert på exploration wells
+    // // 2. funskjon som bygger tabledata basert på exploration wells
 
-    const buildExplorationDrillingScheduleTableData = (expWell: ExplorationWell[]) => {
-        console.log("assetWells: ", expWell)
-        console.log("wells: ", wells)
-        const data: any[] = []
+    // const buildExplorationDrillingScheduleTableData = (expWell: ExplorationWell[]) => {
+    //     const data: any[] = []
 
-        const expWells = createMissingExplorationWellsFromWells(expWell)
-        console.log("Hello")
+    //     const expWells = createMissingExplorationWellsFromWells(expWell)
 
-        expWells.forEach((aw) => {
-            const well = wells?.find((w) => w.id === aw.wellId)
-            const name = well?.name
-            const { drillingSchedule } = aw
-            data.push({
-                profileName: name, profile: drillingSchedule, set: () => { }, unit: "Yee",
-            })
-        })
-        console.log(expWells)
-        return data
-    }
+    //     expWells.forEach((aw) => {
+    //         const well = wells?.find((w) => w.id === aw.wellId)
+    //         const name = well?.name
+    //         const { drillingSchedule } = aw
+    //         data.push({
+    //             profileName: name, profile: drillingSchedule, set: () => { }, unit: "Yee",
+    //         })
+    //     })
+    //     return data
+    // }
 
-    useEffect(() => {
-        if (wells) {
-            const explorationWellsTableData = buildExplorationDrillingScheduleTableData(explorationWells)
-            console.log(explorationWellsTableData)
-            setExplorationWellsGridData(explorationWellsTableData)
-        }
-    }, [wells, explorationWells])
+    // const updateDrillingSchedulesArray = () => {
+    //     const newExplorationWellsGridData: ExplorationWell[] = { ...explorationWellsGridData }
+
+    // }
+
+    // const updateWells = (p: any) => {
+    //     const rowWells: ExplorationWell[] = p.data.wells
+    //     if (rowWells) {
+    //         const { field } = p.colDef
+    //         const index = rowWells.findIndex((w) => w === p.data.well)
+    //         if (index > -1) {
+    //             const well = rowWells[index]
+    //             const updatedWell = well
+    //             updatedWell[field as keyof typeof updatedWell] = field === "name" ? p.newValue : Number(p.newValue)
+    //             const updatedWells = [...rowWells]
+    //             updatedWells[index] = updatedWell
+    //             setWells(updatedWells)
+    //         }
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     if (wells) {
+    //         const explorationWellsTableData = buildExplorationDrillingScheduleTableData(explorationWells)
+    //         console.log(explorationWellsTableData)
+    //         setExplorationWellsGridData(explorationWellsTableData)
+    //     }
+    // }, [wells, explorationWells])
 
     // const developmentTimeSeriesData: ITimeSeriesData[] = [
     //     {
@@ -318,7 +336,7 @@ function CaseDrillingScheduleTab({
                 </TableYearWrapper>
             </ColumnWrapper>
             <TableWrapper>
-                <CaseTabTable
+                {/* <CaseTabTable
                     caseItem={caseItem}
                     project={project}
                     setCase={setCase}
@@ -329,6 +347,19 @@ function CaseDrillingScheduleTab({
                     tableName="Exploration wells"
                     gridRef={developmentWellsGridRef}
                     alignedGridsRef={[explorationWellsGridRef]}
+                /> */}
+                <CaseDrillingScheduleTabTable
+                    assetWells={explorationWells}
+                    caseItem={caseItem}
+                    dg4Year={caseItem.DG4Date.getFullYear()}
+                    project={project}
+                    setAssetWell={setExplorationWells}
+                    setCase={setCase}
+                    setProject={setProject}
+                    tableName="yee"
+                    tableYears={tableYears}
+                    assetId={exploration.id!}
+                    wells={wells}
                 />
             </TableWrapper>
             {/* <CaseTabTable
