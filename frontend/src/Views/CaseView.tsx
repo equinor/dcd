@@ -10,7 +10,7 @@ import {
     useEffect,
     useState,
 } from "react"
-import { useHistory, useParams } from "react-router-dom"
+import { useHistory, useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
     add, delete_to_trash, edit, library_add, more_vertical,
@@ -119,7 +119,7 @@ const CaseView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
     const [activeTab, setActiveTab] = useState<number>(0)
-    const { caseId } = useParams<Record<string, string | undefined>>()
+    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
     const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
@@ -131,12 +131,9 @@ const CaseView = () => {
     const [transport, setTransport] = useState<Transport>()
 
     const [wells, setWells] = useState<Well[]>()
-    // Development
-    // eslint-disable-next-line max-len
-    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>([])
-    // Exploration
-    // eslint-disable-next-line max-len
-    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>([])
+    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>()
+    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
+
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
@@ -148,8 +145,7 @@ const CaseView = () => {
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
     const history = useHistory()
-
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
+    const location = useLocation()
 
     useEffect(() => {
         (async () => {
@@ -157,30 +153,41 @@ const CaseView = () => {
                 const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
-                const caseResult = projectResult.cases.find((o) => o.id === caseId)
-                setCase(caseResult)
-                setDrainageStrategy(
-                    projectResult?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink),
-                )
-                const explorationResult = projectResult
-                    ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
-                setExploration(explorationResult)
-                const wellProjectResult = projectResult
-                    ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
-                setWellProject(wellProjectResult)
-                setSurf(projectResult?.surfs.find((sur) => sur.id === caseResult?.surfLink))
-                setTopside(projectResult?.topsides.find((top) => top.id === caseResult?.topsideLink))
-                setSubstructure(projectResult?.substructures.find((sub) => sub.id === caseResult?.substructureLink))
-                setTransport(projectResult?.transports.find((tran) => tran.id === caseResult?.transportLink))
-
-                setWells(projectResult.wells)
-                setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
-                setExplorationWells(explorationResult?.explorationWells ?? [])
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
         })()
-    }, [currentProject?.externalId, caseId])
+    }, [currentProject?.externalId, caseId, fusionContextId])
+
+    useEffect(() => {
+        if (project) {
+            const caseResult = project.cases.find((o) => o.id === caseId)
+            if (!caseResult) {
+                if (location.pathname.indexOf("/case") > -1) {
+                    const projectUrl = location.pathname.split("/case")[0]
+                    history.push(projectUrl)
+                }
+            }
+            setCase(caseResult)
+            setDrainageStrategy(
+                project?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink),
+            )
+            const explorationResult = project
+                ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
+            setExploration(explorationResult)
+            const wellProjectResult = project
+                ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
+            setWellProject(wellProjectResult)
+            setSurf(project?.surfs.find((sur) => sur.id === caseResult?.surfLink))
+            setTopside(project?.topsides.find((top) => top.id === caseResult?.topsideLink))
+            setSubstructure(project?.substructures.find((sub) => sub.id === caseResult?.substructureLink))
+            setTransport(project?.transports.find((tran) => tran.id === caseResult?.transportLink))
+
+            setWells(project.wells)
+            setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
+            setExplorationWells(explorationResult?.explorationWells ?? [])
+        }
+    }, [project])
 
     const duplicateCase = async () => {
         try {
@@ -209,7 +216,8 @@ const CaseView = () => {
     if (!project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
-        || !substructure || !transport) {
+        || !substructure || !transport
+        || !explorationWells || !wellProjectWells) {
         return (
             <p>
                 Case is missing data:
@@ -230,6 +238,10 @@ const CaseView = () => {
                 {substructure ? null : "substructure"}
                 <br />
                 {transport ? null : "transport"}
+                <br />
+                {explorationWells ? null : "explorationWells"}
+                <br />
+                {wellProjectWells ? null : "wellProjectWells"}
             </p>
         )
     }

@@ -118,7 +118,7 @@ const CasesTable = ({ project, setProject }: Props) => {
 
     useEffect(() => {
         casesToRowData()
-    }, project.cases)
+    }, [project.cases])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,

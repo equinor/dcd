@@ -32,6 +32,7 @@ declare namespace Components {
             capexFactorFEEDStudies?: number; // double
             npv?: number; // double
             breakEven?: number; // double
+            host?: string | null;
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time
@@ -640,6 +641,18 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace CreateMultipleExplorationWells {
+        export type RequestBody = Components.Schemas.ExplorationWellDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.ExplorationWellDto[];
+        }
+    }
+    namespace CreateMultipleWellProjectWells {
+        export type RequestBody = Components.Schemas.WellProjectWellDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.WellProjectWellDto[];
+        }
+    }
     namespace CreateProject {
         export type RequestBody = Components.Schemas.ProjectDto;
         namespace Responses {
@@ -1091,6 +1104,18 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.ExplorationWellDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateMultipleExplorationWells {
+        export type RequestBody = Components.Schemas.ExplorationWellDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.ExplorationWellDto[];
+        }
+    }
+    namespace UpdateMultipleWellProjectWells {
+        export type RequestBody = Components.Schemas.WellProjectWellDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.WellProjectWellDto[];
         }
     }
     namespace UpdateMultipleWells {
