@@ -77,9 +77,9 @@ interface Props {
     wellProject: WellProject,
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
     explorationWells: ExplorationWell[],
-    setExplorationWells: Dispatch<SetStateAction<ExplorationWell[]>>,
+    setExplorationWells: Dispatch<SetStateAction<ExplorationWell[] | undefined>>,
     wellProjectWells: WellProjectWell[],
-    setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[]>>,
+    setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[] | undefined>>,
     wells: Well[] | undefined
 }
 
@@ -211,7 +211,7 @@ function CaseDrillingScheduleTab({
                     caseItem={caseItem}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     project={project}
-                    setAssetWell={setExplorationWells}
+                    setAssetWells={setExplorationWells}
                     setCase={setCase}
                     setProject={setProject}
                     tableName="Exploration wells"
@@ -229,7 +229,7 @@ function CaseDrillingScheduleTab({
                     caseItem={caseItem}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     project={project}
-                    setAssetWell={setWellProjectWells}
+                    setAssetWells={setWellProjectWells}
                     setCase={setCase}
                     setProject={setProject}
                     tableName="Development wells"
