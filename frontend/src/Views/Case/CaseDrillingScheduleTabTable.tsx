@@ -82,6 +82,7 @@ function CaseDrillingScheduleTabTable({
                 const name = wells?.find((well) => well.id === w.wellId)?.name
                 const tableWell: any = {
                     name: name ?? "",
+                    total: 0,
                     assetWell: w,
                     assetWells: existingAndNewAssetWells,
                     drillingSchedule: w.drillingSchedule ?? new DrillingSchedule(),
@@ -93,6 +94,7 @@ function CaseDrillingScheduleTabTable({
                         i < tableWell.drillingSchedule.startYear + tableWell.drillingSchedule.values.length; i += 1) {
                         tableWell[(dg4Year + i).toString()] = tableWell.drillingSchedule.values[j]
                         j += 1
+                        tableWell.total = tableWell.drillingSchedule.values.reduce((x: number, y: number) => x + y)
                     }
                 }
                 tableWells.push(tableWell)
@@ -102,10 +104,15 @@ function CaseDrillingScheduleTabTable({
     }
 
     const generateTableYearColDefs = () => {
-        const profileNameDef = {
-            field: "name", headerName: tableName, width: 250, editable: false,
-        }
-        const yearDefs = []
+        const columnPinned: any[] = [
+            {
+                field: "name", headerName: tableName, width: 250, editable: false, pinned: "left",
+            },
+            {
+                field: "total", flex: 2, editable: false, pinned: "right", width: 100,
+            },
+        ]
+        const yearDefs: any[] = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
@@ -113,8 +120,7 @@ function CaseDrillingScheduleTabTable({
                 minWidth: 100,
             })
         }
-        const totalDef = { field: "total", flex: 2, editable: false }
-        return [profileNameDef, ...yearDefs, totalDef]
+        return columnPinned.concat([...yearDefs])
     }
 
     const [columnDefs, setColumnDefs] = useState(generateTableYearColDefs())

@@ -54,7 +54,9 @@ function CaseTabTable({
                         (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
                     )[j]
                     j += 1
-                    rowObject.total = ts.profile.values.reduce((x: number, y: number) => x + y)
+                    rowObject.total = ts.profile.values.map(
+                        (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
+                    ).reduce((x: number, y: number) => x + y)
                 }
             }
 
@@ -64,11 +66,18 @@ function CaseTabTable({
     }
 
     const generateTableYearColDefs = () => {
-        const profileNameDef = {
-            field: "profileName", headerName: tableName, width: 250, editable: false,
-        }
-        const unitDef = { field: "unit", width: 100, editable: false }
-        const yearDefs = []
+        const columnPinned: any[] = [
+            {
+                field: "profileName", headerName: tableName, width: 250, editable: false, pinned: "left",
+            },
+            {
+                field: "unit", width: 100, editable: false, pinned: "left",
+            },
+            {
+                field: "total", flex: 2, editable: false, pinned: "right", width: 100,
+            },
+        ]
+        const yearDefs: any[] = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
@@ -77,8 +86,7 @@ function CaseTabTable({
                 minWidth: 100,
             })
         }
-        const totalDef = { field: "total", flex: 2, editable: false }
-        return [profileNameDef, unitDef, ...yearDefs, totalDef]
+        return columnPinned.concat([...yearDefs])
     }
 
     const [columnDefs, setColumnDefs] = useState(generateTableYearColDefs())
