@@ -12,6 +12,8 @@ public class DcdDbContext : DbContext
 
     }
     public DbSet<Project>? Projects { get; set; }
+    public DbSet<ExplorationOperationalWellCosts>? ExplorationOperationalWellCosts { get; set; }
+    public DbSet<DevelopmentOperationalWellCosts>? DevelopmentOperationalWellCosts { get; set; }
 
     public DbSet<Case>? Cases { get; set; }
     public DbSet<Well>? Wells { get; set; }

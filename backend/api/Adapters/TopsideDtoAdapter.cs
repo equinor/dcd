@@ -15,7 +15,6 @@ public static class TopsideDtoAdapter
             DryWeight = topside.DryWeight,
             OilCapacity = topside.OilCapacity,
             GasCapacity = topside.GasCapacity,
-            FacilitiesAvailability = topside.FacilitiesAvailability,
             ArtificialLift = topside.ArtificialLift,
             Maturity = topside.Maturity,
             Currency = topside.Currency,

@@ -13,7 +13,6 @@ public class Topside
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
     public double GasCapacity { get; set; }
-    public double FacilitiesAvailability { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public Maturity Maturity { get; set; }
     public Currency Currency { get; set; }
@@ -36,6 +35,7 @@ public class Topside
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
     public double FacilityOpex { get; set; }
+    public double PeakElectricityImported { get; set; }
 }
 
 public class TopsideCostProfile : TimeSeriesCost

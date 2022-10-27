@@ -8,26 +8,45 @@ import SubstructureView from "../Views/SubstructureView"
 import SurfView from "../Views/SurfView"
 import TopsideView from "../Views/TopsideView"
 import TransportView from "../Views/TransportView"
+import UnauthorizedView from "../Views/UnauthorizedView"
 import Welcome from "../Views/Welcome"
 import WellProjectView from "../Views/WellProjectView"
 
 export function AppRouter(): JSX.Element {
     return (
         <Switch>
-            <Route exact path="/">
+            <Route
+                path="/"
+                exact
+            >
                 <Welcome />
             </Route>
-            <Route exact path="/:fusionContextId">
+            <Route
+                path="/403"
+                exact
+            >
+                <UnauthorizedView />
+            </Route>
+            <Route
+                path="/:fusionContextId"
+                exact
+            >
                 <SideMenu>
                     <ProjectView />
                 </SideMenu>
             </Route>
-            <Route path="/:fusionContextId/case/:caseId" exact>
+            <Route
+                path="/:fusionContextId/case/:caseId"
+                exact
+            >
                 <SideMenu>
                     <CaseView />
                 </SideMenu>
             </Route>
-            <Route path="/:fusionContextId/case/:caseId/surf/:surfId" exact>
+            <Route
+                path="/:fusionContextId/case/:caseId/surf/:surfId"
+                exact
+            >
                 <SideMenu>
                     <SurfView />
                 </SideMenu>
