@@ -13,6 +13,7 @@ public static class EmissionCalculationHelper
     private const int DailyEmissionFromDrillingRig = 100;
     private const int DaysInLeapYear = 366;
     private const int DaysInYear = 365;
+    private const int ConversionFactor = 1000;
 
     public static TimeSeries<double> CalculateTotalFuelConsumptions(Case caseItem, Topside topside,
         DrainageStrategy drainageStrategy)
@@ -27,7 +28,7 @@ public static class EmissionCalculationHelper
             var year = caseItem.DG4Date.Year + i;
             var calendarDays = DateTime.IsLeapYear(year) ? DaysInLeapYear : DaysInYear;
 
-            var fuelGasConsumption = productionEfficiency * fuelGasConsumptionMax * calendarDays / 1000;
+            var fuelGasConsumption = productionEfficiency * fuelGasConsumptionMax * calendarDays / ConversionFactor;
 
             valuesList.Add(fuelGasConsumption);
         }
@@ -135,7 +136,7 @@ public static class EmissionCalculationHelper
         }
 
         var oilRates = drainageStrategy.ProductionProfileOil.Values;
-        oilValues.AddRange(oilRates.Select(oilValue => oilValue * FlaredGasPerProducedVolume / 1000));
+        oilValues.AddRange(oilRates.Select(oilValue => oilValue * FlaredGasPerProducedVolume / ConversionFactor));
 
         return new TimeSeriesVolume
         {
@@ -153,7 +154,7 @@ public static class EmissionCalculationHelper
         }
 
         var gasRates = drainageStrategy.ProductionProfileGas.Values;
-        gasValues.AddRange(gasRates.Select(gasValue => gasValue * FlaredGasPerProducedVolume / 1000));
+        gasValues.AddRange(gasRates.Select(gasValue => gasValue * FlaredGasPerProducedVolume / ConversionFactor));
 
         return new TimeSeriesVolume
         {
