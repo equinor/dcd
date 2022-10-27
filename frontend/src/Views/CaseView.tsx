@@ -118,7 +118,7 @@ const CaseView = () => {
 
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
-    const [activeTab, setActiveTab] = useState<number>(3)
+    const [activeTab, setActiveTab] = useState<number>(0)
     const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 

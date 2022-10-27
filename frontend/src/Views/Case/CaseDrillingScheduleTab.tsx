@@ -161,7 +161,11 @@ function CaseDrillingScheduleTab({
         const updateExplorationWells = explorationWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
         const updateExplorationWellsResult = await (await GetExplorationWellService()).updateMultipleExplorationWells(updateExplorationWells)
 
-        setExplorationWells(updateExplorationWellsResult)
+        if (updateExplorationWellsResult && updateExplorationWellsResult.length > 0) {
+            setExplorationWells(updateExplorationWellsResult)
+        } else if (newExplorationWellsResult && newExplorationWellsResult.length > 0) {
+            setExplorationWells(newExplorationWellsResult)
+        }
 
         // WellProject wells
         const newWellProjectWells = wellProjectWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
@@ -170,15 +174,20 @@ function CaseDrillingScheduleTab({
         const updateWellProjectWells = wellProjectWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
         const updateWellProjectWellsResult = await (await GetWellProjectWellService()).updateMultipleWellProjectWells(updateWellProjectWells)
 
-        setWellProjectWells(updateWellProjectWellsResult)
+        if (updateWellProjectWellsResult && updateWellProjectWellsResult.length > 0) {
+            setWellProjectWells(updateWellProjectWellsResult)
+        } else if (newWellProjectWellsResult && newWellProjectWellsResult.length > 0) {
+            setWellProjectWells(newWellProjectWellsResult)
+        }
     }
 
     return (
         <>
             <TopWrapper>
-                <PageTitle variant="h3">Cost</PageTitle>
+                <PageTitle variant="h3">Drilling schedule</PageTitle>
                 <Button onClick={handleSave}>Save</Button>
             </TopWrapper>
+            {(!wells || wells.length === 0) && <p>Create wells in technical input in order to see them in the list below.</p>}
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField
