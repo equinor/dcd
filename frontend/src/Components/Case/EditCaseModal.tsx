@@ -20,7 +20,9 @@ import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { ModalNoFocus } from "../ModalNoFocus"
-import { DefaultDate, ProjectPath, ToMonthDate } from "../../Utils/common"
+import {
+    DefaultDate, IsDefaultDate, ProjectPath, ToMonthDate,
+} from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 
 const CreateCaseForm = styled.form`
@@ -137,6 +139,23 @@ const EditCaseModal = ({
         }
     }
 
+    const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        let newDate = new Date(e.target.value)
+        if (Number.isNaN(newDate.getTime())) {
+            newDate = DefaultDate()
+        } else {
+            newDate = new Date(e.target.value)
+        }
+        setDG4Date(newDate)
+    }
+
+    const getDG4Value = () => {
+        if (!IsDefaultDate(dG4Date)) {
+            return ToMonthDate(dG4Date)
+        }
+        return !IsDefaultDate(caseItem?.DG4Date) ? ToMonthDate(caseItem?.DG4Date) : undefined
+    }
+
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
@@ -207,8 +226,8 @@ const EditCaseModal = ({
                             type="month"
                             id="dgDate"
                             name="dgDate"
-                            value={ToMonthDate(dG4Date) ?? ToMonthDate(caseItem?.DG4Date)}
-                            onChange={(e) => setDG4Date(new Date(e.currentTarget.value))}
+                            value={getDG4Value()}
+                            onChange={handleDG4Change}
                         />
                     </DateField>
                 </RowWrapper>
