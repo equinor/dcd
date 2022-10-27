@@ -32,6 +32,7 @@ public class Case
     public double CapexFactorFEEDStudies { get; set; }
     public double NPV { get; set; }
     public double BreakEven { get; set; }
+    public string? Host { get; set; }
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
     public Guid WellProjectLink { get; set; } = Guid.Empty;
     public Guid SurfLink { get; set; } = Guid.Empty;
