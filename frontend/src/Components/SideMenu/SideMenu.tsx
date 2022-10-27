@@ -57,7 +57,8 @@ const SideMenu: React.FC<Props> = ({ children }) => {
                         await new Promise((r) => setTimeout(r, 2000))
                         const secondAttempt = await (await GetProjectService())
                             .getProjectByID(currentProject.externalId!)
-                            setProject(secondAttempt)
+
+                        setProject(secondAttempt)
                     } else {
                         setProject(fetchedProject)
                     }

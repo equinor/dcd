@@ -1,24 +1,16 @@
-/* eslint-disable camelcase */
 import {
     Button,
-    Icon,
-    Menu,
     Tabs, Typography,
 } from "@equinor/eds-core-react"
 import React, {
     useEffect,
     useState,
 } from "react"
-import { useLocation, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import styled from "styled-components"
-import {
-    add,
-    delete_to_trash, edit, library_add, more_vertical,
-} from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
-import { Case } from "../models/case/Case"
 import OverviewView from "./OverviewView"
 import CompareCasesView from "./CompareCasesView"
 import SettingsView from "./SettingsView"
@@ -42,10 +34,6 @@ const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
 
-const InvisibleButton = styled(Button)`
-    border: 1px solid #007079;
-`
-
 const TransparentButton = styled(Button)`
     color: #007079;
     background-color: white;
@@ -65,7 +53,6 @@ const ProjectView = () => {
 
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
-    const [caseItem, setCase] = useState<Case>()
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
 
@@ -74,9 +61,6 @@ const ProjectView = () => {
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
 
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
-
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     useEffect(() => {
         (async () => {
