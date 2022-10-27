@@ -37,6 +37,10 @@ import { GetCaseService } from "../Services/CaseService"
 import EditCaseModal from "../Components/Case/EditCaseModal"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseSummaryTab from "./Case/CaseSummaryTab"
+import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
+import { Well } from "../models/Well"
+import { WellProjectWell } from "../models/WellProjectWell"
+import { ExplorationWell } from "../models/ExplorationWell"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -126,6 +130,13 @@ const CaseView = () => {
     const [substructure, setSubstructure] = useState<Substructure>()
     const [transport, setTransport] = useState<Transport>()
 
+    const [wells, setWells] = useState<Well[]>()
+    // Development
+    // eslint-disable-next-line max-len
+    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>([])
+    // Exploration
+    // eslint-disable-next-line max-len
+    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>([])
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
@@ -151,12 +162,20 @@ const CaseView = () => {
                 setDrainageStrategy(
                     projectResult?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink),
                 )
-                setExploration(projectResult?.explorations.find((exp) => exp.id === caseResult?.explorationLink))
-                setWellProject(projectResult?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink))
+                const explorationResult = projectResult
+                    ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
+                setExploration(explorationResult)
+                const wellProjectResult = projectResult
+                    ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
+                setWellProject(wellProjectResult)
                 setSurf(projectResult?.surfs.find((sur) => sur.id === caseResult?.surfLink))
                 setTopside(projectResult?.topsides.find((top) => top.id === caseResult?.topsideLink))
                 setSubstructure(projectResult?.substructures.find((sub) => sub.id === caseResult?.substructureLink))
                 setTransport(projectResult?.transports.find((tran) => tran.id === caseResult?.transportLink))
+
+                setWells(projectResult.wells)
+                setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
+                setExplorationWells(explorationResult?.explorationWells ?? [])
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
             }
@@ -321,7 +340,21 @@ const CaseView = () => {
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
-                                <p>Drilling Schedule</p>
+                                <CaseDrillingScheduleTab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                    exploration={exploration}
+                                    setExploration={setExploration}
+                                    wellProject={wellProject}
+                                    setWellProject={setWellProject}
+                                    explorationWells={explorationWells}
+                                    setExplorationWells={setExplorationWells}
+                                    wellProjectWells={wellProjectWells}
+                                    setWellProjectWells={setWellProjectWells}
+                                    wells={wells}
+                                />
                             </StyledTabPanel>
                             <StyledTabPanel>
                                 <CaseFacilitiesTab

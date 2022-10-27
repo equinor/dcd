@@ -8,6 +8,7 @@ import SubstructureView from "../Views/SubstructureView"
 import SurfView from "../Views/SurfView"
 import TopsideView from "../Views/TopsideView"
 import TransportView from "../Views/TransportView"
+import UnauthorizedView from "../Views/UnauthorizedView"
 import Welcome from "../Views/Welcome"
 import WellProjectView from "../Views/WellProjectView"
 
@@ -19,6 +20,12 @@ export function AppRouter(): JSX.Element {
                 exact
             >
                 <Welcome />
+            </Route>
+            <Route
+                path="/403"
+                exact
+            >
+                <UnauthorizedView />
             </Route>
             <Route
                 path="/:fusionContextId"
