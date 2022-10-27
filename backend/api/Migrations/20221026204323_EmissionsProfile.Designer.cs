@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,10 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221026204323_EmissionsProfile")]
+    partial class EmissionsProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,9 +90,6 @@ namespace api.Migrations
 
                     b.Property<int>("GasInjectorCount")
                         .HasColumnType("int");
-
-                    b.Property<string>("Host")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("ModifyTime")
                         .HasColumnType("datetimeoffset");

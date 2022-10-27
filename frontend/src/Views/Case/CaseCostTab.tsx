@@ -1,16 +1,9 @@
 import {
-    Dispatch,
-    SetStateAction,
-    ChangeEventHandler,
-    useState,
-    useEffect,
-    useRef,
+    ChangeEventHandler, Dispatch, SetStateAction, useEffect, useRef, useState,
 } from "react"
 import styled from "styled-components"
 
-import {
-    Button, NativeSelect, Typography,
-} from "@equinor/eds-core-react"
+import { Button, NativeSelect, Typography } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
@@ -43,6 +36,7 @@ import { GetTopsideService } from "../../Services/TopsideService"
 import { GetSubstructureService } from "../../Services/SubstructureService"
 import { GetTransportService } from "../../Services/TransportService"
 import { GetWellProjectService } from "../../Services/WellProjectService"
+import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -153,11 +147,11 @@ function CaseCostTab({
         (async () => {
             try {
                 // OPEX
-                const study = await (await GetCaseService()).generateStudyCost(caseItem.id)
+                const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
                 setStudyCost(study)
-                const opex = await (await GetCaseService()).generateOpexCost(caseItem.id)
+                const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
                 setOpexCost(opex)
-                const cessation = await (await GetCaseService()).generateCessationCost(caseItem.id)
+                const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
                 setCessationCost(cessation)
 
                 // CAPEX
@@ -181,7 +175,7 @@ function CaseCostTab({
                 setseismicAcqAndProcCost(seismicAcqAndProc)
                 const countryOffice = exploration.countryOfficeCost
                 setCountryOfficeCost(countryOffice)
-                const gAndGAdmin = await (await GetCaseService()).generateGAndGAdminCost(caseItem.id)
+                const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
                 setGAndGAdminCost(gAndGAdmin)
 
                 SetTableYearsFromProfiles([study, opex, cessation,

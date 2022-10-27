@@ -1,8 +1,6 @@
 import { Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import {
-    useParams,
-} from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
@@ -14,9 +12,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
 import { IsDefaultDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
-import {
-    AssetViewDiv, Wrapper, WrapperColumn,
-} from "./Asset/StyledAssetComponents"
+import { AssetViewDiv, Wrapper, WrapperColumn } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import Maturity from "../Components/Maturity"
 import NumberInput from "../Components/NumberInput"
@@ -161,6 +157,7 @@ const TopsideView = () => {
             newTopside.cO2ShareOilProfile = cO2ShareOilProfile
             newTopside.cO2ShareGasProfile = cO2ShareGasProfile
             newTopside.cO2ShareWaterInjectionProfile = cO2ShareWaterInjectionProfile
+            // eslint-disable-next-line max-len
             newTopside.cO2OnMaxOilProfile = cO2OnMaxOilProfile
             newTopside.cO2OnMaxGasProfile = cO2OnMaxGasProfile
             newTopside.cO2OnMaxWaterInjectionProfile = cO2OnMaxWaterInjectionProfile
@@ -322,7 +319,7 @@ const TopsideView = () => {
                     setHasChanges={setHasChanges}
                     setValue={setFuelConsumption}
                     value={fuelConsumption ?? 0}
-                    integer
+                    integer={false}
                     label="Fuel consumption (MSm³ gas/sd)"
                 />
                 <NumberInput

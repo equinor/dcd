@@ -26,7 +26,8 @@ public static class DrainageStrategyDtoAdapter
             FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses, unit),
             NetSalesGas = Convert(drainageStrategy.NetSalesGas, unit),
             Co2Emissions = Convert(drainageStrategy.Co2Emissions, unit),
-            ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit)
+            ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit),
+            ImportedElectricity = Convert(drainageStrategy.ImportedElectricity, unit),
         };
         return drainageStrategyDto;
     }
@@ -34,7 +35,8 @@ public static class DrainageStrategyDtoAdapter
     private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
     {
         string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
-        string[] BBL_Units = { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
+        string[] BBL_Units =
+            { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
         string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
 
         // Per now - the timeseriestypes which use millions are the same in both SI and Oilfield
@@ -48,7 +50,8 @@ public static class DrainageStrategyDtoAdapter
             // Trim zeroes for BBL when sending back to frontend
             values = Array.ConvertAll(values, x => x / 1E6);
         }
-        // If Oilfield is selected, convert to respective values 
+
+        // If Oilfield is selected, convert to respective values
         if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
         {
             if (BBL_Units.Contains(type))
@@ -62,6 +65,7 @@ public static class DrainageStrategyDtoAdapter
                 values = Array.ConvertAll(values, x => x * 35.315);
             }
         }
+
         return values;
     }
 
@@ -73,9 +77,10 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileOil.Id,
                 StartYear = productionProfileOil.StartYear,
-                Values = ConvertUnitValues(productionProfileOil.Values, unit, nameof(ProductionProfileOil))
+                Values = ConvertUnitValues(productionProfileOil.Values, unit, nameof(ProductionProfileOil)),
             };
         }
+
         return null;
     }
 
@@ -87,9 +92,10 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileGas.Id,
                 StartYear = productionProfileGas.StartYear,
-                Values = ConvertUnitValues(productionProfileGas.Values, unit, nameof(ProductionProfileGas))
+                Values = ConvertUnitValues(productionProfileGas.Values, unit, nameof(ProductionProfileGas)),
             };
         }
+
         return null;
     }
 
@@ -101,13 +107,15 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileWater.Id,
                 StartYear = productionProfileWater.StartYear,
-                Values = ConvertUnitValues(productionProfileWater.Values, unit, nameof(ProductionProfileWater))
+                Values = ConvertUnitValues(productionProfileWater.Values, unit, nameof(ProductionProfileWater)),
             };
         }
+
         return null;
     }
 
-    private static ProductionProfileWaterInjectionDto? Convert(ProductionProfileWaterInjection? productionProfileWaterInjection, PhysUnit unit)
+    private static ProductionProfileWaterInjectionDto? Convert(
+        ProductionProfileWaterInjection? productionProfileWaterInjection, PhysUnit unit)
     {
         if (productionProfileWaterInjection != null)
         {
@@ -115,13 +123,15 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileWaterInjection.Id,
                 StartYear = productionProfileWaterInjection.StartYear,
-                Values = ConvertUnitValues(productionProfileWaterInjection.Values, unit, nameof(ProductionProfileWaterInjection))
+                Values = ConvertUnitValues(productionProfileWaterInjection.Values, unit,
+                    nameof(ProductionProfileWaterInjection)),
             };
         }
+
         return null;
     }
 
-    private static FuelFlaringAndLossesDto? Convert(FuelFlaringAndLosses? fuelFlaringAndLosses, PhysUnit unit)
+    public static FuelFlaringAndLossesDto? Convert(FuelFlaringAndLosses? fuelFlaringAndLosses, PhysUnit unit)
     {
         if (fuelFlaringAndLosses != null)
         {
@@ -129,13 +139,14 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = fuelFlaringAndLosses.Id,
                 StartYear = fuelFlaringAndLosses.StartYear,
-                Values = ConvertUnitValues(fuelFlaringAndLosses.Values, unit, nameof(FuelFlaringAndLosses))
+                Values = ConvertUnitValues(fuelFlaringAndLosses.Values, unit, nameof(FuelFlaringAndLosses)),
             };
         }
+
         return null;
     }
 
-    private static NetSalesGasDto? Convert(NetSalesGas? netSalesGas, PhysUnit unit)
+    public static NetSalesGasDto? Convert(NetSalesGas? netSalesGas, PhysUnit unit)
     {
         if (netSalesGas != null)
         {
@@ -143,13 +154,14 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = netSalesGas.Id,
                 StartYear = netSalesGas.StartYear,
-                Values = ConvertUnitValues(netSalesGas.Values, unit, nameof(NetSalesGas))
+                Values = ConvertUnitValues(netSalesGas.Values, unit, nameof(NetSalesGas)),
             };
         }
+
         return null;
     }
 
-    private static Co2EmissionsDto? Convert(Co2Emissions? co2Emissions, PhysUnit unit)
+    public static Co2EmissionsDto? Convert(Co2Emissions? co2Emissions, PhysUnit unit)
     {
         if (co2Emissions != null)
         {
@@ -157,9 +169,10 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = co2Emissions.Id,
                 StartYear = co2Emissions.StartYear,
-                Values = ConvertUnitValues(co2Emissions.Values, unit, nameof(Co2Emissions))
+                Values = ConvertUnitValues(co2Emissions.Values, unit, nameof(Co2Emissions)),
             };
         }
+
         return null;
     }
 
@@ -171,9 +184,25 @@ public static class DrainageStrategyDtoAdapter
             {
                 Id = productionProfileNGL.Id,
                 StartYear = productionProfileNGL.StartYear,
-                Values = ConvertUnitValues(productionProfileNGL.Values, unit, nameof(ProductionProfileNGL))
+                Values = ConvertUnitValues(productionProfileNGL.Values, unit, nameof(ProductionProfileNGL)),
             };
         }
+
+        return null;
+    }
+
+    public static ImportedElectricityDto? Convert(ImportedElectricity? importedElectricity, PhysUnit unit)
+    {
+        if (importedElectricity != null)
+        {
+            return new ImportedElectricityDto
+            {
+                Id = importedElectricity.Id,
+                StartYear = importedElectricity.StartYear,
+                Values = ConvertUnitValues(importedElectricity.Values, unit, nameof(ImportedElectricity)),
+            };
+        }
+
         return null;
     }
 }

@@ -1,27 +1,14 @@
 import {
-    Dispatch,
-    SetStateAction,
-    ChangeEventHandler,
-    useState,
-    useEffect,
+    ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
 
-import {
-    Button, NativeSelect, Typography,
-} from "@equinor/eds-core-react"
+import { Button, Typography } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import CaseTabTable from "./CaseTabTable"
-import { NetSalesGas } from "../../models/assets/drainagestrategy/NetSalesGas"
-import { FuelFlaringAndLosses } from "../../models/assets/drainagestrategy/FuelFlaringAndLosses"
-import { ProductionProfileGas } from "../../models/assets/drainagestrategy/ProductionProfileGas"
-import { ProductionProfileOil } from "../../models/assets/drainagestrategy/ProductionProfileOil"
-import { ProductionProfileWater } from "../../models/assets/drainagestrategy/ProductionProfileWater"
-import { ProductionProfileNGL } from "../../models/assets/drainagestrategy/ProductionProfileNGL"
-import { ProductionProfileWaterInjection } from "../../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
@@ -38,6 +25,7 @@ import { TopsideCostProfile } from "../../models/assets/topside/TopsideCostProfi
 import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
 import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
 import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
+import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -139,11 +127,11 @@ function CaseSummaryTab({
         (async () => {
             try {
                 // OPEX
-                const study = await (await GetCaseService()).generateStudyCost(caseItem.id)
+                const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
                 setStudyCost(study)
-                const opex = await (await GetCaseService()).generateOpexCost(caseItem.id)
+                const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
                 setOpexCost(opex)
-                const cessation = await (await GetCaseService()).generateCessationCost(caseItem.id)
+                const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
                 setCessationCost(cessation)
 
                 // CAPEX
