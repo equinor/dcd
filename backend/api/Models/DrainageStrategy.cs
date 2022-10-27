@@ -34,45 +34,54 @@ public enum GasSolution
 
 public class ProductionProfileOil : TimeSeriesVolume
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
 public class ProductionProfileGas : TimeSeriesVolume
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
 public class ProductionProfileWater : TimeSeriesVolume
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
 public class ProductionProfileWaterInjection : TimeSeriesVolume
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
 public class FuelFlaringAndLosses : TimeSeriesVolume
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
 public class NetSalesGas : TimeSeriesVolume
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
 public class Co2Emissions : TimeSeriesMass
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
 public class ProductionProfileNGL : TimeSeriesVolume
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
 public class ImportedElectricity : TimeSeriesEnergy
 {
-    [ForeignKey("DrainageStrategy.Id")] public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
