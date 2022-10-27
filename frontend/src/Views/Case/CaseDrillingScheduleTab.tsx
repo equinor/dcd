@@ -187,7 +187,7 @@ function CaseDrillingScheduleTab({
                 <PageTitle variant="h3">Drilling schedule</PageTitle>
                 <Button onClick={handleSave}>Save</Button>
             </TopWrapper>
-            {(!wells || wells.length === 0) && <p>Create wells in technical input in order to see them in the list below.</p>}
+            <p>Create wells in technical input in order to see them in the list below.</p>
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField
@@ -235,7 +235,7 @@ function CaseDrillingScheduleTab({
                     setAssetWell={setExplorationWells}
                     setCase={setCase}
                     setProject={setProject}
-                    tableName="yee"
+                    tableName="Exploration wells"
                     tableYears={tableYears}
                     assetId={exploration.id!}
                     wells={wells}
@@ -251,7 +251,7 @@ function CaseDrillingScheduleTab({
                     setAssetWell={setWellProjectWells}
                     setCase={setCase}
                     setProject={setProject}
-                    tableName="yee"
+                    tableName="Development wells"
                     tableYears={tableYears}
                     assetId={wellProject.id!}
                     wells={wells}

@@ -103,7 +103,7 @@ function CaseDrillingScheduleTabTable({
 
     const generateTableYearColDefs = () => {
         const profileNameDef = {
-            field: "name", width: 250, editable: false,
+            field: "name", headerName: tableName, width: 250, editable: false,
         }
         const yearDefs = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
