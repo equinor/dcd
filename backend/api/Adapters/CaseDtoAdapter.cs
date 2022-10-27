@@ -43,6 +43,7 @@ public static class CaseDtoAdapter
             CapexFactorFEEDStudies = case_.CapexFactorFEEDStudies,
             NPV = case_.NPV,
             BreakEven = case_.BreakEven,
+            Host = case_.Host,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
             SharepointFileUrl = case_.SharepointFileUrl,

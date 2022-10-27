@@ -6,7 +6,8 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography,
+    Button, NativeSelect, Typography, Input,
+ Label,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -19,6 +20,8 @@ import { GetTopsideService } from "../../Services/TopsideService"
 import { GetSurfService } from "../../Services/SurfService"
 import { GetSubstructureService } from "../../Services/SubstructureService"
 import { GetTransportService } from "../../Services/TransportService"
+import { WrapperColumn } from "../Asset/StyledAssetComponents"
+import { GetCaseService } from "../../Services/CaseService"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -44,6 +47,11 @@ const NumberInputField = styled.div`
 `
 const NativeSelectField = styled(NativeSelect)`
     width: 320px;
+`
+const HostWrapper = styled.div`
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
 `
 
 interface Props {
@@ -133,8 +141,19 @@ function CaseFacilitiesTab({
             const newConcept: Components.Schemas.Concept = Number(e.currentTarget.value) as Components.Schemas.Concept
             const newSubstructure: Substructure = { ...substructure }
             newSubstructure.concept = newConcept
+            if (newConcept !== 1) {
+                const newCase: Case = { ...caseItem }
+                newCase.host = ""
+                setCase(newCase)
+            }
             setSubstrucutre(newSubstructure)
         }
+    }
+
+    const handleHostChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newCase: Case = { ...caseItem }
+        newCase.host = e.currentTarget.value
+        setCase(newCase)
     }
 
     const handleTransportOilExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -166,6 +185,11 @@ function CaseFacilitiesTab({
             const result = await (await GetTransportService()).newUpdate(transport)
             setTransport(result)
         }
+
+        if (caseItem) {
+            const result = await (await GetCaseService()).update(caseItem)
+            setCase(result)
+        }
     }
 
     return (
@@ -174,6 +198,41 @@ function CaseFacilitiesTab({
                 <PageTitle variant="h2">Facilities</PageTitle>
                 <Button onClick={handleSave}>Save</Button>
             </TopWrapper>
+            <ColumnWrapper>
+                <RowWrapper>
+                    <NativeSelectField
+                        id="platformConcept"
+                        label="Platform concept"
+                        onChange={handleSubstructureConceptChange}
+                        value={substructure?.concept}
+                    >
+                        <option key="0" value={0}>No Concept</option>
+                        <option key="1" value={1}>Tie-back to existing offshore platform</option>
+                        <option key="2" value={2}>JACKET - Fixed Steel Jacket</option>
+                        <option key="3" value={3}>GBS - Fixed Concrete Platform - Gravity Based Structure</option>
+                        <option key="4" value={4}>TLP - Tension Leg Platform - Steel</option>
+                        <option key="5" value={5}>SPAR Platform - Steel</option>
+                        <option key="6" value={6}>SEMI - Semi Submersible - Steel</option>
+                        <option key="7" value={7}>CIRCULAR BARGE - Sevan type FPSO</option>
+                        <option key="8" value={8}>BARGE - Barge shaped - Spread Moored FPSO</option>
+                        <option key="9" value={9}>FPSO - Ship shaped - TUrret Moored</option>
+                        <option key="10" value={10}>TANKER - converted tanker FPSO - Turret Moored</option>
+                        <option key="11" value={11}>JACK-UP Platform</option>
+                        <option key="12" value={12}>Subsea to shore</option>
+                    </NativeSelectField>
+                    {substructure.concept === 1 && (
+                        <HostWrapper>
+                            <Label htmlFor="NumberInput" label="Host" />
+                            <Input
+                                id="NumberInput"
+                                value={caseItem.host ?? ""}
+                                disabled={false}
+                                onChange={handleHostChange}
+                            />
+                        </HostWrapper>
+                    )}
+                </RowWrapper>
+            </ColumnWrapper>
             <ColumnWrapper>
                 <Typography variant="h4">Topside</Typography>
                 <RowWrapper>
@@ -186,7 +245,7 @@ function CaseFacilitiesTab({
                         />
                     </NumberInputField>
                     <CaseNumberInput
-                        onChange={() => {}}
+                        onChange={() => { }}
                         value={caseItem?.facilitiesAvailability}
                         integer
                         disabled
@@ -282,26 +341,7 @@ function CaseFacilitiesTab({
                             label="Substructure dry weight"
                         />
                     </NumberInputField>
-                    <NativeSelectField
-                        id="substructureConcept"
-                        label="Substructure concept"
-                        onChange={handleSubstructureConceptChange}
-                        value={substructure?.concept}
-                    >
-                        <option key="0" value={0}>No Concept</option>
-                        <option key="1" value={1}>Tie-back to existing offshore platform</option>
-                        <option key="2" value={2}>JACKET - Fixed Steel Jacket</option>
-                        <option key="3" value={3}>GBS - Fixed Concrete Platform - Gravity Based Structure</option>
-                        <option key="4" value={4}>TLP - Tension Leg Platform - Steel</option>
-                        <option key="5" value={5}>SPAR Platform - Steel</option>
-                        <option key="6" value={6}>SEMI - Semi Submersible - Steel</option>
-                        <option key="7" value={7}>CIRCULAR BARGE - Sevan type FPSO</option>
-                        <option key="8" value={8}>BARGE - Barge shaped - Spread Moored FPSO</option>
-                        <option key="9" value={9}>FPSO - Ship shaped - TUrret Moored</option>
-                        <option key="10" value={10}>TANKER - converted tanker FPSO - Turret Moored</option>
-                        <option key="11" value={11}>JACK-UP Platform</option>
-                        <option key="12" value={12}>Subsea to shore</option>
-                    </NativeSelectField>
+
                 </RowWrapper>
             </ColumnWrapper>
             <ColumnWrapper>

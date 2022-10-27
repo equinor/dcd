@@ -43,6 +43,7 @@ public static class CaseAdapter
             CapexFactorFEEDStudies = caseDto.CapexFactorFEEDStudies,
             NPV = caseDto.NPV,
             BreakEven = caseDto.BreakEven,
+            Host = caseDto.Host,
             SharepointFileId = caseDto.SharepointFileId,
             SharepointFileName = caseDto.SharepointFileName,
             SharepointFileUrl = caseDto.SharepointFileUrl,
@@ -84,6 +85,7 @@ public static class CaseAdapter
         existing.CapexFactorFEEDStudies = caseDto.CapexFactorFEEDStudies;
         existing.NPV = caseDto.NPV;
         existing.BreakEven = caseDto.BreakEven;
+        existing.Host = caseDto.Host;
         existing.SharepointFileId = caseDto.SharepointFileId;
         existing.SharepointFileName = caseDto.SharepointFileName;
     }
