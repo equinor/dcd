@@ -471,6 +471,7 @@ declare namespace Components {
             dryWeight?: number; // double
             oilCapacity?: number; // double
             gasCapacity?: number; // double
+            waterInjectionCapacity?: number; // double
             artificialLift?: ArtificialLift /* int32 */;
             maturity?: Maturity /* int32 */;
             currency?: Currency /* int32 */;
