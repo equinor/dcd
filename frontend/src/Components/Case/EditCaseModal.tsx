@@ -95,7 +95,7 @@ const EditCaseModal = ({
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string | undefined>()
     const [dG4Date, setDG4Date] = useState<Date>(DefaultDate())
-    const [description, setDescription] = useState<string | undefined>()
+    const [description, setDescription] = useState<string>("")
     const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>()
     const [producerCount, setProducerWells] = useState<number>()
     const [gasInjectorCount, setGasInjectorWells] = useState<number>()
@@ -111,7 +111,7 @@ const EditCaseModal = ({
 
         setCaseName(caseItem?.name)
         setDG4Date(caseItem?.DG4Date ?? dG4DefaultDate)
-        setDescription(caseItem?.description)
+        setDescription(caseItem?.description ?? "")
         setProductionStrategy(caseItem?.productionStrategyOverview ?? 0)
         setProducerWells(caseItem?.producerCount ?? 0)
         setGasInjectorWells(caseItem?.gasInjectorCount ?? 0)
@@ -203,7 +203,7 @@ const EditCaseModal = ({
         }
     }
 
-    const disableCreateButton = () => caseName && caseName !== "" && description && description !== ""
+    const disableCreateButton = () => caseName && caseName !== ""
 
     return (
         <ModalNoFocus isOpen={isOpen} title={editMode ? "Edit case" : "Add new case"}>
