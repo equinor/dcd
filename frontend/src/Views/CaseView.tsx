@@ -41,6 +41,7 @@ import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
 import { Well } from "../models/Well"
 import { WellProjectWell } from "../models/WellProjectWell"
 import { ExplorationWell } from "../models/ExplorationWell"
+import CaseCO2Tab from "./Case/CaseCO2Tab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -406,7 +407,14 @@ const CaseView = () => {
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
-                                <p>CO2 Emissions</p>
+                                <CaseCO2Tab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                    drainageStrategy={drainageStrategy}
+                                    setDrainageStrategy={setDrainageStrategy}
+                                />
                             </StyledTabPanel>
                             <StyledTabPanel>
                                 <CaseSummaryTab
@@ -433,14 +441,6 @@ const CaseView = () => {
                     </TabContentWrapper>
                 </Tabs>
                 <DividerLine />
-                <CaseAsset
-                    caseItem={caseItem}
-                    project={project}
-                    setProject={setProject}
-                    setCase={setCase}
-                    caseId={caseId}
-                />
-
             </CaseViewDiv>
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleTechnicalInputModal}
