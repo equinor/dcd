@@ -10,7 +10,7 @@ import {
 
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
-import { lock, lock_open } from "@equinor/eds-icons"
+import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
