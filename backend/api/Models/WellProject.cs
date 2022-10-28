@@ -9,6 +9,10 @@ public class WellProject
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
     public WellProjectCostProfile? CostProfile { get; set; }
+    public OilProducerCostProfile? OilProducerCostProfile { get; set; }
+    public GasProducerCostProfile? GasProducerCostProfile { get; set; }
+    public WaterInjectorCostProfile? WaterInjectorCostProfile { get; set; }
+    public GasInjectorCostProfile? GasInjectorCostProfile { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public double RigMobDemob { get; set; }
     public double AnnualWellInterventionCost { get; set; }
@@ -18,6 +22,34 @@ public class WellProject
 }
 
 public class WellProjectCostProfile : TimeSeriesCost
+{
+    [ForeignKey("WellProject.Id")]
+    public WellProject WellProject { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class OilProducerCostProfile : TimeSeriesCost
+{
+    [ForeignKey("WellProject.Id")]
+    public WellProject WellProject { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class GasProducerCostProfile : TimeSeriesCost
+{
+    [ForeignKey("WellProject.Id")]
+    public WellProject WellProject { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class WaterInjectorCostProfile : TimeSeriesCost
+{
+    [ForeignKey("WellProject.Id")]
+    public WellProject WellProject { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class GasInjectorCostProfile : TimeSeriesCost
 {
     [ForeignKey("WellProject.Id")]
     public WellProject WellProject { get; set; } = null!;
