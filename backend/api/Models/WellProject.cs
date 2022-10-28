@@ -32,26 +32,22 @@ public class OilProducerCostProfile : TimeSeriesCost
 {
     [ForeignKey("WellProject.Id")]
     public WellProject WellProject { get; set; } = null!;
-    public bool Override { get; set; }
 }
 
 public class GasProducerCostProfile : TimeSeriesCost
 {
     [ForeignKey("WellProject.Id")]
     public WellProject WellProject { get; set; } = null!;
-    public bool Override { get; set; }
 }
 
 public class WaterInjectorCostProfile : TimeSeriesCost
 {
     [ForeignKey("WellProject.Id")]
     public WellProject WellProject { get; set; } = null!;
-    public bool Override { get; set; }
 }
 
 public class GasInjectorCostProfile : TimeSeriesCost
 {
     [ForeignKey("WellProject.Id")]
     public WellProject WellProject { get; set; } = null!;
-    public bool Override { get; set; }
 }

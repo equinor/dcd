@@ -150,7 +150,7 @@ public static class WellProjectAdapter
         existing.Currency = costProfile.Currency;
         existing.StartYear = costProfile.StartYear;
         existing.Values = costProfile.Values;
-        existing.Override = costProfile.Override;
+        // existing.Override = costProfile.Override;
 
         return existing;
     }
@@ -166,7 +166,7 @@ public static class WellProjectAdapter
             Currency = costProfile.Currency,
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
-            Override = costProfile.Override
+            // Override = costProfile.Override
         };
         return wellProjectCostProfile;
     }
@@ -181,7 +181,7 @@ public static class WellProjectAdapter
         existing.Currency = costProfile.Currency;
         existing.StartYear = costProfile.StartYear;
         existing.Values = costProfile.Values;
-        existing.Override = costProfile.Override;
+        // existing.Override = costProfile.Override;
 
         return existing;
     }
@@ -197,7 +197,7 @@ public static class WellProjectAdapter
             Currency = costProfile.Currency,
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
-            Override = costProfile.Override
+            // Override = costProfile.Override
         };
         return wellProjectCostProfile;
     }
@@ -212,7 +212,7 @@ public static class WellProjectAdapter
         existing.Currency = costProfile.Currency;
         existing.StartYear = costProfile.StartYear;
         existing.Values = costProfile.Values;
-        existing.Override = costProfile.Override;
+        // existing.Override = costProfile.Override;
 
         return existing;
     }
@@ -228,7 +228,7 @@ public static class WellProjectAdapter
             Currency = costProfile.Currency,
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
-            Override = costProfile.Override
+            // Override = costProfile.Override
         };
         return wellProjectCostProfile;
     }
@@ -243,7 +243,7 @@ public static class WellProjectAdapter
         existing.Currency = costProfile.Currency;
         existing.StartYear = costProfile.StartYear;
         existing.Values = costProfile.Values;
-        existing.Override = costProfile.Override;
+        // existing.Override = costProfile.Override;
 
         return existing;
     }
@@ -259,7 +259,7 @@ public static class WellProjectAdapter
             Currency = costProfile.Currency,
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
-            Override = costProfile.Override
+            // Override = costProfile.Override
         };
         return wellProjectCostProfile;
     }

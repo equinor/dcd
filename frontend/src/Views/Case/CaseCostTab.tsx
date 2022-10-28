@@ -189,7 +189,7 @@ function CaseCostTab({
                     const wellProjectWaterInjectorCostProfile = wellProject.waterInjectorCostProfile
                     setWellProjectWaterInjectorCost(wellProjectWaterInjectorCostProfile)
                     const wellProjectGasInjectorCostProfile = wellProject.gasInjectorCostProfile
-                    setWellProjectGasInjectorCost(wellProjectGasInjectorCost)
+                    setWellProjectGasInjectorCost(wellProjectGasInjectorCostProfile)
 
                     // Exploration
                     const explorationCostProfile = exploration.costProfile
