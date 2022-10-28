@@ -9,7 +9,6 @@ import {
 } from "react"
 
 import { AgGridReact } from "ag-grid-react"
-import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
@@ -37,7 +36,6 @@ function CaseTabTable({
     tableYears, tableName,
     alignedGridsRef, gridRef,
 }: Props) {
-    useAgGridStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
     const profilesToRowData = () => {
