@@ -70,6 +70,7 @@ interface Props {
     wellProject: WellProject,
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
     drainageStrategy: DrainageStrategy
+    activeTab: number
 }
 
 function CaseSummaryTab({
@@ -82,6 +83,7 @@ function CaseSummaryTab({
     substructure, setSubstrucutre,
     transport, setTransport,
     drainageStrategy,
+    activeTab,
 }: Props) {
     // OPEX
     const [studyCost, setStudyCost] = useState<StudyCostProfile>()
@@ -128,32 +130,34 @@ function CaseSummaryTab({
     useEffect(() => {
         (async () => {
             try {
-                // OPEX
-                const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                setStudyCost(study)
-                const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                setOpexCost(opex)
-                const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                setCessationCost(cessation)
+                if (activeTab === 7) {
+                    // OPEX
+                    const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    setStudyCost(study)
+                    const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    setOpexCost(opex)
+                    const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
+                    setCessationCost(cessation)
 
-                // CAPEX
-                const topsideCostProfile = topside.costProfile
-                setTopsideCost(topsideCostProfile)
-                const surfCostProfile = surf.costProfile
-                setSurfCost(surfCostProfile)
-                const substructureCostProfile = substructure.costProfile
-                setSubstructureCost(substructureCostProfile)
-                const transportCostProfile = transport.costProfile
-                setTransportCost(transportCostProfile)
+                    // CAPEX
+                    const topsideCostProfile = topside.costProfile
+                    setTopsideCost(topsideCostProfile)
+                    const surfCostProfile = surf.costProfile
+                    setSurfCost(surfCostProfile)
+                    const substructureCostProfile = substructure.costProfile
+                    setSubstructureCost(substructureCostProfile)
+                    const transportCostProfile = transport.costProfile
+                    setTransportCost(transportCostProfile)
 
-                setTableYearsFromProfiles([study, opex, cessation,
-                    topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
-                ])
+                    setTableYearsFromProfiles([study, opex, cessation,
+                        topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
+                    ])
+                }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [])
+    }, [activeTab])
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
@@ -213,6 +217,8 @@ function CaseSummaryTab({
         setCase(updateedCaseResult)
         setIsSaving(false)
     }
+
+    if (activeTab !== 7) { return null }
 
     return (
         <>

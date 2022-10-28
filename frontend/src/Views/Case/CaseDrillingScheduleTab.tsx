@@ -83,6 +83,7 @@ interface Props {
     wellProjectWells: WellProjectWell[],
     setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[] | undefined>>,
     wells: Well[] | undefined
+    activeTab: number
 }
 
 function CaseDrillingScheduleTab({
@@ -92,7 +93,7 @@ function CaseDrillingScheduleTab({
     wellProject, setWellProject,
     explorationWells, setExplorationWells,
     wellProjectWells, setWellProjectWells,
-    wells,
+    wells, activeTab,
 }: Props) {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -136,16 +137,18 @@ function CaseDrillingScheduleTab({
     }
 
     useEffect(() => {
-        const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
-        const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
-        SetTableYearsFromProfiles(
-            [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-            caseItem.DG4Date.getFullYear(),
-            setStartYear,
-            setEndYear,
-            setTableYears,
-        )
-    }, [])
+        if (activeTab === 3) {
+            const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
+            const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
+            SetTableYearsFromProfiles(
+                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+                caseItem.DG4Date.getFullYear(),
+                setStartYear,
+                setEndYear,
+                setTableYears,
+            )
+        }
+    }, [activeTab])
 
     const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
         if (wells && wells.length > 0) {
@@ -180,14 +183,16 @@ function CaseDrillingScheduleTab({
     }
 
     useEffect(() => {
-        setOilProducerCount(sumWellsForWellCategory(0))
-        setGasProducerCount(sumWellsForWellCategory(1))
-        setWaterInjectorCount(sumWellsForWellCategory(2))
-        setGasInjectorCount(sumWellsForWellCategory(3))
-        setExplorationWellCount(sumWellsForWellCategory(4))
-        setAppraisalWellCount(sumWellsForWellCategory(5))
-        setSidetrackCount(sumWellsForWellCategory(6))
-    }, [wells, explorationWells, wellProjectWells])
+        if (activeTab === 3) {
+            setOilProducerCount(sumWellsForWellCategory(0))
+            setGasProducerCount(sumWellsForWellCategory(1))
+            setWaterInjectorCount(sumWellsForWellCategory(2))
+            setGasInjectorCount(sumWellsForWellCategory(3))
+            setExplorationWellCount(sumWellsForWellCategory(4))
+            setAppraisalWellCount(sumWellsForWellCategory(5))
+            setSidetrackCount(sumWellsForWellCategory(6))
+        }
+    }, [wells, explorationWells, wellProjectWells, activeTab])
 
     const handleSave = async () => {
         setIsSaving(true)
@@ -227,6 +232,8 @@ function CaseDrillingScheduleTab({
             setWellProjectWells(newWellProjectWellsResult)
         }
     }
+
+    if (activeTab !== 3) { return null }
 
     return (
         <>

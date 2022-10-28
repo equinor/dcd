@@ -14,7 +14,6 @@ import {
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
-import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
@@ -59,11 +58,13 @@ interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
+    activeTab: number
 }
 
 function CaseCO2Tab({
     project, setProject,
     caseItem, setCase,
+    activeTab,
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
 
@@ -74,21 +75,23 @@ function CaseCO2Tab({
     useEffect(() => {
         (async () => {
             try {
-                const co2 = await (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
-                setCo2Emissions(co2)
+                if (activeTab === 6) {
+                    const co2 = await (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
+                    setCo2Emissions(co2)
 
-                SetTableYearsFromProfiles(
-                    [co2],
-                    caseItem.DG4Date.getFullYear(),
-                    setStartYear,
-                    setEndYear,
-                    setTableYears,
-                )
+                    SetTableYearsFromProfiles(
+                        [co2],
+                        caseItem.DG4Date.getFullYear(),
+                        setStartYear,
+                        setEndYear,
+                        setTableYears,
+                    )
+                }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [])
+    }, [activeTab])
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -126,6 +129,8 @@ function CaseCO2Tab({
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
+
+    if (activeTab !== 6) { return null }
 
     return (
         <>

@@ -48,6 +48,7 @@ interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
+    activeTab: number
 }
 
 function CaseDescriptionTab({
@@ -55,6 +56,7 @@ function CaseDescriptionTab({
     setProject,
     caseItem,
     setCase,
+    activeTab,
 }: Props) {
     const [isSaving, setIsSaving] = useState<boolean>()
 
@@ -116,6 +118,7 @@ function CaseDescriptionTab({
         setIsSaving(false)
         setCase(result)
     }
+    if (activeTab !== 0) { return null }
 
     return (
         <>

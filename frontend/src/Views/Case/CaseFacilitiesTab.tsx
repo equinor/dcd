@@ -66,6 +66,7 @@ interface Props {
     setSubstrucutre: Dispatch<SetStateAction<Substructure | undefined>>,
     transport: Transport,
     setTransport: Dispatch<SetStateAction<Transport | undefined>>,
+    activeTab: number
 }
 
 function CaseFacilitiesTab({
@@ -75,6 +76,7 @@ function CaseFacilitiesTab({
     surf, setSurf,
     substructure, setSubstrucutre,
     transport, setTransport,
+    activeTab,
 }: Props) {
     const [isSaving, setIsSaving] = useState<boolean>()
 
@@ -194,6 +196,8 @@ function CaseFacilitiesTab({
         }
         setIsSaving(false)
     }
+
+    if (activeTab !== 4) { return null }
 
     return (
         <>
