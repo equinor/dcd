@@ -126,7 +126,7 @@ public class CaseService
         var project = _projectService.GetProject(case_.ProjectId);
         case_.Project = project;
 
-        case_.Name = case_.Name + " - copy";
+        case_.Name += " - copy";
         _context.Cases!.Add(case_);
         _context.SaveChanges();
         return _projectService.GetProjectDto(project.Id);

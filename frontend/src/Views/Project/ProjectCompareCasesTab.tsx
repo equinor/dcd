@@ -3,7 +3,7 @@ import React from "react"
 import {
     Typography,
 } from "@equinor/eds-core-react"
-import LinearDataTable from "../Components/LinearDataTable"
+import LinearDataTable from "../../Components/LinearDataTable"
 
 interface Props {
     capexYearX: number[]
@@ -20,7 +20,7 @@ const ChartsContainer = styled.div`
     display: flex;
 `
 
-const CompareCasesView = ({
+const ProjectCompareCasesTab = ({
     capexYearX,
     capexYearY,
     caseTitles,
@@ -41,4 +41,4 @@ const CompareCasesView = ({
 
 )
 
-export default CompareCasesView
+export default ProjectCompareCasesTab
