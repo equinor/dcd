@@ -205,14 +205,14 @@ function CaseCostTab({
 
     const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        const newCapexFactorFeasibilityStudies = Number(e.currentTarget.value)
+        const newCapexFactorFeasibilityStudies = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
         newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
         setCase(newCase)
     }
 
     const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        const newCapexFactorFEEDStudies = Number(e.currentTarget.value)
+        const newCapexFactorFEEDStudies = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
         newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
         setCase(newCase)
     }
