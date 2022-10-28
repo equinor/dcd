@@ -338,6 +338,8 @@ declare namespace Components {
             topside?: boolean;
             transport?: boolean;
             sharePointFileId?: string | null;
+            sharePointFileName?: string | null;
+            sharePointFileUrl?: string | null;
             sharePointSiteUrl?: string | null;
         }
         export interface SharepointIds {
