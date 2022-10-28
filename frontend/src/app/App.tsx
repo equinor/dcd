@@ -1,6 +1,7 @@
 import { Progress } from "@equinor/eds-core-react"
 import { useAppConfig, useCurrentUser, useFusionEnvironment } from "@equinor/fusion"
 import { ErrorBoundary } from "@equinor/fusion-components"
+import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import ConceptAppAuthProvider from "../auth/ConceptAppAuthProvider"
 import { buildConfig } from "../Services/config"
 import { StoreAppId, StoreAppScope } from "../Utils/common"
@@ -19,6 +20,7 @@ const setEnvironment = (): void => {
  */
 function App(): JSX.Element {
     setEnvironment()
+    useAgGridStyles()
     const user = useCurrentUser()
     const runtimeConfig = useAppConfig()
     if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {

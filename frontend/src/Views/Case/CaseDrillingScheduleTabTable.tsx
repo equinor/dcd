@@ -8,7 +8,6 @@ import {
 } from "react"
 
 import { AgGridReact } from "ag-grid-react"
-import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import "ag-grid-enterprise"
@@ -44,7 +43,6 @@ function CaseDrillingScheduleTabTable({
     assetWells, setAssetWells,
     wells, assetId, isExplorationTable,
 }: Props) {
-    useAgGridStyles()
     const [rowData, setRowData] = useState<any[]>([])
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
