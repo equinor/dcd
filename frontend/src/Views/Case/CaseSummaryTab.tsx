@@ -180,28 +180,46 @@ function CaseSummaryTab({
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Study cost", unit: "MNOK", profile: studyCost,
+            profileName: "Study cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: studyCost,
         },
         {
-            profileName: "OPEX cost", unit: "MNOK", profile: opexCost,
+            profileName: "OPEX cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: opexCost,
         },
         {
-            profileName: "Cessation cost", unit: "MNOK", profile: cessationCost,
+            profileName: "Cessation cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationCost,
         },
     ]
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Topside cost", unit: "MNOK", profile: topsideCost, set: setTopsideCost,
+            profileName: "Topside cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: topsideCost,
+            set: setTopsideCost,
         },
         {
-            profileName: "SURF cost", unit: "MNOK", profile: surfCost, set: setSurfCost,
+            profileName: "SURF cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: surfCost,
+            set: setSurfCost,
         },
         {
-            profileName: "Substructure cost", unit: "MNOK", profile: substructureCost, set: setSubstructureCost,
+            profileName: "Substructure cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: substructureCost,
+            set: setSubstructureCost,
         },
         {
-            profileName: "Transport cost", unit: "MNOK", profile: transportCost, set: setTransportCost,
+            profileName: "Transport cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: transportCost,
+            set: setTransportCost,
         },
     ]
 

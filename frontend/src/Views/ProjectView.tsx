@@ -12,9 +12,9 @@ import styled from "styled-components"
 import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
-import OverviewView from "./OverviewView"
-import CompareCasesView from "./CompareCasesView"
-import SettingsView from "./SettingsView"
+import ProjectOverviewTab from "./Project/ProjectOverviewTab"
+import ProjectCompareCasesTab from "./Project/ProjectCompareCasesTab"
+import ProjectSettingsTab from "./Project/ProjectSettingsTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
@@ -130,13 +130,13 @@ const ProjectView = () => {
                     </List>
                     <Panels>
                         <StyledTabPanel>
-                            <OverviewView
+                            <ProjectOverviewTab
                                 project={project}
                                 setProject={setProject}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <CompareCasesView
+                            <ProjectCompareCasesTab
                                 capexYearX={capexYearXLabels}
                                 capexYearY={capexYearYDatas}
                                 caseTitles={capexYearCaseTitles}
@@ -146,13 +146,9 @@ const ProjectView = () => {
                             <p>Workflow</p>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <SettingsView
+                            <ProjectSettingsTab
                                 project={project}
                                 setProject={setProject}
-                                physicalUnit={physicalUnit}
-                                setPhysicalUnit={setPhysicalUnit}
-                                currency={currency}
-                                setCurrency={setCurrency}
                             />
                         </StyledTabPanel>
                     </Panels>

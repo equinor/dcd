@@ -15,7 +15,6 @@ import {
 } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { AgGridReact } from "ag-grid-react"
-import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import {
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
@@ -50,8 +49,6 @@ const CasesTable = ({ project, setProject }: Props) => {
 
     const history = useHistory()
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
-
-    useAgGridStyles()
 
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
