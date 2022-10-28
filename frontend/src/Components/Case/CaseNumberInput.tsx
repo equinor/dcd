@@ -8,8 +8,6 @@ interface Props {
     integer: boolean,
     disabled?: boolean
     label: string
-    // nonNegativeValues: boolean
-    // isPercentage: boolean
 }
 
 const CaseNumberInput = ({
@@ -18,8 +16,6 @@ const CaseNumberInput = ({
     integer,
     disabled,
     label,
-    // nonNegativeValues,
-    // isPercentage,
 }: Props) => (
     <WrapperColumn>
         <Label htmlFor="NumberInput" label={label} />
@@ -34,8 +30,6 @@ const CaseNumberInput = ({
                     event.preventDefault()
                 }
             }}
-            min={0} // nonNegativeValues
-            max={100} // isPercentage
         />
     </WrapperColumn>
 )

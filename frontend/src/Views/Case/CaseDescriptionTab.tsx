@@ -68,26 +68,26 @@ function CaseDescriptionTab({
 
     const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        const newfacilitiesAvailability = Number(e.currentTarget.value)
+        const newfacilitiesAvailability = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
         newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         setCase(newCase)
     }
 
     const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.producerCount = Number(e.currentTarget.value)
+        newCase.producerCount = Math.max(Number(e.currentTarget.value), 0)
         setCase(newCase)
     }
 
     const handleGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.gasInjectorCount = Number(e.currentTarget.value)
+        newCase.gasInjectorCount = Math.max(Number(e.currentTarget.value), 0)
         setCase(newCase)
     }
 
     const handletWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.waterInjectorCount = Number(e.currentTarget.value)
+        newCase.waterInjectorCount = Math.max(Number(e.currentTarget.value), 0)
         setCase(newCase)
     }
 
