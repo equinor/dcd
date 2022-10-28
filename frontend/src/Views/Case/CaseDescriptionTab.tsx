@@ -2,11 +2,12 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
+    useState,
 } from "react"
 import styled from "styled-components"
 
 import {
-    Button, Label, NativeSelect, Typography,
+    Button, Label, NativeSelect, Progress, Typography,
 } from "@equinor/eds-core-react"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { Project } from "../../models/Project"
@@ -55,6 +56,8 @@ function CaseDescriptionTab({
     caseItem,
     setCase,
 }: Props) {
+    const [isSaving, setIsSaving] = useState<boolean>()
+
     const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
         newCase.description = e.currentTarget.value
@@ -107,8 +110,10 @@ function CaseDescriptionTab({
     }
 
     const handleSave = async () => {
+        setIsSaving(true)
         const updatedCase = Case.Copy(caseItem)
         const result = await (await GetCaseService()).update(updatedCase)
+        setIsSaving(false)
         setCase(result)
     }
 
@@ -116,7 +121,11 @@ function CaseDescriptionTab({
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Description</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Circular size={16} color="primary" />
+                    </Button>
+                )}
             </TopWrapper>
             <ColumnWrapper>
 

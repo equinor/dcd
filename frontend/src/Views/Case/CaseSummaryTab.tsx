@@ -3,7 +3,7 @@ import {
 } from "react"
 import styled from "styled-components"
 
-import { Button, Typography } from "@equinor/eds-core-react"
+import { Button, Progress, Typography } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
@@ -97,6 +97,8 @@ function CaseSummaryTab({
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const [isSaving, setIsSaving] = useState<boolean>()
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
         if (timeSeries && timeSeries.startYear && timeSeries.values) {
@@ -204,17 +206,23 @@ function CaseSummaryTab({
     }
 
     const handleSave = async () => {
+        setIsSaving(true)
         const updatedSurfResult = await (await GetSurfService()).newUpdate(surf)
         setSurf(updatedSurfResult)
         const updateedCaseResult = await (await GetCaseService()).update(caseItem)
         setCase(updateedCaseResult)
+        setIsSaving(false)
     }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Summary</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Circular size={16} color="primary" />
+                    </Button>
+                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>

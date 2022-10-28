@@ -9,7 +9,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography,
+    Button, NativeSelect, Progress, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -112,6 +112,8 @@ function CaseDrillingScheduleTab({
     const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
     const [sidetrackCount, setSidetrackCount] = useState<number>(0)
 
+    const [isSaving, setIsSaving] = useState<boolean>()
+
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
         if (newStartYear < 2010) {
@@ -188,6 +190,7 @@ function CaseDrillingScheduleTab({
     }, [wells, explorationWells, wellProjectWells])
 
     const handleSave = async () => {
+        setIsSaving(true)
         // Exploration wells
         const newExplorationWells = explorationWells
             .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
@@ -216,6 +219,8 @@ function CaseDrillingScheduleTab({
         const updateWellProjectWellsResult = await (await GetWellProjectWellService())
             .updateMultipleWellProjectWells(updateWellProjectWells)
 
+        setIsSaving(false)
+
         if (updateWellProjectWellsResult && updateWellProjectWellsResult.length > 0) {
             setWellProjectWells(updateWellProjectWellsResult)
         } else if (newWellProjectWellsResult && newWellProjectWellsResult.length > 0) {
@@ -227,7 +232,11 @@ function CaseDrillingScheduleTab({
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Drilling schedule</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Circular size={16} color="primary" />
+                    </Button>
+                )}
             </TopWrapper>
             <p>Create wells in technical input in order to see them in the list below.</p>
             <ColumnWrapper>

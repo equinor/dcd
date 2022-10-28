@@ -8,7 +8,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography,
+    Button, NativeSelect, Progress, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -94,6 +94,8 @@ function CaseProductionProfilesTab({
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const [isSaving, setIsSaving] = useState<boolean>()
 
     const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
         const newDrainageStrategy: DrainageStrategy = { ...drainage }
@@ -214,6 +216,7 @@ function CaseProductionProfilesTab({
     }, [])
 
     const handleSave = async () => {
+        setIsSaving(true)
         if (drainageStrategy) {
             const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
             newDrainageStrategy.netSalesGas = netSalesGas
@@ -228,13 +231,18 @@ function CaseProductionProfilesTab({
         }
         const updateCaseResult = await (await GetCaseService()).update(caseItem)
         setCase(updateCaseResult)
+        setIsSaving(false)
     }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Production profiles</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Circular size={16} color="primary" />
+                    </Button>
+                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>

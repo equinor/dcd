@@ -3,7 +3,9 @@ import {
 } from "react"
 import styled from "styled-components"
 
-import { Button, NativeSelect, Typography } from "@equinor/eds-core-react"
+import {
+ Button, NativeSelect, Progress, Typography,
+} from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
@@ -142,6 +144,8 @@ function CaseCostTab({
     const capexGridRef = useRef(null)
     const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
+
+    const [isSaving, setIsSaving] = useState<boolean>()
 
     useEffect(() => {
         (async () => {
@@ -338,6 +342,7 @@ function CaseCostTab({
     }, [explorationCost, seismicAcqAndProcCost, countryOfficeCost])
 
     const handleSave = async () => {
+        setIsSaving(true)
         const updatedSurfResult = await (await GetSurfService()).newUpdate(surf)
         setSurf(updatedSurfResult)
         const updatedTopsideResult = await (await GetTopsideService()).newUpdate(topside)
@@ -352,13 +357,18 @@ function CaseCostTab({
         setExploration(updatedExplorationResult)
         const updateedCaseResult = await (await GetCaseService()).update(caseItem)
         setCase(updateedCaseResult)
+        setIsSaving(false)
     }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Cost</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Circular size={16} color="primary" />
+                    </Button>
+                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>

@@ -4,7 +4,7 @@ import {
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Input, Label, Switch,
+    Button, Input, Label, Progress, Switch,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { GetProspService } from "../../Services/ProspService"
@@ -50,6 +50,8 @@ function PROSPTab({
     const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>()
 
+    const [isRefreshing, setIsRefreshing] = useState<boolean>()
+
     useEffect(() => {
         (async () => {
             setSharepointUrl(project.sharepointSiteUrl ?? "")
@@ -66,6 +68,7 @@ function PROSPTab({
     }, [])
 
     const saveUrl: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        setIsRefreshing(true)
         e.preventDefault()
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
@@ -77,7 +80,9 @@ function PROSPTab({
                 setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
             }
             setDriveItems(result)
+            setIsRefreshing(false)
         } catch (error) {
+            setIsRefreshing(false)
             console.error("[PROSPTab] error while submitting form data", error)
         }
     }
@@ -99,7 +104,12 @@ function PROSPTab({
                     onChange={handleSharePointUrl}
                     value={sharepointUrl}
                 />
-                <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
+                {!isRefreshing ? <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
+                    : (
+                        <Button variant="outlined">
+                            <Progress.Circular size={16} color="primary" />
+                        </Button>
+                    )}
             </ProspFieldWrapper>
             <SwitchWrapper>
                 <Switch
