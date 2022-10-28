@@ -174,7 +174,6 @@ function CaseDescriptionTab({
                             onChange={handleProductionStrategyChange}
                             value={caseItem.productionStrategyOverview}
                         >
-                            <option key={undefined} value={undefined}> </option>
                             <option key={0} value={0}>Depletion</option>
                             <option key={1} value={1}>Water injection</option>
                             <option key={2} value={2}>Gas injection</option>
