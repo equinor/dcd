@@ -76,12 +76,14 @@ interface Props {
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     drainageStrategy: DrainageStrategy,
     setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
+    activeTab: number
 }
 
 function CaseProductionProfilesTab({
     project, setProject,
     caseItem, setCase,
     drainageStrategy, setDrainageStrategy,
+    activeTab,
 }: Props) {
     const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
@@ -195,19 +197,21 @@ function CaseProductionProfilesTab({
     }
 
     useEffect(() => {
-        SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-        drainageStrategy.productionProfileWaterInjection,
-        ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
-        setNetSalesGas(drainageStrategy.netSalesGas)
-        setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
-        setGas(drainageStrategy.productionProfileGas)
-        setOil(drainageStrategy.productionProfileOil)
-        setWater(drainageStrategy.productionProfileWater)
-        setNGL(drainageStrategy.productionProfileNGL)
-        setWaterInjection(drainageStrategy.productionProfileWaterInjection)
-    }, [])
+        if (activeTab === 1) {
+            SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
+            drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+            drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+            drainageStrategy.productionProfileWaterInjection,
+            ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
+            setNetSalesGas(drainageStrategy.netSalesGas)
+            setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
+            setGas(drainageStrategy.productionProfileGas)
+            setOil(drainageStrategy.productionProfileOil)
+            setWater(drainageStrategy.productionProfileWater)
+            setNGL(drainageStrategy.productionProfileNGL)
+            setWaterInjection(drainageStrategy.productionProfileWaterInjection)
+        }
+    }, [activeTab])
 
     const handleSave = async () => {
         setIsSaving(true)
@@ -227,6 +231,8 @@ function CaseProductionProfilesTab({
         setCase(updateCaseResult)
         setIsSaving(false)
     }
+
+    if (activeTab !== 1) { return null }
 
     return (
         <>

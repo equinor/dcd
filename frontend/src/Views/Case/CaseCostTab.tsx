@@ -103,6 +103,7 @@ interface Props {
     wellProject: WellProject,
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
     drainageStrategy: DrainageStrategy
+    activeTab: number
 }
 
 function CaseCostTab({
@@ -115,6 +116,7 @@ function CaseCostTab({
     substructure, setSubstructure,
     transport, setTransport,
     drainageStrategy,
+    activeTab,
 }: Props) {
     // OPEX
     const [studyCost, setStudyCost] = useState<StudyCostProfile>()
@@ -150,48 +152,50 @@ function CaseCostTab({
     useEffect(() => {
         (async () => {
             try {
-                // OPEX
-                const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                setStudyCost(study)
-                const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                setOpexCost(opex)
-                const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                setCessationCost(cessation)
+                if (activeTab === 5) {
+                    // OPEX
+                    const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    setStudyCost(study)
+                    const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    setOpexCost(opex)
+                    const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
+                    setCessationCost(cessation)
 
-                // CAPEX
-                const topsideCostProfile = topside.costProfile
-                setTopsideCost(topsideCostProfile)
-                const surfCostProfile = surf.costProfile
-                setSurfCost(surfCostProfile)
-                const substructureCostProfile = substructure.costProfile
-                setSubstructureCost(substructureCostProfile)
-                const transportCostProfile = transport.costProfile
-                setTransportCost(transportCostProfile)
+                    // CAPEX
+                    const topsideCostProfile = topside.costProfile
+                    setTopsideCost(topsideCostProfile)
+                    const surfCostProfile = surf.costProfile
+                    setSurfCost(surfCostProfile)
+                    const substructureCostProfile = substructure.costProfile
+                    setSubstructureCost(substructureCostProfile)
+                    const transportCostProfile = transport.costProfile
+                    setTransportCost(transportCostProfile)
 
-                // Development
-                const wellProjectCostProfile = wellProject.costProfile
-                setWellProjectCost(wellProjectCostProfile)
+                    // Development
+                    const wellProjectCostProfile = wellProject.costProfile
+                    setWellProjectCost(wellProjectCostProfile)
 
-                // Exploration
-                const explorationCostProfile = exploration.costProfile
-                setExplorationCost(explorationCostProfile)
-                const seismicAcqAndProc = exploration.seismicAcquisitionAndProcessing
-                setseismicAcqAndProcCost(seismicAcqAndProc)
-                const countryOffice = exploration.countryOfficeCost
-                setCountryOfficeCost(countryOffice)
-                const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
-                setGAndGAdminCost(gAndGAdmin)
+                    // Exploration
+                    const explorationCostProfile = exploration.costProfile
+                    setExplorationCost(explorationCostProfile)
+                    const seismicAcqAndProc = exploration.seismicAcquisitionAndProcessing
+                    setseismicAcqAndProcCost(seismicAcqAndProc)
+                    const countryOffice = exploration.countryOfficeCost
+                    setCountryOfficeCost(countryOffice)
+                    const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
+                    setGAndGAdminCost(gAndGAdmin)
 
-                SetTableYearsFromProfiles([study, opex, cessation,
-                    surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
-                    wellProjectCostProfile,
-                    explorationCostProfile, seismicAcqAndProc, countryOffice, gAndGAdmin,
-                ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
+                    SetTableYearsFromProfiles([study, opex, cessation,
+                        surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
+                        wellProjectCostProfile,
+                        explorationCostProfile, seismicAcqAndProc, countryOffice, gAndGAdmin,
+                    ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
+                }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [])
+    }, [activeTab])
 
     const updatedAndSetSurf = (surfItem: Surf) => {
         const newSurf: Surf = { ...surfItem }
@@ -359,6 +363,8 @@ function CaseCostTab({
         setCase(updateedCaseResult)
         setIsSaving(false)
     }
+
+    if (activeTab !== 5) { return null }
 
     return (
         <>

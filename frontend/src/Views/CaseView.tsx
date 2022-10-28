@@ -318,6 +318,7 @@ const CaseView = () => {
                                     setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -328,6 +329,7 @@ const CaseView = () => {
                                     setCase={setCase}
                                     drainageStrategy={drainageStrategy}
                                     setDrainageStrategy={setDrainageStrategy}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -336,6 +338,7 @@ const CaseView = () => {
                                     setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -353,6 +356,7 @@ const CaseView = () => {
                                     wellProjectWells={wellProjectWells}
                                     setWellProjectWells={setWellProjectWells}
                                     wells={wells}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -369,6 +373,7 @@ const CaseView = () => {
                                     setSubstrucutre={setSubstructure}
                                     transport={transport}
                                     setTransport={setTransport}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -390,6 +395,7 @@ const CaseView = () => {
                                     transport={transport}
                                     setTransport={setTransport}
                                     drainageStrategy={drainageStrategy}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -398,6 +404,7 @@ const CaseView = () => {
                                     setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -419,6 +426,7 @@ const CaseView = () => {
                                     transport={transport}
                                     setTransport={setTransport}
                                     drainageStrategy={drainageStrategy}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                         </Panels>

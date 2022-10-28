@@ -39,6 +39,7 @@ interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
+    activeTab: number
 }
 
 function CaseScheduleTab({
@@ -46,6 +47,7 @@ function CaseScheduleTab({
     setProject,
     caseItem,
     setCase,
+    activeTab,
 }: Props) {
     const [isSaving, setIsSaving] = useState<boolean>()
 
@@ -208,6 +210,8 @@ function CaseScheduleTab({
         const maxDate = new Date(maxDateValue)
         return ToMonthDate(maxDate)
     }
+
+    if (activeTab !== 2) { return null }
 
     return (
         <>
