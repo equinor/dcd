@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
     Dispatch,
     SetStateAction,
@@ -66,6 +65,9 @@ const YearDashWrapper = styled.div`
 const TableWrapper = styled.div`
     margin-bottom: 50px;
 `
+const InputWrapper = styled.div`
+    margin-right: 20px;
+`
 
 interface Props {
     project: Project,
@@ -98,6 +100,17 @@ function CaseDrillingScheduleTab({
 
     const wellProjectWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
+
+    // WellProjectWell
+    const [oilProducerCount, setOilProducerCount] = useState<number>(0)
+    const [gasProducerCount, setGasProducerCount] = useState<number>(0)
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>(0)
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>(0)
+
+    // ExplorationWell
+    const [explorationWellCount, setExplorationWellCount] = useState<number>(0)
+    const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
+    const [sidetrackCount, setSidetrackCount] = useState<number>(0)
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -132,13 +145,59 @@ function CaseDrillingScheduleTab({
         )
     }, [])
 
+    const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
+        if (wells && wells.length > 0) {
+            if (category >= 4) {
+                const filteredExplorationWells = explorationWells.filter((ew) => ew.explorationId === exploration.id)
+                const filteredWells = wells.filter((w) => w.wellCategory === category)
+                let sum = 0
+                filteredWells.forEach((fw) => {
+                    filteredExplorationWells.filter((few) => few.wellId === fw.id).forEach((ew) => {
+                        if (ew.drillingSchedule
+                            && ew.drillingSchedule.values
+                            && ew.drillingSchedule.values.length > 0) {
+                            sum += ew.drillingSchedule.values.reduce((a, b) => a + b, 0)
+                        }
+                    })
+                })
+                return sum
+            }
+            const filteredWellProjectWells = wellProjectWells.filter((wpw) => wpw.wellProjectId === wellProject.id)
+            const filteredWells = wells.filter((w) => w.wellCategory === category)
+            let sum = 0
+            filteredWells.forEach((fw) => {
+                filteredWellProjectWells.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
+                    if (ew.drillingSchedule && ew.drillingSchedule.values && ew.drillingSchedule.values.length > 0) {
+                        sum += ew.drillingSchedule.values.reduce((a, b) => a + b, 0)
+                    }
+                })
+            })
+            return sum
+        }
+        return 0
+    }
+
+    useEffect(() => {
+        setOilProducerCount(sumWellsForWellCategory(0))
+        setGasProducerCount(sumWellsForWellCategory(1))
+        setWaterInjectorCount(sumWellsForWellCategory(2))
+        setGasInjectorCount(sumWellsForWellCategory(3))
+        setExplorationWellCount(sumWellsForWellCategory(4))
+        setAppraisalWellCount(sumWellsForWellCategory(5))
+        setSidetrackCount(sumWellsForWellCategory(6))
+    }, [wells, explorationWells, wellProjectWells])
+
     const handleSave = async () => {
         // Exploration wells
-        const newExplorationWells = explorationWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
-        const newExplorationWellsResult = await (await GetExplorationWellService()).createMultipleExplorationWells(newExplorationWells)
+        const newExplorationWells = explorationWells
+            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
+        const newExplorationWellsResult = await (await GetExplorationWellService())
+            .createMultipleExplorationWells(newExplorationWells)
 
-        const updateExplorationWells = explorationWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
-        const updateExplorationWellsResult = await (await GetExplorationWellService()).updateMultipleExplorationWells(updateExplorationWells)
+        const updateExplorationWells = explorationWells
+            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
+        const updateExplorationWellsResult = await (await GetExplorationWellService())
+            .updateMultipleExplorationWells(updateExplorationWells)
 
         if (updateExplorationWellsResult && updateExplorationWellsResult.length > 0) {
             setExplorationWells(updateExplorationWellsResult)
@@ -147,11 +206,15 @@ function CaseDrillingScheduleTab({
         }
 
         // WellProject wells
-        const newWellProjectWells = wellProjectWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
-        const newWellProjectWellsResult = await (await GetWellProjectWellService()).createMultipleWellProjectWell(newWellProjectWells)
+        const newWellProjectWells = wellProjectWells
+            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
+        const newWellProjectWellsResult = await (await GetWellProjectWellService())
+            .createMultipleWellProjectWell(newWellProjectWells)
 
-        const updateWellProjectWells = wellProjectWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
-        const updateWellProjectWellsResult = await (await GetWellProjectWellService()).updateMultipleWellProjectWells(updateWellProjectWells)
+        const updateWellProjectWells = wellProjectWells
+            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
+        const updateWellProjectWellsResult = await (await GetWellProjectWellService())
+            .updateMultipleWellProjectWells(updateWellProjectWells)
 
         if (updateWellProjectWellsResult && updateWellProjectWellsResult.length > 0) {
             setWellProjectWells(updateWellProjectWellsResult)
@@ -167,6 +230,64 @@ function CaseDrillingScheduleTab({
                 <Button onClick={handleSave}>Save</Button>
             </TopWrapper>
             <p>Create wells in technical input in order to see them in the list below.</p>
+            <ColumnWrapper>
+                <RowWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            value={explorationWellCount}
+                            integer
+                            disabled
+                            label="Exploration wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            value={appraisalWellCount}
+                            integer
+                            disabled
+                            label="Appraisal wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            value={oilProducerCount}
+                            integer
+                            disabled
+                            label="Oil producer wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            value={gasProducerCount}
+                            integer
+                            disabled
+                            label="Gas producer wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            value={waterInjectorCount}
+                            integer
+                            disabled
+                            label="Water injector wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            value={gasInjectorCount}
+                            integer
+                            disabled
+                            label="Gas injector wells"
+                        />
+                    </InputWrapper>
+                </RowWrapper>
+            </ColumnWrapper>
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField
