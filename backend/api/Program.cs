@@ -73,7 +73,7 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
         DbContextOptionsBuilder<DcdDbContext> dbBuilder = new();
         dbBuilder.UseSqlServer(sqlConnectionString);
         using DcdDbContext context = new(dbBuilder.Options);
-        context.Database.EnsureCreated();
+        // context.Database.EnsureCreated();
     }
 }
 
