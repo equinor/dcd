@@ -1,5 +1,14 @@
 declare namespace Components {
     namespace Schemas {
+        export interface AppraisalWellCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
         export interface CapexDto {
             id?: string; // uuid
@@ -164,6 +173,9 @@ declare namespace Components {
             projectId?: string; // uuid
             name?: string | null;
             costProfile?: ExplorationCostProfileDto;
+            explorationWellCostProfile?: ExplorationWellCostProfileDto;
+            appraisalWellCostProfile?: AppraisalWellCostProfileDto;
+            sidetrackCostProfile?: SidetrackCostProfileDto;
             gAndGAdminCost?: GAndGAdminCostDto;
             seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessingDto;
             countryOfficeCost?: CountryOfficeCostDto;
@@ -179,6 +191,15 @@ declare namespace Components {
             explorationProjectDrillingCosts?: number; // double
             appraisalRigMobDemob?: number; // double
             appraisalProjectDrillingCosts?: number; // double
+        }
+        export interface ExplorationWellCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
         }
         export interface ExplorationWellDto {
             drillingSchedule?: DrillingScheduleDto;
@@ -376,6 +397,15 @@ declare namespace Components {
             tenantId?: string | null;
             webId?: string | null;
             "@odata.type"?: string | null;
+        }
+        export interface SidetrackCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
         }
         export type Source = 0 | 1; // int32
         export interface Stream {
