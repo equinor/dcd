@@ -59,14 +59,11 @@ interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
-    drainageStrategy: DrainageStrategy,
-    setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
 }
 
 function CaseCO2Tab({
     project, setProject,
     caseItem, setCase,
-    drainageStrategy, setDrainageStrategy,
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
 

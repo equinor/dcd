@@ -3,6 +3,7 @@ import {
     Button,
     Icon,
     Menu,
+    Progress,
     Tabs,
     Typography,
 } from "@equinor/eds-core-react"
@@ -148,9 +149,13 @@ const CaseView = () => {
     const history = useHistory()
     const location = useLocation()
 
+    const [isLoading, setIsLoading] = useState<boolean>()
+
     useEffect(() => {
         (async () => {
             try {
+                setIsLoading(true)
+                setActiveTab(0)
                 const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
@@ -187,6 +192,7 @@ const CaseView = () => {
             setWells(project.wells)
             setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
             setExplorationWells(explorationResult?.explorationWells ?? [])
+            setIsLoading(false)
         }
     }, [project])
 
@@ -214,36 +220,16 @@ const CaseView = () => {
         }
     }
 
-    if (!project || !caseItem
+    if (isLoading || !project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
         || !substructure || !transport
         || !explorationWells || !wellProjectWells) {
         return (
-            <p>
-                Case is missing data:
-                {project ? null : "project"}
-                <br />
-                {caseItem ? null : "case"}
-                <br />
-                {drainageStrategy ? null : "drainageStrategy"}
-                <br />
-                {exploration ? null : "exploration"}
-                <br />
-                {wellProject ? null : "wellProject"}
-                <br />
-                {surf ? null : "surf"}
-                <br />
-                {topside ? null : "topside"}
-                <br />
-                {substructure ? null : "substructure"}
-                <br />
-                {transport ? null : "transport"}
-                <br />
-                {explorationWells ? null : "explorationWells"}
-                <br />
-                {wellProjectWells ? null : "wellProjectWells"}
-            </p>
+            <>
+                <Progress.Circular size={16} color="primary" />
+                <p>Loading case</p>
+            </>
         )
     }
 
@@ -412,8 +398,6 @@ const CaseView = () => {
                                     setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
-                                    drainageStrategy={drainageStrategy}
-                                    setDrainageStrategy={setDrainageStrategy}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
