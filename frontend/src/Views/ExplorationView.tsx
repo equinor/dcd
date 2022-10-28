@@ -20,8 +20,6 @@ import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
 import { IAssetService } from "../Services/IAssetService"
 import { Well } from "../models/Well"
-import DrillingSchedules from "../Components/Well/DrillingSchedules"
-import WellList from "../Components/Well/WellList"
 import { ExplorationWell } from "../models/ExplorationWell"
 import { SeismicAcquisitionAndProcessing } from "../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../models/assets/exploration/CountryOfficeCost"
@@ -95,8 +93,8 @@ const ExplorationView = () => {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
                         [newExploration.costProfile,
-                            newExploration.seismicAcquisitionAndProcessing,
-                            newExploration.countryOfficeCost],
+                        newExploration.seismicAcquisitionAndProcessing,
+                        newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )
@@ -152,8 +150,6 @@ const ExplorationView = () => {
 
     return (
         <AssetViewDiv>
-            <WellList project={project} exploration={exploration} setProject={setProject} />
-
             <Wrapper>
                 <Typography variant="h2">Exploration</Typography>
                 <Save
@@ -207,17 +203,6 @@ const ExplorationView = () => {
                 profileType="Cost"
                 readOnlyTimeSeries={[gAndGAdminCost]}
                 readOnlyName={["G & G and admin cost"]}
-            />
-            <Typography>Drilling schedules:</Typography>
-            <DrillingSchedules
-                setProject={setProject}
-                explorationWells={explorationWells}
-                project={project}
-                caseItem={caseItem!}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
     )
