@@ -1,5 +1,6 @@
 import {
     Button,
+    Progress,
     Tabs, Typography,
 } from "@equinor/eds-core-react"
 import React, {
@@ -62,12 +63,17 @@ const ProjectView = () => {
 
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
 
+    const [isLoading, setIsLoading] = useState<boolean>()
+    const [isCreating, setIsCreating] = useState<boolean>()
+
     useEffect(() => {
         (async () => {
             try {
+                setIsLoading(true)
                 if (currentProject?.externalId) {
                     let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
                     if (!res || res.id === "") {
+                        setIsCreating(true)
                         res = await (await GetProjectService()).createProjectFromContextId(currentProject.id)
                     }
                     if (res !== undefined) {
@@ -75,6 +81,8 @@ const ProjectView = () => {
                         setCurrency(res?.currency)
                     }
                     setProject(res)
+                    setIsCreating(false)
+                    setIsLoading(false)
                 }
             } catch (error) {
                 // eslint-disable-next-line max-len
@@ -85,9 +93,20 @@ const ProjectView = () => {
 
     const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
-    if (!project || project.id === "") {
+    if (isLoading || !project || project.id === "") {
+        if (isCreating) {
+            return (
+                <>
+                    <Progress.Circular size={16} color="primary" />
+                    <p>Creating project</p>
+                </>
+            )
+        }
         return (
-            <p>Retrieving project</p>
+            <>
+                <Progress.Circular size={16} color="primary" />
+                <p>Loading project</p>
+            </>
         )
     }
 

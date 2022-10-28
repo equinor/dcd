@@ -4,7 +4,7 @@ import {
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Icon, Tabs, Typography,
+    Button, Icon, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { clear } from "@equinor/eds-icons"
 import WellCostsTab from "./WellCostsTab"
@@ -83,6 +83,8 @@ const EditTechnicalInputModal = ({
     const [wellProjectWells, setWellProjectWells] = useState<Well[] | undefined>(project?.wells?.filter((w) => !IsExplorationWell(w)))
     const [explorationWells, setExplorationWells] = useState<Well[] | undefined>(project?.wells?.filter((w) => IsExplorationWell(w)))
 
+    const [isSaving, setIsSaving] = useState<boolean>()
+
     useEffect(() => {
         (async () => {
             try {
@@ -148,6 +150,7 @@ const EditTechnicalInputModal = ({
     }
 
     const handleSave = async () => {
+        setIsSaving(true)
         const explorationResult = await (await GetExplorationOperationalWellCostsService()).update({ ...explorationOperationalWellCosts })
         setExplorationOperationalWellCosts(explorationResult)
 
@@ -155,7 +158,7 @@ const EditTechnicalInputModal = ({
         setDevelopmentOperationalWellCosts(developmentResult)
 
         await saveWells()
-
+        setIsSaving(false)
         toggleEditTechnicalInputModal()
     }
 
@@ -216,7 +219,12 @@ const EditTechnicalInputModal = ({
                         >
                             Cancel
                         </CancelButton>
-                        <Button onClick={handleSave}>Save and close</Button>
+                        {!isSaving ? <Button onClick={handleSave}>Save and close</Button>
+                            : (
+                                <Button>
+                                    <Progress.Dots />
+                                </Button>
+                            )}
                     </ButtonsWrapper>
                 </Wrapper>
             </ModalDiv>

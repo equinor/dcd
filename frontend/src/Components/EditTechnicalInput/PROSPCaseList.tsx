@@ -1,4 +1,6 @@
-import { Button, Checkbox, NativeSelect } from "@equinor/eds-core-react"
+import {
+    Button, Checkbox, NativeSelect, Progress,
+} from "@equinor/eds-core-react"
 import {
     ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
@@ -39,6 +41,8 @@ function PROSPCaseList({
 }: Props) {
     const gridRef = useRef<any>(null)
     const [rowData, setRowData] = useState<RowData[]>()
+
+    const [isApplying, setIsApplying] = useState<boolean>()
 
     const casesToRowData = () => {
         if (project.cases) {
@@ -202,9 +206,11 @@ function PROSPCaseList({
     }
 
     const save = useCallback(async (p: Project) => {
+        setIsApplying(true)
         const dtos = gridDataToDtos(p)
         const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
         setProject(newProject)
+        setIsApplying(false)
     }, [])
 
     return (
@@ -225,11 +231,19 @@ function PROSPCaseList({
                     onGridReady={onGridReady}
                 />
             </div>
-            <Button
-                onClick={() => save(project)}
-            >
-                Save
-            </Button>
+            {!isApplying ? (
+                <Button
+                    onClick={() => save(project)}
+                    color="secondary"
+                >
+                    Apply changes
+                </Button>
+            ) : (
+                <Button variant="outlined">
+                    <Progress.Dots color="primary" />
+                </Button>
+            )}
+
         </>
     )
 }

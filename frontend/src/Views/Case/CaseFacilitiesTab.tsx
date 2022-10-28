@@ -2,11 +2,12 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
+    useState,
 } from "react"
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography, Input, Label,
+    Button, NativeSelect, Typography, Input, Label, Progress,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -75,6 +76,8 @@ function CaseFacilitiesTab({
     substructure, setSubstrucutre,
     transport, setTransport,
 }: Props) {
+    const [isSaving, setIsSaving] = useState<boolean>()
+
     const handleTopsideDryWeightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
         newTopside.dryWeight = Number(e.currentTarget.value)
@@ -167,6 +170,7 @@ function CaseFacilitiesTab({
     }
 
     const handleSave = async () => {
+        setIsSaving(true)
         if (topside) {
             const result = await (await GetTopsideService()).newUpdate(topside)
             setTopside(result)
@@ -188,13 +192,18 @@ function CaseFacilitiesTab({
             const result = await (await GetCaseService()).update(caseItem)
             setCase(result)
         }
+        setIsSaving(false)
     }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h2">Facilities</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Dots />
+                    </Button>
+                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>
