@@ -109,12 +109,6 @@ function CaseProductionProfilesTab({
         setDrainageStrategy(newDrainageStrategy)
     }
 
-    const handleDrainageStrategyNGLYieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        newDrainageStrategy.nglYield = Number(e.currentTarget.value)
-        updateAndSetDraiangeStrategy(newDrainageStrategy)
-    }
-
     const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
         const newfacilitiesAvailability = Number(e.currentTarget.value)
@@ -263,14 +257,6 @@ function CaseProductionProfilesTab({
                         <option key={0} value={0}>Export</option>
                         <option key={1} value={1}>Injection</option>
                     </NativeSelectField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleDrainageStrategyNGLYieldChange}
-                            value={drainageStrategy?.nglYield}
-                            integer={false}
-                            label="NGL yield"
-                        />
-                    </NumberInputField>
                 </RowWrapper>
             </ColumnWrapper>
             <ColumnWrapper>
