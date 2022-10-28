@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
     Dispatch,
     SetStateAction,
@@ -9,6 +10,8 @@ import {
 
 import { AgGridReact } from "ag-grid-react"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
+import { lock, lock_open } from "@equinor/eds-icons"
+import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import "ag-grid-enterprise"
@@ -51,11 +54,11 @@ function CaseTabTable({
                 let j = 0
                 for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {
                     rowObject[(dg4Year + i).toString()] = ts.profile.values.map(
-                        (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
+                        (v: number) => Math.round((v + Number.EPSILON) * 10) / 10,
                     )[j]
                     j += 1
                     rowObject.total = ts.profile.values.map(
-                        (v:number) => Math.round((v + Number.EPSILON) * 10) / 10,
+                        (v: number) => Math.round((v + Number.EPSILON) * 10) / 10,
                     ).reduce((x: number, y: number) => x + y)
                 }
             }
@@ -63,6 +66,13 @@ function CaseTabTable({
             tableRows.push(rowObject)
         })
         return tableRows
+    }
+
+    const lockIcon = (params: any) => {
+        if (!params.data.set) {
+            return <Icon data={lock} color="#007079" />
+        }
+        return null
     }
 
     const generateTableYearColDefs = () => {
@@ -75,6 +85,16 @@ function CaseTabTable({
             },
             {
                 field: "total", flex: 2, editable: false, pinned: "right", width: 100,
+            },
+            {
+                headerName: "",
+                width: 60,
+                field: "set",
+                pinned: "right",
+                aggFunc: "",
+                cellStyle: { fontWeight: "normal" },
+                editable: false,
+                cellRenderer: lockIcon,
             },
         ]
         const yearDefs: any[] = []
