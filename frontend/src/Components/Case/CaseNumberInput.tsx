@@ -8,6 +8,7 @@ interface Props {
     integer: boolean,
     disabled?: boolean
     label: string
+    // nonNegativeValues: boolean
 }
 
 const CaseNumberInput = ({
@@ -16,6 +17,7 @@ const CaseNumberInput = ({
     integer,
     disabled,
     label,
+    // nonNegativeValues,
 }: Props) => (
     <WrapperColumn>
         <Label htmlFor="NumberInput" label={label} />
@@ -30,6 +32,7 @@ const CaseNumberInput = ({
                     event.preventDefault()
                 }
             }}
+            min={0} // general min or make prop bool nonNegativeValues?
         />
     </WrapperColumn>
 )
