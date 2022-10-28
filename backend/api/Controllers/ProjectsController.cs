@@ -3,6 +3,7 @@ using api.Dtos;
 using api.Models;
 using api.Services;
 
+using Api.Authorization;
 using Api.Services.FusionIntegration;
 
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class ProjectsController : ControllerBase
 {
     private readonly ProjectService _projectService;

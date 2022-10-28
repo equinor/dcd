@@ -1,5 +1,3 @@
-using System.Linq;
-
 using api.Dtos;
 using api.Models;
 
@@ -19,6 +17,7 @@ public static class TestHelper
         Assert.Equal(expected.ProjectPhase, actual.ProjectPhase);
         Assert.Equal(expected.ProjectCategory, actual.ProjectCategory);
     }
+
     public static void CompareProjectsData(Project expected, Project actual)
     {
         Assert.Equal(expected.Name, actual.Name);
@@ -30,6 +29,7 @@ public static class TestHelper
         Assert.Equal(expected.ProjectPhase, actual.ProjectPhase);
         Assert.Equal(expected.ProjectCategory, actual.ProjectCategory);
     }
+
     public static void CompareProjects(Project expected, Project actual)
     {
         CompareProjectsData(expected, actual);
@@ -46,7 +46,7 @@ public static class TestHelper
             var casesSourceAndTarget = expected.Cases.OrderBy(c => c.Name).Zip(actual.Cases.OrderBy(c => c.Name));
             foreach (var casePair in casesSourceAndTarget)
             {
-                TestHelper.CompareCases(casePair.First, casePair.Second);
+                CompareCases(casePair.First, casePair.Second);
             }
         }
 
@@ -63,7 +63,7 @@ public static class TestHelper
                 .Zip(actual.DrainageStrategies.OrderBy(d => d.Name));
             foreach (var drainageStrategyPair in drainageStrategiesExpectedAndActual)
             {
-                TestHelper.CompareDrainageStrategies(drainageStrategyPair.First, drainageStrategyPair.Second);
+                CompareDrainageStrategies(drainageStrategyPair.First, drainageStrategyPair.Second);
             }
         }
 
@@ -80,7 +80,7 @@ public static class TestHelper
                 .Zip(actual.WellProjects.OrderBy(d => d.Name));
             foreach (var wellProjectPair in wellProjectsExpectedAndActual)
             {
-                TestHelper.CompareWellProjects(wellProjectPair.First, wellProjectPair.Second);
+                CompareWellProjects(wellProjectPair.First, wellProjectPair.Second);
             }
         }
 
@@ -97,7 +97,7 @@ public static class TestHelper
                 .Zip(actual.Explorations.OrderBy(d => d.Name));
             foreach (var explorationPair in explorationsExpectedAndActual)
             {
-                TestHelper.CompareExplorations(explorationPair.First, explorationPair.Second);
+                CompareExplorations(explorationPair.First, explorationPair.Second);
             }
         }
 
@@ -114,7 +114,7 @@ public static class TestHelper
                 .Zip(actual.Substructures.OrderBy(d => d.Name));
             foreach (var substructurePair in substructuresExpectedAndActual)
             {
-                TestHelper.CompareSubstructures(substructurePair.First, substructurePair.Second);
+                CompareSubstructures(substructurePair.First, substructurePair.Second);
             }
         }
 
@@ -131,7 +131,7 @@ public static class TestHelper
                 .Zip(actual.Surfs.OrderBy(d => d.Name));
             foreach (var surfPair in surfsExpectedAndActual)
             {
-                TestHelper.CompareSurfs(surfPair.First, surfPair.Second);
+                CompareSurfs(surfPair.First, surfPair.Second);
             }
         }
 
@@ -148,7 +148,7 @@ public static class TestHelper
                 .Zip(actual.Topsides.OrderBy(d => d.Name));
             foreach (var topsidePair in topsidesExpectedAndActual)
             {
-                TestHelper.CompareTopsides(topsidePair.First, topsidePair.Second);
+                CompareTopsides(topsidePair.First, topsidePair.Second);
             }
         }
 
@@ -165,7 +165,7 @@ public static class TestHelper
                 .Zip(actual.Transports.OrderBy(d => d.Name));
             foreach (var transportPair in transportsExpectedAndActual)
             {
-                TestHelper.CompareTransports(transportPair.First, transportPair.Second);
+                CompareTransports(transportPair.First, transportPair.Second);
             }
         }
     }
@@ -183,7 +183,6 @@ public static class TestHelper
             Assert.Equal(expected.Description, actual.Description);
             Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
         }
-
     }
 
     public static void CompareCases(Case expected, CaseDto actual)
@@ -199,7 +198,6 @@ public static class TestHelper
             Assert.Equal(expected.Description, actual.Description);
             Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
         }
-
     }
 
     public static void CompareCases(CaseDto expected, CaseDto actual)
@@ -218,6 +216,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.Description, actual.Description);
         Assert.Equal(expected.NGLYield, actual.NGLYield);
@@ -248,6 +247,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.ProjectId, actual.ProjectId);
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.Description, actual.Description);
@@ -286,6 +286,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.ProjectId, actual.ProjectId);
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.Description, actual.Description);
@@ -356,10 +357,10 @@ public static class TestHelper
         {
             Assert.Equal(expected.Name, actual.Name);
 
-            TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            CompareCosts(expected.CostProfile, actual.CostProfile);
             Assert.Equal(expected.CostProfile.Exploration.Name,
                 actual.CostProfile.Exploration.Name);
-            TestHelper.CompareCosts(expected.GAndGAdminCost,
+            CompareCosts(expected.GAndGAdminCost,
                 actual.GAndGAdminCost);
             Assert.Equal(expected.GAndGAdminCost.Exploration.Name,
                 actual.GAndGAdminCost.Exploration.Name);
@@ -405,8 +406,8 @@ public static class TestHelper
             Assert.Equal(expected.ProjectId, actual.ProjectId);
             Assert.Equal(expected.Name, actual.Name);
 
-            TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
-            TestHelper.CompareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
+            CompareCosts(expected.CostProfile, actual.CostProfile);
+            CompareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
 
             Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
         }
@@ -420,6 +421,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.Maturity, actual.Maturity);
         CompareCosts(expected.CostProfile, actual.CostProfile);
@@ -434,6 +436,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.Maturity, actual.Maturity);
         CompareCosts(expected.CostProfile, actual.CostProfile);
@@ -453,6 +456,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.ProjectId, actual.ProjectId);
         Assert.Equal(expected.Maturity, actual.Maturity);
@@ -468,6 +472,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
         Assert.Equal(expected.AnnualWellInterventionCost,
@@ -475,7 +480,7 @@ public static class TestHelper
         Assert.Equal(expected.PluggingAndAbandonment,
             actual.PluggingAndAbandonment);
         Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-        TestHelper.CompareCosts(expected.CostProfile,
+        CompareCosts(expected.CostProfile,
             actual.CostProfile);
     }
 
@@ -487,6 +492,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
         Assert.Equal(expected.AnnualWellInterventionCost,
@@ -494,7 +500,7 @@ public static class TestHelper
         Assert.Equal(expected.PluggingAndAbandonment,
             actual.PluggingAndAbandonment);
         Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-        TestHelper.CompareCosts(expected.CostProfile,
+        CompareCosts(expected.CostProfile,
             actual.CostProfile);
     }
 
@@ -511,6 +517,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
         Assert.Equal(expected.AnnualWellInterventionCost,
@@ -518,7 +525,7 @@ public static class TestHelper
         Assert.Equal(expected.PluggingAndAbandonment,
             actual.PluggingAndAbandonment);
         Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-        TestHelper.CompareCosts(expected.CostProfile,
+        CompareCosts(expected.CostProfile,
             actual.CostProfile);
     }
 
@@ -536,9 +543,9 @@ public static class TestHelper
             Assert.Equal(expected.DryWeight, actual.DryWeight);
             Assert.Equal(expected.GasCapacity, actual.GasCapacity);
             Assert.Equal(expected.OilCapacity, actual.OilCapacity);
-            Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
+            Assert.Equal(expected.WaterInjectionCapacity, actual.WaterInjectionCapacity);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            CompareCosts(expected.CostProfile, actual.CostProfile);
         }
     }
 
@@ -556,9 +563,9 @@ public static class TestHelper
             Assert.Equal(expected.DryWeight, actual.DryWeight);
             Assert.Equal(expected.GasCapacity, actual.GasCapacity);
             Assert.Equal(expected.OilCapacity, actual.OilCapacity);
-            Assert.Equal(expected.FacilitiesAvailability, actual.FacilitiesAvailability);
+            Assert.Equal(expected.WaterInjectionCapacity, actual.WaterInjectionCapacity);
             Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
-            TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            CompareCosts(expected.CostProfile, actual.CostProfile);
         }
     }
 
@@ -579,7 +586,7 @@ public static class TestHelper
             Assert.Equal(expected.InfieldPipelineSystemLength, actual.InfieldPipelineSystemLength);
             Assert.Equal(expected.UmbilicalSystemLength, actual.UmbilicalSystemLength);
             Assert.Equal(expected.ProductionFlowline, actual.ProductionFlowline);
-            TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
+            CompareCosts(expected.CostProfile, actual.CostProfile);
         }
     }
 
@@ -591,6 +598,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.StartYear, actual.StartYear);
         Assert.Equal(expected.InternalData, actual.InternalData);
         Assert.Equal(expected.Values.Length, actual.Values.Length);
@@ -610,6 +618,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.StartYear, actual.StartYear);
         Assert.Equal(expected.Values.Length, actual.Values.Length);
         var valuePairsXY = expected.Values.Zip(actual.Values);
@@ -633,6 +642,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         Assert.Equal(expected.StartYear, actual.StartYear);
         Assert.Equal(expected.Values.Length, actual.Values.Length);
         var valuePairsXY = expected.Values.Zip(actual.Values);
@@ -691,6 +701,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         CompareYearValues(expected, actual);
         Assert.Equal(expected.Currency, actual.Currency);
         Assert.Equal(expected.EPAVersion, actual.EPAVersion);
@@ -704,6 +715,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         CompareYearValues(expected, actual);
         Assert.Equal(expected.Currency, actual.Currency);
         Assert.Equal(expected.EPAVersion, actual.EPAVersion);
@@ -722,6 +734,7 @@ public static class TestHelper
             Assert.Null(actual);
             return;
         }
+
         CompareYearValues(expected, actual);
         Assert.Equal(expected.Currency, actual.Currency);
         Assert.Equal(expected.EPAVersion, actual.EPAVersion);

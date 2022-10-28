@@ -1,5 +1,3 @@
-using System.Security.Principal;
-
 using api.Adapters;
 using api.Context;
 using api.Dtos;
@@ -37,6 +35,21 @@ public class WellProjectWellService
         throw new NotFoundInDBException();
     }
 
+    public WellProjectWellDto[]? CreateMultipleWellProjectWells(WellProjectWellDto[] wellProjectWellDtos)
+    {
+        var wellProjectId = wellProjectWellDtos.FirstOrDefault()?.WellProjectId;
+        ProjectDto? projectDto = null;
+        foreach (var wellProjectWellDto in wellProjectWellDtos)
+        {
+            projectDto = CreateWellProjectWell(wellProjectWellDto);
+        }
+        if (projectDto != null && wellProjectId != null)
+        {
+            return projectDto.WellProjects?.FirstOrDefault(e => e.Id == wellProjectId)?.WellProjectWells?.ToArray();
+        }
+        return null;
+    }
+
     public ProjectDto UpdateWellProjectWell(WellProjectWellDto updatedWellProjectWellDto)
     {
         var existing = GetWellProjectWell(updatedWellProjectWellDto.WellId, updatedWellProjectWellDto.WellProjectId);
@@ -46,7 +59,10 @@ public class WellProjectWellService
             _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
         }
 
-        var wellProject = _context.WellProjects!.Include(wp => wp.CostProfile).Include(wp => wp.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.WellProjectId);
+        var wellProject = _context.WellProjects!.Include(wp => wp.CostProfile)
+        .Include(wp => wp.WellProjectWells!)
+        .ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.WellProjectId);
+
         _wellProjectService.CalculateCostProfile(wellProject, existing, null);
 
         _context.WellProjectWell!.Update(existing);
@@ -57,6 +73,21 @@ public class WellProjectWellService
             return _projectService.GetProjectDto((Guid)projectId);
         }
         throw new NotFoundInDBException();
+    }
+
+    public WellProjectWellDto[]? UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos)
+    {
+        var wellProjectId = updatedWellProjectWellDtos.FirstOrDefault()?.WellProjectId;
+        ProjectDto? projectDto = null;
+        foreach (var wellProjectWellDto in updatedWellProjectWellDtos)
+        {
+            projectDto = UpdateWellProjectWell(wellProjectWellDto);
+        }
+        if (projectDto != null && wellProjectId != null)
+        {
+            return projectDto.WellProjects?.FirstOrDefault(e => e.Id == wellProjectId)?.WellProjectWells?.ToArray();
+        }
+        return null;
     }
 
     public WellProjectWell GetWellProjectWell(Guid wellId, Guid caseId)
