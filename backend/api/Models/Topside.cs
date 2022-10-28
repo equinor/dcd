@@ -13,6 +13,7 @@ public class Topside
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
     public double GasCapacity { get; set; }
+    public double WaterInjectionCapacity { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public Maturity Maturity { get; set; }
     public Currency Currency { get; set; }

@@ -103,7 +103,7 @@ public class ProspExcelImportService
             "M112",
             "N112",
             "O112",
-            "P112"
+            "P112",
         };
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Surf.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.Surf.dG3Date);
@@ -125,7 +125,7 @@ public class ProspExcelImportService
         var costProfile = new SurfCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
+            StartYear = costProfileStartYear - dG4Date.Year,
         };
 
         // Prosp meta data
@@ -157,7 +157,7 @@ public class ProspExcelImportService
             ProducerCount = producerCount,
             GasInjectorCount = gasInjectorCount,
             WaterInjectorCount = waterInjectorCount,
-            CessationCost = cessationCost
+            CessationCost = cessationCost,
         };
 
         var dto = SurfDtoAdapter.Convert(newSurf);
@@ -182,7 +182,7 @@ public class ProspExcelImportService
             "M104",
             "N104",
             "O104",
-            "P104"
+            "P104",
         };
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.TopSide.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.TopSide.dG3Date);
@@ -194,6 +194,7 @@ public class ProspExcelImportService
         var flaredGas = ReadDoubleValue(cellData, _prospConfig.TopSide.flaredGas);
         var oilCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.oilCapacity);
         var gasCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.gasCapacity);
+        var waterInjectorCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.waterInjectionCapacity);
         var producerCount = ReadIntValue(cellData, _prospConfig.TopSide.producerCount);
         var gasInjectorCount = ReadIntValue(cellData, _prospConfig.TopSide.gasInjectorCount);
         var waterInjectorCount = ReadIntValue(cellData, _prospConfig.TopSide.waterInjectorCount);
@@ -209,7 +210,7 @@ public class ProspExcelImportService
         var costProfile = new TopsideCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
+            StartYear = costProfileStartYear - dG4Date.Year,
         };
         var peakElectricityImported = ReadDoubleValue(cellData, _prospConfig.TopSide.peakElectricityImported);
         // Prosp meta data
@@ -230,6 +231,7 @@ public class ProspExcelImportService
             DryWeight = dryWeight,
             OilCapacity = oilCapacity,
             GasCapacity = gasCapacity,
+            WaterInjectionCapacity = waterInjectorCapacity,
             ArtificialLift = artificialLift,
             ProducerCount = producerCount,
             WaterInjectorCount = waterInjectorCount,
@@ -248,7 +250,7 @@ public class ProspExcelImportService
             CostYear = costYear,
             Maturity = Maturity.A,
             FacilityOpex = facilityOpex,
-            PeakElectricityImported = peakElectricityImported
+            PeakElectricityImported = peakElectricityImported,
         };
         var dto = TopsideDtoAdapter.Convert(newTopside);
         if (topsideLink != Guid.Empty)
@@ -271,7 +273,7 @@ public class ProspExcelImportService
             "M105",
             "N105",
             "O105",
-            "P105"
+            "P105",
         };
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.SubStructure.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.SubStructure.dG3Date);
@@ -282,7 +284,7 @@ public class ProspExcelImportService
         var costProfile = new SubstructureCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
+            StartYear = costProfileStartYear - dG4Date.Year,
         };
 
         // Prosp meta data
@@ -306,7 +308,7 @@ public class ProspExcelImportService
             ProspVersion = versionDate,
             Currency = currency,
             CostYear = costYear,
-            Maturity = Maturity.A
+            Maturity = Maturity.A,
         };
 
         if (substructureLink != Guid.Empty)
@@ -330,7 +332,7 @@ public class ProspExcelImportService
             "M113",
             "N113",
             "O113",
-            "P113"
+            "P113",
         };
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Transport.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.Transport.dG3Date);
@@ -338,7 +340,7 @@ public class ProspExcelImportService
         var costProfile = new TransportCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
+            StartYear = costProfileStartYear - dG4Date.Year,
         };
 
         // Prosp meta data
@@ -364,7 +366,7 @@ public class ProspExcelImportService
             CostYear = costYear,
             OilExportPipelineLength = oilExportPipelineLength,
             GasExportPipelineLength = gasExportPipelineLength,
-            Maturity = Maturity.A
+            Maturity = Maturity.A,
         };
         var dto = TransportDtoAdapter.Convert(newTransport);
         if (transportLink != Guid.Empty)
@@ -481,7 +483,7 @@ public class ProspExcelImportService
             9 => Concept.TANKER,
             10 => Concept.JACK_UP,
             11 => Concept.SUBSEA_TO_SHORE,
-            _ => Concept.NO_CONCEPT
+            _ => Concept.NO_CONCEPT,
         };
     }
 
@@ -493,7 +495,7 @@ public class ProspExcelImportService
             1 => ArtificialLift.GasLift,
             2 => ArtificialLift.ElectricalSubmergedPumps,
             3 => ArtificialLift.SubseaBoosterPumps,
-            _ => ArtificialLift.NoArtificialLift
+            _ => ArtificialLift.NoArtificialLift,
         };
     }
 
@@ -514,7 +516,7 @@ public class ProspExcelImportService
             32 => ProductionFlowline.SSClad_PIP,
             33 => ProductionFlowline.Cr13_PIP,
             41 => ProductionFlowline.HDPELinedCS,
-            _ => ProductionFlowline.No_production_flowline
+            _ => ProductionFlowline.No_production_flowline,
         };
     }
 }
