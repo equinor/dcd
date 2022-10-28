@@ -220,7 +220,7 @@ function CaseSummaryTab({
                 <PageTitle variant="h3">Summary</PageTitle>
                 {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
                     <Button>
-                        <Progress.Circular size={16} color="primary" />
+                        <Progress.Dots />
                     </Button>
                 )}
             </TopWrapper>

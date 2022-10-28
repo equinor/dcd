@@ -222,7 +222,7 @@ const EditTechnicalInputModal = ({
                         {!isSaving ? <Button onClick={handleSave}>Save and close</Button>
                             : (
                                 <Button>
-                                    <Progress.Circular size={16} color="primary" />
+                                    <Progress.Dots />
                                 </Button>
                             )}
                     </ButtonsWrapper>

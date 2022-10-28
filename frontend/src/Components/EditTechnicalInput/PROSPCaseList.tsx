@@ -240,7 +240,7 @@ function PROSPCaseList({
                 </Button>
             ) : (
                 <Button variant="outlined">
-                    <Progress.Circular size={16} color="primary" />
+                    <Progress.Dots color="primary" />
                 </Button>
             )}
 

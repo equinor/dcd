@@ -215,7 +215,7 @@ function CaseScheduleTab({
                 <PageTitle variant="h3">Schedule</PageTitle>
                 {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
                     <Button>
-                        <Progress.Circular size={16} color="primary" />
+                        <Progress.Dots />
                     </Button>
                 )}
             </TopWrapper>

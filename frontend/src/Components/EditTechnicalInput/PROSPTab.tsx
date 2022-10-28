@@ -107,7 +107,7 @@ function PROSPTab({
                 {!isRefreshing ? <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
                     : (
                         <Button variant="outlined">
-                            <Progress.Circular size={16} color="primary" />
+                            <Progress.Dots color="primary" />
                         </Button>
                     )}
             </ProspFieldWrapper>

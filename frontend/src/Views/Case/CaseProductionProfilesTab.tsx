@@ -234,7 +234,7 @@ function CaseProductionProfilesTab({
                 <PageTitle variant="h3">Production profiles</PageTitle>
                 {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
                     <Button>
-                        <Progress.Circular size={16} color="primary" />
+                        <Progress.Dots />
                     </Button>
                 )}
             </TopWrapper>

@@ -4,7 +4,7 @@ import {
 import styled from "styled-components"
 
 import {
- Button, NativeSelect, Progress, Typography,
+    Button, NativeSelect, Progress, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -366,7 +366,7 @@ function CaseCostTab({
                 <PageTitle variant="h3">Cost</PageTitle>
                 {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
                     <Button>
-                        <Progress.Circular size={16} color="primary" />
+                        <Progress.Dots />
                     </Button>
                 )}
             </TopWrapper>
