@@ -194,6 +194,7 @@ public class ProspExcelImportService
         var flaredGas = ReadDoubleValue(cellData, _prospConfig.TopSide.flaredGas);
         var oilCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.oilCapacity);
         var gasCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.gasCapacity);
+        var waterInjectorCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.waterInjectionCapacity);
         var producerCount = ReadIntValue(cellData, _prospConfig.TopSide.producerCount);
         var gasInjectorCount = ReadIntValue(cellData, _prospConfig.TopSide.gasInjectorCount);
         var waterInjectorCount = ReadIntValue(cellData, _prospConfig.TopSide.waterInjectorCount);
@@ -230,6 +231,7 @@ public class ProspExcelImportService
             DryWeight = dryWeight,
             OilCapacity = oilCapacity,
             GasCapacity = gasCapacity,
+            WaterInjectionCapacity = waterInjectorCapacity,
             ArtificialLift = artificialLift,
             ProducerCount = producerCount,
             WaterInjectorCount = waterInjectorCount,

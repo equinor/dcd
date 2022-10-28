@@ -3,7 +3,9 @@ import {
 } from "react"
 import styled from "styled-components"
 
-import { Button, NativeSelect, Typography } from "@equinor/eds-core-react"
+import {
+    Button, NativeSelect, Progress, Typography,
+} from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
@@ -101,6 +103,7 @@ interface Props {
     wellProject: WellProject,
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
     drainageStrategy: DrainageStrategy
+    activeTab: number
 }
 
 function CaseCostTab({
@@ -113,6 +116,7 @@ function CaseCostTab({
     substructure, setSubstructure,
     transport, setTransport,
     drainageStrategy,
+    activeTab,
 }: Props) {
     // OPEX
     const [studyCost, setStudyCost] = useState<StudyCostProfile>()
@@ -143,51 +147,55 @@ function CaseCostTab({
     const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
 
+    const [isSaving, setIsSaving] = useState<boolean>()
+
     useEffect(() => {
         (async () => {
             try {
-                // OPEX
-                const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                setStudyCost(study)
-                const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                setOpexCost(opex)
-                const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                setCessationCost(cessation)
+                if (activeTab === 5) {
+                    // OPEX
+                    const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    setStudyCost(study)
+                    const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    setOpexCost(opex)
+                    const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
+                    setCessationCost(cessation)
 
-                // CAPEX
-                const topsideCostProfile = topside.costProfile
-                setTopsideCost(topsideCostProfile)
-                const surfCostProfile = surf.costProfile
-                setSurfCost(surfCostProfile)
-                const substructureCostProfile = substructure.costProfile
-                setSubstructureCost(substructureCostProfile)
-                const transportCostProfile = transport.costProfile
-                setTransportCost(transportCostProfile)
+                    // CAPEX
+                    const topsideCostProfile = topside.costProfile
+                    setTopsideCost(topsideCostProfile)
+                    const surfCostProfile = surf.costProfile
+                    setSurfCost(surfCostProfile)
+                    const substructureCostProfile = substructure.costProfile
+                    setSubstructureCost(substructureCostProfile)
+                    const transportCostProfile = transport.costProfile
+                    setTransportCost(transportCostProfile)
 
-                // Development
-                const wellProjectCostProfile = wellProject.costProfile
-                setWellProjectCost(wellProjectCostProfile)
+                    // Development
+                    const wellProjectCostProfile = wellProject.costProfile
+                    setWellProjectCost(wellProjectCostProfile)
 
-                // Exploration
-                const explorationCostProfile = exploration.costProfile
-                setExplorationCost(explorationCostProfile)
-                const seismicAcqAndProc = exploration.seismicAcquisitionAndProcessing
-                setseismicAcqAndProcCost(seismicAcqAndProc)
-                const countryOffice = exploration.countryOfficeCost
-                setCountryOfficeCost(countryOffice)
-                const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
-                setGAndGAdminCost(gAndGAdmin)
+                    // Exploration
+                    const explorationCostProfile = exploration.costProfile
+                    setExplorationCost(explorationCostProfile)
+                    const seismicAcqAndProc = exploration.seismicAcquisitionAndProcessing
+                    setseismicAcqAndProcCost(seismicAcqAndProc)
+                    const countryOffice = exploration.countryOfficeCost
+                    setCountryOfficeCost(countryOffice)
+                    const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
+                    setGAndGAdminCost(gAndGAdmin)
 
-                SetTableYearsFromProfiles([study, opex, cessation,
-                    surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
-                    wellProjectCostProfile,
-                    explorationCostProfile, seismicAcqAndProc, countryOffice, gAndGAdmin,
-                ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
+                    SetTableYearsFromProfiles([study, opex, cessation,
+                        surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
+                        wellProjectCostProfile,
+                        explorationCostProfile, seismicAcqAndProc, countryOffice, gAndGAdmin,
+                    ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
+                }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [])
+    }, [activeTab])
 
     const updatedAndSetSurf = (surfItem: Surf) => {
         const newSurf: Surf = { ...surfItem }
@@ -246,52 +254,81 @@ function CaseCostTab({
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Study cost", unit: "MNOK", profile: studyCost,
+            profileName: "Study cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: studyCost,
         },
         {
-            profileName: "OPEX cost", unit: "MNOK", profile: opexCost,
+            profileName: "OPEX cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: opexCost,
         },
         {
-            profileName: "Cessation cost", unit: "MNOK", profile: cessationCost,
+            profileName: "Cessation cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationCost,
         },
     ]
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Subsea production system", unit: "MNOK", profile: surfCost, set: setSurfCost,
+            profileName: "Subsea production system",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: surfCost,
+            set: setSurfCost,
         },
         {
-            profileName: "Topside", unit: "MNOK", profile: topsideCost, set: setTopsideCost,
+            profileName: "Topside",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: topsideCost,
+            set: setTopsideCost,
         },
         {
-            profileName: "Substructure", unit: "MNOK", profile: substructureCost, set: setSubstructureCost,
+            profileName: "Substructure",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: substructureCost,
+            set: setSubstructureCost,
         },
         {
-            profileName: "Transport system", unit: "MNOK", profile: transportCost, set: setTransportCost,
+            profileName: "Transport system",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: transportCost,
+            set: setTransportCost,
         },
     ]
 
     const developmentTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Development cost", unit: "MNOK", profile: wellProjectCost, set: setWellProjectCost,
+            profileName: "Development cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: wellProjectCost,
+            set: setWellProjectCost,
         },
     ]
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "G&G and admin costs", unit: "MNOK", profile: gAndGAdminCost,
+            profileName: "G&G and admin costs",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: gAndGAdminCost,
         },
         {
             profileName: "Seismic acquisition and processing",
-            unit: "MNOK",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: seismicAcqAndProcCost,
             set: setseismicAcqAndProcCost,
         },
         {
-            profileName: "Country office cost", unit: "MNOK", profile: countryOfficeCost, set: setCountryOfficeCost,
+            profileName: "Country office cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: countryOfficeCost,
+            set: setCountryOfficeCost,
         },
         {
-            profileName: "Exploration cost", unit: "MNOK", profile: explorationCost, set: setExplorationCost,
+            profileName: "Exploration cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: explorationCost,
+            set: setExplorationCost,
         },
     ]
 
@@ -338,6 +375,7 @@ function CaseCostTab({
     }, [explorationCost, seismicAcqAndProcCost, countryOfficeCost])
 
     const handleSave = async () => {
+        setIsSaving(true)
         const updatedSurfResult = await (await GetSurfService()).newUpdate(surf)
         setSurf(updatedSurfResult)
         const updatedTopsideResult = await (await GetTopsideService()).newUpdate(topside)
@@ -352,13 +390,20 @@ function CaseCostTab({
         setExploration(updatedExplorationResult)
         const updateedCaseResult = await (await GetCaseService()).update(caseItem)
         setCase(updateedCaseResult)
+        setIsSaving(false)
     }
+
+    if (activeTab !== 5) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Cost</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Dots />
+                    </Button>
+                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>

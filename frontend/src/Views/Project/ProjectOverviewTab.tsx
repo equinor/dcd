@@ -9,13 +9,13 @@ import {
     Button, Icon, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
-import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../Utils/common"
-import { WrapperColumn, WrapperRow } from "./Asset/StyledAssetComponents"
-import { Project } from "../models/Project"
-import { GetProjectService } from "../Services/ProjectService"
-import { GetSTEAService } from "../Services/STEAService"
-import EditCaseModal from "../Components/Case/EditCaseModal"
-import CasesTable from "../Components/Case/CasesTable"
+import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../../Utils/common"
+import { WrapperColumn, WrapperRow } from "../Asset/StyledAssetComponents"
+import { Project } from "../../models/Project"
+import { GetProjectService } from "../../Services/ProjectService"
+import { GetSTEAService } from "../../Services/STEAService"
+import EditCaseModal from "../../Components/Case/EditCaseModal"
+import CasesTable from "../../Components/Case/CasesTable"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -68,7 +68,7 @@ interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
-function OverviewView({
+function ProjectOverviewTab({
     project, setProject,
 }: Props) {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
@@ -145,4 +145,4 @@ function OverviewView({
     )
 }
 
-export default OverviewView
+export default ProjectOverviewTab

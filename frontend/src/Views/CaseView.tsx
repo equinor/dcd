@@ -3,6 +3,7 @@ import {
     Button,
     Icon,
     Menu,
+    Progress,
     Tabs,
     Typography,
 } from "@equinor/eds-core-react"
@@ -41,6 +42,7 @@ import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
 import { Well } from "../models/Well"
 import { WellProjectWell } from "../models/WellProjectWell"
 import { ExplorationWell } from "../models/ExplorationWell"
+import CaseCO2Tab from "./Case/CaseCO2Tab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -147,9 +149,13 @@ const CaseView = () => {
     const history = useHistory()
     const location = useLocation()
 
+    const [isLoading, setIsLoading] = useState<boolean>()
+
     useEffect(() => {
         (async () => {
             try {
+                setIsLoading(true)
+                setActiveTab(0)
                 const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
@@ -186,6 +192,7 @@ const CaseView = () => {
             setWells(project.wells)
             setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
             setExplorationWells(explorationResult?.explorationWells ?? [])
+            setIsLoading(false)
         }
     }, [project])
 
@@ -213,36 +220,16 @@ const CaseView = () => {
         }
     }
 
-    if (!project || !caseItem
+    if (isLoading || !project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
         || !substructure || !transport
         || !explorationWells || !wellProjectWells) {
         return (
-            <p>
-                Case is missing data:
-                {project ? null : "project"}
-                <br />
-                {caseItem ? null : "case"}
-                <br />
-                {drainageStrategy ? null : "drainageStrategy"}
-                <br />
-                {exploration ? null : "exploration"}
-                <br />
-                {wellProject ? null : "wellProject"}
-                <br />
-                {surf ? null : "surf"}
-                <br />
-                {topside ? null : "topside"}
-                <br />
-                {substructure ? null : "substructure"}
-                <br />
-                {transport ? null : "transport"}
-                <br />
-                {explorationWells ? null : "explorationWells"}
-                <br />
-                {wellProjectWells ? null : "wellProjectWells"}
-            </p>
+            <>
+                <Progress.Circular size={16} color="primary" />
+                <p>Loading case</p>
+            </>
         )
     }
 
@@ -331,6 +318,7 @@ const CaseView = () => {
                                     setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -341,6 +329,7 @@ const CaseView = () => {
                                     setCase={setCase}
                                     drainageStrategy={drainageStrategy}
                                     setDrainageStrategy={setDrainageStrategy}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -349,6 +338,7 @@ const CaseView = () => {
                                     setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -366,6 +356,7 @@ const CaseView = () => {
                                     wellProjectWells={wellProjectWells}
                                     setWellProjectWells={setWellProjectWells}
                                     wells={wells}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -382,6 +373,7 @@ const CaseView = () => {
                                     setSubstrucutre={setSubstructure}
                                     transport={transport}
                                     setTransport={setTransport}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -403,10 +395,17 @@ const CaseView = () => {
                                     transport={transport}
                                     setTransport={setTransport}
                                     drainageStrategy={drainageStrategy}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
-                                <p>CO2 Emissions</p>
+                                <CaseCO2Tab
+                                    project={project}
+                                    setProject={setProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
+                                    activeTab={activeTab}
+                                />
                             </StyledTabPanel>
                             <StyledTabPanel>
                                 <CaseSummaryTab
@@ -427,20 +426,13 @@ const CaseView = () => {
                                     transport={transport}
                                     setTransport={setTransport}
                                     drainageStrategy={drainageStrategy}
+                                    activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                         </Panels>
                     </TabContentWrapper>
                 </Tabs>
                 <DividerLine />
-                <CaseAsset
-                    caseItem={caseItem}
-                    project={project}
-                    setProject={setProject}
-                    setCase={setCase}
-                    caseId={caseId}
-                />
-
             </CaseViewDiv>
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleTechnicalInputModal}
