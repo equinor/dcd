@@ -46,10 +46,11 @@ public class ProjectService
 
     public ProjectDto UpdateProject(ProjectDto projectDto)
     {
-        var updatedProject = ProjectAdapter.Convert(projectDto);
-        _context.Projects!.Update(updatedProject);
+        var existingProject = GetProject(projectDto.ProjectId);
+        ProjectAdapter.ConvertExisting(existingProject, projectDto);
+        _context.Projects!.Update(existingProject);
         _context.SaveChanges();
-        return GetProjectDto(updatedProject.Id);
+        return GetProjectDto(existingProject.Id);
     }
 
     public ProjectDto CreateProject(Project project)
