@@ -82,43 +82,43 @@ function CaseFacilitiesTab({
 
     const handleTopsideDryWeightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.dryWeight = Number(e.currentTarget.value)
+        newTopside.dryWeight = Math.max(Number(e.currentTarget.value), 0)
         setTopside(newTopside)
     }
 
     const handleTopsideOilCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.oilCapacity = Number(e.currentTarget.value)
+        newTopside.oilCapacity = Math.max(Number(e.currentTarget.value), 0)
         setTopside(newTopside)
     }
 
     const handleTopsideGasCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.gasCapacity = Number(e.currentTarget.value)
+        newTopside.gasCapacity = Math.max(Number(e.currentTarget.value), 0)
         setTopside(newTopside)
     }
 
     const handleSurfTemplateCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.templateCount = Number(e.currentTarget.value)
+        newSurf.templateCount = Math.max(Number(e.currentTarget.value), 0)
         setSurf(newSurf)
     }
 
     const handleSurfRiserCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.riserCount = Number(e.currentTarget.value)
+        newSurf.riserCount = Math.max(Number(e.currentTarget.value), 0)
         setSurf(newSurf)
     }
 
     const handleSurfInfieldPipelineSystemLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.infieldPipelineSystemLength = Number(e.currentTarget.value)
+        newSurf.infieldPipelineSystemLength = Math.max(Number(e.currentTarget.value), 0)
         setSurf(newSurf)
     }
 
     const handleSurfUmbilicalSystemLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.umbilicalSystemLength = Number(e.currentTarget.value)
+        newSurf.umbilicalSystemLength = Math.max(Number(e.currentTarget.value), 0)
         setSurf(newSurf)
     }
 
@@ -134,7 +134,7 @@ function CaseFacilitiesTab({
 
     const handleSubstructureDryweightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSubstructure: Substructure = { ...substructure }
-        newSubstructure.dryWeight = Number(e.currentTarget.value)
+        newSubstructure.dryWeight = Math.max(Number(e.currentTarget.value), 0)
         setSubstrucutre(newSubstructure)
     }
 
@@ -161,13 +161,13 @@ function CaseFacilitiesTab({
 
     const handleTransportOilExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTransport: Transport = { ...transport }
-        newTransport.oilExportPipelineLength = Number(e.currentTarget.value)
+        newTransport.oilExportPipelineLength = Math.max(Number(e.currentTarget.value), 0)
         setTransport(newTransport)
     }
 
     const handleTransportGasExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTransport: Transport = { ...transport }
-        newTransport.gasExportPipelineLength = Number(e.currentTarget.value)
+        newTransport.gasExportPipelineLength = Math.max(Number(e.currentTarget.value), 0)
         setTransport(newTransport)
     }
 
