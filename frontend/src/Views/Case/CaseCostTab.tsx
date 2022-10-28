@@ -254,52 +254,81 @@ function CaseCostTab({
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Study cost", unit: "MNOK", profile: studyCost,
+            profileName: "Study cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: studyCost,
         },
         {
-            profileName: "OPEX cost", unit: "MNOK", profile: opexCost,
+            profileName: "OPEX cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: opexCost,
         },
         {
-            profileName: "Cessation cost", unit: "MNOK", profile: cessationCost,
+            profileName: "Cessation cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationCost,
         },
     ]
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Subsea production system", unit: "MNOK", profile: surfCost, set: setSurfCost,
+            profileName: "Subsea production system",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: surfCost,
+            set: setSurfCost,
         },
         {
-            profileName: "Topside", unit: "MNOK", profile: topsideCost, set: setTopsideCost,
+            profileName: "Topside",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: topsideCost,
+            set: setTopsideCost,
         },
         {
-            profileName: "Substructure", unit: "MNOK", profile: substructureCost, set: setSubstructureCost,
+            profileName: "Substructure",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: substructureCost,
+            set: setSubstructureCost,
         },
         {
-            profileName: "Transport system", unit: "MNOK", profile: transportCost, set: setTransportCost,
+            profileName: "Transport system",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: transportCost,
+            set: setTransportCost,
         },
     ]
 
     const developmentTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Development cost", unit: "MNOK", profile: wellProjectCost, set: setWellProjectCost,
+            profileName: "Development cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: wellProjectCost,
+            set: setWellProjectCost,
         },
     ]
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "G&G and admin costs", unit: "MNOK", profile: gAndGAdminCost,
+            profileName: "G&G and admin costs",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: gAndGAdminCost,
         },
         {
             profileName: "Seismic acquisition and processing",
-            unit: "MNOK",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: seismicAcqAndProcCost,
             set: setseismicAcqAndProcCost,
         },
         {
-            profileName: "Country office cost", unit: "MNOK", profile: countryOfficeCost, set: setCountryOfficeCost,
+            profileName: "Country office cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: countryOfficeCost,
+            set: setCountryOfficeCost,
         },
         {
-            profileName: "Exploration cost", unit: "MNOK", profile: explorationCost, set: setExplorationCost,
+            profileName: "Exploration cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: explorationCost,
+            set: setExplorationCost,
         },
     ]
 
