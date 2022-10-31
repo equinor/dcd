@@ -251,7 +251,7 @@ function CaseDrillingScheduleTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={() => { }}
-                            value={explorationWellCount}
+                            defaultValue={explorationWellCount}
                             integer
                             disabled
                             label="Exploration wells"
@@ -260,7 +260,7 @@ function CaseDrillingScheduleTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={() => { }}
-                            value={appraisalWellCount}
+                            defaultValue={appraisalWellCount}
                             integer
                             disabled
                             label="Appraisal wells"
@@ -269,7 +269,7 @@ function CaseDrillingScheduleTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={() => { }}
-                            value={oilProducerCount}
+                            defaultValue={oilProducerCount}
                             integer
                             disabled
                             label="Oil producer wells"
@@ -278,7 +278,7 @@ function CaseDrillingScheduleTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={() => { }}
-                            value={gasProducerCount}
+                            defaultValue={gasProducerCount}
                             integer
                             disabled
                             label="Gas producer wells"
@@ -287,7 +287,7 @@ function CaseDrillingScheduleTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={() => { }}
-                            value={waterInjectorCount}
+                            defaultValue={waterInjectorCount}
                             integer
                             disabled
                             label="Water injector wells"
@@ -296,7 +296,7 @@ function CaseDrillingScheduleTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={() => { }}
-                            value={gasInjectorCount}
+                            defaultValue={gasInjectorCount}
                             integer
                             disabled
                             label="Gas injector wells"
@@ -319,7 +319,7 @@ function CaseDrillingScheduleTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleStartYearChange}
-                            value={startYear}
+                            defaultValue={startYear}
                             integer
                             label="Start year"
                         />
@@ -330,7 +330,7 @@ function CaseDrillingScheduleTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleEndYearChange}
-                            value={endYear}
+                            defaultValue={endYear}
                             integer
                             label="End year"
                         />
