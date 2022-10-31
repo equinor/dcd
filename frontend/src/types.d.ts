@@ -550,6 +550,7 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
             facilityOpex?: number; // double
+            peakElectricityImported?: number; // double
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
