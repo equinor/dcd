@@ -21,6 +21,7 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 
 using Serilog;
+using Serilog.Enrichers;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -143,6 +144,9 @@ builder.Services.AddFusionIntegration(options =>
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .ReadFrom.Configuration(config)
+    .Enrich.WithMachineName()
+    .Enrich.WithProperty("Environment", environment)
+    .Enrich.FromLogContext()
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 builder.Services.AddScoped<ProjectService>();
