@@ -154,7 +154,7 @@ function CaseCO2Tab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleStartYearChange}
-                            value={startYear}
+                            defaultValue={startYear}
                             integer
                             label="Start year"
                         />
@@ -165,7 +165,7 @@ function CaseCO2Tab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleEndYearChange}
-                            value={endYear}
+                            defaultValue={endYear}
                             integer
                             label="End year"
                         />
