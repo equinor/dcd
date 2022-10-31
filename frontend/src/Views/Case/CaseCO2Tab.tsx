@@ -23,6 +23,7 @@ import { Co2Emissions } from "../../models/assets/drainagestrategy/Co2Emissions"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import CaseCO2Distribution from "../../Components/Case/CaseCO2Distribution"
 import { Topside } from "../../models/assets/topside/Topside"
+import { GetTopsideService } from "../../Services/TopsideService"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -88,6 +89,8 @@ function CaseCO2Tab({
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const [isSaving, setIsSaving] = useState<boolean>()
 
     // const lockIcon = () => <Icon data={lock} color="#007079" />
 
@@ -161,13 +164,22 @@ function CaseCO2Tab({
         setTableYears([startYear, endYear])
     }
 
+    const handleSave = async () => {
+        setIsSaving(true)
+        if (topside) {
+            const result = await (await GetTopsideService()).newUpdate(topside)
+            setTopside(result)
+        }
+        setIsSaving(false)
+    }
+
     if (activeTab !== 6) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">CO2 Emissions</PageTitle>
-                {/* <Button onClick={handleSave}>Save</Button> */}
+                <Button onClick={handleSave}>Save</Button>
             </TopWrapper>
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
             <ColumnWrapper>
