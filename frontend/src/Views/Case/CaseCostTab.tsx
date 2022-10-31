@@ -39,6 +39,13 @@ import { GetSubstructureService } from "../../Services/SubstructureService"
 import { GetTransportService } from "../../Services/TransportService"
 import { GetWellProjectService } from "../../Services/WellProjectService"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
+import { GasProducerCostProfile } from "../../models/assets/wellproject/GasProducerCostProfile"
+import { OilProducerCostProfile } from "../../models/assets/wellproject/OilProducerCostProfile"
+import { GasInjectorCostProfile } from "../../models/assets/wellproject/GasInjectorCostProfile"
+import { WaterInjectorCostProfile } from "../../models/assets/wellproject/WaterInjectorCostProfile"
+import { ExplorationWellCostProfile } from "../../models/assets/exploration/ExplorationWellCostProfile"
+import { AppraisalWellCostProfile } from "../../models/assets/exploration/AppraisalWellCostProfile"
+import { SidetrackCostProfile } from "../../models/assets/exploration/SidetrackCostProfile"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -130,10 +137,17 @@ function CaseCostTab({
     const [transportCost, setTransportCost] = useState<TransportCostProfile>()
 
     // Development
-    const [wellProjectCost, setWellProjectCost] = useState<WellProjectCostProfile>()
+    // const [wellProjectCost, setWellProjectCost] = useState<WellProjectCostProfile>()
+    const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<OilProducerCostProfile>()
+    const [wellProjectGasProducerCost, setWellProjectGasProducerCost] = useState<GasProducerCostProfile>()
+    const [wellProjectWaterInjectorCost, setWellProjectWaterInjectorCost] = useState<WaterInjectorCostProfile>()
+    const [wellProjectGasInjectorCost, setWellProjectGasInjectorCost] = useState<GasInjectorCostProfile>()
 
     // Exploration
-    const [explorationCost, setExplorationCost] = useState<ExplorationCostProfile>()
+    // const [explorationCost, setExplorationCost] = useState<ExplorationCostProfile>()
+    const [explorationWellCost, setExplorationWellCost] = useState<ExplorationWellCostProfile>()
+    const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<AppraisalWellCostProfile>()
+    const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<SidetrackCostProfile>()
     const [seismicAcqAndProcCost, setseismicAcqAndProcCost] = useState<SeismicAcquisitionAndProcessing>()
     const [countryOfficeCost, setCountryOfficeCost] = useState<CountryOfficeCost>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
@@ -172,14 +186,28 @@ function CaseCostTab({
                     setTransportCost(transportCostProfile)
 
                     // Development
-                    const wellProjectCostProfile = wellProject.costProfile
-                    setWellProjectCost(wellProjectCostProfile)
+                    // const wellProjectCostProfile = wellProject.costProfile
+                    // setWellProjectCost(wellProjectCostProfile)
+                    const {
+                        oilProducerCostProfile, gasProducerCostProfile,
+                        waterInjectorCostProfile, gasInjectorCostProfile,
+                    } = wellProject
+                    setWellProjectOilProducerCost(oilProducerCostProfile)
+                    setWellProjectGasProducerCost(gasProducerCostProfile)
+                    setWellProjectWaterInjectorCost(waterInjectorCostProfile)
+                    setWellProjectGasInjectorCost(gasInjectorCostProfile)
 
                     // Exploration
-                    const explorationCostProfile = exploration.costProfile
-                    setExplorationCost(explorationCostProfile)
-                    const seismicAcqAndProc = exploration.seismicAcquisitionAndProcessing
-                    setseismicAcqAndProcCost(seismicAcqAndProc)
+                    // const explorationCostProfile = exploration.costProfile
+                    // setExplorationCost(explorationCostProfile)
+                    const {
+                        explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
+                        seismicAcquisitionAndProcessing,
+                    } = exploration
+                    setExplorationWellCost(explorationWellCostProfile)
+                    setExplorationAppraisalWellCost(appraisalWellCostProfile)
+                    setExplorationSidetrackCost(sidetrackCostProfile)
+                    setseismicAcqAndProcCost(seismicAcquisitionAndProcessing)
                     const countryOffice = exploration.countryOfficeCost
                     setCountryOfficeCost(countryOffice)
                     const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
@@ -187,8 +215,10 @@ function CaseCostTab({
 
                     SetTableYearsFromProfiles([study, opex, cessation,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
-                        wellProjectCostProfile,
-                        explorationCostProfile, seismicAcqAndProc, countryOffice, gAndGAdmin,
+                        oilProducerCostProfile, gasProducerCostProfile,
+                        waterInjectorCostProfile, gasInjectorCostProfile,
+                        explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
+                        seismicAcquisitionAndProcessing, countryOffice, gAndGAdmin,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                 }
             } catch (error) {
@@ -299,10 +329,28 @@ function CaseCostTab({
 
     const developmentTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Development cost",
+            profileName: "Oil producer cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: wellProjectCost,
-            set: setWellProjectCost,
+            profile: wellProjectOilProducerCost,
+            set: setWellProjectOilProducerCost,
+        },
+        {
+            profileName: "Gas producer cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: wellProjectGasProducerCost,
+            set: setWellProjectGasProducerCost,
+        },
+        {
+            profileName: "Water injector cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: wellProjectWaterInjectorCost,
+            set: setWellProjectWaterInjectorCost,
+        },
+        {
+            profileName: "Gas injector cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: wellProjectGasInjectorCost,
+            set: setWellProjectGasInjectorCost,
         },
     ]
 
@@ -325,10 +373,22 @@ function CaseCostTab({
             set: setCountryOfficeCost,
         },
         {
-            profileName: "Exploration cost",
+            profileName: "Exploration well cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationCost,
-            set: setExplorationCost,
+            profile: explorationWellCost,
+            set: setExplorationWellCost,
+        },
+        {
+            profileName: "Appraisal well cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: explorationAppraisalWellCost,
+            set: setExplorationAppraisalWellCost,
+        },
+        {
+            profileName: "Sidetrack well cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: explorationSidetrackCost,
+            set: setExplorationSidetrackCost,
         },
     ]
 
@@ -338,41 +398,94 @@ function CaseCostTab({
 
     useEffect(() => {
         const newSurf: Surf = { ...surf }
+        if (newSurf.costProfile && !surfCost) { return }
         newSurf.costProfile = surfCost
         setSurf(newSurf)
     }, [surfCost])
 
     useEffect(() => {
         const newTopside: Topside = { ...topside }
+        if (newTopside.costProfile && !topsideCost) { return }
         newTopside.costProfile = topsideCost
         setTopside(newTopside)
     }, [topsideCost])
 
     useEffect(() => {
         const newSubstructure: Substructure = { ...substructure }
+        if (newSubstructure.costProfile && !substructureCost) { return }
         newSubstructure.costProfile = substructureCost
         setSubstructure(newSubstructure)
     }, [substructureCost])
 
     useEffect(() => {
         const newTransport: Transport = { ...transport }
+        if (newTransport.costProfile && !transportCost) { return }
         newTransport.costProfile = transportCost
         setTransport(newTransport)
     }, [transportCost])
 
     useEffect(() => {
         const newWellProject: WellProject = { ...wellProject }
-        newWellProject.costProfile = wellProjectCost
+        if (newWellProject.oilProducerCostProfile && !wellProjectOilProducerCost) { return }
+        newWellProject.oilProducerCostProfile = wellProjectOilProducerCost
         setWellProject(newWellProject)
-    }, [wellProjectCost])
+    }, [wellProjectOilProducerCost])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
+        if (newWellProject.gasProducerCostProfile && !wellProjectGasProducerCost) { return }
+        newWellProject.gasProducerCostProfile = wellProjectGasProducerCost
+        setWellProject(newWellProject)
+    }, [wellProjectGasProducerCost])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
+        if (newWellProject.waterInjectorCostProfile && !wellProjectWaterInjectorCost) { return }
+        newWellProject.waterInjectorCostProfile = wellProjectWaterInjectorCost
+        setWellProject(newWellProject)
+    }, [wellProjectWaterInjectorCost])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
+        if (newWellProject.gasInjectorCostProfile && !wellProjectGasInjectorCost) { return }
+        newWellProject.gasInjectorCostProfile = wellProjectGasInjectorCost
+        setWellProject(newWellProject)
+    }, [wellProjectGasInjectorCost])
 
     useEffect(() => {
         const newExploration: Exploration = { ...exploration }
-        newExploration.costProfile = explorationCost
+        if (newExploration.explorationWellCostProfile && !explorationWellCost) { return }
+        newExploration.explorationWellCostProfile = explorationWellCost
+        setExploration(newExploration)
+    }, [explorationWellCost])
+
+    useEffect(() => {
+        const newExploration: Exploration = { ...exploration }
+        if (newExploration.appraisalWellCostProfile && !explorationAppraisalWellCost) { return }
+        newExploration.appraisalWellCostProfile = explorationAppraisalWellCost
+        setExploration(newExploration)
+    }, [explorationAppraisalWellCost])
+
+    useEffect(() => {
+        const newExploration: Exploration = { ...exploration }
+        if (newExploration.sidetrackCostProfile && !explorationSidetrackCost) { return }
+        newExploration.sidetrackCostProfile = explorationSidetrackCost
+        setExploration(newExploration)
+    }, [explorationSidetrackCost])
+
+    useEffect(() => {
+        const newExploration: Exploration = { ...exploration }
+        if (newExploration.seismicAcquisitionAndProcessing && !seismicAcqAndProcCost) { return }
         newExploration.seismicAcquisitionAndProcessing = seismicAcqAndProcCost
+        setExploration(newExploration)
+    }, [seismicAcqAndProcCost])
+
+    useEffect(() => {
+        const newExploration: Exploration = { ...exploration }
+        if (newExploration.countryOfficeCost && !countryOfficeCost) { return }
         newExploration.countryOfficeCost = countryOfficeCost
         setExploration(newExploration)
-    }, [explorationCost, seismicAcqAndProcCost, countryOfficeCost])
+    }, [countryOfficeCost])
 
     const handleSave = async () => {
         setIsSaving(true)
@@ -410,7 +523,7 @@ function CaseCostTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFeasibilityChange}
-                            value={caseItem.capexFactorFeasibilityStudies * 100}
+                            defaultValue={caseItem.capexFactorFeasibilityStudies * 100}
                             integer={false}
                             label="CAPEX factor feasibility studies (%)"
                         />
@@ -418,7 +531,7 @@ function CaseCostTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFEEDChange}
-                            value={caseItem.capexFactorFEEDStudies * 100}
+                            defaultValue={caseItem.capexFactorFEEDStudies * 100}
                             integer={false}
                             label="CAPEX factor FEED studies (%)"
                         />
@@ -451,7 +564,7 @@ function CaseCostTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleStartYearChange}
-                            value={startYear}
+                            defaultValue={startYear}
                             integer
                             label="Start year"
                         />
@@ -462,7 +575,7 @@ function CaseCostTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleEndYearChange}
-                            value={endYear}
+                            defaultValue={endYear}
                             integer
                             label="End year"
                         />

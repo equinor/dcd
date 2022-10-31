@@ -11,7 +11,6 @@ public static class ExplorationWellDtoAdapter
         {
             ExplorationId = explorationWell.ExplorationId,
             WellId = explorationWell.WellId,
-            Count = explorationWell.Count,
         };
 
         if (explorationWell.DrillingSchedule != null)
