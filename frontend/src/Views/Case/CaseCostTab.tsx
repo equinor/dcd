@@ -523,7 +523,7 @@ function CaseCostTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFeasibilityChange}
-                            value={caseItem.capexFactorFeasibilityStudies * 100}
+                            defaultValue={caseItem.capexFactorFeasibilityStudies * 100}
                             integer={false}
                             label="CAPEX factor feasibility studies (%)"
                         />
@@ -531,7 +531,7 @@ function CaseCostTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFEEDChange}
-                            value={caseItem.capexFactorFEEDStudies * 100}
+                            defaultValue={caseItem.capexFactorFEEDStudies * 100}
                             integer={false}
                             label="CAPEX factor FEED studies (%)"
                         />
@@ -564,7 +564,7 @@ function CaseCostTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleStartYearChange}
-                            value={startYear}
+                            defaultValue={startYear}
                             integer
                             label="Start year"
                         />
@@ -575,7 +575,7 @@ function CaseCostTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleEndYearChange}
-                            value={endYear}
+                            defaultValue={endYear}
                             integer
                             label="End year"
                         />
