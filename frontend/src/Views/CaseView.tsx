@@ -405,6 +405,8 @@ const CaseView = () => {
                                     caseItem={caseItem}
                                     setCase={setCase}
                                     activeTab={activeTab}
+                                    topside={topside}
+                                    setTopside={setTopside}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
