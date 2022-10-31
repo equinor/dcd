@@ -359,7 +359,7 @@ function CaseFacilitiesTab({
                         />
                     </NumberInputField>
                 </RowWrapper>
-                <Typography variant="h5">Subsea wells</Typography>
+                <Typography variant="h5">Platform wells</Typography>
                 <RowWrapper>
                     <NumberInputField>
                         <CaseNumberInput
@@ -443,7 +443,7 @@ function CaseFacilitiesTab({
                         <option key="13" value={13}>HDPE lined CS (Water injection only)</option>
                     </NativeSelectField>
                 </RowWrapper>
-                <Typography variant="h5">Platform wells</Typography>
+                <Typography variant="h5">Subsea wells</Typography>
                 <RowWrapper>
                     <NumberInputField>
                         <CaseNumberInput
