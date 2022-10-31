@@ -12,7 +12,7 @@ interface Props {
     topside: Topside,
 }
 
-function CaseCO2Distribution({
+function CaseCO2DistributionTable({
     project, topside,
 }: Props) {
     const gridRef = useRef(null)
@@ -115,4 +115,4 @@ function CaseCO2Distribution({
     )
 }
 
-export default CaseCO2Distribution
+export default CaseCO2DistributionTable

@@ -10,9 +10,7 @@ import styled from "styled-components"
 
 import {
     Button, NativeSelect, Typography,
-    Icon,
 } from "@equinor/eds-core-react"
-import { lock } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
@@ -21,9 +19,9 @@ import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { Co2Emissions } from "../../models/assets/drainagestrategy/Co2Emissions"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
-import CaseCO2Distribution from "../../Components/Case/CaseCO2Distribution"
 import { Topside } from "../../models/assets/topside/Topside"
 import { GetTopsideService } from "../../Services/TopsideService"
+import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -91,8 +89,6 @@ function CaseCO2Tab({
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const [isSaving, setIsSaving] = useState<boolean>()
-
-    // const lockIcon = () => <Icon data={lock} color="#007079" />
 
     useEffect(() => {
         (async () => {
@@ -184,7 +180,7 @@ function CaseCO2Tab({
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
             <ColumnWrapper>
                 <RowWrapper>
-                    <CaseCO2Distribution project={project} topside={topside} />
+                    <CaseCO2DistributionTable project={project} topside={topside} />
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideFuelConsumptionChange}
