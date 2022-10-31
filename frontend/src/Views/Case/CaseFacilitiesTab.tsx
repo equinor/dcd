@@ -250,14 +250,14 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideDryWeightChange}
-                            value={topside?.dryWeight}
+                            defaultValue={topside?.dryWeight}
                             integer={false}
                             label="Topside dry weight"
                         />
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={() => { }}
-                        value={caseItem.facilitiesAvailability * 100}
+                        defaultValue={caseItem.facilitiesAvailability * 100}
                         integer
                         disabled
                         label="Facilities availability (%)"
@@ -267,7 +267,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideOilCapacityChange}
-                            value={topside?.oilCapacity}
+                            defaultValue={topside?.oilCapacity}
                             integer={false}
                             label="Oil capacity"
                         />
@@ -275,7 +275,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideGasCapacityChange}
-                            value={topside?.gasCapacity}
+                            defaultValue={topside?.gasCapacity}
                             integer={false}
                             label="Gas capacity"
                         />
@@ -289,14 +289,14 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfTemplateCountChange}
-                            value={surf?.templateCount}
+                            defaultValue={surf?.templateCount}
                             integer
                             label="Templates"
                         />
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={handleSurfRiserCountChange}
-                        value={surf?.riserCount}
+                        defaultValue={surf?.riserCount}
                         integer
                         label="Risers"
                     />
@@ -305,7 +305,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfInfieldPipelineSystemLengthChange}
-                            value={surf?.infieldPipelineSystemLength}
+                            defaultValue={surf?.infieldPipelineSystemLength}
                             integer={false}
                             label="Production lines length"
                         />
@@ -313,7 +313,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfUmbilicalSystemLengthChange}
-                            value={surf?.umbilicalSystemLength}
+                            defaultValue={surf?.umbilicalSystemLength}
                             integer={false}
                             label="Umbilical system length"
                         />
@@ -347,7 +347,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSubstructureDryweightChange}
-                            value={substructure?.dryWeight}
+                            defaultValue={substructure?.dryWeight}
                             integer={false}
                             label="Substructure dry weight"
                         />
@@ -361,7 +361,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTransportOilExportPipelineLengthChange}
-                            value={transport?.oilExportPipelineLength}
+                            defaultValue={transport?.oilExportPipelineLength}
                             integer={false}
                             label="Oil export pipeline length"
                         />
@@ -369,7 +369,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTransportGasExportPipelineLengthChange}
-                            value={transport?.gasExportPipelineLength}
+                            defaultValue={transport?.gasExportPipelineLength}
                             integer={false}
                             label="Gas export pipeline length"
                         />

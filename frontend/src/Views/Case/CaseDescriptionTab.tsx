@@ -145,7 +145,7 @@ function CaseDescriptionTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={handleProducerCountChange}
-                            value={caseItem.producerCount}
+                            defaultValue={caseItem.producerCount}
                             integer
                             label="Oil producer wells"
                         />
@@ -153,7 +153,7 @@ function CaseDescriptionTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={handletWaterInjectorCountChange}
-                            value={caseItem.waterInjectorCount}
+                            defaultValue={caseItem.waterInjectorCount}
                             integer
                             disabled={false}
                             label="Water injector count"
@@ -161,7 +161,7 @@ function CaseDescriptionTab({
                     </InputWrapper>
                     <CaseNumberInput
                         onChange={handleGasInjectorCountChange}
-                        value={caseItem.gasInjectorCount}
+                        defaultValue={caseItem.gasInjectorCount}
                         integer
                         label="Gas injector count"
                     />
@@ -196,7 +196,7 @@ function CaseDescriptionTab({
                     </InputWrapper>
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}
-                        value={caseItem.facilitiesAvailability * 100}
+                        defaultValue={caseItem.facilitiesAvailability * 100}
                         integer={false}
                         label="Facilities availability (%)"
                     />

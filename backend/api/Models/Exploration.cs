@@ -9,6 +9,9 @@ public class Exploration
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
     public ExplorationCostProfile? CostProfile { get; set; }
+    public ExplorationWellCostProfile? ExplorationWellCostProfile { get; set; }
+    public AppraisalWellCostProfile? AppraisalWellCostProfile { get; set; }
+    public SidetrackCostProfile? SidetrackCostProfile { get; set; }
     public SeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
     public CountryOfficeCost? CountryOfficeCost { get; set; }
     public GAndGAdminCost? GAndGAdminCost { get; set; }
@@ -18,6 +21,24 @@ public class Exploration
 }
 
 public class ExplorationCostProfile : TimeSeriesCost
+{
+    [ForeignKey("Exploration.Id")]
+    public Exploration Exploration { get; set; } = null!;
+    public bool Override { get; set; }
+}
+public class ExplorationWellCostProfile : TimeSeriesCost
+{
+    [ForeignKey("Exploration.Id")]
+    public Exploration Exploration { get; set; } = null!;
+    public bool Override { get; set; }
+}
+public class AppraisalWellCostProfile : TimeSeriesCost
+{
+    [ForeignKey("Exploration.Id")]
+    public Exploration Exploration { get; set; } = null!;
+    public bool Override { get; set; }
+}
+public class SidetrackCostProfile : TimeSeriesCost
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;

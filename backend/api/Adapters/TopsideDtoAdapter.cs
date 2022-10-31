@@ -40,6 +40,7 @@ public static class TopsideDtoAdapter
             DG3Date = topside.DG3Date,
             DG4Date = topside.DG4Date,
             FacilityOpex = topside.FacilityOpex,
+            PeakElectricityImported = topside.PeakElectricityImported,
         };
         return topsideDto;
     }
