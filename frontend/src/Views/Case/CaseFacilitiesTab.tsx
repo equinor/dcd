@@ -301,14 +301,14 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleFacilityOpexChange}
-                            value={topside?.facilityOpex}
+                            defaultValue={topside?.facilityOpex}
                             integer={false}
                             label="Facility opex"
                         />
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={handleSurfCessationCostChange}
-                        value={surf?.cessationCost}
+                        defaultValue={surf?.cessationCost}
                         integer={false}
                         label="Cessation cost"
                     />
@@ -353,7 +353,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideWaterInjectionCapacityChange}
-                            value={topside?.waterInjectionCapacity}
+                            defaultValue={topside?.waterInjectionCapacity}
                             integer={false}
                             label="Water injection capacity"
                         />
@@ -364,7 +364,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideProducerCountChange}
-                            value={topside?.producerCount}
+                            defaultValue={topside?.producerCount}
                             integer
                             label="Producer count"
                         />
@@ -372,14 +372,14 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideGasInjectorCountChange}
-                            value={topside?.gasInjectorCount}
+                            defaultValue={topside?.gasInjectorCount}
                             integer
                             label="Gas injector count"
                         />
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={handleTopsideWaterInjectorCountChange}
-                        value={topside?.waterInjectorCount}
+                        defaultValue={topside?.waterInjectorCount}
                         integer
                         label="Water injector count"
                     />
@@ -448,7 +448,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfProducerCountChange}
-                            value={surf?.producerCount}
+                            defaultValue={surf?.producerCount}
                             integer
                             label="Producer count"
                         />
@@ -456,14 +456,14 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfGasInjectorCountChange}
-                            value={surf?.gasInjectorCount}
+                            defaultValue={surf?.gasInjectorCount}
                             integer
                             label="Gas injector count"
                         />
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={handleSurfWaterInjectorCountChange}
-                        value={surf?.waterInjectorCount}
+                        defaultValue={surf?.waterInjectorCount}
                         integer
                         label="Water injector count"
                     />
