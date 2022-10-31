@@ -19,6 +19,7 @@ import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { Co2Emissions } from "../../models/assets/drainagestrategy/Co2Emissions"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
+import CaseCO2Distribution from "../../Components/Case/CaseCO2Distribution"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -177,6 +178,7 @@ function CaseCO2Tab({
                     </Button>
                 </TableYearWrapper>
             </ColumnWrapper>
+            <CaseCO2Distribution project={project} />
             <CaseTabTable
                 caseItem={caseItem}
                 project={project}
