@@ -38,6 +38,7 @@ public static class TopsideAdapter
             DG3Date = topsideDto.DG3Date,
             DG4Date = topsideDto.DG4Date,
             FacilityOpex = topsideDto.FacilityOpex,
+            PeakElectricityImported = topsideDto.PeakElectricityImported,
         };
 
         if (topsideDto.CostProfile != null)
@@ -86,6 +87,7 @@ public static class TopsideAdapter
         existing.DG3Date = topsideDto.DG3Date;
         existing.DG4Date = topsideDto.DG4Date;
         existing.FacilityOpex = topsideDto.FacilityOpex;
+        existing.PeakElectricityImported = topsideDto.PeakElectricityImported;
     }
 
     private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)

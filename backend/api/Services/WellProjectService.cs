@@ -26,6 +26,10 @@ public class WellProjectService
         {
             return _context.WellProjects
                 .Include(c => c.CostProfile)
+                .Include(c => c.OilProducerCostProfile)
+                .Include(c => c.GasProducerCostProfile)
+                .Include(c => c.WaterInjectorCostProfile)
+                .Include(c => c.GasInjectorCostProfile)
                 .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
                 .Where(d => d.Project.Id.Equals(projectId));
         }
@@ -196,6 +200,10 @@ public class WellProjectService
     {
         var wellProject = _context.WellProjects!
             .Include(c => c.CostProfile)
+            .Include(c => c.OilProducerCostProfile)
+            .Include(c => c.GasProducerCostProfile)
+            .Include(c => c.WaterInjectorCostProfile)
+            .Include(c => c.GasInjectorCostProfile)
             .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
             .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.Well)
             .FirstOrDefault(o => o.Id == wellProjectId);

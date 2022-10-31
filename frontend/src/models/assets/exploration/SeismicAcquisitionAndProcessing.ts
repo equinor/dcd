@@ -25,6 +25,7 @@ Components.Schemas.SeismicAcquisitionAndProcessingDto, ITimeSeries {
             this.startYear = 0
             this.name = "Seismic acquisition and processing"
             this.values = []
+            this.epaVersion = ""
         }
     }
 

@@ -82,43 +82,43 @@ function CaseFacilitiesTab({
 
     const handleTopsideDryWeightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.dryWeight = Number(e.currentTarget.value)
+        newTopside.dryWeight = Math.max(Number(e.currentTarget.value), 0)
         setTopside(newTopside)
     }
 
     const handleTopsideOilCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.oilCapacity = Number(e.currentTarget.value)
+        newTopside.oilCapacity = Math.max(Number(e.currentTarget.value), 0)
         setTopside(newTopside)
     }
 
     const handleTopsideGasCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.gasCapacity = Number(e.currentTarget.value)
+        newTopside.gasCapacity = Math.max(Number(e.currentTarget.value), 0)
         setTopside(newTopside)
     }
 
     const handleSurfTemplateCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.templateCount = Number(e.currentTarget.value)
+        newSurf.templateCount = Math.max(Number(e.currentTarget.value), 0)
         setSurf(newSurf)
     }
 
     const handleSurfRiserCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.riserCount = Number(e.currentTarget.value)
+        newSurf.riserCount = Math.max(Number(e.currentTarget.value), 0)
         setSurf(newSurf)
     }
 
     const handleSurfInfieldPipelineSystemLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.infieldPipelineSystemLength = Number(e.currentTarget.value)
+        newSurf.infieldPipelineSystemLength = Math.max(Number(e.currentTarget.value), 0)
         setSurf(newSurf)
     }
 
     const handleSurfUmbilicalSystemLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.umbilicalSystemLength = Number(e.currentTarget.value)
+        newSurf.umbilicalSystemLength = Math.max(Number(e.currentTarget.value), 0)
         setSurf(newSurf)
     }
 
@@ -134,7 +134,7 @@ function CaseFacilitiesTab({
 
     const handleSubstructureDryweightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSubstructure: Substructure = { ...substructure }
-        newSubstructure.dryWeight = Number(e.currentTarget.value)
+        newSubstructure.dryWeight = Math.max(Number(e.currentTarget.value), 0)
         setSubstrucutre(newSubstructure)
     }
 
@@ -161,13 +161,13 @@ function CaseFacilitiesTab({
 
     const handleTransportOilExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTransport: Transport = { ...transport }
-        newTransport.oilExportPipelineLength = Number(e.currentTarget.value)
+        newTransport.oilExportPipelineLength = Math.max(Number(e.currentTarget.value), 0)
         setTransport(newTransport)
     }
 
     const handleTransportGasExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTransport: Transport = { ...transport }
-        newTransport.gasExportPipelineLength = Number(e.currentTarget.value)
+        newTransport.gasExportPipelineLength = Math.max(Number(e.currentTarget.value), 0)
         setTransport(newTransport)
     }
 
@@ -250,14 +250,14 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideDryWeightChange}
-                            value={topside?.dryWeight}
+                            defaultValue={topside?.dryWeight}
                             integer={false}
                             label="Topside dry weight"
                         />
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={() => { }}
-                        value={caseItem.facilitiesAvailability * 100}
+                        defaultValue={caseItem.facilitiesAvailability * 100}
                         integer
                         disabled
                         label="Facilities availability (%)"
@@ -267,7 +267,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideOilCapacityChange}
-                            value={topside?.oilCapacity}
+                            defaultValue={topside?.oilCapacity}
                             integer={false}
                             label="Oil capacity"
                         />
@@ -275,7 +275,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideGasCapacityChange}
-                            value={topside?.gasCapacity}
+                            defaultValue={topside?.gasCapacity}
                             integer={false}
                             label="Gas capacity"
                         />
@@ -289,14 +289,14 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfTemplateCountChange}
-                            value={surf?.templateCount}
+                            defaultValue={surf?.templateCount}
                             integer
                             label="Templates"
                         />
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={handleSurfRiserCountChange}
-                        value={surf?.riserCount}
+                        defaultValue={surf?.riserCount}
                         integer
                         label="Risers"
                     />
@@ -305,7 +305,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfInfieldPipelineSystemLengthChange}
-                            value={surf?.infieldPipelineSystemLength}
+                            defaultValue={surf?.infieldPipelineSystemLength}
                             integer={false}
                             label="Production lines length"
                         />
@@ -313,7 +313,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfUmbilicalSystemLengthChange}
-                            value={surf?.umbilicalSystemLength}
+                            defaultValue={surf?.umbilicalSystemLength}
                             integer={false}
                             label="Umbilical system length"
                         />
@@ -347,7 +347,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSubstructureDryweightChange}
-                            value={substructure?.dryWeight}
+                            defaultValue={substructure?.dryWeight}
                             integer={false}
                             label="Substructure dry weight"
                         />
@@ -361,7 +361,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTransportOilExportPipelineLengthChange}
-                            value={transport?.oilExportPipelineLength}
+                            defaultValue={transport?.oilExportPipelineLength}
                             integer={false}
                             label="Oil export pipeline length"
                         />
@@ -369,7 +369,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTransportGasExportPipelineLengthChange}
-                            value={transport?.gasExportPipelineLength}
+                            defaultValue={transport?.gasExportPipelineLength}
                             integer={false}
                             label="Gas export pipeline length"
                         />

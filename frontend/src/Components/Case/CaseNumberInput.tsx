@@ -4,7 +4,7 @@ import { WrapperColumn } from "../../Views/Asset/StyledAssetComponents"
 
 interface Props {
     onChange: ChangeEventHandler<HTMLInputElement>
-    value: number | undefined
+    defaultValue: number | undefined
     integer: boolean,
     disabled?: boolean
     label: string
@@ -12,7 +12,7 @@ interface Props {
 
 const CaseNumberInput = ({
     onChange,
-    value,
+    defaultValue,
     integer,
     disabled,
     label,
@@ -22,7 +22,7 @@ const CaseNumberInput = ({
         <Input
             id="NumberInput"
             type="number"
-            value={value}
+            defaultValue={defaultValue}
             disabled={disabled}
             onChange={onChange}
             onKeyPress={(event) => {

@@ -1,7 +1,7 @@
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { ITimeSeries } from "../../ITimeSeries"
 
-export class CountryOfficeCost implements Components.Schemas.CountryOfficeCostDto, ITimeSeries {
+export class ExplorationWellCostProfile implements Components.Schemas.ExplorationWellCostProfileDto, ITimeSeries {
     id?: string
     startYear?: number
     name?: string
@@ -9,29 +9,31 @@ export class CountryOfficeCost implements Components.Schemas.CountryOfficeCostDt
     epaVersion?: string
     currency?: Components.Schemas.Currency
     sum?: number
+    override?: boolean
 
-    constructor(data?: Components.Schemas.CountryOfficeCostDto) {
+    constructor(data?: Components.Schemas.ExplorationWellCostProfileDto) {
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
-            this.name = "Country office cost"
+            this.name = "Cost profile"
             this.values = data.values ?? []
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
             this.sum = data.sum
+            this.override = data.override
         } else {
             this.id = EMPTY_GUID
             this.startYear = 0
-            this.name = "Country office cost"
+            this.name = "Cost profile"
             this.values = []
             this.epaVersion = ""
         }
     }
 
-    static fromJSON(data?: Components.Schemas.CountryOfficeCostDto): CountryOfficeCost | undefined {
+    static fromJSON(data?: Components.Schemas.ExplorationWellCostProfileDto): ExplorationWellCostProfile | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new CountryOfficeCost(data)
+        return new ExplorationWellCostProfile(data)
     }
 }

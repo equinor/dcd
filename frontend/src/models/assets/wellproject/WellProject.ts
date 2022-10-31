@@ -1,6 +1,10 @@
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { WellProjectWell } from "../../WellProjectWell"
 import { IAsset } from "../IAsset"
+import { GasInjectorCostProfile } from "./GasInjectorCostProfile"
+import { GasProducerCostProfile } from "./GasProducerCostProfile"
+import { OilProducerCostProfile } from "./OilProducerCostProfile"
+import { WaterInjectorCostProfile } from "./WaterInjectorCostProfile"
 import { WellProjectCostProfile } from "./WellProjectCostProfile"
 
 export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
@@ -8,6 +12,10 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: WellProjectCostProfile | undefined
+    oilProducerCostProfile?: OilProducerCostProfile
+    gasProducerCostProfile?: GasProducerCostProfile
+    waterInjectorCostProfile?: WaterInjectorCostProfile
+    gasInjectorCostProfile?: GasInjectorCostProfile
     artificialLift?: Components.Schemas.ArtificialLift | undefined
     rigMobDemob?: number | undefined
     annualWellInterventionCost?: number | undefined
@@ -21,6 +29,10 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.name = data.name ?? ""
             this.projectId = data.projectId ?? ""
             this.costProfile = WellProjectCostProfile.fromJSON(data.costProfile)
+            this.oilProducerCostProfile = OilProducerCostProfile.fromJSON(data.oilProducerCostProfile)
+            this.gasProducerCostProfile = GasProducerCostProfile.fromJSON(data.gasProducerCostProfile)
+            this.waterInjectorCostProfile = WaterInjectorCostProfile.fromJSON(data.waterInjectorCostProfile)
+            this.gasInjectorCostProfile = GasInjectorCostProfile.fromJSON(data.gasInjectorCostProfile)
             this.artificialLift = data.artificialLift ?? 0
             this.rigMobDemob = data.rigMobDemob ?? 0
             this.annualWellInterventionCost = data.annualWellInterventionCost ?? 0
