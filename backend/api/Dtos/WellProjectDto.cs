@@ -8,6 +8,10 @@ public class WellProjectDto
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
     public WellProjectCostProfileDto? CostProfile { get; set; }
+    public OilProducerCostProfileDto? OilProducerCostProfile { get; set; }
+    public GasProducerCostProfileDto? GasProducerCostProfile { get; set; }
+    public WaterInjectorCostProfileDto? WaterInjectorCostProfile { get; set; }
+    public GasInjectorCostProfileDto? GasInjectorCostProfile { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public double RigMobDemob { get; set; }
     public double AnnualWellInterventionCost { get; set; }
@@ -17,6 +21,26 @@ public class WellProjectDto
 }
 
 public class WellProjectCostProfileDto : TimeSeriesCostDto
+{
+    public bool Override { get; set; }
+}
+
+public class OilProducerCostProfileDto : TimeSeriesCostDto
+{
+    public bool Override { get; set; }
+}
+
+public class GasProducerCostProfileDto : TimeSeriesCostDto
+{
+    public bool Override { get; set; }
+}
+
+public class WaterInjectorCostProfileDto : TimeSeriesCostDto
+{
+    public bool Override { get; set; }
+}
+
+public class GasInjectorCostProfileDto : TimeSeriesCostDto
 {
     public bool Override { get; set; }
 }

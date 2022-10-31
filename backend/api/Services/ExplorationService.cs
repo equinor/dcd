@@ -28,6 +28,9 @@ public class ExplorationService
         {
             return _context.Explorations
                 .Include(c => c.CostProfile)
+                .Include(c => c.ExplorationWellCostProfile)
+                .Include(c => c.AppraisalWellCostProfile)
+                .Include(c => c.SidetrackCostProfile)
                 .Include(c => c.GAndGAdminCost)
                 .Include(c => c.SeismicAcquisitionAndProcessing)
                 .Include(c => c.CountryOfficeCost)
@@ -230,6 +233,9 @@ public class ExplorationService
 
         var exploration = _context.Explorations!
             .Include(c => c.CostProfile)
+            .Include(c => c.ExplorationWellCostProfile)
+            .Include(c => c.AppraisalWellCostProfile)
+            .Include(c => c.SidetrackCostProfile)
             .Include(c => c.GAndGAdminCost)
             .Include(c => c.SeismicAcquisitionAndProcessing)
             .Include(c => c.CountryOfficeCost)
