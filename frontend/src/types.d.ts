@@ -1,5 +1,14 @@
 declare namespace Components {
     namespace Schemas {
+        export interface AppraisalWellCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
         export interface CapexDto {
             id?: string; // uuid
@@ -164,6 +173,9 @@ declare namespace Components {
             projectId?: string; // uuid
             name?: string | null;
             costProfile?: ExplorationCostProfileDto;
+            explorationWellCostProfile?: ExplorationWellCostProfileDto;
+            appraisalWellCostProfile?: AppraisalWellCostProfileDto;
+            sidetrackCostProfile?: SidetrackCostProfileDto;
             gAndGAdminCost?: GAndGAdminCostDto;
             seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessingDto;
             countryOfficeCost?: CountryOfficeCostDto;
@@ -180,8 +192,16 @@ declare namespace Components {
             appraisalRigMobDemob?: number; // double
             appraisalProjectDrillingCosts?: number; // double
         }
+        export interface ExplorationWellCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export interface ExplorationWellDto {
-            count?: number; // int32
             drillingSchedule?: DrillingScheduleDto;
             explorationId?: string; // uuid
             wellId?: string; // uuid
@@ -199,6 +219,24 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface GasInjectorCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
+        export interface GasProducerCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
         }
         export type GasSolution = 0 | 1; // int32
         export interface Identity {
@@ -234,6 +272,15 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface OilProducerCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
         }
         export interface OpexCostProfileDto {
             id?: string; // uuid
@@ -350,6 +397,15 @@ declare namespace Components {
             tenantId?: string | null;
             webId?: string | null;
             "@odata.type"?: string | null;
+        }
+        export interface SidetrackCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
         }
         export type Source = 0 | 1; // int32
         export interface Stream {
@@ -531,6 +587,15 @@ declare namespace Components {
         export interface UrlDto {
             url?: string | null;
         }
+        export interface WaterInjectorCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
         export interface WellDto {
             id?: string; // uuid
@@ -556,6 +621,10 @@ declare namespace Components {
             projectId?: string; // uuid
             name?: string | null;
             costProfile?: WellProjectCostProfileDto;
+            oilProducerCostProfile?: OilProducerCostProfileDto;
+            gasProducerCostProfile?: GasProducerCostProfileDto;
+            waterInjectorCostProfile?: WaterInjectorCostProfileDto;
+            gasInjectorCostProfile?: GasInjectorCostProfileDto;
             artificialLift?: ArtificialLift /* int32 */;
             rigMobDemob?: number; // double
             annualWellInterventionCost?: number; // double
@@ -564,7 +633,6 @@ declare namespace Components {
             wellProjectWells?: WellProjectWellDto[] | null;
         }
         export interface WellProjectWellDto {
-            count?: number; // int32
             drillingSchedule?: DrillingScheduleDto;
             wellProjectId?: string; // uuid
             wellId?: string; // uuid

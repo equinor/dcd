@@ -27,8 +27,6 @@ import { IAssetService } from "../Services/IAssetService"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 import { WellProjectWell } from "../models/WellProjectWell"
 import { Well } from "../models/Well"
-import DrillingSchedules from "../Components/Well/DrillingSchedules"
-import WellList from "../Components/Well/WellList"
 
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
@@ -136,8 +134,6 @@ function WellProjectView() {
     if (!wellProject || !caseItem) return null
     return (
         <AssetViewDiv>
-            <WellList project={project} wellProject={wellProject} setProject={setProject} />
-
             <Wrapper>
                 <Typography variant="h2">WellProject</Typography>
                 <Save
@@ -231,17 +227,6 @@ function WellProjectView() {
                 profileType="Cost"
                 readOnlyTimeSeries={[]}
                 readOnlyName={[]}
-            />
-            <Typography>Drilling schedules:</Typography>
-            <DrillingSchedules
-                setProject={setProject}
-                wellProjectWells={wellProjectWells}
-                project={project}
-                caseItem={caseItem!}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
     )
