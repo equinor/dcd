@@ -80,9 +80,39 @@ function CaseFacilitiesTab({
 }: Props) {
     const [isSaving, setIsSaving] = useState<boolean>()
 
+    const handleFacilityOpexChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newTopside: Topside = { ...topside }
+        newTopside.facilityOpex = Number(e.currentTarget.value)
+        setTopside(newTopside)
+    }
+
+    const handleSurfCessationCostChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newSurf: Surf = { ...surf }
+        newSurf.cessationCost = Number(e.currentTarget.value)
+        setSurf(newSurf)
+    }
+
     const handleTopsideDryWeightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
         newTopside.dryWeight = Number(e.currentTarget.value)
+        setTopside(newTopside)
+    }
+
+    const handleTopsideProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newTopside: Topside = { ...topside }
+        newTopside.producerCount = Number(e.currentTarget.value)
+        setTopside(newTopside)
+    }
+
+    const handleTopsideGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newTopside: Topside = { ...topside }
+        newTopside.gasInjectorCount = Number(e.currentTarget.value)
+        setTopside(newTopside)
+    }
+
+    const handleTopsideWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newTopside: Topside = { ...topside }
+        newTopside.waterInjectorCount = Number(e.currentTarget.value)
         setTopside(newTopside)
     }
 
@@ -98,6 +128,12 @@ function CaseFacilitiesTab({
         setTopside(newTopside)
     }
 
+    const handleTopsideWaterInjectionCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newTopside: Topside = { ...topside }
+        newTopside.waterInjectionCapacity = Number(e.currentTarget.value)
+        setTopside(newTopside)
+    }
+
     const handleSurfTemplateCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
         newSurf.templateCount = Number(e.currentTarget.value)
@@ -107,6 +143,24 @@ function CaseFacilitiesTab({
     const handleSurfRiserCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
         newSurf.riserCount = Number(e.currentTarget.value)
+        setSurf(newSurf)
+    }
+
+    const handleSurfProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newSurf: Surf = { ...surf }
+        newSurf.producerCount = Number(e.currentTarget.value)
+        setSurf(newSurf)
+    }
+
+    const handleSurfGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newSurf: Surf = { ...surf }
+        newSurf.gasInjectorCount = Number(e.currentTarget.value)
+        setSurf(newSurf)
+    }
+
+    const handleSurfWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newSurf: Surf = { ...surf }
+        newSurf.waterInjectorCount = Number(e.currentTarget.value)
         setSurf(newSurf)
     }
 
@@ -243,6 +297,22 @@ function CaseFacilitiesTab({
                         </HostWrapper>
                     )}
                 </RowWrapper>
+                <RowWrapper>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={handleFacilityOpexChange}
+                            value={topside?.facilityOpex}
+                            integer={false}
+                            label="Facility opex"
+                        />
+                    </NumberInputField>
+                    <CaseNumberInput
+                        onChange={handleSurfCessationCostChange}
+                        value={surf?.cessationCost}
+                        integer={false}
+                        label="Cessation cost"
+                    />
+                </RowWrapper>
             </ColumnWrapper>
             <ColumnWrapper>
                 <Typography variant="h4">Topside</Typography>
@@ -280,6 +350,39 @@ function CaseFacilitiesTab({
                             label="Gas capacity"
                         />
                     </NumberInputField>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={handleTopsideWaterInjectionCapacityChange}
+                            value={topside?.waterInjectionCapacity}
+                            integer={false}
+                            label="Water injection capacity"
+                        />
+                    </NumberInputField>
+                </RowWrapper>
+                <Typography variant="h5">Subsea wells</Typography>
+                <RowWrapper>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={handleTopsideProducerCountChange}
+                            value={topside?.producerCount}
+                            integer
+                            label="Producer count"
+                        />
+                    </NumberInputField>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={handleTopsideGasInjectorCountChange}
+                            value={topside?.gasInjectorCount}
+                            integer
+                            label="Gas injector count"
+                        />
+                    </NumberInputField>
+                    <CaseNumberInput
+                        onChange={handleTopsideWaterInjectorCountChange}
+                        value={topside?.waterInjectorCount}
+                        integer
+                        label="Water injector count"
+                    />
                 </RowWrapper>
             </ColumnWrapper>
 
@@ -339,6 +442,31 @@ function CaseFacilitiesTab({
                         <option key="12" value={12}>Cr13 + PIP</option>
                         <option key="13" value={13}>HDPE lined CS (Water injection only)</option>
                     </NativeSelectField>
+                </RowWrapper>
+                <Typography variant="h5">Platform wells</Typography>
+                <RowWrapper>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={handleSurfProducerCountChange}
+                            value={surf?.producerCount}
+                            integer
+                            label="Producer count"
+                        />
+                    </NumberInputField>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={handleSurfGasInjectorCountChange}
+                            value={surf?.gasInjectorCount}
+                            integer
+                            label="Gas injector count"
+                        />
+                    </NumberInputField>
+                    <CaseNumberInput
+                        onChange={handleSurfWaterInjectorCountChange}
+                        value={surf?.waterInjectorCount}
+                        integer
+                        label="Water injector count"
+                    />
                 </RowWrapper>
             </ColumnWrapper>
             <ColumnWrapper>
