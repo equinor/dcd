@@ -167,7 +167,7 @@ function CaseSummaryTab({
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        newCase.breakEven = Number(e.currentTarget.value)
+        newCase.breakEven = Math.max(Number(e.currentTarget.value), 0)
         setCase(newCase)
     }
 

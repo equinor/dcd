@@ -117,7 +117,7 @@ function CaseProductionProfilesTab({
 
     const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        const newfacilitiesAvailability = Number(e.currentTarget.value)
+        const newfacilitiesAvailability = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
         newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         setCase(newCase)
     }
