@@ -249,7 +249,7 @@ function CaseProductionProfilesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFacilitiesAvailabilityChange}
-                            value={caseItem.facilitiesAvailability * 100}
+                            defaultValue={caseItem.facilitiesAvailability * 100}
                             integer={false}
                             label="Facilities availability (%)"
                         />
@@ -280,7 +280,7 @@ function CaseProductionProfilesTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleStartYearChange}
-                            value={startYear}
+                            defaultValue={startYear}
                             integer
                             label="Start year"
                         />
@@ -291,7 +291,7 @@ function CaseProductionProfilesTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleEndYearChange}
-                            value={endYear}
+                            defaultValue={endYear}
                             integer
                             label="End year"
                         />

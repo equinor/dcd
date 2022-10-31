@@ -253,7 +253,7 @@ function CaseSummaryTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseNPVChange}
-                            value={caseItem.npv}
+                            defaultValue={caseItem.npv}
                             integer={false}
                             label="NPV before tax"
                         />
@@ -261,7 +261,7 @@ function CaseSummaryTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseBreakEvenChange}
-                            value={caseItem.breakEven}
+                            defaultValue={caseItem.breakEven}
                             integer={false}
                             label="B/E before tax"
                         />
