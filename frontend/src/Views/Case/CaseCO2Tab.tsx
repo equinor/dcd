@@ -10,7 +10,9 @@ import styled from "styled-components"
 
 import {
     Button, NativeSelect, Typography,
+    Icon,
 } from "@equinor/eds-core-react"
+import { lock } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
@@ -20,6 +22,7 @@ import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { Co2Emissions } from "../../models/assets/drainagestrategy/Co2Emissions"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import CaseCO2Distribution from "../../Components/Case/CaseCO2Distribution"
+import { Topside } from "../../models/assets/topside/Topside"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -30,6 +33,12 @@ const TopWrapper = styled.div`
     flex-direction: row;
     margin-top: 20px;
     margin-bottom: 20px;
+`
+const RowWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 50px;
+    margin-top: 20px;
 `
 const PageTitle = styled(Typography)`
     flex-grow: 1;
@@ -53,18 +62,25 @@ const YearInputWrapper = styled.div`
 const YearDashWrapper = styled.div`
     padding-right: 5px;
 `
+const NumberInputField = styled.div`
+    padding-right: 20px;
+    padding-left: 50px;
+`
 
 interface Props {
     project: Project,
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
+    topside: Topside,
+    setTopside: Dispatch<SetStateAction<Topside | undefined>>,
     activeTab: number
 }
 
 function CaseCO2Tab({
     project, setProject,
     caseItem, setCase,
+    topside, setTopside,
     activeTab,
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
@@ -72,6 +88,8 @@ function CaseCO2Tab({
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    // const lockIcon = () => <Icon data={lock} color="#007079" />
 
     useEffect(() => {
         (async () => {
@@ -112,6 +130,18 @@ function CaseCO2Tab({
         setEndYear(newEndYear)
     }
 
+    const handleTopsideFuelConsumptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newTopside: Topside = { ...topside }
+        newTopside.fuelConsumption = Number(e.currentTarget.value)
+        setTopside(newTopside)
+    }
+
+    const handleTopsideFlaredGasChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newTopside: Topside = { ...topside }
+        newTopside.flaredGas = Number(e.currentTarget.value)
+        setTopside(newTopside)
+    }
+
     interface ITimeSeriesData {
         profileName: string
         unit: string,
@@ -140,6 +170,25 @@ function CaseCO2Tab({
                 {/* <Button onClick={handleSave}>Save</Button> */}
             </TopWrapper>
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
+            <ColumnWrapper>
+                <RowWrapper>
+                    <CaseCO2Distribution project={project} topside={topside} />
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={handleTopsideFuelConsumptionChange}
+                            value={topside?.fuelConsumption}
+                            integer={false}
+                            label="Fuel consumption (million Sm³ gas/sd)"
+                        />
+                    </NumberInputField>
+                    <CaseNumberInput
+                        onChange={handleTopsideFlaredGasChange}
+                        value={topside?.flaredGas}
+                        integer
+                        label="Flared gas (million Sm³ gas/sd)"
+                    />
+                </RowWrapper>
+            </ColumnWrapper>
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField
@@ -178,7 +227,6 @@ function CaseCO2Tab({
                     </Button>
                 </TableYearWrapper>
             </ColumnWrapper>
-            <CaseCO2Distribution project={project} />
             <CaseTabTable
                 caseItem={caseItem}
                 project={project}

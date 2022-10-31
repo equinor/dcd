@@ -2,14 +2,18 @@ import { AgGridReact } from "ag-grid-react"
 import {
     useEffect, useMemo, useRef, useState,
 } from "react"
+import { lock } from "@equinor/eds-icons"
+import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
+import { Topside } from "../../models/assets/topside/Topside"
 
 interface Props {
     project: Project,
+    topside: Topside,
 }
 
 function CaseCO2Distribution({
-    project,
+    project, topside,
 }: Props) {
     const gridRef = useRef(null)
 
@@ -17,20 +21,64 @@ function CaseCO2Distribution({
         gridRef.current = params.api
     }
 
-    const [rowData, setRowData] = useState()
+    const lockIcon = (params: any) => {
+        if (!params.data.set) {
+            return <Icon data={lock} color="#007079" />
+        }
+        return null
+    }
+
+    const co2Data = [
+        {
+            profile: "Oil profile",
+            expectedProfile: topside?.cO2ShareOilProfile,
+            maxProfile: topside?.cO2OnMaxOilProfile,
+        },
+        {
+            profile: "Gas profile",
+            expectedProfile: topside?.cO2ShareGasProfile,
+            maxProfile: topside?.cO2OnMaxGasProfile,
+        },
+        {
+            profile: "Water injection profile",
+            expectedProfile: topside?.cO2ShareWaterInjectionProfile,
+            maxProfile: topside?.cO2OnMaxWaterInjectionProfile,
+        },
+    ]
+
+    const [rowData, setRowData] = useState(co2Data)
 
     useEffect(() => {
     }, [])
 
     const [columnDefs] = useState([
         {
-            field: "profile", headerName: "CO2 distribution", width: 110, flex: 1,
+            field: "profile",
+            headerName: "CO2 distribution",
+            width: 110,
+            flex: 1,
+            editable: false,
         },
         {
-            field: "expectedProfile", headerName: "Expected profile", width: 200,
+            field: "expectedProfile",
+            headerName: "Expected profile",
+            width: 200,
+            editable: false,
         },
         {
-            field: "maxProfile", headerName: "Max profile", width: 200,
+            field: "maxProfile",
+            headerName: "Max profile",
+            width: 200,
+            editable: false,
+        },
+        {
+            headerName: "",
+            width: 60,
+            field: "set",
+            aggFunc: "",
+            cellStyle: { fontWeight: "normal" },
+            editable: false,
+            cellRenderer: lockIcon,
         },
     ])
 
@@ -55,6 +103,12 @@ function CaseCO2Distribution({
                 defaultColDef={defaultColDef}
                 animateRows
                 domLayout="autoHeight"
+                enableCellChangeFlash
+                rowSelection="multiple"
+                enableRangeSelection
+                suppressCopySingleCellRanges
+                suppressMovableColumns
+                enableCharts
                 onGridReady={onGridReady}
             />
         </div>
