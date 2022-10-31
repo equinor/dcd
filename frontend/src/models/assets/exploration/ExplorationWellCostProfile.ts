@@ -26,6 +26,7 @@ export class ExplorationWellCostProfile implements Components.Schemas.Exploratio
             this.startYear = 0
             this.name = "Cost profile"
             this.values = []
+            this.epaVersion = ""
         }
     }
 

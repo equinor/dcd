@@ -26,6 +26,7 @@ export class AppraisalWellCostProfile implements Components.Schemas.AppraisalWel
             this.startYear = 0
             this.name = "Cost profile"
             this.values = []
+            this.epaVersion = ""
         }
     }
 

@@ -93,8 +93,8 @@ const ExplorationView = () => {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
                         [newExploration.costProfile,
-                        newExploration.seismicAcquisitionAndProcessing,
-                        newExploration.countryOfficeCost],
+                            newExploration.seismicAcquisitionAndProcessing,
+                            newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
                     )

@@ -26,6 +26,7 @@ export class SidetrackCostProfile implements Components.Schemas.SidetrackCostPro
             this.startYear = 0
             this.name = "Cost profile"
             this.values = []
+            this.epaVersion = ""
         }
     }
 
