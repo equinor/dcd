@@ -34,6 +34,18 @@ public class TransportService
         return _projectService.GetProjectDto(transport.ProjectId);
     }
 
+    public Transport NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
+    {
+        var transport = TransportAdapter.Convert(transportDto);
+        var project = _projectService.GetProject(transport.ProjectId);
+        transport.Project = project;
+        transport.LastChangedDate = DateTimeOffset.Now;
+        var createdTransport = _context.Transports!.Add(transport);
+        _context.SaveChanges();
+        SetCaseLink(transport, sourceCaseId, project);
+        return createdTransport.Entity;
+    }
+
     private void SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases?.FirstOrDefault(o => o.Id == sourceCaseId);
@@ -112,5 +124,26 @@ public class TransportService
         _context.Transports!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedTransportDto.ProjectId);
+    }
+
+    public TransportDto NewUpdateTransport(TransportDto updatedTransportDto)
+    {
+        var existing = GetTransport(updatedTransportDto.Id);
+        TransportAdapter.ConvertExisting(existing, updatedTransportDto);
+
+        if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.TransportCostProfile!.Remove(existing.CostProfile);
+        }
+
+        if (updatedTransportDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+        {
+            _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
+        }
+
+        existing.LastChangedDate = DateTimeOffset.Now;
+        var updatedTransport = _context.Transports!.Update(existing);
+        _context.SaveChanges();
+        return TransportDtoAdapter.Convert(updatedTransport.Entity);
     }
 }

@@ -27,7 +27,7 @@ public class STEAService
         foreach (Case c in project.Cases!)
         {
             ProjectDto projectDto = ProjectDtoAdapter.Convert(project);
-            CaseDto caseDto = CaseDtoAdapter.Convert(c, projectDto);
+            CaseDto caseDto = CaseDtoAdapter.Convert(c);
             STEACaseDto sTEACaseDto = STEACaseDtoBuilder.Build(caseDto, projectDto);
             sTEACaseDtos.Add(sTEACaseDto);
         }
