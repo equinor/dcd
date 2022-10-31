@@ -48,6 +48,19 @@ public class TopsideService
         return _projectService.GetProjectDto(project.Id);
     }
 
+    public Topside NewCreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
+    {
+        var topside = TopsideAdapter.Convert(topsideDto);
+        var project = _projectService.GetProject(topsideDto.ProjectId);
+        topside.Project = project;
+        topside.LastChangedDate = DateTimeOffset.Now;
+        topside.ProspVersion = topsideDto.ProspVersion;
+        var createdTopside = _context.Topsides!.Add(topside);
+        _context.SaveChanges();
+        SetCaseLink(topside, sourceCaseId, project);
+        return createdTopside.Entity;
+    }
+
     private void SetCaseLink(Topside topside, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
@@ -97,6 +110,26 @@ public class TopsideService
         _context.Topsides!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
+    }
+
+    public TopsideDto NewUpdateTopside(TopsideDto updatedTopsideDto)
+    {
+        var existing = GetTopside(updatedTopsideDto.Id);
+        TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
+
+        if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.TopsideCostProfiles!.Remove(existing.CostProfile);
+        }
+
+        if (updatedTopsideDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+        {
+            _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
+        }
+        existing.LastChangedDate = DateTimeOffset.Now;
+        var updatedTopside = _context.Topsides!.Update(existing);
+        _context.SaveChanges();
+        return TopsideDtoAdapter.Convert(updatedTopside.Entity);
     }
 
     public Topside GetTopside(Guid topsideId)
