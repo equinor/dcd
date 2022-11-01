@@ -1,17 +1,22 @@
 import {
-    Button, Checkbox, NativeSelect, Progress,
+    Button, Checkbox, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"
 import {
     ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
 import { RowNode } from "ag-grid-enterprise"
+import styled from "styled-components"
 import { Project } from "../../models/Project"
 import SharePointImport from "./SharePointImport"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
 
+const ApplyButtonWrapper = styled.div`
+    display: flex;
+    padding-top: 1em;
+`
 interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project
@@ -83,9 +88,15 @@ function PROSPCaseList({
         p.setValue(value)
     }
 
+    const handleCheckboxChange = (p: any, value: boolean) => {
+        p.setValue(value)
+    }
+
     const caseSelectedRenderer = (p:any) => {
-        console.log(p.value)
-        return <Checkbox checked />
+        if (p.value) {
+            return <Checkbox checked onChange={() => handleCheckboxChange(p, false)} />
+        }
+        return <Checkbox onChange={() => handleCheckboxChange(p, true)} />
     }
 
     const checkBoxStatus = (
@@ -136,7 +147,11 @@ function PROSPCaseList({
     const fileLinkRenderer = (p:any) => {
         const link = p.data?.fileLink
         if (link && link !== "") {
-            return (<a href={link}>Test</a>)
+            return (
+                <a href={link} aria-label="SharePoint File link">
+                    <Icon name="external_link" />
+                </a>
+            )
         }
         return null
     }
@@ -145,21 +160,9 @@ function PROSPCaseList({
     const order: SortOrder = "asc"
 
     const [columnDefs, setColumnDefs] = useState([
-        { field: "checkbox", cellRenderer: caseSelectedRenderer, width: 100 },
+        { field: "caseSelected", cellRenderer: caseSelectedRenderer, flex: 1 },
         {
             field: "name", sort: order, flex: 3,
-        },
-        {
-            field: "surfState", headerName: "Surf", flex: 1, cellRenderer: checkBoxStatus, hide: check,
-        },
-        {
-            field: "substructureState", headerName: "Substructure", flex: 1, cellRenderer: checkBoxStatus, hide: check,
-        },
-        {
-            field: "topsideState", headerName: "Topside", flex: 1, cellRenderer: checkBoxStatus, hide: check,
-        },
-        {
-            field: "transportState", headerName: "Transport", flex: 1, cellRenderer: checkBoxStatus, hide: check,
         },
         {
             field: "driveItem",
@@ -172,7 +175,19 @@ function PROSPCaseList({
             field: "fileLink",
             headerName: "Link",
             cellRenderer: fileLinkRenderer,
-            flex: 6,
+            flex: 4,
+        },
+        {
+            field: "surfState", headerName: "Surf", flex: 1, cellRenderer: checkBoxStatus, hide: check,
+        },
+        {
+            field: "substructureState", headerName: "Substructure", flex: 1, cellRenderer: checkBoxStatus, hide: check,
+        },
+        {
+            field: "topsideState", headerName: "Topside", flex: 1, cellRenderer: checkBoxStatus, hide: check,
+        },
+        {
+            field: "transportState", headerName: "Transport", flex: 1, cellRenderer: checkBoxStatus, hide: check,
         },
     ])
 
@@ -253,18 +268,20 @@ function PROSPCaseList({
                     onGridReady={onGridReady}
                 />
             </div>
-            {!isApplying ? (
-                <Button
-                    onClick={() => save(project)}
-                    color="secondary"
-                >
-                    Apply changes
-                </Button>
-            ) : (
-                <Button variant="outlined">
-                    <Progress.Dots color="primary" />
-                </Button>
-            )}
+            <ApplyButtonWrapper>
+                {!isApplying ? (
+                    <Button
+                        onClick={() => save(project)}
+                        color="secondary"
+                    >
+                        Apply changes
+                    </Button>
+                ) : (
+                    <Button variant="outlined">
+                        <Progress.Dots color="primary" />
+                    </Button>
+                )}
+            </ApplyButtonWrapper>
 
         </>
     )
