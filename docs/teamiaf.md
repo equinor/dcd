@@ -11,11 +11,11 @@ We are a development team from [Sopra Steria](https://www.soprasteria.no/)
 - [Anne Hjellbrekke Frøyen](ifro@equinor.com)(UX)
 
 ## General
-- The team is located in Stavanger and Bergen, and uses Teams primarly for meeting such as
--- Daily Standup
--- Weekly status meeting with PO
--- Biweekly grooming meeting and sprint retro
-- As the team is located in two different city the team mainly uses Microsoft Teams and Slack as form of communication. The team in both city have seatings in Sopra Steria offices in Stavanger and Bergen, and do uses them frequently to work together in office environment.
+- The team is located in Stavanger and Bergen, and have seatings in Sopra Steria offices in both locations. The team do still use remote communication tools such as Teams and Slack for communication and recurrent meetings such as:
+    - Daily Standup
+    - Weekly status meeting with PO
+    - Bi-weekly grooming meeting and sprint retro
+
 
 ## Backlogs/Dev board
 - [ConceptApp](https://dev.azure.com/2S-IAF/DCD/_boards/board/t/DCD%20Team/Stories)
@@ -63,11 +63,13 @@ Daily:
 ### Security
 - How do you review security (min every 4 months) 
     - Automatic code scanning for vulnerabilities with [Snyk](https://app.snyk.io/org/shellvis-team)
+    - Monthly reviews of [Snyk](https://app.snyk.io/org/shellvis-team) rapport
 
 
  - How does the team conduct code reviews? 
     - All developments are done in forks, where any changes are made into PR which uses the four eyes principle.
     - Codacy is used to code scan all PRs.
+    - Automated testing and linting are set to run in pipelines during builds and deploy
  
 - How is endpoints checked for security 
     - Endpoints are annotated with attributes opening the endpoint for specific roles.
@@ -78,10 +80,6 @@ Daily:
  - How does the team test and protect their code and environment? 
     - Regression testing, end to end testing, and unit testing.
     - Environment are seperated into into production and preproduction.
-
- 
-- How is infrastructure as code tested  
-
  
 - What is not automated? 
 
@@ -99,11 +97,11 @@ Daily:
 
 
 - Whom have access to test/dev/qa env 
-    - All team members
+    - All team members, Equinor stakeholders, and Product Owner
  
 - What branch protection is in place 
-    - Any changing done to main needs to be approved by a team member.
-    - Only collaborators are allowed to create branch in main repository
+    - Any changing done to main needs to be a pull request, and the change needs to approved by another team member.
+    - Only team members set as collaborators in repository are allowed to create branch in main repository.
 
 - Which linter is used 
     - ESlint 
