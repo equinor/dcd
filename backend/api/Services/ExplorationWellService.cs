@@ -1,5 +1,3 @@
-using System.Security.Principal;
-
 using api.Adapters;
 using api.Context;
 using api.Dtos;
@@ -46,7 +44,12 @@ public class ExplorationWellService
             _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
         }
 
-        var exploration = _context.Explorations!.Include(wp => wp.CostProfile).Include(wp => wp.CountryOfficeCost).Include(wp => wp.SeismicAcquisitionAndProcessing).Include(wp => wp.ExplorationWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.ExplorationId);
+        var exploration = _context.Explorations!.Include(wp => wp.CostProfile)
+        .Include(wp => wp.CountryOfficeCost)
+        .Include(wp => wp.SeismicAcquisitionAndProcessing)
+        .Include(wp => wp.ExplorationWells!)
+        .ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.ExplorationId);
+
         _explorationService.CalculateCostProfile(exploration, existing, null);
 
         _context.ExplorationWell!.Update(existing);
@@ -57,6 +60,36 @@ public class ExplorationWellService
             return _projectService.GetProjectDto((Guid)projectId);
         }
         throw new NotFoundInDBException();
+    }
+
+    public ExplorationWellDto[]? UpdateMultpleExplorationWells(ExplorationWellDto[] updatedExplorationWellDtos)
+    {
+        var explorationId = updatedExplorationWellDtos.FirstOrDefault()?.ExplorationId;
+        ProjectDto? projectDto = null;
+        foreach (var explorationWellDto in updatedExplorationWellDtos)
+        {
+            projectDto = UpdateExplorationWell(explorationWellDto);
+        }
+        if (projectDto != null && explorationId != null)
+        {
+            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
+        }
+        return null;
+    }
+
+    public ExplorationWellDto[]? CreateMultpleExplorationWells(ExplorationWellDto[] explorationWellDtos)
+    {
+        var explorationId = explorationWellDtos.FirstOrDefault()?.ExplorationId;
+        ProjectDto? projectDto = null;
+        foreach (var explorationWellDto in explorationWellDtos)
+        {
+            projectDto = CreateExplorationWell(explorationWellDto);
+        }
+        if (projectDto != null && explorationId != null)
+        {
+            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
+        }
+        return null;
     }
 
     public ExplorationWell GetExplorationWell(Guid wellId, Guid caseId)

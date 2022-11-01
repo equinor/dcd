@@ -5,12 +5,18 @@ import { ExplorationCostProfile } from "./ExplorationCostProfile"
 import { CountryOfficeCost } from "./CountryOfficeCost"
 import { GAndGAdminCost } from "./GAndGAdminCost"
 import { SeismicAcquisitionAndProcessing } from "./SeismicAcquisitionAndProcessing"
+import { ExplorationWellCostProfile } from "./ExplorationWellCostProfile"
+import { AppraisalWellCostProfile } from "./AppraisalWellCostProfile"
+import { SidetrackCostProfile } from "./SidetrackCostProfile"
 
 export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     id?: string | undefined
     projectId?: string | undefined
     name?: string | undefined
     costProfile?: ExplorationCostProfile | undefined
+    explorationWellCostProfile?: ExplorationWellCostProfile
+    appraisalWellCostProfile?: AppraisalWellCostProfile
+    sidetrackCostProfile?: SidetrackCostProfile
     gAndGAdminCost?: GAndGAdminCost | undefined
     seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessing | undefined
     countryOfficeCost?: CountryOfficeCost | undefined
@@ -24,6 +30,9 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
             this.projectId = data.projectId
             this.name = data.name ?? ""
             this.costProfile = ExplorationCostProfile.fromJSON(data.costProfile)
+            this.explorationWellCostProfile = ExplorationWellCostProfile.fromJSON(data.explorationWellCostProfile)
+            this.appraisalWellCostProfile = AppraisalWellCostProfile.fromJSON(data.appraisalWellCostProfile)
+            this.sidetrackCostProfile = SidetrackCostProfile.fromJSON(data.sidetrackCostProfile)
             this.gAndGAdminCost = GAndGAdminCost.fromJSON(data.gAndGAdminCost)
             this.seismicAcquisitionAndProcessing = SeismicAcquisitionAndProcessing
                 .fromJSON(data.seismicAcquisitionAndProcessing)

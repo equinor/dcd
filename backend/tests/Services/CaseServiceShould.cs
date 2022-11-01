@@ -42,7 +42,7 @@ public class CaseShould : IDisposable
         CaseService caseService = new
             CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
 
-        caseService.CreateCase(CaseDtoAdapter.Convert(actual, ProjectDtoAdapter.Convert(project)));
+        caseService.CreateCase(CaseDtoAdapter.Convert(actual));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Cases;
@@ -54,7 +54,6 @@ public class CaseShould : IDisposable
         Assert.Equal(expected.Description, actual.Description);
         Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
         Assert.Equal(expected.DG4Date, actual.DG4Date);
-        Assert.Equal(expected.ModifyTime, actual.ModifyTime);
         Assert.Equal(expected.ReferenceCase, actual.ReferenceCase);
     }
 
@@ -71,7 +70,7 @@ public class CaseShould : IDisposable
         var updatedCase = CreateUpdatedCase(project, oldCase);
 
         // Act
-        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase, ProjectDtoAdapter.Convert(project)));
+        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase));
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
@@ -87,7 +86,7 @@ public class CaseShould : IDisposable
         var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
         var project = fixture.context.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
-        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem, ProjectDtoAdapter.Convert(project)));
+        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
         o.Name == project.Name).Cases;
@@ -120,7 +119,7 @@ public class CaseShould : IDisposable
 
         var project = fixture.context.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
-        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem, ProjectDtoAdapter.Convert(project)));
+        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
 
         var cases = fixture.context.Projects.FirstOrDefault(o =>
             o.Name == project.Name).Cases;

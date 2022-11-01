@@ -4,7 +4,7 @@ import SharepointIds = Components.Schemas.SharepointIds;
 export class DriveItem implements Components.Schemas.DriveItemDto {
     name?: string | null
     id?: string | null
-    webUrl?: string | null
+    sharepointFileUrl?: string | null
     createdDateTime?: string | null
     size?: number | null
     sharepointIds?: SharepointIds
@@ -15,7 +15,7 @@ export class DriveItem implements Components.Schemas.DriveItemDto {
     constructor(data: Components.Schemas.DriveItemDto) {
         this.name = data.name ?? null
         this.id = data.id ?? null
-        this.webUrl = data.webUrl ?? null
+        this.sharepointFileUrl = data.sharepointFileUrl ?? null
         this.createdDateTime = data.createdDateTime ?? null
         this.size = data.size ?? 0
         this.sharepointIds = data.sharepointIds ?? []
