@@ -39,15 +39,15 @@ The team works in sprints of two weeks.
 ### Recurrent meetings
 
 Per sprint (2 weeks): 
-    - Sprint planning 
-    - Backlog grooming 
-    - Retrospective 
+- Sprint planning 
+- Backlog grooming 
+- Retrospective 
 
 Weekly: 
-    - Status meeting 
+- Status meeting 
 
 Daily: 
-    - Standup 
+- Standup 
 
 
 ## Board status
