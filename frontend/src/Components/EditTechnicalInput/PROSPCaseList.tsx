@@ -226,9 +226,9 @@ function PROSPCaseList({
     }
 
     const save = useCallback(async (p: Project) => {
-        setIsApplying(true)
         const dtos = gridDataToDtos(p)
         if (dtos.length > 0) {
+            setIsApplying(true)
             const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
             setProject(newProject)
             setIsApplying(false)
