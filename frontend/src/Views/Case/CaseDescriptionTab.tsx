@@ -68,26 +68,26 @@ function CaseDescriptionTab({
 
     const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        const newfacilitiesAvailability = Number(e.currentTarget.value)
+        const newfacilitiesAvailability = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
         newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         setCase(newCase)
     }
 
     const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.producerCount = Number(e.currentTarget.value)
+        newCase.producerCount = Math.max(Number(e.currentTarget.value), 0)
         setCase(newCase)
     }
 
     const handleGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.gasInjectorCount = Number(e.currentTarget.value)
+        newCase.gasInjectorCount = Math.max(Number(e.currentTarget.value), 0)
         setCase(newCase)
     }
 
     const handletWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.waterInjectorCount = Number(e.currentTarget.value)
+        newCase.waterInjectorCount = Math.max(Number(e.currentTarget.value), 0)
         setCase(newCase)
     }
 
@@ -145,7 +145,7 @@ function CaseDescriptionTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={handleProducerCountChange}
-                            value={caseItem.producerCount}
+                            defaultValue={caseItem.producerCount}
                             integer
                             label="Oil producer wells"
                         />
@@ -153,7 +153,7 @@ function CaseDescriptionTab({
                     <InputWrapper>
                         <CaseNumberInput
                             onChange={handletWaterInjectorCountChange}
-                            value={caseItem.waterInjectorCount}
+                            defaultValue={caseItem.waterInjectorCount}
                             integer
                             disabled={false}
                             label="Water injector count"
@@ -161,7 +161,7 @@ function CaseDescriptionTab({
                     </InputWrapper>
                     <CaseNumberInput
                         onChange={handleGasInjectorCountChange}
-                        value={caseItem.gasInjectorCount}
+                        defaultValue={caseItem.gasInjectorCount}
                         integer
                         label="Gas injector count"
                     />
@@ -174,7 +174,6 @@ function CaseDescriptionTab({
                             onChange={handleProductionStrategyChange}
                             value={caseItem.productionStrategyOverview}
                         >
-                            <option key={undefined} value={undefined}> </option>
                             <option key={0} value={0}>Depletion</option>
                             <option key={1} value={1}>Water injection</option>
                             <option key={2} value={2}>Gas injection</option>
@@ -197,7 +196,7 @@ function CaseDescriptionTab({
                     </InputWrapper>
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}
-                        value={caseItem.facilitiesAvailability * 100}
+                        defaultValue={caseItem.facilitiesAvailability * 100}
                         integer={false}
                         label="Facilities availability (%)"
                     />

@@ -155,7 +155,6 @@ const CaseView = () => {
         (async () => {
             try {
                 setIsLoading(true)
-                setActiveTab(0)
                 const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
@@ -405,6 +404,8 @@ const CaseView = () => {
                                     caseItem={caseItem}
                                     setCase={setCase}
                                     activeTab={activeTab}
+                                    topside={topside}
+                                    setTopside={setTopside}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
