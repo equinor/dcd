@@ -9,7 +9,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography,
+    Button, NativeSelect, Typography, Progress,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -175,7 +175,11 @@ function CaseCO2Tab({
         <>
             <TopWrapper>
                 <PageTitle variant="h3">CO2 Emissions</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Dots />
+                    </Button>
+                )}
             </TopWrapper>
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
             <ColumnWrapper>

@@ -1,6 +1,6 @@
 import { AgGridReact } from "ag-grid-react"
 import {
-    useEffect, useMemo, useRef, useState,
+    useMemo, useRef, useState,
 } from "react"
 import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
@@ -44,10 +44,7 @@ function CaseCO2DistributionTable({
         },
     ]
 
-    const [rowData, setRowData] = useState(co2Data)
-
-    useEffect(() => {
-    }, [])
+    const [rowData] = useState(co2Data)
 
     const [columnDefs] = useState([
         {
@@ -55,19 +52,16 @@ function CaseCO2DistributionTable({
             headerName: "CO2 distribution",
             width: 110,
             flex: 1,
-            editable: false,
         },
         {
             field: "expectedProfile",
             headerName: "Expected profile",
             width: 200,
-            editable: false,
         },
         {
             field: "maxProfile",
             headerName: "Max profile",
             width: 200,
-            editable: false,
         },
         {
             headerName: "",
@@ -75,7 +69,6 @@ function CaseCO2DistributionTable({
             field: "set",
             aggFunc: "",
             cellStyle: { fontWeight: "normal" },
-            editable: false,
             cellRenderer: lockIcon,
         },
     ])
@@ -84,7 +77,7 @@ function CaseCO2DistributionTable({
         sortable: true,
         filter: true,
         resizable: true,
-        editable: true,
+        editable: false,
     }), [])
 
     return (
