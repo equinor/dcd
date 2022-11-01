@@ -11,6 +11,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     cessationCostProfile?: TopsideCessationCostProfile | undefined
     dryWeight?: number | undefined
     oilCapacity?: number | undefined
+    waterInjectionCapacity?: number // double
     gasCapacity?: number | undefined
     artificialLift?: Components.Schemas.ArtificialLift
     maturity?: Components.Schemas.Maturity | undefined
@@ -34,6 +35,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     DG3Date?: Date | null
     DG4Date?: Date | null
     facilityOpex?: number | undefined
+    peakElectricityImported?: number // double
 
     constructor(data?: Components.Schemas.TopsideDto) {
         if (data !== undefined) {
@@ -48,6 +50,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.maturity = data.maturity
             this.oilCapacity = data.oilCapacity
             this.gasCapacity = data.gasCapacity
+            this.waterInjectionCapacity = data.waterInjectionCapacity
             this.currency = data.currency ?? 1
             this.fuelConsumption = data.fuelConsumption
             this.flaredGas = data.flaredGas
@@ -68,6 +71,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.DG3Date = data.dG3Date ? new Date(data.dG3Date) : null
             this.DG4Date = data.dG4Date ? new Date(data.dG4Date) : null
             this.facilityOpex = data.facilityOpex
+            this.peakElectricityImported = data.peakElectricityImported
         } else {
             this.id = EMPTY_GUID
             this.name = ""

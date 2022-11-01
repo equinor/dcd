@@ -15,6 +15,7 @@ public static class TopsideAdapter
             DryWeight = topsideDto.DryWeight,
             OilCapacity = topsideDto.OilCapacity,
             GasCapacity = topsideDto.GasCapacity,
+            WaterInjectionCapacity = topsideDto.WaterInjectionCapacity,
             ArtificialLift = topsideDto.ArtificialLift,
             Maturity = topsideDto.Maturity,
             Currency = topsideDto.Currency,
@@ -36,7 +37,8 @@ public static class TopsideAdapter
             ApprovedBy = topsideDto.ApprovedBy,
             DG3Date = topsideDto.DG3Date,
             DG4Date = topsideDto.DG4Date,
-            FacilityOpex = topsideDto.FacilityOpex
+            FacilityOpex = topsideDto.FacilityOpex,
+            PeakElectricityImported = topsideDto.PeakElectricityImported,
         };
 
         if (topsideDto.CostProfile != null)
@@ -60,6 +62,7 @@ public static class TopsideAdapter
         existing.DryWeight = topsideDto.DryWeight;
         existing.OilCapacity = topsideDto.OilCapacity;
         existing.GasCapacity = topsideDto.GasCapacity;
+        existing.WaterInjectionCapacity = topsideDto.WaterInjectionCapacity;
         existing.ArtificialLift = topsideDto.ArtificialLift;
         existing.Maturity = topsideDto.Maturity;
         existing.Currency = topsideDto.Currency;
@@ -84,13 +87,16 @@ public static class TopsideAdapter
         existing.DG3Date = topsideDto.DG3Date;
         existing.DG4Date = topsideDto.DG4Date;
         existing.FacilityOpex = topsideDto.FacilityOpex;
+        existing.PeakElectricityImported = topsideDto.PeakElectricityImported;
     }
+
     private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
     {
         if (costprofile == null)
         {
             return null;
         }
+
         var topsideCostProfile = new TopsideCostProfile
         {
             Id = costprofile.Id,
@@ -98,26 +104,28 @@ public static class TopsideAdapter
             EPAVersion = costprofile.EPAVersion,
             Topside = topside,
             StartYear = costprofile.StartYear,
-            Values = costprofile.Values
+            Values = costprofile.Values,
         };
 
         return topsideCostProfile;
     }
 
-    private static TopsideCessationCostProfile? Convert(TopsideCessationCostProfileDto? topsideCessationCostProfileDto, Topside topside)
+    private static TopsideCessationCostProfile? Convert(TopsideCessationCostProfileDto? topsideCessationCostProfileDto,
+        Topside topside)
     {
         if (topsideCessationCostProfileDto == null)
         {
             return null;
         }
-        TopsideCessationCostProfile topsideCessationCostProfile = new TopsideCessationCostProfile
+
+        var topsideCessationCostProfile = new TopsideCessationCostProfile
         {
             Id = topsideCessationCostProfileDto.Id,
             Currency = topsideCessationCostProfileDto.Currency,
             EPAVersion = topsideCessationCostProfileDto.EPAVersion,
             Topside = topside,
             StartYear = topsideCessationCostProfileDto.StartYear,
-            Values = topsideCessationCostProfileDto.Values
+            Values = topsideCessationCostProfileDto.Values,
         };
 
         return topsideCessationCostProfile;

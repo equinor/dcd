@@ -2,18 +2,18 @@ namespace api.Helpers;
 
 public class Prosp
 {
+    public SubStructure SubStructure;
+    public Surf Surf;
+    public TopSide TopSide;
+    public Transport Transport;
+
     public Prosp()
     {
         Surf = new Surf();
         TopSide = new TopSide();
         SubStructure = new SubStructure();
         Transport = new Transport();
-
     }
-    public Surf Surf;
-    public TopSide TopSide;
-    public SubStructure SubStructure;
-    public Transport Transport;
 }
 
 public class Surf
@@ -47,6 +47,7 @@ public class TopSide
     public string flaredGas { get; set; } = null!;
     public string oilCapacity { get; set; } = null!;
     public string gasCapacity { get; set; } = null!;
+    public string waterInjectionCapacity { get; set; } = null!;
     public string producerCount { get; set; } = null!;
     public string waterInjectorCount { get; set; } = null!;
     public string gasInjectorCount { get; set; } = null!;

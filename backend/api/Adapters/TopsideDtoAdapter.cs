@@ -15,6 +15,7 @@ public static class TopsideDtoAdapter
             DryWeight = topside.DryWeight,
             OilCapacity = topside.OilCapacity,
             GasCapacity = topside.GasCapacity,
+            WaterInjectionCapacity = topside.WaterInjectionCapacity,
             ArtificialLift = topside.ArtificialLift,
             Maturity = topside.Maturity,
             Currency = topside.Currency,
@@ -38,7 +39,8 @@ public static class TopsideDtoAdapter
             ApprovedBy = topside.ApprovedBy,
             DG3Date = topside.DG3Date,
             DG4Date = topside.DG4Date,
-            FacilityOpex = topside.FacilityOpex
+            FacilityOpex = topside.FacilityOpex,
+            PeakElectricityImported = topside.PeakElectricityImported,
         };
         return topsideDto;
     }
@@ -56,7 +58,7 @@ public static class TopsideDtoAdapter
             Currency = costProfile.Currency,
             EPAVersion = costProfile.EPAVersion,
             Values = costProfile.Values,
-            StartYear = costProfile.StartYear
+            StartYear = costProfile.StartYear,
         };
         return topsideCostProfile;
     }
@@ -68,13 +70,13 @@ public static class TopsideDtoAdapter
             return null;
         }
 
-        TopsideCessationCostProfileDto topsideCostProfile = new TopsideCessationCostProfileDto
+        var topsideCostProfile = new TopsideCessationCostProfileDto
         {
             Id = topsideCessationCostProfile.Id,
             Currency = topsideCessationCostProfile.Currency,
             EPAVersion = topsideCessationCostProfile.EPAVersion,
             Values = topsideCessationCostProfile.Values,
-            StartYear = topsideCessationCostProfile.StartYear
+            StartYear = topsideCessationCostProfile.StartYear,
         };
         return topsideCostProfile;
     }

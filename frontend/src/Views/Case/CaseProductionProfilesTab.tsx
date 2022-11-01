@@ -8,7 +8,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography,
+    Button, NativeSelect, Progress, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -26,6 +26,8 @@ import { ProductionProfileWaterInjection } from "../../models/assets/drainagestr
 import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
+import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
+import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -76,24 +78,30 @@ interface Props {
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     drainageStrategy: DrainageStrategy,
     setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
+    activeTab: number
 }
 
 function CaseProductionProfilesTab({
     project, setProject,
     caseItem, setCase,
     drainageStrategy, setDrainageStrategy,
+    activeTab,
 }: Props) {
-    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
-    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
     const [gas, setGas] = useState<ProductionProfileGas>()
     const [oil, setOil] = useState<ProductionProfileOil>()
     const [water, setWater] = useState<ProductionProfileWater>()
     const [nGL, setNGL] = useState<ProductionProfileNGL>()
     const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
 
+    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
+    const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
+    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
+
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const [isSaving, setIsSaving] = useState<boolean>()
 
     const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
         const newDrainageStrategy: DrainageStrategy = { ...drainage }
@@ -107,15 +115,9 @@ function CaseProductionProfilesTab({
         setDrainageStrategy(newDrainageStrategy)
     }
 
-    const handleDrainageStrategyNGLYieldChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        newDrainageStrategy.nglYield = Number(e.currentTarget.value)
-        updateAndSetDraiangeStrategy(newDrainageStrategy)
-    }
-
     const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        const newfacilitiesAvailability = Number(e.currentTarget.value)
+        const newfacilitiesAvailability = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
         newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         setCase(newCase)
     }
@@ -151,7 +153,7 @@ function CaseProductionProfilesTab({
     interface ITimeSeriesData {
         profileName: string
         unit: string,
-        set: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
     }
 
@@ -183,14 +185,17 @@ function CaseProductionProfilesTab({
         {
             profileName: "Fuel flaring and losses",
             unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            set: setFuelFlaringAndLosses,
             profile: fuelFlaringAndLosses,
         },
         {
             profileName: "Net sales gas",
             unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            set: setNetSalesGas,
             profile: netSalesGas,
+        },
+        {
+            profileName: "Imported electricity",
+            unit: "GWh",
+            profile: importedElectricity,
         },
     ]
 
@@ -199,21 +204,37 @@ function CaseProductionProfilesTab({
     }
 
     useEffect(() => {
-        SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-        drainageStrategy.productionProfileWaterInjection,
-        ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
-        setNetSalesGas(drainageStrategy.netSalesGas)
-        setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
-        setGas(drainageStrategy.productionProfileGas)
-        setOil(drainageStrategy.productionProfileOil)
-        setWater(drainageStrategy.productionProfileWater)
-        setNGL(drainageStrategy.productionProfileNGL)
-        setWaterInjection(drainageStrategy.productionProfileWaterInjection)
-    }, [])
+        (async () => {
+            try {
+                if (activeTab === 1) {
+                    const fuelFlaringProfile = await (await GetGenerateProfileService())
+                        .generateFuelFlaringLossesProfile(caseItem.id)
+                    setFuelFlaringAndLosses(fuelFlaringProfile)
+                    const netSaleProfile = await (await GetGenerateProfileService()).generateNetSaleProfile(caseItem.id)
+                    setNetSalesGas(netSaleProfile)
+                    const importedElectricityProfile = await (await GetGenerateProfileService())
+                        .generateImportedElectricityProfile(caseItem.id)
+                    setImportedElectricity(importedElectricityProfile)
+
+                    SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
+                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+                    drainageStrategy.productionProfileWaterInjection,
+                    ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
+                    setGas(drainageStrategy.productionProfileGas)
+                    setOil(drainageStrategy.productionProfileOil)
+                    setWater(drainageStrategy.productionProfileWater)
+                    setNGL(drainageStrategy.productionProfileNGL)
+                    setWaterInjection(drainageStrategy.productionProfileWaterInjection)
+                }
+            } catch (error) {
+                console.error("[CaseView] Error while generating cost profile", error)
+            }
+        })()
+    }, [activeTab])
 
     const handleSave = async () => {
+        setIsSaving(true)
         if (drainageStrategy) {
             const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
             newDrainageStrategy.netSalesGas = netSalesGas
@@ -228,20 +249,27 @@ function CaseProductionProfilesTab({
         }
         const updateCaseResult = await (await GetCaseService()).update(caseItem)
         setCase(updateCaseResult)
+        setIsSaving(false)
     }
+
+    if (activeTab !== 1) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Production profiles</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Dots />
+                    </Button>
+                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFacilitiesAvailabilityChange}
-                            value={caseItem.facilitiesAvailability * 100}
+                            defaultValue={caseItem.facilitiesAvailability * 100}
                             integer={false}
                             label="Facilities availability (%)"
                         />
@@ -255,14 +283,6 @@ function CaseProductionProfilesTab({
                         <option key={0} value={0}>Export</option>
                         <option key={1} value={1}>Injection</option>
                     </NativeSelectField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleDrainageStrategyNGLYieldChange}
-                            value={drainageStrategy?.nglYield}
-                            integer={false}
-                            label="NGL yield"
-                        />
-                    </NumberInputField>
                 </RowWrapper>
             </ColumnWrapper>
             <ColumnWrapper>
@@ -280,7 +300,7 @@ function CaseProductionProfilesTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleStartYearChange}
-                            value={startYear}
+                            defaultValue={startYear}
                             integer
                             label="Start year"
                         />
@@ -291,7 +311,7 @@ function CaseProductionProfilesTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleEndYearChange}
-                            value={endYear}
+                            defaultValue={endYear}
                             integer
                             label="End year"
                         />

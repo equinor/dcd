@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
     Dispatch,
     SetStateAction,
@@ -10,7 +9,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography,
+    Button, NativeSelect, Progress, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -66,6 +65,9 @@ const YearDashWrapper = styled.div`
 const TableWrapper = styled.div`
     margin-bottom: 50px;
 `
+const InputWrapper = styled.div`
+    margin-right: 20px;
+`
 
 interface Props {
     project: Project,
@@ -81,6 +83,7 @@ interface Props {
     wellProjectWells: WellProjectWell[],
     setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[] | undefined>>,
     wells: Well[] | undefined
+    activeTab: number
 }
 
 function CaseDrillingScheduleTab({
@@ -90,7 +93,7 @@ function CaseDrillingScheduleTab({
     wellProject, setWellProject,
     explorationWells, setExplorationWells,
     wellProjectWells, setWellProjectWells,
-    wells,
+    wells, activeTab,
 }: Props) {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -98,6 +101,19 @@ function CaseDrillingScheduleTab({
 
     const wellProjectWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
+
+    // WellProjectWell
+    const [oilProducerCount, setOilProducerCount] = useState<number>(0)
+    const [gasProducerCount, setGasProducerCount] = useState<number>(0)
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>(0)
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>(0)
+
+    // ExplorationWell
+    const [explorationWellCount, setExplorationWellCount] = useState<number>(0)
+    const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
+    const [sidetrackCount, setSidetrackCount] = useState<number>(0)
+
+    const [isSaving, setIsSaving] = useState<boolean>()
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -121,24 +137,75 @@ function CaseDrillingScheduleTab({
     }
 
     useEffect(() => {
-        const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
-        const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
-        SetTableYearsFromProfiles(
-            [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-            caseItem.DG4Date.getFullYear(),
-            setStartYear,
-            setEndYear,
-            setTableYears,
-        )
-    }, [])
+        if (activeTab === 3) {
+            const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
+            const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
+            SetTableYearsFromProfiles(
+                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+                caseItem.DG4Date.getFullYear(),
+                setStartYear,
+                setEndYear,
+                setTableYears,
+            )
+        }
+    }, [activeTab])
+
+    const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
+        if (wells && wells.length > 0) {
+            if (category >= 4) {
+                const filteredExplorationWells = explorationWells.filter((ew) => ew.explorationId === exploration.id)
+                const filteredWells = wells.filter((w) => w.wellCategory === category)
+                let sum = 0
+                filteredWells.forEach((fw) => {
+                    filteredExplorationWells.filter((few) => few.wellId === fw.id).forEach((ew) => {
+                        if (ew.drillingSchedule
+                            && ew.drillingSchedule.values
+                            && ew.drillingSchedule.values.length > 0) {
+                            sum += ew.drillingSchedule.values.reduce((a, b) => a + b, 0)
+                        }
+                    })
+                })
+                return sum
+            }
+            const filteredWellProjectWells = wellProjectWells.filter((wpw) => wpw.wellProjectId === wellProject.id)
+            const filteredWells = wells.filter((w) => w.wellCategory === category)
+            let sum = 0
+            filteredWells.forEach((fw) => {
+                filteredWellProjectWells.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
+                    if (ew.drillingSchedule && ew.drillingSchedule.values && ew.drillingSchedule.values.length > 0) {
+                        sum += ew.drillingSchedule.values.reduce((a, b) => a + b, 0)
+                    }
+                })
+            })
+            return sum
+        }
+        return 0
+    }
+
+    useEffect(() => {
+        if (activeTab === 3) {
+            setOilProducerCount(sumWellsForWellCategory(0))
+            setGasProducerCount(sumWellsForWellCategory(1))
+            setWaterInjectorCount(sumWellsForWellCategory(2))
+            setGasInjectorCount(sumWellsForWellCategory(3))
+            setExplorationWellCount(sumWellsForWellCategory(4))
+            setAppraisalWellCount(sumWellsForWellCategory(5))
+            setSidetrackCount(sumWellsForWellCategory(6))
+        }
+    }, [wells, explorationWells, wellProjectWells, activeTab])
 
     const handleSave = async () => {
+        setIsSaving(true)
         // Exploration wells
-        const newExplorationWells = explorationWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
-        const newExplorationWellsResult = await (await GetExplorationWellService()).createMultipleExplorationWells(newExplorationWells)
+        const newExplorationWells = explorationWells
+            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
+        const newExplorationWellsResult = await (await GetExplorationWellService())
+            .createMultipleExplorationWells(newExplorationWells)
 
-        const updateExplorationWells = explorationWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
-        const updateExplorationWellsResult = await (await GetExplorationWellService()).updateMultipleExplorationWells(updateExplorationWells)
+        const updateExplorationWells = explorationWells
+            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
+        const updateExplorationWellsResult = await (await GetExplorationWellService())
+            .updateMultipleExplorationWells(updateExplorationWells)
 
         if (updateExplorationWellsResult && updateExplorationWellsResult.length > 0) {
             setExplorationWells(updateExplorationWellsResult)
@@ -147,11 +214,17 @@ function CaseDrillingScheduleTab({
         }
 
         // WellProject wells
-        const newWellProjectWells = wellProjectWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
-        const newWellProjectWellsResult = await (await GetWellProjectWellService()).createMultipleWellProjectWell(newWellProjectWells)
+        const newWellProjectWells = wellProjectWells
+            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
+        const newWellProjectWellsResult = await (await GetWellProjectWellService())
+            .createMultipleWellProjectWell(newWellProjectWells)
 
-        const updateWellProjectWells = wellProjectWells.filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
-        const updateWellProjectWellsResult = await (await GetWellProjectWellService()).updateMultipleWellProjectWells(updateWellProjectWells)
+        const updateWellProjectWells = wellProjectWells
+            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
+        const updateWellProjectWellsResult = await (await GetWellProjectWellService())
+            .updateMultipleWellProjectWells(updateWellProjectWells)
+
+        setIsSaving(false)
 
         if (updateWellProjectWellsResult && updateWellProjectWellsResult.length > 0) {
             setWellProjectWells(updateWellProjectWellsResult)
@@ -160,13 +233,77 @@ function CaseDrillingScheduleTab({
         }
     }
 
+    if (activeTab !== 3) { return null }
+
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Drilling schedule</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Dots />
+                    </Button>
+                )}
             </TopWrapper>
             <p>Create wells in technical input in order to see them in the list below.</p>
+            <ColumnWrapper>
+                <RowWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={explorationWellCount}
+                            integer
+                            disabled
+                            label="Exploration wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={appraisalWellCount}
+                            integer
+                            disabled
+                            label="Appraisal wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={oilProducerCount}
+                            integer
+                            disabled
+                            label="Oil producer wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={gasProducerCount}
+                            integer
+                            disabled
+                            label="Gas producer wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={waterInjectorCount}
+                            integer
+                            disabled
+                            label="Water injector wells"
+                        />
+                    </InputWrapper>
+                    <InputWrapper>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={gasInjectorCount}
+                            integer
+                            disabled
+                            label="Gas injector wells"
+                        />
+                    </InputWrapper>
+                </RowWrapper>
+            </ColumnWrapper>
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField
@@ -182,7 +319,7 @@ function CaseDrillingScheduleTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleStartYearChange}
-                            value={startYear}
+                            defaultValue={startYear}
                             integer
                             label="Start year"
                         />
@@ -193,7 +330,7 @@ function CaseDrillingScheduleTab({
                     <YearInputWrapper>
                         <CaseNumberInput
                             onChange={handleEndYearChange}
-                            value={endYear}
+                            defaultValue={endYear}
                             integer
                             label="End year"
                         />

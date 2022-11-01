@@ -15,6 +15,9 @@ public static class ExplorationDtoAdapter
             RigMobDemob = exploration.RigMobDemob,
             Currency = exploration.Currency,
             CostProfile = Convert(exploration.CostProfile),
+            ExplorationWellCostProfile = Convert(exploration.ExplorationWellCostProfile),
+            AppraisalWellCostProfile = Convert(exploration.AppraisalWellCostProfile),
+            SidetrackCostProfile = Convert(exploration.SidetrackCostProfile),
             GAndGAdminCost = Convert(exploration.GAndGAdminCost),
             SeismicAcquisitionAndProcessing = Convert(exploration.SeismicAcquisitionAndProcessing),
             CountryOfficeCost = Convert(exploration.CountryOfficeCost),
@@ -30,6 +33,54 @@ public static class ExplorationDtoAdapter
             return null!;
         }
         return new ExplorationCostProfileDto
+        {
+            Id = costProfile.Id,
+            Currency = costProfile.Currency,
+            EPAVersion = costProfile.EPAVersion,
+            StartYear = costProfile.StartYear,
+            Values = costProfile.Values,
+            Override = costProfile.Override,
+        };
+    }
+    private static ExplorationWellCostProfileDto Convert(ExplorationWellCostProfile? costProfile)
+    {
+        if (costProfile == null)
+        {
+            return null!;
+        }
+        return new ExplorationWellCostProfileDto
+        {
+            Id = costProfile.Id,
+            Currency = costProfile.Currency,
+            EPAVersion = costProfile.EPAVersion,
+            StartYear = costProfile.StartYear,
+            Values = costProfile.Values,
+            Override = costProfile.Override,
+        };
+    }
+    private static AppraisalWellCostProfileDto Convert(AppraisalWellCostProfile? costProfile)
+    {
+        if (costProfile == null)
+        {
+            return null!;
+        }
+        return new AppraisalWellCostProfileDto
+        {
+            Id = costProfile.Id,
+            Currency = costProfile.Currency,
+            EPAVersion = costProfile.EPAVersion,
+            StartYear = costProfile.StartYear,
+            Values = costProfile.Values,
+            Override = costProfile.Override,
+        };
+    }
+    private static SidetrackCostProfileDto Convert(SidetrackCostProfile? costProfile)
+    {
+        if (costProfile == null)
+        {
+            return null!;
+        }
+        return new SidetrackCostProfileDto
         {
             Id = costProfile.Id,
             Currency = costProfile.Currency,

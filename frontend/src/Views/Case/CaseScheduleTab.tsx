@@ -2,11 +2,12 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
+    useState,
 } from "react"
 import styled from "styled-components"
 
 import {
-    Button, Typography,
+    Button, Progress, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -38,6 +39,7 @@ interface Props {
     setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
+    activeTab: number
 }
 
 function CaseScheduleTab({
@@ -45,7 +47,10 @@ function CaseScheduleTab({
     setProject,
     caseItem,
     setCase,
+    activeTab,
 }: Props) {
+    const [isSaving, setIsSaving] = useState<boolean>()
+
     const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
@@ -178,8 +183,10 @@ function CaseScheduleTab({
     }
 
     const handleSave = async () => {
+        setIsSaving(true)
         const result = await (await GetCaseService()).update(caseItem)
         setCase(result)
+        setIsSaving(false)
     }
 
     const findMinDate = (dates: Date[]) => {
@@ -204,11 +211,17 @@ function CaseScheduleTab({
         return ToMonthDate(maxDate)
     }
 
+    if (activeTab !== 2) { return null }
+
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Schedule</PageTitle>
-                <Button onClick={handleSave}>Save</Button>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Dots />
+                    </Button>
+                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>
