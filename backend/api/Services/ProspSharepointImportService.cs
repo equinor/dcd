@@ -215,10 +215,12 @@ public class ProspSharepointImportService
                     var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
                         iteminfo.Transport);
 
-                    projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
-                        projectId,
-                        assets,
-                        iteminfo.SharePointFileId);
+                    // projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                    //     projectId,
+                    //     assets,
+                    //     iteminfo.SharePointFileId,
+                    //     iteminfo.SharePointFileName,
+                    //     iteminfo.SharePointFileUrl);
                 }
             }
         }
@@ -243,7 +245,7 @@ public class ProspSharepointImportService
             { nameof(Surf), surf },
             { nameof(Topside), topside },
             { nameof(Substructure), substructure },
-            { nameof(Transport), transport }
+            { nameof(Transport), transport },
         };
     }
 
@@ -260,7 +262,7 @@ public class ProspSharepointImportService
             SharepointIds = driveItem.SharepointIds,
             LastModifiedBy = driveItem.LastModifiedBy,
             LastModifiedDateTime = driveItem.LastModifiedDateTime,
-            SharepointFileUrl = driveItem.WebUrl
+            SharepointFileUrl = driveItem.WebUrl,
         };
         dto.Add(item);
     }
@@ -272,7 +274,7 @@ public class ProspSharepointImportService
             ExcelMimeTypes.Xls,
             ExcelMimeTypes.Xlsb,
             ExcelMimeTypes.Xlsm,
-            ExcelMimeTypes.Xlsx
+            ExcelMimeTypes.Xlsx,
         };
         return validMimeTypes;
     }

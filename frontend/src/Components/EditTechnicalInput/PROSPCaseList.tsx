@@ -29,6 +29,7 @@ interface RowData {
     sharepointFileUrl?: string | null
     driveItem: [DriveItem[] | undefined, string | undefined | null]
     fileLink?: string | null
+    caseSelected: boolean,
 }
 
 function PROSPCaseList({
@@ -56,6 +57,7 @@ function PROSPCaseList({
                     sharepointFileUrl: c.sharepointFileUrl,
                     fileLink: c.sharepointFileUrl,
                     driveItem: [driveItems, c.sharepointFileId],
+                    caseSelected: false,
                 }
                 tableCases.push(tableCase)
             })
@@ -75,6 +77,11 @@ function PROSPCaseList({
 
     const changeStatus = (p: any, value: ImportStatusEnum) => {
         p.setValue(value)
+    }
+
+    const caseSelectedRenderer = (p:any) => {
+        console.log(p.value)
+        return <Checkbox checked />
     }
 
     const checkBoxStatus = (
@@ -122,11 +129,19 @@ function PROSPCaseList({
             </NativeSelect>
         )
     }
+    const fileLinkRenderer = (p:any) => {
+        const link = p.data?.fileLink
+        if (link && link !== "") {
+            return (<a href={link}>Test</a>)
+        }
+        return null
+    }
 
     type SortOrder = "desc" | "asc" | null
     const order: SortOrder = "asc"
 
     const [columnDefs, setColumnDefs] = useState([
+        { field: "checkbox", cellRenderer: caseSelectedRenderer, width: 100 },
         {
             field: "name", sort: order, flex: 3,
         },
@@ -152,8 +167,8 @@ function PROSPCaseList({
         {
             field: "fileLink",
             headerName: "Link",
+            cellRenderer: fileLinkRenderer,
             flex: 6,
-            hide: true,
         },
     ])
 
@@ -186,25 +201,32 @@ function PROSPCaseList({
             dto.sharePointFileId = node.data?.driveItem[1]
 
             dto.sharePointFileName = node.data?.driveItem[0]?.find(
-                (di) => di.sharepointIds === dto.sharePointFileId,
-            )?.name ?? ""
+                (di) => di.id === dto.sharePointFileId,
+            )?.name
+
+            dto.sharepointFileUrl = node.data?.driveItem[0]?.find(
+                (di) => di.id === dto.sharePointFileId,
+            )?.sharepointFileUrl
 
             dto.sharePointSiteUrl = p.sharepointSiteUrl
             dto.id = node.data?.id
-            dto.sharePointFileName = node.data?.sharePointFileName ?? ""
             dto.surf = node.data?.surfState === ImportStatusEnum.Selected
             dto.substructure = node.data?.substructureState === ImportStatusEnum.Selected
             dto.topside = node.data?.topsideState === ImportStatusEnum.Selected
             dto.transport = node.data?.transportState === ImportStatusEnum.Selected
-            dtos.push(dto)
+            if (node.data?.caseSelected) {
+                dtos.push(dto)
+            }
         })
         return dtos
     }
 
     const save = useCallback(async (p: Project) => {
         const dtos = gridDataToDtos(p)
-        const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
-        setProject(newProject)
+        if (dtos.length > 0) {
+            const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
+            setProject(newProject)
+        }
     }, [])
 
     return (
