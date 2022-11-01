@@ -4,16 +4,14 @@ import {
 } from "react"
 import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
 import { Topside } from "../../models/assets/topside/Topside"
 
 interface Props {
-    project: Project,
     topside: Topside,
 }
 
 function CaseCO2DistributionTable({
-    project, topside,
+    topside,
 }: Props) {
     const gridRef = useRef(null)
 

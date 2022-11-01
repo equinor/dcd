@@ -180,7 +180,7 @@ function CaseCO2Tab({
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
             <ColumnWrapper>
                 <RowWrapper>
-                    <CaseCO2DistributionTable project={project} topside={topside} />
+                    <CaseCO2DistributionTable topside={topside} />
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideFuelConsumptionChange}
