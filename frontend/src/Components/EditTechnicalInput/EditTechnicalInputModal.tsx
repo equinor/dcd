@@ -18,6 +18,7 @@ import { GetDevelopmentOperationalWellCostsService } from "../../Services/Develo
 import { Well } from "../../models/Well"
 import { IsExplorationWell } from "../../Utils/common"
 import { GetWellService } from "../../Services/WellService"
+import CO2Tab from "./CO2Tab"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -190,6 +191,7 @@ const EditTechnicalInputModal = ({
                     <List>
                         <Tab>Well Costs</Tab>
                         <Tab>PROSP</Tab>
+                        <Tab>CO2</Tab>
                     </List>
                     <Panels>
                         <StyledTabPanel>
@@ -207,6 +209,13 @@ const EditTechnicalInputModal = ({
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <PROSPTab project={project} setProject={setProject} />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <CO2Tab
+                                project={project}
+                            />
+                            {" "}
+
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
