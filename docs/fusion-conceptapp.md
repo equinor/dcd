@@ -1,6 +1,4 @@
-# Application Template for [insert-app-name](https://github.com/equinor/insert-app-name)
-
->This repo is accessable for all users in github.com/equinor organization. Please do not expose any classifyed  information in this contract.
+# Application Template for [conceptapp](https://github.com/equinor/dcd)
 
 ## Title of project initiative, working title, official app title, ect
 
@@ -15,7 +13,7 @@
  
 ## Summary/Description
 
-Description of app/solution  
+Concept App is a Fusion application that lets the user create and mature early phase business case concepts.  
 
 ## Documentation/Meeting Log Update - update every 4 months for each app
 
