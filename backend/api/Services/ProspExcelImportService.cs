@@ -422,7 +422,7 @@ public class ProspExcelImportService
     }
 
     public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
-        string sharepointFileId, string sharepointFileName, string sharepointFileUrl)
+        string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart;
@@ -467,6 +467,94 @@ public class ProspExcelImportService
         }
 
         return _projectService.GetProjectDto(projectId);
+    }
+
+    public void ClearImportedProspData(Guid sourceCaseId, Guid projectId)
+    {
+        var caseItem = _caseService.GetCase(sourceCaseId);
+        caseItem.SharepointFileId = null;
+        caseItem.SharepointFileName = null;
+        caseItem.SharepointFileUrl = null;
+
+        ClearImportedSurf(caseItem);
+        ClearImportedTopside(caseItem);
+        ClearImportedSubstructure(caseItem);
+        ClearImportedTransport(caseItem);
+
+        var caseDto = CaseDtoAdapter.Convert(caseItem);
+        _caseService.UpdateCase(caseDto);
+    }
+
+    private void ClearImportedSurf(Case caseItem)
+    {
+        var surfLink = caseItem.SurfLink;
+        var surf = new Models.Surf
+        {
+            Id = surfLink,
+            CostProfile = null,
+            ProjectId = caseItem.ProjectId,
+        };
+
+        var dto = SurfDtoAdapter.Convert(surf);
+
+        if (surfLink != Guid.Empty)
+        {
+            _surfService.UpdateSurf(dto);
+        }
+    }
+
+    private void ClearImportedTopside(Case caseItem)
+    {
+        var topsideLink = caseItem.TopsideLink;
+        var topside = new Topside
+        {
+            Id = topsideLink,
+            CostProfile = null,
+            ProjectId = caseItem.ProjectId,
+        };
+
+        var dto = TopsideDtoAdapter.Convert(topside);
+
+        if (topsideLink != Guid.Empty)
+        {
+            _topsideService.UpdateTopside(dto);
+        }
+    }
+
+    private void ClearImportedSubstructure(Case caseItem)
+    {
+        var substructureLink = caseItem.SubstructureLink;
+        var substructure = new Substructure
+        {
+            Id = substructureLink,
+            CostProfile = null,
+            ProjectId = caseItem.ProjectId,
+        };
+
+        var dto = SubstructureDtoAdapter.Convert(substructure);
+
+        if (substructureLink != Guid.Empty)
+        {
+            _substructureService.UpdateSubstructure(dto);
+        }
+    }
+
+    private void ClearImportedTransport(Case caseItem)
+    {
+        var transportLink = caseItem.TransportLink;
+        var transport = new Models.Transport
+        {
+            Id = transportLink,
+            CostProfile = null,
+            ProjectId = caseItem.ProjectId,
+        };
+
+        var dto = TransportDtoAdapter.Convert(transport);
+
+        if (transportLink != Guid.Empty)
+        {
+            _transportService.UpdateTransport(dto);
+        }
     }
 
     private static Concept MapSubstructureConcept(int importValue)
