@@ -1,9 +1,11 @@
 import {
+    useCallback,
     useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
+import { RowNode } from "ag-grid-community"
 import { Project } from "../../models/Project"
 
 const TransparentButton = styled(Button)`
@@ -27,26 +29,51 @@ interface Props {
     project: Project
 }
 
+interface RowData {
+    profile: string,
+    unit: string,
+    defaultAssumptions: string,
+}
+
 function CO2ListTechnicalInput({
     project,
 }: Props) {
     const gridRef = useRef<any>(null)
 
-    useEffect(() => {
-    }, [project])
+    const onGridReady = (params: any) => {
+        gridRef.current = params.api
+    }
+
+    const selectCO2VentedRow = useCallback(() => {
+        gridRef.current.forEachNode((node: RowNode<RowData>) => {
+            node.setSelected(node.data?.profile === "CO2 vented")
+            if (node.data?.profile === "CO2 vented") {
+                node.setSelected(node.data?.profile === "CO2 vented")
+                gridRef.current.onFilterChanged()
+            }
+        })
+    }, [])
+
+    const isExternalFilterPresent = useCallback(
+        (node: any): boolean => !node.selected,
+        [],
+    )
+
+    const doesExternalFilterPass = useCallback(
+        (node: any): boolean => !node.selected,
+        [],
+    )
 
     const co2Data = [
         {
             profile: "Fuel gas consumption from PROSP (Scope 1)",
             unit: "MSm³/sd",
             defaultAssumptions: "-",
-            value: 0,
         },
         {
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
             defaultAssumptions: "-",
-            value: 0,
         },
         {
             profile: "CO2-emissions from fuel gas",
@@ -85,7 +112,11 @@ function CO2ListTechnicalInput({
         },
     ]
 
-    const [rowData] = useState(co2Data)
+    const [rowData, setRowData] = useState([{}])
+
+    useEffect(() => {
+        setRowData(co2Data)
+    }, [project])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -126,7 +157,7 @@ function CO2ListTechnicalInput({
                     <Button>
                         CO2 vented
                     </Button>
-                    <TransparentButton>
+                    <TransparentButton onClick={selectCO2VentedRow}>
                         CO2 re-injected
                     </TransparentButton>
                 </CaseButtonsWrapper>
@@ -144,6 +175,9 @@ function CO2ListTechnicalInput({
                     defaultColDef={defaultColDef}
                     animateRows
                     domLayout="autoHeight"
+                    onGridReady={onGridReady}
+                    isExternalFilterPresent={isExternalFilterPresent}
+                    doesExternalFilterPass={doesExternalFilterPass}
                 />
             </div>
 

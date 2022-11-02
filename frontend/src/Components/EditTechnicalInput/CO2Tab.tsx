@@ -1,4 +1,4 @@
-import { Typography } from "@equinor/eds-core-react"
+import { Typography } from "@material-ui/core"
 import { Dispatch, SetStateAction } from "react"
 import styled from "styled-components"
 import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
@@ -41,6 +41,7 @@ const CO2Tab = ({
     <>
         <TopWrapper color="danger">
             <Typography variant="h4">CO2 Emission</Typography>
+            <Typography variant="h6">This page is work in progress...</Typography>
         </TopWrapper>
         <CO2ListTechnicalInput project={project} />
     </>
