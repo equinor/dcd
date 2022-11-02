@@ -172,54 +172,69 @@ public class ProspSharepointImportService
     public async Task<ProjectDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
     {
         var projectDto = new ProjectDto();
-        if (!string.IsNullOrWhiteSpace(dtos.FirstOrDefault()?.SharePointSiteUrl))
+        if (string.IsNullOrWhiteSpace(dtos.FirstOrDefault()?.SharePointSiteUrl))
         {
-            var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
-            if (siteId == null)
+            return projectDto;
+        }
+
+        foreach (var importDto in dtos)
+        {
+            if (!string.IsNullOrWhiteSpace(importDto.SharePointFileId) || importDto.Id == null)
             {
-                return projectDto;
+                continue;
             }
 
-            var driveId = await GetDriveIdFromSharePointSiteUrl(dtos, siteId);
+            var caseId = new Guid(importDto.Id);
+            _service.ClearImportedProspData(caseId, projectId);
+        }
 
-            var fileIdsOnCases = dtos.ToDictionary(dto => new Guid(dto.Id!), dto => dto.SharePointFileId);
+        var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
+        if (siteId == null)
+        {
+            return projectDto;
+        }
 
-            var fileStreamsOnCases = new Dictionary<Guid, Stream>();
-            foreach (var item in fileIdsOnCases.Where(d => !string.IsNullOrWhiteSpace(d.Value)))
+        var driveId = await GetDriveIdFromSharePointSiteUrl(dtos, siteId);
+
+        var fileIdsOnCases = dtos.ToDictionary(dto => new Guid(dto.Id!), dto => dto.SharePointFileId);
+
+        var fileStreamsOnCases = new Dictionary<Guid, Stream>();
+        foreach (var item in fileIdsOnCases.Where(d => !string.IsNullOrWhiteSpace(d.Value)))
+        {
+            try
             {
-                try
-                {
-                    var driveItemStream = await _graphServiceClient.Sites[siteId]
-                        .Drives[driveId].Items[item.Value]
-                        .Content.Request()
-                        .GetAsync();
+                var driveItemStream = await _graphServiceClient.Sites[siteId]
+                    .Drives[driveId].Items[item.Value]
+                    .Content.Request()
+                    .GetAsync();
 
-                    fileStreamsOnCases.Add(item.Key, driveItemStream);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
+                fileStreamsOnCases.Add(item.Key, driveItemStream);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        foreach (var caseWithFileStream in fileStreamsOnCases)
+        {
+            if (caseWithFileStream.Value.Length <= 0)
+            {
+                continue;
             }
 
-            foreach (var caseWithFileStream in fileStreamsOnCases)
+            foreach (var iteminfo in dtos.Where(importDto =>
+                         importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
             {
-                if (caseWithFileStream.Value.Length <= 0)
-                {
-                    continue;
-                }
+                var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
+                    iteminfo.Transport);
 
-                foreach (var iteminfo in dtos.Where(importDto =>
-                             importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
-                {
-                    var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
-                        iteminfo.Transport);
-
-                    projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
-                        projectId,
-                        assets,
-                        iteminfo.SharePointFileId);
-                }
+                projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                    projectId,
+                    assets,
+                    iteminfo.SharePointFileId,
+                    iteminfo.SharePointFileName,
+                    iteminfo.SharePointFileUrl);
             }
         }
 
@@ -243,7 +258,7 @@ public class ProspSharepointImportService
             { nameof(Surf), surf },
             { nameof(Topside), topside },
             { nameof(Substructure), substructure },
-            { nameof(Transport), transport }
+            { nameof(Transport), transport },
         };
     }
 
@@ -260,7 +275,7 @@ public class ProspSharepointImportService
             SharepointIds = driveItem.SharepointIds,
             LastModifiedBy = driveItem.LastModifiedBy,
             LastModifiedDateTime = driveItem.LastModifiedDateTime,
-            SharepointFileUrl = driveItem.WebUrl
+            SharepointFileUrl = driveItem.WebUrl,
         };
         dto.Add(item);
     }
@@ -272,7 +287,7 @@ public class ProspSharepointImportService
             ExcelMimeTypes.Xls,
             ExcelMimeTypes.Xlsb,
             ExcelMimeTypes.Xlsm,
-            ExcelMimeTypes.Xlsx
+            ExcelMimeTypes.Xlsx,
         };
         return validMimeTypes;
     }

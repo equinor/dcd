@@ -55,11 +55,11 @@ public class PROSPController : ControllerBase
     [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
     [DisableRequestSizeLimit]
     public async Task<ProjectDto?> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
-        [FromBody] SharePointImportDto[] dto)
+        [FromBody] SharePointImportDto[] dtos)
     {
         try
         {
-            var projectDto = await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dto);
+            var projectDto = await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
 
             return projectDto.ProjectId == projectId
                 ? projectDto
