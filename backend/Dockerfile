@@ -23,8 +23,8 @@ RUN mkdir -p /var/lib/dynatrace/oneagent/agent/config/ && touch /var/lib/dynatra
 ENV LD_PRELOAD /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so
 
 #Dynatrace config
-ENV DT_TAGS=SHELLVIS SERVICENAME=CONCEPTAPP ENVIRONMENT=$environment
-ENV DT_CUSTOM_PROP=SERVICENAME=CONCEPTAPP ENVIRONMENT=$environment
+ENV DT_TAGS=SHELLVIS\ SERVICENAME=CONCEPTAPP\ ENVIRONMENT=$environment
+ENV DT_CUSTOM_PROP=SERVICENAME=CONCEPTAPP\ ENVIRONMENT=$environment
 ENV DT_PROCESS_GROUP=CONCEPTAPP-$environment
 ENV AppConfiguration__ConnectionString=$azappconfig
 
