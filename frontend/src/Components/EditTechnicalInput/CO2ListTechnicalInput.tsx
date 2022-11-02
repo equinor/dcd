@@ -5,7 +5,6 @@ import {
 import { AgGridReact } from "ag-grid-react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import { RowNode } from "ag-grid-community"
 import { Project } from "../../models/Project"
 
 const TransparentButton = styled(Button)`
@@ -29,39 +28,43 @@ interface Props {
     project: Project
 }
 
-interface RowData {
-    profile: string,
-    unit: string,
-    defaultAssumptions: string,
-}
-
 function CO2ListTechnicalInput({
     project,
 }: Props) {
     const gridRef = useRef<any>(null)
 
+    // eslint-disable-next-line no-var
+    var cO2VentedRow = "CO2 vented"
+
     const onGridReady = (params: any) => {
         gridRef.current = params.api
     }
 
-    const selectCO2VentedRow = useCallback(() => {
-        gridRef.current.forEachNode((node: RowNode<RowData>) => {
-            node.setSelected(node.data?.profile === "CO2 vented")
-            if (node.data?.profile === "CO2 vented") {
-                node.setSelected(node.data?.profile === "CO2 vented")
-                gridRef.current.onFilterChanged()
-            }
-        })
+    const externalFilterChanged = useCallback((newValue: string) => {
+        cO2VentedRow = newValue
+        gridRef.current.onFilterChanged()
     }, [])
 
     const isExternalFilterPresent = useCallback(
-        (node: any): boolean => !node.selected,
+        (): boolean => cO2VentedRow !== "CO2 vented",
         [],
     )
 
     const doesExternalFilterPass = useCallback(
-        (node: any): boolean => !node.selected,
-        [],
+        (node: any): boolean => {
+            if (node.data) {
+                switch (cO2VentedRow) {
+                case "CO2 vented":
+                    return node.data.profile === "CO2 vented"
+                case "":
+                    return node.data.profile !== "CO2 vented"
+                default:
+                    return true
+                }
+            }
+            return true
+        },
+        [cO2VentedRow],
     )
 
     const co2Data = [
@@ -139,13 +142,11 @@ function CO2ListTechnicalInput({
             field: "defaultAssumptions",
             headerName: "Default assumptions",
             width: 200,
-            // type: "rightAligned",
         },
         {
             field: "value",
             headerName: "Value",
             width: 500,
-            // type: "rightAligned",
             flex: 1,
         },
     ])
@@ -154,10 +155,10 @@ function CO2ListTechnicalInput({
         <>
             <ColumnWrapper>
                 <CaseButtonsWrapper>
-                    <Button>
+                    <Button onClick={() => externalFilterChanged("CO2 vented")}>
                         CO2 vented
                     </Button>
-                    <TransparentButton onClick={selectCO2VentedRow}>
+                    <TransparentButton onClick={() => externalFilterChanged("")}>
                         CO2 re-injected
                     </TransparentButton>
                 </CaseButtonsWrapper>
