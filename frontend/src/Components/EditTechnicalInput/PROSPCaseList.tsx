@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
     Button, Checkbox, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"
@@ -7,7 +8,6 @@ import {
 import { AgGridReact } from "ag-grid-react"
 import { RowNode } from "ag-grid-enterprise"
 import styled from "styled-components"
-// eslint-disable-next-line camelcase
 import { external_link } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
 import SharePointImport from "./SharePointImport"
@@ -156,7 +156,6 @@ function PROSPCaseList({
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    {/* eslint-disable-next-line camelcase */}
                     <Icon data={external_link} />
                 </a>
             )
