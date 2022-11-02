@@ -211,11 +211,7 @@ const EditTechnicalInputModal = ({
                             <PROSPTab project={project} setProject={setProject} />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <CO2Tab
-                                project={project}
-                            />
-                            {" "}
-
+                            <CO2Tab project={project} />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
