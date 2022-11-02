@@ -215,12 +215,12 @@ public class ProspSharepointImportService
                     var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
                         iteminfo.Transport);
 
-                    // projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
-                    //     projectId,
-                    //     assets,
-                    //     iteminfo.SharePointFileId,
-                    //     iteminfo.SharePointFileName,
-                    //     iteminfo.SharePointFileUrl);
+                    projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                        projectId,
+                        assets,
+                        iteminfo.SharePointFileId,
+                        iteminfo.SharePointFileName,
+                        iteminfo.SharePointFileUrl);
                 }
             }
         }

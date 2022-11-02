@@ -7,6 +7,8 @@ import {
 import { AgGridReact } from "ag-grid-react"
 import { RowNode } from "ag-grid-enterprise"
 import styled from "styled-components"
+// eslint-disable-next-line camelcase
+import { external_link } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
 import SharePointImport from "./SharePointImport"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
@@ -148,8 +150,9 @@ function PROSPCaseList({
         const link = p.data?.fileLink
         if (link && link !== "") {
             return (
-                <a href={link} aria-label="SharePoint File link">
-                    <Icon name="external_link" />
+                <a href={link} aria-label="SharePoint File link" target="_blank" rel="noreferrer noopener">
+                    {/* eslint-disable-next-line camelcase */}
+                    <Icon data={external_link} />
                 </a>
             )
         }
@@ -160,7 +163,9 @@ function PROSPCaseList({
     const order: SortOrder = "asc"
 
     const [columnDefs, setColumnDefs] = useState([
-        { field: "caseSelected", cellRenderer: caseSelectedRenderer, flex: 1 },
+        {
+            field: "caseSelected", headerName: "", cellRenderer: caseSelectedRenderer, flex: 1,
+        },
         {
             field: "name", sort: order, flex: 3,
         },
