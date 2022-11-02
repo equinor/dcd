@@ -200,12 +200,12 @@ function CaseDrillingScheduleTab({
         const newExplorationWells = explorationWells
             .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
         const newExplorationWellsResult = await (await GetExplorationWellService())
-            .createMultipleExplorationWells(newExplorationWells)
+            .createMultipleExplorationWells(caseItem.id, newExplorationWells)
 
         const updateExplorationWells = explorationWells
             .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
         const updateExplorationWellsResult = await (await GetExplorationWellService())
-            .updateMultipleExplorationWells(updateExplorationWells)
+            .updateMultipleExplorationWells(caseItem.id, updateExplorationWells)
 
         if (updateExplorationWellsResult && updateExplorationWellsResult.length > 0) {
             setExplorationWells(updateExplorationWellsResult)
