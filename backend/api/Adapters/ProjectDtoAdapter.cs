@@ -119,7 +119,7 @@ public static class ProjectDtoAdapter
             Cases = new List<CaseDto>(),
             Wells = new List<WellDto>(),
             SharepointSiteUrl = project.SharepointSiteUrl,
-                        CO2RemovedFromGas = project.CO2RemovedFromGas,
+            CO2RemovedFromGas = project.CO2RemovedFromGas,
             CO2EmissionFromFuelGas = project.CO2EmissionFromFuelGas,
             FlaredGasPerProducedVolume = project.FlaredGasPerProducedVolume,
             CO2EmissionsFromFlaredGas = project.CO2EmissionsFromFlaredGas,
