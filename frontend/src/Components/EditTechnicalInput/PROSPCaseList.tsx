@@ -150,7 +150,7 @@ function PROSPCaseList({
         const link = p.data?.fileLink
         if (link && link !== "") {
             return (
-                <a href={link} aria-label="SharePoint File link" target="_blank" rel="noreferrer noopener">
+                <a href={link} aria-label="SharePoint File link">
                     {/* eslint-disable-next-line camelcase */}
                     <Icon data={external_link} />
                 </a>
