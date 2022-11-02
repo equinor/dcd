@@ -9,8 +9,9 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
     substructureState?: ImportStatusEnum | undefined
     topsideState?: ImportStatusEnum | undefined
     transportState?: ImportStatusEnum | undefined
-    sharePointFileName?: string | undefined
-    sharePointFileId?: string | undefined
+    sharePointFileId?: string | null
+    sharePointFileName?: string | null
+    sharePointFileUrl?: string | null
     sharePointSiteUrl?: string | undefined
 
     constructor(caseItem: Case, project: Project, data: Components.Schemas.SharePointImportDto | undefined) {
@@ -20,8 +21,9 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         this.substructureState = SharePointImport.substructureStatus(caseItem, project)
         this.topsideState = SharePointImport.topsideStatus(caseItem, project)
         this.transportState = SharePointImport.transportStatus(caseItem, project)
-        this.sharePointFileName = caseItem.sharepointFileName ?? ""
-        this.sharePointFileId = caseItem.sharepointFileId ?? ""
+        this.sharePointFileName = data?.sharePointFileName ?? ""
+        this.sharePointFileId = data?.sharePointFileId ?? ""
+        this.sharePointFileUrl = data?.sharePointFileUrl ?? ""
         this.sharePointSiteUrl = data?.sharePointSiteUrl ?? ""
     }
 
