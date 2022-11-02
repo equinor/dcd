@@ -86,6 +86,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.cessationCost = CaseCessationCostProfile.fromJSON(data.cessationCost)
         this.sharepointFileId = data.sharepointFileId ?? ""
         this.sharepointFileName = data.sharepointFileName ?? ""
+        this.sharepointFileUrl = data.sharepointFileUrl ?? ""
     }
 
     static Copy(data: Case) {
