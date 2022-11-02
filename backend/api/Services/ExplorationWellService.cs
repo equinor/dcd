@@ -64,7 +64,7 @@ public class ExplorationWellService
         }
 
         var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
-        costProfileHelper.UpdateExplorationCostProfilesFromDrillingSchedule(caseId);
+        costProfileHelper.UpdateExplorationCostProfilesForCase(caseId);
 
         if (projectDto != null && explorationId != null)
         {

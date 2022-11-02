@@ -15,10 +15,13 @@ namespace tests;
 public class ExplorationServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
+    private readonly IServiceProvider _serviceProvider;
 
     public ExplorationServiceShould(DatabaseFixture fixture)
     {
         this.fixture = new DatabaseFixture();
+        var serviceCollection = new ServiceCollection();
+        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -31,7 +34,7 @@ public class ExplorationServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedExplorations = fixture.context.Explorations.ToList().Where(o => o.Project.Id == project.Id);
@@ -54,7 +57,7 @@ public class ExplorationServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -74,7 +77,7 @@ public class ExplorationServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
@@ -100,7 +103,7 @@ public class ExplorationServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;

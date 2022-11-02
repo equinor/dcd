@@ -56,7 +56,8 @@ public class TimeSeriesCost : TimeSeries<double>
     public string EPAVersion { get; set; } = string.Empty;
     public Currency Currency { get; set; }
 
-    public static TimeSeries<double> MergeCostProfilesList(List<TimeSeries<double>> timeseriesList) {
+    public static TimeSeries<double> MergeCostProfilesList(List<TimeSeries<double>> timeseriesList)
+    {
         var timeSeries = new TimeSeries<double>();
         foreach (var ts in timeseriesList)
         {

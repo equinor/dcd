@@ -24,11 +24,9 @@ public class ProjectService
     private readonly WellService _wellService;
     private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
     private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
-
-
     private readonly ILogger<ProjectService> _logger;
 
-    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory)
+    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<ProjectService>();
@@ -39,7 +37,7 @@ public class ProjectService
         _topsideService = new TopsideService(_context, this, loggerFactory);
         _explorationService = new ExplorationService(_context, this, loggerFactory);
         _transportService = new TransportService(_context, this, loggerFactory);
-        _wellService = new WellService(_context, this, _wellProjectService, _explorationService, loggerFactory);
+        _wellService = new WellService(_context, this, _wellProjectService, _explorationService, serviceProvider, loggerFactory);
         _explorationOperationalWellCostsService = new ExplorationOperationalWellCostsService(_context, this, loggerFactory);
         _developmentOperationalWellCostsService = new DevelopmentOperationalWellCostsService(_context, this, loggerFactory);
     }
