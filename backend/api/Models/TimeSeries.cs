@@ -46,6 +46,11 @@ public class TimeSeriesMass : TimeSeries<double>
 
 }
 
+public class TimeSeriesEnergy : TimeSeries<double>
+{
+
+}
+
 public class TimeSeriesCost : TimeSeries<double>
 {
     public string EPAVersion { get; set; } = string.Empty;

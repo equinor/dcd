@@ -13,6 +13,7 @@ public class DrainageStrategyDto
     public int GasInjectorCount { get; set; }
     public int WaterInjectorCount { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
+    public GasSolution GasSolution { get; set; }
     public ProductionProfileOilDto? ProductionProfileOil { get; set; }
     public ProductionProfileGasDto? ProductionProfileGas { get; set; }
     public ProductionProfileWaterDto? ProductionProfileWater { get; set; }
@@ -21,8 +22,9 @@ public class DrainageStrategyDto
     public NetSalesGasDto? NetSalesGas { get; set; }
     public Co2EmissionsDto? Co2Emissions { get; set; }
     public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
-    public double FacilitiesAvailability { get; set; }
+    public ImportedElectricityDto? ImportedElectricity { get; set; }
 }
+
 public class ProductionProfileOilDto : TimeSeriesVolumeDto
 {
 }
@@ -30,19 +32,28 @@ public class ProductionProfileOilDto : TimeSeriesVolumeDto
 public class ProductionProfileGasDto : TimeSeriesVolumeDto
 {
 }
+
 public class ProductionProfileWaterDto : TimeSeriesVolumeDto
 {
 }
+
 public class ProductionProfileWaterInjectionDto : TimeSeriesVolumeDto
 {
 }
+
 public class FuelFlaringAndLossesDto : TimeSeriesVolumeDto
 {
 }
+
 public class NetSalesGasDto : TimeSeriesVolumeDto
 {
 }
+
 public class Co2EmissionsDto : TimeSeriesMassDto
+{
+}
+
+public class ImportedElectricityDto : TimeSeriesEnergyDto
 {
 }
 

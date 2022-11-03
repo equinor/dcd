@@ -9,19 +9,21 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
     substructureState?: ImportStatusEnum | undefined
     topsideState?: ImportStatusEnum | undefined
     transportState?: ImportStatusEnum | undefined
-    sharePointFileName?: string | undefined
-    sharePointFileId?: string | undefined
+    sharePointFileId?: string | null
+    sharePointFileName?: string | null
+    sharePointFileUrl?: string | null
     sharePointSiteUrl?: string | undefined
 
-    constructor(caseItem: Case, project: Project, data:Components.Schemas.SharePointImportDto | undefined) {
+    constructor(caseItem: Case, project: Project, data: Components.Schemas.SharePointImportDto | undefined) {
         this.id = caseItem.id!
         this.selected = false
         this.surfState = SharePointImport.surfStatus(caseItem, project)
         this.substructureState = SharePointImport.substructureStatus(caseItem, project)
         this.topsideState = SharePointImport.topsideStatus(caseItem, project)
         this.transportState = SharePointImport.transportStatus(caseItem, project)
-        this.sharePointFileName = caseItem.sharepointFileName ?? ""
-        this.sharePointFileId = caseItem.sharepointFileId ?? ""
+        this.sharePointFileName = data?.sharePointFileName ?? ""
+        this.sharePointFileId = data?.sharePointFileId ?? ""
+        this.sharePointFileUrl = data?.sharePointFileUrl ?? ""
         this.sharePointSiteUrl = data?.sharePointSiteUrl ?? ""
     }
 
@@ -33,34 +35,34 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         if (!surf) { return ImportStatusEnum.NotSelected }
         if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
 
-        return ImportStatusEnum.NotSelected
+        return ImportStatusEnum.Selected
     }
 
     static substructureStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
-        const surfId = caseItem.substructureLink
-        const surf = project.substructures.find((s) => s.id === surfId)
-        if (!surf) { return ImportStatusEnum.NotSelected }
-        if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
+        const substructureId = caseItem.substructureLink
+        const substructure = project.substructures.find((s) => s.id === substructureId)
+        if (!substructure) { return ImportStatusEnum.NotSelected }
+        if (SharePointImport.mapSource(substructure.source) === "PROSP") { return ImportStatusEnum.PROSP }
 
-        return ImportStatusEnum.NotSelected
+        return ImportStatusEnum.Selected
     }
 
     static topsideStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
-        const surfId = caseItem.topsideLink
-        const surf = project.topsides.find((s) => s.id === surfId)
-        if (!surf) { return ImportStatusEnum.NotSelected }
-        if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
+        const topsideId = caseItem.topsideLink
+        const topside = project.topsides.find((s) => s.id === topsideId)
+        if (!topside) { return ImportStatusEnum.NotSelected }
+        if (SharePointImport.mapSource(topside.source) === "PROSP") { return ImportStatusEnum.PROSP }
 
-        return ImportStatusEnum.NotSelected
+        return ImportStatusEnum.Selected
     }
 
     static transportStatus = (caseItem: Case, project: Project): ImportStatusEnum => {
-        const surfId = caseItem.transportLink
-        const surf = project.transports.find((s) => s.id === surfId)
-        if (!surf) { return ImportStatusEnum.NotSelected }
-        if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
+        const transportId = caseItem.transportLink
+        const transport = project.transports.find((s) => s.id === transportId)
+        if (!transport) { return ImportStatusEnum.NotSelected }
+        if (SharePointImport.mapSource(transport.source) === "PROSP") { return ImportStatusEnum.PROSP }
 
-        return ImportStatusEnum.NotSelected
+        return ImportStatusEnum.Selected
     }
 
     static toDto = (value: SharePointImport): Components.Schemas.SharePointImportDto => {

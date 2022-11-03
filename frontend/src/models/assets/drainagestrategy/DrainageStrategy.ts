@@ -19,6 +19,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     producerCount?: number
     gasInjectorCount?: number
     artificialLift?: Components.Schemas.ArtificialLift
+    gasSolution?: Components.Schemas.GasSolution /* int32 */
     netSalesGas?: NetSalesGas | undefined
     co2Emissions?: Co2Emissions | undefined
     fuelFlaringAndLosses?: FuelFlaringAndLosses | undefined
@@ -27,7 +28,6 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     productionProfileWater?: ProductionProfileWater | undefined
     productionProfileWaterInjection?: ProductionProfileWaterInjection | undefined
     productionProfileNGL?: ProductionProfileNGL | undefined
-    facilitiesAvailability?: number
 
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
         if (data !== undefined) {
@@ -40,6 +40,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.gasInjectorCount = data.gasInjectorCount
             this.producerCount = data.producerCount
             this.artificialLift = data.artificialLift
+            this.gasSolution = data.gasSolution
             this.netSalesGas = NetSalesGas.fromJson(data.netSalesGas)
             this.co2Emissions = Co2Emissions.fromJson(data.co2Emissions)
             this.fuelFlaringAndLosses = FuelFlaringAndLosses.fromJson(data.fuelFlaringAndLosses)
@@ -49,7 +50,6 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.productionProfileNGL = ProductionProfileNGL.fromJson(data.productionProfileNGL)
             this.productionProfileWaterInjection = ProductionProfileWaterInjection
                 .fromJson(data.productionProfileWaterInjection)
-            this.facilitiesAvailability = data.facilitiesAvailability
         } else {
             this.id = EMPTY_GUID
             this.name = ""
