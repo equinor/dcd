@@ -72,10 +72,11 @@ type Props = {
     isOpen: boolean
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project,
+    setWells?: Dispatch<SetStateAction<Well[] | undefined>>
 }
 
 const EditTechnicalInputModal = ({
-    toggleEditTechnicalInputModal, isOpen, setProject, project,
+    toggleEditTechnicalInputModal, isOpen, setProject, project, setWells,
 }: Props) => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
@@ -128,6 +129,9 @@ const EditTechnicalInputModal = ({
         const filteredWellProjectWellsResult = wells.filter((w: any) => !IsExplorationWell(w))
         setWellProjectWells(filteredWellProjectWellsResult)
         setExplorationWells(filteredExplorationWellsResult)
+        if (setWells) {
+            setWells(wells)
+        }
     }
 
     const saveWells = async () => {
