@@ -8,7 +8,6 @@ public class WellProject
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
-    public WellProjectCostProfile? CostProfile { get; set; }
     public OilProducerCostProfile? OilProducerCostProfile { get; set; }
     public GasProducerCostProfile? GasProducerCostProfile { get; set; }
     public WaterInjectorCostProfile? WaterInjectorCostProfile { get; set; }
@@ -21,12 +20,6 @@ public class WellProject
     public ICollection<WellProjectWell>? WellProjectWells { get; set; }
 }
 
-public class WellProjectCostProfile : TimeSeriesCost
-{
-    [ForeignKey("WellProject.Id")]
-    public WellProject WellProject { get; set; } = null!;
-    public bool Override { get; set; }
-}
 
 public class OilProducerCostProfile : TimeSeriesCost
 {

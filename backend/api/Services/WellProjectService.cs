@@ -25,7 +25,6 @@ public class WellProjectService
         if (_context.WellProjects != null)
         {
             return _context.WellProjects
-                .Include(c => c.CostProfile)
                 .Include(c => c.OilProducerCostProfile)
                 .Include(c => c.GasProducerCostProfile)
                 .Include(c => c.WaterInjectorCostProfile)
@@ -99,11 +98,6 @@ public class WellProjectService
         var existing = GetWellProject(updatedWellProject.Id);
         WellProjectAdapter.ConvertExisting(existing, updatedWellProject);
 
-        if (updatedWellProject.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.WellProjectCostProfile!.Remove(existing.CostProfile);
-        }
-
         _context.WellProjects!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedWellProject.ProjectId);
@@ -114,11 +108,6 @@ public class WellProjectService
         var existing = GetWellProject(updatedWellProjectDto.Id);
         WellProjectAdapter.ConvertExisting(existing, updatedWellProjectDto);
 
-        if (updatedWellProjectDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.WellProjectCostProfile!.Remove(existing.CostProfile);
-        }
-
         var updatedWellProject = _context.WellProjects!.Update(existing);
         _context.SaveChanges();
         return WellProjectDtoAdapter.Convert(updatedWellProject.Entity);
@@ -127,7 +116,6 @@ public class WellProjectService
     public WellProject GetWellProject(Guid wellProjectId)
     {
         var wellProject = _context.WellProjects!
-            .Include(c => c.CostProfile)
             .Include(c => c.OilProducerCostProfile)
             .Include(c => c.GasProducerCostProfile)
             .Include(c => c.WaterInjectorCostProfile)

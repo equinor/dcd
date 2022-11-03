@@ -27,7 +27,6 @@ public class ExplorationService
         if (_context.Explorations != null)
         {
             return _context.Explorations
-                .Include(c => c.CostProfile)
                 .Include(c => c.ExplorationWellCostProfile)
                 .Include(c => c.AppraisalWellCostProfile)
                 .Include(c => c.SidetrackCostProfile)
@@ -101,11 +100,6 @@ public class ExplorationService
         var existing = GetExploration(updatedExplorationDto.Id);
         ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
 
-        if (updatedExplorationDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.ExplorationCostProfile!.Remove(existing.CostProfile);
-        }
-
         if (updatedExplorationDto.GAndGAdminCost == null && existing.GAndGAdminCost != null)
         {
             _context.GAndGAdminCost!.Remove(existing.GAndGAdminCost);
@@ -131,11 +125,6 @@ public class ExplorationService
         var existing = GetExploration(updatedExplorationDto.Id);
         ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
 
-        if (updatedExplorationDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.ExplorationCostProfile!.Remove(existing.CostProfile);
-        }
-
         if (updatedExplorationDto.GAndGAdminCost == null && existing.GAndGAdminCost != null)
         {
             _context.GAndGAdminCost!.Remove(existing.GAndGAdminCost);
@@ -158,9 +147,7 @@ public class ExplorationService
 
     public Exploration GetExploration(Guid explorationId)
     {
-
         var exploration = _context.Explorations!
-            .Include(c => c.CostProfile)
             .Include(c => c.ExplorationWellCostProfile)
             .Include(c => c.AppraisalWellCostProfile)
             .Include(c => c.SidetrackCostProfile)

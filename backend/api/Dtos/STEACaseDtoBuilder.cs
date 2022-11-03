@@ -1,4 +1,5 @@
 using api.Dtos;
+using api.Models;
 
 namespace api.Adapters;
 
@@ -22,13 +23,15 @@ public static class STEACaseDtoBuilder
     private static void AddCapex(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
     {
         sTEACaseDto.Capex = new CapexDto();
-        sTEACaseDto.Capex.Drilling = new WellProjectCostProfileDto();
+        sTEACaseDto.Capex.Drilling = new TimeSeriesCostDto();
         int dg4Year = c.DG4Date.Year;
         if (c.WellProjectLink != Guid.Empty)
         {
-            WellProjectCostProfileDto? wellProjectCostProfileDto = p.WellProjects!.First(l => l.Id == c.WellProjectLink).CostProfile;
-            if (wellProjectCostProfileDto != null)
+            var wellProject = p.WellProjects!.First(l => l.Id == c.WellProjectLink);
+            if (wellProject != null)
             {
+                TimeSeriesCost.MergeCostProfiles(wellProject.OilProducerCostProfile, wellProject.GasProducerCostProfile);
+
                 sTEACaseDto.Capex.Drilling = wellProjectCostProfileDto;
                 sTEACaseDto.Capex.Drilling.StartYear += dg4Year;
                 sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.Drilling);

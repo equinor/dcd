@@ -15,11 +15,10 @@ public class STEACaseDto
 
 public class CapexDto : TimeSeriesCostDto
 {
-    public WellProjectCostProfileDto Drilling { get; set; } = null!;
+    public TimeSeriesCostDto Drilling { get; set; } = null!;
 
     public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = null!;
     public CessationOffshoreFacilities CessationOffshoreFacilities { get; set; } = null!;
-
 }
 
 public class ProductionAndSalesVolumesDto

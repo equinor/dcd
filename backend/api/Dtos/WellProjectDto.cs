@@ -7,7 +7,6 @@ public class WellProjectDto
     public Guid Id { get; set; }
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
-    public WellProjectCostProfileDto? CostProfile { get; set; }
     public OilProducerCostProfileDto? OilProducerCostProfile { get; set; }
     public GasProducerCostProfileDto? GasProducerCostProfile { get; set; }
     public WaterInjectorCostProfileDto? WaterInjectorCostProfile { get; set; }
@@ -20,10 +19,6 @@ public class WellProjectDto
     public List<WellProjectWellDto>? WellProjectWells { get; set; }
 }
 
-public class WellProjectCostProfileDto : TimeSeriesCostDto
-{
-    public bool Override { get; set; }
-}
 
 public class OilProducerCostProfileDto : TimeSeriesCostDto
 {

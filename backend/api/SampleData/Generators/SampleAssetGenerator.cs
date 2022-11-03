@@ -76,22 +76,11 @@ public static class SampleAssetGenerator
             .WithWellProject(new WellProjectBuilder
             {
                 Name = "SkarvenWell"
-            }.WithWellProjectCostProfile(new WellProjectCostProfile
-            {
-                Currency = Currency.NOK,
-                StartYear = 7,
-                Values = new[] { 1146e6 }
-            }))
+            })
             .WithExploration(new ExplorationBuilder
             {
                 Name = "SkarvenExpl"
-            }.WithExplorationCostProfile(new ExplorationCostProfile
-            {
-                Currency = Currency.NOK,
-                StartYear = 1,
-                Values = new[] { 280e6 }
-
-            }).WithGAndGAdminCost(new GAndGAdminCost
+            }.WithGAndGAdminCost(new GAndGAdminCost
             {
                 Currency = Currency.NOK,
                 StartYear = 0,
@@ -180,13 +169,6 @@ public static class SampleAssetGenerator
                 PluggingAndAbandonment = 300.0,
                 ArtificialLift = ArtificialLift.GasLift
             }
-                .WithWellProjectCostProfile(new WellProjectCostProfile
-                {
-                    Currency = Currency.USD,
-                    StartYear = 8,
-                    Values = new[] { 33.4, 18.9, 62.3 }
-                }
-                )
             )
             .WithSurf(new SurfBuilder
             {
@@ -256,13 +238,6 @@ public static class SampleAssetGenerator
                 Name = "Exploration",
                 RigMobDemob = 122.4
             }
-                .WithExplorationCostProfile(new ExplorationCostProfile
-                {
-                    Currency = Currency.USD,
-                    StartYear = 14,
-                    Values = new[] { 11.4, 28.2, 34.3 }
-                }
-                )
                 .WithGAndGAdminCost(new GAndGAdminCost
                 {
                     Currency = Currency.NOK,
@@ -416,25 +391,16 @@ public static class SampleAssetGenerator
         {
             Name = "SkarvenWellCase2",
             AnnualWellInterventionCost = 85e6
-        }.WithWellProjectCostProfile(new WellProjectCostProfile
-        {
-            Currency = Currency.NOK,
-            StartYear = 7,
-            Values = new[] { 764e6 }
-        });
+        }
+        ;
     }
     public static ExplorationBuilder case2Exploration()
     {
         return new ExplorationBuilder
         {
             Name = "SkarvenExplCase2"
-        }.WithExplorationCostProfile(new ExplorationCostProfile
-        {
-            Currency = Currency.NOK,
-            StartYear = 1,
-            Values = new[] { 280e6 }
-
-        }).WithGAndGAdminCost(new GAndGAdminCost
+        }
+        .WithGAndGAdminCost(new GAndGAdminCost
         {
             Currency = Currency.NOK,
             StartYear = 0,

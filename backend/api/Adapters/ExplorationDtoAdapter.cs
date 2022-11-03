@@ -14,7 +14,6 @@ public static class ExplorationDtoAdapter
             Name = exploration.Name,
             RigMobDemob = exploration.RigMobDemob,
             Currency = exploration.Currency,
-            CostProfile = Convert(exploration.CostProfile),
             ExplorationWellCostProfile = Convert(exploration.ExplorationWellCostProfile),
             AppraisalWellCostProfile = Convert(exploration.AppraisalWellCostProfile),
             SidetrackCostProfile = Convert(exploration.SidetrackCostProfile),
@@ -26,22 +25,6 @@ public static class ExplorationDtoAdapter
         return explorationDto;
     }
 
-    private static ExplorationCostProfileDto Convert(ExplorationCostProfile? costProfile)
-    {
-        if (costProfile == null)
-        {
-            return null!;
-        }
-        return new ExplorationCostProfileDto
-        {
-            Id = costProfile.Id,
-            Currency = costProfile.Currency,
-            EPAVersion = costProfile.EPAVersion,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values,
-            Override = costProfile.Override,
-        };
-    }
     private static ExplorationWellCostProfileDto Convert(ExplorationWellCostProfile? costProfile)
     {
         if (costProfile == null)
