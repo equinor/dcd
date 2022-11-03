@@ -117,17 +117,44 @@ public class CaseService
 
     public ProjectDto DuplicateCase(Guid caseId)
     {
-        var case_ = GetCase(caseId);
-        case_.Id = new Guid();
-        if (case_.DG4Date == DateTimeOffset.MinValue)
-        {
-            case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
-        }
-        var project = _projectService.GetProject(case_.ProjectId);
-        case_.Project = project;
+        var drainageStrategyService = _serviceProvider.GetRequiredService<DrainageStrategyService>();
 
-        case_.Name += " - copy";
-        _context.Cases!.Add(case_);
+        var topsideService = _serviceProvider.GetRequiredService<TopsideService>();
+        var surfService = _serviceProvider.GetRequiredService<SurfService>();
+        var substructureService = _serviceProvider.GetRequiredService<SubstructureService>();
+        var transportService = _serviceProvider.GetRequiredService<TransportService>();
+
+        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
+        var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
+
+        var wellProjectWellService = _serviceProvider.GetRequiredService<WellProjectWellService>();
+        var explorationWellService = _serviceProvider.GetRequiredService<ExplorationWellService>();
+
+        var caseItem = GetCase(caseId);
+        var sourceWellProjectId = caseItem.WellProjectLink;
+        var sourceExplorationId = caseItem.ExplorationLink;
+        caseItem.Id = new Guid();
+        if (caseItem.DG4Date == DateTimeOffset.MinValue)
+        {
+            caseItem.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
+        }
+        var project = _projectService.GetProject(caseItem.ProjectId);
+        caseItem.Project = project;
+
+        caseItem.Name += " - copy";
+        _context.Cases!.Add(caseItem);
+
+        drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
+        topsideService.CopyTopside(caseItem.TopsideLink, caseItem.Id);
+        surfService.CopySurf(caseItem.SurfLink, caseItem.Id);
+        substructureService.CopySubstructure(caseItem.SubstructureLink, caseItem.Id);
+        transportService.CopyTransport(caseItem.TransportLink, caseItem.Id);
+        var newWellProject = wellProjectService.CopyWellProject(caseItem.WellProjectLink, caseItem.Id);
+        var newExploration = explorationService.CopyExploration(caseItem.ExplorationLink, caseItem.Id);
+
+        wellProjectWellService.CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
+        explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
+
         _context.SaveChanges();
         return _projectService.GetProjectDto(project.Id);
     }

@@ -77,7 +77,7 @@ public class ExplorationWellService
         return null;
     }
 
-    public ExplorationWellDto[]? CreateMultpleExplorationWells(ExplorationWellDto[] explorationWellDtos)
+    public ExplorationWellDto[]? CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos)
     {
         var explorationId = explorationWellDtos.FirstOrDefault()?.ExplorationId;
         ProjectDto? projectDto = null;
@@ -104,6 +104,24 @@ public class ExplorationWellService
         return explorationWell;
     }
 
+    public ExplorationWellDto[]? CopyExplorationWell(Guid sourceExplorationId, Guid targetExplorationId)
+    {
+        var sourceExplorationWells = GetAll().Where(ew => ew.ExplorationId == sourceExplorationId).ToList();
+        if (sourceExplorationWells?.Count > 0)
+        {
+            var newExplorationWellDtos = new List<ExplorationWellDto>();
+            foreach (var explorationWell in sourceExplorationWells)
+            {
+                var newExplorationDto = ExplorationWellDtoAdapter.Convert(explorationWell);
+                newExplorationDto.ExplorationId = targetExplorationId;
+                newExplorationWellDtos.Add(newExplorationDto);
+            }
+            var result = CreateMultipleExplorationWells(newExplorationWellDtos.ToArray());
+            return result;
+        }
+        return null;
+    }
+
     public ExplorationWellDto GetExplorationWellDto(Guid wellId, Guid caseId)
     {
         var explorationWell = GetExplorationWell(wellId, caseId);
@@ -116,7 +134,7 @@ public class ExplorationWellService
     {
         if (_context.ExplorationWell != null)
         {
-            return _context.ExplorationWell;
+            return _context.ExplorationWell.Include(ew => ew.DrillingSchedule);
         }
         else
         {

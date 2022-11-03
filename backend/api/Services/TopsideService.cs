@@ -35,6 +35,26 @@ public class TopsideService
         }
     }
 
+    public TopsideDto CopyTopside(Guid topsideId, Guid sourceCaseId)
+    {
+        var source = GetTopside(topsideId);
+        var newTopsideDto = TopsideDtoAdapter.Convert(source);
+        newTopsideDto.Id = Guid.Empty;
+        if (newTopsideDto.CostProfile != null)
+        {
+            newTopsideDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newTopsideDto.CessationCostProfile != null)
+        {
+            newTopsideDto.CessationCostProfile.Id = Guid.Empty;
+        }
+
+        var topside = NewCreateTopside(newTopsideDto, sourceCaseId);
+        var dto = TopsideDtoAdapter.Convert(topside);
+
+        return dto;
+    }
+
     public ProjectDto CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
     {
         var topside = TopsideAdapter.Convert(topsideDto);

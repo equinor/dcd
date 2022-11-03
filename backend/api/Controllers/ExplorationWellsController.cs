@@ -51,7 +51,7 @@ public class ExplorationWellsController : ControllerBase
     [HttpPost("multiple", Name = "CreateMultipleExplorationWells")]
     public ExplorationWellDto[]? CreateMultipleExplorationWell([FromBody] ExplorationWellDto[] wellDtos)
     {
-        return _explorationWellService.CreateMultpleExplorationWells(wellDtos);
+        return _explorationWellService.CreateMultipleExplorationWells(wellDtos);
     }
 
     [HttpPut("multiple", Name = "UpdateMultipleExplorationWells")]

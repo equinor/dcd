@@ -39,6 +39,38 @@ public class WellProjectService
         }
     }
 
+    public WellProjectDto CopyWellProject(Guid wellProjectId, Guid sourceCaseId)
+    {
+        var source = GetWellProject(wellProjectId);
+        var newWellProjectDto = WellProjectDtoAdapter.Convert(source);
+        newWellProjectDto.Id = Guid.Empty;
+        if (newWellProjectDto.CostProfile != null)
+        {
+            newWellProjectDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newWellProjectDto.OilProducerCostProfile != null)
+        {
+            newWellProjectDto.OilProducerCostProfile.Id = Guid.Empty;
+        }
+        if (newWellProjectDto.GasProducerCostProfile != null)
+        {
+            newWellProjectDto.GasProducerCostProfile.Id = Guid.Empty;
+        }
+        if (newWellProjectDto.WaterInjectorCostProfile != null)
+        {
+            newWellProjectDto.WaterInjectorCostProfile.Id = Guid.Empty;
+        }
+        if (newWellProjectDto.GasInjectorCostProfile != null)
+        {
+            newWellProjectDto.GasInjectorCostProfile.Id = Guid.Empty;
+        }
+
+        var wellProject = NewCreateWellProject(newWellProjectDto, sourceCaseId);
+        var dto = WellProjectDtoAdapter.Convert(wellProject);
+
+        return dto;
+    }
+
     public ProjectDto CreateWellProject(WellProject wellProject, Guid sourceCaseId)
     {
         var project = _projectService.GetProject(wellProject.ProjectId);
