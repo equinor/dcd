@@ -54,4 +54,10 @@ public class WellProjectsController : ControllerBase
     {
         return _wellProjectService.NewUpdateWellProject(wellProjectDto);
     }
+
+    [HttpPost("{wellProjectId}/copy", Name = "CopyWellProject")]
+    public WellProjectDto CopyWellProject([FromQuery] Guid caseId, Guid wellProjectId)
+    {
+        return _wellProjectService.CopyWellProject(wellProjectId, caseId);
+    }
 }

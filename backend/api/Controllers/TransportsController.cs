@@ -53,4 +53,10 @@ public class TransportsController : ControllerBase
     {
         return _transportService.DeleteTransport(transportId);
     }
+
+    [HttpPost("{transportId}/copy", Name = "CopyTransport")]
+    public TransportDto CopyTransport([FromQuery] Guid caseId, Guid transportId)
+    {
+        return _transportService.CopyTransport(transportId, caseId);
+    }
 }

@@ -66,6 +66,56 @@ public class DrainageStrategyService
         return createdDrainageStrategy.Entity;
     }
 
+    public DrainageStrategyDto CopyDrainageStrategy(Guid drainageStrategyId, Guid sourceCaseId)
+    {
+        var source = GetDrainageStrategy(drainageStrategyId);
+        var unit = _projectService.GetProject(source.ProjectId).PhysicalUnit;
+
+        var newDrainageStrategyDto = DrainageStrategyDtoAdapter.Convert(source, unit);
+        newDrainageStrategyDto.Id = Guid.Empty;
+        if (newDrainageStrategyDto.ProductionProfileOil != null)
+        {
+            newDrainageStrategyDto.ProductionProfileOil.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.ProductionProfileGas != null)
+        {
+            newDrainageStrategyDto.ProductionProfileGas.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.ProductionProfileWater != null)
+        {
+            newDrainageStrategyDto.ProductionProfileWater.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.ProductionProfileWaterInjection != null)
+        {
+            newDrainageStrategyDto.ProductionProfileWaterInjection.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.FuelFlaringAndLosses != null)
+        {
+            newDrainageStrategyDto.FuelFlaringAndLosses.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.NetSalesGas != null)
+        {
+            newDrainageStrategyDto.NetSalesGas.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.Co2Emissions != null)
+        {
+            newDrainageStrategyDto.Co2Emissions.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.ProductionProfileNGL != null)
+        {
+            newDrainageStrategyDto.ProductionProfileNGL.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.ImportedElectricity != null)
+        {
+            newDrainageStrategyDto.ImportedElectricity.Id = Guid.Empty;
+        }
+
+        var drainageStrategy = NewCreateDrainageStrategy(newDrainageStrategyDto, sourceCaseId);
+        var dto = DrainageStrategyDtoAdapter.Convert(drainageStrategy, unit);
+
+        return dto;
+    }
+
     private void SetCaseLink(DrainageStrategy drainageStrategy, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);

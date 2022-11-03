@@ -48,6 +48,12 @@ public class TopsidesController : ControllerBase
         return _topsideService.UpdateTopside(topsideDto);
     }
 
+    [HttpPost("{topsideId}/copy", Name = "CopyTopside")]
+    public TopsideDto CopyTopside([FromQuery] Guid caseId, Guid topsideId)
+    {
+        return _topsideService.CopyTopside(topsideId, caseId);
+    }
+
     [HttpPut("new", Name = "NewUpdateTopside")]
     public TopsideDto NewUpdateTopside([FromBody] TopsideDto topsideDto)
     {
