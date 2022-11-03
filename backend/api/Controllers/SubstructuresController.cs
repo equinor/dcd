@@ -49,6 +49,12 @@ public class SubstructuresController : ControllerBase
         return _substructureService.UpdateSubstructure(substructureDto);
     }
 
+    [HttpPost("{substructureId}/copy", Name = "CopySubstructure")]
+    public SubstructureDto CopySubstructure([FromQuery] Guid caseId, Guid substructureId)
+    {
+        return _substructureService.CopySubstructure(substructureId, caseId);
+    }
+
     [HttpPut("new", Name = "NewUpdateSubstructure")]
     public SubstructureDto NewUpdateSubstructure([FromBody] SubstructureDto substructureDto)
     {
