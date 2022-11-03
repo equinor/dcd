@@ -440,6 +440,7 @@ const CaseView = () => {
                 isOpen={editTechnicalInputModalIsOpen}
                 project={project}
                 setProject={setProject}
+                setWells={setWells}
             />
             <EditCaseModal
                 setProject={setProject}
