@@ -18,6 +18,8 @@ import { GetDevelopmentOperationalWellCostsService } from "../../Services/Develo
 import { Well } from "../../models/Well"
 import { IsExplorationWell } from "../../Utils/common"
 import { GetWellService } from "../../Services/WellService"
+import CO2Tab from "./CO2Tab"
+import { GetProjectService } from "../../Services/ProjectService"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -161,6 +163,9 @@ const EditTechnicalInputModal = ({
         const developmentResult = await (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
         setDevelopmentOperationalWellCosts(developmentResult)
 
+        const projectResult = await (await GetProjectService()).updateProject(Project.Copy(project))
+        setProject(projectResult)
+
         await saveWells()
         setIsSaving(false)
         toggleEditTechnicalInputModal()
@@ -194,6 +199,7 @@ const EditTechnicalInputModal = ({
                     <List>
                         <Tab>Well Costs</Tab>
                         <Tab>PROSP</Tab>
+                        <Tab>CO2</Tab>
                     </List>
                     <Panels>
                         <StyledTabPanel>
@@ -211,6 +217,9 @@ const EditTechnicalInputModal = ({
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <PROSPTab project={project} setProject={setProject} />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <CO2Tab project={project} setProject={setProject} />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
