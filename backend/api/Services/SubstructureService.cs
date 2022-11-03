@@ -59,6 +59,26 @@ public class SubstructureService
         return createdSubstructure.Entity;
     }
 
+    public SubstructureDto CopySubstructure(Guid substructureId, Guid sourceCaseId)
+    {
+        var source = GetSubstructure(substructureId);
+        var newSubstructureDto = SubstructureDtoAdapter.Convert(source);
+        newSubstructureDto.Id = Guid.Empty;
+        if (newSubstructureDto.CostProfile != null)
+        {
+            newSubstructureDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newSubstructureDto.CessationCostProfile != null)
+        {
+            newSubstructureDto.CessationCostProfile.Id = Guid.Empty;
+        }
+
+        var topside = NewCreateSubstructure(newSubstructureDto, sourceCaseId);
+        var dto = SubstructureDtoAdapter.Convert(topside);
+
+        return dto;
+    }
+
     private void SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);

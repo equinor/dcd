@@ -46,6 +46,26 @@ public class TransportService
         return createdTransport.Entity;
     }
 
+    public TransportDto CopyTransport(Guid transportId, Guid sourceCaseId)
+    {
+        var source = GetTransport(transportId);
+        var newTransportDto = TransportDtoAdapter.Convert(source);
+        newTransportDto.Id = Guid.Empty;
+        if (newTransportDto.CostProfile != null)
+        {
+            newTransportDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newTransportDto.CessationCostProfile != null)
+        {
+            newTransportDto.CessationCostProfile.Id = Guid.Empty;
+        }
+
+        var topside = NewCreateTransport(newTransportDto, sourceCaseId);
+        var dto = TransportDtoAdapter.Convert(topside);
+
+        return dto;
+    }
+
     private void SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases?.FirstOrDefault(o => o.Id == sourceCaseId);

@@ -28,4 +28,11 @@ public class ProjectDto
     public ICollection<DrainageStrategyDto>? DrainageStrategies { get; set; }
     public ICollection<WellProjectDto>? WellProjects { get; set; }
     public string? SharepointSiteUrl { get; set; }
+    public double CO2RemovedFromGas { get; set; }
+    public double CO2EmissionFromFuelGas { get; set; }
+    public double FlaredGasPerProducedVolume { get; set; }
+    public double CO2EmissionsFromFlaredGas { get; set; }
+    public double CO2Vented { get; set; }
+    public double DailyEmissionFromDrillingRig { get; set; }
+    public double AverageDevelopmentDrillingDays { get; set; }
 }

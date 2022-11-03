@@ -22,7 +22,14 @@ public static class ProjectAdapter
             Id = projectDto.ProjectId,
             SharepointSiteUrl = projectDto.SharepointSiteUrl,
             ExplorationOperationalWellCosts = ExplorationOperationalWellCostsAdapter.Convert(projectDto.ExplorationOperationalWellCosts),
-            DevelopmentOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(projectDto.DevelopmentOperationalWellCosts)
+            DevelopmentOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(projectDto.DevelopmentOperationalWellCosts),
+            CO2RemovedFromGas = projectDto.CO2RemovedFromGas,
+            CO2EmissionFromFuelGas = projectDto.CO2EmissionFromFuelGas,
+            FlaredGasPerProducedVolume = projectDto.FlaredGasPerProducedVolume,
+            CO2EmissionsFromFlaredGas = projectDto.CO2EmissionsFromFlaredGas,
+            CO2Vented = projectDto.CO2Vented,
+            DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig,
+            AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays
         };
 
         return project;
@@ -42,5 +49,12 @@ public static class ProjectAdapter
         existing.PhysicalUnit = projectDto.PhysUnit;
         existing.Id = projectDto.ProjectId;
         existing.SharepointSiteUrl = projectDto.SharepointSiteUrl;
+        existing.CO2RemovedFromGas = projectDto.CO2RemovedFromGas;
+        existing.CO2EmissionFromFuelGas = projectDto.CO2EmissionFromFuelGas;
+        existing.FlaredGasPerProducedVolume = projectDto.FlaredGasPerProducedVolume;
+        existing.CO2EmissionsFromFlaredGas = projectDto.CO2EmissionsFromFlaredGas;
+        existing.CO2Vented = projectDto.CO2Vented;
+        existing.DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig;
+        existing.AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays;
     }
 }
