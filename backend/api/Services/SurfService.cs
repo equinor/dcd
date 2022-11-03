@@ -35,6 +35,26 @@ public class SurfService
         }
     }
 
+    public SurfDto CopySurf(Guid surfId, Guid sourceCaseId)
+    {
+        var source = GetSurf(surfId);
+        var newSurfDto = SurfDtoAdapter.Convert(source);
+        newSurfDto.Id = Guid.Empty;
+        if (newSurfDto.CostProfile != null)
+        {
+            newSurfDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newSurfDto.CessationCostProfile != null)
+        {
+            newSurfDto.CessationCostProfile.Id = Guid.Empty;
+        }
+
+        var surf = NewCreateSurf(newSurfDto, sourceCaseId);
+        var dto = SurfDtoAdapter.Convert(surf);
+
+        return dto;
+    }
+
     public ProjectDto UpdateSurf(SurfDto updatedSurfDto)
     {
         var existing = GetSurf(updatedSurfDto.Id);
