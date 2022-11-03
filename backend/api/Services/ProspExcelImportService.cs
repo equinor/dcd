@@ -14,16 +14,17 @@ namespace api.Services;
 public class ProspExcelImportService
 {
     private const string SheetName = "main";
+    private readonly CaseService _caseService;
     private readonly ProjectService _projectService;
     private readonly Prosp _prospConfig;
     private readonly SubstructureService _substructureService;
     private readonly SurfService _surfService;
     private readonly TopsideService _topsideService;
     private readonly TransportService _transportService;
-    private readonly CaseService _caseService;
 
 
-    public ProspExcelImportService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory, SurfService surfService,
+    public ProspExcelImportService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory,
+        SurfService surfService,
         SubstructureService substructureService, TopsideService topsideService, TransportService transportService,
         IConfiguration config)
     {
@@ -66,7 +67,7 @@ public class ProspExcelImportService
             return value;
         }
 
-        return -1;
+        return 0;
     }
 
     private static double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
@@ -102,7 +103,7 @@ public class ProspExcelImportService
             "M112",
             "N112",
             "O112",
-            "P112"
+            "P112",
         };
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Surf.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.Surf.dG3Date);
@@ -118,13 +119,13 @@ public class ProspExcelImportService
         var producerCount = ReadIntValue(cellData, _prospConfig.Surf.producerCount);
         var waterInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.waterInjectorCount);
         var gasInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.gasInjectorCount);
-
+        var cessationCost = ReadIntValue(cellData, _prospConfig.Surf.cessationCost);
         //TODO: Add cessation cost from PROSP after feedback from PO
         // var cessationCost = ReadDoubleValue(parsedData, "K88");
         var costProfile = new SurfCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
+            StartYear = costProfileStartYear - dG4Date.Year,
         };
 
         // Prosp meta data
@@ -133,8 +134,10 @@ public class ProspExcelImportService
         var importedCurrency = ReadIntValue(cellData, _prospConfig.Surf.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
+        var surfLink = _caseService.GetCase(sourceCaseId).SurfLink;
         var newSurf = new Models.Surf
         {
+            Id = surfLink,
             Name = "ImportedSurf",
             CostProfile = costProfile,
             ProjectId = projectId,
@@ -153,10 +156,20 @@ public class ProspExcelImportService
             DG4Date = dG4Date,
             ProducerCount = producerCount,
             GasInjectorCount = gasInjectorCount,
-            WaterInjectorCount = waterInjectorCount
+            WaterInjectorCount = waterInjectorCount,
+            CessationCost = cessationCost,
         };
+
         var dto = SurfDtoAdapter.Convert(newSurf);
-        _surfService.CreateSurf(dto, sourceCaseId);
+
+        if (surfLink != Guid.Empty)
+        {
+            _surfService.UpdateSurf(dto);
+        }
+        else
+        {
+            _surfService.CreateSurf(dto, sourceCaseId);
+        }
     }
 
     private void ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -169,7 +182,7 @@ public class ProspExcelImportService
             "M104",
             "N104",
             "O104",
-            "P104"
+            "P104",
         };
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.TopSide.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.TopSide.dG3Date);
@@ -181,6 +194,7 @@ public class ProspExcelImportService
         var flaredGas = ReadDoubleValue(cellData, _prospConfig.TopSide.flaredGas);
         var oilCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.oilCapacity);
         var gasCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.gasCapacity);
+        var waterInjectorCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.waterInjectionCapacity);
         var producerCount = ReadIntValue(cellData, _prospConfig.TopSide.producerCount);
         var gasInjectorCount = ReadIntValue(cellData, _prospConfig.TopSide.gasInjectorCount);
         var waterInjectorCount = ReadIntValue(cellData, _prospConfig.TopSide.waterInjectorCount);
@@ -196,17 +210,19 @@ public class ProspExcelImportService
         var costProfile = new TopsideCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
+            StartYear = costProfileStartYear - dG4Date.Year,
         };
-
+        var peakElectricityImported = ReadDoubleValue(cellData, _prospConfig.TopSide.peakElectricityImported);
         // Prosp meta data
         var versionDate = ReadDateValue(cellData, _prospConfig.TopSide.versionDate);
         var costYear = ReadIntValue(cellData, _prospConfig.TopSide.costYear);
         var importedCurrency = ReadIntValue(cellData, _prospConfig.TopSide.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
+        var topsideLink = _caseService.GetCase(sourceCaseId).TopsideLink;
         var newTopside = new Topside
         {
+            Id = topsideLink,
             Name = "ImportedTopside",
             CostProfile = costProfile,
             ProjectId = projectId,
@@ -215,6 +231,7 @@ public class ProspExcelImportService
             DryWeight = dryWeight,
             OilCapacity = oilCapacity,
             GasCapacity = gasCapacity,
+            WaterInjectionCapacity = waterInjectorCapacity,
             ArtificialLift = artificialLift,
             ProducerCount = producerCount,
             WaterInjectorCount = waterInjectorCount,
@@ -232,10 +249,18 @@ public class ProspExcelImportService
             Currency = currency,
             CostYear = costYear,
             Maturity = Maturity.A,
-            FacilityOpex = facilityOpex
+            FacilityOpex = facilityOpex,
+            PeakElectricityImported = peakElectricityImported,
         };
         var dto = TopsideDtoAdapter.Convert(newTopside);
-        _topsideService.CreateTopside(dto, sourceCaseId);
+        if (topsideLink != Guid.Empty)
+        {
+            _topsideService.UpdateTopside(dto);
+        }
+        else
+        {
+            _topsideService.CreateTopside(dto, sourceCaseId);
+        }
     }
 
     private void ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -248,7 +273,7 @@ public class ProspExcelImportService
             "M105",
             "N105",
             "O105",
-            "P105"
+            "P105",
         };
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.SubStructure.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.SubStructure.dG3Date);
@@ -259,7 +284,7 @@ public class ProspExcelImportService
         var costProfile = new SubstructureCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
+            StartYear = costProfileStartYear - dG4Date.Year,
         };
 
         // Prosp meta data
@@ -268,8 +293,10 @@ public class ProspExcelImportService
         var importedCurrency = ReadIntValue(cellData, _prospConfig.SubStructure.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
+        var substructureLink = _caseService.GetCase(sourceCaseId).SubstructureLink;
         var newSubstructure = new Substructure
         {
+            Id = substructureLink,
             Name = "ImportedSubstructure",
             CostProfile = costProfile,
             ProjectId = projectId,
@@ -281,9 +308,18 @@ public class ProspExcelImportService
             ProspVersion = versionDate,
             Currency = currency,
             CostYear = costYear,
-            Maturity = Maturity.A
+            Maturity = Maturity.A,
         };
-        _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
+
+        if (substructureLink != Guid.Empty)
+        {
+            var dto = SubstructureDtoAdapter.Convert(newSubstructure);
+            _substructureService.UpdateSubstructure(dto);
+        }
+        else
+        {
+            _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
+        }
     }
 
     private void ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -296,7 +332,7 @@ public class ProspExcelImportService
             "M113",
             "N113",
             "O113",
-            "P113"
+            "P113",
         };
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Transport.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.Transport.dG3Date);
@@ -304,7 +340,7 @@ public class ProspExcelImportService
         var costProfile = new TransportCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year
+            StartYear = costProfileStartYear - dG4Date.Year,
         };
 
         // Prosp meta data
@@ -315,9 +351,10 @@ public class ProspExcelImportService
         var gasExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.gasExportPipelineLength);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-
+        var transportLink = _caseService.GetCase(sourceCaseId).TransportLink;
         var newTransport = new Models.Transport
         {
+            Id = transportLink,
             Name = "ImportedTransport",
             CostProfile = costProfile,
             ProjectId = projectId,
@@ -329,10 +366,17 @@ public class ProspExcelImportService
             CostYear = costYear,
             OilExportPipelineLength = oilExportPipelineLength,
             GasExportPipelineLength = gasExportPipelineLength,
-            Maturity = Maturity.A
+            Maturity = Maturity.A,
         };
         var dto = TransportDtoAdapter.Convert(newTransport);
-        _transportService.CreateTransport(dto, sourceCaseId);
+        if (transportLink != Guid.Empty)
+        {
+            _transportService.UpdateTransport(dto);
+        }
+        else
+        {
+            _transportService.CreateTransport(dto, sourceCaseId);
+        }
     }
 
     public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
@@ -377,7 +421,8 @@ public class ProspExcelImportService
         return _projectService.GetProjectDto(projectId);
     }
 
-    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets, string sharepointFileId)
+    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
+        string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
         var workbookPart = document.WorkbookPart;
@@ -415,11 +460,101 @@ public class ProspExcelImportService
 
             var caseItem = _caseService.GetCase(sourceCaseId);
             caseItem.SharepointFileId = sharepointFileId;
-            var caseDto = CaseDtoAdapter.Convert(caseItem, _projectService.GetProjectDto(projectId));
+            caseItem.SharepointFileName = sharepointFileName;
+            caseItem.SharepointFileUrl = sharepointFileUrl;
+            var caseDto = CaseDtoAdapter.Convert(caseItem);
             return _caseService.UpdateCase(caseDto);
         }
 
         return _projectService.GetProjectDto(projectId);
+    }
+
+    public void ClearImportedProspData(Guid sourceCaseId, Guid projectId)
+    {
+        var caseItem = _caseService.GetCase(sourceCaseId);
+        caseItem.SharepointFileId = null;
+        caseItem.SharepointFileName = null;
+        caseItem.SharepointFileUrl = null;
+
+        ClearImportedSurf(caseItem);
+        ClearImportedTopside(caseItem);
+        ClearImportedSubstructure(caseItem);
+        ClearImportedTransport(caseItem);
+
+        var caseDto = CaseDtoAdapter.Convert(caseItem);
+        _caseService.UpdateCase(caseDto);
+    }
+
+    private void ClearImportedSurf(Case caseItem)
+    {
+        var surfLink = caseItem.SurfLink;
+        var surf = new Models.Surf
+        {
+            Id = surfLink,
+            CostProfile = null,
+            ProjectId = caseItem.ProjectId,
+        };
+
+        var dto = SurfDtoAdapter.Convert(surf);
+
+        if (surfLink != Guid.Empty)
+        {
+            _surfService.UpdateSurf(dto);
+        }
+    }
+
+    private void ClearImportedTopside(Case caseItem)
+    {
+        var topsideLink = caseItem.TopsideLink;
+        var topside = new Topside
+        {
+            Id = topsideLink,
+            CostProfile = null,
+            ProjectId = caseItem.ProjectId,
+        };
+
+        var dto = TopsideDtoAdapter.Convert(topside);
+
+        if (topsideLink != Guid.Empty)
+        {
+            _topsideService.UpdateTopside(dto);
+        }
+    }
+
+    private void ClearImportedSubstructure(Case caseItem)
+    {
+        var substructureLink = caseItem.SubstructureLink;
+        var substructure = new Substructure
+        {
+            Id = substructureLink,
+            CostProfile = null,
+            ProjectId = caseItem.ProjectId,
+        };
+
+        var dto = SubstructureDtoAdapter.Convert(substructure);
+
+        if (substructureLink != Guid.Empty)
+        {
+            _substructureService.UpdateSubstructure(dto);
+        }
+    }
+
+    private void ClearImportedTransport(Case caseItem)
+    {
+        var transportLink = caseItem.TransportLink;
+        var transport = new Models.Transport
+        {
+            Id = transportLink,
+            CostProfile = null,
+            ProjectId = caseItem.ProjectId,
+        };
+
+        var dto = TransportDtoAdapter.Convert(transport);
+
+        if (transportLink != Guid.Empty)
+        {
+            _transportService.UpdateTransport(dto);
+        }
     }
 
     private static Concept MapSubstructureConcept(int importValue)
@@ -438,7 +573,7 @@ public class ProspExcelImportService
             9 => Concept.TANKER,
             10 => Concept.JACK_UP,
             11 => Concept.SUBSEA_TO_SHORE,
-            _ => Concept.NO_CONCEPT
+            _ => Concept.NO_CONCEPT,
         };
     }
 
@@ -450,7 +585,7 @@ public class ProspExcelImportService
             1 => ArtificialLift.GasLift,
             2 => ArtificialLift.ElectricalSubmergedPumps,
             3 => ArtificialLift.SubseaBoosterPumps,
-            _ => ArtificialLift.NoArtificialLift
+            _ => ArtificialLift.NoArtificialLift,
         };
     }
 
@@ -471,7 +606,7 @@ public class ProspExcelImportService
             32 => ProductionFlowline.SSClad_PIP,
             33 => ProductionFlowline.Cr13_PIP,
             41 => ProductionFlowline.HDPELinedCS,
-            _ => ProductionFlowline.No_production_flowline
+            _ => ProductionFlowline.No_production_flowline,
         };
     }
 }

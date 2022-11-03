@@ -35,6 +35,26 @@ public class SurfService
         }
     }
 
+    public SurfDto CopySurf(Guid surfId, Guid sourceCaseId)
+    {
+        var source = GetSurf(surfId);
+        var newSurfDto = SurfDtoAdapter.Convert(source);
+        newSurfDto.Id = Guid.Empty;
+        if (newSurfDto.CostProfile != null)
+        {
+            newSurfDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newSurfDto.CessationCostProfile != null)
+        {
+            newSurfDto.CessationCostProfile.Id = Guid.Empty;
+        }
+
+        var surf = NewCreateSurf(newSurfDto, sourceCaseId);
+        var dto = SurfDtoAdapter.Convert(surf);
+
+        return dto;
+    }
+
     public ProjectDto UpdateSurf(SurfDto updatedSurfDto)
     {
         var existing = GetSurf(updatedSurfDto.Id);
@@ -54,6 +74,27 @@ public class SurfService
         _context.SaveChanges();
         return _projectService.GetProjectDto(existing.ProjectId);
     }
+
+    public SurfDto NewUpdateSurf(SurfDto updatedSurfDto)
+    {
+        var existing = GetSurf(updatedSurfDto.Id);
+        SurfAdapter.ConvertExisting(existing, updatedSurfDto);
+
+        if (updatedSurfDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.SurfCostProfile!.Remove(existing.CostProfile);
+        }
+
+        if (updatedSurfDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+        {
+            _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
+        }
+        existing.LastChangedDate = DateTimeOffset.Now;
+        var updatedSurf = _context.Surfs!.Update(existing);
+        _context.SaveChanges();
+        return SurfDtoAdapter.Convert(updatedSurf.Entity);
+    }
+
     public Surf GetSurf(Guid surfId)
     {
         var surf = _context.Surfs!
@@ -78,6 +119,18 @@ public class SurfService
         _context.SaveChanges();
         SetCaseLink(surf, sourceCaseId, project);
         return _projectService.GetProjectDto(surf.ProjectId);
+    }
+
+    public Surf NewCreateSurf(SurfDto surfDto, Guid sourceCaseId)
+    {
+        var surf = SurfAdapter.Convert(surfDto);
+        var project = _projectService.GetProject(surf.ProjectId);
+        surf.Project = project;
+        surf.LastChangedDate = DateTimeOffset.Now;
+        var createdSurf = _context.Surfs!.Add(surf);
+        _context.SaveChanges();
+        SetCaseLink(surf, sourceCaseId, project);
+        return createdSurf.Entity;
     }
 
     private void SetCaseLink(Surf surf, Guid sourceCaseId, Project project)

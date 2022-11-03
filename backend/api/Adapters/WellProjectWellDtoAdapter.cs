@@ -11,7 +11,6 @@ public static class WellProjectWellDtoAdapter
         {
             WellProjectId = wellProjectWell.WellProjectId,
             WellId = wellProjectWell.WellId,
-            Count = wellProjectWell.Count,
         };
 
         if (wellProjectWell.DrillingSchedule != null)
