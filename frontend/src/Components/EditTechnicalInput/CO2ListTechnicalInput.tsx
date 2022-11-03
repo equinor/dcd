@@ -189,6 +189,7 @@ function CO2ListTechnicalInput({
             width: 500,
             flex: 1,
             editable: true,
+            type: "numericColumn",
         },
     ])
 
@@ -196,12 +197,14 @@ function CO2ListTechnicalInput({
         <>
             <ColumnWrapper>
                 <CaseButtonsWrapper>
-                    <Button onClick={() => externalFilterChanged("CO2 vented")}>
-                        CO2 vented
-                    </Button>
-                    <TransparentButton onClick={() => externalFilterChanged("")}>
-                        CO2 re-injected
-                    </TransparentButton>
+                    <Button.Group aria-label="primary actions">
+                        <Button onClick={() => externalFilterChanged("CO2 vented")}>
+                            CO2 vented
+                        </Button>
+                        <TransparentButton onClick={() => externalFilterChanged("")}>
+                            CO2 re-injected
+                        </TransparentButton>
+                    </Button.Group>
                 </CaseButtonsWrapper>
             </ColumnWrapper>
             <div
