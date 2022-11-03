@@ -189,7 +189,6 @@ function CO2ListTechnicalInput({
             width: 500,
             flex: 1,
             editable: true,
-            type: "numericColumn",
         },
     ])
 
