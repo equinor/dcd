@@ -53,4 +53,10 @@ public class ExplorationsController : ControllerBase
     {
         return _explorationService.NewUpdateExploration(eplorationDto);
     }
+
+    [HttpPost("{explorationId}/copy", Name = "CopyExploration")]
+    public ExplorationDto CopyExploration([FromQuery] Guid caseId, Guid explorationId)
+    {
+        return _explorationService.CopyExploration(explorationId, caseId);
+    }
 }

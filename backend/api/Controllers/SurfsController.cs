@@ -60,5 +60,4 @@ public class SurfsController : ControllerBase
     {
         return _surfService.DeleteSurf(surfId);
     }
-
 }
