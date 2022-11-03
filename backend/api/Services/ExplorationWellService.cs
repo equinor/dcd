@@ -113,6 +113,10 @@ public class ExplorationWellService
             foreach (var explorationWell in sourceExplorationWells)
             {
                 var newExplorationDto = ExplorationWellDtoAdapter.Convert(explorationWell);
+                if (newExplorationDto.DrillingSchedule != null)
+                {
+                    newExplorationDto.DrillingSchedule.Id = Guid.Empty;
+                }
                 newExplorationDto.ExplorationId = targetExplorationId;
                 newExplorationWellDtos.Add(newExplorationDto);
             }
