@@ -6,7 +6,7 @@ import {
     useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
-import { Button, Switch } from "@equinor/eds-core-react"
+import { Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { Project } from "../../models/Project"
 
@@ -38,11 +38,19 @@ function CO2ListTechnicalInput({
 
     const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(project.cO2RemovedFromGas ?? 0)
     const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(project.cO2EmissionFromFuelGas ?? 0)
-    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(project.flaredGasPerProducedVolume ?? 0)
-    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(project.cO2EmissionsFromFlaredGas ?? 0)
+    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(
+        project.flaredGasPerProducedVolume ?? 0,
+    )
+    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(
+        project.cO2EmissionsFromFlaredGas ?? 0,
+    )
     const [cO2Vented, setCO2Vented] = useState<number>(project.cO2Vented ?? 0)
-    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(project.averageDevelopmentDrillingDays ?? 0)
-    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(project.dailyEmissionFromDrillingRig ?? 0)
+    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(
+        project.averageDevelopmentDrillingDays ?? 0,
+    )
+    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(
+        project.dailyEmissionFromDrillingRig ?? 0,
+    )
 
     let cO2VentedRow = true
 
@@ -64,12 +72,12 @@ function CO2ListTechnicalInput({
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                    case true:
-                        return node.data.profile === "CO2 vented"
-                    case false:
-                        return node.data.profile !== "CO2 vented"
-                    default:
-                        return true
+                case true:
+                    return node.data.profile === "CO2 vented"
+                case false:
+                    return node.data.profile !== "CO2 vented"
+                default:
+                    return true
                 }
             }
             return true
