@@ -33,17 +33,17 @@ const WellListWrapper = styled.div`
 
 interface Props {
     project: Project
+    setProject: Dispatch<SetStateAction<Project | undefined>>
 }
 
 const CO2Tab = ({
-    project,
+    project, setProject,
 }: Props) => (
     <>
         <TopWrapper color="danger">
             <Typography variant="h4">CO2 Emission</Typography>
-            <Typography variant="h6">This page is work in progress...</Typography>
         </TopWrapper>
-        <CO2ListTechnicalInput project={project} />
+        <CO2ListTechnicalInput project={project} setProject={setProject} />
     </>
 )
 
