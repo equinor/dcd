@@ -163,7 +163,7 @@ const EditTechnicalInputModal = ({
         const developmentResult = await (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
         setDevelopmentOperationalWellCosts(developmentResult)
 
-        const projectResult = await (await GetProjectService()).updateProject({ ...project })
+        const projectResult = await (await GetProjectService()).updateProject(Project.Copy(project))
         setProject(projectResult)
 
         await saveWells()

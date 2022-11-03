@@ -1,20 +1,16 @@
 import {
+    ChangeEvent,
     Dispatch,
     SetStateAction,
     useCallback,
     useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
-import { Button } from "@equinor/eds-core-react"
+import { Button, Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { Project } from "../../models/Project"
 
-const TransparentButton = styled(Button)`
-    color: #007079;
-    background-color: white;
-    border: 1px solid #007079;
-`
-const CaseButtonsWrapper = styled.div`
+const SwitchWrapper = styled.div`
     align-items: flex-end;
     display: flex;
     flex-direction: row;
@@ -22,7 +18,8 @@ const CaseButtonsWrapper = styled.div`
     z-index: 110;
 `
 const ColumnWrapper = styled.div`
-    margin-left: 39rem;
+    margin-top: 1rem;
+    margin-left: 45rem;
     flex-direction: column;
     margin-bottom: 0.5rem;
 `
@@ -37,28 +34,29 @@ function CO2ListTechnicalInput({
 }: Props) {
     const gridRef = useRef<any>(null)
 
-    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>()
-    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>()
-    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>()
-    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>()
-    const [cO2Vented, setCO2Vented] = useState<number>()
-    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>()
-    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>()
+    const [check, setCheck] = useState(false)
 
-    // eslint-disable-next-line no-var
-    var cO2VentedRow = "CO2 vented"
+    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(project.cO2RemovedFromGas ?? 0)
+    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(project.cO2EmissionFromFuelGas ?? 0)
+    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(project.flaredGasPerProducedVolume ?? 0)
+    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(project.cO2EmissionsFromFlaredGas ?? 0)
+    const [cO2Vented, setCO2Vented] = useState<number>(project.cO2Vented ?? 0)
+    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(project.averageDevelopmentDrillingDays ?? 0)
+    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(project.dailyEmissionFromDrillingRig ?? 0)
+
+    let cO2VentedRow = true
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
     }
 
-    const externalFilterChanged = useCallback((newValue: string) => {
-        cO2VentedRow = newValue
+    const externalFilterChanged = useCallback((newCO2VentedRow: boolean) => {
+        cO2VentedRow = newCO2VentedRow
         gridRef.current.onFilterChanged()
     }, [])
 
     const isExternalFilterPresent = useCallback(
-        (): boolean => cO2VentedRow !== "CO2 vented",
+        (): boolean => cO2VentedRow === false,
         [],
     )
 
@@ -66,12 +64,12 @@ function CO2ListTechnicalInput({
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                case "CO2 vented":
-                    return node.data.profile === "CO2 vented"
-                case "":
-                    return node.data.profile !== "CO2 vented"
-                default:
-                    return true
+                    case true:
+                        return node.data.profile === "CO2 vented"
+                    case false:
+                        return node.data.profile !== "CO2 vented"
+                    default:
+                        return true
                 }
             }
             return true
@@ -131,19 +129,7 @@ function CO2ListTechnicalInput({
     }
 
     useEffect(() => {
-        (async () => {
-            try {
-                setCO2RemovedFromGas(project.cO2RemovedFromGas)
-                setCO2EmissionsFromFuelGas(project.cO2EmissionFromFuelGas)
-                setFlaredGasPerProducedVolume(project.flaredGasPerProducedVolume)
-                setCO2EmissionsFromFlaredGas(project.cO2EmissionsFromFlaredGas)
-                setCO2Vented(project.cO2Vented)
-                setAverageDevelopmentWellDrillingDays(project.averageDevelopmentDrillingDays)
-                setDailyEmissionsFromDrillingRig(project.dailyEmissionFromDrillingRig)
-            } catch (error) {
-                console.error("[CO2Tab] error while submitting form data", error)
-            }
-        })()
+        setRowData(co2Data)
     }, [])
 
     useEffect(() => {
@@ -158,7 +144,6 @@ function CO2ListTechnicalInput({
             newProject.dailyEmissionFromDrillingRig = dailyEmissionsFromDrillingRig
             setProject(newProject)
         }
-        setRowData(co2Data)
     }, [cO2RemovedFromGas, cO2EmissionsFromFuelGas, flaredGasPerProducedVolume,
         cO2EmissionsFromFuelGas, cO2Vented, averageDevelopmentWellDrillingDays,
         dailyEmissionsFromDrillingRig])
@@ -192,19 +177,33 @@ function CO2ListTechnicalInput({
         },
     ])
 
+    const switchRow = () => {
+        if (check) {
+            return externalFilterChanged(true)
+        }
+        return externalFilterChanged(false)
+    }
+
+    const switchLabel = () => {
+        if (check) {
+            return "CO2 re-injected"
+        }
+        return "CO2 vented"
+    }
+
     return (
         <>
             <ColumnWrapper>
-                <CaseButtonsWrapper>
-                    <Button.Group aria-label="primary actions">
-                        <Button onClick={() => externalFilterChanged("CO2 vented")}>
-                            CO2 vented
-                        </Button>
-                        <TransparentButton onClick={() => externalFilterChanged("")}>
-                            CO2 re-injected
-                        </TransparentButton>
-                    </Button.Group>
-                </CaseButtonsWrapper>
+                <SwitchWrapper>
+                    <Switch
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            setCheck(e.target.checked)
+                        }}
+                        onClick={switchRow}
+                        checked={check}
+                        label={switchLabel()}
+                    />
+                </SwitchWrapper>
             </ColumnWrapper>
             <div
                 style={{
