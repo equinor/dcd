@@ -127,7 +127,7 @@ function CaseDrillingScheduleTabTable({
         wellsToRowData()
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [assetWells, tableYears])
+    }, [assetWells, tableYears, wells])
 
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
