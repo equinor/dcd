@@ -57,7 +57,7 @@ function CaseTabTable({
                         )[j]
                         j += 1
                         rowObject.total = ts.profile.values.map(
-                            (v: number) => Math.round((v + Number.EPSILON) * 10) / 10,
+                            (v: number) => Math.round((v + Number.EPSILON) * 1000) / 1000,
                         ).reduce((x: number, y: number) => x + y)
                     }
                 } else {
