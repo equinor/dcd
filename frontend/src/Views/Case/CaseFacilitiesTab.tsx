@@ -301,7 +301,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleFacilityOpexChange}
-                            defaultValue={topside?.facilityOpex}
+                            defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
                             integer={false}
                             label="Facility opex"
                         />
@@ -320,8 +320,8 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideDryWeightChange}
-                            defaultValue={topside?.dryWeight}
-                            integer={false}
+                            defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
+                            integer
                             label="Topside dry weight"
                         />
                     </NumberInputField>
@@ -337,15 +337,15 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideOilCapacityChange}
-                            defaultValue={topside?.oilCapacity}
-                            integer={false}
+                            defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
+                            integer
                             label="Oil capacity"
                         />
                     </NumberInputField>
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideGasCapacityChange}
-                            defaultValue={topside?.gasCapacity}
+                            defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
                             integer={false}
                             label="Gas capacity"
                         />
@@ -353,8 +353,8 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTopsideWaterInjectionCapacityChange}
-                            defaultValue={topside?.waterInjectionCapacity}
-                            integer={false}
+                            defaultValue={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
+                            integer
                             label="Water injection capacity"
                         />
                     </NumberInputField>
@@ -408,7 +408,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfInfieldPipelineSystemLengthChange}
-                            defaultValue={surf?.infieldPipelineSystemLength}
+                            defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
                             integer={false}
                             label="Production lines length"
                         />
@@ -416,7 +416,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSurfUmbilicalSystemLengthChange}
-                            defaultValue={surf?.umbilicalSystemLength}
+                            defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
                             integer={false}
                             label="Umbilical system length"
                         />
@@ -475,8 +475,8 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleSubstructureDryweightChange}
-                            defaultValue={substructure?.dryWeight}
-                            integer={false}
+                            defaultValue={Math.round(Number(substructure?.dryWeight) * 1) / 1}
+                            integer
                             label="Substructure dry weight"
                         />
                     </NumberInputField>
@@ -489,7 +489,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTransportOilExportPipelineLengthChange}
-                            defaultValue={transport?.oilExportPipelineLength}
+                            defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
                             integer={false}
                             label="Oil export pipeline length"
                         />
@@ -497,7 +497,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleTransportGasExportPipelineLengthChange}
-                            defaultValue={transport?.gasExportPipelineLength}
+                            defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
                             integer={false}
                             label="Gas export pipeline length"
                         />
