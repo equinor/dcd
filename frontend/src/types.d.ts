@@ -355,6 +355,13 @@ declare namespace Components {
             drainageStrategies?: DrainageStrategyDto[] | null;
             wellProjects?: WellProjectDto[] | null;
             sharepointSiteUrl?: string | null;
+            cO2RemovedFromGas?: number; // double
+            cO2EmissionFromFuelGas?: number; // double
+            flaredGasPerProducedVolume?: number; // double
+            cO2EmissionsFromFlaredGas?: number; // double
+            cO2Vented?: number; // double
+            dailyEmissionFromDrillingRig?: number; // double
+            averageDevelopmentDrillingDays?: number; // double
         }
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface STEACaseDto {

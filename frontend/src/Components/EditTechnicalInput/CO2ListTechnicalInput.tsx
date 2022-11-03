@@ -33,6 +33,16 @@ function CO2ListTechnicalInput({
 }: Props) {
     const gridRef = useRef<any>(null)
 
+    const [fuelGasConsumptionFromProsp, setFuelGasConsumptionFromProsp] = useState<number>()
+    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>()
+    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>()
+    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>()
+    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>()
+    const [cO2Vented, setCO2Vented] = useState<number>()
+    const [cO2ReInjected, setCO2ReInjected] = useState<number>()
+    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>()
+    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>()
+
     // eslint-disable-next-line no-var
     var cO2VentedRow = "CO2 vented"
 
@@ -71,47 +81,38 @@ function CO2ListTechnicalInput({
         {
             profile: "Fuel gas consumption from PROSP (Scope 1)",
             unit: "MSm³/sd",
-            defaultAssumptions: "-",
         },
         {
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
-            defaultAssumptions: "-",
         },
         {
             profile: "CO2-emissions from fuel gas",
             unit: "kg CO2/Sm³",
-            defaultAssumptions: "2.34",
         },
         {
             profile: "Flared gas per produced volume",
             unit: "Sm³/boe",
-            defaultAssumptions: "0.18",
         },
         {
             profile: "CO2-emissions from flared gas",
             unit: "kg CO2/Sm³",
-            defaultAssumptions: "3.73",
         },
         {
             profile: "CO2 vented",
             unit: "kg CO2/Sm³",
-            defaultAssumptions: "-",
         },
         {
             profile: "CO2 re-injected",
             unit: "kg CO2/Sm³",
-            defaultAssumptions: "-",
         },
         {
             profile: "Average development well drilling days",
             unit: "days/wells",
-            defaultAssumptions: "-",
         },
         {
             profile: "Daily emissions from drilling rig",
             unit: "tonnes CO2/day",
-            defaultAssumptions: "100",
         },
     ]
 
@@ -136,11 +137,6 @@ function CO2ListTechnicalInput({
         {
             field: "unit",
             headerName: "Unit",
-            width: 200,
-        },
-        {
-            field: "defaultAssumptions",
-            headerName: "Default assumptions",
             width: 200,
         },
         {
