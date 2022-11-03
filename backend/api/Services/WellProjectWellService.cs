@@ -105,12 +105,14 @@ public class WellProjectWellService
     public WellProjectWellDto[]? CopyWellProjectWell(Guid sourceWellProjectId, Guid targetWellProjectId)
     {
         var sourceWellProjectWells = GetAll().Where(wpw => wpw.WellProjectId == sourceWellProjectId).ToList();
-        if (sourceWellProjectWells?.Count > 0) {
+        if (sourceWellProjectWells?.Count > 0)
+        {
             var newWellProjectWellDtos = new List<WellProjectWellDto>();
             foreach (var wellProjectWell in sourceWellProjectWells)
             {
                 var newWellProjectWellDto = WellProjectWellDtoAdapter.Convert(wellProjectWell);
-                if (newWellProjectWellDto.DrillingSchedule != null) {
+                if (newWellProjectWellDto.DrillingSchedule != null)
+                {
                     newWellProjectWellDto.DrillingSchedule.Id = Guid.Empty;
                 }
                 newWellProjectWellDto.WellProjectId = targetWellProjectId;
