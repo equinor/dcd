@@ -47,10 +47,6 @@ public class ExplorationService
         var source = GetExploration(explorationId);
         var newExplorationDto = ExplorationDtoAdapter.Convert(source);
         newExplorationDto.Id = Guid.Empty;
-        if (newExplorationDto.CostProfile != null)
-        {
-            newExplorationDto.CostProfile.Id = Guid.Empty;
-        }
         if (newExplorationDto.ExplorationWellCostProfile != null)
         {
             newExplorationDto.ExplorationWellCostProfile.Id = Guid.Empty;

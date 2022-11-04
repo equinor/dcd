@@ -43,10 +43,6 @@ public class WellProjectService
         var source = GetWellProject(wellProjectId);
         var newWellProjectDto = WellProjectDtoAdapter.Convert(source);
         newWellProjectDto.Id = Guid.Empty;
-        if (newWellProjectDto.CostProfile != null)
-        {
-            newWellProjectDto.CostProfile.Id = Guid.Empty;
-        }
         if (newWellProjectDto.OilProducerCostProfile != null)
         {
             newWellProjectDto.OilProducerCostProfile.Id = Guid.Empty;

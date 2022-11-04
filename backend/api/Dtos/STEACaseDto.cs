@@ -5,7 +5,7 @@ public class STEACaseDto
 {
     public string Name { get; set; } = null!;
     public int StartYear { get; set; }
-    public ExplorationCostProfileDto Exploration { get; set; } = null!;
+    public TimeSeriesCostDto Exploration { get; set; } = null!;
 
     public CapexDto Capex { get; set; } = null!;
 
