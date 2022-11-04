@@ -6,20 +6,22 @@
     "author": "",
     "license": "ISC",
     "manifest": {
-        "name": "Digitalization of Concept Development",
+        "name": "Concept App",
         "shortName": "conceptapp",
-        "description": "Digitalization of Concept Development",
+        "description": "Concept App",
         "owners": [
             "eriei@equinor.com",
             "eisande@equinor.com",
             "ahmab@equinor.com",
-            "toaus@equinor.com"
+            "toaus@equinor.com",
+            "dboh@equinor.com"
         ],
         "admins": [
             "eriei@equinor.com",
             "eisande@equinor.com",
             "ahmab@equinor.com",
-            "toaus@equinor.com"
+            "toaus@equinor.com",
+            "dboh@equinor.com"
         ]
     },
     "dependencies": {
