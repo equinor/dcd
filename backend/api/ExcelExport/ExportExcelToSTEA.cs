@@ -23,7 +23,7 @@ public static class ExportToSTEA
             rowCount++;
             businessCase.Capex = CreateExcelCostRow("Capex [Expected Real MNOK'21]", project.StartYear, c.Capex, rowCount, 1);
             rowCount++;
-            // businessCase.Drilling = CreateExcelCostRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1);
+            businessCase.Drilling = CreateExcelCostRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1);
             rowCount++;
             businessCase.OffshoreFacilites = CreateExcelCostRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1);
             rowCount++;
