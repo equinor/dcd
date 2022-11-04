@@ -190,14 +190,16 @@ function CaseCO2Tab({
                             onChange={handleTopsideFuelConsumptionChange}
                             defaultValue={topside?.fuelConsumption}
                             integer={false}
-                            label="Fuel consumption (million Sm³ gas/sd)"
+                            label="Fuel consumption"
+                            unit="million Sm³ gas/sd"
                         />
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={handleTopsideFlaredGasChange}
                         defaultValue={topside?.flaredGas}
                         integer
-                        label="Flared gas (million Sm³ gas/sd)"
+                        label="Flared gas"
+                        unit="million Sm³ gas/sd"
                     />
                 </RowWrapper>
             </ColumnWrapper>

@@ -86,11 +86,6 @@ const NumberInputInherited = ({
                 value={value}
                 disabled={disabled}
                 onChange={onChange}
-                onKeyPress={(event) => {
-                    if (integer && !/\d/.test(event.key)) {
-                        event.preventDefault()
-                    }
-                }}
             />
         </WrapperColumn>
     )
