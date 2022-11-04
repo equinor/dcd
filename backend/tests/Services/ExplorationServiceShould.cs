@@ -131,13 +131,6 @@ public class ExplorationServiceShould : IDisposable
             ProjectId = project.Id,
             RigMobDemob = 32.7
         }
-              .WithExplorationCostProfile(new ExplorationCostProfile()
-              {
-                  Currency = Currency.USD,
-                  StartYear = 2230,
-                  Values = new double[] { 131.4, 28.2, 334.3 }
-              }
-                )
                 .WithGAndGAdminCost(new GAndGAdminCost()
                 {
                     Currency = Currency.NOK,
@@ -158,13 +151,6 @@ public class ExplorationServiceShould : IDisposable
             ProjectId = project.Id,
             RigMobDemob = 32.7
         }
-                 .WithExplorationCostProfile(new ExplorationCostProfile()
-                 {
-                     Currency = Currency.NOK,
-                     StartYear = 2010,
-                     Values = new double[] { 11.4, 28.2, 34.3 }
-                 }
-                )
                 .WithGAndGAdminCost(new GAndGAdminCost()
                 {
                     Currency = Currency.USD,

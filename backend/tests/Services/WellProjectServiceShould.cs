@@ -201,15 +201,7 @@ public class WellProjectServiceShould : IDisposable
             PluggingAndAbandonment = 4.4,
             Project = project,
             ProjectId = project.Id,
-        }
-            .WithWellProjectCostProfile(new WellProjectCostProfile
-            {
-                Currency = Currency.USD,
-                EPAVersion = "test EPA",
-                StartYear = 2030,
-                Values = new double[] { 13.4, 18.9, 34.3 }
-            }
-            );
+        };
     }
 
     private static WellProjectDto CreateUpdatedWellProject(Project project)
@@ -224,14 +216,6 @@ public class WellProjectServiceShould : IDisposable
             Project = project,
             ProjectId = project.Id,
         }
-            .WithWellProjectCostProfile(new WellProjectCostProfile
-            {
-                Currency = Currency.NOK,
-                EPAVersion = "Updated EPA",
-                StartYear = 2030,
-                Values = new double[] { 13.4, 18.9, 34.3 }
-            }
-            )
         );
     }
 }
