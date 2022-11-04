@@ -14,7 +14,6 @@ import { unwrapCase } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
-import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
@@ -35,7 +34,6 @@ const ExplorationView = () => {
     const currentProject = useCurrentContext()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
-    const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
     const [seismicAcquisitionAndProcessing,
         setSeismicAcquisitionAndProcessing] = useState<SeismicAcquisitionAndProcessing>()
     const [countryOfficeCost, setCountryOfficeCost] = useState<CountryOfficeCost>()
@@ -79,8 +77,6 @@ const ExplorationView = () => {
                 setCurrency(newExploration.currency ?? 1)
                 setRigMobDemob(newExploration.rigMobDemob)
 
-                setCostProfile(newExploration.costProfile)
-
                 setSeismicAcquisitionAndProcessing(newExploration.seismicAcquisitionAndProcessing)
                 setCountryOfficeCost(newExploration.countryOfficeCost)
 
@@ -92,8 +88,7 @@ const ExplorationView = () => {
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newExploration.costProfile,
-                            newExploration.seismicAcquisitionAndProcessing,
+                        [newExploration.seismicAcquisitionAndProcessing,
                             newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
@@ -106,7 +101,6 @@ const ExplorationView = () => {
     useEffect(() => {
         const newExploration: Exploration = { ...exploration }
         newExploration.rigMobDemob = rigMobDemob
-        newExploration.costProfile = costProfile
         newExploration.currency = currency
         newExploration.seismicAcquisitionAndProcessing = seismicAcquisitionAndProcessing
         newExploration.countryOfficeCost = countryOfficeCost
@@ -115,27 +109,15 @@ const ExplorationView = () => {
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [costProfile, seismicAcquisitionAndProcessing, countryOfficeCost],
+                [seismicAcquisitionAndProcessing, countryOfficeCost],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
-
-    const overrideCostProfile = () => {
-        if (costProfile) {
-            const newCostProfile = { ...costProfile }
-            newCostProfile.override = !costProfile?.override
-            setCostProfile(newCostProfile)
-            setHasChanges(true)
-        }
-    }
+    }, [rigMobDemob, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
 
     const setAllStates = (timeSeries: any) => {
         if (timeSeries) {
-            if (timeSeries.name === "Cost profile") {
-                setCostProfile(timeSeries)
-            }
             if (timeSeries.name === "Seismic acquisition and processing") {
                 setSeismicAcquisitionAndProcessing(timeSeries)
             }
@@ -183,18 +165,12 @@ const ExplorationView = () => {
                     label="Rig mob demob"
                 />
             </Wrapper>
-            <Wrapper>
-                <Switch
-                    label="Override generated cost profile"
-                    onClick={overrideCostProfile}
-                    checked={costProfile?.override ?? false}
-                />
-            </Wrapper>
+
             <TimeSeries
                 dG4Year={caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={[costProfile, seismicAcquisitionAndProcessing,
+                timeSeries={[seismicAcquisitionAndProcessing,
                     countryOfficeCost]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}

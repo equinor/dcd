@@ -17,7 +17,7 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
-            drilling?: WellProjectCostProfileDto;
+            drilling?: TimeSeriesCostDto;
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationOffshoreFacilities?: CessationOffshoreFacilities;
         }
@@ -159,20 +159,10 @@ declare namespace Components {
             lastModifiedBy?: IdentitySet;
             lastModifiedDateTime?: string | null; // date-time
         }
-        export interface ExplorationCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            sum?: number; // double
-            override?: boolean;
-        }
         export interface ExplorationDto {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
-            costProfile?: ExplorationCostProfileDto;
             explorationWellCostProfile?: ExplorationWellCostProfileDto;
             appraisalWellCostProfile?: AppraisalWellCostProfileDto;
             sidetrackCostProfile?: SidetrackCostProfileDto;
@@ -367,7 +357,7 @@ declare namespace Components {
         export interface STEACaseDto {
             name?: string | null;
             startYear?: number; // int32
-            exploration?: ExplorationCostProfileDto;
+            exploration?: TimeSeriesCostDto;
             capex?: CapexDto;
             productionAndSalesVolumes?: ProductionAndSalesVolumesDto;
             offshoreFacilitiesCostProfileDto?: OffshoreFacilitiesCostProfileDto;
@@ -511,6 +501,14 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
+        export interface TimeSeriesCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -617,20 +615,10 @@ declare namespace Components {
             wellCost?: number; // double
             drillingDays?: number; // double
         }
-        export interface WellProjectCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            sum?: number; // double
-            override?: boolean;
-        }
         export interface WellProjectDto {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
-            costProfile?: WellProjectCostProfileDto;
             oilProducerCostProfile?: OilProducerCostProfileDto;
             gasProducerCostProfile?: GasProducerCostProfileDto;
             waterInjectorCostProfile?: WaterInjectorCostProfileDto;
@@ -670,6 +658,111 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.StudyCostProfileDto;
+        }
+    }
+    namespace CopyDrainageStrategy {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+            export type DrainageStrategyId = string; // uuid
+        }
+        export interface PathParameters {
+            drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.DrainageStrategyDto;
+        }
+    }
+    namespace CopyExploration {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+            export type ExplorationId = string; // uuid
+        }
+        export interface PathParameters {
+            explorationId: Parameters.ExplorationId /* uuid */;
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.ExplorationDto;
+        }
+    }
+    namespace CopySubstructure {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+            export type SubstructureId = string; // uuid
+        }
+        export interface PathParameters {
+            substructureId: Parameters.SubstructureId /* uuid */;
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.SubstructureDto;
+        }
+    }
+    namespace CopySurf {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+            export type SurfId = string; // uuid
+        }
+        export interface PathParameters {
+            surfId: Parameters.SurfId /* uuid */;
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.SurfDto;
+        }
+    }
+    namespace CopyTopside {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+            export type TopsideId = string; // uuid
+        }
+        export interface PathParameters {
+            topsideId: Parameters.TopsideId /* uuid */;
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.TopsideDto;
+        }
+    }
+    namespace CopyTransport {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+            export type TransportId = string; // uuid
+        }
+        export interface PathParameters {
+            transportId: Parameters.TransportId /* uuid */;
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.TransportDto;
+        }
+    }
+    namespace CopyWellProject {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+            export type WellProjectId = string; // uuid
+        }
+        export interface PathParameters {
+            wellProjectId: Parameters.WellProjectId /* uuid */;
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.WellProjectDto;
         }
     }
     namespace CreateCase {
@@ -1186,12 +1279,24 @@ declare namespace Paths {
         }
     }
     namespace UpdateMultipleExplorationWells {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
         export type RequestBody = Components.Schemas.ExplorationWellDto[];
         namespace Responses {
             export type $200 = Components.Schemas.ExplorationWellDto[];
         }
     }
     namespace UpdateMultipleWellProjectWells {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
         export type RequestBody = Components.Schemas.WellProjectWellDto[];
         namespace Responses {
             export type $200 = Components.Schemas.WellProjectWellDto[];
