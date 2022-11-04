@@ -347,6 +347,7 @@ function CaseFacilitiesTab({
                         defaultValue={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
                         integer={false}
                         label="Peak electricity imported"
+                        unit="MW"
                     />
                 </RowWrapper>
                 <RowWrapper>
