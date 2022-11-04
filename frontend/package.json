@@ -25,7 +25,7 @@
         ]
     },
     "dependencies": {
-        "@equinor/eds-core-react": "^0.21.0",
+        "@equinor/eds-core-react": "^0.25.0",
         "@equinor/eds-icons": "^0.14.0",
         "@equinor/eds-tokens": "^0.7.1",
         "@equinor/fusion": "^3.3.21",
@@ -53,7 +53,7 @@
         "react-focus-on": "^3.5.4",
         "react-plotly.js": "^2.5.1",
         "react-router-dom": "^5.3.3",
-        "styled-components": "^5.3.3"
+        "styled-components": "^5.3.6"
     },
     "scripts": {
         "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
