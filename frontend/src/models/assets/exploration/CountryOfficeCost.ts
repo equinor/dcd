@@ -24,6 +24,7 @@ export class CountryOfficeCost implements Components.Schemas.CountryOfficeCostDt
             this.startYear = 0
             this.name = "Country office cost"
             this.values = []
+            this.epaVersion = ""
         }
     }
 

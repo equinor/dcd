@@ -3,6 +3,8 @@ using api.Dtos;
 using api.Models;
 using api.Services;
 
+using Api.Authorization;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -13,6 +15,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class TopsidesController : ControllerBase
 {
     private readonly TopsideService _topsideService;
@@ -38,5 +46,17 @@ public class TopsidesController : ControllerBase
     public ProjectDto UpdateTopside([FromBody] TopsideDto topsideDto)
     {
         return _topsideService.UpdateTopside(topsideDto);
+    }
+
+    [HttpPost("{topsideId}/copy", Name = "CopyTopside")]
+    public TopsideDto CopyTopside([FromQuery] Guid caseId, Guid topsideId)
+    {
+        return _topsideService.CopyTopside(topsideId, caseId);
+    }
+
+    [HttpPut("new", Name = "NewUpdateTopside")]
+    public TopsideDto NewUpdateTopside([FromBody] TopsideDto topsideDto)
+    {
+        return _topsideService.NewUpdateTopside(topsideDto);
     }
 }

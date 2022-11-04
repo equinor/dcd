@@ -29,4 +29,9 @@ export class Well implements Components.Schemas.WellDto {
     static fromJSON(data: Components.Schemas.WellDto): Well {
         return new Well(data)
     }
+
+    static toDto(data: Well): Components.Schemas.WellDto {
+        const dto: Components.Schemas.WellDto = { ...data }
+        return dto
+    }
 }

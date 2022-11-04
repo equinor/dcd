@@ -3,6 +3,7 @@ using api.Dtos;
 using api.Models;
 using api.Services;
 
+using Api.Authorization;
 using Api.Services.FusionIntegration;
 
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class ProjectsController : ControllerBase
 {
     private readonly ProjectService _projectService;
@@ -46,8 +53,6 @@ public class ProjectsController : ControllerBase
         var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
         if (projectMaster != null)
         {
-            DateTimeOffset createDate = DateTimeOffset.UtcNow;
-
             var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
             var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
             ProjectDto projectDto = new()
@@ -55,7 +60,6 @@ public class ProjectsController : ControllerBase
                 Name = projectMaster.Description ?? "",
                 Description = projectMaster.Description ?? "",
                 CommonLibraryName = projectMaster.Description ?? "",
-                CreateDate = createDate,
                 FusionProjectId = projectMaster.Identity,
                 Country = projectMaster.Country ?? "",
                 Currency = Currency.NOK,
@@ -65,6 +69,7 @@ public class ProjectsController : ControllerBase
                 ProjectPhase = phase,
             };
             var project = ProjectAdapter.Convert(projectDto);
+            project.CreateDate = DateTimeOffset.UtcNow;
             return _projectService.CreateProject(project);
         }
         return new ProjectDto();
@@ -80,6 +85,7 @@ public class ProjectsController : ControllerBase
     public ProjectDto CreateProject([FromBody] ProjectDto projectDto)
     {
         var project = ProjectAdapter.Convert(projectDto);
+        project.CreateDate = DateTimeOffset.UtcNow;
         return _projectService.CreateProject(project);
     }
 

@@ -2,6 +2,8 @@
 using api.Dtos;
 using api.Services;
 
+using Api.Authorization;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -12,6 +14,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class ExplorationWellsController : ControllerBase
 {
 
@@ -29,7 +37,7 @@ public class ExplorationWellsController : ControllerBase
     }
 
     [HttpPost(Name = "CreateExplorationWell")]
-    public ProjectDto CreateWExplorationWell([FromBody] ExplorationWellDto wellDto)
+    public ProjectDto CreateExplorationWell([FromBody] ExplorationWellDto wellDto)
     {
         return _explorationWellService.CreateExplorationWell(wellDto);
     }
@@ -38,5 +46,17 @@ public class ExplorationWellsController : ControllerBase
     public ProjectDto UpdateExplorationWell([FromBody] ExplorationWellDto wellDto)
     {
         return _explorationWellService.UpdateExplorationWell(wellDto);
+    }
+
+    [HttpPost("multiple", Name = "CreateMultipleExplorationWells")]
+    public ExplorationWellDto[]? CreateMultipleExplorationWell([FromBody] ExplorationWellDto[] wellDtos)
+    {
+        return _explorationWellService.CreateMultipleExplorationWells(wellDtos);
+    }
+
+    [HttpPut("multiple", Name = "UpdateMultipleExplorationWells")]
+    public ExplorationWellDto[]? UpdateMultipleExplorationWell([FromBody] ExplorationWellDto[] wellDtos)
+    {
+        return _explorationWellService.UpdateMultpleExplorationWells(wellDtos);
     }
 }

@@ -228,7 +228,6 @@ public static class SampleAssetGenerator
                 OilCapacity = 50.0,
                 GasCapacity = 75.0,
                 DryWeight = 45.1,
-                FacilitiesAvailability = 0.8,
                 ArtificialLift = ArtificialLift.GasLift
             }
                 .WithCostProfile(new TopsideCostProfile
