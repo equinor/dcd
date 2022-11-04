@@ -17,7 +17,7 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
-            drilling?: WellProjectCostProfileDto;
+            drilling?: TimeSeriesCostDto;
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationOffshoreFacilities?: CessationOffshoreFacilities;
         }
@@ -76,6 +76,11 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface CessationCostWrapperDto {
+            cessationCostDto?: CessationCostDto;
+            cessationWellsCostDto?: CessationWellsCostDto;
+            cessationOffshoreFacilitiesCostDto?: CessationOffshoreFacilitiesCostDto;
+        }
         export interface CessationOffshoreFacilities {
             id?: string; // uuid
             startYear?: number; // int32
@@ -87,6 +92,22 @@ declare namespace Components {
             topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
             substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
             transportCessationCostProfileDto?: TransportCessationCostProfileDto;
+        }
+        export interface CessationOffshoreFacilitiesCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface CessationWellsCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface Co2EmissionsDto {
             id?: string; // uuid
@@ -159,20 +180,10 @@ declare namespace Components {
             lastModifiedBy?: IdentitySet;
             lastModifiedDateTime?: string | null; // date-time
         }
-        export interface ExplorationCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            sum?: number; // double
-            override?: boolean;
-        }
         export interface ExplorationDto {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
-            costProfile?: ExplorationCostProfileDto;
             explorationWellCostProfile?: ExplorationWellCostProfileDto;
             appraisalWellCostProfile?: AppraisalWellCostProfileDto;
             sidetrackCostProfile?: SidetrackCostProfileDto;
@@ -380,7 +391,7 @@ declare namespace Components {
         export interface STEACaseDto {
             name?: string | null;
             startYear?: number; // int32
-            exploration?: ExplorationCostProfileDto;
+            exploration?: TimeSeriesCostDto;
             capex?: CapexDto;
             productionAndSalesVolumes?: ProductionAndSalesVolumesDto;
             offshoreFacilitiesCostProfileDto?: OffshoreFacilitiesCostProfileDto;
@@ -529,6 +540,14 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
+        export interface TimeSeriesCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface TopsideCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -659,20 +678,10 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
-        export interface WellProjectCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            sum?: number; // double
-            override?: boolean;
-        }
         export interface WellProjectDto {
             id?: string; // uuid
             projectId?: string; // uuid
             name?: string | null;
-            costProfile?: WellProjectCostProfileDto;
             oilProducerCostProfile?: OilProducerCostProfileDto;
             gasProducerCostProfile?: GasProducerCostProfileDto;
             waterInjectorCostProfile?: WaterInjectorCostProfileDto;
@@ -1065,7 +1074,7 @@ declare namespace Paths {
             caseId: Parameters.CaseId /* uuid */;
         }
         namespace Responses {
-            export type $200 = Components.Schemas.CessationCostDto;
+            export type $200 = Components.Schemas.CessationCostWrapperDto;
         }
     }
     namespace GenerateCo2Emissions {
@@ -1333,12 +1342,24 @@ declare namespace Paths {
         }
     }
     namespace UpdateMultipleExplorationWells {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
         export type RequestBody = Components.Schemas.ExplorationWellDto[];
         namespace Responses {
             export type $200 = Components.Schemas.ExplorationWellDto[];
         }
     }
     namespace UpdateMultipleWellProjectWells {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
         export type RequestBody = Components.Schemas.WellProjectWellDto[];
         namespace Responses {
             export type $200 = Components.Schemas.WellProjectWellDto[];

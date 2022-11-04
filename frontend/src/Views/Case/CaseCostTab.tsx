@@ -152,14 +152,12 @@ function CaseCostTab({
     const [transportCost, setTransportCost] = useState<TransportCostProfile>()
 
     // Development
-    // const [wellProjectCost, setWellProjectCost] = useState<WellProjectCostProfile>()
     const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<OilProducerCostProfile>()
     const [wellProjectGasProducerCost, setWellProjectGasProducerCost] = useState<GasProducerCostProfile>()
     const [wellProjectWaterInjectorCost, setWellProjectWaterInjectorCost] = useState<WaterInjectorCostProfile>()
     const [wellProjectGasInjectorCost, setWellProjectGasInjectorCost] = useState<GasInjectorCostProfile>()
 
     // Exploration
-    // const [explorationCost, setExplorationCost] = useState<ExplorationCostProfile>()
     const [explorationWellCost, setExplorationWellCost] = useState<ExplorationWellCostProfile>()
     const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<AppraisalWellCostProfile>()
     const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<SidetrackCostProfile>()
@@ -225,8 +223,6 @@ function CaseCostTab({
                     setTransportCost(transportCostProfile)
 
                     // Development
-                    // const wellProjectCostProfile = wellProject.costProfile
-                    // setWellProjectCost(wellProjectCostProfile)
                     const {
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
@@ -237,8 +233,6 @@ function CaseCostTab({
                     setWellProjectGasInjectorCost(gasInjectorCostProfile)
 
                     // Exploration
-                    // const explorationCostProfile = exploration.costProfile
-                    // setExplorationCost(explorationCostProfile)
                     const {
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
                         seismicAcquisitionAndProcessing,
