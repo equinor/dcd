@@ -195,4 +195,17 @@ public class CaseService
         }
         return caseItem;
     }
+
+    public IEnumerable<Case> GetAll()
+    {
+        if (_context.Cases != null)
+        {
+            return _context.Cases;
+        }
+        else
+        {
+            _logger.LogInformation("No cases exists");
+            return new List<Case>();
+        }
+    }
 }

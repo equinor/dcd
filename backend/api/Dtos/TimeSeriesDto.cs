@@ -63,6 +63,91 @@ public class TimeSeriesCostDto : TimeSeriesDto<double>
             return this;
         }
     }
+
+    public static TimeSeriesCostDto MergeCostProfilesList(List<TimeSeriesCostDto> timeseriesList)
+    {
+        var timeSeries = new TimeSeriesCostDto();
+        if (timeseriesList.Count > 0)
+        {
+            foreach (var ts in timeseriesList)
+            {
+                timeSeries = MergeCostProfiles(timeSeries, ts);
+            }
+        }
+
+        return timeSeries;
+    }
+
+    public static TimeSeriesCostDto MergeCostProfiles(TimeSeriesCostDto t1, TimeSeriesCostDto t2)
+    {
+        var t1Year = t1.StartYear;
+        var t2Year = t2.StartYear;
+        var t1Values = t1.Values ?? Array.Empty<double>();
+        var t2Values = t2.Values ?? Array.Empty<double>();
+        if (t1Values.Length == 0)
+        {
+            if (t2Values.Length == 0)
+            {
+                return new TimeSeriesCostDto();
+            }
+            return t2;
+        }
+        if (t2Values.Length == 0)
+        {
+            return t1;
+        }
+
+        var offset = t1Year < t2Year ? t2Year - t1Year : t1Year - t2Year;
+
+        List<double> values;
+        if (t1Year < t2Year)
+        {
+            values = MergeCostProfileData(t1Values.ToList(), t2Values.ToList(), offset);
+        }
+        else
+        {
+            values = MergeCostProfileData(t2Values.ToList(), t1Values.ToList(), offset);
+        }
+
+        var timeSeries = new TimeSeriesCostDto
+        {
+            StartYear = Math.Min(t1Year, t2Year),
+            Values = values.ToArray()
+        };
+        return timeSeries;
+    }
+
+    private static List<double> MergeCostProfileData(List<double> t1, List<double> t2, int offset)
+    {
+        var doubleList = new List<double>();
+        if (offset > t1.Count)
+        {
+            doubleList.AddRange(t1);
+            var zeros = offset - t1.Count;
+            var zeroList = Enumerable.Repeat(0.0, zeros);
+            doubleList.AddRange(zeroList);
+            doubleList.AddRange(t2);
+            return doubleList;
+        }
+        doubleList.AddRange(t1.Take(offset));
+        if (t1.Count - offset == t2.Count)
+        {
+            doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+        }
+        else if (t1.Count - offset > t2.Count)
+        {
+            doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+            var remaining = t1.Count - offset - t2.Count;
+            doubleList.AddRange(t1.TakeLast(remaining));
+        }
+        else
+        {
+            doubleList.AddRange(t1.TakeLast(t1.Count - offset).Zip(t2, (x, y) => x + y));
+            var remaining = t2.Count - (t1.Count - offset);
+            doubleList.AddRange(t2.TakeLast(remaining));
+        }
+        return doubleList;
+    }
 }
 
 public class TimeSeriesVolumeDto : TimeSeriesDto<double>

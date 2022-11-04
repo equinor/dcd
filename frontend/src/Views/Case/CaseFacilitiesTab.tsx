@@ -98,6 +98,12 @@ function CaseFacilitiesTab({
         setTopside(newTopside)
     }
 
+    const handleTopsidePeakElectricityImportedChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newTopside: Topside = { ...topside }
+        newTopside.peakElectricityImported = Math.max(Number(e.currentTarget.value), 0)
+        setTopside(newTopside)
+    }
+
     const handleTopsideProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
         newTopside.producerCount = Number(e.currentTarget.value)
@@ -326,13 +332,22 @@ function CaseFacilitiesTab({
                             unit="tonnes"
                         />
                     </NumberInputField>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={caseItem.facilitiesAvailability * 100}
+                            integer
+                            disabled
+                            label="Facilities availability"
+                            unit="%"
+                        />
+                    </NumberInputField>
                     <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={caseItem.facilitiesAvailability * 100}
-                        integer
-                        disabled
-                        label="Facilities availability"
-                        unit="%"
+                        onChange={handleTopsidePeakElectricityImportedChange}
+                        defaultValue={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
+                        integer={false}
+                        label="Peak electricity imported"
+                        unit="MW"
                     />
                 </RowWrapper>
                 <RowWrapper>

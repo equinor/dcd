@@ -11,15 +11,17 @@ public class WellService
 {
     private readonly DcdDbContext _context;
     private readonly ProjectService _projectService;
+    private readonly IServiceProvider _serviceProvider;
     private readonly WellProjectService _wellProjectService;
     private readonly ExplorationService _explorationService;
     private readonly ILogger<CaseService> _logger;
 
-    public WellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ExplorationService explorationService, ILoggerFactory loggerFactory)
+    public WellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ExplorationService explorationService, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<CaseService>();
+        _serviceProvider = serviceProvider;
         _wellProjectService = wellProjectService;
         _explorationService = explorationService;
     }
@@ -35,28 +37,7 @@ public class WellService
     public ProjectDto UpdateWell(WellDto updatedWellDto)
     {
         var existing = GetWell(updatedWellDto.Id);
-        var updateCostProfiles = existing.WellCost != updatedWellDto.WellCost;
         WellAdapter.ConvertExisting(existing, updatedWellDto);
-
-        if (updateCostProfiles)
-        {
-            if (existing.WellProjectWells?.Count > 0)
-            {
-                foreach (var wpw in existing.WellProjectWells)
-                {
-                    var wellProject = _wellProjectService.GetWellProject(wpw.WellProjectId);
-                    _wellProjectService.CalculateCostProfile(wellProject, wpw, existing);
-                }
-            }
-            else if (existing.ExplorationWells?.Count > 0)
-            {
-                foreach (var ew in existing.ExplorationWells)
-                {
-                    var exploration = _explorationService.GetExploration(ew.ExplorationId);
-                    _explorationService.CalculateCostProfile(exploration, ew, existing);
-                }
-            }
-        }
 
         _context.Wells!.Update(existing);
         _context.SaveChanges();
@@ -70,6 +51,10 @@ public class WellService
         {
             projectDto = UpdateWell(wellDto);
         }
+
+        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
+        costProfileHelper.UpdateCostProfilesForWells(updatedWellDtos.Select(w => w.Id).ToList());
+
         if (projectDto != null)
         {
             return projectDto.Wells?.ToArray();

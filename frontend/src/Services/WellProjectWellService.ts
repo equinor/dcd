@@ -34,13 +34,13 @@ class __WellProjectWellService extends __BaseService {
         return Project.fromJSON(res)
     }
 
-    public async updateMultipleWellProjectWells(body: Components.Schemas.WellProjectWellDto[]): Promise<any> {
-        const res: Components.Schemas.WellProjectWellDto[] = await this.put("/multiple", { body })
+    public async updateMultipleWellProjectWells(caseId: string, body: Components.Schemas.WellProjectWellDto[]): Promise<any> {
+        const res: Components.Schemas.WellProjectWellDto[] = await this.putWithParams("/multiple", { body }, { params: { caseId } })
         return res
     }
 
-    public async createMultipleWellProjectWell(data: Components.Schemas.WellProjectWellDto[]): Promise<any> {
-        const res: Components.Schemas.WellProjectWellDto[] = await this.post("/multiple", { body: data })
+    public async createMultipleWellProjectWell(caseId: string, data: Components.Schemas.WellProjectWellDto[]): Promise<any> {
+        const res: Components.Schemas.WellProjectWellDto[] = await this.postWithParams("/multiple", { body: data }, { params: { caseId } })
         return res
     }
 }

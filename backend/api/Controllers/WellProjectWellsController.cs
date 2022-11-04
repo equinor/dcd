@@ -59,8 +59,8 @@ public class WellProjectWellsController : ControllerBase
     }
 
     [HttpPut("multiple", Name = "UpdateMultipleWellProjectWells")]
-    public WellProjectWellDto[]? UpdateMultipleWellProjectWells([FromBody] WellProjectWellDto[] wellDto)
+    public WellProjectWellDto[]? UpdateMultipleWellProjectWells([FromQuery] Guid caseId, [FromBody] WellProjectWellDto[] wellDto)
     {
-        return _wellProjectWellService.UpdateMultipleWellProjectWells(wellDto);
+        return _wellProjectWellService.UpdateMultipleWellProjectWells(wellDto, caseId);
     }
 }
