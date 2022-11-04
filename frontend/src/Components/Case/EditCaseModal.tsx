@@ -264,8 +264,8 @@ const EditCaseModal = ({
                                 type="number"
                                 value={producerCount}
                                 disabled={false}
-                                onChange={(e) => setProducerWells(Number(e.currentTarget.value))}
-                                onKeyPress={(e) => {
+                                onChange={(e: any) => setProducerWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: any) => {
                                     if (!/\d/.test(e.key)) {
                                         e.preventDefault()
                                     }
@@ -281,8 +281,8 @@ const EditCaseModal = ({
                                 type="number"
                                 value={gasInjectorCount}
                                 disabled={false}
-                                onChange={(e) => setGasInjectorWells(Number(e.currentTarget.value))}
-                                onKeyPress={(e) => {
+                                onChange={(e: any) => setGasInjectorWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: any) => {
                                     if (!/\d/.test(e.key)) {
                                         e.preventDefault()
                                     }
@@ -297,8 +297,8 @@ const EditCaseModal = ({
                             type="number"
                             value={waterInjectorCount}
                             disabled={false}
-                            onChange={(e) => setWaterInjectorWells(Number(e.currentTarget.value))}
-                            onKeyPress={(e) => {
+                            onChange={(e: any) => setWaterInjectorWells(Number(e.currentTarget.value))}
+                            onKeyPress={(e: any) => {
                                 if (!/\d/.test(e.key)) {
                                     e.preventDefault()
                                 }

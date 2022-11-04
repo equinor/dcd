@@ -525,7 +525,8 @@ function CaseCostTab({
                             onChange={handleCaseFeasibilityChange}
                             defaultValue={caseItem.capexFactorFeasibilityStudies * 100}
                             integer={false}
-                            label="CAPEX factor feasibility studies (%)"
+                            label="CAPEX factor feasibility studies"
+                            unit="%"
                         />
                     </NumberInputField>
                     <NumberInputField>
@@ -533,7 +534,8 @@ function CaseCostTab({
                             onChange={handleCaseFEEDChange}
                             defaultValue={caseItem.capexFactorFEEDStudies * 100}
                             integer={false}
-                            label="CAPEX factor FEED studies (%)"
+                            label="CAPEX factor FEED studies"
+                            unit="%"
                         />
                     </NumberInputField>
                     <NativeSelectField
