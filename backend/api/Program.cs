@@ -160,6 +160,7 @@ builder.Services.AddScoped<TopsideService>();
 builder.Services.AddScoped<WellService>();
 builder.Services.AddScoped<WellProjectWellService>();
 builder.Services.AddScoped<ExplorationWellService>();
+builder.Services.AddScoped<CostProfileFromDrillingScheduleHelper>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<ExplorationOperationalWellCostsService>();

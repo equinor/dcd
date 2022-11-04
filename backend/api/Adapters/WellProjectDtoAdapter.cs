@@ -19,10 +19,6 @@ public static class WellProjectDtoAdapter
             Currency = wellProject.Currency,
             WellProjectWells = wellProject.WellProjectWells?.Select(wc => WellProjectWellDtoAdapter.Convert(wc)).ToList()
         };
-        if (wellProject.CostProfile != null)
-        {
-            wellProjectDto.CostProfile = Convert(wellProject.CostProfile);
-        }
         if (wellProject.OilProducerCostProfile != null)
         {
             wellProjectDto.OilProducerCostProfile = Convert(wellProject.OilProducerCostProfile);
@@ -42,23 +38,6 @@ public static class WellProjectDtoAdapter
         return wellProjectDto;
     }
 
-    private static WellProjectCostProfileDto? Convert(WellProjectCostProfile? costProfile)
-    {
-        if (costProfile == null)
-        {
-            return null!;
-        }
-        var wellProjectCostProfileDto = new WellProjectCostProfileDto
-        {
-            Id = costProfile.Id,
-            EPAVersion = costProfile.EPAVersion,
-            Currency = costProfile.Currency,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values,
-            Override = costProfile.Override,
-        };
-        return wellProjectCostProfileDto;
-    }
     private static OilProducerCostProfileDto? Convert(OilProducerCostProfile? costProfile)
     {
         if (costProfile == null)

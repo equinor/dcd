@@ -33,13 +33,13 @@ class _ExplorationWellService extends __BaseService {
         return Project.fromJSON(res)
     }
 
-    public async createMultipleExplorationWells(data: Components.Schemas.ExplorationWellDto[]): Promise<any> {
-        const res: Components.Schemas.ExplorationWellDto[] = await this.post("/multiple", { body: data })
+    public async createMultipleExplorationWells(caseId: string, data: Components.Schemas.ExplorationWellDto[]): Promise<any> {
+        const res: Components.Schemas.ExplorationWellDto[] = await this.postWithParams("/multiple", { body: data }, { params: { caseId } })
         return res
     }
 
-    public async updateMultipleExplorationWells(body: Components.Schemas.ExplorationWellDto[]): Promise<any> {
-        const res: Components.Schemas.ExplorationWellDto[] = await this.put("/multiple", { body })
+    public async updateMultipleExplorationWells(caseId: string, body: Components.Schemas.ExplorationWellDto[]): Promise<any> {
+        const res: Components.Schemas.ExplorationWellDto[] = await this.putWithParams("/multiple", { body }, { params: { caseId } })
         return res
     }
 }

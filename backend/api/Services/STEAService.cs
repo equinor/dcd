@@ -13,9 +13,9 @@ public class STEAService
     private readonly ProjectService _projectService;
     private readonly ILogger<STEAService> _logger;
 
-    public STEAService(DcdDbContext context, ILoggerFactory loggerFactory)
+    public STEAService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
-        _projectService = new ProjectService(context, loggerFactory);
+        _projectService = new ProjectService(context, loggerFactory, serviceProvider);
         _logger = loggerFactory.CreateLogger<STEAService>();
     }
 
