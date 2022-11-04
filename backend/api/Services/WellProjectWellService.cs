@@ -11,15 +11,16 @@ public class WellProjectWellService
 {
     private readonly DcdDbContext _context;
     private readonly ProjectService _projectService;
-    private readonly WellProjectService _wellProjectService;
+    private readonly IServiceProvider _serviceProvider;
+
     private readonly ILogger<CaseService> _logger;
 
-    public WellProjectWellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ILoggerFactory loggerFactory)
+    public WellProjectWellService(DcdDbContext context, ProjectService projectService, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
+        _serviceProvider = serviceProvider;
         _logger = loggerFactory.CreateLogger<CaseService>();
-        _wellProjectService = wellProjectService;
     }
 
     public ProjectDto CreateWellProjectWell(WellProjectWellDto wellProjectWellDto)
@@ -59,12 +60,6 @@ public class WellProjectWellService
             _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
         }
 
-        var wellProject = _context.WellProjects!.Include(wp => wp.CostProfile)
-        .Include(wp => wp.WellProjectWells!)
-        .ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.WellProjectId);
-
-        _wellProjectService.CalculateCostProfile(wellProject, existing, null);
-
         _context.WellProjectWell!.Update(existing);
         _context.SaveChanges();
         var projectId = _context.WellProjects!.FirstOrDefault(c => c.Id == updatedWellProjectWellDto.WellProjectId)?.ProjectId;
@@ -75,7 +70,7 @@ public class WellProjectWellService
         throw new NotFoundInDBException();
     }
 
-    public WellProjectWellDto[]? UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos)
+    public WellProjectWellDto[]? UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos, Guid caseId)
     {
         var wellProjectId = updatedWellProjectWellDtos.FirstOrDefault()?.WellProjectId;
         ProjectDto? projectDto = null;
@@ -83,6 +78,10 @@ public class WellProjectWellService
         {
             projectDto = UpdateWellProjectWell(wellProjectWellDto);
         }
+
+        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
+        costProfileHelper.UpdateWellProjectCostProfilesForCase(caseId);
+
         if (projectDto != null && wellProjectId != null)
         {
             return projectDto.WellProjects?.FirstOrDefault(e => e.Id == wellProjectId)?.WellProjectWells?.ToArray();

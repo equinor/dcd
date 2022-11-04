@@ -19,10 +19,6 @@ public static class WellProjectAdapter
             Currency = wellProjectDto.Currency,
         };
 
-        if (wellProjectDto.CostProfile != null)
-        {
-            wellProject.CostProfile = Convert(wellProjectDto.CostProfile, wellProject);
-        }
         if (wellProjectDto.OilProducerCostProfile != null)
         {
             wellProject.OilProducerCostProfile = Convert(wellProjectDto.OilProducerCostProfile, wellProject);
@@ -52,17 +48,6 @@ public static class WellProjectAdapter
         existing.PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment;
         existing.Currency = wellProjectDto.Currency;
 
-        if (wellProjectDto.CostProfile != null)
-        {
-            if (existing.CostProfile != null)
-            {
-                existing.CostProfile = ConvertExisting(wellProjectDto.CostProfile, existing);
-            }
-            else
-            {
-                existing.CostProfile = Convert(wellProjectDto.CostProfile, existing);
-            }
-        }
         if (wellProjectDto.OilProducerCostProfile != null)
         {
             if (existing.OilProducerCostProfile != null)
@@ -109,36 +94,6 @@ public static class WellProjectAdapter
         }
     }
 
-    private static WellProjectCostProfile? ConvertExisting(WellProjectCostProfileDto? costProfile, WellProject wellProject)
-    {
-        if (costProfile == null) return null;
-
-        var existing = wellProject.CostProfile;
-
-        existing!.EPAVersion = costProfile.EPAVersion;
-        existing.Currency = costProfile.Currency;
-        existing.StartYear = costProfile.StartYear;
-        existing.Values = costProfile.Values;
-        existing.Override = costProfile.Override;
-
-        return existing;
-    }
-
-    private static WellProjectCostProfile? Convert(WellProjectCostProfileDto? costProfile, WellProject wellProject)
-    {
-        if (costProfile == null) return null;
-        var wellProjectCostProfile = new WellProjectCostProfile
-        {
-            Id = costProfile.Id,
-            WellProject = wellProject,
-            EPAVersion = costProfile.EPAVersion,
-            Currency = costProfile.Currency,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values,
-            Override = costProfile.Override
-        };
-        return wellProjectCostProfile;
-    }
 
     private static OilProducerCostProfile? ConvertExisting(OilProducerCostProfileDto? costProfile, WellProject wellProject)
     {
