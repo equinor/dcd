@@ -26,8 +26,8 @@ export class __GenerateProfileService extends __BaseService {
 
     async generateStudyCost(id: string) {
         // eslint-disable-next-line max-len
-        const costProfile: Components.Schemas.StudyCostProfileDto = await this.post<Components.Schemas.StudyCostProfileDto>(`/${id}/calculateStudy`)
-        return StudyCostProfile.fromJSON(costProfile)
+        const costProfiles: Components.Schemas.StudyCostProfileWrapperDto = await this.post<Components.Schemas.StudyCostProfileWrapperDto>(`/${id}/generateStudy`)
+        return costProfiles
     }
 
     async generateCessationCost(id: string) {

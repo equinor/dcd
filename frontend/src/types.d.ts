@@ -448,6 +448,11 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface StudyCostProfileWrapperDto {
+            studyCostProfileDto?: StudyCostProfileDto;
+            totalFeasibilityAndConceptStudiesDto?: TotalFeasibilityAndConceptStudiesDto;
+            totalFEEDStudiesDto?: TotalFEEDStudiesDto;
+        }
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -574,6 +579,22 @@ declare namespace Components {
             facilityOpex?: number; // double
             peakElectricityImported?: number; // double
         }
+        export interface TotalFEEDStudiesDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface TotalFeasibilityAndConceptStudiesDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -671,28 +692,6 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
-    namespace CalculateOpex {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.OpexCostProfileWrapperDto;
-        }
-    }
-    namespace CalculateStudy {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.StudyCostProfileDto;
-        }
-    }
     namespace CopyDrainageStrategy {
         namespace Parameters {
             export type CaseId = string; // uuid
@@ -1122,6 +1121,28 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.NetSalesGasDto;
+        }
+    }
+    namespace GenerateOpex {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.OpexCostProfileWrapperDto;
+        }
+    }
+    namespace GenerateStudy {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.StudyCostProfileWrapperDto;
         }
     }
     namespace GetExplorationWells {

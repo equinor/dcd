@@ -81,3 +81,10 @@ public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost
 public class StudyCostProfile : TimeSeriesCost
 {
 }
+
+public class TotalFeasibilityAndConceptStudies : TimeSeriesCost
+{
+}
+public class TotalFEEDStudies : TimeSeriesCost
+{
+}

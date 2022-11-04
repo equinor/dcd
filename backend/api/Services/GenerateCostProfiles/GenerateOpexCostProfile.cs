@@ -7,6 +7,7 @@ namespace api.Services;
 public class GenerateOpexCostProfile
 {
     private readonly CaseService _caseService;
+    private readonly ProjectService _projectService;
     private readonly ILogger<CaseService> _logger;
     private readonly DrainageStrategyService _drainageStrategyService;
     private readonly WellProjectService _wellProjectService;
@@ -15,6 +16,7 @@ public class GenerateOpexCostProfile
     public GenerateOpexCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
         _logger = loggerFactory.CreateLogger<CaseService>();
+        _projectService = serviceProvider.GetRequiredService<ProjectService>();
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
         _caseService = serviceProvider.GetRequiredService<CaseService>();
         _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
@@ -48,6 +50,7 @@ public class GenerateOpexCostProfile
     public WellInterventionCostProfile CalculateWellInterventionCostProfile(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
+        var project = _projectService.GetProject(caseItem.ProjectId);
 
         var drainageStrategy = new DrainageStrategy();
         try
@@ -94,7 +97,7 @@ public class GenerateOpexCostProfile
         var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
         cumulativeDrillingSchedule.StartYear = tempSeries.StartYear;
 
-        var interventionCost = wellProject.AnnualWellInterventionCost;
+        var interventionCost = project.DevelopmentOperationalWellCosts?.AnnualWellInterventionCostPerWell ?? 0;
 
         var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
 

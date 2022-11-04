@@ -57,10 +57,11 @@ public class GenerateProfileController : ControllerBase
         return Ok(_generateOpexCostProfile.Generate(caseId));
     }
 
-    [HttpPost("{caseId}/calculateStudy", Name = "CalculateStudy")]
-    public StudyCostProfileDto CalculateStudyCost(Guid caseId)
+    [HttpPost("{caseId}/generateStudy", Name = "GenerateStudy")]
+    [ProducesResponseType(typeof(StudyCostProfileWrapperDto), (int)HttpStatusCode.OK)]
+    public IActionResult CalculateStudyCost(Guid caseId)
     {
-        return _generateStudyCostProfile.Generate(caseId);
+        return Ok(_generateStudyCostProfile.Generate(caseId));
     }
 
     [HttpPost("{caseId}/generateCessation", Name = "GenerateCessation")]

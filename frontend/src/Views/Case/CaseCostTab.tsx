@@ -48,6 +48,8 @@ import { AppraisalWellCostProfile } from "../../models/assets/exploration/Apprai
 import { SidetrackCostProfile } from "../../models/assets/exploration/SidetrackCostProfile"
 import { OffshoreFacilitiesOperationsCostProfile } from "../../models/case/OffshoreFacilitiesOperationsCostProfile"
 import { WellInterventionCostProfile } from "../../models/case/WellInterventionCostProfile"
+import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasibilityAndConceptStudies"
+import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -129,6 +131,10 @@ function CaseCostTab({
 }: Props) {
     // OPEX
     const [studyCost, setStudyCost] = useState<StudyCostProfile>()
+    const [totalFeasibilityAndConceptStudies,
+        setTotalFeasibilityAndConceptStudies] = useState<TotalFeasibilityAndConceptStudies>()
+    const [totalFEEDStudies, setTotalFEEDStudies] = useState<TotalFEEDStudies>()
+
     const [opexCost, setOpexCost] = useState<OpexCostProfile>()
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<OffshoreFacilitiesOperationsCostProfile>()
@@ -173,8 +179,14 @@ function CaseCostTab({
             try {
                 if (activeTab === 5) {
                     // OPEX
-                    const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    const studyWrapper = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    const study = StudyCostProfile.fromJSON(studyWrapper.studyCostProfileDto)
                     setStudyCost(study)
+                    const totalFeasibility = TotalFeasibilityAndConceptStudies
+                        .fromJSON(studyWrapper.totalFeasibilityAndConceptStudiesDto)
+                    setTotalFeasibilityAndConceptStudies(totalFeasibility)
+                    const totalFEED = TotalFEEDStudies.fromJSON(studyWrapper.totalFEEDStudiesDto)
+                    setTotalFEEDStudies(totalFEED)
 
                     const opexWrapper = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
                     const opex = OpexCostProfile.fromJSON(opexWrapper.opexCostProfileDto)
@@ -301,6 +313,16 @@ function CaseCostTab({
             profileName: "Study cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: studyCost,
+        },
+        {
+            profileName: "Feasibility & conceptual stud.",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalFeasibilityAndConceptStudies,
+        },
+        {
+            profileName: "FEED studies (DG2-DG3)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalFEEDStudies,
         },
         {
             profileName: "OPEX cost",

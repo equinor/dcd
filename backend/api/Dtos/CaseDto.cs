@@ -66,12 +66,25 @@ public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto
 public class StudyCostProfileDto : TimeSeriesCostDto
 {
 }
+public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto
+{
+}
+public class TotalFEEDStudiesDto : TimeSeriesCostDto
+{
+}
 
 public class OpexCostProfileWrapperDto
 {
     public OpexCostProfileDto? OpexCostProfileDto { get; set; }
     public WellInterventionCostProfileDto? WellInterventionCostProfileDto { get; set; }
     public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfileDto { get; set; }
+}
+
+public class StudyCostProfileWrapperDto
+{
+    public StudyCostProfileDto? StudyCostProfileDto { get; set; }
+    public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudiesDto { get; set; }
+    public TotalFEEDStudiesDto? TotalFEEDStudiesDto { get; set; }
 }
 
 public class CapexYear

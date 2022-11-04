@@ -133,9 +133,9 @@ function CaseSummaryTab({
                 if (activeTab === 7) {
                     // OPEX
                     const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    setStudyCost(study)
+                    // setStudyCost(study)
                     const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    setOpexCost(opex)
+                    // setOpexCost(opex)
                     const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
                     setCessationCost(cessation)
 
@@ -149,7 +149,7 @@ function CaseSummaryTab({
                     const transportCostProfile = transport.costProfile
                     setTransportCost(transportCostProfile)
 
-                    setTableYearsFromProfiles([study, opex, cessation,
+                    setTableYearsFromProfiles([cessation,
                         topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
                     ])
                 }

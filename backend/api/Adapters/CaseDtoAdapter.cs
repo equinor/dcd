@@ -136,4 +136,36 @@ public static class CaseDtoAdapter
             Values = studyCost.Values,
         };
     }
+    public static TotalFeasibilityAndConceptStudiesDto Convert(TotalFeasibilityAndConceptStudies? studyCost)
+    {
+        if (studyCost == null)
+        {
+            return null!;
+        }
+
+        return new TotalFeasibilityAndConceptStudiesDto
+        {
+            Id = studyCost.Id,
+            Currency = studyCost.Currency,
+            EPAVersion = studyCost.EPAVersion,
+            StartYear = studyCost.StartYear,
+            Values = studyCost.Values,
+        };
+    }
+    public static TotalFEEDStudiesDto Convert(TotalFEEDStudies? studyCost)
+    {
+        if (studyCost == null)
+        {
+            return null!;
+        }
+
+        return new TotalFEEDStudiesDto
+        {
+            Id = studyCost.Id,
+            Currency = studyCost.Currency,
+            EPAVersion = studyCost.EPAVersion,
+            StartYear = studyCost.StartYear,
+            Values = studyCost.Values,
+        };
+    }
 }
