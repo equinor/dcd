@@ -110,26 +110,26 @@ public class CaseShould : IDisposable
         Assert.Throws<NotFoundInDBException>(() => caseService.DeleteCase(new Guid()));
     }
 
-    [Fact]
-    public void DuplicateCase()
-    {
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
+    // [Fact]
+    // public void DuplicateCase()
+    // {
+    //     var loggerFactory = new LoggerFactory();
+    //     var projectService = new ProjectService(fixture.context, loggerFactory);
+    //     var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
 
-        var project = fixture.context.Projects.FirstOrDefault();
-        var caseItem = CreateCase(project);
-        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
+    //     var project = fixture.context.Projects.FirstOrDefault();
+    //     var caseItem = CreateCase(project);
+    //     caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
 
-        var cases = fixture.context.Projects.FirstOrDefault(o =>
-            o.Name == project.Name).Cases;
-        var expected = cases.Where(o => o.Description ==
-                caseItem.Description);
-        Assert.True(expected.Count() == 1);
+    //     var cases = fixture.context.Projects.FirstOrDefault(o =>
+    //         o.Name == project.Name).Cases;
+    //     var expected = cases.Where(o => o.Description ==
+    //             caseItem.Description);
+    //     Assert.True(expected.Count() == 1);
 
-        caseService.DuplicateCase(expected.First().Id);
-        Assert.True(expected.Count() == 2);
-    }
+    //     caseService.DuplicateCase(expected.First().Id);
+    //     Assert.True(expected.Count() == 2);
+    // }
 
     private static Case CreateUpdatedCase(Project project, Case oldCase)
     {

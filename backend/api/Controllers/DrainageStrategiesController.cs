@@ -47,6 +47,12 @@ public class DrainageStrategiesController : ControllerBase
         return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategyDto);
     }
 
+    [HttpPost("{drainageStrategyId}/copy", Name = "CopyDrainageStrategy")]
+    public DrainageStrategyDto CopyDrainageStrategy([FromQuery] Guid caseId, Guid drainageStrategyId)
+    {
+        return _drainageStrategyService.CopyDrainageStrategy(drainageStrategyId, caseId);
+    }
+
     [HttpPut("new", Name = "NewUpdateDrainageStrategy")]
     public DrainageStrategyDto NewUpdateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
     {

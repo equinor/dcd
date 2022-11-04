@@ -42,6 +42,46 @@ public class ExplorationService
         }
     }
 
+    public ExplorationDto CopyExploration(Guid explorationId, Guid sourceCaseId)
+    {
+        var source = GetExploration(explorationId);
+        var newExplorationDto = ExplorationDtoAdapter.Convert(source);
+        newExplorationDto.Id = Guid.Empty;
+        if (newExplorationDto.CostProfile != null)
+        {
+            newExplorationDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newExplorationDto.ExplorationWellCostProfile != null)
+        {
+            newExplorationDto.ExplorationWellCostProfile.Id = Guid.Empty;
+        }
+        if (newExplorationDto.AppraisalWellCostProfile != null)
+        {
+            newExplorationDto.AppraisalWellCostProfile.Id = Guid.Empty;
+        }
+        if (newExplorationDto.SidetrackCostProfile != null)
+        {
+            newExplorationDto.SidetrackCostProfile.Id = Guid.Empty;
+        }
+        if (newExplorationDto.SeismicAcquisitionAndProcessing != null)
+        {
+            newExplorationDto.SeismicAcquisitionAndProcessing.Id = Guid.Empty;
+        }
+        if (newExplorationDto.CountryOfficeCost != null)
+        {
+            newExplorationDto.CountryOfficeCost.Id = Guid.Empty;
+        }
+        if (newExplorationDto.GAndGAdminCost != null)
+        {
+            newExplorationDto.GAndGAdminCost.Id = Guid.Empty;
+        }
+
+        var wellProject = NewCreateExploration(newExplorationDto, sourceCaseId);
+        var dto = ExplorationDtoAdapter.Convert(wellProject);
+
+        return dto;
+    }
+
     public ProjectDto CreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
     {
         var exploration = ExplorationAdapter.Convert(explorationDto);

@@ -36,6 +36,13 @@ export class Project implements Components.Schemas.ProjectDto {
     explorationWellCosts?: ExplorationOperationalWellCosts
     developmentWellCosts?: DevelopmentOperationalWellCosts
     sharepointSiteUrl?: string | null
+    cO2RemovedFromGas?: number // double
+    cO2EmissionFromFuelGas?: number // double
+    flaredGasPerProducedVolume?: number // double
+    cO2EmissionsFromFlaredGas?: number // double
+    cO2Vented?: number // double
+    dailyEmissionFromDrillingRig?: number // double
+    averageDevelopmentDrillingDays?: number // double
 
     constructor(data: Components.Schemas.ProjectDto) {
         this.cases = data.cases?.map(Case.fromJSON) ?? []
@@ -62,6 +69,13 @@ export class Project implements Components.Schemas.ProjectDto {
         this.explorationWellCosts = ExplorationOperationalWellCosts.fromJSON(data.explorationOperationalWellCosts)
         this.developmentWellCosts = DevelopmentOperationalWellCosts.fromJSON(data.developmentOperationalWellCosts)
         this.sharepointSiteUrl = data.sharepointSiteUrl
+        this.cO2RemovedFromGas = data.cO2RemovedFromGas ?? 0
+        this.cO2EmissionFromFuelGas = data.cO2EmissionFromFuelGas ?? 0
+        this.flaredGasPerProducedVolume = data.flaredGasPerProducedVolume ?? 0
+        this.cO2EmissionsFromFlaredGas = data.cO2EmissionsFromFlaredGas ?? 0
+        this.cO2Vented = data.cO2Vented ?? 0
+        this.dailyEmissionFromDrillingRig = data.dailyEmissionFromDrillingRig ?? 0
+        this.averageDevelopmentDrillingDays = data.averageDevelopmentDrillingDays ?? 0
     }
 
     static fromJSON(data: Components.Schemas.ProjectDto): Project {

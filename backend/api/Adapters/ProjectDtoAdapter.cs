@@ -112,7 +112,14 @@ public static class ProjectDtoAdapter
             DevelopmentOperationalWellCosts = DevelopmentOperationalWellCostsDtoAdapter.Convert(project.DevelopmentOperationalWellCosts),
             Cases = new List<CaseDto>(),
             Wells = new List<WellDto>(),
-            SharepointSiteUrl = project.SharepointSiteUrl
+            SharepointSiteUrl = project.SharepointSiteUrl,
+            CO2RemovedFromGas = project.CO2RemovedFromGas,
+            CO2EmissionFromFuelGas = project.CO2EmissionFromFuelGas,
+            FlaredGasPerProducedVolume = project.FlaredGasPerProducedVolume,
+            CO2EmissionsFromFlaredGas = project.CO2EmissionsFromFlaredGas,
+            CO2Vented = project.CO2Vented,
+            DailyEmissionFromDrillingRig = project.DailyEmissionFromDrillingRig,
+            AverageDevelopmentDrillingDays = project.AverageDevelopmentDrillingDays
         };
     }
 }

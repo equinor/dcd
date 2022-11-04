@@ -49,10 +49,15 @@ public class SurfsController : ControllerBase
         return _surfService.CreateSurf(surfDto, sourceCaseId);
     }
 
+    [HttpPost("{surfId}/copy", Name = "CopySurf")]
+    public SurfDto CopySurf([FromQuery] Guid caseId, Guid surfId)
+    {
+        return _surfService.CopySurf(surfId, caseId);
+    }
+
     [HttpDelete("{surfId}", Name = "DeleteSurf")]
     public ProjectDto DeleteSurf(Guid surfId)
     {
         return _surfService.DeleteSurf(surfId);
     }
-
 }

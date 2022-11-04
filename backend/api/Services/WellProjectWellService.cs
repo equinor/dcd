@@ -101,6 +101,28 @@ public class WellProjectWellService
         return wellProjectWell;
     }
 
+    public WellProjectWellDto[]? CopyWellProjectWell(Guid sourceWellProjectId, Guid targetWellProjectId)
+    {
+        var sourceWellProjectWells = GetAll().Where(wpw => wpw.WellProjectId == sourceWellProjectId).ToList();
+        if (sourceWellProjectWells?.Count > 0)
+        {
+            var newWellProjectWellDtos = new List<WellProjectWellDto>();
+            foreach (var wellProjectWell in sourceWellProjectWells)
+            {
+                var newWellProjectWellDto = WellProjectWellDtoAdapter.Convert(wellProjectWell);
+                if (newWellProjectWellDto.DrillingSchedule != null)
+                {
+                    newWellProjectWellDto.DrillingSchedule.Id = Guid.Empty;
+                }
+                newWellProjectWellDto.WellProjectId = targetWellProjectId;
+                newWellProjectWellDtos.Add(newWellProjectWellDto);
+            }
+            var result = CreateMultipleWellProjectWells(newWellProjectWellDtos.ToArray());
+            return result;
+        }
+        return null;
+    }
+
     public WellProjectWellDto GetWellProjectWellDto(Guid wellId, Guid caseId)
     {
         var wellProjectWell = GetWellProjectWell(wellId, caseId);
