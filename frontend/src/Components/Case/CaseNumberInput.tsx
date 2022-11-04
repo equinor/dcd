@@ -5,9 +5,10 @@ import { WrapperColumn } from "../../Views/Asset/StyledAssetComponents"
 interface Props {
     onChange: ChangeEventHandler<HTMLInputElement>
     defaultValue: number | undefined
-    integer: boolean,
+    integer: boolean
     disabled?: boolean
     label: string
+    unit?: string
 }
 
 const CaseNumberInput = ({
@@ -16,20 +17,27 @@ const CaseNumberInput = ({
     integer,
     disabled,
     label,
+    unit,
 }: Props) => (
     <WrapperColumn>
-        <Label htmlFor="NumberInput" label={label} />
+        <Label htmlFor="numberInput" label={label} />
         <Input
-            id="NumberInput"
+            id="numberInput"
             type="number"
             defaultValue={defaultValue}
             disabled={disabled}
             onChange={onChange}
-            onKeyPress={(event) => {
+            onKeyPress={(event: any) => {
                 if (integer && !/\d/.test(event.key)) {
                     event.preventDefault()
                 }
             }}
+            rightAdornments={(
+                // eslint-disable-next-line react/jsx-no-useless-fragment
+                <>
+                    {unit}
+                </>
+            )}
         />
     </WrapperColumn>
 )

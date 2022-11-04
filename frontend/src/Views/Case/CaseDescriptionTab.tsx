@@ -198,7 +198,8 @@ function CaseDescriptionTab({
                         onChange={handleFacilitiesAvailabilityChange}
                         defaultValue={caseItem.facilitiesAvailability * 100}
                         integer={false}
-                        label="Facilities availability (%)"
+                        label="Facilities availability"
+                        unit="%"
                     />
                 </RowWrapper>
             </ColumnWrapper>
