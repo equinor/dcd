@@ -331,7 +331,8 @@ function CaseFacilitiesTab({
                         defaultValue={caseItem.facilitiesAvailability * 100}
                         integer
                         disabled
-                        label="Facilities availability (%)"
+                        label="Facilities availability"
+                        unit="%"
                     />
                 </RowWrapper>
                 <RowWrapper>

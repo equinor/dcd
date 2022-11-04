@@ -271,7 +271,8 @@ function CaseProductionProfilesTab({
                             onChange={handleCaseFacilitiesAvailabilityChange}
                             defaultValue={caseItem.facilitiesAvailability * 100}
                             integer={false}
-                            label="Facilities availability (%)"
+                            label="Facilities availability"
+                            unit="%"
                         />
                     </NumberInputField>
                     <NativeSelectField
