@@ -138,7 +138,9 @@ function CO2ListTechnicalInput({
 
     useEffect(() => {
         setRowData(co2Data)
-    }, [])
+    }, [cO2RemovedFromGas, cO2EmissionsFromFuelGas, flaredGasPerProducedVolume,
+        cO2EmissionsFromFlaredGas, cO2Vented, averageDevelopmentWellDrillingDays,
+        dailyEmissionsFromDrillingRig])
 
     useEffect(() => {
         if (project) {
