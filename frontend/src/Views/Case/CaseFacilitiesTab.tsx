@@ -323,6 +323,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
                             integer
                             label="Topside dry weight"
+                            unit="tonnes"
                         />
                     </NumberInputField>
                     <CaseNumberInput
@@ -340,6 +341,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
                             integer
                             label="Oil capacity"
+                            unit="Sm³/sd"
                         />
                     </NumberInputField>
                     <NumberInputField>
@@ -348,6 +350,8 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
                             integer={false}
                             label="Gas capacity"
+                            unit="MSm³/sd"
+
                         />
                     </NumberInputField>
                     <NumberInputField>
@@ -356,6 +360,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
                             integer
                             label="Water injection capacity"
+                            unit="MSm³/sd"
                         />
                     </NumberInputField>
                 </RowWrapper>
@@ -411,6 +416,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
                             integer={false}
                             label="Production lines length"
+                            unit="km"
                         />
                     </NumberInputField>
                     <NumberInputField>
@@ -419,6 +425,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
                             integer={false}
                             label="Umbilical system length"
+                            unit="km"
                         />
                     </NumberInputField>
                     <NativeSelectField
@@ -478,6 +485,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(substructure?.dryWeight) * 1) / 1}
                             integer
                             label="Substructure dry weight"
+                            unit="tonnes"
                         />
                     </NumberInputField>
 
@@ -492,6 +500,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
                             integer={false}
                             label="Oil export pipeline length"
+                            unit="km"
                         />
                     </NumberInputField>
                     <NumberInputField>
@@ -500,6 +509,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
                             integer={false}
                             label="Gas export pipeline length"
+                            unit="km"
                         />
                     </NumberInputField>
                 </RowWrapper>
