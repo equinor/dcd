@@ -55,8 +55,23 @@ public class OpexCostProfileDto : TimeSeriesCostDto
 {
 }
 
+public class WellInterventionCostProfileDto : TimeSeriesCostDto
+{
+}
+
+public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto
+{
+}
+
 public class StudyCostProfileDto : TimeSeriesCostDto
 {
+}
+
+public class OpexCostProfileWrapperDto
+{
+    public OpexCostProfileDto? OpexCostProfileDto { get; set; }
+    public WellInterventionCostProfileDto? WellInterventionCostProfileDto { get; set; }
+    public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfileDto { get; set; }
 }
 
 public class CapexYear

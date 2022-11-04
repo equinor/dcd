@@ -71,6 +71,12 @@ public class CessationCost : TimeSeriesCost
 public class OpexCostProfile : TimeSeriesCost
 {
 }
+public class WellInterventionCostProfile : TimeSeriesCost
+{
+}
+public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost
+{
+}
 
 public class StudyCostProfile : TimeSeriesCost
 {

@@ -1,3 +1,5 @@
+using System.Net;
+
 using api.Dtos;
 using api.Services;
 using api.Services.GenerateCostProfiles;
@@ -49,9 +51,10 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/calculateOpex", Name = "CalculateOpex")]
-    public OpexCostProfileDto GenerateOPEX(Guid caseId)
+    [ProducesResponseType(typeof(OpexCostProfileWrapperDto), (int)HttpStatusCode.OK)]
+    public IActionResult GenerateOPEX(Guid caseId)
     {
-        return _generateOpexCostProfile.Generate(caseId);
+        return Ok(_generateOpexCostProfile.Generate(caseId));
     }
 
     [HttpPost("{caseId}/calculateStudy", Name = "CalculateStudy")]

@@ -21,24 +21,31 @@ public class GenerateOpexCostProfile
         _topsideService = serviceProvider.GetRequiredService<TopsideService>();
     }
 
-    public OpexCostProfileDto Generate(Guid caseId)
+    public OpexCostProfileWrapperDto Generate(Guid caseId)
     {
+        var result = new OpexCostProfileWrapperDto();
         var wellInterventionCost = CalculateWellInterventionCostProfile(caseId);
+        var wellInterventionCostDto = CaseDtoAdapter.Convert(wellInterventionCost);
 
         var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseId);
+        var offshoreFacilitiesOperationsCostDto = CaseDtoAdapter.Convert(offshoreFacilitiesOperationsCost);
+
+        result.WellInterventionCostProfileDto = wellInterventionCostDto;
+        result.OffshoreFacilitiesOperationsCostProfileDto = offshoreFacilitiesOperationsCostDto;
 
         var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
-        if (OPEX == null) { return new OpexCostProfileDto(); }
+        // if (OPEX == null) { return new OpexCostProfileDto(); }
         var opexCostProfile = new OpexCostProfile
         {
             StartYear = OPEX.StartYear,
             Values = OPEX.Values
         };
         var opexDto = CaseDtoAdapter.Convert(opexCostProfile);
-        return opexDto ?? new OpexCostProfileDto();
+        result.OpexCostProfileDto = opexDto;
+        return result ?? new OpexCostProfileWrapperDto();
     }
 
-    public TimeSeries<double> CalculateWellInterventionCostProfile(Guid caseId)
+    public WellInterventionCostProfile CalculateWellInterventionCostProfile(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
 
@@ -61,10 +68,10 @@ public class GenerateOpexCostProfile
         catch (ArgumentException)
         {
             _logger.LogInformation("WellProject {0} not found.", caseItem.WellProjectLink);
-            return new TimeSeries<double>();
+            return new WellInterventionCostProfile();
         }
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
-        if (linkedWells == null) { return new TimeSeries<double>(); }
+        if (linkedWells == null) { return new WellInterventionCostProfile(); }
 
         var wellInterventionCostsFromDrillingSchedule = new TimeSeries<double>();
         foreach (var linkedWell in linkedWells)
@@ -111,10 +118,16 @@ public class GenerateOpexCostProfile
 
         wellInterventionCostsFromDrillingSchedule.Values = valuesList.ToArray();
 
-        return wellInterventionCostsFromDrillingSchedule;
+        var result = new WellInterventionCostProfile
+        {
+            Values = wellInterventionCostsFromDrillingSchedule.Values,
+            StartYear = wellInterventionCostsFromDrillingSchedule.StartYear,
+        };
+
+        return result;
     }
 
-    public TimeSeries<double> CalculateOffshoreFacilitiesOperationsCostProfile(Guid caseId)
+    public OffshoreFacilitiesOperationsCostProfile CalculateOffshoreFacilitiesOperationsCostProfile(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
 
@@ -126,9 +139,9 @@ public class GenerateOpexCostProfile
         catch (ArgumentException)
         {
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
-            return new TimeSeries<double>();
+            return new OffshoreFacilitiesOperationsCostProfile();
         }
-        if (drainageStrategy?.ProductionProfileOil == null) { return new TimeSeries<double>(); }
+        if (drainageStrategy?.ProductionProfileOil == null) { return new OffshoreFacilitiesOperationsCostProfile(); }
         var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
         var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
 
@@ -140,7 +153,7 @@ public class GenerateOpexCostProfile
         catch (ArgumentException)
         {
             _logger.LogInformation("Topside {0} not found.", caseItem.TopsideLink);
-            return new TimeSeries<double>();
+            return new OffshoreFacilitiesOperationsCostProfile();
         }
         var facilityOpex = topside.FacilityOpex;
         var values = new List<double>
@@ -156,7 +169,7 @@ public class GenerateOpexCostProfile
         }
         const int preOpexCostYearOffset = 3;
 
-        var offshoreFacilitiesOperationsCost = new TimeSeries<double>
+        var offshoreFacilitiesOperationsCost = new OffshoreFacilitiesOperationsCostProfile
         {
             StartYear = firstYear - preOpexCostYearOffset,
             Values = values.ToArray()

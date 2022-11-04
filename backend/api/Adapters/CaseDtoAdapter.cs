@@ -86,6 +86,40 @@ public static class CaseDtoAdapter
         };
     }
 
+    public static OffshoreFacilitiesOperationsCostProfileDto Convert(OffshoreFacilitiesOperationsCostProfile? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new OffshoreFacilitiesOperationsCostProfileDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+
+    public static WellInterventionCostProfileDto Convert(WellInterventionCostProfile? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new WellInterventionCostProfileDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+
     public static StudyCostProfileDto Convert(StudyCostProfile? studyCost)
     {
         if (studyCost == null)
