@@ -24,8 +24,6 @@ import { Exploration } from "../../models/assets/exploration/Exploration"
 import { GetExplorationService } from "../../Services/ExplorationService"
 import { Surf } from "../../models/assets/surf/Surf"
 import { GetSurfService } from "../../Services/SurfService"
-import { ExplorationCostProfile } from "../../models/assets/exploration/ExplorationCostProfile"
-import { WellProjectCostProfile } from "../../models/assets/wellproject/WellProjectCostProfile"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Substructure } from "../../models/assets/substructure/Substructure"
 import { Topside } from "../../models/assets/topside/Topside"
@@ -137,14 +135,12 @@ function CaseCostTab({
     const [transportCost, setTransportCost] = useState<TransportCostProfile>()
 
     // Development
-    // const [wellProjectCost, setWellProjectCost] = useState<WellProjectCostProfile>()
     const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<OilProducerCostProfile>()
     const [wellProjectGasProducerCost, setWellProjectGasProducerCost] = useState<GasProducerCostProfile>()
     const [wellProjectWaterInjectorCost, setWellProjectWaterInjectorCost] = useState<WaterInjectorCostProfile>()
     const [wellProjectGasInjectorCost, setWellProjectGasInjectorCost] = useState<GasInjectorCostProfile>()
 
     // Exploration
-    // const [explorationCost, setExplorationCost] = useState<ExplorationCostProfile>()
     const [explorationWellCost, setExplorationWellCost] = useState<ExplorationWellCostProfile>()
     const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<AppraisalWellCostProfile>()
     const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<SidetrackCostProfile>()
@@ -186,8 +182,6 @@ function CaseCostTab({
                     setTransportCost(transportCostProfile)
 
                     // Development
-                    // const wellProjectCostProfile = wellProject.costProfile
-                    // setWellProjectCost(wellProjectCostProfile)
                     const {
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
@@ -198,8 +192,6 @@ function CaseCostTab({
                     setWellProjectGasInjectorCost(gasInjectorCostProfile)
 
                     // Exploration
-                    // const explorationCostProfile = exploration.costProfile
-                    // setExplorationCost(explorationCostProfile)
                     const {
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
                         seismicAcquisitionAndProcessing,

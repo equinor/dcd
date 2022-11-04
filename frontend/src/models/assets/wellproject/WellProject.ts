@@ -5,13 +5,11 @@ import { GasInjectorCostProfile } from "./GasInjectorCostProfile"
 import { GasProducerCostProfile } from "./GasProducerCostProfile"
 import { OilProducerCostProfile } from "./OilProducerCostProfile"
 import { WaterInjectorCostProfile } from "./WaterInjectorCostProfile"
-import { WellProjectCostProfile } from "./WellProjectCostProfile"
 
 export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
-    costProfile?: WellProjectCostProfile | undefined
     oilProducerCostProfile?: OilProducerCostProfile
     gasProducerCostProfile?: GasProducerCostProfile
     waterInjectorCostProfile?: WaterInjectorCostProfile
@@ -28,7 +26,6 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.id = data.id
             this.name = data.name ?? ""
             this.projectId = data.projectId ?? ""
-            this.costProfile = WellProjectCostProfile.fromJSON(data.costProfile)
             this.oilProducerCostProfile = OilProducerCostProfile.fromJSON(data.oilProducerCostProfile)
             this.gasProducerCostProfile = GasProducerCostProfile.fromJSON(data.gasProducerCostProfile)
             this.waterInjectorCostProfile = WaterInjectorCostProfile.fromJSON(data.waterInjectorCostProfile)
