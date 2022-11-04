@@ -70,6 +70,9 @@ const YearInputWrapper = styled.div`
 const YearDashWrapper = styled.div`
     padding-right: 5px;
 `
+const InputWrapper = styled.div`
+    margin-right: 20px;
+`
 
 interface Props {
     project: Project,
@@ -217,9 +220,9 @@ function CaseProductionProfilesTab({
                     setImportedElectricity(importedElectricityProfile)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                    drainageStrategy.productionProfileWaterInjection,
+                        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+                        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+                        drainageStrategy.productionProfileWaterInjection,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
@@ -284,6 +287,62 @@ function CaseProductionProfilesTab({
                         <option key={0} value={0}>Export</option>
                         <option key={1} value={1}>Injection</option>
                     </NativeSelectField>
+                    <InputWrapper>
+                        <NativeSelectField
+                            id="productionStrategy"
+                            label="Production strategy overview"
+                            onChange={() => { }}
+                            disabled
+                            value={caseItem.productionStrategyOverview}
+                        >
+                            <option key={0} value={0}>Depletion</option>
+                            <option key={1} value={1}>Water injection</option>
+                            <option key={2} value={2}>Gas injection</option>
+                            <option key={3} value={3}>WAG</option>
+                            <option key={4} value={4}>Mixed</option>
+                        </NativeSelectField>
+                    </InputWrapper>
+                    <InputWrapper>
+                        <NativeSelectField
+                            id="artificialLift"
+                            label="Artificial lift"
+                            onChange={() => { }}
+                            disabled
+                            value={caseItem.artificialLift}
+                        >
+                            <option key="0" value={0}>No lift</option>
+                            <option key="1" value={1}>Gas lift</option>
+                            <option key="2" value={2}>Electrical submerged pumps</option>
+                            <option key="3" value={3}>Subsea booster pumps</option>
+                        </NativeSelectField>
+                    </InputWrapper>
+                </RowWrapper>
+                <RowWrapper>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={caseItem.producerCount}
+                            integer
+                            disabled
+                            label="Oil producer wells"
+                        />
+                    </NumberInputField>
+                    <NumberInputField>
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={caseItem.waterInjectorCount}
+                            integer
+                            disabled
+                            label="Water injector count"
+                        />
+                    </NumberInputField>
+                    <CaseNumberInput
+                        onChange={() => { }}
+                        defaultValue={caseItem.gasInjectorCount}
+                        integer
+                        disabled
+                        label="Gas injector count"
+                    />
                 </RowWrapper>
             </ColumnWrapper>
             <ColumnWrapper>
