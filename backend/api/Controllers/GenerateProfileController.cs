@@ -65,9 +65,10 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateCessation", Name = "GenerateCessation")]
-    public CessationCostDto GenerateCessation(Guid caseId)
+    [ProducesResponseType(typeof(CessationCostWrapperDto), (int)HttpStatusCode.OK)]
+    public IActionResult GenerateCessation(Guid caseId)
     {
-        return _generateCessationCostProfile.Generate(caseId);
+        return Ok(_generateCessationCostProfile.Generate(caseId));
     }
 
     [HttpPost("{caseId}/generateNetSaleGas", Name = "GenerateNetSaleGas")]

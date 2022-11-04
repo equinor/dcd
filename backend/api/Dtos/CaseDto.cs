@@ -50,6 +50,12 @@ public class CaseDto
 public class CessationCostDto : TimeSeriesCostDto
 {
 }
+public class CessationWellsCostDto : TimeSeriesCostDto
+{
+}
+public class CessationOffshoreFacilitiesCostDto : TimeSeriesCostDto
+{
+}
 
 public class OpexCostProfileDto : TimeSeriesCostDto
 {
@@ -71,6 +77,13 @@ public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto
 }
 public class TotalFEEDStudiesDto : TimeSeriesCostDto
 {
+}
+
+public class CessationCostWrapperDto
+{
+    public CessationCostDto? CessationCostDto { get; set; }
+    public CessationWellsCostDto? CessationWellsCostDto { get; set; }
+    public CessationOffshoreFacilitiesCostDto? CessationOffshoreFacilitiesCostDto { get; set; }
 }
 
 public class OpexCostProfileWrapperDto

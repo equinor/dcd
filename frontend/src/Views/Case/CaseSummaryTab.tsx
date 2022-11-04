@@ -13,7 +13,7 @@ import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
 import { OpexCostProfile } from "../../models/case/OpexCostProfile"
-import { CaseCessationCostProfile } from "../../models/case/CaseCessationCostProfile"
+import { CessationCostProfile } from "../../models/case/CessationCostProfile"
 import { Exploration } from "../../models/assets/exploration/Exploration"
 import { Surf } from "../../models/assets/surf/Surf"
 import { GetSurfService } from "../../Services/SurfService"
@@ -88,7 +88,7 @@ function CaseSummaryTab({
     // OPEX
     const [studyCost, setStudyCost] = useState<StudyCostProfile>()
     const [opexCost, setOpexCost] = useState<OpexCostProfile>()
-    const [cessationCost, setCessationCost] = useState<CaseCessationCostProfile>()
+    const [cessationCost, setCessationCost] = useState<CessationCostProfile>()
 
     // CAPEX
     const [topsideCost, setTopsideCost] = useState<TopsideCostProfile>()
@@ -137,7 +137,7 @@ function CaseSummaryTab({
                     const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
                     // setOpexCost(opex)
                     const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                    setCessationCost(cessation)
+                    // setCessationCost(cessation)
 
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
@@ -149,7 +149,7 @@ function CaseSummaryTab({
                     const transportCostProfile = transport.costProfile
                     setTransportCost(transportCostProfile)
 
-                    setTableYearsFromProfiles([cessation,
+                    setTableYearsFromProfiles([
                         topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
                     ])
                 }

@@ -16,7 +16,7 @@ import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
 import { OpexCostProfile } from "../../models/case/OpexCostProfile"
-import { CaseCessationCostProfile } from "../../models/case/CaseCessationCostProfile"
+import { CessationCostProfile } from "../../models/case/CessationCostProfile"
 import { SeismicAcquisitionAndProcessing } from "../../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../../models/assets/exploration/CountryOfficeCost"
 import { GAndGAdminCost } from "../../models/assets/exploration/GAndGAdminCost"
@@ -24,8 +24,6 @@ import { Exploration } from "../../models/assets/exploration/Exploration"
 import { GetExplorationService } from "../../Services/ExplorationService"
 import { Surf } from "../../models/assets/surf/Surf"
 import { GetSurfService } from "../../Services/SurfService"
-import { ExplorationCostProfile } from "../../models/assets/exploration/ExplorationCostProfile"
-import { WellProjectCostProfile } from "../../models/assets/wellproject/WellProjectCostProfile"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Substructure } from "../../models/assets/substructure/Substructure"
 import { Topside } from "../../models/assets/topside/Topside"
@@ -50,6 +48,8 @@ import { OffshoreFacilitiesOperationsCostProfile } from "../../models/case/Offsh
 import { WellInterventionCostProfile } from "../../models/case/WellInterventionCostProfile"
 import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasibilityAndConceptStudies"
 import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
+import { CessationWellsCost } from "../../models/case/CessationWellsCost"
+import { CessationOffshoreFacilitiesCost } from "../../models/case/CessationOffshoreFacilitiesCost"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -139,7 +139,11 @@ function CaseCostTab({
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<OffshoreFacilitiesOperationsCostProfile>()
     const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<WellInterventionCostProfile>()
-    const [cessationCost, setCessationCost] = useState<CaseCessationCostProfile>()
+
+    const [cessationCost, setCessationCost] = useState<CessationCostProfile>()
+    const [cessationWellsCost, setCessationWellsCost] = useState<CessationWellsCost>()
+    const [cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost] = useState<CessationOffshoreFacilitiesCost>()
 
     // CAPEX
     const [topsideCost, setTopsideCost] = useState<TopsideCostProfile>()
@@ -167,7 +171,9 @@ function CaseCostTab({
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
+    const studyGridRef = useRef(null)
     const opexGridRef = useRef(null)
+    const cessationGridRef = useRef(null)
     const capexGridRef = useRef(null)
     const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
@@ -198,8 +204,15 @@ function CaseCostTab({
                         .fromJSON(opexWrapper.offshoreFacilitiesOperationsCostProfileDto)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
 
-                    const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
+                    const cessationWrapper = await (await GetGenerateProfileService())
+                        .generateCessationCost(caseItem.id)
+                    const cessation = CessationCostProfile.fromJSON(cessationWrapper.cessationCostDto)
                     setCessationCost(cessation)
+                    const cessationWells = CessationWellsCost.fromJSON(cessationWrapper.cessationWellsCostDto)
+                    setCessationWellsCost(cessationWells)
+                    const cessationOffshoreFacilities = CessationOffshoreFacilitiesCost
+                        .fromJSON(cessationWrapper.cessationOffshoreFacilitiesCostDto)
+                    setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
 
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
@@ -308,12 +321,7 @@ function CaseCostTab({
         profile: ITimeSeries | undefined
     }
 
-    const opexTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Study cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: studyCost,
-        },
+    const studyTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Feasibility & conceptual stud.",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -325,9 +333,17 @@ function CaseCostTab({
             profile: totalFEEDStudies,
         },
         {
-            profileName: "OPEX cost",
+            profileName: "Study cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: opexCost,
+            profile: studyCost,
+        },
+    ]
+
+    const opexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Well intervention",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: wellInterventionCostProfile,
         },
         {
             profileName: "Offshore facilities operations",
@@ -335,9 +351,22 @@ function CaseCostTab({
             profile: offshoreFacilitiesOperationsCostProfile,
         },
         {
-            profileName: "Well intervention",
+            profileName: "OPEX cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: opexCost,
+        },
+    ]
+
+    const cessationTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Cessation - Development wells",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellInterventionCostProfile,
+        },
+        {
+            profileName: "Cessation - Offshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: offshoreFacilitiesOperationsCostProfile,
         },
         {
             profileName: "Cessation cost",
@@ -641,6 +670,20 @@ function CaseCostTab({
                     project={project}
                     setCase={setCase}
                     setProject={setProject}
+                    timeSeriesData={studyTimeSeriesData}
+                    dg4Year={caseItem.DG4Date.getFullYear()}
+                    tableYears={tableYears}
+                    tableName="Study costs"
+                    gridRef={studyGridRef}
+                    alignedGridsRef={[opexGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
+                />
+            </TableWrapper>
+            <TableWrapper>
+                <CaseTabTable
+                    caseItem={caseItem}
+                    project={project}
+                    setCase={setCase}
+                    setProject={setProject}
                     timeSeriesData={opexTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
@@ -655,10 +698,24 @@ function CaseCostTab({
                     project={project}
                     setCase={setCase}
                     setProject={setProject}
+                    timeSeriesData={cessationTimeSeriesData}
+                    dg4Year={caseItem.DG4Date.getFullYear()}
+                    tableYears={tableYears}
+                    tableName="Cessation costs"
+                    gridRef={cessationCost}
+                    alignedGridsRef={[capexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
+                />
+            </TableWrapper>
+            <TableWrapper>
+                <CaseTabTable
+                    caseItem={caseItem}
+                    project={project}
+                    setCase={setCase}
+                    setProject={setProject}
                     timeSeriesData={capexTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
-                    tableName="CAPEX"
+                    tableName="Offshore facilitiy costs"
                     gridRef={capexGridRef}
                     alignedGridsRef={[opexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
                 />

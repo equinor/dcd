@@ -3,9 +3,6 @@ import { __BaseService } from "./__BaseService"
 
 import { GetToken, LoginAccessTokenKey } from "../Utils/common"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
-import { OpexCostProfile } from "../models/case/OpexCostProfile"
-import { StudyCostProfile } from "../models/case/StudyCostProfile"
-import { CaseCessationCostProfile } from "../models/case/CaseCessationCostProfile"
 import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
 import { ImportedElectricity } from "../models/assets/drainagestrategy/ImportedElectricity"
 import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
@@ -32,8 +29,8 @@ export class __GenerateProfileService extends __BaseService {
 
     async generateCessationCost(id: string) {
         // eslint-disable-next-line max-len
-        const costProfile: Components.Schemas.CessationCostDto = await this.post<Components.Schemas.CessationCostDto>(`/${id}/generateCessation`)
-        return CaseCessationCostProfile.fromJSON(costProfile)
+        const costProfiles: Components.Schemas.CessationCostWrapperDto = await this.post<Components.Schemas.CessationCostWrapperDto>(`/${id}/generateCessation`)
+        return costProfiles
     }
 
     async generateNetSaleProfile(id:string) {

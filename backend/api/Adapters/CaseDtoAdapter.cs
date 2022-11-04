@@ -68,6 +68,38 @@ public static class CaseDtoAdapter
             Values = opexCost.Values,
         };
     }
+    public static CessationWellsCostDto Convert(CessationWellsCost? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new CessationWellsCostDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+    public static CessationOffshoreFacilitiesCostDto Convert(CessationOffshoreFacilitiesCost? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new CessationOffshoreFacilitiesCostDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
 
     public static OpexCostProfileDto Convert(OpexCostProfile? opexCost)
     {
