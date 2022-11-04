@@ -46,6 +46,8 @@ import { WaterInjectorCostProfile } from "../../models/assets/wellproject/WaterI
 import { ExplorationWellCostProfile } from "../../models/assets/exploration/ExplorationWellCostProfile"
 import { AppraisalWellCostProfile } from "../../models/assets/exploration/AppraisalWellCostProfile"
 import { SidetrackCostProfile } from "../../models/assets/exploration/SidetrackCostProfile"
+import { OffshoreFacilitiesOperationsCostProfile } from "../../models/case/OffshoreFacilitiesOperationsCostProfile"
+import { WellInterventionCostProfile } from "../../models/case/WellInterventionCostProfile"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -128,6 +130,9 @@ function CaseCostTab({
     // OPEX
     const [studyCost, setStudyCost] = useState<StudyCostProfile>()
     const [opexCost, setOpexCost] = useState<OpexCostProfile>()
+    const [offshoreFacilitiesOperationsCostProfile,
+        setOffshoreFacilitiesOperationsCostProfile] = useState<OffshoreFacilitiesOperationsCostProfile>()
+    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<WellInterventionCostProfile>()
     const [cessationCost, setCessationCost] = useState<CaseCessationCostProfile>()
 
     // CAPEX
@@ -170,8 +175,17 @@ function CaseCostTab({
                     // OPEX
                     const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
                     setStudyCost(study)
-                    const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+
+                    const opexWrapper = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    const opex = OpexCostProfile.fromJSON(opexWrapper.opexCostProfileDto)
                     setOpexCost(opex)
+                    const wellIntervention = WellInterventionCostProfile
+                        .fromJSON(opexWrapper.wellInterventionCostProfileDto)
+                    setWellInterventionCostProfile(wellIntervention)
+                    const offshoreFacilitiesOperations = OffshoreFacilitiesOperationsCostProfile
+                        .fromJSON(opexWrapper.offshoreFacilitiesOperationsCostProfileDto)
+                    setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
+
                     const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
                     setCessationCost(cessation)
 
@@ -292,6 +306,16 @@ function CaseCostTab({
             profileName: "OPEX cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: opexCost,
+        },
+        {
+            profileName: "Offshore facilities operations",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: offshoreFacilitiesOperationsCostProfile,
+        },
+        {
+            profileName: "Well intervention",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: wellInterventionCostProfile,
         },
         {
             profileName: "Cessation cost",

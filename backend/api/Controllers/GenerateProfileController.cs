@@ -50,7 +50,7 @@ public class GenerateProfileController : ControllerBase
         return _generateGAndGAdminCostProfile.Generate(caseId);
     }
 
-    [HttpPost("{caseId}/calculateOpex", Name = "CalculateOpex")]
+    [HttpPost("{caseId}/generateOpex", Name = "GenerateOpex")]
     [ProducesResponseType(typeof(OpexCostProfileWrapperDto), (int)HttpStatusCode.OK)]
     public IActionResult GenerateOPEX(Guid caseId)
     {

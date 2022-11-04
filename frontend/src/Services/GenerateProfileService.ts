@@ -20,8 +20,8 @@ export class __GenerateProfileService extends __BaseService {
 
     async generateOpexCost(id: string) {
         // eslint-disable-next-line max-len
-        const costProfile: Components.Schemas.OpexCostProfileDto = await this.post<Components.Schemas.OpexCostProfileDto>(`/${id}/calculateOpex`)
-        return OpexCostProfile.fromJSON(costProfile)
+        const costProfiles: Components.Schemas.OpexCostProfileWrapperDto = await this.post<Components.Schemas.OpexCostProfileWrapperDto>(`/${id}/generateOpex`)
+        return costProfiles
     }
 
     async generateStudyCost(id: string) {
