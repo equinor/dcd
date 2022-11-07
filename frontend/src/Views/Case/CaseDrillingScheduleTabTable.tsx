@@ -136,8 +136,11 @@ function CaseDrillingScheduleTabTable({
             if (isInteger(prop)
                 && p.data[prop] !== ""
                 && p.data[prop] !== null
-                && !Number.isNaN(Number(p.data[prop]))) {
-                tableTimeSeriesValues.push({ year: parseInt(prop, 10), value: Number(p.data[prop]) })
+                && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
+                tableTimeSeriesValues.push({
+                    year: parseInt(prop, 10),
+                    value: Number(p.data[prop].toString().replace(/,/g, ".")),
+                })
             }
         })
         tableTimeSeriesValues.sort((a, b) => a.year - b.year)

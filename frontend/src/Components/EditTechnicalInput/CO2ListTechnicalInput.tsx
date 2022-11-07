@@ -133,7 +133,7 @@ function CO2ListTechnicalInput({
     const [rowData, setRowData] = useState([{}])
 
     const handleCellValueChange = (p: any) => {
-        p.data.set(Number(p.data.value))
+        p.data.set(Number(p.data.value.toString().replace(/,/g, ".")))
     }
 
     useEffect(() => {
