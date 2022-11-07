@@ -50,15 +50,15 @@ function CaseTabTable({
             rowObject.profile = ts.profile
             if (ts.profile && ts.profile.values.length > 0) {
                 let j = 0
-                if (tableName === "Production profiles") {
+                if (tableName === "Production profiles" || tableName === "CO2 emissions") {
                     for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {
                         rowObject[(dg4Year + i).toString()] = ts.profile.values.map(
                             (v: number) => Math.round((v + Number.EPSILON) * 1000) / 1000,
                         )[j]
                         j += 1
-                        rowObject.total = ts.profile.values.map(
-                            (v: number) => Math.round((v + Number.EPSILON) * 1000) / 1000,
-                        ).reduce((x: number, y: number) => x + y)
+                        rowObject.total = Math.round(ts.profile.values.map(
+                            (v: number) => (v + Number.EPSILON),
+                        ).reduce((x: number, y: number) => x + y) * 1000) / 1000
                     }
                 } else {
                     for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {
@@ -66,9 +66,9 @@ function CaseTabTable({
                             (v: number) => Math.round((v + Number.EPSILON) * 10) / 10,
                         )[j]
                         j += 1
-                        rowObject.total = ts.profile.values.map(
-                            (v: number) => Math.round((v + Number.EPSILON) * 10) / 10,
-                        ).reduce((x: number, y: number) => x + y)
+                        rowObject.total = Math.round(ts.profile.values.map(
+                            (v: number) => (v + Number.EPSILON),
+                        ).reduce((x: number, y: number) => x + y) * 10) / 10
                     }
                 }
             }
