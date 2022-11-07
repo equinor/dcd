@@ -13,10 +13,13 @@ namespace tests;
 public class SubstructureServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
+    private readonly IServiceProvider _serviceProvider;
 
     public SubstructureServiceShould()
     {
         fixture = new DatabaseFixture();
+        var serviceCollection = new ServiceCollection();
+        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -29,7 +32,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedSubstructures = fixture.context.Substructures.ToList().Where(o => o.Project.Id == project.Id);
@@ -52,7 +55,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -74,7 +77,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -89,7 +92,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedSubstructure = CreateTestSubstructure(project);
@@ -103,7 +106,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var substructureToDelete = CreateTestSubstructure(project);
@@ -125,7 +128,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
 
         // Act, assert
@@ -137,7 +140,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldSubstructure = CreateTestSubstructure(project);
@@ -160,7 +163,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldSubstructure = CreateTestSubstructure(project);
