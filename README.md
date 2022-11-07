@@ -1,6 +1,8 @@
 # Digital Concept Development (DCD)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings) [![Contributors][contributors-shield]][contributors-url]
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings) 
+![Known Vulnerabilities](https://snyk.io/test/github/equinor/dcd/badge.svg)
+[![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url]
 
 ## Concept App, Digital Concept Application
@@ -18,6 +20,25 @@ and volume profiles for drainage stragegy and creating these as assets on busine
 -   [.NET 6.0+](https://dotnet.microsoft.com/download/dotnet/6.0)
 -   [Node 16+ with npm 8+](https://github.com/nodesource/distributions/blob/master/README.md)
 -   [Docker](https://docs.docker.com/engine/install/)
+
+## Architechture
+
+The application is split between the [frontend app](#frontend) hosted in Fusion, and the [backend app](#backend) hosted in Radix. Authentication is based on [RBAC](https://learn.microsoft.com/en-us/azure/role-based-access-control/overview), where we have different app registrations for preproduction and production with are consented to access Fusion Preprod or Fusion Prod. 
+
+### Services used in the application
+
+### Security
+Snyk surveillance has been added to the project for continous monitoring of the code and its dependency. 
+
+### Azure App Config
+Azure App Configuration provides a service to centrally manage application settings and feature flags. It allows us to change configuration directly in Azure for all environment. 
+
+Combined with Azure Key Vault it also combines a secure place to store secrets and connection strings. 
+
+### Omnia Radix
+Omnia Radix is a Equinor PaaS (Platform as a Service) based on Kubernetes which provides to run and host docker containers. 
+
+Configuration of the required infrastructure is placed in a radixconfig.yml, which defines how your app should be hosted. 
 
 ## Frontend
 
