@@ -28,15 +28,15 @@ The application is split between the [frontend app](#frontend) hosted in Fusion,
 ### Services used in the application
 
 ### Security
-Snyk surveillance has been added to the project for continous monitoring of the code and its dependency. 
+Snyk surveillance has been added to the project for continuous monitoring of the code and its dependency. 
 
 ### Azure App Config
-Azure App Configuration provides a service to centrally manage application settings and feature flags. It allows us to change configuration directly in Azure for all environment. 
+Azure App Configuration provides a service to centrally manage application settings and feature flags. It allows us to change configuration directly in Azure for all environments. 
 
 Combined with Azure Key Vault it also combines a secure place to store secrets and connection strings. 
 
 ### Omnia Radix
-Omnia Radix is a Equinor PaaS (Platform as a Service) based on Kubernetes which provides to run and host docker containers. 
+Omnia Radix is a Equinor PaaS (Platform as a Service) based on Kubernetes to build and run docker containers. 
 
 Configuration of the required infrastructure is placed in a radixconfig.yml, which defines how your app should be hosted. 
 
