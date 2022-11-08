@@ -94,11 +94,11 @@ function CaseCO2Tab({
         (async () => {
             try {
                 if (activeTab === 6) {
-                    const co2 = await (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
-                    setCo2Emissions(co2)
+                    const co2 = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
+                    setCo2Emissions(await co2)
 
                     SetTableYearsFromProfiles(
-                        [co2],
+                        [await co2],
                         caseItem.DG4Date.getFullYear(),
                         setStartYear,
                         setEndYear,
