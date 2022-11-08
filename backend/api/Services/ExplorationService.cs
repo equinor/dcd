@@ -181,7 +181,8 @@ public class ExplorationService
         return ExplorationDtoAdapter.Convert(updatedExploration.Entity);
     }
 
-    public ExplorationDto[] UpdateMultiple(ExplorationDto[] updatedExplorationDtos) {
+    public ExplorationDto[] UpdateMultiple(ExplorationDto[] updatedExplorationDtos)
+    {
         var updatedExplorationDtoList = new List<ExplorationDto>();
         foreach (var explorationDto in updatedExplorationDtos)
         {
@@ -193,7 +194,8 @@ public class ExplorationService
         return updatedExplorationDtoList.ToArray();
     }
 
-    public ExplorationDto UpdateSingleExploration(ExplorationDto updatedExplorationDto) {
+    public ExplorationDto UpdateSingleExploration(ExplorationDto updatedExplorationDto)
+    {
         var existing = GetExploration(updatedExplorationDto.Id);
         ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
         var exploration = _context.Explorations!.Update(existing);

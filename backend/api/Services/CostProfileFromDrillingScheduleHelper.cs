@@ -112,7 +112,6 @@ public class CostProfileFromDrillingScheduleHelper
         exploration.SidetrackCostProfile = sidetrackCostProfile;
 
         var explorationDto = ExplorationDtoAdapter.Convert(exploration);
-        // var dto = explorationService.NewUpdateExploration(explorationDto);
         return explorationDto;
     }
 
@@ -199,7 +198,6 @@ public class CostProfileFromDrillingScheduleHelper
         wellProject.GasInjectorCostProfile = gasInjectorCostProfile;
 
         var wellProjectDto = WellProjectDtoAdapter.Convert(wellProject);
-        // var dto = wellProjectService.NewUpdateWellProject(wellProjectDto);
         return wellProjectDto;
     }
 
