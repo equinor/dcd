@@ -19,28 +19,92 @@ public static class WellProjectDtoAdapter
             Currency = wellProject.Currency,
             WellProjectWells = wellProject.WellProjectWells?.Select(wc => WellProjectWellDtoAdapter.Convert(wc)).ToList()
         };
-        if (wellProject.CostProfile != null)
+        if (wellProject.OilProducerCostProfile != null)
         {
-            wellProjectDto.CostProfile = Convert(wellProject.CostProfile);
+            wellProjectDto.OilProducerCostProfile = Convert(wellProject.OilProducerCostProfile);
+        }
+        if (wellProject.GasProducerCostProfile != null)
+        {
+            wellProjectDto.GasProducerCostProfile = Convert(wellProject.GasProducerCostProfile);
+        }
+        if (wellProject.WaterInjectorCostProfile != null)
+        {
+            wellProjectDto.WaterInjectorCostProfile = Convert(wellProject.WaterInjectorCostProfile);
+        }
+        if (wellProject.GasInjectorCostProfile != null)
+        {
+            wellProjectDto.GasInjectorCostProfile = Convert(wellProject.GasInjectorCostProfile);
         }
         return wellProjectDto;
     }
 
-    private static WellProjectCostProfileDto? Convert(WellProjectCostProfile? costProfile)
+    private static OilProducerCostProfileDto? Convert(OilProducerCostProfile? costProfile)
     {
         if (costProfile == null)
         {
             return null!;
         }
-        var wellProjectCostProfileDto = new WellProjectCostProfileDto
+        var wellProjectCostProfileDto = new OilProducerCostProfileDto
         {
             Id = costProfile.Id,
             EPAVersion = costProfile.EPAVersion,
             Currency = costProfile.Currency,
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
-            Override = costProfile.Override,
+            // Override = costProfile.Override,
         };
         return wellProjectCostProfileDto;
     }
+    private static GasProducerCostProfileDto? Convert(GasProducerCostProfile? costProfile)
+    {
+        if (costProfile == null)
+        {
+            return null!;
+        }
+        var wellProjectCostProfileDto = new GasProducerCostProfileDto
+        {
+            Id = costProfile.Id,
+            EPAVersion = costProfile.EPAVersion,
+            Currency = costProfile.Currency,
+            StartYear = costProfile.StartYear,
+            Values = costProfile.Values,
+            // Override = costProfile.Override,
+        };
+        return wellProjectCostProfileDto;
+    }
+    private static WaterInjectorCostProfileDto? Convert(WaterInjectorCostProfile? costProfile)
+    {
+        if (costProfile == null)
+        {
+            return null!;
+        }
+        var wellProjectCostProfileDto = new WaterInjectorCostProfileDto
+        {
+            Id = costProfile.Id,
+            EPAVersion = costProfile.EPAVersion,
+            Currency = costProfile.Currency,
+            StartYear = costProfile.StartYear,
+            Values = costProfile.Values,
+            // Override = costProfile.Override,
+        };
+        return wellProjectCostProfileDto;
+    }
+    private static GasInjectorCostProfileDto? Convert(GasInjectorCostProfile? costProfile)
+    {
+        if (costProfile == null)
+        {
+            return null!;
+        }
+        var wellProjectCostProfileDto = new GasInjectorCostProfileDto
+        {
+            Id = costProfile.Id,
+            EPAVersion = costProfile.EPAVersion,
+            Currency = costProfile.Currency,
+            StartYear = costProfile.StartYear,
+            Values = costProfile.Values,
+            // Override = costProfile.Override,
+        };
+        return wellProjectCostProfileDto;
+    }
+
 }
