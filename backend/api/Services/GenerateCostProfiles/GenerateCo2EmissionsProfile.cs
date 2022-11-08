@@ -27,13 +27,13 @@ public class GenerateCo2EmissionsProfile
         _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
     }
 
-    public Co2EmissionsDto Generate(Guid caseId)
+    public async Task<Co2EmissionsDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var topside = _topsideService.GetTopside(caseItem.TopsideLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
         var project = _projectService.GetProject(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-        var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(caseItem, topside, drainageStrategy);
         var flaringsProfile = GetFlaringsProfile(drainageStrategy);
         var lossesProfile = GetLossesProfile(drainageStrategy);

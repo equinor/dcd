@@ -43,9 +43,9 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
-    public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
+    public async Task<GAndGAdminCostDto> GenerateGAndGAdminCost(Guid caseId)
     {
-        return _generateGAndGAdminCostProfile.Generate(caseId);
+        return await _generateGAndGAdminCostProfile.Generate(caseId);
     }
 
     [HttpPost("{caseId}/calculateOpex", Name = "CalculateOpex")]
@@ -61,32 +61,32 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateCessation", Name = "GenerateCessation")]
-    public CessationCostDto GenerateCessation(Guid caseId)
+    public async Task<CessationCostDto> GenerateCessation(Guid caseId)
     {
-        return _generateCessationCostProfile.Generate(caseId);
+        return await _generateCessationCostProfile.Generate(caseId);
     }
 
     [HttpPost("{caseId}/generateNetSaleGas", Name = "GenerateNetSaleGas")]
-    public NetSalesGasDto? GenerateNetSaleGas(Guid caseId)
+    public async Task<NetSalesGasDto?> GenerateNetSaleGas(Guid caseId)
     {
-        return _generateNetSaleGasProfile.Generate(caseId);
+        return await _generateNetSaleGasProfile.Generate(caseId);
     }
 
     [HttpPost("{caseId}/generateFuelFlaringLosses", Name = "GenerateFuelFlaringLosses")]
-    public FuelFlaringAndLossesDto GenerateFuelFlaringLosses(Guid caseId)
+    public async Task<FuelFlaringAndLossesDto> GenerateFuelFlaringLosses(Guid caseId)
     {
-        return _generateFuelFlaringLossessProfile.Generate(caseId);
+        return await _generateFuelFlaringLossessProfile.Generate(caseId);
     }
 
     [HttpPost("{caseId}/generateCo2Emissions", Name = "GenerateCo2Emissions")]
-    public Co2EmissionsDto GenerateCo2Emissions(Guid caseId)
+    public async Task<Co2EmissionsDto> GenerateCo2Emissions(Guid caseId)
     {
-        return _generateCo2EmissionsProfile.Generate(caseId);
+        return await _generateCo2EmissionsProfile.Generate(caseId);
     }
 
     [HttpPost("{caseId}/generateImportedElectricity", Name = "GenerateImportedElectricity")]
-    public ImportedElectricityDto GenerateImportedElectricity(Guid caseId)
+    public async Task<ImportedElectricityDto> GenerateImportedElectricity(Guid caseId)
     {
-        return _generateImportedElectricityProfile.Generate(caseId);
+        return await _generateImportedElectricityProfile.Generate(caseId);
     }
 }

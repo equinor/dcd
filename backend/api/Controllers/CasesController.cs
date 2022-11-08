@@ -34,15 +34,15 @@ public class CasesController : ControllerBase
     }
 
     [HttpPost("new", Name = "NewCreateCase")]
-    public ProjectDto NewCreateCase([FromBody] CaseDto caseDto)
+    public async Task<ProjectDto> NewCreateCase([FromBody] CaseDto caseDto)
     {
-        return _caseService.NewCreateCase(caseDto);
+        return await _caseService.NewCreateCase(caseDto);
     }
 
     [HttpPost("copy", Name = "Duplicate")]
-    public ProjectDto DuplicateCase([FromQuery] Guid copyCaseId)
+    public async Task<ProjectDto> DuplicateCase([FromQuery] Guid copyCaseId)
     {
-        return _caseService.DuplicateCase(copyCaseId);
+        return await _caseService.DuplicateCase(copyCaseId);
     }
 
     [HttpPut(Name = "UpdateCase")]
@@ -58,7 +58,7 @@ public class CasesController : ControllerBase
     }
 
     [HttpDelete("{caseId}", Name = "DeleteCase")]
-    public ProjectDto DeleteTransport(Guid caseId)
+    public Task<ProjectDto> DeleteTransport(Guid caseId)
     {
         return _caseService.DeleteCase(caseId);
     }

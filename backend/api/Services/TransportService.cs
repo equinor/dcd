@@ -10,8 +10,8 @@ namespace api.Services;
 public class TransportService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
     private readonly ILogger<TransportService> _logger;
+    private readonly ProjectService _projectService;
 
     public TransportService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
     {
@@ -19,7 +19,8 @@ public class TransportService
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TransportService>();
     }
-    public ProjectDto CreateTransport(TransportDto transportDto, Guid sourceCaseId)
+
+    public async Task<ProjectDto> CreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
         var transport = TransportAdapter.Convert(transportDto);
         var project = _projectService.GetProject(transport.ProjectId);
@@ -29,19 +30,19 @@ public class TransportService
         transport.GasExportPipelineLength = transportDto.GasExportPipelineLength;
         transport.OilExportPipelineLength = transportDto.OilExportPipelineLength;
         _context.Transports!.Add(transport);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         SetCaseLink(transport, sourceCaseId, project);
         return _projectService.GetProjectDto(transport.ProjectId);
     }
 
-    public Transport NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
+    public async Task<Transport> NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
         var transport = TransportAdapter.Convert(transportDto);
         var project = _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.LastChangedDate = DateTimeOffset.Now;
         var createdTransport = _context.Transports!.Add(transport);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         SetCaseLink(transport, sourceCaseId, project);
         return createdTransport.Entity;
     }
@@ -51,37 +52,39 @@ public class TransportService
         var case_ = project.Cases?.FirstOrDefault(o => o.Id == sourceCaseId);
         if (case_ == null)
         {
-            throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
+            throw new NotFoundInDBException($"Case {sourceCaseId} not found in database.");
         }
+
         case_.TransportLink = transport.Id;
         _context.SaveChanges();
     }
 
-    public ProjectDto DeleteTransport(Guid transportId)
+    public async Task<ProjectDto> DeleteTransport(Guid transportId)
     {
-        var transport = GetTransport(transportId);
+        var transport = await GetTransport(transportId);
         _context.Transports!.Remove(transport);
         DeleteCaseLinks(transportId);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return _projectService.GetProjectDto(transport.ProjectId);
     }
 
-    public Transport GetTransport(Guid transportId)
+    public async Task<Transport> GetTransport(Guid transportId)
     {
-        var transport = _context.Transports!
+        var transport = await _context.Transports!
             .Include(c => c.CostProfile)
             .Include(c => c.CessationCostProfile)
-            .FirstOrDefault(c => c.Id == transportId);
+            .FirstOrDefaultAsync(c => c.Id == transportId);
         if (transport == null)
         {
-            throw new ArgumentException(string.Format("Transport {0} not found.", transportId));
+            throw new ArgumentException($"Transport {transportId} not found.");
         }
+
         return transport;
     }
 
     private void DeleteCaseLinks(Guid transportId)
     {
-        foreach (Case c in _context.Cases!)
+        foreach (var c in _context.Cases!)
         {
             if (c.TransportLink == transportId)
             {
@@ -99,15 +102,13 @@ public class TransportService
                 .Include(c => c.CessationCostProfile)
                 .Where(c => c.Project.Id.Equals(projectId));
         }
-        else
-        {
-            return new List<Transport>();
-        }
+
+        return new List<Transport>();
     }
 
     public ProjectDto UpdateTransport(TransportDto updatedTransportDto)
     {
-        var existing = GetTransport(updatedTransportDto.Id);
+        var existing = GetTransport(updatedTransportDto.Id).Result;
         TransportAdapter.ConvertExisting(existing, updatedTransportDto);
 
         if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)
@@ -128,7 +129,7 @@ public class TransportService
 
     public TransportDto NewUpdateTransport(TransportDto updatedTransportDto)
     {
-        var existing = GetTransport(updatedTransportDto.Id);
+        var existing = GetTransport(updatedTransportDto.Id).Result;
         TransportAdapter.ConvertExisting(existing, updatedTransportDto);
 
         if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)

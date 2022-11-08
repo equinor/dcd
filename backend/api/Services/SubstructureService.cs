@@ -1,4 +1,3 @@
-
 using api.Adapters;
 using api.Context;
 using api.Dtos;
@@ -11,8 +10,8 @@ namespace api.Services;
 public class SubstructureService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
     private readonly ILogger<SubstructureService> _logger;
+    private readonly ProjectService _projectService;
 
     public SubstructureService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
     {
@@ -30,31 +29,29 @@ public class SubstructureService
                 .Include(c => c.CessationCostProfile)
                 .Where(c => c.Project.Id.Equals(projectId));
         }
-        else
-        {
-            return new List<Substructure>();
-        }
+
+        return new List<Substructure>();
     }
 
-    public ProjectDto CreateSubstructure(Substructure substructure, Guid sourceCaseId)
+    public async Task<ProjectDto> CreateSubstructure(Substructure substructure, Guid sourceCaseId)
     {
         var project = _projectService.GetProject(substructure.ProjectId);
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.Now;
         _context.Substructures!.Add(substructure);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         SetCaseLink(substructure, sourceCaseId, project);
         return _projectService.GetProjectDto(project.Id);
     }
 
-    public Substructure NewCreateSubstructure(SubstructureDto substructureDto, Guid sourceCaseId)
+    public async Task<Substructure> NewCreateSubstructure(SubstructureDto substructureDto, Guid sourceCaseId)
     {
         var substructure = SubstructureAdapter.Convert(substructureDto);
         var project = _projectService.GetProject(substructure.ProjectId);
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.Now;
         var createdSubstructure = _context.Substructures!.Add(substructure);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         SetCaseLink(substructure, sourceCaseId, project);
         return createdSubstructure.Entity;
     }
@@ -66,22 +63,23 @@ public class SubstructureService
         {
             throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
         }
+
         case_.SubstructureLink = substructure.Id;
         _context.SaveChanges();
     }
 
-    public ProjectDto DeleteSubstructure(Guid substructureId)
+    public async Task<ProjectDto> DeleteSubstructure(Guid substructureId)
     {
-        var substructure = GetSubstructure(substructureId);
+        var substructure = await GetSubstructure(substructureId);
         _context.Substructures!.Remove(substructure);
         DeleteCaseLinks(substructureId);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return _projectService.GetProjectDto(substructure.ProjectId);
     }
 
     private void DeleteCaseLinks(Guid substructureId)
     {
-        foreach (Case c in _context.Cases!)
+        foreach (var c in _context.Cases!)
         {
             if (c.SubstructureLink == substructureId)
             {
@@ -92,7 +90,7 @@ public class SubstructureService
 
     public ProjectDto UpdateSubstructure(SubstructureDto updatedSubstructureDto)
     {
-        var existing = GetSubstructure(updatedSubstructureDto.Id);
+        var existing = GetSubstructure(updatedSubstructureDto.Id).Result;
 
         SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
 
@@ -105,6 +103,7 @@ public class SubstructureService
         {
             _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
+
         existing.LastChangedDate = DateTimeOffset.Now;
         _context.Substructures!.Update(existing);
         _context.SaveChanges();
@@ -113,7 +112,7 @@ public class SubstructureService
 
     public SubstructureDto NewUpdateSubstructure(SubstructureDto updatedSubstructureDto)
     {
-        var existing = GetSubstructure(updatedSubstructureDto.Id);
+        var existing = GetSubstructure(updatedSubstructureDto.Id).Result;
 
         SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
 
@@ -126,23 +125,25 @@ public class SubstructureService
         {
             _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
+
         existing.LastChangedDate = DateTimeOffset.Now;
         var updatedSubstructure = _context.Substructures!.Update(existing);
         _context.SaveChanges();
         return SubstructureDtoAdapter.Convert(updatedSubstructure.Entity);
     }
 
-    public Substructure GetSubstructure(Guid substructureId)
+    public async Task<Substructure> GetSubstructure(Guid substructureId)
     {
-        var substructure = _context.Substructures!
+        var substructure = await _context.Substructures!
             .Include(c => c.Project)
             .Include(c => c.CostProfile)
             .Include(c => c.CessationCostProfile)
-            .FirstOrDefault(o => o.Id == substructureId);
+            .FirstOrDefaultAsync(o => o.Id == substructureId);
         if (substructure == null)
         {
-            throw new ArgumentException(string.Format("Substructure {0} not found.", substructureId));
+            throw new ArgumentException($"Substructure {substructureId} not found.");
         }
+
         return substructure;
     }
 }

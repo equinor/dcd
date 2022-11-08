@@ -1,6 +1,4 @@
-using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
 using Api.Authorization;
@@ -16,11 +14,10 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class SurfsController : ControllerBase
 {
     private readonly SurfService _surfService;
@@ -44,15 +41,14 @@ public class SurfsController : ControllerBase
     }
 
     [HttpPost(Name = "CreateSurf")]
-    public ProjectDto CreateSurf([FromQuery] Guid sourceCaseId, [FromBody] SurfDto surfDto)
+    public async Task<ProjectDto> CreateSurf([FromQuery] Guid sourceCaseId, [FromBody] SurfDto surfDto)
     {
-        return _surfService.CreateSurf(surfDto, sourceCaseId);
+        return await _surfService.CreateSurf(surfDto, sourceCaseId);
     }
 
     [HttpDelete("{surfId}", Name = "DeleteSurf")]
-    public ProjectDto DeleteSurf(Guid surfId)
+    public async Task<ProjectDto> DeleteSurf(Guid surfId)
     {
-        return _surfService.DeleteSurf(surfId);
+        return await _surfService.DeleteSurf(surfId);
     }
-
 }

@@ -1,6 +1,4 @@
-using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
 using Api.Authorization;
@@ -16,11 +14,10 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class TransportsController : ControllerBase
 {
     private readonly TransportService _transportService;
@@ -43,14 +40,14 @@ public class TransportsController : ControllerBase
     }
 
     [HttpPost(Name = "CreateTransport")]
-    public ProjectDto CreateTransport([FromQuery] Guid sourceCaseId, [FromBody] TransportDto transportDto)
+    public async Task<ProjectDto> CreateTransport([FromQuery] Guid sourceCaseId, [FromBody] TransportDto transportDto)
     {
-        return _transportService.CreateTransport(transportDto, sourceCaseId);
+        return await _transportService.CreateTransport(transportDto, sourceCaseId);
     }
 
     [HttpDelete("{transportId}", Name = "DeleteTransport")]
-    public ProjectDto DeleteTransport(Guid transportId)
+    public async Task<ProjectDto> DeleteTransport(Guid transportId)
     {
-        return _transportService.DeleteTransport(transportId);
+        return await _transportService.DeleteTransport(transportId);
     }
 }

@@ -20,14 +20,15 @@ public class GenerateFuelFlaringLossesProfile
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
     }
 
-    public FuelFlaringAndLossesDto Generate(Guid caseId)
+    public async Task<FuelFlaringAndLossesDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var topside = _topsideService.GetTopside(caseItem.TopsideLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
         var project = _projectService.GetProject(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var fuelConsumptions =
-            EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
+            EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside,
+                drainageStrategy);
         var flarings = EmissionCalculationHelper.CalculateFlaring(drainageStrategy);
         var losses = EmissionCalculationHelper.CalculateLosses(drainageStrategy);
 

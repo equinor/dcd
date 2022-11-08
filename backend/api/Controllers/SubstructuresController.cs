@@ -1,6 +1,5 @@
 using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
 using Api.Authorization;
@@ -16,11 +15,10 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class SubstructuresController : ControllerBase
 {
     private readonly SubstructureService _substructureService;
@@ -31,16 +29,17 @@ public class SubstructuresController : ControllerBase
     }
 
     [HttpPost(Name = "CreateSubstructure")]
-    public ProjectDto CreateSubstructure([FromQuery] Guid sourceCaseId, [FromBody] SubstructureDto substructureDto)
+    public async Task<ProjectDto> CreateSubstructure([FromQuery] Guid sourceCaseId,
+        [FromBody] SubstructureDto substructureDto)
     {
         var substructure = SubstructureAdapter.Convert(substructureDto);
-        return _substructureService.CreateSubstructure(substructure, sourceCaseId);
+        return await _substructureService.CreateSubstructure(substructure, sourceCaseId);
     }
 
     [HttpDelete("{substructureId}", Name = "DeleteSubstructure")]
-    public ProjectDto DeleteSubstructure(Guid substructureId)
+    public async Task<ProjectDto> DeleteSubstructure(Guid substructureId)
     {
-        return _substructureService.DeleteSubstructure(substructureId);
+        return await _substructureService.DeleteSubstructure(substructureId);
     }
 
     [HttpPut(Name = "UpdateSubstructure")]

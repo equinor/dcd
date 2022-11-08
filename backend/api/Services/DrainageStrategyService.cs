@@ -5,14 +5,13 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-
 namespace api.Services;
 
 public class DrainageStrategyService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
     private readonly ILogger<DrainageStrategyService> _logger;
+    private readonly ProjectService _projectService;
 
     public DrainageStrategyService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
     {
@@ -36,32 +35,31 @@ public class DrainageStrategyService
                 .Include(c => c.ProductionProfileNGL)
                 .Where(d => d.Project.Id.Equals(projectId));
         }
-        else
-        {
-            return new List<DrainageStrategy>();
-        }
+
+        return new List<DrainageStrategy>();
     }
 
-    public ProjectDto CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
+    public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
         var unit = _projectService.GetProject(drainageStrategyDto.ProjectId).PhysicalUnit;
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
         var project = _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
         _context.DrainageStrategies!.Add(drainageStrategy);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         SetCaseLink(drainageStrategy, sourceCaseId, project);
         return _projectService.GetProjectDto(drainageStrategy.ProjectId);
     }
 
-    public DrainageStrategy NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
+    public async Task<DrainageStrategy> NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto,
+        Guid sourceCaseId)
     {
         var unit = _projectService.GetProject(drainageStrategyDto.ProjectId).PhysicalUnit;
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
         var project = _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
         var createdDrainageStrategy = _context.DrainageStrategies!.Add(drainageStrategy);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         SetCaseLink(drainageStrategy, sourceCaseId, project);
         return createdDrainageStrategy.Entity;
     }
@@ -73,22 +71,23 @@ public class DrainageStrategyService
         {
             throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
         }
+
         case_.DrainageStrategyLink = drainageStrategy.Id;
         _context.SaveChanges();
     }
 
-    public ProjectDto DeleteDrainageStrategy(Guid drainageStrategyId)
+    public async Task<ProjectDto> DeleteDrainageStrategy(Guid drainageStrategyId)
     {
-        var drainageStrategy = GetDrainageStrategy(drainageStrategyId);
+        var drainageStrategy = await GetDrainageStrategy(drainageStrategyId);
         _context.DrainageStrategies!.Remove(drainageStrategy);
         DeleteCaseLinks(drainageStrategyId);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return _projectService.GetProjectDto(drainageStrategy.ProjectId);
     }
 
     private void DeleteCaseLinks(Guid drainageStrategyId)
     {
-        foreach (Case c in _context.Cases!)
+        foreach (var c in _context.Cases!)
         {
             if (c.DrainageStrategyLink == drainageStrategyId)
             {
@@ -99,7 +98,7 @@ public class DrainageStrategyService
 
     public ProjectDto UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
     {
-        var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
+        var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id).Result;
         var unit = _projectService.GetProject(existing.ProjectId).PhysicalUnit;
 
         DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
@@ -108,30 +107,38 @@ public class DrainageStrategyService
         {
             _context.ProductionProfileOil!.Remove(existing.ProductionProfileOil);
         }
+
         if (updatedDrainageStrategyDto.ProductionProfileGas == null && existing.ProductionProfileGas != null)
         {
             _context.ProductionProfileGas!.Remove(existing.ProductionProfileGas);
         }
+
         if (updatedDrainageStrategyDto.ProductionProfileWater == null && existing.ProductionProfileWater != null)
         {
             _context.ProductionProfileWater!.Remove(existing.ProductionProfileWater);
         }
-        if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null && existing.ProductionProfileWaterInjection != null)
+
+        if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null &&
+            existing.ProductionProfileWaterInjection != null)
         {
             _context.ProductionProfileWaterInjection!.Remove(existing.ProductionProfileWaterInjection);
         }
+
         if (updatedDrainageStrategyDto.FuelFlaringAndLosses == null && existing.FuelFlaringAndLosses != null)
         {
             _context.FuelFlaringAndLosses!.Remove(existing.FuelFlaringAndLosses);
         }
+
         if (updatedDrainageStrategyDto.NetSalesGas == null && existing.NetSalesGas != null)
         {
             _context.NetSalesGas!.Remove(existing.NetSalesGas);
         }
+
         if (updatedDrainageStrategyDto.Co2Emissions == null && existing.Co2Emissions != null)
         {
             _context.Co2Emissions!.Remove(existing.Co2Emissions);
         }
+
         if (updatedDrainageStrategyDto.ProductionProfileNGL == null && existing.ProductionProfileNGL != null)
         {
             _context.ProductionProfileNGL!.Remove(existing.ProductionProfileNGL);
@@ -144,7 +151,7 @@ public class DrainageStrategyService
 
     public DrainageStrategyDto NewUpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
     {
-        var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
+        var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id).Result;
         var unit = _projectService.GetProject(existing.ProjectId).PhysicalUnit;
 
         DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
@@ -153,30 +160,38 @@ public class DrainageStrategyService
         {
             _context.ProductionProfileOil!.Remove(existing.ProductionProfileOil);
         }
+
         if (updatedDrainageStrategyDto.ProductionProfileGas == null && existing.ProductionProfileGas != null)
         {
             _context.ProductionProfileGas!.Remove(existing.ProductionProfileGas);
         }
+
         if (updatedDrainageStrategyDto.ProductionProfileWater == null && existing.ProductionProfileWater != null)
         {
             _context.ProductionProfileWater!.Remove(existing.ProductionProfileWater);
         }
-        if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null && existing.ProductionProfileWaterInjection != null)
+
+        if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null &&
+            existing.ProductionProfileWaterInjection != null)
         {
             _context.ProductionProfileWaterInjection!.Remove(existing.ProductionProfileWaterInjection);
         }
+
         if (updatedDrainageStrategyDto.FuelFlaringAndLosses == null && existing.FuelFlaringAndLosses != null)
         {
             _context.FuelFlaringAndLosses!.Remove(existing.FuelFlaringAndLosses);
         }
+
         if (updatedDrainageStrategyDto.NetSalesGas == null && existing.NetSalesGas != null)
         {
             _context.NetSalesGas!.Remove(existing.NetSalesGas);
         }
+
         if (updatedDrainageStrategyDto.Co2Emissions == null && existing.Co2Emissions != null)
         {
             _context.Co2Emissions!.Remove(existing.Co2Emissions);
         }
+
         if (updatedDrainageStrategyDto.ProductionProfileNGL == null && existing.ProductionProfileNGL != null)
         {
             _context.ProductionProfileNGL!.Remove(existing.ProductionProfileNGL);
@@ -187,9 +202,9 @@ public class DrainageStrategyService
         return DrainageStrategyDtoAdapter.Convert(updatedDrainageStrategy.Entity, unit);
     }
 
-    public DrainageStrategy GetDrainageStrategy(Guid drainageStrategyId)
+    public async Task<DrainageStrategy> GetDrainageStrategy(Guid drainageStrategyId)
     {
-        var drainageStrategy = _context.DrainageStrategies!
+        var drainageStrategy = await _context.DrainageStrategies!
             .Include(c => c.Project)
             .Include(c => c.ProductionProfileOil)
             .Include(c => c.ProductionProfileGas)
@@ -199,11 +214,12 @@ public class DrainageStrategyService
             .Include(c => c.NetSalesGas)
             .Include(c => c.Co2Emissions)
             .Include(c => c.ProductionProfileNGL)
-            .FirstOrDefault(o => o.Id == drainageStrategyId);
+            .FirstOrDefaultAsync(o => o.Id == drainageStrategyId);
         if (drainageStrategy == null)
         {
-            throw new ArgumentException(string.Format("Drainage strategy {0} not found.", drainageStrategyId));
+            throw new ArgumentException($"Drainage strategy {drainageStrategyId} not found.");
         }
+
         return drainageStrategy;
     }
 }

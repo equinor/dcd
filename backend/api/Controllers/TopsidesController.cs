@@ -1,6 +1,4 @@
-using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
 using Api.Authorization;
@@ -16,11 +14,10 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class TopsidesController : ControllerBase
 {
     private readonly TopsideService _topsideService;
@@ -31,15 +28,15 @@ public class TopsidesController : ControllerBase
     }
 
     [HttpPost(Name = "CreateTopside")]
-    public ProjectDto CreateTopside([FromQuery] Guid sourceCaseId, [FromBody] TopsideDto topsideDto)
+    public async Task<ProjectDto> CreateTopside([FromQuery] Guid sourceCaseId, [FromBody] TopsideDto topsideDto)
     {
-        return _topsideService.CreateTopside(topsideDto, sourceCaseId);
+        return await _topsideService.CreateTopside(topsideDto, sourceCaseId);
     }
 
     [HttpDelete("{topsideId}", Name = "DeleteTopside")]
-    public ProjectDto DeleteTopside(Guid topsideId)
+    public async Task<ProjectDto> DeleteTopside(Guid topsideId)
     {
-        return _topsideService.DeleteTopside(topsideId);
+        return await _topsideService.DeleteTopside(topsideId);
     }
 
     [HttpPut(Name = "UpdateTopside")]

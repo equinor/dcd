@@ -4,15 +4,14 @@ using api.Adapters;
 using api.Dtos;
 using api.Models;
 
-
 namespace api.Services;
 
 public class GenerateGAndGAdminCostProfile
 {
-    private readonly ProjectService _projectService;
     private readonly CaseService _caseService;
-    private readonly ILogger<CaseService> _logger;
     private readonly ExplorationService _explorationService;
+    private readonly ILogger<CaseService> _logger;
+    private readonly ProjectService _projectService;
 
     public GenerateGAndGAdminCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
@@ -22,21 +21,23 @@ public class GenerateGAndGAdminCostProfile
         _explorationService = serviceProvider.GetRequiredService<ExplorationService>();
     }
 
-    public GAndGAdminCostDto Generate(Guid caseId)
+    public async Task<GAndGAdminCostDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
         Exploration exploration;
         try
         {
-            exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
+            exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
+            _logger.LogInformation("Exploration {0} not found", caseItem.ExplorationLink.ToString());
             return new GAndGAdminCostDto();
         }
-        var linkedWells = exploration.ExplorationWells?.Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well).ToList();
+
+        var linkedWells = exploration.ExplorationWells
+            ?.Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well).ToList();
         if (exploration != null && linkedWells?.Count > 0)
         {
             var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
@@ -47,7 +48,8 @@ public class GenerateGAndGAdminCostProfile
                 var project = _projectService.GetProject(caseItem.ProjectId);
                 var country = project.Country;
                 var countryCost = MapCountry(country);
-                var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
+                var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(),
+                    TimeSpan.Zero);
                 var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;
 
                 var totalMinutesLastYear = new TimeSpan(365, 0, 0, 0).TotalMinutes;
@@ -55,19 +57,21 @@ public class GenerateGAndGAdminCostProfile
 
                 var gAndGAdminCost = new GAndGAdminCost
                 {
-                    StartYear = (int)earliestYear - caseItem.DG4Date.Year
+                    StartYear = (int)earliestYear - caseItem.DG4Date.Year,
                 };
                 var years = lastYear.Year - (int)earliestYear;
                 var values = new List<double>();
-                for (int i = 0; i < years; i++)
+                for (var i = 0; i < years; i++)
                 {
                     values.Add(countryCost);
                 }
+
                 values.Add(countryCost * percentageOfLastYear);
                 gAndGAdminCost.Values = values.ToArray();
                 return ExplorationDtoAdapter.Convert(gAndGAdminCost);
             }
         }
+
         return new GAndGAdminCostDto();
     }
 

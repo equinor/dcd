@@ -1,6 +1,4 @@
-using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
 using Api.Authorization;
@@ -16,11 +14,10 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class ExplorationsController : ControllerBase
 {
     private readonly ExplorationService _explorationService;
@@ -31,15 +28,16 @@ public class ExplorationsController : ControllerBase
     }
 
     [HttpPost(Name = "CreateExploration")]
-    public ProjectDto CreateExploration([FromQuery] Guid sourceCaseId, [FromBody] ExplorationDto explorationDto)
+    public async Task<ProjectDto> CreateExploration([FromQuery] Guid sourceCaseId,
+        [FromBody] ExplorationDto explorationDto)
     {
-        return _explorationService.CreateExploration(explorationDto, sourceCaseId);
+        return await _explorationService.CreateExploration(explorationDto, sourceCaseId);
     }
 
     [HttpDelete("{explorationId}", Name = "DeleteExploration")]
-    public ProjectDto DeleteExploration(Guid explorationId)
+    public async Task<ProjectDto> DeleteExploration(Guid explorationId)
     {
-        return _explorationService.DeleteExploration(explorationId);
+        return await _explorationService.DeleteExploration(explorationId);
     }
 
     [HttpPut(Name = "UpdateExploration")]

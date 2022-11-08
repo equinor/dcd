@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 using api.Adapters;
 using api.Dtos;
 using api.Models;
@@ -8,7 +5,6 @@ using api.SampleData.Builders;
 using api.Services;
 
 using Xunit;
-
 
 namespace tests;
 
@@ -62,7 +58,7 @@ public class WellProjectServiceShould : IDisposable
         var expectedWellProject = CreateTestWellProject(project);
 
         // Act
-        var projectResult = wellProjectService.CreateWellProject(expectedWellProject, caseId);
+        var projectResult = wellProjectService.CreateWellProject(expectedWellProject, caseId).GetAwaiter().GetResult();
 
         // Assert
         var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == expectedWellProject.Name);
@@ -84,7 +80,8 @@ public class WellProjectServiceShould : IDisposable
         var expectedWellProject = CreateTestWellProject(new Project { Id = new Guid() });
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => wellProjectService.CreateWellProject(expectedWellProject, caseId));
+        Assert.Throws<NotFoundInDBException>(() =>
+            wellProjectService.CreateWellProject(expectedWellProject, caseId).GetAwaiter().GetResult());
     }
 
     [Fact]
@@ -98,7 +95,8 @@ public class WellProjectServiceShould : IDisposable
         var expectedWellProject = CreateTestWellProject(project);
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => wellProjectService.CreateWellProject(expectedWellProject, new Guid()));
+        Assert.Throws<NotFoundInDBException>(() =>
+            wellProjectService.CreateWellProject(expectedWellProject, new Guid()).GetAwaiter().GetResult());
     }
 
     [Fact]
@@ -114,12 +112,12 @@ public class WellProjectServiceShould : IDisposable
         fixture.context.Cases.Add(new Case
         {
             Project = project,
-            WellProjectLink = wellProjectToDelete.Id
+            WellProjectLink = wellProjectToDelete.Id,
         });
         fixture.context.SaveChanges();
 
         // Act
-        var projectResult = wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
+        var projectResult = wellProjectService.DeleteWellProject(wellProjectToDelete.Id).GetAwaiter().GetResult();
 
         // Assert
         var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == wellProjectToDelete.Name);
@@ -144,7 +142,8 @@ public class WellProjectServiceShould : IDisposable
         wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
 
         // Act, assert
-        Assert.Throws<ArgumentException>(() => wellProjectService.DeleteWellProject(wellProjectToDelete.Id));
+        Assert.Throws<ArgumentException>(() =>
+            wellProjectService.DeleteWellProject(wellProjectToDelete.Id).GetAwaiter().GetResult());
     }
 
     [Fact]
@@ -184,7 +183,7 @@ public class WellProjectServiceShould : IDisposable
         var updatedWellProject = CreateUpdatedWellProject(project);
 
         // Act, assert
-        Assert.Throws<ArgumentException>(() => wellProjectService.UpdateWellProject(updatedWellProject));
+        Assert.Throws<AggregateException>(() => wellProjectService.UpdateWellProject(updatedWellProject));
     }
 
     private static WellProject CreateTestWellProject(Project project)
@@ -204,7 +203,7 @@ public class WellProjectServiceShould : IDisposable
                 Currency = Currency.USD,
                 EPAVersion = "test EPA",
                 StartYear = 2030,
-                Values = new double[] { 13.4, 18.9, 34.3 }
+                Values = new[] { 13.4, 18.9, 34.3 },
             }
             );
     }
@@ -226,7 +225,7 @@ public class WellProjectServiceShould : IDisposable
                 Currency = Currency.NOK,
                 EPAVersion = "Updated EPA",
                 StartYear = 2030,
-                Values = new double[] { 13.4, 18.9, 34.3 }
+                Values = new[] { 13.4, 18.9, 34.3 },
             }
             )
         );

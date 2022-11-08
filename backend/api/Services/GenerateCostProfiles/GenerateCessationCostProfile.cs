@@ -7,10 +7,10 @@ namespace api.Services;
 public class GenerateCessationCostProfile
 {
     private readonly CaseService _caseService;
-    private readonly ILogger<CaseService> _logger;
     private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly WellProjectService _wellProjectService;
+    private readonly ILogger<CaseService> _logger;
     private readonly SurfService _surfService;
+    private readonly WellProjectService _wellProjectService;
 
     public GenerateCessationCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
@@ -21,21 +21,25 @@ public class GenerateCessationCostProfile
         _surfService = serviceProvider.GetRequiredService<SurfService>();
     }
 
-    public CessationCostDto Generate(Guid caseId)
+    public async Task<CessationCostDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
         var cessationWells = new TimeSeries<double>();
         var cessationOffshoreFacilities = new TimeSeries<double>();
 
         var lastYear = GetRelativeLastYearOfProduction(caseItem);
-        if (lastYear == null) { return new CessationCostDto(); }
+        if (lastYear == null)
+        {
+            return new CessationCostDto();
+        }
 
         WellProject wellProject;
         try
         {
-            wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-            var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
+            wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+            var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory))
+                .ToList();
             if (linkedWells != null)
             {
                 var pluggingAndAbandonment = wellProject.PluggingAndAbandonment;
@@ -45,37 +49,38 @@ public class GenerateCessationCostProfile
                 {
                     sumDrilledWells += well.DrillingSchedule?.Values.Sum() ?? 0;
                 }
-                var totalCost = sumDrilledWells * (double)pluggingAndAbandonment;
+
+                var totalCost = sumDrilledWells * pluggingAndAbandonment;
                 cessationWells.StartYear = (int)lastYear;
-                var cessationWellsValues = new double[] { totalCost / 2, totalCost / 2 };
+                var cessationWellsValues = new[] { totalCost / 2, totalCost / 2 };
                 cessationWells.Values = cessationWellsValues;
             }
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("WellProject {0} not found.", caseItem.WellProjectLink);
+            _logger.LogInformation("WellProject {0} not found", caseItem.WellProjectLink.ToString());
         }
 
         Surf surf;
         try
         {
-            surf = _surfService.GetSurf(caseItem.SurfLink);
+            surf = await _surfService.GetSurf(caseItem.SurfLink);
             var surfCessationCost = surf.CessationCost;
 
             cessationOffshoreFacilities.StartYear = (int)lastYear + 1;
-            var cessationOffshoreFacilitiesValues = new double[] { (double)surfCessationCost / 2, (double)surfCessationCost / 2 };
+            var cessationOffshoreFacilitiesValues = new[] { surfCessationCost / 2, surfCessationCost / 2 };
             cessationOffshoreFacilities.Values = cessationOffshoreFacilitiesValues;
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("Surf {0} not found.", caseItem.SurfLink);
+            _logger.LogInformation("Surf {0} not found", caseItem.SurfLink.ToString());
         }
 
         var cessationTimeSeries = TimeSeriesCost.MergeCostProfiles(cessationWells, cessationOffshoreFacilities);
         var cessation = new CessationCost
         {
             StartYear = cessationTimeSeries.StartYear,
-            Values = cessationTimeSeries.Values
+            Values = cessationTimeSeries.Values,
         };
         var dto = CaseDtoAdapter.Convert(cessation);
         return dto;
@@ -86,15 +91,21 @@ public class GenerateCessationCostProfile
         var drainageStrategy = new DrainageStrategy();
         try
         {
-            drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+            drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink).Result;
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            _logger.LogInformation("DrainageStrategy {0} not found", caseItem.DrainageStrategyLink.ToString());
             return null;
         }
-        if (drainageStrategy.ProductionProfileOil == null) { return null; }
-        var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length - 1;
+
+        if (drainageStrategy.ProductionProfileOil == null)
+        {
+            return null;
+        }
+
+        var lastYear = drainageStrategy.ProductionProfileOil.StartYear +
+            drainageStrategy.ProductionProfileOil.Values.Length - 1;
         return lastYear;
     }
 }

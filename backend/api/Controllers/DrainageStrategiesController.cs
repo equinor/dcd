@@ -1,4 +1,3 @@
-using api.Adapters;
 using api.Dtos;
 using api.Services;
 
@@ -15,11 +14,10 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class DrainageStrategiesController : ControllerBase
 {
     private readonly DrainageStrategyService _drainageStrategyService;
@@ -30,15 +28,16 @@ public class DrainageStrategiesController : ControllerBase
     }
 
     [HttpPost(Name = "CreateDrainageStrategy")]
-    public ProjectDto CreateDrainageStrategy([FromQuery] Guid sourceCaseId, [FromBody] DrainageStrategyDto drainageStrategyDto)
+    public async Task<ProjectDto> CreateDrainageStrategy([FromQuery] Guid sourceCaseId,
+        [FromBody] DrainageStrategyDto drainageStrategyDto)
     {
-        return _drainageStrategyService.CreateDrainageStrategy(drainageStrategyDto, sourceCaseId);
+        return await _drainageStrategyService.CreateDrainageStrategy(drainageStrategyDto, sourceCaseId);
     }
 
     [HttpDelete("{drainageStrategyId}", Name = "DeleteDrainageStrategy")]
-    public ProjectDto DeleteDrainageStrategy(Guid drainageStrategyId)
+    public async Task<ProjectDto> DeleteDrainageStrategy(Guid drainageStrategyId)
     {
-        return _drainageStrategyService.DeleteDrainageStrategy(drainageStrategyId);
+        return await _drainageStrategyService.DeleteDrainageStrategy(drainageStrategyId);
     }
 
     [HttpPut(Name = "UpdateDrainageStrategy")]

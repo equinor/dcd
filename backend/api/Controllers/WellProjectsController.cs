@@ -1,6 +1,5 @@
 using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
 using Api.Authorization;
@@ -16,11 +15,10 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class WellProjectsController : ControllerBase
 {
     private readonly WellProjectService _wellProjectService;
@@ -31,16 +29,17 @@ public class WellProjectsController : ControllerBase
     }
 
     [HttpPost(Name = "CreateWellProject")]
-    public ProjectDto CreateWellProject([FromQuery] Guid sourceCaseId, [FromBody] WellProjectDto wellProjectDto)
+    public async Task<ProjectDto> CreateWellProject([FromQuery] Guid sourceCaseId,
+        [FromBody] WellProjectDto wellProjectDto)
     {
         var wellProject = WellProjectAdapter.Convert(wellProjectDto);
-        return _wellProjectService.CreateWellProject(wellProject, sourceCaseId);
+        return await _wellProjectService.CreateWellProject(wellProject, sourceCaseId);
     }
 
     [HttpDelete("{wellProjectId}", Name = "DeleteWellProject")]
-    public ProjectDto DeleteWellProject(Guid wellProjectId)
+    public async Task<ProjectDto> DeleteWellProject(Guid wellProjectId)
     {
-        return _wellProjectService.DeleteWellProject(wellProjectId);
+        return await _wellProjectService.DeleteWellProject(wellProjectId);
     }
 
     [HttpPut(Name = "UpdateWellProject")]
