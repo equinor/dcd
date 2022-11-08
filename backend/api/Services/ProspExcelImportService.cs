@@ -120,8 +120,6 @@ public class ProspExcelImportService
         var waterInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.waterInjectorCount);
         var gasInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.gasInjectorCount);
         var cessationCost = ReadDoubleValue(cellData, _prospConfig.Surf.cessationCost);
-        //TODO: Add cessation cost from PROSP after feedback from PO
-        // var cessationCost = ReadDoubleValue(parsedData, "K88");
         var costProfile = new SurfCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
