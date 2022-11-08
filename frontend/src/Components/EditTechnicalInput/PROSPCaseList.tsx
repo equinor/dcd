@@ -105,7 +105,7 @@ function PROSPCaseList({
         p: any,
     ) => {
         if (p.value === ImportStatusEnum.PROSP) {
-            return <Checkbox disabled checked />
+            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
         if (p.value === ImportStatusEnum.Selected) {
             return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
