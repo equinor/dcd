@@ -106,16 +106,16 @@ function PROSPCaseList({
     ) => {
         if (p.value === ImportStatusEnum.PROSP) {
             // Imported assets should have checked checkboxes and remaining assets should remain unchecked.
-            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
+            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
         if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName !== "") {
-            return <Checkbox checked={false} onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
+            return <Checkbox onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
         }
         if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName === "") {
             return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
         if (p.value === ImportStatusEnum.NotSelected) {
-            return <Checkbox checked={false} onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
+            return <Checkbox onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
         }
         return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
     }

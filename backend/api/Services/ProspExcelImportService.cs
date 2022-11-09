@@ -427,6 +427,11 @@ public class ProspExcelImportService
         var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
             .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
+        var caseItem = _caseService.GetCase(sourceCaseId);
+        caseItem.SharepointFileId = sharepointFileId;
+        caseItem.SharepointFileName = sharepointFileName;
+        caseItem.SharepointFileUrl = sharepointFileUrl;
+
         if (mainSheet?.Id != null && workbookPart != null)
         {
             var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
@@ -438,28 +443,32 @@ public class ProspExcelImportService
                 if (assets["Surf"])
                 {
                     ImportSurf(parsedData, sourceCaseId, projectId);
+                } else {
+                    ClearImportedSurf(caseItem);
                 }
 
                 if (assets["Topside"])
                 {
                     ImportTopside(parsedData, sourceCaseId, projectId);
+                } else {
+                    ClearImportedTopside(caseItem);
                 }
 
                 if (assets["Substructure"])
                 {
                     ImportSubstructure(parsedData, sourceCaseId, projectId);
+                } else {
+                    ClearImportedSubstructure(caseItem);
                 }
 
                 if (assets["Transport"])
                 {
                     ImportTransport(parsedData, sourceCaseId, projectId);
+                } else {
+                    ClearImportedTransport(caseItem);
                 }
             }
 
-            var caseItem = _caseService.GetCase(sourceCaseId);
-            caseItem.SharepointFileId = sharepointFileId;
-            caseItem.SharepointFileName = sharepointFileName;
-            caseItem.SharepointFileUrl = sharepointFileUrl;
             var caseDto = CaseDtoAdapter.Convert(caseItem);
             return _caseService.UpdateCase(caseDto);
         }
