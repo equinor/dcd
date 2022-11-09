@@ -156,19 +156,26 @@ const EditTechnicalInputModal = ({
     }
 
     const handleSave = async () => {
-        setIsSaving(true)
-        const explorationResult = await (await GetExplorationOperationalWellCostsService()).update({ ...explorationOperationalWellCosts })
-        setExplorationOperationalWellCosts(explorationResult)
+        try {
+            setIsSaving(true)
+            const explorationResult = (await GetExplorationOperationalWellCostsService()).update({ ...explorationOperationalWellCosts })
+            const developmentResult = (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
 
-        const developmentResult = await (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
-        setDevelopmentOperationalWellCosts(developmentResult)
+            setExplorationOperationalWellCosts(await explorationResult)
+            setDevelopmentOperationalWellCosts(await developmentResult)
 
-        const projectResult = await (await GetProjectService()).updateProject(Project.Copy(project))
-        setProject(projectResult)
+            const projectResult = await (await GetProjectService()).updateProject(Project.Copy(project))
+            setProject(projectResult)
 
-        await saveWells()
-        setIsSaving(false)
-        toggleEditTechnicalInputModal()
+            await saveWells()
+            setIsSaving(false)
+            toggleEditTechnicalInputModal()
+        } catch (error) {
+            console.error("Error when saving technical input: ", error)
+        } finally {
+            setIsSaving(false)
+            toggleEditTechnicalInputModal()
+        }
     }
 
     return (
