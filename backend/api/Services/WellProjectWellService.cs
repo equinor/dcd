@@ -80,7 +80,10 @@ public class WellProjectWellService
         }
 
         var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
-        costProfileHelper.UpdateWellProjectCostProfilesForCase(caseId);
+        var wellProjectDto = costProfileHelper.UpdateWellProjectCostProfilesForCase(caseId);
+
+        var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
+        wellProjectService.NewUpdateWellProject(wellProjectDto);
 
         if (projectDto != null && wellProjectId != null)
         {

@@ -41,15 +41,25 @@ public class CostProfileFromDrillingScheduleHelper
         var explorationCaseIds = explorationCases.Select(c => c.Id).Distinct();
         var wellProjectCaseIds = wellProjectCases.Select(c => c.Id).Distinct();
 
+        var updatedExplorationDtoList = new List<ExplorationDto>();
         foreach (var caseId in explorationCaseIds)
         {
-            UpdateExplorationCostProfilesForCase(caseId);
+            var explorationDto = UpdateExplorationCostProfilesForCase(caseId);
+            updatedExplorationDtoList.Add(explorationDto);
         }
 
+        var updatedWellProjectDtoList = new List<WellProjectDto>();
         foreach (var caseId in wellProjectCaseIds)
         {
-            UpdateWellProjectCostProfilesForCase(caseId);
+            var wellProjectDto = UpdateWellProjectCostProfilesForCase(caseId);
+            updatedWellProjectDtoList.Add(wellProjectDto);
         }
+
+        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
+        explorationService.UpdateMultiple(updatedExplorationDtoList.ToArray());
+
+        var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
+        wellProjectService.UpdateMultiple(updatedWellProjectDtoList.ToArray());
     }
 
     public ExplorationDto UpdateExplorationCostProfilesForCase(Guid caseId)
@@ -102,8 +112,7 @@ public class CostProfileFromDrillingScheduleHelper
         exploration.SidetrackCostProfile = sidetrackCostProfile;
 
         var explorationDto = ExplorationDtoAdapter.Convert(exploration);
-        var dto = explorationService.NewUpdateExploration(explorationDto);
-        return dto;
+        return explorationDto;
     }
 
     private static TimeSeries<double> GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<ExplorationWell> explorationWells)
@@ -189,8 +198,7 @@ public class CostProfileFromDrillingScheduleHelper
         wellProject.GasInjectorCostProfile = gasInjectorCostProfile;
 
         var wellProjectDto = WellProjectDtoAdapter.Convert(wellProject);
-        var dto = wellProjectService.NewUpdateWellProject(wellProjectDto);
-        return dto;
+        return wellProjectDto;
     }
 
     private static TimeSeries<double> GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<WellProjectWell> wellProjectWells)
