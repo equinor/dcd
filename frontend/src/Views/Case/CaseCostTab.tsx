@@ -164,12 +164,9 @@ function CaseCostTab({
             try {
                 if (activeTab === 5) {
                     // OPEX
-                    const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    setStudyCost(study)
-                    const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    setOpexCost(opex)
-                    const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                    setCessationCost(cessation)
+                    const study = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    const opex = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    const cessation = (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
 
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
@@ -202,15 +199,18 @@ function CaseCostTab({
                     setseismicAcqAndProcCost(seismicAcquisitionAndProcessing)
                     const countryOffice = exploration.countryOfficeCost
                     setCountryOfficeCost(countryOffice)
-                    const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
-                    setGAndGAdminCost(gAndGAdmin)
+                    const gAndGAdmin = (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
+                    setGAndGAdminCost(await gAndGAdmin)
+                    setOpexCost(await opex)
+                    setStudyCost(await study)
+                    setCessationCost(await cessation)
 
-                    SetTableYearsFromProfiles([study, opex, cessation,
+                    SetTableYearsFromProfiles([await study, await opex, await cessation,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                        seismicAcquisitionAndProcessing, countryOffice, gAndGAdmin,
+                        seismicAcquisitionAndProcessing, countryOffice, await gAndGAdmin,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                 }
             } catch (error) {
