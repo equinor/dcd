@@ -74,7 +74,8 @@ function WellListEditTechnicalInput({
             if (index > -1) {
                 const well = rowWells[index]
                 const updatedWell = well
-                updatedWell[field as keyof typeof updatedWell] = field === "name" ? p.newValue : Number(p.newValue)
+                updatedWell[field as keyof typeof updatedWell] = field === "name"
+                    ? p.newValue : Number(p.newValue.toString().replace(/,/g, "."))
                 const updatedWells = [...rowWells]
                 updatedWells[index] = updatedWell
                 setWells(updatedWells)

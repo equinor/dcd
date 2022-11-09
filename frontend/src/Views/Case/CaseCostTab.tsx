@@ -183,33 +183,39 @@ function CaseCostTab({
             try {
                 if (activeTab === 5) {
                     // OPEX
-                    const studyWrapper = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    const study = StudyCostProfile.fromJSON(studyWrapper.studyCostProfileDto)
-                    setStudyCost(study)
+                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    const cessationWrapper = (await GetGenerateProfileService())
+                        .generateCessationCost(caseItem.id)
+
+                    const gAndGAdmin = (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
+
+                    const study = StudyCostProfile.fromJSON((await studyWrapper).studyCostProfileDto)
                     const totalFeasibility = TotalFeasibilityAndConceptStudies
-                        .fromJSON(studyWrapper.totalFeasibilityAndConceptStudiesDto)
+                        .fromJSON((await studyWrapper).totalFeasibilityAndConceptStudiesDto)
+                    const totalFEED = TotalFEEDStudies.fromJSON((await studyWrapper).totalFEEDStudiesDto)
+
+                    setStudyCost(study)
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
-                    const totalFEED = TotalFEEDStudies.fromJSON(studyWrapper.totalFEEDStudiesDto)
                     setTotalFEEDStudies(totalFEED)
 
-                    const opexWrapper = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    const opex = OpexCostProfile.fromJSON(opexWrapper.opexCostProfileDto)
-                    setOpexCost(opex)
+                    const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
                     const wellIntervention = WellInterventionCostProfile
-                        .fromJSON(opexWrapper.wellInterventionCostProfileDto)
-                    setWellInterventionCostProfile(wellIntervention)
+                        .fromJSON((await opexWrapper).wellInterventionCostProfileDto)
                     const offshoreFacilitiesOperations = OffshoreFacilitiesOperationsCostProfile
-                        .fromJSON(opexWrapper.offshoreFacilitiesOperationsCostProfileDto)
+                        .fromJSON((await opexWrapper).offshoreFacilitiesOperationsCostProfileDto)
+
+                    setOpexCost(opex)
+                    setWellInterventionCostProfile(wellIntervention)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
 
-                    const cessationWrapper = await (await GetGenerateProfileService())
-                        .generateCessationCost(caseItem.id)
-                    const cessation = CessationCostProfile.fromJSON(cessationWrapper.cessationCostDto)
-                    setCessationCost(cessation)
-                    const cessationWells = CessationWellsCost.fromJSON(cessationWrapper.cessationWellsCostDto)
-                    setCessationWellsCost(cessationWells)
+                    const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)
+                    const cessationWells = CessationWellsCost.fromJSON((await cessationWrapper).cessationWellsCostDto)
                     const cessationOffshoreFacilities = CessationOffshoreFacilitiesCost
-                        .fromJSON(cessationWrapper.cessationOffshoreFacilitiesCostDto)
+                        .fromJSON((await cessationWrapper).cessationOffshoreFacilitiesCostDto)
+
+                    setCessationCost(cessation)
+                    setCessationWellsCost(cessationWells)
                     setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
 
                     // CAPEX
@@ -243,15 +249,15 @@ function CaseCostTab({
                     setseismicAcqAndProcCost(seismicAcquisitionAndProcessing)
                     const countryOffice = exploration.countryOfficeCost
                     setCountryOfficeCost(countryOffice)
-                    const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
-                    setGAndGAdminCost(gAndGAdmin)
+
+                    setGAndGAdminCost(await gAndGAdmin)
 
                     SetTableYearsFromProfiles([study, opex, cessation,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                        seismicAcquisitionAndProcessing, countryOffice, gAndGAdmin,
+                        seismicAcquisitionAndProcessing, countryOffice, await gAndGAdmin,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                 }
             } catch (error) {

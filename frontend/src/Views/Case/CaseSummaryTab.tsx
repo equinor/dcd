@@ -132,12 +132,12 @@ function CaseSummaryTab({
             try {
                 if (activeTab === 7) {
                     // OPEX
-                    const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    // setStudyCost(study)
-                    const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    // setOpexCost(opex)
-                    const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                    // setCessationCost(cessation)
+                    const study = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    const opex = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    const cessation = (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
+                    // setStudyCost(await study)
+                    // setOpexCost(await opex)
+                    // setCessationCost(await cessation)
 
                     // CAPEX
                     const topsideCostProfile = topside.costProfile

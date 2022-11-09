@@ -30,18 +30,18 @@ function CaseCO2DistributionTable({
     const co2Data = [
         {
             profile: "Oil profile",
-            expectedProfile: Math.round(Number(topside?.cO2ShareOilProfile) * 100 * 1000) / 1000,
-            maxProfile: Math.round(Number(topside?.cO2OnMaxOilProfile) * 100 * 1000) / 1000,
+            expectedProfile: `${Math.round(Number(0.456789) * 100 * 1) / 1}%`,
+            maxProfile: `${Math.round(Number(topside?.cO2OnMaxOilProfile) * 100 * 1) / 1}%`,
         },
         {
             profile: "Gas profile",
-            expectedProfile: Math.round(Number(topside?.cO2ShareGasProfile) * 100 * 1000) / 1000,
-            maxProfile: Math.round(Number(topside?.cO2OnMaxGasProfile) * 100 * 1000) / 1000,
+            expectedProfile: `${Math.round(Number(topside?.cO2ShareGasProfile) * 100 * 1) / 1}%`,
+            maxProfile: `${Math.round(Number(topside?.cO2OnMaxGasProfile) * 100 * 1) / 1}%`,
         },
         {
             profile: "Water injection profile",
-            expectedProfile: Math.round(Number(topside?.cO2ShareWaterInjectionProfile) * 100 * 1000) / 1000,
-            maxProfile: Math.round(Number(topside?.cO2OnMaxWaterInjectionProfile) * 100 * 1000) / 1000,
+            expectedProfile: `${Math.round(Number(topside?.cO2ShareWaterInjectionProfile) * 100 * 1) / 1}%`,
+            maxProfile: `${Math.round(Number(topside?.cO2OnMaxWaterInjectionProfile) * 100 * 1) / 1}%`,
         },
     ]
 

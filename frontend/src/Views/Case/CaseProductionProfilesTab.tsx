@@ -210,14 +210,14 @@ function CaseProductionProfilesTab({
         (async () => {
             try {
                 if (activeTab === 1) {
-                    const fuelFlaringProfile = await (await GetGenerateProfileService())
+                    const fuelFlaringProfile = (await GetGenerateProfileService())
                         .generateFuelFlaringLossesProfile(caseItem.id)
-                    setFuelFlaringAndLosses(fuelFlaringProfile)
-                    const netSaleProfile = await (await GetGenerateProfileService()).generateNetSaleProfile(caseItem.id)
-                    setNetSalesGas(netSaleProfile)
-                    const importedElectricityProfile = await (await GetGenerateProfileService())
+                    const netSaleProfile = (await GetGenerateProfileService()).generateNetSaleProfile(caseItem.id)
+                    const importedElectricityProfile = (await GetGenerateProfileService())
                         .generateImportedElectricityProfile(caseItem.id)
-                    setImportedElectricity(importedElectricityProfile)
+                    setFuelFlaringAndLosses(await fuelFlaringProfile)
+                    setNetSalesGas(await netSaleProfile)
+                    setImportedElectricity(await importedElectricityProfile)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
                         drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
