@@ -16,7 +16,6 @@ public static class ExplorationAdapter
             RigMobDemob = explorationDto.RigMobDemob,
             Currency = explorationDto.Currency,
         };
-        exploration.CostProfile = Convert(explorationDto.CostProfile, exploration);
         exploration.ExplorationWellCostProfile = Convert(explorationDto.ExplorationWellCostProfile, exploration);
         exploration.AppraisalWellCostProfile = Convert(explorationDto.AppraisalWellCostProfile, exploration);
         exploration.SidetrackCostProfile = Convert(explorationDto.SidetrackCostProfile, exploration);
@@ -33,7 +32,6 @@ public static class ExplorationAdapter
         existing.Name = explorationDto.Name;
         existing.RigMobDemob = explorationDto.RigMobDemob;
         existing.Currency = explorationDto.Currency;
-        existing.CostProfile = Convert(explorationDto.CostProfile, existing);
         existing.ExplorationWellCostProfile = Convert(explorationDto.ExplorationWellCostProfile, existing);
         existing.AppraisalWellCostProfile = Convert(explorationDto.AppraisalWellCostProfile, existing);
         existing.SidetrackCostProfile = Convert(explorationDto.SidetrackCostProfile, existing);
@@ -42,23 +40,6 @@ public static class ExplorationAdapter
         existing.CountryOfficeCost = Convert(explorationDto.CountryOfficeCost, existing);
     }
 
-    private static ExplorationCostProfile Convert(ExplorationCostProfileDto? costProfileDto, Exploration exploration)
-    {
-        if (costProfileDto == null)
-        {
-            return null!;
-        }
-        return new ExplorationCostProfile
-        {
-            Id = costProfileDto.Id,
-            Currency = costProfileDto.Currency,
-            EPAVersion = costProfileDto.EPAVersion,
-            Exploration = exploration,
-            StartYear = costProfileDto.StartYear,
-            Values = costProfileDto.Values,
-            Override = costProfileDto.Override,
-        };
-    }
 
     private static ExplorationWellCostProfile Convert(ExplorationWellCostProfileDto? costProfileDto, Exploration exploration)
     {

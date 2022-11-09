@@ -27,7 +27,6 @@ public class ExplorationService
         if (_context.Explorations != null)
         {
             return _context.Explorations
-                .Include(c => c.CostProfile)
                 .Include(c => c.ExplorationWellCostProfile)
                 .Include(c => c.AppraisalWellCostProfile)
                 .Include(c => c.SidetrackCostProfile)
@@ -48,10 +47,6 @@ public class ExplorationService
         var source = GetExploration(explorationId);
         var newExplorationDto = ExplorationDtoAdapter.Convert(source);
         newExplorationDto.Id = Guid.Empty;
-        if (newExplorationDto.CostProfile != null)
-        {
-            newExplorationDto.CostProfile.Id = Guid.Empty;
-        }
         if (newExplorationDto.ExplorationWellCostProfile != null)
         {
             newExplorationDto.ExplorationWellCostProfile.Id = Guid.Empty;
@@ -136,87 +131,10 @@ public class ExplorationService
         }
     }
 
-    public void CalculateCostProfile(Exploration? exploration, ExplorationWell explorationWell, Well? updatedWell)
-    {
-        if (exploration != null && exploration?.CostProfile?.Override != true)
-        {
-            var project = _context.Projects!.Include(p => p.Wells).FirstOrDefault(p => p.Id == exploration!.ProjectId);
-            if (exploration!.ExplorationWells != null && project?.Wells != null
-                                                     && (exploration.ExplorationWells.Any(wpw => wpw.DrillingSchedule != null
-                                                         && wpw.WellId != explorationWell.WellId) || explorationWell.DrillingSchedule != null))
-            {
-                var wells = project.Wells.ToList();
-                if (updatedWell != null)
-                {
-                    var index = wells.FindIndex(w => w.Id == updatedWell.Id);
-                    if (index >= 0)
-                    {
-                        wells[index].WellCost = updatedWell.WellCost;
-                    }
-                }
-                GenerateCostProfileFromDrillingSchedules(exploration, exploration.ExplorationWells.ToList(), wells);
-                var explorationDto = ExplorationDtoAdapter.Convert(exploration);
-                UpdateExploration(explorationDto);
-            }
-            else if (exploration.ExplorationWells != null && project?.Wells != null)
-            {
-                exploration.CostProfile = null;
-                var explorationDto = ExplorationDtoAdapter.Convert(exploration);
-                UpdateExploration(explorationDto);
-            }
-        }
-    }
-
-    public void GenerateCostProfileFromDrillingSchedules(Exploration exploration, List<ExplorationWell> explorationWells, List<Well> wells)
-    {
-        var costProfile = new ExplorationCostProfile();
-        var costProfiles = new List<ExplorationCostProfile>();
-        foreach (var explorationWell in explorationWells)
-        {
-            if (explorationWell.DrillingSchedule == null) { continue; }
-
-            var well = wells.Find(w => w.Id == explorationWell.WellId);
-            if (well == null) { continue; }
-
-            var wellCostProfile = new ExplorationCostProfile();
-            wellCostProfile.StartYear = explorationWell.DrillingSchedule.StartYear;
-            var values = new List<double>();
-            foreach (var value in explorationWell.DrillingSchedule.Values)
-            {
-                values.Add(value * well.WellCost);
-            }
-            wellCostProfile.Values = values.ToArray();
-            costProfiles.Add(wellCostProfile);
-        }
-
-        var tempCostProfile = new TimeSeries<double>();
-        foreach (var profile in costProfiles)
-        {
-            tempCostProfile = TimeSeriesCost.MergeCostProfiles(tempCostProfile, profile);
-        }
-
-        costProfile.StartYear = tempCostProfile.StartYear;
-        costProfile.Values = tempCostProfile.Values;
-        if (exploration.CostProfile != null)
-        {
-            exploration.CostProfile.StartYear = costProfile.StartYear;
-            exploration.CostProfile.Values = costProfile.Values;
-        }
-        else
-        {
-            exploration.CostProfile = costProfile;
-        }
-    }
-
     public ProjectDto UpdateExploration(ExplorationDto updatedExplorationDto)
     {
         var existing = GetExploration(updatedExplorationDto.Id);
         ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
-
-        if (updatedExplorationDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.ExplorationCostProfile!.Remove(existing.CostProfile);
-        }
 
         if (updatedExplorationDto.GAndGAdminCost == null && existing.GAndGAdminCost != null)
         {
@@ -243,11 +161,6 @@ public class ExplorationService
         var existing = GetExploration(updatedExplorationDto.Id);
         ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
 
-        if (updatedExplorationDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.ExplorationCostProfile!.Remove(existing.CostProfile);
-        }
-
         if (updatedExplorationDto.GAndGAdminCost == null && existing.GAndGAdminCost != null)
         {
             _context.GAndGAdminCost!.Remove(existing.GAndGAdminCost);
@@ -270,9 +183,7 @@ public class ExplorationService
 
     public Exploration GetExploration(Guid explorationId)
     {
-
         var exploration = _context.Explorations!
-            .Include(c => c.CostProfile)
             .Include(c => c.ExplorationWellCostProfile)
             .Include(c => c.AppraisalWellCostProfile)
             .Include(c => c.SidetrackCostProfile)

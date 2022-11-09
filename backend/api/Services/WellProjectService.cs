@@ -25,7 +25,6 @@ public class WellProjectService
         if (_context.WellProjects != null)
         {
             return _context.WellProjects
-                .Include(c => c.CostProfile)
                 .Include(c => c.OilProducerCostProfile)
                 .Include(c => c.GasProducerCostProfile)
                 .Include(c => c.WaterInjectorCostProfile)
@@ -44,10 +43,6 @@ public class WellProjectService
         var source = GetWellProject(wellProjectId);
         var newWellProjectDto = WellProjectDtoAdapter.Convert(source);
         newWellProjectDto.Id = Guid.Empty;
-        if (newWellProjectDto.CostProfile != null)
-        {
-            newWellProjectDto.CostProfile.Id = Guid.Empty;
-        }
         if (newWellProjectDto.OilProducerCostProfile != null)
         {
             newWellProjectDto.OilProducerCostProfile.Id = Guid.Empty;
@@ -126,87 +121,10 @@ public class WellProjectService
         }
     }
 
-    public void CalculateCostProfile(WellProject? wellProject, WellProjectWell wellProjectWell, Well? updatedWell)
-    {
-        if (wellProject != null && wellProject?.CostProfile?.Override != true)
-        {
-            var project = _context.Projects!.Include(p => p.Wells).FirstOrDefault(p => p.Id == wellProject!.ProjectId);
-            if (wellProject!.WellProjectWells != null && project?.Wells != null
-                                                     && (wellProject.WellProjectWells.Any(wpw => wpw.DrillingSchedule != null
-                                                         && wpw.WellId != wellProjectWell.WellId) || wellProjectWell.DrillingSchedule != null))
-            {
-                var wells = project.Wells.ToList();
-                if (updatedWell != null)
-                {
-                    var index = wells.FindIndex(w => w.Id == updatedWell.Id);
-                    if (index >= 0)
-                    {
-                        wells[index].WellCost = updatedWell.WellCost;
-                    }
-                }
-                GenerateCostProfileFromDrillingSchedules(wellProject, wellProject.WellProjectWells.ToList(), wells);
-                var wellProjectDto = WellProjectDtoAdapter.Convert(wellProject);
-                UpdateWellProject(wellProjectDto);
-            }
-            else if (wellProject.WellProjectWells != null && project?.Wells != null)
-            {
-                wellProject.CostProfile = null;
-                var wellProjectDto = WellProjectDtoAdapter.Convert(wellProject);
-                UpdateWellProject(wellProjectDto);
-            }
-        }
-    }
-
-    public void GenerateCostProfileFromDrillingSchedules(WellProject wellProject, List<WellProjectWell> wellProjectWells, List<Well> wells)
-    {
-        var costProfile = new WellProjectCostProfile();
-        var costProfiles = new List<WellProjectCostProfile>();
-        foreach (var wellProjectWell in wellProjectWells)
-        {
-            if (wellProjectWell.DrillingSchedule == null) { continue; }
-
-            var well = wells.Find(w => w.Id == wellProjectWell.WellId);
-            if (well == null) { continue; }
-
-            var wellCostProfile = new WellProjectCostProfile();
-            wellCostProfile.StartYear = wellProjectWell.DrillingSchedule.StartYear;
-            var values = new List<double>();
-            foreach (var value in wellProjectWell.DrillingSchedule.Values)
-            {
-                values.Add(value * well.WellCost);
-            }
-            wellCostProfile.Values = values.ToArray();
-            costProfiles.Add(wellCostProfile);
-        }
-
-        var tempCostProfile = new TimeSeries<double>();
-        foreach (var profile in costProfiles)
-        {
-            tempCostProfile = TimeSeriesCost.MergeCostProfiles(tempCostProfile, profile);
-        }
-
-        costProfile.StartYear = tempCostProfile.StartYear;
-        costProfile.Values = tempCostProfile.Values;
-        if (wellProject.CostProfile != null)
-        {
-            wellProject.CostProfile.StartYear = costProfile.StartYear;
-            wellProject.CostProfile.Values = costProfile.Values;
-        }
-        else
-        {
-            wellProject.CostProfile = costProfile;
-        }
-    }
-
     public ProjectDto UpdateWellProject(WellProjectDto updatedWellProject)
     {
         var existing = GetWellProject(updatedWellProject.Id);
         WellProjectAdapter.ConvertExisting(existing, updatedWellProject);
-
-        if (updatedWellProject.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.WellProjectCostProfile!.Remove(existing.CostProfile);
-        }
 
         _context.WellProjects!.Update(existing);
         _context.SaveChanges();
@@ -218,11 +136,6 @@ public class WellProjectService
         var existing = GetWellProject(updatedWellProjectDto.Id);
         WellProjectAdapter.ConvertExisting(existing, updatedWellProjectDto);
 
-        if (updatedWellProjectDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.WellProjectCostProfile!.Remove(existing.CostProfile);
-        }
-
         var updatedWellProject = _context.WellProjects!.Update(existing);
         _context.SaveChanges();
         return WellProjectDtoAdapter.Convert(updatedWellProject.Entity);
@@ -231,7 +144,6 @@ public class WellProjectService
     public WellProject GetWellProject(Guid wellProjectId)
     {
         var wellProject = _context.WellProjects!
-            .Include(c => c.CostProfile)
             .Include(c => c.OilProducerCostProfile)
             .Include(c => c.GasProducerCostProfile)
             .Include(c => c.WaterInjectorCostProfile)

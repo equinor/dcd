@@ -24,8 +24,6 @@ import { Exploration } from "../../models/assets/exploration/Exploration"
 import { GetExplorationService } from "../../Services/ExplorationService"
 import { Surf } from "../../models/assets/surf/Surf"
 import { GetSurfService } from "../../Services/SurfService"
-import { ExplorationCostProfile } from "../../models/assets/exploration/ExplorationCostProfile"
-import { WellProjectCostProfile } from "../../models/assets/wellproject/WellProjectCostProfile"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Substructure } from "../../models/assets/substructure/Substructure"
 import { Topside } from "../../models/assets/topside/Topside"
@@ -137,14 +135,12 @@ function CaseCostTab({
     const [transportCost, setTransportCost] = useState<TransportCostProfile>()
 
     // Development
-    // const [wellProjectCost, setWellProjectCost] = useState<WellProjectCostProfile>()
     const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<OilProducerCostProfile>()
     const [wellProjectGasProducerCost, setWellProjectGasProducerCost] = useState<GasProducerCostProfile>()
     const [wellProjectWaterInjectorCost, setWellProjectWaterInjectorCost] = useState<WaterInjectorCostProfile>()
     const [wellProjectGasInjectorCost, setWellProjectGasInjectorCost] = useState<GasInjectorCostProfile>()
 
     // Exploration
-    // const [explorationCost, setExplorationCost] = useState<ExplorationCostProfile>()
     const [explorationWellCost, setExplorationWellCost] = useState<ExplorationWellCostProfile>()
     const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<AppraisalWellCostProfile>()
     const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<SidetrackCostProfile>()
@@ -168,12 +164,9 @@ function CaseCostTab({
             try {
                 if (activeTab === 5) {
                     // OPEX
-                    const study = await (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    setStudyCost(study)
-                    const opex = await (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    setOpexCost(opex)
-                    const cessation = await (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                    setCessationCost(cessation)
+                    const study = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    const opex = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    const cessation = (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
 
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
@@ -186,8 +179,6 @@ function CaseCostTab({
                     setTransportCost(transportCostProfile)
 
                     // Development
-                    // const wellProjectCostProfile = wellProject.costProfile
-                    // setWellProjectCost(wellProjectCostProfile)
                     const {
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
@@ -198,8 +189,6 @@ function CaseCostTab({
                     setWellProjectGasInjectorCost(gasInjectorCostProfile)
 
                     // Exploration
-                    // const explorationCostProfile = exploration.costProfile
-                    // setExplorationCost(explorationCostProfile)
                     const {
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
                         seismicAcquisitionAndProcessing,
@@ -210,15 +199,18 @@ function CaseCostTab({
                     setseismicAcqAndProcCost(seismicAcquisitionAndProcessing)
                     const countryOffice = exploration.countryOfficeCost
                     setCountryOfficeCost(countryOffice)
-                    const gAndGAdmin = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
-                    setGAndGAdminCost(gAndGAdmin)
+                    const gAndGAdmin = (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
+                    setGAndGAdminCost(await gAndGAdmin)
+                    setOpexCost(await opex)
+                    setStudyCost(await study)
+                    setCessationCost(await cessation)
 
-                    SetTableYearsFromProfiles([study, opex, cessation,
+                    SetTableYearsFromProfiles([await study, await opex, await cessation,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                        seismicAcquisitionAndProcessing, countryOffice, gAndGAdmin,
+                        seismicAcquisitionAndProcessing, countryOffice, await gAndGAdmin,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                 }
             } catch (error) {
@@ -525,7 +517,8 @@ function CaseCostTab({
                             onChange={handleCaseFeasibilityChange}
                             defaultValue={caseItem.capexFactorFeasibilityStudies * 100}
                             integer={false}
-                            label="CAPEX factor feasibility studies (%)"
+                            label="CAPEX factor feasibility studies"
+                            unit="%"
                         />
                     </NumberInputField>
                     <NumberInputField>
@@ -533,7 +526,8 @@ function CaseCostTab({
                             onChange={handleCaseFEEDChange}
                             defaultValue={caseItem.capexFactorFEEDStudies * 100}
                             integer={false}
-                            label="CAPEX factor FEED studies (%)"
+                            label="CAPEX factor FEED studies"
+                            unit="%"
                         />
                     </NumberInputField>
                     <NativeSelectField

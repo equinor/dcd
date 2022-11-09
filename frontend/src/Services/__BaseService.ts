@@ -69,6 +69,16 @@ export class __BaseService {
         return data
     }
 
+    protected async putWithParams(
+        path: string,
+        options?: RequestOptions,
+        requestQuery?: AxiosRequestConfig,
+    ): Promise<any> {
+        const { data } = await this.client.put(path, options?.body, requestQuery)
+
+        return data
+    }
+
     protected async getWithParams(
         path: string,
         requestQuery?: AxiosRequestConfig,

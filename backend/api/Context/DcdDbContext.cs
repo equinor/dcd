@@ -48,12 +48,10 @@ public class DcdDbContext : DbContext
     public DbSet<ProductionProfileNGL>? ProductionProfileNGL { get; set; }
 
     public DbSet<WellProject>? WellProjects { get; set; }
-    public DbSet<WellProjectCostProfile>? WellProjectCostProfile { get; set; }
 
     public DbSet<DrillingSchedule>? DrillingSchedule { get; set; }
 
     public DbSet<Exploration>? Explorations { get; set; }
-    public DbSet<ExplorationCostProfile>? ExplorationCostProfile { get; set; }
     public DbSet<GAndGAdminCost>? GAndGAdminCost { get; set; }
     public DbSet<SeismicAcquisitionAndProcessing>? SeismicAcquisitionAndProcessing { get; set; }
     public DbSet<CountryOfficeCost>? CountryOfficeCost { get; set; }

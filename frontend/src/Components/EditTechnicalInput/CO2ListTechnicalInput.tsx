@@ -90,55 +90,57 @@ function CO2ListTechnicalInput({
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
             set: setCO2RemovedFromGas,
-            value: cO2RemovedFromGas,
+            value: Math.round(cO2RemovedFromGas * 100) / 100,
         },
         {
             profile: "CO2-emissions from fuel gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFuelGas,
-            value: cO2EmissionsFromFuelGas,
+            value: Math.round(cO2EmissionsFromFuelGas * 100) / 100,
         },
         {
             profile: "Flared gas per produced volume",
             unit: "Sm³/boe",
             set: setFlaredGasPerProducedVolume,
-            value: flaredGasPerProducedVolume,
+            value: Math.round(flaredGasPerProducedVolume * 100) / 100,
         },
         {
             profile: "CO2-emissions from flared gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFlaredGas,
-            value: cO2EmissionsFromFlaredGas,
+            value: Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
         },
         {
             profile: "CO2 vented",
             unit: "kg CO2/Sm³",
             set: setCO2Vented,
-            value: cO2Vented,
+            value: Math.round(cO2Vented * 100) / 100,
         },
         {
             profile: "Average development well drilling days",
             unit: "days/wells",
             set: setAverageDevelopmentWellDrillingDays,
-            value: averageDevelopmentWellDrillingDays,
+            value: Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
         },
         {
             profile: "Daily emissions from drilling rig",
             unit: "tonnes CO2/day",
             set: setDailyEmissionsFromDrillingRig,
-            value: dailyEmissionsFromDrillingRig,
+            value: Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
         },
     ]
 
     const [rowData, setRowData] = useState([{}])
 
     const handleCellValueChange = (p: any) => {
-        p.data.set(Number(p.data.value))
+        p.data.set(Number(p.data.value.toString().replace(/,/g, ".")))
     }
 
     useEffect(() => {
         setRowData(co2Data)
-    }, [])
+    }, [cO2RemovedFromGas, cO2EmissionsFromFuelGas, flaredGasPerProducedVolume,
+        cO2EmissionsFromFlaredGas, cO2Vented, averageDevelopmentWellDrillingDays,
+        dailyEmissionsFromDrillingRig])
 
     useEffect(() => {
         if (project) {

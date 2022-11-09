@@ -38,7 +38,7 @@ public class CaseShould : IDisposable
         var loggerFactory = new LoggerFactory();
         var project = fixture.context.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         CaseService caseService = new
             CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
 
@@ -61,7 +61,7 @@ public class CaseShould : IDisposable
     public void UpdateCase()
     {
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldCase = CreateCase(project);
@@ -82,7 +82,7 @@ public class CaseShould : IDisposable
     public void DeleteCase()
     {
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
         var project = fixture.context.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
@@ -104,7 +104,7 @@ public class CaseShould : IDisposable
     public void DeleteNonExistentCase()
     {
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
 
         Assert.Throws<NotFoundInDBException>(() => caseService.DeleteCase(new Guid()));
