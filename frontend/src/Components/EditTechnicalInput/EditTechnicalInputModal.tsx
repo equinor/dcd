@@ -171,7 +171,7 @@ const EditTechnicalInputModal = ({
             setIsSaving(false)
             toggleEditTechnicalInputModal()
         } catch (error) {
-            console.error(error)
+            console.error("Error when saving technical input: ", error)
         } finally {
             setIsSaving(false)
             toggleEditTechnicalInputModal()
