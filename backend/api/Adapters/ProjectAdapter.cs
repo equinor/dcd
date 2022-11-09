@@ -43,8 +43,6 @@ public static class ProjectAdapter
         existing.FusionProjectId = projectDto.FusionProjectId;
         existing.Description = projectDto.Description;
         existing.Country = projectDto.Country;
-        existing.ProjectCategory = projectDto.ProjectCategory;
-        existing.ProjectPhase = projectDto.ProjectPhase;
         existing.Currency = projectDto.Currency;
         existing.PhysicalUnit = projectDto.PhysUnit;
         existing.Id = projectDto.ProjectId;
