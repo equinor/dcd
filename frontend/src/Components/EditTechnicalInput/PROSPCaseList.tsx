@@ -105,7 +105,7 @@ function PROSPCaseList({
         p: any,
     ) => {
         if (p.value === ImportStatusEnum.PROSP) {
-            // importerte assets skal ha markert checkbox og gjenstående assets skal være åpne.
+            // Imported assets should have checked checkboxes and remaining assets should remain unchecked.
             return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
         }
         if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName !== "") {
