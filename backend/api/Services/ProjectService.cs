@@ -22,10 +22,11 @@ public class ProjectService
     private readonly TransportService _transportService;
     private readonly ExplorationService _explorationService;
     private readonly WellService _wellService;
-
+    private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
+    private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
     private readonly ILogger<ProjectService> _logger;
 
-    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory)
+    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<ProjectService>();
@@ -36,15 +37,18 @@ public class ProjectService
         _topsideService = new TopsideService(_context, this, loggerFactory);
         _explorationService = new ExplorationService(_context, this, loggerFactory);
         _transportService = new TransportService(_context, this, loggerFactory);
-        _wellService = new WellService(_context, this, _wellProjectService, _explorationService, loggerFactory);
+        _wellService = new WellService(_context, this, _wellProjectService, _explorationService, serviceProvider, loggerFactory);
+        _explorationOperationalWellCostsService = new ExplorationOperationalWellCostsService(_context, this, loggerFactory);
+        _developmentOperationalWellCostsService = new DevelopmentOperationalWellCostsService(_context, this, loggerFactory);
     }
 
     public ProjectDto UpdateProject(ProjectDto projectDto)
     {
-        var updatedProject = ProjectAdapter.Convert(projectDto);
-        _context.Projects!.Update(updatedProject);
+        var existingProject = GetProject(projectDto.ProjectId);
+        ProjectAdapter.ConvertExisting(existingProject, projectDto);
+        _context.Projects!.Update(existingProject);
         _context.SaveChanges();
-        return GetProjectDto(updatedProject.Id);
+        return GetProjectDto(existingProject.Id);
     }
 
     public ProjectDto CreateProject(Project project)
@@ -144,6 +148,8 @@ public class ProjectService
             var project = _context.Projects!
                 .Include(p => p.Cases)
                 .Include(p => p.Wells)
+                .Include(p => p.ExplorationOperationalWellCosts)
+                .Include(p => p.DevelopmentOperationalWellCosts)
                 .FirstOrDefault(p => p.Id.Equals(projectId));
 
             if (project == null)

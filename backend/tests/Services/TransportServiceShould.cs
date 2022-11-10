@@ -17,10 +17,13 @@ namespace tests;
 public class TransportServiceShould
 {
     private readonly DatabaseFixture fixture;
+    private readonly IServiceProvider _serviceProvider;
 
     public TransportServiceShould()
     {
         fixture = new DatabaseFixture();
+        var serviceCollection = new ServiceCollection();
+        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     [Fact]
@@ -28,7 +31,7 @@ public class TransportServiceShould
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var transportService = new TransportService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedTransports = fixture.context.Transports.ToList().Where(o => o.Project.Id == project.Id);
@@ -51,7 +54,7 @@ public class TransportServiceShould
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var transportService = new TransportService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -73,7 +76,7 @@ public class TransportServiceShould
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var transportService = new TransportService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -88,7 +91,7 @@ public class TransportServiceShould
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var transportService = new TransportService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedTransport = CreateTestTransport(project);
@@ -102,7 +105,7 @@ public class TransportServiceShould
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var transportService = new TransportService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var transportToDelete = CreateTestTransport(project);
@@ -129,7 +132,7 @@ public class TransportServiceShould
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var transportService = new TransportService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var transportToDelete = CreateTestTransport(project);
@@ -148,7 +151,7 @@ public class TransportServiceShould
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var transportService = new TransportService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldTransport = CreateTestTransport(project);
@@ -195,7 +198,7 @@ public class TransportServiceShould
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var transportService = new TransportService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldTransport = CreateTestTransport(project);

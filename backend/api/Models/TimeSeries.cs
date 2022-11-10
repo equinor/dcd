@@ -46,10 +46,26 @@ public class TimeSeriesMass : TimeSeries<double>
 
 }
 
+public class TimeSeriesEnergy : TimeSeries<double>
+{
+
+}
+
 public class TimeSeriesCost : TimeSeries<double>
 {
     public string EPAVersion { get; set; } = string.Empty;
     public Currency Currency { get; set; }
+
+    public static TimeSeries<double> MergeCostProfilesList(List<TimeSeries<double>> timeseriesList)
+    {
+        var timeSeries = new TimeSeries<double>();
+        foreach (var ts in timeseriesList)
+        {
+            timeSeries = MergeCostProfiles(timeSeries, ts);
+        }
+
+        return timeSeries;
+    }
 
     public static TimeSeries<double> MergeCostProfiles(TimeSeries<double> t1, TimeSeries<double> t2)
     {

@@ -212,9 +212,22 @@ public class GenerateStudyCostProfile
         try
         {
             wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-            if (wellProject?.CostProfile != null)
+
+            if (wellProject?.OilProducerCostProfile != null)
             {
-                sumWellCost = wellProject.CostProfile.Values.Sum();
+                sumWellCost = wellProject.OilProducerCostProfile.Values.Sum();
+            }
+            if (wellProject?.GasProducerCostProfile != null)
+            {
+                sumWellCost = wellProject.GasProducerCostProfile.Values.Sum();
+            }
+            if (wellProject?.WaterInjectorCostProfile != null)
+            {
+                sumWellCost = wellProject.WaterInjectorCostProfile.Values.Sum();
+            }
+            if (wellProject?.GasInjectorCostProfile != null)
+            {
+                sumWellCost = wellProject.GasInjectorCostProfile.Values.Sum();
             }
         }
         catch (ArgumentException)
