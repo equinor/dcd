@@ -36,7 +36,7 @@ public static class EmissionCalculationHelper
         return TimeSeriesCost.MergeCostProfiles(totalUseOfPower, newTimeSeries);
     }
 
-    private static TimeSeries<double> CalculateTotalUseOfPower(Case caseItem,Topside topside, DrainageStrategy drainageStrategy)
+    private static TimeSeries<double> CalculateTotalUseOfPower(Case caseItem, Topside topside, DrainageStrategy drainageStrategy)
     {
         var totalUseOfPowerOil = CalculateTotalUseOfPowerOil(caseItem, topside, drainageStrategy);
         var totalUseOfPowerGas = CalculateTotalUseOfPowerGas(caseItem, topside, drainageStrategy);
@@ -102,7 +102,7 @@ public static class EmissionCalculationHelper
         };
 
         var index = 0;
-        for (var i = gasRatesProfile.StartYear; i < gasRatesProfile.StartYear + gasRatesProfile.Values.Length; i++,index++)
+        for (var i = gasRatesProfile.StartYear; i < gasRatesProfile.StartYear + gasRatesProfile.Values.Length; i++, index++)
         {
             var year = caseItem.DG4Date.Year + i;
             var calendarDays = DateTime.IsLeapYear(year) ? DaysInLeapYear : DaysInYear;
