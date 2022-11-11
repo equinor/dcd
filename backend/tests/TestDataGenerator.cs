@@ -110,12 +110,6 @@ public static class TestDataGenerator
         {
             Name = "SkarvenWellCase2",
             AnnualWellInterventionCost = 85e6,
-            CostProfile = new WellProjectCostProfileDto
-            {
-                Currency = Currency.NOK,
-                StartYear = 2029,
-                Values = new[] { 764e6 }
-            }
         };
     }
     public static ExplorationDto Case2Exploration()
@@ -123,13 +117,6 @@ public static class TestDataGenerator
         return new ExplorationDto
         {
             Name = "SkarvenExplCase2",
-            CostProfile = new ExplorationCostProfileDto
-            {
-                Currency = Currency.NOK,
-                StartYear = 2023,
-                Values = new[] { 280e6 }
-
-            },
             GAndGAdminCost = new GAndGAdminCostDto
             {
                 Currency = Currency.NOK,

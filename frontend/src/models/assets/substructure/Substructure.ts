@@ -9,7 +9,7 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
     projectId?: string | undefined
     costProfile?: SubstructureCostProfile | undefined
     cessationCostProfile?: SubstructureCessationCostProfile | undefined
-    dryweight?: number | undefined
+    dryWeight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
     currency?: Components.Schemas.Currency
     approvedBy?: string | null | undefined
@@ -29,7 +29,7 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
             this.costProfile = SubstructureCostProfile.fromJSON(data.costProfile)
             this.cessationCostProfile = SubstructureCessationCostProfile
                 .fromJSON(data.cessationCostProfile)
-            this.dryweight = data.dryWeight
+            this.dryWeight = data.dryWeight
             this.maturity = data.maturity
             this.currency = data.currency ?? 1
             this.approvedBy = data.approvedBy ?? ""

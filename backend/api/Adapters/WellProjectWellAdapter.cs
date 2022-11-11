@@ -9,7 +9,6 @@ public static class WellProjectWellAdapter
     {
         var wellProjectWell = new WellProjectWell
         {
-            Count = wellProjectWellDto.Count,
             WellProjectId = wellProjectWellDto.WellProjectId,
             WellId = wellProjectWellDto.WellId,
         };
@@ -22,7 +21,6 @@ public static class WellProjectWellAdapter
 
     public static void ConvertExisting(WellProjectWell existing, WellProjectWellDto wellProjectWellDto)
     {
-        existing.Count = wellProjectWellDto.Count;
         if (wellProjectWellDto.DrillingSchedule != null)
         {
             if (existing.DrillingSchedule != null)

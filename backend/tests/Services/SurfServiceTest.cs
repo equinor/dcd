@@ -19,11 +19,15 @@ public class SurfServiceTest
     readonly DatabaseFixture fixture;
     readonly IOrderedEnumerable<api.SampleData.Builders.ProjectBuilder> projectsFromSampleDataGenerator;
 
+    private readonly IServiceProvider _serviceProvider;
+
     public SurfServiceTest(DatabaseFixture fixture)
     {
         //arrange
         this.fixture = new DatabaseFixture();
         projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.Name);
+        var serviceCollection = new ServiceCollection();
+        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public Surf InitializeTestSurf()
@@ -38,7 +42,7 @@ public class SurfServiceTest
     public SurfService GetSurfService()
     {
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var surfService = new SurfService(fixture.context, projectService, loggerFactory);
         return surfService;
     }
@@ -47,7 +51,7 @@ public class SurfServiceTest
     public void GetAllSurf()
     {
         var loggerFactory = new LoggerFactory();
-        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         SurfService surfService = new SurfService(fixture.context, projectService, loggerFactory);
         var project = projectsFromSampleDataGenerator.First();
         surfService.GetSurfs(project.Id);
@@ -57,7 +61,7 @@ public class SurfServiceTest
     public void CreateNewSurf()
     {
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var surfService = new SurfService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(p => p.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;

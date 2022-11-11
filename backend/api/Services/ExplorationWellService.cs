@@ -1,5 +1,3 @@
-using System.Security.Principal;
-
 using api.Adapters;
 using api.Context;
 using api.Dtos;
@@ -13,15 +11,15 @@ public class ExplorationWellService
 {
     private readonly DcdDbContext _context;
     private readonly ProjectService _projectService;
-    private readonly ExplorationService _explorationService;
+    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<CaseService> _logger;
 
-    public ExplorationWellService(DcdDbContext context, ProjectService projectService, ExplorationService explorationService, ILoggerFactory loggerFactory)
+    public ExplorationWellService(DcdDbContext context, ProjectService projectService, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
+        _serviceProvider = serviceProvider;
         _logger = loggerFactory.CreateLogger<CaseService>();
-        _explorationService = explorationService;
     }
 
     public ProjectDto CreateExplorationWell(ExplorationWellDto explorationWellDto)
@@ -39,17 +37,14 @@ public class ExplorationWellService
 
     public ProjectDto UpdateExplorationWell(ExplorationWellDto updatedExplorationWellDto)
     {
-        var existing = GetExplorationWell(updatedExplorationWellDto.WellId, updatedExplorationWellDto.ExplorationId);
-        ExplorationWellAdapter.ConvertExisting(existing, updatedExplorationWellDto);
-        if (updatedExplorationWellDto.DrillingSchedule == null && existing.DrillingSchedule != null)
+        var existingExplorationWell = GetExplorationWell(updatedExplorationWellDto.WellId, updatedExplorationWellDto.ExplorationId);
+        ExplorationWellAdapter.ConvertExisting(existingExplorationWell, updatedExplorationWellDto);
+        if (updatedExplorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
         {
-            _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
+            _context.DrillingSchedule!.Remove(existingExplorationWell.DrillingSchedule);
         }
 
-        var exploration = _context.Explorations!.Include(wp => wp.CostProfile).Include(wp => wp.CountryOfficeCost).Include(wp => wp.SeismicAcquisitionAndProcessing).Include(wp => wp.ExplorationWells).ThenInclude(wpw => wpw.DrillingSchedule).FirstOrDefault(wp => wp.Id == existing.ExplorationId);
-        _explorationService.CalculateCostProfile(exploration, existing, null);
-
-        _context.ExplorationWell!.Update(existing);
+        _context.ExplorationWell!.Update(existingExplorationWell);
         _context.SaveChanges();
         var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == updatedExplorationWellDto.ExplorationId)?.ProjectId;
         if (projectId != null)
@@ -57,6 +52,43 @@ public class ExplorationWellService
             return _projectService.GetProjectDto((Guid)projectId);
         }
         throw new NotFoundInDBException();
+    }
+
+    public ExplorationWellDto[]? UpdateMultpleExplorationWells(ExplorationWellDto[] updatedExplorationWellDtos, Guid caseId)
+    {
+        var explorationId = updatedExplorationWellDtos.FirstOrDefault()?.ExplorationId;
+        ProjectDto? projectDto = null;
+        foreach (var explorationWellDto in updatedExplorationWellDtos)
+        {
+            projectDto = UpdateExplorationWell(explorationWellDto);
+        }
+
+        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
+        var explorationDto = costProfileHelper.UpdateExplorationCostProfilesForCase(caseId);
+
+        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
+        explorationService.NewUpdateExploration(explorationDto);
+
+        if (projectDto != null && explorationId != null)
+        {
+            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
+        }
+        return null;
+    }
+
+    public ExplorationWellDto[]? CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos)
+    {
+        var explorationId = explorationWellDtos.FirstOrDefault()?.ExplorationId;
+        ProjectDto? projectDto = null;
+        foreach (var explorationWellDto in explorationWellDtos)
+        {
+            projectDto = CreateExplorationWell(explorationWellDto);
+        }
+        if (projectDto != null && explorationId != null)
+        {
+            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
+        }
+        return null;
     }
 
     public ExplorationWell GetExplorationWell(Guid wellId, Guid caseId)
@@ -71,6 +103,28 @@ public class ExplorationWellService
         return explorationWell;
     }
 
+    public ExplorationWellDto[]? CopyExplorationWell(Guid sourceExplorationId, Guid targetExplorationId)
+    {
+        var sourceExplorationWells = GetAll().Where(ew => ew.ExplorationId == sourceExplorationId).ToList();
+        if (sourceExplorationWells?.Count > 0)
+        {
+            var newExplorationWellDtos = new List<ExplorationWellDto>();
+            foreach (var explorationWell in sourceExplorationWells)
+            {
+                var newExplorationDto = ExplorationWellDtoAdapter.Convert(explorationWell);
+                if (newExplorationDto.DrillingSchedule != null)
+                {
+                    newExplorationDto.DrillingSchedule.Id = Guid.Empty;
+                }
+                newExplorationDto.ExplorationId = targetExplorationId;
+                newExplorationWellDtos.Add(newExplorationDto);
+            }
+            var result = CreateMultipleExplorationWells(newExplorationWellDtos.ToArray());
+            return result;
+        }
+        return null;
+    }
+
     public ExplorationWellDto GetExplorationWellDto(Guid wellId, Guid caseId)
     {
         var explorationWell = GetExplorationWell(wellId, caseId);
@@ -83,7 +137,7 @@ public class ExplorationWellService
     {
         if (_context.ExplorationWell != null)
         {
-            return _context.ExplorationWell;
+            return _context.ExplorationWell.Include(ew => ew.DrillingSchedule);
         }
         else
         {

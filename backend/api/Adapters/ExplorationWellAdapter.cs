@@ -9,7 +9,6 @@ public static class ExplorationWellAdapter
     {
         var explorationWell = new ExplorationWell
         {
-            Count = explorationWellDto.Count,
             ExplorationId = explorationWellDto.ExplorationId,
             WellId = explorationWellDto.WellId,
         };
@@ -22,7 +21,6 @@ public static class ExplorationWellAdapter
 
     public static void ConvertExisting(ExplorationWell existing, ExplorationWellDto explorationWellDto)
     {
-        existing.Count = explorationWellDto.Count;
         if (explorationWellDto.DrillingSchedule != null)
         {
             if (existing.DrillingSchedule != null)
