@@ -6,7 +6,7 @@ import {
     ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
-import { RowNode } from "ag-grid-enterprise"
+import { GetRowIdFunc, GetRowIdParams, RowNode } from "ag-grid-enterprise"
 import styled from "styled-components"
 import { external_link } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
@@ -128,11 +128,18 @@ function PROSPCaseList({
         return options
     }
 
-    const handleFileChange = (event: ChangeEvent<HTMLSelectElement>, p: any) => {
+    const getRowId = useMemo<GetRowIdFunc>(() => (params: GetRowIdParams) => params.data.id, [])
+
+    const handleFileChange = useCallback((event: ChangeEvent<HTMLSelectElement>, p: any) => {
         const value = { ...p.value }
         value[1] = event.currentTarget.selectedOptions[0].value
+
+        const nodeId: string = p.node?.data.id
+        const rowNode = gridRef.current?.getRowNode(nodeId)
+        rowNode.setDataValue("caseSelected", true)
+
         p.setValue(value)
-    }
+    }, [])
 
     const fileIdDropDown = (p: any) => {
         const fileId = p.value[1]
@@ -279,6 +286,7 @@ function PROSPCaseList({
                     animateRows
                     domLayout="autoHeight"
                     onGridReady={onGridReady}
+                    getRowId={getRowId}
                 />
             </div>
             <ApplyButtonWrapper>
