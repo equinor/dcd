@@ -28,8 +28,8 @@ public class GenerateNetSaleGasProfile
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
         var calculateNetSaleGas = CalculateNetSaleGas(drainageStrategy, fuelConsumptions, flarings, losses);
 
         var netSaleGas = new NetSalesGas
