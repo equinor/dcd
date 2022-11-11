@@ -87,6 +87,10 @@ function PROSPCaseList({
     }), [])
 
     const changeStatus = (p: any, value: ImportStatusEnum) => {
+        const nodeId: string = p.node?.data.id
+        const rowNode = gridRef.current?.getRowNode(nodeId)
+        rowNode.setDataValue("caseSelected", true)
+
         p.setValue(value)
     }
 
