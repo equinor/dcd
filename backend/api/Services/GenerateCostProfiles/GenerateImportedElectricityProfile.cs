@@ -28,8 +28,8 @@ public class GenerateImportedElectricityProfile
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
         var calculateImportedElectricity =
             CalculateImportedElectricity(topside.PeakElectricityImported, fuelConsumptions, flarings, losses);
 

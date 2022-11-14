@@ -1,12 +1,14 @@
 # Digital Concept Development (DCD)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings) [![Contributors][contributors-shield]][contributors-url]
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/684c3f46696f49dc8b95a2d789b08daf)](https://app.codacy.com/gh/equinor/dcd?utm_source=github.com&utm_medium=referral&utm_content=equinor/dcd&utm_campaign=Badge_Grade_Settings) 
+![Known Vulnerabilities](https://snyk.io/test/github/equinor/dcd/badge.svg)
+[![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url] [![Issues][issues-shield]][issues-url]
 
 ## Concept App, Digital Concept Application
 
--   Product owner: Atle Svandal
--   Business area: Early phase concept studies
+- Product owner: Atle Svandal
+- Business area: Early phase concept studies
 
 ## Summary Description
 
@@ -15,9 +17,31 @@ and volume profiles for drainage stragegy and creating these as assets on busine
 
 ### Prerequisites
 
--   [.NET 6.0+](https://dotnet.microsoft.com/download/dotnet/6.0)
--   [Node 16+ with npm 8+](https://github.com/nodesource/distributions/blob/master/README.md)
--   [Docker](https://docs.docker.com/engine/install/)
+- [.NET 6.0+](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [Node 16+ with npm 8+](https://github.com/nodesource/distributions/blob/master/README.md)
+- [Docker](https://docs.docker.com/engine/install/)
+
+## Architechture
+
+The application is split between the [frontend app](#frontend) hosted in Fusion, and the [backend app](#backend) hosted in Radix. Authentication is based on [RBAC](https://learn.microsoft.com/en-us/azure/role-based-access-control/overview), where we have different app registrations for preproduction and production with are consented to access Fusion Preprod or Fusion Prod. 
+
+### Services used in the application
+
+### Security
+
+Snyk surveillance has been added to the project for continuous monitoring of the code and its dependency. 
+
+### Azure App Config
+
+Azure App Configuration provides a service to centrally manage application settings and feature flags. It allows us to change configuration directly in Azure for all environments.
+
+Combined with Azure Key Vault it also combines a secure place to store secrets and connection strings. 
+
+### Omnia Radix
+
+Omnia Radix is a Equinor PaaS (Platform as a Service) based on Kubernetes to build and run docker containers.
+
+Configuration of the required infrastructure is placed in a radixconfig.yml, which defines how your app should be hosted.
 
 ## Frontend
 
@@ -27,7 +51,7 @@ The frontend is built using TypeScript and components from the Equinor Design Sy
 
 Before you can run the application, you need to copy `.env.template` (`cp .env.template .env`) and set the necessary values.
 
-```
+```cmd
 cd frontend
 npm install
 npm start
@@ -35,7 +59,7 @@ npm start
 
 ## Backend
 
-The backend is built with .NET 6
+The backend is dotnet webapi built with .NET 6 which provides a REST interface for the frontend. Swagger has been installed to provide documentation for the API, and to test functions. The backend retrieves and stores data in a Azure SQL Database for each environment. 
 
 ### Run backend
 
@@ -52,7 +76,7 @@ authentication, as far as I know.
 
 Then, to start the backend, you can run
 
-```
+```cmd
 cd backend/api
 dotnet run
 ```
@@ -66,37 +90,9 @@ manually and when a new tag is created.
 
 ## Development
 
-### Git Hooks
-
-There are various git hooks provided in the `git-hooks` folder. Using these is
-voluntary. Various checks are performed that are also performed in CI. The
-intention is to shorten the development cycle and avoid pushing code that will
-not pass CI.
-
-To use e.g. the pre-commit hook, copy the file `pre-commit` into `.git/hooks/`
-in the project root, or (more elegant, as this will automate the hook
-automatically) link the script like such, running in the project root:
-
-```
-ln -s $PWD/git-hooks/pre-commit .git/hooks/pre-commit
-```
-
-The above requires having `ln` available.
-
-#### Dependencies
-
-The scripts rely on
-
-```
-- /bin/sh
-- git
-- dotnet
-- basic *nix utils (grep, tail, awk, ...)
-```
-
 ### Team
 
-DCD is developed by the It's a Feature team in TDI EDT DSD EDB. Development was started by the Shellvis team. 
+DCD is developed by the It's a Feature team in TDI EDT DSD EDB. Development was started by the Shellvis team.
 
 [contributors-shield]: https://img.shields.io/github/contributors/equinor/dcd.svg?style=for-the-badge
 [contributors-url]: https://github.com/equinor/dcd/graphs/contributors
@@ -113,17 +109,21 @@ DCD is developed by the It's a Feature team in TDI EDT DSD EDB. Development was 
 [product-screenshot]: images/screenshot.png
 
 ## Architecture Diagrams
+
 The following diagrams have been created using PlantUML.
 
 ### System Context Diagram
+
 System context diagram for the DCD application.
 ![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/equinor/dcd///main/PlantUMLC4L1)
 
 ### Container Diagram
+
 Container diagram for the DCD application.
 ![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/equinor/dcd///main/DCD_C4Container.iuml)
 
 ## Access to application and data - UNDER CONSTRUCTION
+
 AD groups that can view data (AccessIT groups work in progress)
 |Name|Description|User types|How to check|
 |-|-|-|-|
