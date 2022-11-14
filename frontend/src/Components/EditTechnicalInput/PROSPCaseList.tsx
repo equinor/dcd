@@ -252,7 +252,6 @@ function PROSPCaseList({
             dto.sharePointSiteUrl = p.sharepointSiteUrl
             dto.id = node.data?.id
             dto.surf = node.data?.surfState === ImportStatusEnum.Selected
-            console.log(dto.surf)
             dto.substructure = node.data?.substructureState === ImportStatusEnum.Selected
             dto.topside = node.data?.topsideState === ImportStatusEnum.Selected
             dto.transport = node.data?.transportState === ImportStatusEnum.Selected
