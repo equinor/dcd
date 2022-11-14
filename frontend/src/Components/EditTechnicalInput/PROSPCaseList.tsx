@@ -92,14 +92,7 @@ function PROSPCaseList({
     }
 
     const changeStatus = (p: any, value: ImportStatusEnum) => {
-<<<<<<< HEAD
-        const nodeId: string = p.node?.data.id
-        const rowNode = gridRef.current?.getRowNode(nodeId)
-        rowNode.setDataValue("caseSelected", true)
-
-=======
         caseAutoSelect(p.node?.data.id)
->>>>>>> c5b142dd6e3acd02e50570362bc93e3c1223ed64
         p.setValue(value)
     }
 
@@ -143,23 +136,12 @@ function PROSPCaseList({
 
     const getRowId = useMemo<GetRowIdFunc>(() => (params: GetRowIdParams) => params.data.id, [])
 
-<<<<<<< HEAD
-    const handleFileChange = useCallback((event: ChangeEvent<HTMLSelectElement>, p: any) => {
-        const value = { ...p.value }
-        value[1] = event.currentTarget.selectedOptions[0].value
-
-        const nodeId: string = p.node?.data.id
-        const rowNode = gridRef.current?.getRowNode(nodeId)
-        rowNode.setDataValue("caseSelected", true)
-
-=======
     const handleFileChange = (event: ChangeEvent<HTMLSelectElement>, p: any) => {
         const value = { ...p.value }
         value[1] = event.currentTarget.selectedOptions[0].value
         caseAutoSelect(p.node?.data.id)
->>>>>>> c5b142dd6e3acd02e50570362bc93e3c1223ed64
         p.setValue(value)
-    }, [])
+    }
 
     const fileIdDropDown = (p: any) => {
         const fileId = p.value[1]
