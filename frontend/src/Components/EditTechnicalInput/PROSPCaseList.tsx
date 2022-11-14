@@ -115,13 +115,13 @@ function PROSPCaseList({
             return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
         if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName !== "") {
-            return <Checkbox onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
+            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
         if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName === "") {
             return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
         if (p.value === ImportStatusEnum.NotSelected) {
-            return <Checkbox onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
+            return <Checkbox checked={false} onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
         }
         return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
     }
@@ -252,6 +252,7 @@ function PROSPCaseList({
             dto.sharePointSiteUrl = p.sharepointSiteUrl
             dto.id = node.data?.id
             dto.surf = node.data?.surfState === ImportStatusEnum.Selected
+            console.log(dto.surf)
             dto.substructure = node.data?.substructureState === ImportStatusEnum.Selected
             dto.topside = node.data?.topsideState === ImportStatusEnum.Selected
             dto.transport = node.data?.transportState === ImportStatusEnum.Selected

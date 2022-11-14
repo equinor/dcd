@@ -33,7 +33,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         const surfId = caseItem.surfLink
         const surf = project.surfs.find((s) => s.id === surfId)
         if (!surf) { return ImportStatusEnum.NotSelected }
-        if (SharePointImport.mapSource(surf.source) === "PROSP") { return ImportStatusEnum.PROSP }
+        if (SharePointImport.mapSource(surf.source) === "ConceptApp") { return ImportStatusEnum.NotSelected }
 
         return ImportStatusEnum.Selected
     }
@@ -42,7 +42,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         const substructureId = caseItem.substructureLink
         const substructure = project.substructures.find((s) => s.id === substructureId)
         if (!substructure) { return ImportStatusEnum.NotSelected }
-        if (SharePointImport.mapSource(substructure.source) === "PROSP") { return ImportStatusEnum.PROSP }
+        if (SharePointImport.mapSource(substructure.source) === "ConceptApp") { return ImportStatusEnum.NotSelected }
 
         return ImportStatusEnum.Selected
     }
@@ -51,7 +51,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         const topsideId = caseItem.topsideLink
         const topside = project.topsides.find((s) => s.id === topsideId)
         if (!topside) { return ImportStatusEnum.NotSelected }
-        if (SharePointImport.mapSource(topside.source) === "PROSP") { return ImportStatusEnum.PROSP }
+        if (SharePointImport.mapSource(topside.source) === "ConceptApp") { return ImportStatusEnum.NotSelected }
 
         return ImportStatusEnum.Selected
     }
@@ -60,7 +60,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         const transportId = caseItem.transportLink
         const transport = project.transports.find((s) => s.id === transportId)
         if (!transport) { return ImportStatusEnum.NotSelected }
-        if (SharePointImport.mapSource(transport.source) === "PROSP") { return ImportStatusEnum.PROSP }
+        if (SharePointImport.mapSource(transport.source) === "ConceptApp") { return ImportStatusEnum.NotSelected }
 
         return ImportStatusEnum.Selected
     }
