@@ -22,7 +22,7 @@ public class TransportService
     public ProjectDto CreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
         var transport = TransportAdapter.Convert(transportDto);
-        var project = _projectService.GetProject(transport.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(transport.ProjectId);
         transport.Project = project;
         transport.ProspVersion = transportDto.ProspVersion;
         transport.LastChangedDate = DateTimeOffset.Now;
@@ -37,7 +37,7 @@ public class TransportService
     public Transport NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
         var transport = TransportAdapter.Convert(transportDto);
-        var project = _projectService.GetProject(transport.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(transport.ProjectId);
         transport.Project = project;
         transport.LastChangedDate = DateTimeOffset.Now;
         var createdTransport = _context.Transports!.Add(transport);

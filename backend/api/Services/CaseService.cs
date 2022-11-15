@@ -29,7 +29,7 @@ public class CaseService
         {
             case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
         }
-        var project = _projectService.GetProject(case_.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(case_.ProjectId);
         case_.Project = project;
         _context.Cases!.Add(case_);
         _context.SaveChanges();
@@ -47,7 +47,7 @@ public class CaseService
         var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
 
         var case_ = CaseAdapter.Convert(caseDto);
-        var project = _projectService.GetProject(case_.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(case_.ProjectId);
         case_.Project = project;
         case_.CapexFactorFeasibilityStudies = 0.015;
         case_.CapexFactorFEEDStudies = 0.015;
@@ -138,7 +138,7 @@ public class CaseService
         {
             caseItem.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
         }
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(caseItem.ProjectId);
         caseItem.Project = project;
 
         caseItem.Name += " - copy";

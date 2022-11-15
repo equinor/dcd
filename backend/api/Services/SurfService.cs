@@ -111,7 +111,7 @@ public class SurfService
     public ProjectDto CreateSurf(SurfDto surfDto, Guid sourceCaseId)
     {
         var surf = SurfAdapter.Convert(surfDto);
-        var project = _projectService.GetProject(surf.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(surf.ProjectId);
         surf.Project = project;
         surf.ProspVersion = surfDto.ProspVersion;
         surf.LastChangedDate = DateTimeOffset.Now;
@@ -124,7 +124,7 @@ public class SurfService
     public Surf NewCreateSurf(SurfDto surfDto, Guid sourceCaseId)
     {
         var surf = SurfAdapter.Convert(surfDto);
-        var project = _projectService.GetProject(surf.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(surf.ProjectId);
         surf.Project = project;
         surf.LastChangedDate = DateTimeOffset.Now;
         var createdSurf = _context.Surfs!.Add(surf);

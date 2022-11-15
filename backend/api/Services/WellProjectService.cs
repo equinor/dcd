@@ -68,7 +68,7 @@ public class WellProjectService
 
     public ProjectDto CreateWellProject(WellProject wellProject, Guid sourceCaseId)
     {
-        var project = _projectService.GetProject(wellProject.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(wellProject.ProjectId);
         wellProject.Project = project;
         _context.WellProjects!.Add(wellProject);
         _context.SaveChanges();
@@ -79,7 +79,7 @@ public class WellProjectService
     public WellProject NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId)
     {
         var wellProject = WellProjectAdapter.Convert(wellProjectDto);
-        var project = _projectService.GetProject(wellProject.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(wellProject.ProjectId);
         wellProject.Project = project;
         var createdWellProject = _context.WellProjects!.Add(wellProject);
         _context.SaveChanges();

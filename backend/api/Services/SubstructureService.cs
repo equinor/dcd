@@ -38,7 +38,7 @@ public class SubstructureService
 
     public ProjectDto CreateSubstructure(Substructure substructure, Guid sourceCaseId)
     {
-        var project = _projectService.GetProject(substructure.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(substructure.ProjectId);
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.Now;
         _context.Substructures!.Add(substructure);
@@ -50,7 +50,7 @@ public class SubstructureService
     public Substructure NewCreateSubstructure(SubstructureDto substructureDto, Guid sourceCaseId)
     {
         var substructure = SubstructureAdapter.Convert(substructureDto);
-        var project = _projectService.GetProject(substructure.ProjectId);
+        var project = _projectService.GetProjectWithBaggage(substructure.ProjectId);
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.Now;
         var createdSubstructure = _context.Substructures!.Add(substructure);
