@@ -146,7 +146,7 @@ public class ProjectService
             }
 
 
-            var project =  _context.Projects!
+            var project = _context.Projects!
                          .Include(p => p.Cases)
                          .Include(p => p.Wells)
                          .Include(p => p.ExplorationOperationalWellCosts)
