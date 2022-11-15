@@ -443,28 +443,36 @@ public class ProspExcelImportService
                 if (assets["Surf"])
                 {
                     ImportSurf(parsedData, sourceCaseId, projectId);
-                } else {
+                }
+                else
+                {
                     ClearImportedSurf(caseItem);
                 }
 
                 if (assets["Topside"])
                 {
                     ImportTopside(parsedData, sourceCaseId, projectId);
-                } else {
+                }
+                else
+                {
                     ClearImportedTopside(caseItem);
                 }
 
                 if (assets["Substructure"])
                 {
                     ImportSubstructure(parsedData, sourceCaseId, projectId);
-                } else {
+                }
+                else
+                {
                     ClearImportedSubstructure(caseItem);
                 }
 
                 if (assets["Transport"])
                 {
                     ImportTransport(parsedData, sourceCaseId, projectId);
-                } else {
+                }
+                else
+                {
                     ClearImportedTransport(caseItem);
                 }
             }
