@@ -6,7 +6,7 @@ export class DrillingSchedule implements Components.Schemas.DrillingScheduleDto,
     values?: number []
 
     constructor(data?: Components.Schemas.DrillingScheduleDto) {
-        if (data !== undefined && data !== null) {
+        if (data) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
             this.values = data.values ?? []

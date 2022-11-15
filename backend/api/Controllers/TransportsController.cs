@@ -3,6 +3,8 @@ using api.Dtos;
 using api.Models;
 using api.Services;
 
+using Api.Authorization;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -13,6 +15,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class TransportsController : ControllerBase
 {
     private readonly TransportService _transportService;
@@ -28,6 +36,12 @@ public class TransportsController : ControllerBase
         return _transportService.UpdateTransport(transportDto);
     }
 
+    [HttpPut("new", Name = "NewUpdateTransport")]
+    public TransportDto NewUpdateTransport([FromBody] TransportDto transportDto)
+    {
+        return _transportService.NewUpdateTransport(transportDto);
+    }
+
     [HttpPost(Name = "CreateTransport")]
     public ProjectDto CreateTransport([FromQuery] Guid sourceCaseId, [FromBody] TransportDto transportDto)
     {
@@ -38,5 +52,11 @@ public class TransportsController : ControllerBase
     public ProjectDto DeleteTransport(Guid transportId)
     {
         return _transportService.DeleteTransport(transportId);
+    }
+
+    [HttpPost("{transportId}/copy", Name = "CopyTransport")]
+    public TransportDto CopyTransport([FromQuery] Guid caseId, Guid transportId)
+    {
+        return _transportService.CopyTransport(transportId, caseId);
     }
 }

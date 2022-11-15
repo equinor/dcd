@@ -3,6 +3,8 @@ using api.Dtos;
 using api.Models;
 using api.Services;
 
+using Api.Authorization;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -13,6 +15,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class SurfsController : ControllerBase
 {
     private readonly SurfService _surfService;
@@ -29,10 +37,22 @@ public class SurfsController : ControllerBase
         return _surfService.UpdateSurf(surfDto);
     }
 
+    [HttpPut("new", Name = "NewUpdateSurf")]
+    public SurfDto NewUpdateSurf([FromBody] SurfDto surfDto)
+    {
+        return _surfService.NewUpdateSurf(surfDto);
+    }
+
     [HttpPost(Name = "CreateSurf")]
     public ProjectDto CreateSurf([FromQuery] Guid sourceCaseId, [FromBody] SurfDto surfDto)
     {
         return _surfService.CreateSurf(surfDto, sourceCaseId);
+    }
+
+    [HttpPost("{surfId}/copy", Name = "CopySurf")]
+    public SurfDto CopySurf([FromQuery] Guid caseId, Guid surfId)
+    {
+        return _surfService.CopySurf(surfId, caseId);
     }
 
     [HttpDelete("{surfId}", Name = "DeleteSurf")]
@@ -40,5 +60,4 @@ public class SurfsController : ControllerBase
     {
         return _surfService.DeleteSurf(surfId);
     }
-
 }

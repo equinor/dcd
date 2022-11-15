@@ -47,6 +47,38 @@ public class SubstructureService
         return _projectService.GetProjectDto(project.Id);
     }
 
+    public Substructure NewCreateSubstructure(SubstructureDto substructureDto, Guid sourceCaseId)
+    {
+        var substructure = SubstructureAdapter.Convert(substructureDto);
+        var project = _projectService.GetProject(substructure.ProjectId);
+        substructure.Project = project;
+        substructure.LastChangedDate = DateTimeOffset.Now;
+        var createdSubstructure = _context.Substructures!.Add(substructure);
+        _context.SaveChanges();
+        SetCaseLink(substructure, sourceCaseId, project);
+        return createdSubstructure.Entity;
+    }
+
+    public SubstructureDto CopySubstructure(Guid substructureId, Guid sourceCaseId)
+    {
+        var source = GetSubstructure(substructureId);
+        var newSubstructureDto = SubstructureDtoAdapter.Convert(source);
+        newSubstructureDto.Id = Guid.Empty;
+        if (newSubstructureDto.CostProfile != null)
+        {
+            newSubstructureDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newSubstructureDto.CessationCostProfile != null)
+        {
+            newSubstructureDto.CessationCostProfile.Id = Guid.Empty;
+        }
+
+        var topside = NewCreateSubstructure(newSubstructureDto, sourceCaseId);
+        var dto = SubstructureDtoAdapter.Convert(topside);
+
+        return dto;
+    }
+
     private void SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
@@ -97,6 +129,27 @@ public class SubstructureService
         _context.Substructures!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(existing.ProjectId);
+    }
+
+    public SubstructureDto NewUpdateSubstructure(SubstructureDto updatedSubstructureDto)
+    {
+        var existing = GetSubstructure(updatedSubstructureDto.Id);
+
+        SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
+
+        if (updatedSubstructureDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
+        }
+
+        if (updatedSubstructureDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+        {
+            _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
+        }
+        existing.LastChangedDate = DateTimeOffset.Now;
+        var updatedSubstructure = _context.Substructures!.Update(existing);
+        _context.SaveChanges();
+        return SubstructureDtoAdapter.Convert(updatedSubstructure.Entity);
     }
 
     public Substructure GetSubstructure(Guid substructureId)

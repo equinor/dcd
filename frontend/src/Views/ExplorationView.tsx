@@ -1,38 +1,28 @@
-import {
-    Typography, Switch,
-} from "@equinor/eds-core-react"
+import { Switch, Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import {
-    useParams,
-} from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useCurrentContext } from "@equinor/fusion"
 import { Exploration } from "../models/assets/exploration/Exploration"
 import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-import {
-    AssetViewDiv, Wrapper,
-} from "./Asset/StyledAssetComponents"
+import { AssetViewDiv, Wrapper } from "./Asset/StyledAssetComponents"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import { unwrapCase } from "../Utils/common"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import NumberInput from "../Components/NumberInput"
-import { ExplorationCostProfile } from "../models/assets/exploration/ExplorationCostProfile"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
 import { IAssetService } from "../Services/IAssetService"
 import { Well } from "../models/Well"
-import DrillingSchedules from "../Components/Well/DrillingSchedules"
-import WellList from "../Components/Well/WellList"
 import { ExplorationWell } from "../models/ExplorationWell"
 import { SeismicAcquisitionAndProcessing } from "../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../models/assets/exploration/CountryOfficeCost"
-import { GetCaseService } from "../Services/CaseService"
-import ReadOnlyCostProfile from "../Components/ReadOnlyCostProfile"
+import { GetGenerateProfileService } from "../Services/GenerateProfileService"
 
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
@@ -44,7 +34,6 @@ const ExplorationView = () => {
     const currentProject = useCurrentContext()
     const [firstTSYear, setFirstTSYear] = useState<number>()
     const [lastTSYear, setLastTSYear] = useState<number>()
-    const [costProfile, setCostProfile] = useState<ExplorationCostProfile>()
     const [seismicAcquisitionAndProcessing,
         setSeismicAcquisitionAndProcessing] = useState<SeismicAcquisitionAndProcessing>()
     const [countryOfficeCost, setCountryOfficeCost] = useState<CountryOfficeCost>()
@@ -88,20 +77,18 @@ const ExplorationView = () => {
                 setCurrency(newExploration.currency ?? 1)
                 setRigMobDemob(newExploration.rigMobDemob)
 
-                setCostProfile(newExploration.costProfile)
-
                 setSeismicAcquisitionAndProcessing(newExploration.seismicAcquisitionAndProcessing)
                 setCountryOfficeCost(newExploration.countryOfficeCost)
 
-                const generatedGAndGAdminCost = await (await GetCaseService()).generateGAndGAdminCost(caseResult.id!)
+                // eslint-disable-next-line max-len
+                const generatedGAndGAdminCost = await (await GetGenerateProfileService()).generateGAndGAdminCost(caseResult.id!)
 
                 setGAndGAdminCost(generatedGAndGAdminCost)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
                         caseResult?.DG4Date?.getFullYear(),
-                        [newExploration.costProfile,
-                            newExploration.seismicAcquisitionAndProcessing,
+                        [newExploration.seismicAcquisitionAndProcessing,
                             newExploration.countryOfficeCost],
                         setFirstTSYear,
                         setLastTSYear,
@@ -114,7 +101,6 @@ const ExplorationView = () => {
     useEffect(() => {
         const newExploration: Exploration = { ...exploration }
         newExploration.rigMobDemob = rigMobDemob
-        newExploration.costProfile = costProfile
         newExploration.currency = currency
         newExploration.seismicAcquisitionAndProcessing = seismicAcquisitionAndProcessing
         newExploration.countryOfficeCost = countryOfficeCost
@@ -123,27 +109,15 @@ const ExplorationView = () => {
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
-                [costProfile, seismicAcquisitionAndProcessing, countryOfficeCost],
+                [seismicAcquisitionAndProcessing, countryOfficeCost],
                 setFirstTSYear,
                 setLastTSYear,
             )
         }
-    }, [rigMobDemob, costProfile, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
-
-    const overrideCostProfile = () => {
-        if (costProfile) {
-            const newCostProfile = { ...costProfile }
-            newCostProfile.override = !costProfile?.override
-            setCostProfile(newCostProfile)
-            setHasChanges(true)
-        }
-    }
+    }, [rigMobDemob, currency, seismicAcquisitionAndProcessing, countryOfficeCost])
 
     const setAllStates = (timeSeries: any) => {
         if (timeSeries) {
-            if (timeSeries.name === "Cost profile") {
-                setCostProfile(timeSeries)
-            }
             if (timeSeries.name === "Seismic acquisition and processing") {
                 setSeismicAcquisitionAndProcessing(timeSeries)
             }
@@ -158,8 +132,6 @@ const ExplorationView = () => {
 
     return (
         <AssetViewDiv>
-            <WellList project={project} exploration={exploration} setProject={setProject} />
-
             <Wrapper>
                 <Typography variant="h2">Exploration</Typography>
                 <Save
@@ -193,40 +165,20 @@ const ExplorationView = () => {
                     label="Rig mob demob"
                 />
             </Wrapper>
-            <Wrapper>
-                <Switch
-                    label="Override generated cost profile"
-                    onClick={overrideCostProfile}
-                    checked={costProfile?.override ?? false}
-                />
-            </Wrapper>
+
             <TimeSeries
                 dG4Year={caseItem.DG4Date!.getFullYear()}
                 setTimeSeries={setAllStates}
                 setHasChanges={setHasChanges}
-                timeSeries={[costProfile, seismicAcquisitionAndProcessing,
+                timeSeries={[seismicAcquisitionAndProcessing,
                     countryOfficeCost]}
                 firstYear={firstTSYear!}
                 lastYear={lastTSYear!}
                 profileName={["Cost profile", "Seismic acquisition and processing", "Country office cost"]}
                 profileEnum={project?.currency!}
                 profileType="Cost"
-            />
-            <ReadOnlyCostProfile
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                timeSeries={gAndGAdminCost}
-                title="G &amp; G and admin cost (MUSD)"
-            />
-            <Typography>Drilling schedules:</Typography>
-            <DrillingSchedules
-                setProject={setProject}
-                explorationWells={explorationWells}
-                project={project}
-                caseItem={caseItem!}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
+                readOnlyTimeSeries={[gAndGAdminCost]}
+                readOnlyName={["G & G and admin cost"]}
             />
         </AssetViewDiv>
     )
