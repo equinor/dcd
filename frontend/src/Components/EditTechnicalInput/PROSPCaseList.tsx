@@ -111,15 +111,19 @@ function PROSPCaseList({
         p: any,
     ) => {
         if (p.value === ImportStatusEnum.PROSP) {
-            return <Checkbox disabled checked />
+            // Imported assets should have checked checkboxes and remaining assets should remain unchecked.
+            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
-        if (p.value === ImportStatusEnum.Selected) {
+        if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName !== "") {
+            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
+        }
+        if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName === "") {
             return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
         if (p.value === ImportStatusEnum.NotSelected) {
             return <Checkbox checked={false} onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
         }
-        return <Checkbox onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
+        return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
     }
 
     const sharePointFileDropdownOptions = (items: DriveItem[]) => {
@@ -193,7 +197,7 @@ function PROSPCaseList({
             field: "fileLink",
             headerName: "Link",
             cellRenderer: fileLinkRenderer,
-            flex: 4,
+            width: 60,
         },
         {
             field: "surfState", headerName: "Surf", flex: 1, cellRenderer: checkBoxStatus, hide: check,
