@@ -92,7 +92,7 @@ public class ProjectService
     //     project.CO2EmissionsFromFlaredGas = 3.74;
     //     project.CO2Vented = 1.96;
     //     project.DailyEmissionFromDrillingRig = 100;
-    //     project.AverageDevelopmentDrillingDays = 50;
+    //     project.AverageDevelopmentDrillingDays = 50; test
     // }
 
     public IEnumerable<Project> GetAll()
