@@ -62,6 +62,7 @@ public class ProjectService
         project.Transports = new List<Transport>();
         project.WellProjects = new List<WellProject>();
         project.Explorations = new List<Exploration>();
+        // SetDefaultValues(project);
 
         Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
             new JsonSerializerSettings()
@@ -83,6 +84,16 @@ public class ProjectService
         _context.SaveChanges();
         return GetProjectDto(project.Id);
     }
+
+    // private static void SetDefaultValues(Project project)
+    // {
+    //     project.CO2EmissionFromFuelGas = 2.34;
+    //     project.FlaredGasPerProducedVolume = 1.321;
+    //     project.CO2EmissionsFromFlaredGas = 3.74;
+    //     project.CO2Vented = 1.96;
+    //     project.DailyEmissionFromDrillingRig = 100;
+    //     project.AverageDevelopmentDrillingDays = 50;
+    // }
 
     public IEnumerable<Project> GetAll()
     {
@@ -160,6 +171,8 @@ public class ProjectService
                     .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
                 project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
             }
+
+            return project;
         }
         _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
         throw new NotFoundInDBException("The database contains no projects");
