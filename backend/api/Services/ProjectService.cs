@@ -44,7 +44,7 @@ public class ProjectService
 
     public ProjectDto UpdateProject(ProjectDto projectDto)
     {
-        var existingProject = GetProjectWithBaggage(projectDto.ProjectId);
+        var existingProject = GetProjectWithAssets(projectDto.ProjectId);
         ProjectAdapter.ConvertExisting(existingProject, projectDto);
         _context.Projects!.Update(existingProject);
         _context.SaveChanges();
@@ -92,7 +92,7 @@ public class ProjectService
     //     project.CO2EmissionsFromFlaredGas = 3.74;
     //     project.CO2Vented = 1.96;
     //     project.DailyEmissionFromDrillingRig = 100;
-    //     project.AverageDevelopmentDrillingDays = 50; test
+    //     project.AverageDevelopmentDrillingDays = 50;
     // }
 
     public IEnumerable<Project> GetAll()
@@ -179,7 +179,7 @@ public class ProjectService
 
     }
 
-    public Project GetProjectWithBaggage(Guid projectId)
+    public Project GetProjectWithAssets(Guid projectId)
     {
         if (_context.Projects != null)
         {
@@ -221,7 +221,7 @@ public class ProjectService
 
     public ProjectDto GetProjectDto(Guid projectId)
     {
-        var project = GetProjectWithBaggage(projectId);
+        var project = GetProjectWithAssets(projectId);
         var projectDto = ProjectDtoAdapter.Convert(project);
 
         Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,

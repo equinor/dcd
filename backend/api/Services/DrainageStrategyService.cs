@@ -44,9 +44,9 @@ public class DrainageStrategyService
 
     public ProjectDto CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
-        var unit = _projectService.GetProjectWithBaggage(drainageStrategyDto.ProjectId).PhysicalUnit;
+        var unit = _projectService.GetProjectWithAssets(drainageStrategyDto.ProjectId).PhysicalUnit;
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
-        var project = _projectService.GetProjectWithBaggage(drainageStrategy.ProjectId);
+        var project = _projectService.GetProjectWithAssets(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
         _context.DrainageStrategies!.Add(drainageStrategy);
         _context.SaveChanges();
@@ -56,9 +56,9 @@ public class DrainageStrategyService
 
     public DrainageStrategy NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
-        var unit = _projectService.GetProjectWithBaggage(drainageStrategyDto.ProjectId).PhysicalUnit;
+        var unit = _projectService.GetProjectWithAssets(drainageStrategyDto.ProjectId).PhysicalUnit;
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
-        var project = _projectService.GetProjectWithBaggage(drainageStrategy.ProjectId);
+        var project = _projectService.GetProjectWithAssets(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
         var createdDrainageStrategy = _context.DrainageStrategies!.Add(drainageStrategy);
         _context.SaveChanges();
@@ -69,7 +69,7 @@ public class DrainageStrategyService
     public DrainageStrategyDto CopyDrainageStrategy(Guid drainageStrategyId, Guid sourceCaseId)
     {
         var source = GetDrainageStrategy(drainageStrategyId);
-        var unit = _projectService.GetProjectWithBaggage(source.ProjectId).PhysicalUnit;
+        var unit = _projectService.GetProjectWithAssets(source.ProjectId).PhysicalUnit;
 
         var newDrainageStrategyDto = DrainageStrategyDtoAdapter.Convert(source, unit);
         newDrainageStrategyDto.Id = Guid.Empty;
@@ -150,7 +150,7 @@ public class DrainageStrategyService
     public ProjectDto UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
     {
         var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
-        var unit = _projectService.GetProjectWithBaggage(existing.ProjectId).PhysicalUnit;
+        var unit = _projectService.GetProjectWithAssets(existing.ProjectId).PhysicalUnit;
 
         DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
 
@@ -195,7 +195,7 @@ public class DrainageStrategyService
     public DrainageStrategyDto NewUpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
     {
         var existing = GetDrainageStrategy(updatedDrainageStrategyDto.Id);
-        var unit = _projectService.GetProjectWithBaggage(existing.ProjectId).PhysicalUnit;
+        var unit = _projectService.GetProjectWithAssets(existing.ProjectId).PhysicalUnit;
 
         DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
 

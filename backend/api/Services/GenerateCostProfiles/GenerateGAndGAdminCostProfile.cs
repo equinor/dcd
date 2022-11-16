@@ -44,7 +44,7 @@ public class GenerateGAndGAdminCostProfile
             var dG1Date = caseItem.DG1Date;
             if (earliestYear != null && dG1Date.Year >= earliestYear)
             {
-                var project = _projectService.GetProjectWithBaggage(caseItem.ProjectId);
+                var project = _projectService.GetProjectWithAssets(caseItem.ProjectId);
                 var country = project.Country;
                 var countryCost = MapCountry(country);
                 var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
