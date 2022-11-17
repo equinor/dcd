@@ -24,7 +24,7 @@ public class GenerateImportedElectricityProfile
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProjectWithAssets(caseItem.ProjectId);
+        var project = _projectService.GetProject(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
