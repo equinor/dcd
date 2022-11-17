@@ -27,9 +27,21 @@ public class GenerateOpexCostProfile
     {
         var caseItem = _caseService.GetCase(caseId);
         var project = _projectService.GetProject(caseItem.ProjectId);
-        var wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project);
 
-        var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem);
+        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        TimeSeries<double> wellInterventionCost;
+        TimeSeries<double> offshoreFacilitiesOperationsCost;
+
+        if (drainageStrategy != null)
+        {
+            wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
+            offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
+        }
+        else
+        {
+            wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, new DrainageStrategy());
+            offshoreFacilitiesOperationsCost = new TimeSeries<double>();
+        }
 
         var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
         if (OPEX == null) { return new OpexCostProfileDto(); }
@@ -42,17 +54,8 @@ public class GenerateOpexCostProfile
         return opexDto ?? new OpexCostProfileDto();
     }
 
-    public TimeSeries<double> CalculateWellInterventionCostProfile(Case caseItem, Project project)
+    public TimeSeries<double> CalculateWellInterventionCostProfile(Case caseItem, Project project, DrainageStrategy drainageStrategy)
     {
-        var drainageStrategy = new DrainageStrategy();
-        try
-        {
-            drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-        }
-        catch (ArgumentException)
-        {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
-        }
         var lastYear = drainageStrategy?.ProductionProfileOil == null ? 0 : drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
 
         WellProject wellProject;
@@ -116,19 +119,9 @@ public class GenerateOpexCostProfile
         return wellInterventionCostsFromDrillingSchedule;
     }
 
-    public TimeSeries<double> CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem)
+    public TimeSeries<double> CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, DrainageStrategy drainageStrategy)
     {
-        DrainageStrategy drainageStrategy;
-        try
-        {
-            drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-        }
-        catch (ArgumentException)
-        {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
-            return new TimeSeries<double>();
-        }
-        if (drainageStrategy?.ProductionProfileOil == null) { return new TimeSeries<double>(); }
+        if (drainageStrategy.ProductionProfileOil == null) { return new TimeSeries<double>(); }
         var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
         var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
 
