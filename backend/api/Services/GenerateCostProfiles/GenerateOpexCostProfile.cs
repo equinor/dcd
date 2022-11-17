@@ -26,7 +26,7 @@ public class GenerateOpexCostProfile
     public OpexCostProfileDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         TimeSeries<double> wellInterventionCost;

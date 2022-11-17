@@ -26,7 +26,7 @@ public class GenerateCessationCostProfile
     public CessationCostDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         var cessationWells = new TimeSeries<double>();
         var cessationOffshoreFacilities = new TimeSeries<double>();
