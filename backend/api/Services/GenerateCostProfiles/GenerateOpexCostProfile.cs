@@ -10,6 +10,7 @@ public class GenerateOpexCostProfile
     private readonly ILogger<CaseService> _logger;
     private readonly DrainageStrategyService _drainageStrategyService;
     private readonly WellProjectService _wellProjectService;
+    private readonly ProjectService _projectService;
     private readonly TopsideService _topsideService;
 
     public GenerateOpexCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
@@ -19,13 +20,16 @@ public class GenerateOpexCostProfile
         _caseService = serviceProvider.GetRequiredService<CaseService>();
         _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
         _topsideService = serviceProvider.GetRequiredService<TopsideService>();
+        _projectService = serviceProvider.GetRequiredService<ProjectService>();
     }
 
     public OpexCostProfileDto Generate(Guid caseId)
     {
-        var wellInterventionCost = CalculateWellInterventionCostProfile(caseId);
+        var caseItem = _caseService.GetCase(caseId);
+        var project = _projectService.GetProject(caseItem.ProjectId);
+        var wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project);
 
-        var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseId);
+        var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem);
 
         var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
         if (OPEX == null) { return new OpexCostProfileDto(); }
@@ -38,10 +42,8 @@ public class GenerateOpexCostProfile
         return opexDto ?? new OpexCostProfileDto();
     }
 
-    public TimeSeries<double> CalculateWellInterventionCostProfile(Guid caseId)
+    public TimeSeries<double> CalculateWellInterventionCostProfile(Case caseItem, Project project)
     {
-        var caseItem = _caseService.GetCase(caseId);
-
         var drainageStrategy = new DrainageStrategy();
         try
         {
@@ -87,7 +89,7 @@ public class GenerateOpexCostProfile
         var cumulativeDrillingSchedule = GetCumulativeDrillingSchedule(tempSeries);
         cumulativeDrillingSchedule.StartYear = tempSeries.StartYear;
 
-        var interventionCost = wellProject.AnnualWellInterventionCost;
+        var interventionCost = project.DevelopmentOperationalWellCosts?.AnnualWellInterventionCostPerWell ?? 0;
 
         var wellInterventionCostValues = cumulativeDrillingSchedule.Values.Select(v => v * interventionCost).ToArray();
 
@@ -114,10 +116,8 @@ public class GenerateOpexCostProfile
         return wellInterventionCostsFromDrillingSchedule;
     }
 
-    public TimeSeries<double> CalculateOffshoreFacilitiesOperationsCostProfile(Guid caseId)
+    public TimeSeries<double> CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem)
     {
-        var caseItem = _caseService.GetCase(caseId);
-
         DrainageStrategy drainageStrategy;
         try
         {

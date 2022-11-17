@@ -78,10 +78,6 @@ function WellProjectView() {
                     setWellProject(newWellProject)
                 }
                 setWellProjectName(newWellProject?.name!)
-
-                setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
-                setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
-                setRigMobDemob(newWellProject.rigMobDemob)
                 setCurrency(newWellProject.currency ?? 1)
 
                 setArtificialLift(newWellProject.artificialLift)
@@ -91,9 +87,6 @@ function WellProjectView() {
 
     useEffect(() => {
         const newWellProject: WellProject = { ...wellProject }
-        newWellProject.annualWellInterventionCost = annualWellInterventionCost
-        newWellProject.pluggingAndAbandonment = pluggingAndAbandonment
-        newWellProject.rigMobDemob = rigMobDemob
         newWellProject.currency = currency
         newWellProject.artificialLift = artificialLift
         setWellProject(newWellProject)
