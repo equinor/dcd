@@ -22,7 +22,7 @@ public class STEAService
     public STEAProjectDto GetInputToSTEA(Guid ProjectId)
     {
 
-        var project = _projectService.GetProjectWithAssets(ProjectId);
+        var project = _projectService.GetProject(ProjectId);
         List<STEACaseDto> sTEACaseDtos = new List<STEACaseDto>();
         foreach (Case c in project.Cases!)
         {

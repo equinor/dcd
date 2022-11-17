@@ -55,7 +55,7 @@ public class ProjectServiceTest : IDisposable
         Assert.Equal(projectsFromSampleDataGenerator.Count(), projectsFromGetAllService.Count());
         foreach (var project in projectsFromGetAllService)
         {
-            var projectFromGetProjectService = projectService.GetProjectWithAssets(project.Id);
+            var projectFromGetProjectService = projectService.GetProject(project.Id);
             var projectFromSampleDataGenerator = projectsFromSampleDataGenerator.Find(p => p.Name == project.Name);
             TestHelper.CompareProjects(projectFromSampleDataGenerator, projectFromGetProjectService);
         }
@@ -66,6 +66,6 @@ public class ProjectServiceTest : IDisposable
     {
         var loggerFactory = new LoggerFactory();
         ProjectService projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        Assert.Throws<NotFoundInDBException>(() => projectService.GetProjectWithAssets(new Guid()));
+        Assert.Throws<NotFoundInDBException>(() => projectService.GetProject(new Guid()));
     }
 }

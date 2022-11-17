@@ -34,7 +34,7 @@ namespace api.Services
         public DevelopmentOperationalWellCostsDto CreateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto)
         {
             var explorationOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(dto);
-            var project = _projectService.GetProjectWithAssets(dto.ProjectId);
+            var project = _projectService.GetProject(dto.ProjectId);
             explorationOperationalWellCosts.Project = project;
             _context.DevelopmentOperationalWellCosts!.Add(explorationOperationalWellCosts);
             _context.SaveChanges();

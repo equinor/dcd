@@ -58,7 +58,7 @@ public class TopsideService
     public ProjectDto CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
     {
         var topside = TopsideAdapter.Convert(topsideDto);
-        var project = _projectService.GetProjectWithAssets(topsideDto.ProjectId);
+        var project = _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.Now;
         topside.ProspVersion = topsideDto.ProspVersion;
@@ -71,7 +71,7 @@ public class TopsideService
     public Topside NewCreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
     {
         var topside = TopsideAdapter.Convert(topsideDto);
-        var project = _projectService.GetProjectWithAssets(topsideDto.ProjectId);
+        var project = _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.Now;
         topside.ProspVersion = topsideDto.ProspVersion;

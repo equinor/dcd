@@ -44,7 +44,7 @@ public class ProjectService
 
     public ProjectDto UpdateProject(ProjectDto projectDto)
     {
-        var existingProject = GetProjectWithAssets(projectDto.ProjectId);
+        var existingProject = GetProject(projectDto.ProjectId);
         ProjectAdapter.ConvertExisting(existingProject, projectDto);
         _context.Projects!.Update(existingProject);
         _context.SaveChanges();
@@ -136,7 +136,7 @@ public class ProjectService
         }
     }
 
-    public Project GetProject(Guid projectId)
+    public Project GetProjectWithoutAssets(Guid projectId)
     {
         if (_context.Projects != null)
         {
@@ -168,7 +168,7 @@ public class ProjectService
 
     }
 
-    public Project GetProjectWithAssets(Guid projectId)
+    public Project GetProject(Guid projectId)
     {
         if (_context.Projects != null)
         {
@@ -210,7 +210,7 @@ public class ProjectService
 
     public ProjectDto GetProjectDto(Guid projectId)
     {
-        var project = GetProjectWithAssets(projectId);
+        var project = GetProject(projectId);
         var projectDto = ProjectDtoAdapter.Convert(project);
 
         Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
