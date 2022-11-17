@@ -57,7 +57,9 @@ public class ClaimsMiddelware
             .DefaultIfEmpty(ApplicationRole.None)
             .Select(role => new Claim(ApplicationRoleClaimType, role.ToString()));
 
-        _logger.LogInformation("Application Roles: " + applicationRoleClaims);
+        var rolesAsString = string.Join(",", applicationRoleClaims.Select(x => x.Value.ToString()));
+
+        _logger.LogInformation("Application Roles for User: " +httpContext.User?.Identity?.Name +" " + rolesAsString);
         var claimsIdentity = httpContext.User.Identity as ClaimsIdentity;
         claimsIdentity.AddClaims(applicationRoleClaims);
     }
