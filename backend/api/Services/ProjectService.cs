@@ -100,12 +100,10 @@ public class ProjectService
             {
                 AddAssetsToProject(project);
             }
-            _logger.LogInformation("Get projects");
             return projects;
         }
         else
         {
-            _logger.LogInformation("Get projects");
             return new List<Project>();
         }
     }
