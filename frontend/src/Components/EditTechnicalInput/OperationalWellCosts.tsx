@@ -79,14 +79,9 @@ function OperationalWellCosts({
                     <Table.Cell>
                         <div>
                             Cost
-                            {" "}
-                            <Typography
-                                variant="caption"
-                                token={{ fontWeight: 300 }}
-                            >
-                                {`${project?.currency === 1 ? "mill MNOK" : "mill MUSD"}`}
-
-                            </Typography>
+                            <div style={{ fontWeight: "normal", fontSize: "10px", marginTop: "-4px", color: "#6F6F6F" }}>
+                                {`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                            </div>
                         </div>
                     </Table.Cell>
                 </Table.Row>

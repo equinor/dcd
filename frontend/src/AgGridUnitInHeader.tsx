@@ -10,6 +10,6 @@ export const customUnitHeaderTemplate = (title: string, unit?: string): string =
         + "    <span ref=\"eFilter\" class=\"ag-header-icon ag-filter-icon\"></span>"
         + "    <div class=\"abc\">"
         + `    ${title}`
-        + "    <div class=\"abc\" style=\"font-weight: normal\">"
+        + "    <div class=\"abc\" style=\"font-size: 10px; font-weight: normal; margin-top: 4px; color: #6F6F6F\">"
         + `    ${unit}`
         + "</div>"
