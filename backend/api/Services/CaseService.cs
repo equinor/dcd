@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services;
 
 public class CaseService
@@ -130,14 +132,15 @@ public class CaseService
         var wellProjectWellService = _serviceProvider.GetRequiredService<WellProjectWellService>();
         var explorationWellService = _serviceProvider.GetRequiredService<ExplorationWellService>();
 
-        var caseItem = GetCase(caseId);
+        var caseItem = GetCaseNoTracking(caseId);
+
         var sourceWellProjectId = caseItem.WellProjectLink;
         var sourceExplorationId = caseItem.ExplorationLink;
+
+        caseItem.CreateTime = DateTimeOffset.UtcNow;
+        caseItem.ModifyTime = DateTimeOffset.UtcNow;
         caseItem.Id = new Guid();
-        if (caseItem.DG4Date == DateTimeOffset.MinValue)
-        {
-            caseItem.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
-        }
+
         var project = _projectService.GetProject(caseItem.ProjectId);
         caseItem.Project = project;
 
@@ -149,6 +152,7 @@ public class CaseService
         surfService.CopySurf(caseItem.SurfLink, caseItem.Id);
         substructureService.CopySubstructure(caseItem.SubstructureLink, caseItem.Id);
         transportService.CopyTransport(caseItem.TransportLink, caseItem.Id);
+
         var newWellProject = wellProjectService.CopyWellProject(caseItem.WellProjectLink, caseItem.Id);
         var newExploration = explorationService.CopyExploration(caseItem.ExplorationLink, caseItem.Id);
 
@@ -183,6 +187,17 @@ public class CaseService
         _context.Cases!.Remove(caseItem);
         _context.SaveChanges();
         return _projectService.GetProjectDto(caseItem.ProjectId);
+    }
+
+    public Case GetCaseNoTracking(Guid caseId)
+    {
+        var caseItem = _context.Cases!.AsNoTracking()
+            .FirstOrDefault(c => c.Id == caseId);
+        if (caseItem == null)
+        {
+            throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
+        }
+        return caseItem;
     }
 
     public Case GetCase(Guid caseId)

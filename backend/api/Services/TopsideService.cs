@@ -60,7 +60,7 @@ public class TopsideService
         var topside = TopsideAdapter.Convert(topsideDto);
         var project = _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
-        topside.LastChangedDate = DateTimeOffset.Now;
+        topside.LastChangedDate = DateTimeOffset.UtcNow;
         topside.ProspVersion = topsideDto.ProspVersion;
         _context.Topsides!.Add(topside);
         _context.SaveChanges();
@@ -73,7 +73,7 @@ public class TopsideService
         var topside = TopsideAdapter.Convert(topsideDto);
         var project = _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
-        topside.LastChangedDate = DateTimeOffset.Now;
+        topside.LastChangedDate = DateTimeOffset.UtcNow;
         topside.ProspVersion = topsideDto.ProspVersion;
         var createdTopside = _context.Topsides!.Add(topside);
         _context.SaveChanges();
@@ -126,7 +126,7 @@ public class TopsideService
         {
             _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Topsides!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
@@ -146,7 +146,7 @@ public class TopsideService
         {
             _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedTopside = _context.Topsides!.Update(existing);
         _context.SaveChanges();
         return TopsideDtoAdapter.Convert(updatedTopside.Entity);
