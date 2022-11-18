@@ -40,7 +40,7 @@ public class SubstructureService
     {
         var project = _projectService.GetProject(substructure.ProjectId);
         substructure.Project = project;
-        substructure.LastChangedDate = DateTimeOffset.Now;
+        substructure.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Add(substructure);
         _context.SaveChanges();
         SetCaseLink(substructure, sourceCaseId, project);
@@ -52,7 +52,7 @@ public class SubstructureService
         var substructure = SubstructureAdapter.Convert(substructureDto);
         var project = _projectService.GetProject(substructure.ProjectId);
         substructure.Project = project;
-        substructure.LastChangedDate = DateTimeOffset.Now;
+        substructure.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSubstructure = _context.Substructures!.Add(substructure);
         _context.SaveChanges();
         SetCaseLink(substructure, sourceCaseId, project);
@@ -125,7 +125,7 @@ public class SubstructureService
         {
             _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(existing.ProjectId);
@@ -146,7 +146,7 @@ public class SubstructureService
         {
             _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedSubstructure = _context.Substructures!.Update(existing);
         _context.SaveChanges();
         return SubstructureDtoAdapter.Convert(updatedSubstructure.Entity);

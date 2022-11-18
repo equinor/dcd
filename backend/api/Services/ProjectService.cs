@@ -53,7 +53,7 @@ public class ProjectService
 
     public ProjectDto CreateProject(Project project)
     {
-        project.CreateDate = DateTimeOffset.UtcNow.Date;
+        project.CreateDate = DateTimeOffset.UtcNow;
         project.Cases = new List<Case>();
         project.DrainageStrategies = new List<DrainageStrategy>();
         project.Substructures = new List<Substructure>();
@@ -165,7 +165,6 @@ public class ProjectService
         }
         _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
         throw new NotFoundInDBException("The database contains no projects");
-
     }
 
     public Project GetProject(Guid projectId)
@@ -183,6 +182,11 @@ public class ProjectService
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
                 .FirstOrDefault(p => p.Id.Equals(projectId));
+
+            if (project?.Cases?.Count > 0)
+            {
+                project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
+            }
 
             if (project == null)
             {
