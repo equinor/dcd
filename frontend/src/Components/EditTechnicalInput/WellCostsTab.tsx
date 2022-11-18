@@ -67,6 +67,7 @@ const WellCostsTab = ({
             <ColumnWrapper>
                 <OperationalWellCosts
                     title="Exploration costs"
+                    project={project}
                     explorationOperationalWellCosts={explorationOperationalWellCosts}
                     setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
                 />
@@ -86,6 +87,7 @@ const WellCostsTab = ({
             <ColumnWrapper>
                 <OperationalWellCosts
                     title="Development costs"
+                    project={project}
                     developmentOperationalWellCosts={developmentOperationalWellCosts}
                     setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
                 />

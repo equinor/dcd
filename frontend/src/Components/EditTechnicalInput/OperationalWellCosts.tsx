@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
-import { Table } from "@equinor/eds-core-react"
+import { Table, Typography } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
 import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
 import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
+import { Project } from "../../models/Project"
 import OperationalWellCost from "./OperationalWellCost"
 
 const TableWrapper = styled(Table)`
@@ -14,6 +15,7 @@ const TableWrapper = styled(Table)`
 
 interface Props {
     title: string
+    project: Project
     developmentOperationalWellCosts?: DevelopmentOperationalWellCosts
     setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<DevelopmentOperationalWellCosts | undefined>>
 
@@ -24,6 +26,7 @@ interface Props {
 
 function OperationalWellCosts({
     title,
+    project,
     developmentOperationalWellCosts,
     explorationOperationalWellCosts,
     setDevelopmentOperationalWellCosts,
@@ -74,7 +77,17 @@ function OperationalWellCosts({
                         {title}
                     </Table.Cell>
                     <Table.Cell>
-                        Cost (MUSD)
+                        <div>
+                            Cost
+                            {" "}
+                            <Typography
+                                variant="caption"
+                                token={{ fontWeight: 300 }}
+                            >
+                                {`${project?.currency === 1 ? "mill MNOK" : "mill MUSD"}`}
+
+                            </Typography>
+                        </div>
                     </Table.Cell>
                 </Table.Row>
             </Table.Head>
