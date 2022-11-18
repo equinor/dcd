@@ -20,10 +20,19 @@ public class Project
     public ICollection<Transport>? Transports { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
+    public ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
+    public DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
     public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
     public ICollection<WellProject>? WellProjects { get; set; }
     public ICollection<Exploration>? Explorations { get; set; }
     public string? SharepointSiteUrl { get; set; }
+    public double CO2RemovedFromGas { get; set; }
+    public double CO2EmissionFromFuelGas { get; set; } = 2.34;
+    public double FlaredGasPerProducedVolume { get; set; } = 1.321;
+    public double CO2EmissionsFromFlaredGas { get; set; } = 3.74;
+    public double CO2Vented { get; set; } = 1.96;
+    public double DailyEmissionFromDrillingRig { get; set; } = 100;
+    public double AverageDevelopmentDrillingDays { get; set; } = 50;
 }
 
 public enum PhysUnit

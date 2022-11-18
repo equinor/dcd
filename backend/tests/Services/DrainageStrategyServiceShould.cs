@@ -16,10 +16,13 @@ namespace tests;
 public class DrainageStrategyServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
+    private readonly IServiceProvider _serviceProvider;
 
     public DrainageStrategyServiceShould()
     {
         fixture = new DatabaseFixture();
+        var serviceCollection = new ServiceCollection();
+        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -32,7 +35,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedStrategies = fixture.context.DrainageStrategies.ToList().Where(o => o.Project.Id == project.Id);
@@ -55,7 +58,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -78,7 +81,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -94,7 +97,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedStrategy = CreateTestDrainageStrategy(project);
@@ -109,7 +112,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
@@ -136,7 +139,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
@@ -152,7 +155,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldStrategy = CreateTestDrainageStrategy(project);
@@ -174,7 +177,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldStrategy = CreateTestDrainageStrategy(project);

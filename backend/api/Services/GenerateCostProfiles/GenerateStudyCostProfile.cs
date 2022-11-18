@@ -29,8 +29,13 @@ public class GenerateStudyCostProfile
 
     public StudyCostProfileDto Generate(Guid caseId)
     {
-        var feasibility = CalculateTotalFeasibilityAndConceptStudies(caseId);
-        var feed = CalculateTotalFEEDStudies(caseId);
+        var caseItem = _caseService.GetCase(caseId);
+
+        var sumFacilityCost = SumAllCostFacility(caseItem);
+        var sumWellCost = SumWellCost(caseItem);
+
+        var feasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
+        var feed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
 
         if (feasibility.Values.Length == 0 && feed.Values.Length == 0)
         {
@@ -47,13 +52,8 @@ public class GenerateStudyCostProfile
         return dto;
     }
 
-    public TimeSeries<double> CalculateTotalFeasibilityAndConceptStudies(Guid caseId)
+    public TimeSeries<double> CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
-        var caseItem = _caseService.GetCase(caseId);
-
-        var sumFacilityCost = SumAllCostFacility(caseId);
-        var sumWellCost = SumWellCost(caseId);
-
         var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeasibilityStudies;
 
         var dg0 = caseItem.DG0Date;
@@ -91,13 +91,8 @@ public class GenerateStudyCostProfile
         return feasibilityAndConceptStudiesCost;
     }
 
-    public TimeSeries<double> CalculateTotalFEEDStudies(Guid caseId)
+    public TimeSeries<double> CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
-        var caseItem = _caseService.GetCase(caseId);
-
-        var sumFacilityCost = SumAllCostFacility(caseId);
-        var sumWellCost = SumWellCost(caseId);
-
         var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
 
         var dg2 = caseItem.DG2Date;
@@ -137,10 +132,8 @@ public class GenerateStudyCostProfile
         return feasibilityAndConceptStudiesCost;
     }
 
-    public double SumAllCostFacility(Guid caseId)
+    public double SumAllCostFacility(Case caseItem)
     {
-        var caseItem = _caseService.GetCase(caseId);
-
         var sumFacilityCost = 0.0;
 
         Substructure substructure;
@@ -202,19 +195,30 @@ public class GenerateStudyCostProfile
         return sumFacilityCost;
     }
 
-    public double SumWellCost(Guid caseId)
+    public double SumWellCost(Case caseItem)
     {
-        var caseItem = _caseService.GetCase(caseId);
-
         var sumWellCost = 0.0;
 
         WellProject wellProject;
         try
         {
             wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-            if (wellProject?.CostProfile != null)
+
+            if (wellProject?.OilProducerCostProfile != null)
             {
-                sumWellCost = wellProject.CostProfile.Values.Sum();
+                sumWellCost += wellProject.OilProducerCostProfile.Values.Sum();
+            }
+            if (wellProject?.GasProducerCostProfile != null)
+            {
+                sumWellCost += wellProject.GasProducerCostProfile.Values.Sum();
+            }
+            if (wellProject?.WaterInjectorCostProfile != null)
+            {
+                sumWellCost += wellProject.WaterInjectorCostProfile.Values.Sum();
+            }
+            if (wellProject?.GasInjectorCostProfile != null)
+            {
+                sumWellCost += wellProject.GasInjectorCostProfile.Values.Sum();
             }
         }
         catch (ArgumentException)

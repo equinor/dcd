@@ -104,7 +104,7 @@ function Import({ onClose, onImport }: Props) {
     }
 
     return (
-        <StyledDialog>
+        <StyledDialog open>
             <Dialog.Title>Import tab separated data from Excel</Dialog.Title>
             <Main>
                 <Typography>Start year relative to DG4</Typography>
