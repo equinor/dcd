@@ -149,6 +149,7 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
+
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<FusionService>();
 builder.Services.AddScoped<DrainageStrategyService>();
@@ -163,8 +164,10 @@ builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<CostProfileFromDrillingScheduleHelper>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
+builder.Services.AddScoped<CaseWithAssetsService>();
 builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
 builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
+
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
 builder.Services.AddScoped<GenerateCo2EmissionsProfile>();
@@ -173,9 +176,11 @@ builder.Services.AddScoped<GenerateCessationCostProfile>();
 builder.Services.AddScoped<GenerateImportedElectricityProfile>();
 builder.Services.AddScoped<GenerateFuelFlaringLossesProfile>();
 builder.Services.AddScoped<GenerateNetSaleGasProfile>();
+
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
@@ -183,7 +188,6 @@ builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
-builder.Services.AddScoped<SurfService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
