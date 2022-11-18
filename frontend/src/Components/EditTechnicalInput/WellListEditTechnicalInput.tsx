@@ -156,7 +156,7 @@ function WellListEditTechnicalInput({
             width: 90,
             flex: 1,
             headerComponentParams: {
-                template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "MNOK" : "MUSD"}`)
+                template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`)
             },
         },
     ])
