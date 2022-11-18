@@ -109,7 +109,6 @@ public static class TestDataGenerator
         return new WellProjectDto
         {
             Name = "SkarvenWellCase2",
-            AnnualWellInterventionCost = 85e6,
         };
     }
     public static ExplorationDto Case2Exploration()

@@ -73,7 +73,11 @@ function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
                     {subItems.map((subItem, index) => (
                         <SubItem key={`menu-sub-item-${index + 1}`}>
                             <nav>
-                                <LinkWithoutStyle to={CasePath(fusionContextId!, subItem.id ? subItem.id : "")}>
+                                <LinkWithoutStyle to={CasePath(
+                                    currentProject?.id!,
+                                    subItem.id ? subItem.id : "",
+                                )}
+                                >
                                     <MenuItem
                                         title={subItem.name ? subItem.name : "Untitled"}
                                         isSelected={isSelected && caseId === subItem.id}

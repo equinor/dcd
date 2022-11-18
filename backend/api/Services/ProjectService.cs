@@ -136,13 +136,45 @@ public class ProjectService
         }
     }
 
+    public Project GetProjectWithoutAssets(Guid projectId)
+    {
+        if (_context.Projects != null)
+        {
+            if (projectId == Guid.Empty)
+            {
+                throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+
+            var project = _context.Projects!
+                         .Include(p => p.Cases)
+                         .Include(p => p.Wells)
+                         .Include(p => p.ExplorationOperationalWellCosts)
+                         .Include(p => p.DevelopmentOperationalWellCosts)
+                         .FirstOrDefault(p => p.Id.Equals(projectId));
+
+            if (project == null)
+            {
+                var projectByFusionId = _context.Projects
+                    .Include(c => c.Cases)
+                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+            return project;
+        }
+        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+        throw new NotFoundInDBException("The database contains no projects");
+
+    }
+
     public Project GetProject(Guid projectId)
     {
         if (_context.Projects != null)
         {
             if (projectId == Guid.Empty)
             {
-                throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+                throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
             var project = _context.Projects!

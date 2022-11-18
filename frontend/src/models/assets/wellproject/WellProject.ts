@@ -15,9 +15,6 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     waterInjectorCostProfile?: WaterInjectorCostProfile
     gasInjectorCostProfile?: GasInjectorCostProfile
     artificialLift?: Components.Schemas.ArtificialLift | undefined
-    rigMobDemob?: number | undefined
-    annualWellInterventionCost?: number | undefined
-    pluggingAndAbandonment?: number | undefined
     currency?: Components.Schemas.Currency
     wellProjectWells?: WellProjectWell[] | null
 
@@ -31,9 +28,6 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
             this.waterInjectorCostProfile = WaterInjectorCostProfile.fromJSON(data.waterInjectorCostProfile)
             this.gasInjectorCostProfile = GasInjectorCostProfile.fromJSON(data.gasInjectorCostProfile)
             this.artificialLift = data.artificialLift ?? 0
-            this.rigMobDemob = data.rigMobDemob ?? 0
-            this.annualWellInterventionCost = data.annualWellInterventionCost ?? 0
-            this.pluggingAndAbandonment = data.pluggingAndAbandonment ?? 0
             this.currency = data.currency ?? 1
             this.wellProjectWells = data.wellProjectWells?.map((wc) => new WellProjectWell(wc))
         } else {
