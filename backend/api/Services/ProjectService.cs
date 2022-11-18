@@ -125,7 +125,6 @@ public class ProjectService
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
 
-            _logger.LogInformation(nameof(projectDtos));
             return projectDtos;
         }
         else
@@ -199,7 +198,7 @@ public class ProjectService
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
             AddAssetsToProject(project);
-            _logger.LogInformation("Add assets to project", project.ToString());
+            _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
             return project;
         }
         _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
@@ -216,8 +215,6 @@ public class ProjectService
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             }));
-
-        _logger.LogInformation(nameof(projectDto));
         return projectDto;
     }
 
