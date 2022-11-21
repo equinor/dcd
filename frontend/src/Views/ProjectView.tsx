@@ -136,6 +136,7 @@ const ProjectView = () => {
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <ProjectCompareCasesTab
+                                project={project}
                                 capexYearX={capexYearXLabels}
                                 capexYearY={capexYearYDatas}
                                 caseTitles={capexYearCaseTitles}
