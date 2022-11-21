@@ -76,10 +76,20 @@ function ProjectCompareCasesTab({
         sortable: true,
         filter: true,
         resizable: true,
-        editable: true,
+        editable: false,
     }), [])
 
     const [rowData, setRowData] = useState<TableCompareCase[]>()
+
+    const timeSeriesTotal = (timeSeries: any) => {
+        if (timeSeries?.values.length !== 0 && timeSeries !== undefined) {
+            const value: number = Math.round(timeSeries.values.map(
+                (v: number) => (v + Number.EPSILON),
+            ).reduce((x: number, y: number) => x + y) * 1000) / 1000
+            return value
+        }
+        return 0
+    }
 
     const casesToRowData = () => {
         if (project) {
@@ -92,9 +102,21 @@ function ProjectCompareCasesTab({
                     npv: c.npv ?? 0,
                     breakEven: c.breakEven ?? 0,
                     irr: 0,
-                    oilProduction: 0,
-                    gasProduction: 0,
-                    nglProduction: 0,
+                    oilProduction: timeSeriesTotal(
+                        project.drainageStrategies?.find(
+                            (dr) => dr.id === c.drainageStrategyLink,
+                        )?.productionProfileOil,
+                    ),
+                    gasProduction: timeSeriesTotal(
+                        project.drainageStrategies?.find(
+                            (dr) => dr.id === c.drainageStrategyLink,
+                        )?.productionProfileGas,
+                    ),
+                    nglProduction: timeSeriesTotal(
+                        project.drainageStrategies?.find(
+                            (dr) => dr.id === c.drainageStrategyLink,
+                        )?.productionProfileNGL,
+                    ),
                     totalExportedVolumes: 0,
                     studyCostsPlusOpex: 0,
                     cessationCosts: 0,
@@ -136,7 +158,7 @@ function ProjectCompareCasesTab({
                     width: 175,
                     headerComponentParams: {
                         template:
-                        customUnitHeaderTemplate("Break even", "USD/bbl"),
+                            customUnitHeaderTemplate("Break even", "USD/bbl"),
                     },
                 },
                 {
