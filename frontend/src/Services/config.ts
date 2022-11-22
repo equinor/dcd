@@ -8,6 +8,9 @@ const configuration = {
     CaseService: {
         BASE_URL: "",
     },
+    CaseWithAssetsService: {
+        BASE_URL: "",
+    },
     CommonLibraryService: {
         BASE_URL: "",
     },
@@ -65,7 +68,10 @@ const configuration = {
 }
 
 export const buildConfig = (baseUrl: string) => {
+    // eslint-disable-next-line no-param-reassign
+    baseUrl = "http://localhost:5000"
     configuration.CaseService.BASE_URL = `${baseUrl}/cases`
+    configuration.CaseWithAssetsService.BASE_URL = `${baseUrl}/case-with-assets`
     configuration.CommonLibraryService.BASE_URL = `${baseUrl}/common-library`
     configuration.ProjectService.BASE_URL = `${baseUrl}/projects`
     configuration.DrainageStrategyService.BASE_URL = `${baseUrl}/drainage-strategies`

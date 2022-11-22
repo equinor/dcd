@@ -43,6 +43,7 @@ import { Well } from "../models/Well"
 import { WellProjectWell } from "../models/WellProjectWell"
 import { ExplorationWell } from "../models/ExplorationWell"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
+import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -150,6 +151,7 @@ const CaseView = () => {
     const location = useLocation()
 
     const [isLoading, setIsLoading] = useState<boolean>()
+    const [isSaving, setIsSaving] = useState<boolean>()
 
     useEffect(() => {
         (async () => {
@@ -219,6 +221,30 @@ const CaseView = () => {
         }
     }
 
+    const handleSave = async () => {
+        // Check object changes
+        // Save only objects with changes
+        const dto: any = {}
+        dto.caseDto = caseItem
+        dto.caseDto.hasChanges = true
+        dto.surfDto = surf
+        dto.drainageStrategyDto = drainageStrategy
+        dto.wellProjectDto = wellProject
+        dto.explorationDto = exploration
+        dto.substructureDto = substructure
+        dto.transportDto = transport
+        dto.topsideDto = topside
+        setIsSaving(true)
+        try {
+            const result = await (await GetCaseWithAssetsService()).update(dto)
+            setIsSaving(false)
+        } catch (e) {
+            setIsSaving(false)
+            console.error("Error when saving case and assets: ", e)
+        }
+        // Set result
+    }
+
     if (isLoading || !project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
@@ -239,6 +265,11 @@ const CaseView = () => {
                     <PageTitle variant="h4">{caseItem.name}</PageTitle>
                     <ColumnWrapper>
                         <CaseButtonsWrapper>
+                            {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                                <Button>
+                                    <Progress.Dots />
+                                </Button>
+                            )}
                             <TransparentButton
                                 onClick={() => toggleTechnicalInputModal()}
                             >
