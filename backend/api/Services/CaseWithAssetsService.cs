@@ -63,8 +63,84 @@ public class CaseWithAssetsService
         var updatedTransportDto = UpdateTransport(wrapper.TransportDto);
         var updatedTopsideDto = UpdateTopside(wrapper.TopsideDto);
 
+        if (wrapper.ExplorationWellDto?.Length > 0)
+        {
+            // Create / update explorationWell
+        }
+
+        if (wrapper.WellProjectWellDtos?.Length > 0)
+        {
+            // Create / update WellProjectWell
+        }
+
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedCaseDto.ProjectId);
+    }
+
+    public ExplorationWellDto[]? CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos)
+    {
+        var explorationId = explorationWellDtos.FirstOrDefault()?.ExplorationId;
+        ProjectDto? projectDto = null;
+        foreach (var explorationWellDto in explorationWellDtos)
+        {
+            projectDto = CreateExplorationWell(explorationWellDto);
+        }
+        if (projectDto != null && explorationId != null)
+        {
+            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
+        }
+        return null;
+    }
+
+    public ProjectDto CreateExplorationWell(ExplorationWellDto explorationWellDto)
+    {
+        var explorationWell = ExplorationWellAdapter.Convert(explorationWellDto);
+        _context.ExplorationWell!.Add(explorationWell);
+        var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == explorationWellDto.ExplorationId)?.ProjectId;
+        if (projectId != null)
+        {
+            return _projectService.GetProjectDto((Guid)projectId);
+        }
+        throw new NotFoundInDBException();
+    }
+
+    public ProjectDto UpdateExplorationWell(ExplorationWellDto updatedExplorationWellDto)
+    {
+        var existingExplorationWell = _explorationWellService.GetExplorationWell(updatedExplorationWellDto.WellId, updatedExplorationWellDto.ExplorationId);
+        ExplorationWellAdapter.ConvertExisting(existingExplorationWell, updatedExplorationWellDto);
+        if (updatedExplorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
+        {
+            _context.DrillingSchedule!.Remove(existingExplorationWell.DrillingSchedule);
+        }
+
+        _context.ExplorationWell!.Update(existingExplorationWell);
+        var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == updatedExplorationWellDto.ExplorationId)?.ProjectId;
+        if (projectId != null)
+        {
+            return _projectService.GetProjectDto((Guid)projectId);
+        }
+        throw new NotFoundInDBException();
+    }
+
+    public ExplorationWellDto[]? UpdateMultpleExplorationWells(ExplorationWellDto[] updatedExplorationWellDtos, Guid caseId)
+    {
+        var explorationId = updatedExplorationWellDtos.FirstOrDefault()?.ExplorationId;
+        ProjectDto? projectDto = null;
+        foreach (var explorationWellDto in updatedExplorationWellDtos)
+        {
+            projectDto = UpdateExplorationWell(explorationWellDto);
+        }
+
+        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
+        var explorationDto = costProfileHelper.UpdateExplorationCostProfilesForCase(caseId);
+
+        UpdateExploration(explorationDto);
+
+        if (projectDto != null && explorationId != null)
+        {
+            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
+        }
+        return null;
     }
 
     // public ProjectDto CreateCaseWithAssets(CaseDto caseDto)
