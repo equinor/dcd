@@ -20,5 +20,15 @@ namespace api.Controllers;
 )]
 public class CompareCasesController : ControllerBase
 {
-    
+    private readonly CompareCasesService _compareCasesService;
+    public CompareCasesController(CompareCasesService compareCasesService)
+    {
+        _compareCasesService = compareCasesService;
+    }
+
+    [HttpPost("{projectId}/calculateCompareCasesTotals", Name = "CalculateCompareCasesTotals")]
+    public CompareCasesDto CalculateCompareCasesTotals(Guid projectId)
+    {
+        return _compareCasesService.Calculate(projectId);
+    }
 }

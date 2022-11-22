@@ -42,8 +42,32 @@ public class CompareCasesService
         _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
     }
 
-    public double CalculateTotalOilProduction(Case caseItem)
+    public CompareCasesDto Calculate(Guid projectId)
     {
+        var project = _projectService.GetProject(projectId);
+        if (project.Cases != null)
+        {
+            foreach (var caseItem in project.Cases)
+            {
+                CalculateTotalOilProduction(caseItem.Id);
+                CalculateTotalGasProduction(caseItem.Id);
+                CalculateTotalExportedVolumes(caseItem.Id);
+                CalculateTotalStudyCostsPlusOpex(caseItem.Id);
+                CalculateTotalCessationCosts(caseItem.Id);
+                CalculateOffshorePlusOnshoreFacilityCosts(caseItem.Id);
+                CalculateDevelopmentWellCosts(caseItem.Id);
+                CalculateExplorationWellCosts(caseItem.Id);
+                CalculateTotalCO2Emissions(caseItem.Id);
+                CalculateCO2Intensity(caseItem.Id);
+            }
+        }
+        // var dto = 0;
+        // return dto;
+    }
+
+    public double CalculateTotalOilProduction(Guid caseId)
+    {
+        var caseItem = _caseService.GetCase(caseId);
         var sumOilProduction = 0.0;
 
         DrainageStrategy drainageStrategy;
@@ -63,8 +87,9 @@ public class CompareCasesService
         return sumOilProduction;
     }
 
-    public double CalculateTotalGasProduction(Case caseItem)
+    public double CalculateTotalGasProduction(Guid caseId)
     {
+        var caseItem = _caseService.GetCase(caseId);
         var sumGasProduction = 0.0;
 
         DrainageStrategy drainageStrategy;
@@ -84,9 +109,9 @@ public class CompareCasesService
         return sumGasProduction;
     }
 
-    public double CalculateTotalExportedVolumes(Case caseItem)
+    public double CalculateTotalExportedVolumes(Guid caseId)
     {
-        return CalculateTotalOilProduction(caseItem) + CalculateTotalGasProduction(caseItem);
+        return CalculateTotalOilProduction(caseId) + CalculateTotalGasProduction(caseId);
     }
 
     public double CalculateTotalStudyCostsPlusOpex(Guid caseId)
@@ -106,14 +131,15 @@ public class CompareCasesService
         return generateCessationProfile.Values.Sum();
     }
 
-    public double CalculateOffshorePlusOnshoreFacilityCosts(Case caseItem)
+    public double CalculateOffshorePlusOnshoreFacilityCosts(Guid caseId)
     {
+        var caseItem = _caseService.GetCase(caseId);
         return _generateStudyCostProfile.SumAllCostFacility(caseItem);
-
     }
 
-    public double CalculateDevelopmentWellCosts(Case caseItem)
+    public double CalculateDevelopmentWellCosts(Guid caseId)
     {
+        var caseItem = _caseService.GetCase(caseId);
         return _generateStudyCostProfile.SumWellCost(caseItem);
     }
 
@@ -166,8 +192,7 @@ public class CompareCasesService
 
     public double CalculateCO2Intensity(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var totalOilProductionInGasEquivalent = CalculateTotalOilProduction(caseItem) * 1000;
+        var totalOilProductionInGasEquivalent = CalculateTotalOilProduction(caseId) * 1000;
         return CalculateTotalCO2Emissions(caseId) / totalOilProductionInGasEquivalent;
     }
 }
