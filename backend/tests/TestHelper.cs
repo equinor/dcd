@@ -470,11 +470,6 @@ public static class TestHelper
         }
 
         Assert.Equal(expected.Name, actual.Name);
-        Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-        Assert.Equal(expected.AnnualWellInterventionCost,
-            actual.AnnualWellInterventionCost);
-        Assert.Equal(expected.PluggingAndAbandonment,
-            actual.PluggingAndAbandonment);
         Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
     }
 
@@ -488,11 +483,6 @@ public static class TestHelper
         }
 
         Assert.Equal(expected.Name, actual.Name);
-        Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-        Assert.Equal(expected.AnnualWellInterventionCost,
-            actual.AnnualWellInterventionCost);
-        Assert.Equal(expected.PluggingAndAbandonment,
-            actual.PluggingAndAbandonment);
         Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
     }
 
@@ -511,11 +501,6 @@ public static class TestHelper
         }
 
         Assert.Equal(expected.Name, actual.Name);
-        Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-        Assert.Equal(expected.AnnualWellInterventionCost,
-            actual.AnnualWellInterventionCost);
-        Assert.Equal(expected.PluggingAndAbandonment,
-            actual.PluggingAndAbandonment);
         Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
     }
 

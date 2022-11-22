@@ -13,9 +13,6 @@ public static class WellProjectAdapter
             ProjectId = wellProjectDto.ProjectId,
             Name = wellProjectDto.Name,
             ArtificialLift = wellProjectDto.ArtificialLift,
-            RigMobDemob = wellProjectDto.RigMobDemob,
-            AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost,
-            PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment,
             Currency = wellProjectDto.Currency,
         };
 
@@ -43,9 +40,6 @@ public static class WellProjectAdapter
         existing.ProjectId = wellProjectDto.ProjectId;
         existing.Name = wellProjectDto.Name;
         existing.ArtificialLift = wellProjectDto.ArtificialLift;
-        existing.RigMobDemob = wellProjectDto.RigMobDemob;
-        existing.AnnualWellInterventionCost = wellProjectDto.AnnualWellInterventionCost;
-        existing.PluggingAndAbandonment = wellProjectDto.PluggingAndAbandonment;
         existing.Currency = wellProjectDto.Currency;
 
         if (wellProjectDto.OilProducerCostProfile != null)

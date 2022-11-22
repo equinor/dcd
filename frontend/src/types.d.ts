@@ -624,9 +624,6 @@ declare namespace Components {
             waterInjectorCostProfile?: WaterInjectorCostProfileDto;
             gasInjectorCostProfile?: GasInjectorCostProfileDto;
             artificialLift?: ArtificialLift /* int32 */;
-            rigMobDemob?: number; // double
-            annualWellInterventionCost?: number; // double
-            pluggingAndAbandonment?: number; // double
             currency?: Currency /* int32 */;
             wellProjectWells?: WellProjectWellDto[] | null;
         }

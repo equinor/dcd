@@ -26,7 +26,7 @@ public class GenerateCo2EmissionsProfile
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);

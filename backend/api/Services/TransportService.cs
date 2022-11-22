@@ -25,7 +25,7 @@ public class TransportService
         var project = _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.ProspVersion = transportDto.ProspVersion;
-        transport.LastChangedDate = DateTimeOffset.Now;
+        transport.LastChangedDate = DateTimeOffset.UtcNow;
         transport.GasExportPipelineLength = transportDto.GasExportPipelineLength;
         transport.OilExportPipelineLength = transportDto.OilExportPipelineLength;
         _context.Transports!.Add(transport);
@@ -39,7 +39,7 @@ public class TransportService
         var transport = TransportAdapter.Convert(transportDto);
         var project = _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
-        transport.LastChangedDate = DateTimeOffset.Now;
+        transport.LastChangedDate = DateTimeOffset.UtcNow;
         var createdTransport = _context.Transports!.Add(transport);
         _context.SaveChanges();
         SetCaseLink(transport, sourceCaseId, project);
@@ -140,7 +140,7 @@ public class TransportService
             _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
 
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Transports!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedTransportDto.ProjectId);
@@ -161,7 +161,7 @@ public class TransportService
             _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
 
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedTransport = _context.Transports!.Update(existing);
         _context.SaveChanges();
         return TransportDtoAdapter.Convert(updatedTransport.Entity);

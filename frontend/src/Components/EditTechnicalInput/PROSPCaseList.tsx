@@ -184,7 +184,7 @@ function PROSPCaseList({
             field: "caseSelected", headerName: "", cellRenderer: caseSelectedRenderer, flex: 1,
         },
         {
-            field: "name", sort: order, flex: 3,
+            field: "name", flex: 3,
         },
         {
             field: "driveItem",
