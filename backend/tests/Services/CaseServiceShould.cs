@@ -141,7 +141,7 @@ public class CaseShould : IDisposable
             Project = project,
             Description = "descUpdated",
             ReferenceCase = false,
-            DG4Date = DateTimeOffset.Now.AddDays(1)
+            DG4Date = DateTimeOffset.UtcNow.AddDays(1)
         };
     }
 
@@ -154,7 +154,7 @@ public class CaseShould : IDisposable
             Project = project,
             Description = "desc",
             ReferenceCase = false,
-            DG4Date = DateTimeOffset.Now.AddDays(1)
+            DG4Date = DateTimeOffset.UtcNow.AddDays(1)
         };
     }
 }
