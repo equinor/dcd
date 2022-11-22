@@ -13,13 +13,9 @@ public class WellProject
     public WaterInjectorCostProfile? WaterInjectorCostProfile { get; set; }
     public GasInjectorCostProfile? GasInjectorCostProfile { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
-    public double RigMobDemob { get; set; }
-    public double AnnualWellInterventionCost { get; set; }
-    public double PluggingAndAbandonment { get; set; }
     public Currency Currency { get; set; }
     public ICollection<WellProjectWell>? WellProjectWells { get; set; }
 }
-
 
 public class OilProducerCostProfile : TimeSeriesCost
 {

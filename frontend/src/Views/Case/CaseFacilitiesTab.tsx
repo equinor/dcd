@@ -310,6 +310,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
                             integer={false}
                             label="Facility opex"
+                            unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
                         />
                     </NumberInputField>
                     <CaseNumberInput
@@ -317,6 +318,7 @@ function CaseFacilitiesTab({
                         defaultValue={surf?.cessationCost}
                         integer={false}
                         label="Cessation cost"
+                        unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
                     />
                 </RowWrapper>
             </ColumnWrapper>
