@@ -194,13 +194,6 @@ function CaseCO2Tab({
                             unit="million Sm³ gas/sd"
                         />
                     </NumberInputField>
-                    <CaseNumberInput
-                        onChange={handleTopsideFlaredGasChange}
-                        defaultValue={topside?.flaredGas}
-                        integer
-                        label="Flared gas"
-                        unit="million Sm³ gas/sd"
-                    />
                 </RowWrapper>
             </ColumnWrapper>
             <ColumnWrapper>

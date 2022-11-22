@@ -11,6 +11,7 @@ public class GenerateCessationCostProfile
     private readonly DrainageStrategyService _drainageStrategyService;
     private readonly WellProjectService _wellProjectService;
     private readonly SurfService _surfService;
+    private readonly ProjectService _projectService;
 
     public GenerateCessationCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
@@ -19,11 +20,13 @@ public class GenerateCessationCostProfile
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
         _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
         _surfService = serviceProvider.GetRequiredService<SurfService>();
+        _projectService = serviceProvider.GetRequiredService<ProjectService>();
     }
 
     public CessationCostDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         var cessationWells = new TimeSeries<double>();
         var cessationOffshoreFacilities = new TimeSeries<double>();
@@ -38,7 +41,7 @@ public class GenerateCessationCostProfile
             var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
             if (linkedWells != null)
             {
-                var pluggingAndAbandonment = wellProject.PluggingAndAbandonment;
+                var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
 
                 var sumDrilledWells = 0;
                 foreach (var well in linkedWells)

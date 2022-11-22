@@ -6,7 +6,7 @@ import {
     ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
-import { RowNode } from "ag-grid-enterprise"
+import { GetRowIdFunc, GetRowIdParams, RowNode } from "ag-grid-enterprise"
 import styled from "styled-components"
 import { external_link } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
@@ -86,7 +86,13 @@ function PROSPCaseList({
         resizable: true,
     }), [])
 
+    const caseAutoSelect = (nodeId: string) => {
+        const rowNode = gridRef.current?.getRowNode(nodeId)
+        rowNode.setDataValue("caseSelected", true)
+    }
+
     const changeStatus = (p: any, value: ImportStatusEnum) => {
+        caseAutoSelect(p.node?.data.id)
         p.setValue(value)
     }
 
@@ -105,15 +111,19 @@ function PROSPCaseList({
         p: any,
     ) => {
         if (p.value === ImportStatusEnum.PROSP) {
-            return <Checkbox disabled checked />
+            // Imported assets should have checked checkboxes and remaining assets should remain unchecked.
+            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
-        if (p.value === ImportStatusEnum.Selected) {
+        if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName !== "") {
+            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
+        }
+        if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName === "") {
             return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
         }
         if (p.value === ImportStatusEnum.NotSelected) {
             return <Checkbox checked={false} onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
         }
-        return <Checkbox onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
+        return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
     }
 
     const sharePointFileDropdownOptions = (items: DriveItem[]) => {
@@ -124,9 +134,12 @@ function PROSPCaseList({
         return options
     }
 
+    const getRowId = useMemo<GetRowIdFunc>(() => (params: GetRowIdParams) => params.data.id, [])
+
     const handleFileChange = (event: ChangeEvent<HTMLSelectElement>, p: any) => {
         const value = { ...p.value }
         value[1] = event.currentTarget.selectedOptions[0].value
+        caseAutoSelect(p.node?.data.id)
         p.setValue(value)
     }
 
@@ -171,7 +184,7 @@ function PROSPCaseList({
             field: "caseSelected", headerName: "", cellRenderer: caseSelectedRenderer, flex: 1,
         },
         {
-            field: "name", sort: order, flex: 3,
+            field: "name", flex: 3,
         },
         {
             field: "driveItem",
@@ -184,7 +197,7 @@ function PROSPCaseList({
             field: "fileLink",
             headerName: "Link",
             cellRenderer: fileLinkRenderer,
-            flex: 4,
+            width: 60,
         },
         {
             field: "surfState", headerName: "Surf", flex: 1, cellRenderer: checkBoxStatus, hide: check,
@@ -275,6 +288,7 @@ function PROSPCaseList({
                     animateRows
                     domLayout="autoHeight"
                     onGridReady={onGridReady}
+                    getRowId={getRowId}
                 />
             </div>
             <ApplyButtonWrapper>

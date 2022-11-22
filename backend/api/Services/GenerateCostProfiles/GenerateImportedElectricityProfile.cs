@@ -24,12 +24,12 @@ public class GenerateImportedElectricityProfile
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
         var calculateImportedElectricity =
             CalculateImportedElectricity(topside.PeakElectricityImported, fuelConsumptions, flarings, losses);
 

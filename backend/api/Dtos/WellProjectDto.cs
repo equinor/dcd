@@ -12,9 +12,6 @@ public class WellProjectDto
     public WaterInjectorCostProfileDto? WaterInjectorCostProfile { get; set; }
     public GasInjectorCostProfileDto? GasInjectorCostProfile { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
-    public double RigMobDemob { get; set; }
-    public double AnnualWellInterventionCost { get; set; }
-    public double PluggingAndAbandonment { get; set; }
     public Currency Currency { get; set; }
     public List<WellProjectWellDto>? WellProjectWells { get; set; }
 }

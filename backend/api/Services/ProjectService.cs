@@ -53,7 +53,7 @@ public class ProjectService
 
     public ProjectDto CreateProject(Project project)
     {
-        project.CreateDate = DateTimeOffset.UtcNow.Date;
+        project.CreateDate = DateTimeOffset.UtcNow;
         project.Cases = new List<Case>();
         project.DrainageStrategies = new List<DrainageStrategy>();
         project.Substructures = new List<Substructure>();
@@ -100,12 +100,10 @@ public class ProjectService
             {
                 AddAssetsToProject(project);
             }
-            _logger.LogInformation("Get projects");
             return projects;
         }
         else
         {
-            _logger.LogInformation("Get projects");
             return new List<Project>();
         }
     }
@@ -127,7 +125,6 @@ public class ProjectService
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
 
-            _logger.LogInformation(nameof(projectDtos));
             return projectDtos;
         }
         else
@@ -136,13 +133,44 @@ public class ProjectService
         }
     }
 
+    public Project GetProjectWithoutAssets(Guid projectId)
+    {
+        if (_context.Projects != null)
+        {
+            if (projectId == Guid.Empty)
+            {
+                throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+
+            var project = _context.Projects!
+                         .Include(p => p.Cases)
+                         .Include(p => p.Wells)
+                         .Include(p => p.ExplorationOperationalWellCosts)
+                         .Include(p => p.DevelopmentOperationalWellCosts)
+                         .FirstOrDefault(p => p.Id.Equals(projectId));
+
+            if (project == null)
+            {
+                var projectByFusionId = _context.Projects
+                    .Include(c => c.Cases)
+                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+            return project;
+        }
+        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+        throw new NotFoundInDBException("The database contains no projects");
+    }
+
     public Project GetProject(Guid projectId)
     {
         if (_context.Projects != null)
         {
             if (projectId == Guid.Empty)
             {
-                throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+                throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
             var project = _context.Projects!
@@ -174,6 +202,11 @@ public class ProjectService
                 .Include(p =>p.Transports!.Where(asset => asset.ProjectId == projectId)).ThenInclude(transport => transport.CessationCostProfile)
                 .FirstOrDefault(p => p.Id.Equals(projectId));
 
+            if (project?.Cases?.Count > 0)
+            {
+                project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
+            }
+
             if (project == null)
             {
                 var projectByFusionId = _context.Projects
@@ -191,7 +224,7 @@ public class ProjectService
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
             AddAssetsToProject(project);
-            _logger.LogInformation("Add assets to project", project.ToString());
+            _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
             return project;
         }
         _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
@@ -208,8 +241,6 @@ public class ProjectService
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             }));
-
-        _logger.LogInformation(nameof(projectDto));
         return projectDto;
     }
 

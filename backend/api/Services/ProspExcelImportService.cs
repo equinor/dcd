@@ -119,9 +119,7 @@ public class ProspExcelImportService
         var producerCount = ReadIntValue(cellData, _prospConfig.Surf.producerCount);
         var waterInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.waterInjectorCount);
         var gasInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.gasInjectorCount);
-        var cessationCost = ReadIntValue(cellData, _prospConfig.Surf.cessationCost);
-        //TODO: Add cessation cost from PROSP after feedback from PO
-        // var cessationCost = ReadDoubleValue(parsedData, "K88");
+        var cessationCost = ReadDoubleValue(cellData, _prospConfig.Surf.cessationCost);
         var costProfile = new SurfCostProfile
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
@@ -429,6 +427,11 @@ public class ProspExcelImportService
         var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
             .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
+        var caseItem = _caseService.GetCase(sourceCaseId);
+        caseItem.SharepointFileId = sharepointFileId;
+        caseItem.SharepointFileName = sharepointFileName;
+        caseItem.SharepointFileUrl = sharepointFileUrl;
+
         if (mainSheet?.Id != null && workbookPart != null)
         {
             var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
@@ -441,27 +444,39 @@ public class ProspExcelImportService
                 {
                     ImportSurf(parsedData, sourceCaseId, projectId);
                 }
+                else
+                {
+                    ClearImportedSurf(caseItem);
+                }
 
                 if (assets["Topside"])
                 {
                     ImportTopside(parsedData, sourceCaseId, projectId);
+                }
+                else
+                {
+                    ClearImportedTopside(caseItem);
                 }
 
                 if (assets["Substructure"])
                 {
                     ImportSubstructure(parsedData, sourceCaseId, projectId);
                 }
+                else
+                {
+                    ClearImportedSubstructure(caseItem);
+                }
 
                 if (assets["Transport"])
                 {
                     ImportTransport(parsedData, sourceCaseId, projectId);
                 }
+                else
+                {
+                    ClearImportedTransport(caseItem);
+                }
             }
 
-            var caseItem = _caseService.GetCase(sourceCaseId);
-            caseItem.SharepointFileId = sharepointFileId;
-            caseItem.SharepointFileName = sharepointFileName;
-            caseItem.SharepointFileUrl = sharepointFileUrl;
             var caseDto = CaseDtoAdapter.Convert(caseItem);
             return _caseService.UpdateCase(caseDto);
         }

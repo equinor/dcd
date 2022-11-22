@@ -44,22 +44,30 @@ public class WellService
         return _projectService.GetProjectDto(existing.ProjectId);
     }
 
-    public WellDto[]? UpdateMultipleWells(WellDto[] updatedWellDtos)
+    public WellDto UpdateExistingWell(WellDto updatedWellDto)
     {
-        ProjectDto? projectDto = null;
+        var existing = GetWell(updatedWellDto.Id);
+        WellAdapter.ConvertExisting(existing, updatedWellDto);
+
+        var well = _context.Wells!.Update(existing);
+        return WellDtoAdapter.Convert(well.Entity);
+    }
+
+    public WellDto[] UpdateMultipleWells(WellDto[] updatedWellDtos)
+    {
+        var updatedWellDtoList = new List<WellDto>();
         foreach (var wellDto in updatedWellDtos)
         {
-            projectDto = UpdateWell(wellDto);
+            var updatedWellDto = UpdateExistingWell(wellDto);
+            updatedWellDtoList.Add(updatedWellDto);
         }
+
+        _context.SaveChanges();
 
         var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
         costProfileHelper.UpdateCostProfilesForWells(updatedWellDtos.Select(w => w.Id).ToList());
 
-        if (projectDto != null)
-        {
-            return projectDto.Wells?.ToArray();
-        }
-        return null;
+        return updatedWellDtoList.ToArray();
     }
 
     public WellDto[]? CreateMultipleWells(WellDto[] wellDtos)

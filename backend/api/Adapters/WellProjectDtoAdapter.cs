@@ -13,9 +13,6 @@ public static class WellProjectDtoAdapter
             ProjectId = wellProject.ProjectId,
             Name = wellProject.Name,
             ArtificialLift = wellProject.ArtificialLift,
-            RigMobDemob = wellProject.RigMobDemob,
-            AnnualWellInterventionCost = wellProject.AnnualWellInterventionCost,
-            PluggingAndAbandonment = wellProject.PluggingAndAbandonment,
             Currency = wellProject.Currency,
             WellProjectWells = wellProject.WellProjectWells?.Select(wc => WellProjectWellDtoAdapter.Convert(wc)).ToList()
         };
