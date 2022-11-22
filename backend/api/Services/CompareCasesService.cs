@@ -49,20 +49,34 @@ public class CompareCasesService
         {
             foreach (var caseItem in project.Cases)
             {
-                CalculateTotalOilProduction(caseItem.Id);
-                CalculateTotalGasProduction(caseItem.Id);
-                CalculateTotalExportedVolumes(caseItem.Id);
-                CalculateTotalStudyCostsPlusOpex(caseItem.Id);
-                CalculateTotalCessationCosts(caseItem.Id);
-                CalculateOffshorePlusOnshoreFacilityCosts(caseItem.Id);
-                CalculateDevelopmentWellCosts(caseItem.Id);
-                CalculateExplorationWellCosts(caseItem.Id);
-                CalculateTotalCO2Emissions(caseItem.Id);
-                CalculateCO2Intensity(caseItem.Id);
+                var totalOilProduction = CalculateTotalOilProduction(caseItem.Id);
+                var totalGasProduction = CalculateTotalGasProduction(caseItem.Id);
+                var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem.Id);
+                var totalStudyCostsPlusOpex = CalculateTotalStudyCostsPlusOpex(caseItem.Id);
+                var totalCessationCosts = CalculateTotalCessationCosts(caseItem.Id);
+                var offshorePlusOnshoreFacilityCosts = CalculateOffshorePlusOnshoreFacilityCosts(caseItem.Id);
+                var developmentCosts = CalculateDevelopmentWellCosts(caseItem.Id);
+                var explorationCosts = CalculateExplorationWellCosts(caseItem.Id);
+                var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem.Id);
+                var co2Intensity = CalculateCO2Intensity(caseItem.Id);
+
+                var compareCases = new CompareCasesDto
+                {
+                    TotalOilProduction = totalOilProduction,
+                    TotalGasProduction = totalGasProduction,
+                    TotalExportedVolumes = totalExportedVolumes,
+                    TotalStudyCostsPlusOpex = totalStudyCostsPlusOpex,
+                    TotalCessationCosts = totalCessationCosts,
+                    OffshorePlusOnshoreFacilityCosts = offshorePlusOnshoreFacilityCosts,
+                    DevelopmentWellCosts = developmentCosts,
+                    ExplorationWellCosts = explorationCosts,
+                    TotalCo2Emissions = totalCo2Emissions,
+                    Co2Intensity = co2Intensity,
+                };
+                return compareCases;
             }
         }
-        // var dto = 0;
-        // return dto;
+        return new CompareCasesDto();
     }
 
     public double CalculateTotalOilProduction(Guid caseId)
