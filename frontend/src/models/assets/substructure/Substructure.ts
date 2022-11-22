@@ -20,6 +20,7 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
     concept?: Components.Schemas.Concept | undefined
     DG3Date?: Date | null
     DG4Date?: Date | null
+    hasChanges?: boolean
 
     constructor(data?: Components.Schemas.SubstructureDto) {
         if (data !== undefined) {

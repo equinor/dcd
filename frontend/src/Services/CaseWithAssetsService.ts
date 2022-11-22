@@ -7,9 +7,9 @@ import { GetToken, LoginAccessTokenKey } from "../Utils/common"
 import { Case } from "../models/case/Case"
 
 class __CaseWithAssetsService extends __BaseService {
-    public async update(body: any): Promise<Case> {
+    public async update(body: any): Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.put("", { body })
-        return new Case(res)
+        return Project.fromJSON(res)
     }
 }
 

@@ -133,6 +133,15 @@ const CaseView = () => {
     const [substructure, setSubstructure] = useState<Substructure>()
     const [transport, setTransport] = useState<Transport>()
 
+    const [originalCase, setOriginalCase] = useState<Case>()
+    const [originalDrainageStrategy, setOriginalDrainageStrategy] = useState<DrainageStrategy>()
+    const [originalWellProject, setOriginalWellProject] = useState<WellProject>()
+    const [originalExploration, setOriginalExploration] = useState<Exploration>()
+    const [originalSurf, setOriginalSurf] = useState<Surf>()
+    const [originalSubstructure, setOriginalSubstructure] = useState<Substructure>()
+    const [originalTopside, setOriginalTopside] = useState<Topside>()
+    const [originalTransport, setOriginalTransport] = useState<Transport>()
+
     const [wells, setWells] = useState<Well[]>()
     const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>()
     const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
@@ -175,24 +184,45 @@ const CaseView = () => {
                     history.push(projectUrl)
                 }
             }
+            setOriginalCase(caseResult)
             setCase(caseResult)
+
+            const drainageStrategyResult = project?.drainageStrategies
+                .find((drain) => drain.id === caseResult?.drainageStrategyLink)
+                setOriginalDrainageStrategy(drainageStrategyResult)
             setDrainageStrategy(
-                project?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink),
+                drainageStrategyResult,
             )
+
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
+            setOriginalExploration(explorationResult)
             setExploration(explorationResult)
+
             const wellProjectResult = project
                 ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
+            setOriginalWellProject(wellProjectResult)
             setWellProject(wellProjectResult)
-            setSurf(project?.surfs.find((sur) => sur.id === caseResult?.surfLink))
-            setTopside(project?.topsides.find((top) => top.id === caseResult?.topsideLink))
-            setSubstructure(project?.substructures.find((sub) => sub.id === caseResult?.substructureLink))
-            setTransport(project?.transports.find((tran) => tran.id === caseResult?.transportLink))
+
+            const surfResult = project?.surfs.find((sur) => sur.id === caseResult?.surfLink)
+            setOriginalSurf(surfResult)
+            setSurf(surfResult)
+
+            const topsideResult = project?.topsides.find((top) => top.id === caseResult?.topsideLink)
+            setOriginalTopside(topsideResult)
+            setTopside(topsideResult)
+
+            const substructureResult = project?.substructures.find((sub) => sub.id === caseResult?.substructureLink)
+            setOriginalSubstructure(substructureResult)
+            setSubstructure(substructureResult)
+
+            const transportResult = project?.transports.find((tran) => tran.id === caseResult?.transportLink)
+            setOriginalTransport(transportResult)
+            setTransport(transportResult)
 
             setWells(project.wells)
-            setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
-            setExplorationWells(explorationResult?.explorationWells ?? [])
+            setWellProjectWells(originalWellProject?.wellProjectWells ?? [])
+            setExplorationWells(originalExploration?.explorationWells ?? [])
             setIsLoading(false)
         }
     }, [project])
@@ -221,30 +251,6 @@ const CaseView = () => {
         }
     }
 
-    const handleSave = async () => {
-        // Check object changes
-        // Save only objects with changes
-        const dto: any = {}
-        dto.caseDto = caseItem
-        dto.caseDto.hasChanges = true
-        dto.surfDto = surf
-        dto.drainageStrategyDto = drainageStrategy
-        dto.wellProjectDto = wellProject
-        dto.explorationDto = exploration
-        dto.substructureDto = substructure
-        dto.transportDto = transport
-        dto.topsideDto = topside
-        setIsSaving(true)
-        try {
-            const result = await (await GetCaseWithAssetsService()).update(dto)
-            setIsSaving(false)
-        } catch (e) {
-            setIsSaving(false)
-            console.error("Error when saving case and assets: ", e)
-        }
-        // Set result
-    }
-
     if (isLoading || !project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
@@ -256,6 +262,60 @@ const CaseView = () => {
                 <p>Loading case</p>
             </>
         )
+    }
+
+    const handleSave = async () => {
+        const dto: Components.Schemas.CaseWithAssetsWrapperDto = {}
+
+        dto.caseDto = caseItem
+        if (!(JSON.stringify(caseItem) === JSON.stringify(originalCase))) {
+            dto.caseDto.hasChanges = true
+        }
+
+        dto.drainageStrategyDto = drainageStrategy
+        if (!(JSON.stringify(drainageStrategy) === JSON.stringify(originalDrainageStrategy))) {
+            dto.drainageStrategyDto.hasChanges = true
+        }
+
+        dto.wellProjectDto = wellProject
+        if (!(JSON.stringify(wellProject) === JSON.stringify(originalWellProject))) {
+            dto.wellProjectDto.hasChanges = true
+        }
+
+        dto.explorationDto = exploration
+        if (!(JSON.stringify(exploration) === JSON.stringify(originalExploration))) {
+            dto.explorationDto.hasChanges = true
+        }
+
+        dto.surfDto = surf
+        if (!(JSON.stringify(surf) === JSON.stringify(originalSurf))) {
+            dto.surfDto.hasChanges = true
+        }
+
+        dto.substructureDto = substructure
+        if (!(JSON.stringify(substructure) === JSON.stringify(originalSubstructure))) {
+            dto.substructureDto.hasChanges = true
+        }
+
+        dto.transportDto = transport
+        if (!(JSON.stringify(transport) === JSON.stringify(originalTransport))) {
+            dto.transportDto.hasChanges = true
+        }
+
+        dto.topsideDto = topside
+        if (!(JSON.stringify(topside) === JSON.stringify(originalTopside))) {
+            dto.topsideDto.hasChanges = true
+        }
+
+        setIsSaving(true)
+        try {
+            const result = await (await GetCaseWithAssetsService()).update(dto)
+            setProject(result)
+            setIsSaving(false)
+        } catch (e) {
+            setIsSaving(false)
+            console.error("Error when saving case and assets: ", e)
+        }
     }
 
     return (
