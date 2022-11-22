@@ -91,8 +91,13 @@ manually and when a new tag is created.
 ## Development
 
 ### Team
+DCD is developed by the It's a Feature team in TDI EDT DSD EDB. Development was started by the Shellvis team.  As of november 2022, the team is a Sopra Steria only team. 
 
-DCD is developed by the It's a Feature team in TDI EDT DSD EDB. Development was started by the Shellvis team.
+### Repository
+The application consists of a github monorepo for frontend and backend, and a single repo for [Radix Configuration](#omnia-radix). All code changes to main branch should come as a pull request from a github fork. 
+
+### Build and Release
+There is a project in [Azure Devops](https://dev.azure.com/2S-IAF/DCD) for DCD where user stories and tasks are defined, but also build and release pipeline are hosted. 
 
 [contributors-shield]: https://img.shields.io/github/contributors/equinor/dcd.svg?style=for-the-badge
 [contributors-url]: https://github.com/equinor/dcd/graphs/contributors
