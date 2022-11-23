@@ -165,10 +165,12 @@ const CaseView = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>()
     const [isSaving, setIsSaving] = useState<boolean>()
+    const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
 
     useEffect(() => {
         (async () => {
             try {
+                setUpdateFromServer(true)
                 setIsLoading(true)
                 const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
@@ -180,7 +182,7 @@ const CaseView = () => {
     }, [currentProject?.externalId, caseId, fusionContextId])
 
     useEffect(() => {
-        if (project) {
+        if (project && updateFromServer) {
             const caseResult = project.cases.find((o) => o.id === caseId)
             if (!caseResult) {
                 if (location.pathname.indexOf("/case") > -1) {
@@ -234,6 +236,7 @@ const CaseView = () => {
             setExplorationWells(explorationResult?.explorationWells ?? [])
             setOriginalExplorationWells(explorationWellsResult ?? [])
 
+            setUpdateFromServer(false)
             setIsLoading(false)
         }
     }, [project])
@@ -349,6 +352,7 @@ const CaseView = () => {
         }
 
         setIsSaving(true)
+        setUpdateFromServer(true)
         try {
             const result = await (await GetCaseWithAssetsService()).update(dto)
             setProject(result)
@@ -573,6 +577,9 @@ const CaseView = () => {
                 project={project}
                 setProject={setProject}
                 setWells={setWells}
+                caseId={caseItem.id}
+                setExploration={setExploration}
+                setWellProject={setWellProject}
             />
             <EditCaseModal
                 setProject={setProject}

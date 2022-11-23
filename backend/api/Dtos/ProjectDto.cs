@@ -35,4 +35,5 @@ public class ProjectDto
     public double CO2Vented { get; set; }
     public double DailyEmissionFromDrillingRig { get; set; }
     public double AverageDevelopmentDrillingDays { get; set; }
+    public bool HasChanges { get; set; }
 }
