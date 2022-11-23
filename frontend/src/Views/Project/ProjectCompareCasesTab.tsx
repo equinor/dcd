@@ -79,6 +79,19 @@ function ProjectCompareCasesTab({
     }), [])
 
     const [rowData, setRowData] = useState<TableCompareCase[]>()
+    const [compareCasesTotals, setCompareCasesTotals] = useState<any>()
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const compareCasesService = await (await GetCompareCasesService()).calculate(project.id)
+                setCompareCasesTotals(compareCasesService)
+                console.log(compareCasesService)
+            } catch (error) {
+                console.error("[ProjectView] Error while generating compareCasesTotals", error)
+            }
+        })()
+    }, [])
 
     const timeSeriesTotal = (timeSeries: any) => {
         if (timeSeries?.values.length! !== 0 && timeSeries !== undefined) {
@@ -93,117 +106,38 @@ function ProjectCompareCasesTab({
     const casesToRowData = () => {
         if (project) {
             const tableCompareCases: TableCompareCase[] = []
-            project.cases.forEach((c) => {
-                console.log(project.drainageStrategies?.find(
-                    (dr) => dr.id === c.drainageStrategyLink,
-                ))
-                const tableCase: TableCompareCase = {
-                    id: c.id!,
-                    cases: c.name ?? "",
-                    description: c.description ?? "",
-                    npv: c.npv ?? 0,
-                    breakEven: c.breakEven ?? 0,
-                    oilProduction: timeSeriesTotal(
-                        project.drainageStrategies?.find(
-                            (dr) => dr.id === c.drainageStrategyLink,
-                        )?.productionProfileOil,
-                    ),
-                    gasProduction: timeSeriesTotal(
-                        project.drainageStrategies?.find(
-                            (dr) => dr.id === c.drainageStrategyLink,
-                        )?.productionProfileGas,
-                    ),
-                    totalExportedVolumes: 0,
-                    studyCostsPlusOpex: 0,
-                    cessationCosts: 0,
-                    offshorePlusOnshoreFacilityCosts: 0,
-                    developmentCosts: timeSeriesTotal(
-                        project.wellProjects?.find(
-                            (dr) => dr.id === c.wellProjectLink,
-                        )?.oilProducerCostProfile,
-                    )
-                    + timeSeriesTotal(
-                        project.wellProjects?.find(
-                            (dr) => dr.id === c.wellProjectLink,
-                        )?.gasProducerCostProfile,
-                    )
-                    + timeSeriesTotal(
-                        project.wellProjects?.find(
-                            (dr) => dr.id === c.wellProjectLink,
-                        )?.waterInjectorCostProfile,
-                    )
-                    + timeSeriesTotal(
-                        project.wellProjects?.find(
-                            (dr) => dr.id === c.wellProjectLink,
-                        )?.gasInjectorCostProfile,
-                    ),
-                    explorationWellCosts: timeSeriesTotal(
-                        project.explorations?.find(
-                            (dr) => dr.id === c.explorationLink,
-                        )?.gAndGAdminCost,
-                    )
-                    + timeSeriesTotal(
-                        project.explorations?.find(
-                            (dr) => dr.id === c.explorationLink,
-                        )?.seismicAcquisitionAndProcessing,
-                    )
-                    + timeSeriesTotal(
-                        project.explorations?.find(
-                            (dr) => dr.id === c.explorationLink,
-                        )?.countryOfficeCost,
-                    )
-                    + timeSeriesTotal(
-                        project.explorations?.find(
-                            (dr) => dr.id === c.explorationLink,
-                        )?.explorationWellCostProfile,
-                    )
-                    + timeSeriesTotal(
-                        project.explorations?.find(
-                            (dr) => dr.id === c.explorationLink,
-                        )?.appraisalWellCostProfile,
-                    )
-                    + timeSeriesTotal(
-                        project.explorations?.find(
-                            (dr) => dr.id === c.explorationLink,
-                        )?.sidetrackCostProfile,
-                    ),
-                    totalCO2Emissions: timeSeriesTotal(
-                        project.drainageStrategies?.find(
-                            (dr) => dr.id === c.drainageStrategyLink,
-                        )?.co2Emissions,
-                    ),
-                    cO2Intensity: timeSeriesTotal(
-                        project.drainageStrategies?.find(
-                            (dr) => dr.id === c.drainageStrategyLink,
-                        )?.co2Emissions,
-                    ) ?? 0
-                    / timeSeriesTotal(
-                        project.drainageStrategies?.find(
-                            (dr) => dr.id === c.drainageStrategyLink,
-                        )?.productionProfileOil,
-                    ),
-                }
-                tableCompareCases.push(tableCase)
-            })
+            if (compareCasesTotals) {
+                project.cases.forEach((c) => {
+                    console.log(project.drainageStrategies?.find(
+                        (dr) => dr.id === c.drainageStrategyLink,
+                    ))
+                    const tableCase: TableCompareCase = {
+                        id: c.id!,
+                        cases: c.name ?? "",
+                        description: c.description ?? "",
+                        npv: c.npv ?? 0,
+                        breakEven: c.breakEven ?? 0,
+                        oilProduction: compareCasesTotals[0]?.totalOilProduction,
+                        gasProduction: compareCasesTotals[0]?.totalGasProduction,
+                        totalExportedVolumes: compareCasesTotals[0]?.totalExportedVolumes,
+                        studyCostsPlusOpex: compareCasesTotals[0]?.totalStudyCostsPlusOpex,
+                        cessationCosts: compareCasesTotals[0]?.totalCessationCosts,
+                        offshorePlusOnshoreFacilityCosts: compareCasesTotals[0]?.offshorePlusOnshoreFacilityCosts,
+                        developmentCosts: compareCasesTotals[0]?.developmentWellCosts,
+                        explorationWellCosts: compareCasesTotals[0]?.explorationWellCosts,
+                        totalCO2Emissions: compareCasesTotals[0]?.totalCo2Emissions,
+                        cO2Intensity: compareCasesTotals[0]?.co2Intensity,
+                    }
+                    tableCompareCases.push(tableCase)
+                })
+            }
             setRowData(tableCompareCases)
         }
     }
 
     useEffect(() => {
         casesToRowData()
-    }, [project.cases])
-
-    // const [compareCasesTotals, setCompareCasesTotals] = useState()
-    useEffect(() => {
-        (async () => {
-            try {
-                const compareCasesTotals = (await GetCompareCasesService()).calculate(project.id)
-                console.log(compareCasesTotals)
-            } catch (error) {
-                console.error("[ProjectView] Error while generating compareCasesTotals", error)
-            }
-        })()
-    }, [])
+    }, [project.cases, compareCasesTotals])
 
     const columns = () => {
         const columnPinned: any[] = [

@@ -173,6 +173,7 @@ builder.Services.AddScoped<GenerateCessationCostProfile>();
 builder.Services.AddScoped<GenerateImportedElectricityProfile>();
 builder.Services.AddScoped<GenerateFuelFlaringLossesProfile>();
 builder.Services.AddScoped<GenerateNetSaleGasProfile>();
+builder.Services.AddScoped<CompareCasesService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();

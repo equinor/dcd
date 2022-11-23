@@ -133,9 +133,8 @@ public class CompareCasesService
     {
         var generateStudyProfile = _generateStudyCostProfile.Generate(caseId);
         var generateOpexProfile = _generateOpexCostProfile.Generate(caseId);
-
-        var sumStudyValues = generateStudyProfile.Values.Sum();
-        var sumOpexValues = generateOpexProfile.Values.Sum();
+        var sumStudyValues = generateStudyProfile.Sum;
+        var sumOpexValues = generateOpexProfile.Sum;
 
         return sumStudyValues + sumOpexValues;
     }
@@ -143,7 +142,7 @@ public class CompareCasesService
     public double CalculateTotalCessationCosts(Guid caseId)
     {
         var generateCessationProfile = _generateCessationCostProfile.Generate(caseId);
-        return generateCessationProfile.Values.Sum();
+        return generateCessationProfile.Sum;
     }
 
     public double CalculateOffshorePlusOnshoreFacilityCosts(Guid caseId)
@@ -163,7 +162,7 @@ public class CompareCasesService
         var caseItem = _caseService.GetCase(caseId);
         var sumExplorationWellCost = 0.0;
         var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.Generate(caseId);
-        sumExplorationWellCost += generateGAndGAdminProfile.Values.Sum();
+        sumExplorationWellCost += generateGAndGAdminProfile.Sum;
 
         Exploration exploration;
         try
@@ -202,12 +201,16 @@ public class CompareCasesService
     public double CalculateTotalCO2Emissions(Guid caseId)
     {
         var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
-        return generateCo2EmissionsProfile.Values.Sum();
+        return generateCo2EmissionsProfile.Sum;
     }
 
     public double CalculateCO2Intensity(Guid caseId)
     {
         var totalOilProductionInGasEquivalent = CalculateTotalOilProduction(caseId) * 1000;
-        return CalculateTotalCO2Emissions(caseId) / totalOilProductionInGasEquivalent;
+        var totalCo2Emissions = CalculateTotalCO2Emissions(caseId);
+        if (totalOilProductionInGasEquivalent != 0 && totalCo2Emissions != 0) {
+            return totalCo2Emissions / totalOilProductionInGasEquivalent;
+        }
+        return 0;
     }
 }
