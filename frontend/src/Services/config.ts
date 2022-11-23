@@ -62,6 +62,9 @@ const configuration = {
     GenerateProfileService: {
         BASE_URL: "",
     },
+    CompareCasesService: {
+        BASE_URL: "",
+    },
 }
 
 export const buildConfig = (baseUrl: string) => {
