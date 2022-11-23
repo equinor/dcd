@@ -83,6 +83,7 @@ public class CaseWithAssetsService
     public void CreateAndUpdateExplorationWells(ExplorationWellDto[] explorationWellDtos, Guid caseId)
     {
         var changes = false;
+        var runSaveChanges = false;
         foreach (var explorationWellDto in explorationWellDtos)
         {
             if (explorationWellDto.DrillingSchedule?.Values?.Length > 0)
@@ -92,6 +93,7 @@ public class CaseWithAssetsService
                     var explorationWell = ExplorationWellAdapter.Convert(explorationWellDto);
                     _context.ExplorationWell!.Add(explorationWell);
                     changes = true;
+                    runSaveChanges = true;
                 }
                 else
                 {
@@ -113,6 +115,10 @@ public class CaseWithAssetsService
 
         if (changes)
         {
+            if (runSaveChanges)
+            {
+                _context.SaveChanges();
+            }
             var explorationDto = _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
             UpdateExploration(explorationDto);
         }
@@ -121,6 +127,7 @@ public class CaseWithAssetsService
     public void CreateAndUpdateWellProjectWells(WellProjectWellDto[] wellProjectWellDtos, Guid caseId)
     {
         var changes = false;
+        var runSaveChanges = false;
         foreach (var wellProjectWellDto in wellProjectWellDtos)
         {
             if (wellProjectWellDto.DrillingSchedule?.Values?.Length > 0)
@@ -130,6 +137,7 @@ public class CaseWithAssetsService
                     var wellProjectWell = WellProjectWellAdapter.Convert(wellProjectWellDto);
                     _context.WellProjectWell!.Add(wellProjectWell);
                     changes = true;
+                    runSaveChanges = true;
                 }
                 else
                 {
@@ -151,6 +159,10 @@ public class CaseWithAssetsService
 
         if (changes)
         {
+            if (runSaveChanges)
+            {
+                _context.SaveChanges();
+            }
             var wellProjectDto = _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
             UpdateWellProject(wellProjectDto);
         }
