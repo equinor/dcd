@@ -54,7 +54,7 @@ public class CaseWithAssetsService
 
     public ProjectDto UpdateCaseWithAssets(CaseWithAssetsWrapperDto wrapper)
     {
-        var project = _projectService.GetProject(wrapper.CaseDto.ProjectId);
+        var project = _projectService.GetProjectWithoutAssets(wrapper.CaseDto.ProjectId);
 
         var updatedCaseDto = UpdateCase(wrapper.CaseDto);
 
