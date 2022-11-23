@@ -107,26 +107,23 @@ function ProjectCompareCasesTab({
         if (project) {
             const tableCompareCases: TableCompareCase[] = []
             if (compareCasesTotals) {
-                project.cases.forEach((c) => {
-                    console.log(project.drainageStrategies?.find(
-                        (dr) => dr.id === c.drainageStrategyLink,
-                    ))
+                project.cases.forEach((c, i) => {
                     const tableCase: TableCompareCase = {
                         id: c.id!,
                         cases: c.name ?? "",
                         description: c.description ?? "",
                         npv: c.npv ?? 0,
                         breakEven: c.breakEven ?? 0,
-                        oilProduction: compareCasesTotals[0]?.totalOilProduction,
-                        gasProduction: compareCasesTotals[0]?.totalGasProduction,
-                        totalExportedVolumes: compareCasesTotals[0]?.totalExportedVolumes,
-                        studyCostsPlusOpex: compareCasesTotals[0]?.totalStudyCostsPlusOpex,
-                        cessationCosts: compareCasesTotals[0]?.totalCessationCosts,
-                        offshorePlusOnshoreFacilityCosts: compareCasesTotals[0]?.offshorePlusOnshoreFacilityCosts,
-                        developmentCosts: compareCasesTotals[0]?.developmentWellCosts,
-                        explorationWellCosts: compareCasesTotals[0]?.explorationWellCosts,
-                        totalCO2Emissions: compareCasesTotals[0]?.totalCo2Emissions,
-                        cO2Intensity: compareCasesTotals[0]?.co2Intensity,
+                        oilProduction: compareCasesTotals[i]?.totalOilProduction,
+                        gasProduction: compareCasesTotals[i]?.totalGasProduction,
+                        totalExportedVolumes: compareCasesTotals[i]?.totalExportedVolumes,
+                        studyCostsPlusOpex: compareCasesTotals[i]?.totalStudyCostsPlusOpex,
+                        cessationCosts: compareCasesTotals[i]?.totalCessationCosts,
+                        offshorePlusOnshoreFacilityCosts: compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts,
+                        developmentCosts: compareCasesTotals[i]?.developmentWellCosts,
+                        explorationWellCosts: compareCasesTotals[i]?.explorationWellCosts,
+                        totalCO2Emissions: compareCasesTotals[i]?.totalCo2Emissions,
+                        cO2Intensity: compareCasesTotals[i]?.co2Intensity,
                     }
                     tableCompareCases.push(tableCase)
                 })
