@@ -139,7 +139,7 @@ function PROSPCaseList({
     const getFileLink = (p: any, selectedFileId: any) => {
         const driveItemsList = p.data.driveItem[0]
         let link = null
-        if (selectedFileId) {
+        if (selectedFileId && Array.isArray(driveItemsList)) {
             const item = driveItemsList.find((el: any) => selectedFileId && selectedFileId === el.id)
             link = item.sharepointFileUrl
         }
