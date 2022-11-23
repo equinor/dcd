@@ -28,6 +28,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
     approvedBy?: string | null | undefined
     DG3Date?: Date | null
     DG4Date?: Date | null
+    hasChanges?: boolean
 
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {

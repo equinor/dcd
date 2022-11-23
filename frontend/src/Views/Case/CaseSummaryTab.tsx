@@ -100,8 +100,6 @@ function CaseSummaryTab({
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const [isSaving, setIsSaving] = useState<boolean>()
-
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
         if (timeSeries && timeSeries.startYear && timeSeries.values) {
             return timeSeries.startYear + timeSeries.values.length - 1
@@ -223,30 +221,12 @@ function CaseSummaryTab({
         },
     ]
 
-    const handleTableYearsClick = () => {
-        setTableYears([startYear, endYear])
-    }
-
-    const handleSave = async () => {
-        setIsSaving(true)
-        const updatedSurfResult = await (await GetSurfService()).newUpdate(surf)
-        setSurf(updatedSurfResult)
-        const updateedCaseResult = await (await GetCaseService()).update(caseItem)
-        setCase(updateedCaseResult)
-        setIsSaving(false)
-    }
-
     if (activeTab !== 7) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Summary</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>

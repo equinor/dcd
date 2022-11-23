@@ -17,6 +17,7 @@ export class WellProject implements Components.Schemas.WellProjectDto, IAsset {
     artificialLift?: Components.Schemas.ArtificialLift | undefined
     currency?: Components.Schemas.Currency
     wellProjectWells?: WellProjectWell[] | null
+    hasChanges?: boolean
 
     constructor(data?: Components.Schemas.WellProjectDto) {
         if (data !== undefined) {

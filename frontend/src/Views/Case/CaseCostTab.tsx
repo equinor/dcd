@@ -157,8 +157,6 @@ function CaseCostTab({
     const developmentWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
 
-    const [isSaving, setIsSaving] = useState<boolean>()
-
     useEffect(() => {
         (async () => {
             try {
@@ -479,36 +477,12 @@ function CaseCostTab({
         setExploration(newExploration)
     }, [countryOfficeCost])
 
-    const handleSave = async () => {
-        setIsSaving(true)
-        const updatedSurfResult = await (await GetSurfService()).newUpdate(surf)
-        setSurf(updatedSurfResult)
-        const updatedTopsideResult = await (await GetTopsideService()).newUpdate(topside)
-        setTopside(updatedTopsideResult)
-        const updatedSubstructureResult = await (await GetSubstructureService()).newUpdate(substructure)
-        setSubstructure(updatedSubstructureResult)
-        const updatedTransportResult = await (await GetTransportService()).newUpdate(transport)
-        setTransport(updatedTransportResult)
-        const updatedWellProjectResult = await (await GetWellProjectService()).newUpdate(wellProject)
-        setWellProject(updatedWellProjectResult)
-        const updatedExplorationResult = await (await GetExplorationService()).newUpdate(exploration)
-        setExploration(updatedExplorationResult)
-        const updateedCaseResult = await (await GetCaseService()).update(caseItem)
-        setCase(updateedCaseResult)
-        setIsSaving(false)
-    }
-
     if (activeTab !== 5) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Cost</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>

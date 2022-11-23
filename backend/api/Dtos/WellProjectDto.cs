@@ -14,6 +14,7 @@ public class WellProjectDto
     public ArtificialLift ArtificialLift { get; set; }
     public Currency Currency { get; set; }
     public List<WellProjectWellDto>? WellProjectWells { get; set; }
+    public bool HasChanges { get; set; }
 }
 
 

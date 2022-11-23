@@ -194,56 +194,12 @@ function CaseDrillingScheduleTab({
         }
     }, [wells, explorationWells, wellProjectWells, activeTab])
 
-    const handleSave = async () => {
-        setIsSaving(true)
-        // Exploration wells
-        const newExplorationWells = explorationWells
-            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
-        const newExplorationWellsResult = await (await GetExplorationWellService())
-            .createMultipleExplorationWells(caseItem.id, newExplorationWells)
-
-        const updateExplorationWells = explorationWells
-            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
-        const updateExplorationWellsResult = await (await GetExplorationWellService())
-            .updateMultipleExplorationWells(caseItem.id, updateExplorationWells)
-
-        if (updateExplorationWellsResult && updateExplorationWellsResult.length > 0) {
-            setExplorationWells(updateExplorationWellsResult)
-        } else if (newExplorationWellsResult && newExplorationWellsResult.length > 0) {
-            setExplorationWells(newExplorationWellsResult)
-        }
-
-        // WellProject wells
-        const newWellProjectWells = wellProjectWells
-            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id === EMPTY_GUID)
-        const newWellProjectWellsResult = await (await GetWellProjectWellService())
-            .createMultipleWellProjectWell(caseItem.id, newWellProjectWells)
-
-        const updateWellProjectWells = wellProjectWells
-            .filter((ew) => ew.drillingSchedule && ew.drillingSchedule.id !== EMPTY_GUID)
-        const updateWellProjectWellsResult = await (await GetWellProjectWellService())
-            .updateMultipleWellProjectWells(caseItem.id, updateWellProjectWells)
-
-        setIsSaving(false)
-
-        if (updateWellProjectWellsResult && updateWellProjectWellsResult.length > 0) {
-            setWellProjectWells(updateWellProjectWellsResult)
-        } else if (newWellProjectWellsResult && newWellProjectWellsResult.length > 0) {
-            setWellProjectWells(newWellProjectWellsResult)
-        }
-    }
-
     if (activeTab !== 3) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Drilling schedule</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <p>Create wells in technical input in order to see them in the list below.</p>
             <ColumnWrapper>
