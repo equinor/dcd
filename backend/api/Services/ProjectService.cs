@@ -66,6 +66,13 @@ public class ProjectService
         project.ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts();
         project.DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts();
 
+        project.CO2EmissionFromFuelGas = 2.34;
+        project.FlaredGasPerProducedVolume = 1.321;
+        project.CO2EmissionsFromFlaredGas = 3.74;
+        project.CO2Vented = 1.96;
+        project.DailyEmissionFromDrillingRig = 100;
+        project.AverageDevelopmentDrillingDays = 50;
+
         Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
             new JsonSerializerSettings()
             {
@@ -144,7 +151,6 @@ public class ProjectService
             {
                 throw new NotFoundInDBException($"Project {projectId} not found");
             }
-
 
             var project = _context.Projects!
                          .Include(p => p.Cases)
