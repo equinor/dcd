@@ -44,6 +44,7 @@ import { WellProjectWell } from "../models/WellProjectWell"
 import { ExplorationWell } from "../models/ExplorationWell"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
+import { EMPTY_GUID } from "../Utils/constants"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -146,6 +147,9 @@ const CaseView = () => {
     const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>()
     const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
 
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<WellProjectWell[]>()
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<ExplorationWell[]>()
+
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
@@ -189,7 +193,7 @@ const CaseView = () => {
 
             const drainageStrategyResult = project?.drainageStrategies
                 .find((drain) => drain.id === caseResult?.drainageStrategyLink)
-                setOriginalDrainageStrategy(drainageStrategyResult)
+            setOriginalDrainageStrategy(drainageStrategyResult)
             setDrainageStrategy(
                 drainageStrategyResult,
             )
@@ -221,8 +225,15 @@ const CaseView = () => {
             setTransport(transportResult)
 
             setWells(project.wells)
-            setWellProjectWells(originalWellProject?.wellProjectWells ?? [])
-            setExplorationWells(originalExploration?.explorationWells ?? [])
+
+            const wellProjectWellsResult = structuredClone(wellProjectResult?.wellProjectWells)
+            setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
+            setOriginalWellProjectWells(wellProjectWellsResult ?? [])
+
+            const explorationWellsResult = structuredClone(explorationResult?.explorationWells)
+            setExplorationWells(explorationResult?.explorationWells ?? [])
+            setOriginalExplorationWells(explorationWellsResult ?? [])
+
             setIsLoading(false)
         }
     }, [project])
@@ -305,6 +316,36 @@ const CaseView = () => {
         dto.topsideDto = topside
         if (!(JSON.stringify(topside) === JSON.stringify(originalTopside))) {
             dto.topsideDto.hasChanges = true
+        }
+
+        dto.explorationWellDto = explorationWells
+        if (dto.explorationWellDto?.length > 0) {
+            dto.explorationWellDto.forEach((expWellDto, index) => {
+                if (expWellDto.drillingSchedule?.id !== EMPTY_GUID) {
+                    const originalExpWell = originalExplorationWells
+                        ?.find((oew) => oew.explorationId === expWellDto.explorationId
+                            && oew.wellId === expWellDto.wellId)
+
+                    if (!(JSON.stringify(expWellDto) === JSON.stringify(originalExpWell))) {
+                        dto.explorationWellDto![index].hasChanges = true
+                    }
+                }
+            })
+        }
+
+        dto.wellProjectWellDtos = wellProjectWells
+        if (dto.wellProjectWellDtos?.length > 0) {
+            dto.wellProjectWellDtos.forEach((wpWellDto, index: number) => {
+                if (wpWellDto.drillingSchedule?.id !== EMPTY_GUID) {
+                    const originalWpWell = originalWellProjectWells
+                        ?.find((owpw) => owpw.wellProjectId === wpWellDto.wellProjectId
+                            && owpw.wellId === wpWellDto.wellId)
+
+                    if (!(JSON.stringify(wpWellDto) === JSON.stringify(originalWpWell))) {
+                        dto.wellProjectWellDtos![index].hasChanges = true
+                    }
+                }
+            })
         }
 
         setIsSaving(true)

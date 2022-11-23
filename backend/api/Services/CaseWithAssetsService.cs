@@ -21,13 +21,15 @@ public class CaseWithAssetsService
     private readonly TopsideService _topsideService;
     private readonly ExplorationWellService _explorationWellService;
     private readonly WellProjectWellService _wellProjectWellService;
+    private readonly CostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<CaseService> _logger;
 
     public CaseWithAssetsService(DcdDbContext context, ProjectService projectService, CaseService caseService,
     DrainageStrategyService drainageStrategyService, WellProjectService wellProjectService, ExplorationService explorationService,
     SurfService surfService, SubstructureService substructureService, TransportService transportService, TopsideService topsideService,
-     ExplorationWellService explorationWellService, WellProjectWellService wellProjectWellService,
-     ILoggerFactory loggerFactory)
+    ExplorationWellService explorationWellService, WellProjectWellService wellProjectWellService,
+    CostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
+    ILoggerFactory loggerFactory)
     {
         _context = context;
 
@@ -45,226 +47,114 @@ public class CaseWithAssetsService
         _explorationWellService = explorationWellService;
         _wellProjectWellService = wellProjectWellService;
 
+        _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
+
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
-    // Add wellprojectwell and explorationwell 
     public ProjectDto UpdateCaseWithAssets(CaseWithAssetsWrapperDto wrapper)
     {
         var project = _projectService.GetProject(wrapper.CaseDto.ProjectId);
 
         var updatedCaseDto = UpdateCase(wrapper.CaseDto);
 
-        var updatedDrainageStrategyDto = UpdateDrainageStrategy(wrapper.DrainageStrategyDto, project.PhysicalUnit);
-        var updatedWellProjectDto = UpdateWellProject(wrapper.WellProjectDto);
-        var updatedExplorationDto = UpdateExploration(wrapper.ExplorationDto);
-        var updatedSurfDto = UpdateSurf(wrapper.SurfDto);
-        var updatedSubstructureDto = UpdateSubstructure(wrapper.SubstructureDto);
-        var updatedTransportDto = UpdateTransport(wrapper.TransportDto);
-        var updatedTopsideDto = UpdateTopside(wrapper.TopsideDto);
+        UpdateDrainageStrategy(wrapper.DrainageStrategyDto, project.PhysicalUnit);
+        UpdateWellProject(wrapper.WellProjectDto);
+        UpdateExploration(wrapper.ExplorationDto);
+        UpdateSurf(wrapper.SurfDto);
+        UpdateSubstructure(wrapper.SubstructureDto);
+        UpdateTransport(wrapper.TransportDto);
+        UpdateTopside(wrapper.TopsideDto);
 
         if (wrapper.ExplorationWellDto?.Length > 0)
         {
-            // Create / update explorationWell
+            CreateAndUpdateExplorationWells(wrapper.ExplorationWellDto, updatedCaseDto.Id);
         }
 
         if (wrapper.WellProjectWellDtos?.Length > 0)
         {
-            // Create / update WellProjectWell
+            CreateAndUpdateWellProjectWells(wrapper.WellProjectWellDtos, updatedCaseDto.Id);
         }
 
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedCaseDto.ProjectId);
     }
 
-    public ExplorationWellDto[]? CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos)
+    public void CreateAndUpdateExplorationWells(ExplorationWellDto[] explorationWellDtos, Guid caseId)
     {
-        var explorationId = explorationWellDtos.FirstOrDefault()?.ExplorationId;
-        ProjectDto? projectDto = null;
+        var changes = false;
         foreach (var explorationWellDto in explorationWellDtos)
         {
-            projectDto = CreateExplorationWell(explorationWellDto);
+            if (explorationWellDto.DrillingSchedule?.Values?.Length > 0)
+            {
+                if (explorationWellDto.DrillingSchedule.Id == Guid.Empty)
+                {
+                    var explorationWell = ExplorationWellAdapter.Convert(explorationWellDto);
+                    _context.ExplorationWell!.Add(explorationWell);
+                    changes = true;
+                }
+                else
+                {
+                    if (explorationWellDto.HasChanges)
+                    {
+                        var existingExplorationWell = _explorationWellService.GetExplorationWell(explorationWellDto.WellId, explorationWellDto.ExplorationId);
+                        ExplorationWellAdapter.ConvertExisting(existingExplorationWell, explorationWellDto);
+                        if (explorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
+                        {
+                            _context.DrillingSchedule!.Remove(existingExplorationWell.DrillingSchedule);
+                        }
+
+                        _context.ExplorationWell!.Update(existingExplorationWell);
+                        changes = true;
+                    }
+                }
+            }
         }
-        if (projectDto != null && explorationId != null)
+
+        if (changes)
         {
-            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
+            var explorationDto = _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
+            UpdateExploration(explorationDto);
         }
-        return null;
     }
 
-    public ProjectDto CreateExplorationWell(ExplorationWellDto explorationWellDto)
+    public void CreateAndUpdateWellProjectWells(WellProjectWellDto[] wellProjectWellDtos, Guid caseId)
     {
-        var explorationWell = ExplorationWellAdapter.Convert(explorationWellDto);
-        _context.ExplorationWell!.Add(explorationWell);
-        var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == explorationWellDto.ExplorationId)?.ProjectId;
-        if (projectId != null)
+        var changes = false;
+        foreach (var wellProjectWellDto in wellProjectWellDtos)
         {
-            return _projectService.GetProjectDto((Guid)projectId);
+            if (wellProjectWellDto.DrillingSchedule?.Values?.Length > 0)
+            {
+                if (wellProjectWellDto.DrillingSchedule.Id == Guid.Empty)
+                {
+                    var wellProjectWell = WellProjectWellAdapter.Convert(wellProjectWellDto);
+                    _context.WellProjectWell!.Add(wellProjectWell);
+                    changes = true;
+                }
+                else
+                {
+                    if (wellProjectWellDto.HasChanges)
+                    {
+                        var existingWellProjectWell = _wellProjectWellService.GetWellProjectWell(wellProjectWellDto.WellId, wellProjectWellDto.WellProjectId);
+                        WellProjectWellAdapter.ConvertExisting(existingWellProjectWell, wellProjectWellDto);
+                        if (wellProjectWellDto.DrillingSchedule == null && existingWellProjectWell.DrillingSchedule != null)
+                        {
+                            _context.DrillingSchedule!.Remove(existingWellProjectWell.DrillingSchedule);
+                        }
+
+                        _context.WellProjectWell!.Update(existingWellProjectWell);
+                        changes = true;
+                    }
+                }
+            }
         }
-        throw new NotFoundInDBException();
+
+        if (changes)
+        {
+            var wellProjectDto = _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
+            UpdateWellProject(wellProjectDto);
+        }
     }
-
-    public ProjectDto UpdateExplorationWell(ExplorationWellDto updatedExplorationWellDto)
-    {
-        var existingExplorationWell = _explorationWellService.GetExplorationWell(updatedExplorationWellDto.WellId, updatedExplorationWellDto.ExplorationId);
-        ExplorationWellAdapter.ConvertExisting(existingExplorationWell, updatedExplorationWellDto);
-        if (updatedExplorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
-        {
-            _context.DrillingSchedule!.Remove(existingExplorationWell.DrillingSchedule);
-        }
-
-        _context.ExplorationWell!.Update(existingExplorationWell);
-        var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == updatedExplorationWellDto.ExplorationId)?.ProjectId;
-        if (projectId != null)
-        {
-            return _projectService.GetProjectDto((Guid)projectId);
-        }
-        throw new NotFoundInDBException();
-    }
-
-    public ExplorationWellDto[]? UpdateMultpleExplorationWells(ExplorationWellDto[] updatedExplorationWellDtos, Guid caseId)
-    {
-        var explorationId = updatedExplorationWellDtos.FirstOrDefault()?.ExplorationId;
-        ProjectDto? projectDto = null;
-        foreach (var explorationWellDto in updatedExplorationWellDtos)
-        {
-            projectDto = UpdateExplorationWell(explorationWellDto);
-        }
-
-        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
-        var explorationDto = costProfileHelper.UpdateExplorationCostProfilesForCase(caseId);
-
-        UpdateExploration(explorationDto);
-
-        if (projectDto != null && explorationId != null)
-        {
-            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
-        }
-        return null;
-    }
-
-    // public ProjectDto CreateCaseWithAssets(CaseDto caseDto)
-    // {
-    //     var drainageStrategyService = _serviceProvider.GetRequiredService<DrainageStrategyService>();
-    //     var topsideService = _serviceProvider.GetRequiredService<TopsideService>();
-    //     var surfService = _serviceProvider.GetRequiredService<SurfService>();
-    //     var substructureService = _serviceProvider.GetRequiredService<SubstructureService>();
-    //     var transportService = _serviceProvider.GetRequiredService<TransportService>();
-    //     var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
-    //     var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
-
-    //     var case_ = CaseAdapter.Convert(caseDto);
-    //     var project = _projectService.GetProject(case_.ProjectId);
-    //     case_.Project = project;
-    //     case_.CapexFactorFeasibilityStudies = 0.015;
-    //     case_.CapexFactorFEEDStudies = 0.015;
-
-    //     var createdCase = _context.Cases!.Add(case_);
-    //     _context.SaveChanges();
-
-    //     var drainageStrategyDto = new DrainageStrategyDto
-    //     {
-    //         ProjectId = createdCase.Entity.ProjectId,
-    //         Name = "Drainage strategy",
-    //         Description = ""
-    //     };
-    //     var drainageStrategy = drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
-    //     case_.DrainageStrategyLink = drainageStrategy.Id;
-
-    //     var topsideDto = new TopsideDto
-    //     {
-    //         ProjectId = createdCase.Entity.ProjectId,
-    //         Name = "Topside",
-    //     };
-    //     var topside = topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
-    //     case_.TopsideLink = topside.Id;
-
-    //     var surfDto = new SurfDto
-    //     {
-    //         ProjectId = createdCase.Entity.ProjectId,
-    //         Name = "Surf",
-    //     };
-    //     var surf = surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
-    //     case_.SurfLink = surf.Id;
-
-    //     var substructureDto = new SubstructureDto
-    //     {
-    //         ProjectId = createdCase.Entity.ProjectId,
-    //         Name = "Substructure",
-    //     };
-    //     var substructure = substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
-    //     case_.SubstructureLink = substructure.Id;
-
-    //     var transportDto = new TransportDto
-    //     {
-    //         ProjectId = createdCase.Entity.ProjectId,
-    //         Name = "Transport",
-    //     };
-    //     var transport = transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
-    //     case_.TransportLink = transport.Id;
-
-    //     var explorationDto = new ExplorationDto
-    //     {
-    //         ProjectId = createdCase.Entity.ProjectId,
-    //         Name = "Exploration",
-    //     };
-    //     var exploration = explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
-    //     case_.ExplorationLink = exploration.Id;
-
-    //     var wellProjectDto = new WellProjectDto
-    //     {
-    //         ProjectId = createdCase.Entity.ProjectId,
-    //         Name = "WellProject",
-    //     };
-    //     var wellProject = wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
-    //     case_.WellProjectLink = wellProject.Id;
-
-    //     return _projectService.GetProjectDto(project.Id);
-    // }
-
-    // public ProjectDto DuplicateCase(Guid caseId)
-    // {
-    //     var drainageStrategyService = _serviceProvider.GetRequiredService<DrainageStrategyService>();
-
-    //     var topsideService = _serviceProvider.GetRequiredService<TopsideService>();
-    //     var surfService = _serviceProvider.GetRequiredService<SurfService>();
-    //     var substructureService = _serviceProvider.GetRequiredService<SubstructureService>();
-    //     var transportService = _serviceProvider.GetRequiredService<TransportService>();
-
-    //     var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
-    //     var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
-
-    //     var wellProjectWellService = _serviceProvider.GetRequiredService<WellProjectWellService>();
-    //     var explorationWellService = _serviceProvider.GetRequiredService<ExplorationWellService>();
-
-    //     var caseItem = GetCase(caseId);
-    //     var sourceWellProjectId = caseItem.WellProjectLink;
-    //     var sourceExplorationId = caseItem.ExplorationLink;
-    //     caseItem.Id = new Guid();
-    //     if (caseItem.DG4Date == DateTimeOffset.MinValue)
-    //     {
-    //         caseItem.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
-    //     }
-    //     var project = _projectService.GetProject(caseItem.ProjectId);
-    //     caseItem.Project = project;
-
-    //     caseItem.Name += " - copy";
-    //     _context.Cases!.Add(caseItem);
-
-    //     drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
-    //     topsideService.CopyTopside(caseItem.TopsideLink, caseItem.Id);
-    //     surfService.CopySurf(caseItem.SurfLink, caseItem.Id);
-    //     substructureService.CopySubstructure(caseItem.SubstructureLink, caseItem.Id);
-    //     transportService.CopyTransport(caseItem.TransportLink, caseItem.Id);
-    //     var newWellProject = wellProjectService.CopyWellProject(caseItem.WellProjectLink, caseItem.Id);
-    //     var newExploration = explorationService.CopyExploration(caseItem.ExplorationLink, caseItem.Id);
-
-    //     wellProjectWellService.CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
-    //     explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
-
-    //     _context.SaveChanges();
-    //     return _projectService.GetProjectDto(project.Id);
-    // }
 
     public CaseDto UpdateCase(CaseDto updatedDto)
     {

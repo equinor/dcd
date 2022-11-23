@@ -210,6 +210,7 @@ declare namespace Components {
             drillingSchedule?: DrillingScheduleDto;
             explorationId?: string; // uuid
             wellId?: string; // uuid
+            hasChanges?: boolean;
         }
         export interface FuelFlaringAndLossesDto {
             id?: string; // uuid
@@ -651,6 +652,7 @@ declare namespace Components {
             drillingSchedule?: DrillingScheduleDto;
             wellProjectId?: string; // uuid
             wellId?: string; // uuid
+            hasChanges?: boolean;
         }
     }
 }
