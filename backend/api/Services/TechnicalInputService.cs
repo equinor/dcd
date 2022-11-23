@@ -55,7 +55,6 @@ public class TechnicalInputService
 
     public void CreateAndUpdateWells(WellDto[] wellDtos)
     {
-        var changes = false;
         var runCostProfileCalculation = false;
         var runSaveChanges = false;
         var updatedWells = new List<Guid>();
@@ -66,7 +65,6 @@ public class TechnicalInputService
                 var well = WellAdapter.Convert(wellDto);
                 var updatedWell = _context.Wells!.Add(well);
 
-                changes = true;
                 runSaveChanges = true;
             }
             else
@@ -82,21 +80,17 @@ public class TechnicalInputService
                     WellAdapter.ConvertExisting(existing, wellDto);
 
                     var well = _context.Wells!.Update(existing);
-
-                    changes = true;
                 }
             }
         }
-        if (changes)
+
+        if (runSaveChanges)
         {
-            if (runSaveChanges)
-            {
-                _context.SaveChanges();
-            }
-            if (runCostProfileCalculation)
-            {
-                _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
-            }
+            _context.SaveChanges();
+        }
+        if (runCostProfileCalculation)
+        {
+            _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
         }
     }
 
