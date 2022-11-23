@@ -164,9 +164,11 @@ builder.Services.AddScoped<ExplorationWellService>();
 builder.Services.AddScoped<CostProfileFromDrillingScheduleHelper>();
 builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
-builder.Services.AddScoped<CaseWithAssetsService>();
 builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
 builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
+
+builder.Services.AddScoped<CaseWithAssetsService>();
+builder.Services.AddScoped<TechnicalInputService>();
 
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
