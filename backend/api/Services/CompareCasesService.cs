@@ -42,9 +42,10 @@ public class CompareCasesService
         _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
     }
 
-    public CompareCasesDto Calculate(Guid projectId)
+    public IEnumerable<CompareCasesDto> Calculate(Guid projectId)
     {
         var project = _projectService.GetProject(projectId);
+        var caseList = new List<CompareCasesDto>();
         if (project.Cases != null)
         {
             foreach (var caseItem in project.Cases)
@@ -73,10 +74,10 @@ public class CompareCasesService
                     TotalCo2Emissions = totalCo2Emissions,
                     Co2Intensity = co2Intensity,
                 };
-                return compareCases;
+                caseList.Add(compareCases);
             }
         }
-        return new CompareCasesDto();
+        return caseList;
     }
 
     public double CalculateTotalOilProduction(Guid caseId)

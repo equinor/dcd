@@ -29,6 +29,6 @@ public class CompareCasesController : ControllerBase
     [HttpPost("{projectId}/calculateCompareCasesTotals", Name = "CalculateCompareCasesTotals")]
     public CompareCasesDto CalculateCompareCasesTotals(Guid projectId)
     {
-        return _compareCasesService.Calculate(projectId);
+        return (CompareCasesDto)_compareCasesService.Calculate(projectId);
     }
 }
