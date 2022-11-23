@@ -21,6 +21,8 @@ import { GetWellService } from "../../Services/WellService"
 import CO2Tab from "./CO2Tab"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
+import { Exploration } from "../../models/assets/exploration/Exploration"
+import { WellProject } from "../../models/assets/wellproject/WellProject"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -76,10 +78,13 @@ type Props = {
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project,
     setWells?: Dispatch<SetStateAction<Well[] | undefined>>
+    caseId?: string
+    setExploration?: Dispatch<SetStateAction<Exploration | undefined>>
+    setWellProject?: Dispatch<SetStateAction<WellProject | undefined>>
 }
 
 const EditTechnicalInputModal = ({
-    toggleEditTechnicalInputModal, isOpen, setProject, project, setWells,
+    toggleEditTechnicalInputModal, isOpen, setProject, project, setWells, caseId, setExploration, setWellProject,
 }: Props) => {
     const [activeTab, setActiveTab] = useState<number>(0)
 
@@ -162,10 +167,21 @@ const EditTechnicalInputModal = ({
                 })
             }
 
+            if (caseId && caseId !== "") {
+                dto.caseId = caseId
+            }
+
             const result = await (await GetTechnicalInputService()).update(dto)
 
             if (result.projectDto) {
                 setProject(Project.fromJSON(result.projectDto))
+            }
+
+            if (result.explorationDto && setExploration) {
+                setExploration(Exploration.fromJSON(result.explorationDto))
+            }
+            if (result.wellProjectDto && setWellProject) {
+                setWellProject(WellProject.fromJSON(result.wellProjectDto))
             }
 
             const explorationOperationalWellCostsResult = result.explorationOperationalWellCostsDto

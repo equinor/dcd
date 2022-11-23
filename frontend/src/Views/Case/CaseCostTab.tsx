@@ -217,6 +217,30 @@ function CaseCostTab({
         })()
     }, [activeTab])
 
+    useEffect(() => {
+        const {
+            explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
+            seismicAcquisitionAndProcessing,
+        } = exploration
+        setExplorationWellCost(explorationWellCostProfile)
+        setExplorationAppraisalWellCost(appraisalWellCostProfile)
+        setExplorationSidetrackCost(sidetrackCostProfile)
+        setseismicAcqAndProcCost(seismicAcquisitionAndProcessing)
+        const countryOffice = exploration.countryOfficeCost
+        setCountryOfficeCost(countryOffice)
+    }, [exploration])
+
+    useEffect(() => {
+        const {
+            oilProducerCostProfile, gasProducerCostProfile,
+            waterInjectorCostProfile, gasInjectorCostProfile,
+        } = wellProject
+        setWellProjectOilProducerCost(oilProducerCostProfile)
+        setWellProjectGasProducerCost(gasProducerCostProfile)
+        setWellProjectWaterInjectorCost(waterInjectorCostProfile)
+        setWellProjectGasInjectorCost(gasInjectorCostProfile)
+    }, [wellProject])
+
     const updatedAndSetSurf = (surfItem: Surf) => {
         const newSurf: Surf = { ...surfItem }
         newSurf.costProfile = surfCost

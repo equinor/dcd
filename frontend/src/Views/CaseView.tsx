@@ -577,6 +577,9 @@ const CaseView = () => {
                 project={project}
                 setProject={setProject}
                 setWells={setWells}
+                caseId={caseItem.id}
+                setExploration={setExploration}
+                setWellProject={setWellProject}
             />
             <EditCaseModal
                 setProject={setProject}

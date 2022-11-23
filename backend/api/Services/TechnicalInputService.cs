@@ -11,13 +11,17 @@ public class TechnicalInputService
 {
     private readonly DcdDbContext _context;
     private readonly ProjectService _projectService;
+    private readonly CaseService _caseService;
+    private readonly WellProjectService _wellProjectService;
+    private readonly ExplorationService _explorationService;
     private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
     private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
     private readonly WellService _wellService;
     private readonly CostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<CaseService> _logger;
 
-    public TechnicalInputService(DcdDbContext context, ProjectService projectService,
+    public TechnicalInputService(DcdDbContext context, ProjectService projectService, CaseService caseService,
+    WellProjectService wellProjectService, ExplorationService explorationService,
     ExplorationOperationalWellCostsService explorationOperationalWellCostsService,
     DevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
     WellService wellService, CostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
@@ -26,6 +30,10 @@ public class TechnicalInputService
         _context = context;
 
         _projectService = projectService;
+        _caseService = caseService;
+
+        _explorationService = explorationService;
+        _wellProjectService = wellProjectService;
 
         _explorationOperationalWellCostsService = explorationOperationalWellCostsService;
         _developmentOperationalWellCostsService = developmentOperationalWellCostsService;
@@ -46,14 +54,20 @@ public class TechnicalInputService
 
         if (technicalInputDto.WellDtos?.Length > 0)
         {
-            CreateAndUpdateWells(technicalInputDto.WellDtos);
+            var wellResult = CreateAndUpdateWells(technicalInputDto.WellDtos, technicalInputDto.CaseId);
+            if (wellResult != null)
+            {
+                technicalInputDto.ExplorationDto = wellResult.Value.explorationDto;
+                technicalInputDto.WellProjectDto = wellResult.Value.wellProjectDto;
+            }
         }
 
         _context.SaveChanges();
         return technicalInputDto;
     }
 
-    public void CreateAndUpdateWells(WellDto[] wellDtos)
+    public (ExplorationDto explorationDto, WellProjectDto wellProjectDto)? CreateAndUpdateWells(
+        WellDto[] wellDtos, Guid? caseId)
     {
         var runCostProfileCalculation = false;
         var runSaveChanges = false;
@@ -91,7 +105,16 @@ public class TechnicalInputService
         if (runCostProfileCalculation)
         {
             _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
+            if (caseId != null)
+            {
+                var caseItem = _caseService.GetCase((Guid)caseId);
+                var exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
+                var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+
+                return (ExplorationDtoAdapter.Convert(exploration), WellProjectDtoAdapter.Convert(wellProject));
+            }
         }
+        return null;
     }
 
     public ProjectDto UpdateProject(ProjectDto updatedDto)

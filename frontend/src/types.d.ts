@@ -527,6 +527,9 @@ declare namespace Components {
             explorationOperationalWellCostsDto?: ExplorationOperationalWellCostsDto;
             wellDtos?: WellDto[] | null;
             projectDto?: ProjectDto;
+            explorationDto?: ExplorationDto;
+            wellProjectDto?: WellProjectDto;
+            caseId?: string | null; // uuid
         }
         export interface TimeSeriesCostDto {
             id?: string; // uuid
