@@ -9,6 +9,7 @@ import { AgGridReact } from "ag-grid-react"
 import LinearDataTable from "../../Components/LinearDataTable"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { Project } from "../../models/Project"
+import { GetCompareCasesService } from "../../Services/CompareCasesService"
 
 interface Props {
     project: Project
@@ -113,7 +114,7 @@ function ProjectCompareCasesTab({
                         )?.productionProfileGas,
                     ),
                     totalExportedVolumes: 0,
-                    studyCostsPlusOpex: 0, 
+                    studyCostsPlusOpex: 0,
                     cessationCosts: 0,
                     offshorePlusOnshoreFacilityCosts: 0,
                     developmentCosts: timeSeriesTotal(
@@ -191,6 +192,18 @@ function ProjectCompareCasesTab({
     useEffect(() => {
         casesToRowData()
     }, [project.cases])
+
+    // const [compareCasesTotals, setCompareCasesTotals] = useState()
+    useEffect(() => {
+        (async () => {
+            try {
+                const compareCasesTotals = (await GetCompareCasesService()).calculate(project.id)
+                console.log(compareCasesTotals)
+            } catch (error) {
+                console.error("[ProjectView] Error while generating compareCasesTotals", error)
+            }
+        })()
+    }, [])
 
     const columns = () => {
         const columnPinned: any[] = [
