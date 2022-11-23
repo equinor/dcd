@@ -49,8 +49,6 @@ function CaseScheduleTab({
     setCase,
     activeTab,
 }: Props) {
-    const [isSaving, setIsSaving] = useState<boolean>()
-
     const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
@@ -182,13 +180,6 @@ function CaseScheduleTab({
         setCase(newCase)
     }
 
-    const handleSave = async () => {
-        setIsSaving(true)
-        const result = await (await GetCaseService()).update(caseItem)
-        setCase(result)
-        setIsSaving(false)
-    }
-
     const findMinDate = (dates: Date[]) => {
         const filteredDates = dates.filter((d) => !IsDefaultDate(d))
         if (filteredDates.length === 0) { return undefined }
@@ -217,11 +208,6 @@ function CaseScheduleTab({
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Schedule</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>

@@ -27,6 +27,7 @@ public class SurfDto
     public string ApprovedBy { get; set; } = string.Empty;
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
+    public bool HasChanges { get; set; }
 }
 
 public class SurfCostProfileDto : TimeSeriesCostDto

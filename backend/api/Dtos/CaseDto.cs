@@ -45,6 +45,7 @@ public class CaseDto
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
+    public bool HasChanges { get; set; }
 }
 
 public class CessationCostDto : TimeSeriesCostDto
