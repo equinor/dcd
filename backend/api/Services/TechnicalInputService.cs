@@ -77,7 +77,7 @@ public class TechnicalInputService
             if (wellDto.Id == Guid.Empty)
             {
                 var well = WellAdapter.Convert(wellDto);
-                var updatedWell = _context.Wells!.Add(well);
+                _context.Wells!.Add(well);
 
                 runSaveChanges = true;
             }
@@ -93,7 +93,7 @@ public class TechnicalInputService
                     }
                     WellAdapter.ConvertExisting(existing, wellDto);
 
-                    var well = _context.Wells!.Update(existing);
+                    _context.Wells!.Update(existing);
                 }
             }
         }
