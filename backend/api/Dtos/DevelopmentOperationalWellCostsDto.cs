@@ -8,5 +8,6 @@ namespace api.Dtos
         public double RigMobDemob { get; set; }
         public double AnnualWellInterventionCostPerWell { get; set; }
         public double PluggingAndAbandonment { get; set; }
+        public bool HasChanges { get; set; }
     }
 }

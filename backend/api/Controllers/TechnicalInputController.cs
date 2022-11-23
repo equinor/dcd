@@ -28,7 +28,7 @@ public class TechnicalInputController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateTechnicalInput")]
-    public ProjectDto UpdateTechnicalInput([FromBody] TechnicalInputDto dto)
+    public TechnicalInputDto UpdateTechnicalInput([FromBody] TechnicalInputDto dto)
     {
         return _technicalInputService.UpdateTehnicalInput(dto);
     }

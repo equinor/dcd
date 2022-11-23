@@ -63,6 +63,9 @@ public class ProjectService
         project.WellProjects = new List<WellProject>();
         project.Explorations = new List<Exploration>();
 
+        project.ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts();
+        project.DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts();
+
         Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
             new JsonSerializerSettings()
             {
