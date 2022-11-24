@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import styled from "styled-components"
 import React, {
     useEffect, useMemo, useRef, useState,
@@ -93,16 +94,6 @@ function ProjectCompareCasesTab({
         })()
     }, [])
 
-    const timeSeriesTotal = (timeSeries: any) => {
-        if (timeSeries?.values.length! !== 0 && timeSeries !== undefined) {
-            const value: number = Math.round(timeSeries.values.map(
-                (v: number) => (v + Number.EPSILON),
-            ).reduce((x: number, y: number) => x + y) * 1000) / 1000
-            return value
-        }
-        return 0
-    }
-
     const casesToRowData = () => {
         if (project) {
             const tableCompareCases: TableCompareCase[] = []
@@ -112,18 +103,19 @@ function ProjectCompareCasesTab({
                         id: c.id!,
                         cases: c.name ?? "",
                         description: c.description ?? "",
-                        npv: c.npv ?? 0,
-                        breakEven: c.breakEven ?? 0,
-                        oilProduction: compareCasesTotals[i]?.totalOilProduction,
-                        gasProduction: compareCasesTotals[i]?.totalGasProduction,
-                        totalExportedVolumes: compareCasesTotals[i]?.totalExportedVolumes,
-                        studyCostsPlusOpex: compareCasesTotals[i]?.totalStudyCostsPlusOpex,
-                        cessationCosts: compareCasesTotals[i]?.totalCessationCosts,
-                        offshorePlusOnshoreFacilityCosts: compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts,
-                        developmentCosts: compareCasesTotals[i]?.developmentWellCosts,
-                        explorationWellCosts: compareCasesTotals[i]?.explorationWellCosts,
-                        totalCO2Emissions: compareCasesTotals[i]?.totalCo2Emissions,
-                        cO2Intensity: compareCasesTotals[i]?.co2Intensity,
+                        npv: Math.round(c.npv * 1) / 1 ?? 0,
+                        breakEven: Math.round(c.breakEven * 1) / 1 ?? 0,
+                        oilProduction: Math.round(compareCasesTotals[i]?.totalOilProduction * 10) / 10,
+                        gasProduction: Math.round(compareCasesTotals[i]?.totalGasProduction * 10) / 10,
+                        totalExportedVolumes: Math.round(compareCasesTotals[i]?.totalExportedVolumes * 10) / 10,
+                        studyCostsPlusOpex: Math.round(compareCasesTotals[i]?.totalStudyCostsPlusOpex * 1) / 1,
+                        cessationCosts: Math.round(compareCasesTotals[i]?.totalCessationCosts * 1) / 1,
+                        // eslint-disable-next-line max-len
+                        offshorePlusOnshoreFacilityCosts: Math.round(compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts * 1) / 1,
+                        developmentCosts: Math.round(compareCasesTotals[i]?.developmentWellCosts * 1) / 1,
+                        explorationWellCosts: Math.round(compareCasesTotals[i]?.explorationWellCosts * 1) / 1,
+                        totalCO2Emissions: Math.round(compareCasesTotals[i]?.totalCo2Emissions * 10) / 10,
+                        cO2Intensity: Math.round(compareCasesTotals[i]?.co2Intensity * 10) / 10,
                     }
                     tableCompareCases.push(tableCase)
                 })
@@ -174,7 +166,10 @@ function ProjectCompareCasesTab({
                         headerName: "",
                         width: 175,
                         headerComponentParams: {
-                            template: customUnitHeaderTemplate("Oil production", "MSm3"),
+                            template: customUnitHeaderTemplate(
+                                "Oil production",
+                                `${project?.physUnit === 0 ? "MSm3" : "mill bbl"}`,
+                            ),
                         },
                     },
                     {
@@ -182,7 +177,10 @@ function ProjectCompareCasesTab({
                         headerName: "",
                         width: 175,
                         headerComponentParams: {
-                            template: customUnitHeaderTemplate("Gas production", "GSm3"),
+                            template: customUnitHeaderTemplate(
+                                "Gas production",
+                                `${project?.physUnit === 0 ? "GSm3" : "Bscf"}`,
+                            ),
                         },
                     },
                     {
@@ -190,7 +188,10 @@ function ProjectCompareCasesTab({
                         headerName: "",
                         width: 175,
                         headerComponentParams: {
-                            template: customUnitHeaderTemplate("Total exported volumes", "mill boe"),
+                            template: customUnitHeaderTemplate(
+                                "Total exported volumes",
+                                `${project?.physUnit === 0 ? "mill Sm3" : "mill bbl"}`,
+                            ),
                         },
                     },
                 ],
@@ -203,7 +204,10 @@ function ProjectCompareCasesTab({
                         headerName: "",
                         width: 175,
                         headerComponentParams: {
-                            template: customUnitHeaderTemplate("Study costs + OPEX", "mill USD per 2020"),
+                            template: customUnitHeaderTemplate(
+                                "Study costs + OPEX",
+                                `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+                            ),
                         },
                     },
                     {
@@ -225,7 +229,10 @@ function ProjectCompareCasesTab({
                         width: 225,
                         headerComponentParams: {
                             template:
-                            customUnitHeaderTemplate("Offshore + Onshore facility costs", "mill USD per 2020"),
+                            customUnitHeaderTemplate(
+                                "Offshore + Onshore facility costs",
+                                `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+                            ),
                         },
                     },
                     {
@@ -233,7 +240,10 @@ function ProjectCompareCasesTab({
                         headerName: "",
                         width: 175,
                         headerComponentParams: {
-                            template: customUnitHeaderTemplate("Development well costs", "mill USD per 2020"),
+                            template: customUnitHeaderTemplate(
+                                "Development well costs",
+                                `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+                            ),
                         },
                     },
                     {
@@ -241,7 +251,10 @@ function ProjectCompareCasesTab({
                         headerName: "",
                         width: 175,
                         headerComponentParams: {
-                            template: customUnitHeaderTemplate("Exploration well costs", "mill USD per 2020"),
+                            template: customUnitHeaderTemplate(
+                                "Exploration well costs",
+                                `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+                            ),
                         },
                     },
                 ],
@@ -288,6 +301,9 @@ function ProjectCompareCasesTab({
                 animateRows
                 domLayout="autoHeight"
                 onGridReady={onGridReady}
+                rowSelection="multiple"
+                enableRangeSelection
+                enableCharts
             />
         </div>
     )
