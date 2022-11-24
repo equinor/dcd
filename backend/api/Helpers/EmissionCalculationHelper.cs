@@ -107,7 +107,7 @@ public static class EmissionCalculationHelper
             var calendarDays = DateTime.IsLeapYear(year) ? DaysInLeapYear : DaysInYear;
 
             const int million = 1000000;
-            gasRatesProfile.Values[index] = gasRatesProfile.Values[index] / topside.GasCapacity * calendarDays / million;
+            gasRatesProfile.Values[index] = gasRatesProfile.Values[index] / topside.GasCapacity / calendarDays / million;
         }
 
         totalUseOfPowerGas.StartYear = drainageStrategy.ProductionProfileGas.StartYear;
