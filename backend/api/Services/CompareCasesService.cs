@@ -50,16 +50,16 @@ public class CompareCasesService
         {
             foreach (var caseItem in project.Cases)
             {
-                var totalOilProduction = CalculateTotalOilProduction(caseItem.Id);
-                var totalGasProduction = CalculateTotalGasProduction(caseItem.Id);
-                var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem.Id);
+                var totalOilProduction = CalculateTotalOilProduction(caseItem.Id, project);
+                var totalGasProduction = CalculateTotalGasProduction(caseItem.Id, project);
+                var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem.Id, project);
                 var totalStudyCostsPlusOpex = CalculateTotalStudyCostsPlusOpex(caseItem.Id);
                 var totalCessationCosts = CalculateTotalCessationCosts(caseItem.Id);
                 var offshorePlusOnshoreFacilityCosts = CalculateOffshorePlusOnshoreFacilityCosts(caseItem.Id);
                 var developmentCosts = CalculateDevelopmentWellCosts(caseItem.Id);
                 var explorationCosts = CalculateExplorationWellCosts(caseItem.Id);
                 var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem.Id);
-                var co2Intensity = CalculateCO2Intensity(caseItem.Id);
+                var co2Intensity = CalculateCO2Intensity(caseItem.Id, project);
 
                 var compareCases = new CompareCasesDto
                 {
@@ -80,7 +80,7 @@ public class CompareCasesService
         return caseList;
     }
 
-    public double CalculateTotalOilProduction(Guid caseId)
+    public double CalculateTotalOilProduction(Guid caseId, Project project)
     {
         var caseItem = _caseService.GetCase(caseId);
         var sumOilProduction = 0.0;
@@ -99,7 +99,6 @@ public class CompareCasesService
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
-        var project = _projectService.GetProject(caseItem.ProjectId);
         if (project.PhysicalUnit != 0) {
             return sumOilProduction * 6.29 / 1E6;
         }
@@ -107,7 +106,7 @@ public class CompareCasesService
         return sumOilProduction / 1E6;
     }
 
-    public double CalculateTotalGasProduction(Guid caseId)
+    public double CalculateTotalGasProduction(Guid caseId, Project project)
     {
         var caseItem = _caseService.GetCase(caseId);
         var sumGasProduction = 0.0;
@@ -126,7 +125,6 @@ public class CompareCasesService
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
-        var project = _projectService.GetProject(caseItem.ProjectId);
         if (project.PhysicalUnit != 0) {
             return sumGasProduction * 35.315 / 1E9;
         }
@@ -134,9 +132,9 @@ public class CompareCasesService
         return sumGasProduction / 1E9;
     }
 
-    public double CalculateTotalExportedVolumes(Guid caseId)
+    public double CalculateTotalExportedVolumes(Guid caseId, Project project)
     {
-        return CalculateTotalOilProduction(caseId) + CalculateTotalGasProduction(caseId);
+        return CalculateTotalOilProduction(caseId, project) + CalculateTotalGasProduction(caseId, project);
     }
 
     public double CalculateTotalStudyCostsPlusOpex(Guid caseId)
@@ -214,9 +212,9 @@ public class CompareCasesService
         return generateCo2EmissionsProfile.Sum;
     }
 
-    public double CalculateCO2Intensity(Guid caseId)
+    public double CalculateCO2Intensity(Guid caseId, Project project)
     {
-        var totalExportedVolumes = CalculateTotalExportedVolumes(caseId);
+        var totalExportedVolumes = CalculateTotalExportedVolumes(caseId, project);
         var totalCo2Emissions = CalculateTotalCO2Emissions(caseId);
         if (totalExportedVolumes != 0 && totalCo2Emissions != 0) {
             return totalCo2Emissions / totalExportedVolumes;
