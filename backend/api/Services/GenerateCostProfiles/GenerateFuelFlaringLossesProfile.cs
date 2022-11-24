@@ -20,6 +20,101 @@ public class GenerateFuelFlaringLossesProfile
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
     }
 
+    public TimeSeries<double> CalculateTotalUseOfPowerOil(Topside topside, DrainageStrategy drainageStrategy)
+    {
+        //  total use of power oil = OSP*OOM + ORP*OSP*(1-OOM)
+
+        // OSP * OOM
+        // CO2 share oil profile * CO2 on max oil
+        var osp_oom = topside.CO2ShareOilProfile * topside.CO2OnMaxOilProfile;
+
+        // ORP = OR/OC/cd
+        var oc = topside.OilCapacity;
+        var or = drainageStrategy.ProductionProfileOil?.Values;
+        var cd = 365; // add leap year
+
+        if (or == null || or.Length == 0 || oc == 0)
+        {
+            return new TimeSeries<double>();
+        }
+
+        // ORP
+        var orp = or.Select(v => v / oc / cd);
+
+        var orp_osp_oom = orp.Select(v => v * topside.CO2ShareOilProfile * (1 - topside.CO2OnMaxOilProfile));
+        var totalUseOfPowerOil = orp_osp_oom.Select(v => v + osp_oom).ToArray();
+        var totalUseOfPowerTS = new TimeSeries<double>
+        {
+            Values = totalUseOfPowerOil,
+            StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
+        };
+        return totalUseOfPowerTS;
+    }
+
+    public TimeSeries<double> CalculateTotalUseOfPowerGas(Topside topside, DrainageStrategy drainageStrategy)
+    {
+        //  total use of power gas = GSP*GOM + GRP*GSP*(1-GOM)
+
+        // GSP * GOM
+        // CO2 share gas profile * CO2 on max gas
+        var gsp_gom = topside.CO2ShareGasProfile * topside.CO2OnMaxGasProfile;
+
+        // GRP = GR/GC*cd/1000000
+        var gc = topside.GasCapacity;
+        var gr = drainageStrategy.ProductionProfileGas?.Values;
+        var cd = 365; // add leap year
+
+        if (gr == null || gr.Length == 0 || gc == 0)
+        {
+            return new TimeSeries<double>();
+        }
+
+        // GRP
+        // var grp = gr.Select(v => v / gc * cd / 1e6);
+        // var grp2 = gr.Select(v => (v / gc) / (cd / 1e6));
+        var grp = gr.Select(v => v / gc / cd / 1e6);
+
+        var grp_gsp_gom = grp.Select(v => v * topside.CO2ShareGasProfile * (1 - topside.CO2OnMaxGasProfile));
+        var totalUseOfPowerGas = grp_gsp_gom.Select(v => v + gsp_gom).ToArray();
+        var totalUseOfPowerTS = new TimeSeries<double>
+        {
+            Values = totalUseOfPowerGas,
+            StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
+        };
+        return totalUseOfPowerTS;
+    }
+
+    public TimeSeries<double> CalculateTotalUseOfPowerWI(Topside topside, DrainageStrategy drainageStrategy)
+    {
+        //  total use of power wi = WSP*WOM + WRP*WSP*(1-WOM)
+
+        // WSP*WOM
+        // CO2 share wi profile * CO2 on max wi
+        var wsp_wom = topside.CO2ShareWaterInjectionProfile * topside.CO2OnMaxWaterInjectionProfile;
+
+        // WRP = WR/WIC/cd
+        var wic = topside.WaterInjectionCapacity;
+        var wr = drainageStrategy.ProductionProfileWaterInjection?.Values;
+        var cd = 365; // add leap year
+
+        if (wr == null || wr.Length == 0 || wic == 0)
+        {
+            return new TimeSeries<double>();
+        }
+
+        // WRP
+        var wrp = wr.Select(v => v / wic / cd);
+
+        var wrp_wsp_wom = wrp.Select(v => v * topside.CO2ShareWaterInjectionProfile * (1 - topside.CO2OnMaxWaterInjectionProfile));
+        var totalUseOfPowerWI = wrp_wsp_wom.Select(v => v + wsp_wom).ToArray();
+        var totalUseOfPowerTS = new TimeSeries<double>
+        {
+            Values = totalUseOfPowerWI,
+            StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
+        };
+        return totalUseOfPowerTS;
+    }
+
     public FuelFlaringAndLossesDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
@@ -32,7 +127,7 @@ public class GenerateFuelFlaringLossesProfile
 
         // fuel consumption = PE * FCM * cd  * (OSP*OOM + OR*OSP*(1-OOM) + GSP*OOM + GR*GSP*(1-GOM) + WSP*WOM + WR*WSP*(1-WOM)) *1E6 [Sm3/yr] (New store in base unit)
         // fuel consumption = facilities availability * Fuel gas consumption max * calender days * (CO2 share gas profile * CO2 on max oil + )
-        var part1 = caseItem.FacilitiesAvailability * topside.FuelConsumption /* check if correct */ * 365 * 1_000_000;
+        var part1 = caseItem.FacilitiesAvailability * topside.FuelConsumption * 365 * 1e6;
         // OSP*OOM 
         // CO2 share oil profile * CO2 on max oil
         var part2 = topside.CO2ShareOilProfile * topside.CO2OnMaxOilProfile;
@@ -40,11 +135,12 @@ public class GenerateFuelFlaringLossesProfile
         // gas rate, from production profile gas * CO2 share oil profile * (1 - CO2 on max oil)
         var part3 = drainageStrategy.ProductionProfileOil?.Values.Select(v => v * topside.CO2ShareOilProfile * (1 - topside.CO2OnMaxOilProfile));
         var part3a = drainageStrategy.ProductionProfileOil?.Values.Select(v => part2 + (v * topside.CO2ShareOilProfile * (1 - topside.CO2OnMaxOilProfile))).ToArray() ?? Array.Empty<double>();
-        var part3ts = new TimeSeries<double>
-        {
-            Values = part3a,
-            StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
-        };
+        // var part3ts = new TimeSeries<double>
+        // {
+        //     Values = part3a,
+        //     StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
+        // };
+        var part3ts = CalculateTotalUseOfPowerOil(topside, drainageStrategy);
 
         // GSP*OOM
         // CO2 share gas profile * CO2 on max oil <- Is this correct?
@@ -54,11 +150,12 @@ public class GenerateFuelFlaringLossesProfile
         // gas rate, from production profile gas * CO2 share gas profile * (1 - CO2 on max gas)
         var part5 = drainageStrategy.ProductionProfileGas?.Values.Select(v => v * topside.CO2ShareGasProfile * (1 - topside.CO2OnMaxGasProfile));
         var part5a = drainageStrategy.ProductionProfileGas?.Values.Select(v => part4 + (v * topside.CO2ShareGasProfile * (1 - topside.CO2OnMaxGasProfile))).ToArray() ?? Array.Empty<double>();
-        var part5ts = new TimeSeries<double>
-        {
-            Values = part5a,
-            StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
-        };
+        // var part5ts = new TimeSeries<double>
+        // {
+        //     Values = part5a,
+        //     StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
+        // };
+        var part5ts = CalculateTotalUseOfPowerGas(topside, drainageStrategy);
 
         // WSP*WOM
         // CO2 share wi profile * CO2 on max wi
@@ -68,15 +165,21 @@ public class GenerateFuelFlaringLossesProfile
         // water injection rate, from injection profile water * CO2 share wi profile * (1 - CO2 on max wi)
         var part7 = drainageStrategy.ProductionProfileWaterInjection?.Values.Select(v => v * topside.CO2ShareWaterInjectionProfile * (1 - topside.CO2OnMaxWaterInjectionProfile));
         var part7a = drainageStrategy.ProductionProfileWaterInjection?.Values.Select(v => part6 + (v * topside.CO2ShareWaterInjectionProfile * (1 - topside.CO2OnMaxWaterInjectionProfile))).ToArray() ?? Array.Empty<double>();
-        var part7ts = new TimeSeries<double>
-        {
-            Values = part7a,
-            StartYear = drainageStrategy.ProductionProfileWaterInjection?.StartYear ?? 0,
-        };
+        // var part7ts = new TimeSeries<double>
+        // {
+        //     Values = part7a,
+        //     StartYear = drainageStrategy.ProductionProfileWaterInjection?.StartYear ?? 0,
+        // };
+        var part7ts = CalculateTotalUseOfPowerWI(topside, drainageStrategy);
 
         // fuel consumption = PE * FCM * cd  * (OSP*OOM + OR*OSP*(1-OOM) + GSP*OOM + GR*GSP*(1-GOM) + WSP*WOM + WR*WSP*(1-WOM)) *1E6 [Sm3/yr] (New store in base unit)
 
-        var fuelConsumptions = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { part3ts, part5ts, part7ts });
+        var tempFuelConsumptions = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { part3ts, part5ts, part7ts });
+        var fuelConsumptionValues = tempFuelConsumptions.Values.Select(v => v * part1).ToArray();
+        var fuelConsumptions = new TimeSeries<double>{
+            Values = fuelConsumptionValues,
+            StartYear = tempFuelConsumptions.StartYear,
+        };
 
         // var fuelConsumptions =
         //     EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
@@ -99,7 +202,7 @@ public class GenerateFuelFlaringLossesProfile
         };
         // * Flared gas per produced volume
         var part8bts = TimeSeriesCost.MergeCostProfiles(part8ats, part8ts);
-        var flaringValues = part8bts.Values.Select(v => v * 1.321).ToArray() ?? Array.Empty<double>(); // project.flaredgasperproducedvolume
+        var flaringValues = part8bts.Values.Select(v => v * project.FlaredGasPerProducedVolume).ToArray() ?? Array.Empty<double>(); // project.flaredgasperproducedvolume
         var flaring = new TimeSeries<double>
         {
             Values = flaringValues,

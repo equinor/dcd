@@ -32,7 +32,6 @@ public static class EmissionCalculationHelper
             Values = valuesList.ToArray(),
         };
 
-
         return TimeSeriesCost.MergeCostProfiles(totalUseOfPower, newTimeSeries);
     }
 
