@@ -144,7 +144,7 @@ function ProjectCompareCasesTab({
                         width: 175,
                         editable: false,
                         headerComponentParams: {
-                            template: customUnitHeaderTemplate("NPV", "mill USD per 2020"),
+                            template: customUnitHeaderTemplate("NPV", "mill USD"),
                         },
                     },
                     {
