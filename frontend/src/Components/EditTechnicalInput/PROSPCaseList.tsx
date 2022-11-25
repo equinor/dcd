@@ -100,7 +100,7 @@ function PROSPCaseList({
         p.setValue(value)
     }
 
-    const caseSelectedRenderer = (p:any) => {
+    const caseSelectedRenderer = (p: any) => {
         if (p.value) {
             return <Checkbox checked onChange={() => handleCheckboxChange(p, false)} />
         }
@@ -136,17 +136,48 @@ function PROSPCaseList({
 
     const getRowId = useMemo<GetRowIdFunc>(() => (params: GetRowIdParams) => params.data.id, [])
 
+    const getFileLink = (p: any, selectedFileId: any) => {
+        const driveItemsList = p.data.driveItem[0]
+        let link = null
+        if (selectedFileId && Array.isArray(driveItemsList)) {
+            const item = driveItemsList.find((el: any) => selectedFileId && selectedFileId === el.id)
+            if (item) {
+                link = item.sharepointFileUrl
+            }
+        }
+        return link
+    }
+
+    const updateFileLink = (nodeId: string, selectedFileId: any) => {
+        const rowNode = gridRef.current?.getRowNode(nodeId)
+        if (selectedFileId !== "") {
+            const link = getFileLink(rowNode, selectedFileId)
+            rowNode.setDataValue(
+                "fileLink", (
+                    <a
+                        href={link}
+                        aria-label="SharePoint File link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <Icon data={external_link} />
+                    </a>),
+            )
+        } else {
+            rowNode.setDataValue("fileLink", null)
+        }
+    }
+
     const handleFileChange = (event: ChangeEvent<HTMLSelectElement>, p: any) => {
         const value = { ...p.value }
         value[1] = event.currentTarget.selectedOptions[0].value
         caseAutoSelect(p.node?.data.id)
+        updateFileLink(p.node?.data.id, value[1])
         p.setValue(value)
     }
-
     const fileIdDropDown = (p: any) => {
         const fileId = p.value[1]
         const items: DriveItem[] = p.value[0]
-
         return (
             <NativeSelect
                 id="sharePointFile"
@@ -159,9 +190,10 @@ function PROSPCaseList({
             </NativeSelect>
         )
     }
-    const fileLinkRenderer = (p:any) => {
-        const link = p.data?.fileLink
-        if (link && link !== "") {
+
+    const fileLinkRenderer = (p: any) => {
+        const link = getFileLink(p, p.data.driveItem[1])
+        if (link) {
             return (
                 <a
                     href={link}

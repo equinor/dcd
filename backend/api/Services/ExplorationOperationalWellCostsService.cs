@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services
 {
     public class ExplorationOperationalWellCostsService
@@ -19,7 +21,7 @@ namespace api.Services
 
         public ExplorationOperationalWellCostsDto? UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
         {
-            var existing = GetOperationalWellCosts(dto.ProjectId);
+            var existing = GetOperationalWellCostsByProjectId(dto.ProjectId);
             if (existing == null)
             {
                 return null;
@@ -41,10 +43,18 @@ namespace api.Services
             _context.SaveChanges();
             return ExplorationOperationalWellCostsDtoAdapter.Convert(explorationOperationalWellCosts);
         }
-        public ExplorationOperationalWellCosts? GetOperationalWellCosts(Guid id)
+        public ExplorationOperationalWellCosts? GetOperationalWellCostsByProjectId(Guid id)
         {
             var operationalWellCosts = _context.ExplorationOperationalWellCosts!
                 .FirstOrDefault(o => o.ProjectId == id);
+            return operationalWellCosts;
+        }
+
+        public ExplorationOperationalWellCosts? GetOperationalWellCosts(Guid id)
+        {
+            var operationalWellCosts = _context.ExplorationOperationalWellCosts!
+                .Include(eowc => eowc.Project)
+                .FirstOrDefault(o => o.Id == id);
             return operationalWellCosts;
         }
     }

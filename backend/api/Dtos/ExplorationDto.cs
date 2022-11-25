@@ -16,6 +16,7 @@ public class ExplorationDto
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
     public List<ExplorationWellDto>? ExplorationWells { get; set; }
+    public bool HasChanges { get; set; }
 }
 public class ExplorationWellCostProfileDto : TimeSeriesCostDto
 {

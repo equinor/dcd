@@ -18,7 +18,7 @@ const ButtonWrapper = styled.div`
 interface Props {
     project: Project
     wells: Well[] | undefined
-    setWells: Dispatch<SetStateAction<Well[] | undefined>>
+    setWells: Dispatch<SetStateAction<Well[]>>
     explorationWells: boolean
 }
 
@@ -156,7 +156,7 @@ function WellListEditTechnicalInput({
             width: 90,
             flex: 1,
             headerComponentParams: {
-                template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`)
+                template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`),
             },
         },
     ])

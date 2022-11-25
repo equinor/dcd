@@ -36,6 +36,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
     DG4Date?: Date | null
     facilityOpex?: number | undefined
     peakElectricityImported?: number // double
+    hasChanges?: boolean
 
     constructor(data?: Components.Schemas.TopsideDto) {
         if (data !== undefined) {

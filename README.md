@@ -25,23 +25,21 @@ and volume profiles for drainage stragegy and creating these as assets on busine
 
 The application is split between the [frontend app](#frontend) hosted in Fusion, and the [backend app](#backend) hosted in Radix. Authentication is based on [RBAC](https://learn.microsoft.com/en-us/azure/role-based-access-control/overview), where we have different app registrations for preproduction and production with are consented to access Fusion Preprod or Fusion Prod. 
 
-### Services used in the application
-
 ### Security
 
 Snyk surveillance has been added to the project for continuous monitoring of the code and its dependency. 
 
 ### Azure App Config
 
-Azure App Configuration provides a service to centrally manage application settings and feature flags. It allows us to change configuration directly in Azure for all environments.
-
-Combined with Azure Key Vault it also combines a secure place to store secrets and connection strings. 
+Azure App Configuration provides a service to centrally manage application settings and feature flags. It allows us to change configuration directly in Azure for all environments. Combined with Azure Key Vault it also combines a secure place to store secrets and connection strings.
 
 ### Omnia Radix
 
-Omnia Radix is a Equinor PaaS (Platform as a Service) based on Kubernetes to build and run docker containers.
+[Omnia Radix](https://console.radix.equinor.com/applications/dcd) is a Equinor PaaS (Platform as a Service) based on AKS to build and run docker containers. You can either make Radix build your container directly, or pull the container from a container registry. For DCD the image is built in [Azure Devops](#azuredevops), and pushed to [Azure Container Registry](#azure-container-registry). Radix pulls the image corresponding to release stage.
 
-Configuration of the required infrastructure is placed in a radixconfig.yml, which defines how your app should be hosted.
+Configuration of the required infrastructure is placed in a radixconfig.yml, which defines the different components and environments which are created. Runtime variables and secrets are also defined in radixconfig.yml. The DCD config is placed in a separate [git repo](https://github.com/equinor/dcd-radix-conf).
+
+### Azure Container Registry
 
 ## Frontend
 
@@ -91,8 +89,13 @@ manually and when a new tag is created.
 ## Development
 
 ### Team
+DCD is developed by the It's a Feature team in TDI EDT DSD EDB. Development was started by the Shellvis team.  As of november 2022, the team is a Sopra Steria only team. 
 
-DCD is developed by the It's a Feature team in TDI EDT DSD EDB. Development was started by the Shellvis team.
+### Repository
+The application consists of a github monorepo for frontend and backend, and a single repo for [Radix Configuration](#omnia-radix). All code changes to main branch should come as a pull request from a github fork. 
+
+### Build and Release
+There is a project in [Azure Devops](https://dev.azure.com/2S-IAF/DCD) for DCD where user stories and tasks are defined, but also build and release pipeline are hosted. 
 
 [contributors-shield]: https://img.shields.io/github/contributors/equinor/dcd.svg?style=for-the-badge
 [contributors-url]: https://github.com/equinor/dcd/graphs/contributors

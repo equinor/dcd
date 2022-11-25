@@ -20,6 +20,9 @@ import { IsExplorationWell } from "../../Utils/common"
 import { GetWellService } from "../../Services/WellService"
 import CO2Tab from "./CO2Tab"
 import { GetProjectService } from "../../Services/ProjectService"
+import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
+import { Exploration } from "../../models/assets/exploration/Exploration"
+import { WellProject } from "../../models/assets/wellproject/WellProject"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -75,40 +78,41 @@ type Props = {
     setProject: Dispatch<SetStateAction<Project | undefined>>
     project: Project,
     setWells?: Dispatch<SetStateAction<Well[] | undefined>>
+    caseId?: string
+    setExploration?: Dispatch<SetStateAction<Exploration | undefined>>
+    setWellProject?: Dispatch<SetStateAction<WellProject | undefined>>
 }
 
 const EditTechnicalInputModal = ({
-    toggleEditTechnicalInputModal, isOpen, setProject, project, setWells,
+    toggleEditTechnicalInputModal, isOpen, setProject, project, setWells, caseId, setExploration, setWellProject,
 }: Props) => {
     const [activeTab, setActiveTab] = useState<number>(0)
+
+    const [originalProject, setOriginalProject] = useState<Project>(project)
+
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts | undefined>(project.developmentWellCosts)
-    const [wellProjectWells, setWellProjectWells] = useState<Well[] | undefined>(project?.wells?.filter((w) => !IsExplorationWell(w)))
-    const [explorationWells, setExplorationWells] = useState<Well[] | undefined>(project?.wells?.filter((w) => IsExplorationWell(w)))
+
+    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
+    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts | undefined>(project.developmentWellCosts)
+
+    const [wellProjectWells, setWellProjectWells] = useState<Well[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
+    const [explorationWells, setExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
+
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Well[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
 
     const [isSaving, setIsSaving] = useState<boolean>()
-
-    useEffect(() => {
-        (async () => {
-            try {
-                if (!project.explorationWellCosts || project.explorationWellCosts.id === EMPTY_GUID) {
-                    const res = await (await GetExplorationOperationalWellCostsService()).create({ projectId: project.id })
-                    setExplorationOperationalWellCosts(res)
-                }
-                if (!project.developmentWellCosts || project.developmentWellCosts.id === EMPTY_GUID) {
-                    const res = await (await GetDevelopmentOperationalWellCostsService()).create({ projectId: project.id })
-                    setDevelopmentOperationalWellCosts(res)
-                }
-            } catch (error) {
-                console.error()
-            }
-        })()
-    }, [])
 
     useEffect(() => {
         if (project.wells) {
             setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
             setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
+
+            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !IsExplorationWell(w)))
+            setOriginalWellProjectWells(originalWellProjectWellsResult)
+            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => IsExplorationWell(w)))
+            setOriginalExplorationWells(originalExplorationWellsResult)
         }
     }, [project])
 
@@ -118,56 +122,80 @@ const EditTechnicalInputModal = ({
         return null
     }
 
-    const wellsToWellsDto = (wells: Well[] | undefined): Components.Schemas.WellDto[] => {
-        if (!wells || wells.length === 0) {
-            return []
-        }
-        const wellsDto: Components.Schemas.WellDto[] = wells?.map((w) => Well.toDto(w)) ?? []
-        return wellsDto
-    }
-
     const setExplorationWellProjectWellsFromWells = (wells: Well[]) => {
-        const filteredExplorationWellsResult = wells.filter((w: any) => IsExplorationWell(w))
-        const filteredWellProjectWellsResult = wells.filter((w: any) => !IsExplorationWell(w))
+        const filteredExplorationWellsResult = wells.filter((w: Well) => IsExplorationWell(w))
+        const filteredWellProjectWellsResult = wells.filter((w: Well) => !IsExplorationWell(w))
         setWellProjectWells(filteredWellProjectWellsResult)
         setExplorationWells(filteredExplorationWellsResult)
+
+        setOriginalWellProjectWells(filteredWellProjectWellsResult)
+        setOriginalExplorationWells(filteredExplorationWellsResult)
         if (setWells) {
             setWells(wells)
         }
     }
 
-    const saveWells = async () => {
-        const newExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id === EMPTY_GUID)
-        const newWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id === EMPTY_GUID)
-
-        const wellsToBeCreated = [...newExplorationWells, ...newWellProjectWells]
-        const newWells = await (await GetWellService()).createMultipleWells(wellsToBeCreated)
-
-        const updatedExplorationWells = wellsToWellsDto(explorationWells).filter((w) => w.id !== EMPTY_GUID)
-        const updatedWellProjectWells = wellsToWellsDto(wellProjectWells).filter((w) => w.id !== EMPTY_GUID)
-
-        const wellsToBeUpdated = [...updatedExplorationWells, ...updatedWellProjectWells]
-        const updatedWells = await (await GetWellService()).updateMultipleWells(wellsToBeUpdated)
-        if (updatedWells && updatedWells.length > 0) {
-            setExplorationWellProjectWellsFromWells(updatedWells)
-        } else if (newWells && newWells.length > 0) {
-            setExplorationWellProjectWellsFromWells(newWells)
-        }
-    }
-
     const handleSave = async () => {
         try {
+            const dto: Components.Schemas.TechnicalInputDto = {}
             setIsSaving(true)
-            const explorationResult = (await GetExplorationOperationalWellCostsService()).update({ ...explorationOperationalWellCosts })
-            const developmentResult = (await GetDevelopmentOperationalWellCostsService()).update({ ...developmentOperationalWellCosts })
+            dto.projectDto = Project.Copy(project)
+            if (!(JSON.stringify(project) === JSON.stringify(originalProject))) {
+                dto.projectDto.hasChanges = true
+            }
 
-            setExplorationOperationalWellCosts(await explorationResult)
-            setDevelopmentOperationalWellCosts(await developmentResult)
+            dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
+            if (!(JSON.stringify(explorationOperationalWellCosts) === JSON.stringify(originalExplorationOperationalWellCosts))) {
+                dto.explorationOperationalWellCostsDto.hasChanges = true
+            }
 
-            const projectResult = await (await GetProjectService()).updateProject(Project.Copy(project))
-            setProject(projectResult)
+            dto.developmentOperationalWellCostsDto = developmentOperationalWellCosts
+            if (!(JSON.stringify(developmentOperationalWellCosts) === JSON.stringify(originalDevelopmentOperationalWellCosts))) {
+                dto.developmentOperationalWellCostsDto.hasChanges = true
+            }
 
-            await saveWells()
+            dto.wellDtos = [...explorationWells, ...wellProjectWells]
+            const originalWells = [...originalExplorationWells, ...originalWellProjectWells]
+            if (dto.wellDtos?.length > 0) {
+                dto.wellDtos.forEach((wellDto, index) => {
+                    if (wellDto.id !== EMPTY_GUID) {
+                        const originalWell = originalWells.find((ow) => ow.id === wellDto.id)
+                        if (!(JSON.stringify(wellDto) === JSON.stringify(originalWell))) {
+                            dto.wellDtos![index].hasChanges = true
+                        }
+                    }
+                })
+            }
+
+            if (caseId && caseId !== "") {
+                dto.caseId = caseId
+            }
+
+            const result = await (await GetTechnicalInputService()).update(dto)
+
+            if (result.projectDto) {
+                setProject(Project.fromJSON(result.projectDto))
+            }
+
+            if (result.explorationDto && setExploration) {
+                setExploration(Exploration.fromJSON(result.explorationDto))
+            }
+            if (result.wellProjectDto && setWellProject) {
+                setWellProject(WellProject.fromJSON(result.wellProjectDto))
+            }
+
+            const explorationOperationalWellCostsResult = result.explorationOperationalWellCostsDto
+            setExplorationOperationalWellCosts(explorationOperationalWellCosts)
+            setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
+
+            const developmentOperationalWellCostsResult = result.developmentOperationalWellCostsDto
+            setDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
+            setOriginalDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
+
+            if (result.wellDtos) {
+                setExplorationWellProjectWellsFromWells(result.wellDtos)
+            }
+
             setIsSaving(false)
             toggleEditTechnicalInputModal()
         } catch (error) {
