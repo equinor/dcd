@@ -166,10 +166,8 @@ builder.Services.AddScoped<TransportService>();
 builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
 builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
-
 builder.Services.AddScoped<CaseWithAssetsService>();
 builder.Services.AddScoped<TechnicalInputService>();
-
 builder.Services.AddScoped<GenerateOpexCostProfile>();
 builder.Services.AddScoped<GenerateStudyCostProfile>();
 builder.Services.AddScoped<GenerateCo2EmissionsProfile>();
@@ -178,7 +176,7 @@ builder.Services.AddScoped<GenerateCessationCostProfile>();
 builder.Services.AddScoped<GenerateImportedElectricityProfile>();
 builder.Services.AddScoped<GenerateFuelFlaringLossesProfile>();
 builder.Services.AddScoped<GenerateNetSaleGasProfile>();
-
+builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
