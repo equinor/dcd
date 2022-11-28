@@ -99,7 +99,8 @@ public class CompareCasesService
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
-        if (project.PhysicalUnit != 0) {
+        if (project.PhysicalUnit != 0)
+        {
             return sumOilProduction * 6.29 / 1E6;
         }
 
@@ -125,7 +126,8 @@ public class CompareCasesService
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
-        if (project.PhysicalUnit != 0) {
+        if (project.PhysicalUnit != 0)
+        {
             return sumGasProduction * 35.315 / 1E9;
         }
 
@@ -216,7 +218,8 @@ public class CompareCasesService
     {
         var totalExportedVolumes = CalculateTotalExportedVolumes(caseId, project);
         var totalCo2Emissions = CalculateTotalCO2Emissions(caseId);
-        if (totalExportedVolumes != 0 && totalCo2Emissions != 0) {
+        if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
+        {
             return totalCo2Emissions / totalExportedVolumes;
         }
         return 0;
