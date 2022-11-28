@@ -3,8 +3,8 @@ namespace api.Services;
 public class RefreshProjectService : BackgroundService
 {
     private const int generalDelay = 1 * 60 * 1000; // 10 seconds
-    private ILogger<RefreshProjectService> _logger;
-    private IConfiguration _configuration;
+    private readonly ILogger<RefreshProjectService> _logger;
+    private readonly IConfiguration _configuration;
     public RefreshProjectService(ILogger<RefreshProjectService> logger,
         IConfiguration configuration)
     {
