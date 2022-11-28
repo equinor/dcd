@@ -3,12 +3,14 @@ import {
     MouseEventHandler, useState,
     Dispatch,
     SetStateAction,
+    ChangeEventHandler,
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Icon, Typography,
+    Button, Icon, Label, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
+import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { WrapperColumn, WrapperRow } from "../Asset/StyledAssetComponents"
 import { Project } from "../../models/Project"
@@ -22,23 +24,19 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `
-
 const RowWrapper = styled.div`
     margin: 1rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 `
-
 const StyledButton = styled(Button)`
     color: white;
     background-color: #007079;
 `
-
 const DataDiv = styled.div`
 
  `
-
 const DescriptionDiv = styled.div`
     width: 42.875rem;
     display: flex;
@@ -47,7 +45,6 @@ const DescriptionDiv = styled.div`
     margin-right: 1.875rem;
   }
 `
-
 const Header = styled.header`
     display: flex;
     align-items: center;
@@ -56,11 +53,13 @@ const Header = styled.header`
         margin-right: 2rem;
     }
 `
-
 const ProjectDataFieldLabel = styled(Typography)`
     margin-right: 0.5rem;
     font-weight: bold;
     white-space: pre-wrap;
+`
+const DescriptionField = styled(TextArea)`
+    width: 60rem;
 `
 
 interface Props {
@@ -73,6 +72,12 @@ function ProjectOverviewTab({
 }: Props) {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
+
+    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newProject: Project = { ...project }
+        newProject.description = e.currentTarget.value
+        setProject(newProject)
+    }
 
     const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
@@ -99,8 +104,15 @@ function ProjectOverviewTab({
             <RowWrapper>
                 <DescriptionDiv>
                     <WrapperColumn>
-                        <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
-                        <Typography variant="h3">{project.description}</Typography>
+                        <Label htmlFor="description" label="Project description" />
+                        <DescriptionField
+                            id="description"
+                            placeholder="Enter a description"
+                            onInput={handleDescriptionChange}
+                            value={project.description}
+                            cols={100}
+                            rows={8}
+                        />
                     </WrapperColumn>
                 </DescriptionDiv>
                 <DataDiv>
