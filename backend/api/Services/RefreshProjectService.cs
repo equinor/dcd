@@ -2,7 +2,7 @@
 
 public class RefreshProjectService : BackgroundService
 {
-    private const int generalDelay = 1 * 10 * 1000; // 10 seconds
+    private const int generalDelay = 1 * 60 * 1000; // 10 seconds
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
