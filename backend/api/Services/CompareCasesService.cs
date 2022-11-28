@@ -136,6 +136,9 @@ public class CompareCasesService
 
     public double CalculateTotalExportedVolumes(Guid caseId, Project project)
     {
+        if (project.PhysicalUnit != 0) {
+            return CalculateTotalOilProduction(caseId, project) + CalculateTotalGasProduction(caseId, project) / 5.61;
+        }
         return CalculateTotalOilProduction(caseId, project) + CalculateTotalGasProduction(caseId, project);
     }
 
