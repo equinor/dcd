@@ -1,4 +1,4 @@
-﻿namespace api.Services;
+namespace api.Services;
 
 public class RefreshProjectService : BackgroundService
 {
@@ -23,7 +23,7 @@ public class RefreshProjectService : BackgroundService
 
     private Task UpdateProjects()
     {
-        if(Showtime())
+        if (Showtime())
         {
             // here i can write logic for taking backup at midnight
             Console.WriteLine("Executing background task");
@@ -38,7 +38,7 @@ public class RefreshProjectService : BackgroundService
         var minute = Int32.Parse(runtime.Split(':')[1]);
         var second = Int32.Parse(runtime.Split(':')[2]);
         TimeSpan start = new TimeSpan(hour, minute, second);
-        TimeSpan end = new TimeSpan(hour, minute+1, second);
+        TimeSpan end = new TimeSpan(hour, minute + 1, second);
         TimeSpan now = DateTime.Now.TimeOfDay;
 
         if ((now > start) && (now < end))
