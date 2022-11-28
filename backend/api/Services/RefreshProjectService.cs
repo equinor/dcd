@@ -3,6 +3,14 @@
 public class RefreshProjectService : BackgroundService
 {
     private const int generalDelay = 1 * 60 * 1000; // 10 seconds
+    private ILogger<RefreshProjectService> _logger;
+    private IConfiguration _configuration;
+    public RefreshProjectService(ILogger<RefreshProjectService> logger,
+        IConfiguration configuration)
+    {
+        _logger = logger;
+        _configuration = configuration;
+    }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -13,11 +21,31 @@ public class RefreshProjectService : BackgroundService
         }
     }
 
-    private static Task UpdateProjects()
+    private Task UpdateProjects()
     {
-        // here i can write logic for taking backup at midnight
-        Console.WriteLine("Executing background task");
-
+        if(Showtime())
+        {
+            // here i can write logic for taking backup at midnight
+            Console.WriteLine("Executing background task");
+        }
         return Task.FromResult("Done");
+    }
+
+    private bool Showtime()
+    {
+        var runtime = _configuration.GetSection("HostedService").GetValue<string>("RunTime");
+        var hour = Int32.Parse(runtime.Split(':')[0]);
+        var minute = Int32.Parse(runtime.Split(':')[1]);
+        var second = Int32.Parse(runtime.Split(':')[2]);
+        TimeSpan start = new TimeSpan(hour, minute, second);
+        TimeSpan end = new TimeSpan(10, 1, 0);
+        TimeSpan now = DateTime.Now.TimeOfDay;
+
+        if ((now > start) && (now < end))
+        {
+            return true;
+        }
+
+        return false;
     }
 }
