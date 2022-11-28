@@ -2,7 +2,7 @@ namespace api.Services;
 
 public class RefreshProjectService : BackgroundService
 {
-    private const int generalDelay = 1 * 60 * 1000; // 10 seconds
+    private const int generalDelay = 1 * 10 * 1000 * 3600; // Each hour
     private readonly ILogger<RefreshProjectService> _logger;
     private readonly IConfiguration _configuration;
     public RefreshProjectService(ILogger<RefreshProjectService> logger,
@@ -38,7 +38,7 @@ public class RefreshProjectService : BackgroundService
         var minute = Int32.Parse(runtime.Split(':')[1]);
         var second = Int32.Parse(runtime.Split(':')[2]);
         TimeSpan start = new TimeSpan(hour, minute, second);
-        TimeSpan end = new TimeSpan(hour, minute + 1, second);
+        TimeSpan end = new TimeSpan(hour + 1, minute, second);
         TimeSpan now = DateTime.Now.TimeOfDay;
 
         if ((now > start) && (now < end))
