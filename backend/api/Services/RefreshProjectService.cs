@@ -38,11 +38,12 @@ public class RefreshProjectService : BackgroundService
         var minute = Int32.Parse(runtime.Split(':')[1]);
         var second = Int32.Parse(runtime.Split(':')[2]);
         TimeSpan start = new TimeSpan(hour, minute, second);
-        TimeSpan end = new TimeSpan(10, 1, 0);
+        TimeSpan end = new TimeSpan(hour, minute+1, second);
         TimeSpan now = DateTime.Now.TimeOfDay;
 
         if ((now > start) && (now < end))
         {
+            _logger.LogInformation("HostingService: Showtime");
             return true;
         }
 
