@@ -50,9 +50,9 @@ public class CompareCasesService
         {
             foreach (var caseItem in project.Cases)
             {
-                var totalOilProduction = CalculateTotalOilProduction(caseItem.Id, project);
-                var totalGasProduction = CalculateTotalGasProduction(caseItem.Id, project);
-                var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem.Id, project);
+                var totalOilProduction = CalculateTotalOilProduction(caseItem.Id, project, false);
+                var totalGasProduction = CalculateTotalGasProduction(caseItem.Id, project, false);
+                var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem.Id, project, false);
                 var totalStudyCostsPlusOpex = CalculateTotalStudyCostsPlusOpex(caseItem.Id);
                 var totalCessationCosts = CalculateTotalCessationCosts(caseItem.Id);
                 var offshorePlusOnshoreFacilityCosts = CalculateOffshorePlusOnshoreFacilityCosts(caseItem.Id);
@@ -80,7 +80,7 @@ public class CompareCasesService
         return caseList;
     }
 
-    public double CalculateTotalOilProduction(Guid caseId, Project project)
+    public double CalculateTotalOilProduction(Guid caseId, Project project, Boolean excludeOilFieldConversion)
     {
         var caseItem = _caseService.GetCase(caseId);
         var sumOilProduction = 0.0;
@@ -99,7 +99,7 @@ public class CompareCasesService
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
-        if (project.PhysicalUnit != 0)
+        if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
             return sumOilProduction * 6.29 / 1E6;
         }
@@ -107,7 +107,7 @@ public class CompareCasesService
         return sumOilProduction / 1E6;
     }
 
-    public double CalculateTotalGasProduction(Guid caseId, Project project)
+    public double CalculateTotalGasProduction(Guid caseId, Project project, Boolean excludeOilFieldConversion)
     {
         var caseItem = _caseService.GetCase(caseId);
         var sumGasProduction = 0.0;
@@ -126,7 +126,7 @@ public class CompareCasesService
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
-        if (project.PhysicalUnit != 0)
+        if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
             return sumGasProduction * 35.315 / 1E9;
         }
@@ -134,13 +134,13 @@ public class CompareCasesService
         return sumGasProduction / 1E9;
     }
 
-    public double CalculateTotalExportedVolumes(Guid caseId, Project project)
+    public double CalculateTotalExportedVolumes(Guid caseId, Project project, Boolean excludeOilFieldConversion)
     {
-        if (project.PhysicalUnit != 0)
+        if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return CalculateTotalOilProduction(caseId, project) + CalculateTotalGasProduction(caseId, project) / 5.61;
+            return CalculateTotalOilProduction(caseId, project, false) + CalculateTotalGasProduction(caseId, project, false) / 5.61;
         }
-        return CalculateTotalOilProduction(caseId, project) + CalculateTotalGasProduction(caseId, project);
+        return CalculateTotalOilProduction(caseId, project, true) + CalculateTotalGasProduction(caseId, project, true);
     }
 
     public double CalculateTotalStudyCostsPlusOpex(Guid caseId)
@@ -220,11 +220,11 @@ public class CompareCasesService
 
     public double CalculateCO2Intensity(Guid caseId, Project project)
     {
-        var totalExportedVolumes = CalculateTotalExportedVolumes(caseId, project);
+        var totalExportedVolumes = CalculateTotalExportedVolumes(caseId, project, true);
         var totalCo2Emissions = CalculateTotalCO2Emissions(caseId);
         if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
         {
-            return totalCo2Emissions / totalExportedVolumes;
+            return (totalCo2Emissions / totalExportedVolumes) / 6.29 * 1000;
         }
         return 0;
     }

@@ -190,7 +190,7 @@ function ProjectCompareCasesTab({
                         headerComponentParams: {
                             template: customUnitHeaderTemplate(
                                 "Total exported volumes",
-                                `${project?.physUnit === 0 ? "mill Sm3" : "mill bbl"}`,
+                                `${project?.physUnit === 0 ? "mill Sm3" : "mill boe"}`,
                             ),
                         },
                     },
@@ -215,7 +215,10 @@ function ProjectCompareCasesTab({
                         headerName: "",
                         width: 175,
                         headerComponentParams: {
-                            template: customUnitHeaderTemplate("Cessation costs", "USD/bbl"),
+                            template: customUnitHeaderTemplate(
+                                "Cessation costs",
+                                `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+                            ),
                         },
                     },
                 ],
