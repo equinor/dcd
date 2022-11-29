@@ -48,18 +48,24 @@ public class CompareCasesService
         var caseList = new List<CompareCasesDto>();
         if (project.Cases != null)
         {
+            DrainageStrategy drainageStrategy;
+            Exploration exploration;
             foreach (var caseItem in project.Cases)
             {
-                var totalOilProduction = CalculateTotalOilProduction(caseItem.Id, project, false);
-                var totalGasProduction = CalculateTotalGasProduction(caseItem.Id, project, false);
-                var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem.Id, project, false);
-                var totalStudyCostsPlusOpex = CalculateTotalStudyCostsPlusOpex(caseItem.Id);
-                var totalCessationCosts = CalculateTotalCessationCosts(caseItem.Id);
-                var offshorePlusOnshoreFacilityCosts = CalculateOffshorePlusOnshoreFacilityCosts(caseItem.Id);
-                var developmentCosts = CalculateDevelopmentWellCosts(caseItem.Id);
-                var explorationCosts = CalculateExplorationWellCosts(caseItem.Id);
-                var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem.Id);
-                var co2Intensity = CalculateCO2Intensity(caseItem.Id, project);
+                drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+                exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
+                var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseItem.Id);
+
+                var totalOilProduction = CalculateTotalOilProduction(caseItem, project, drainageStrategy, false);
+                var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
+                var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, false);
+                var totalStudyCostsPlusOpex = CalculateTotalStudyCostsPlusOpex(caseItem);
+                var totalCessationCosts = CalculateTotalCessationCosts(caseItem);
+                var offshorePlusOnshoreFacilityCosts = CalculateOffshorePlusOnshoreFacilityCosts(caseItem);
+                var developmentCosts = CalculateDevelopmentWellCosts(caseItem);
+                var explorationCosts = CalculateExplorationWellCosts(caseItem, exploration);
+                var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
+                var co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
 
                 var compareCases = new CompareCasesDto
                 {
@@ -80,15 +86,11 @@ public class CompareCasesService
         return caseList;
     }
 
-    public double CalculateTotalOilProduction(Guid caseId, Project project, Boolean excludeOilFieldConversion)
+    public double CalculateTotalOilProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
-        var caseItem = _caseService.GetCase(caseId);
         var sumOilProduction = 0.0;
-
-        DrainageStrategy drainageStrategy;
         try
         {
-            drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
             if (drainageStrategy.ProductionProfileOil != null)
             {
                 sumOilProduction += drainageStrategy.ProductionProfileOil.Values.Sum();
@@ -107,15 +109,11 @@ public class CompareCasesService
         return sumOilProduction / 1E6;
     }
 
-    public double CalculateTotalGasProduction(Guid caseId, Project project, Boolean excludeOilFieldConversion)
+    public double CalculateTotalGasProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
-        var caseItem = _caseService.GetCase(caseId);
         var sumGasProduction = 0.0;
-
-        DrainageStrategy drainageStrategy;
         try
         {
-            drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
             if (drainageStrategy.ProductionProfileGas != null)
             {
                 sumGasProduction += drainageStrategy.ProductionProfileGas.Values.Sum();
@@ -134,55 +132,49 @@ public class CompareCasesService
         return sumGasProduction / 1E9;
     }
 
-    public double CalculateTotalExportedVolumes(Guid caseId, Project project, Boolean excludeOilFieldConversion)
+    public double CalculateTotalExportedVolumes(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return CalculateTotalOilProduction(caseId, project, false) + CalculateTotalGasProduction(caseId, project, false) / 5.61;
+            return CalculateTotalOilProduction(caseItem, project, drainageStrategy, false) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, false) / 5.61;
         }
-        return CalculateTotalOilProduction(caseId, project, true) + CalculateTotalGasProduction(caseId, project, true);
+        return CalculateTotalOilProduction(caseItem, project, drainageStrategy, true) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, true);
     }
 
-    public double CalculateTotalStudyCostsPlusOpex(Guid caseId)
+    public double CalculateTotalStudyCostsPlusOpex(Case caseItem)
     {
-        var generateStudyProfile = _generateStudyCostProfile.Generate(caseId);
-        var generateOpexProfile = _generateOpexCostProfile.Generate(caseId);
+        var generateStudyProfile = _generateStudyCostProfile.Generate(caseItem.Id);
+        var generateOpexProfile = _generateOpexCostProfile.Generate(caseItem.Id);
         var sumStudyValues = generateStudyProfile.Sum;
         var sumOpexValues = generateOpexProfile.Sum;
 
         return sumStudyValues + sumOpexValues;
     }
 
-    public double CalculateTotalCessationCosts(Guid caseId)
+    public double CalculateTotalCessationCosts(Case caseItem)
     {
-        var generateCessationProfile = _generateCessationCostProfile.Generate(caseId);
+        var generateCessationProfile = _generateCessationCostProfile.Generate(caseItem.Id);
         return generateCessationProfile.Sum;
     }
 
-    public double CalculateOffshorePlusOnshoreFacilityCosts(Guid caseId)
+    public double CalculateOffshorePlusOnshoreFacilityCosts(Case caseItem)
     {
-        var caseItem = _caseService.GetCase(caseId);
         return _generateStudyCostProfile.SumAllCostFacility(caseItem);
     }
 
-    public double CalculateDevelopmentWellCosts(Guid caseId)
+    public double CalculateDevelopmentWellCosts(Case caseItem)
     {
-        var caseItem = _caseService.GetCase(caseId);
         return _generateStudyCostProfile.SumWellCost(caseItem);
     }
 
-    public double CalculateExplorationWellCosts(Guid caseId)
+    public double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
     {
-        var caseItem = _caseService.GetCase(caseId);
         var sumExplorationWellCost = 0.0;
-        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.Generate(caseId);
+        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.Generate(caseItem.Id);
         sumExplorationWellCost += generateGAndGAdminProfile.Sum;
 
-        Exploration exploration;
         try
         {
-            exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
-
             if (exploration?.CountryOfficeCost != null)
             {
                 sumExplorationWellCost += exploration.CountryOfficeCost.Values.Sum();
@@ -212,16 +204,15 @@ public class CompareCasesService
         return sumExplorationWellCost;
     }
 
-    public double CalculateTotalCO2Emissions(Guid caseId)
+    public double CalculateTotalCO2Emissions(Case caseItem, Co2EmissionsDto generateCo2EmissionsProfile)
     {
-        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
         return generateCo2EmissionsProfile.Sum;
     }
 
-    public double CalculateCO2Intensity(Guid caseId, Project project)
+    public double CalculateCO2Intensity(Case caseItem, Project project, DrainageStrategy drainageStrategy, Co2EmissionsDto generateCo2EmissionsProfile)
     {
-        var totalExportedVolumes = CalculateTotalExportedVolumes(caseId, project, true);
-        var totalCo2Emissions = CalculateTotalCO2Emissions(caseId);
+        var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, true);
+        var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
         if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
         {
             return (totalCo2Emissions / totalExportedVolumes) / 6.29 * 1000;
