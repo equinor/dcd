@@ -55,4 +55,18 @@ public static class ProjectAdapter
         existing.DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig;
         existing.AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays;
     }
+
+    public static void ConvertExistingFromProjectMaster(Project existing, ProjectDto projectDto)
+    {
+        existing.Name = projectDto.Name;
+        existing.CommonLibraryId = projectDto.CommonLibraryId;
+        existing.CommonLibraryName = projectDto.CommonLibraryName;
+        existing.FusionProjectId = projectDto.FusionProjectId;
+        existing.Description = projectDto.Description;
+        existing.Country = projectDto.Country;
+        existing.Id = projectDto.ProjectId;
+        existing.ProjectCategory = projectDto.ProjectCategory;
+        existing.ProjectPhase = projectDto.ProjectPhase;
+
+    }
 }
