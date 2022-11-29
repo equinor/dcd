@@ -27,9 +27,9 @@ public class ProjectService
     private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
     private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
     private readonly ILogger<ProjectService> _logger;
-    private readonly FusionService _fusionService;
+    private readonly FusionService? _fusionService;
 
-    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, FusionService fusionService = null)
+    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, FusionService? fusionService = null)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<ProjectService>();

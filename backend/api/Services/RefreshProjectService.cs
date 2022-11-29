@@ -5,7 +5,7 @@ public class RefreshProjectService : BackgroundService
     private const int generalDelay = 1 * 1000 * 3600; // Each hour
     private readonly ILogger<RefreshProjectService> _logger;
     private readonly IConfiguration _configuration;
-    private ProjectService _projectService;
+
     private readonly IServiceScopeFactory _scopeFactory;
     public RefreshProjectService(IServiceScopeFactory scopeFactory, ILogger<RefreshProjectService> logger,
         IConfiguration configuration)
@@ -26,12 +26,13 @@ public class RefreshProjectService : BackgroundService
 
     private Task UpdateProjects()
     {
+
         _logger.LogInformation("HostingService: Running");
         if (Showtime())
         {
             using var scope = _scopeFactory.CreateScope();
-            _projectService = scope.ServiceProvider.GetRequiredService<ProjectService>();
-            _projectService.UpdateProjectFromProjectMaster();
+            var projectService = scope.ServiceProvider.GetRequiredService<ProjectService>();
+            projectService.UpdateProjectFromProjectMaster();
         }
         return Task.FromResult("Done");
     }
