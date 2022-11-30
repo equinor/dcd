@@ -283,21 +283,30 @@ public class ProjectService
 
     private ProjectDto GetProjectDtoFromProjectMaster(Guid projectGuid)
     {
-        var projectMaster = _fusionService.ProjectMasterAsync(projectGuid).GetAwaiter().GetResult();
-        var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
-        var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
-        ProjectDto projectDto = new()
+        if (_fusionService != null)
         {
-            Name = projectMaster.Description ?? "",
-            CommonLibraryName = projectMaster.Description ?? "",
-            FusionProjectId = projectMaster.Identity,
-            Country = projectMaster.Country ?? "",
-            Currency = Currency.NOK,
-            PhysUnit = PhysUnit.SI,
-            ProjectId = projectMaster.Identity,
-            ProjectCategory = category,
-            ProjectPhase = phase,
-        };
-        return projectDto;
+            var projectMaster = _fusionService.ProjectMasterAsync(projectGuid).GetAwaiter().GetResult();
+            var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
+            var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
+            ProjectDto projectDto = new()
+            {
+                Name = projectMaster.Description ?? "",
+                CommonLibraryName = projectMaster.Description ?? "",
+                FusionProjectId = projectMaster.Identity,
+                Country = projectMaster.Country ?? "",
+                Currency = Currency.NOK,
+                PhysUnit = PhysUnit.SI,
+                ProjectId = projectMaster.Identity,
+                ProjectCategory = category,
+                ProjectPhase = phase,
+            };
+            return projectDto;
+        }
+        else
+        {
+            _logger.LogCritical("FusionService is null!");
+            throw new NullReferenceException();
+        }
+
     }
 }
