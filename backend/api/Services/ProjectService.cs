@@ -261,15 +261,15 @@ public class ProjectService
     public void UpdateProjectFromProjectMaster()
     {
         var projectsDtos = GetAllDtos();
-        int numberofdeviations = 0;
-        int totalprojects = projectsDtos.Count();
+        var numberOfDeviations = 0;
+        var totalNumberOfProjects = projectsDtos.Count();
         foreach (var project in projectsDtos)
         {
             var projectMaster = GetProjectDtoFromProjectMaster(project.ProjectId);
             if (!project.Equals(projectMaster))
             {
                 _logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name, project.ProjectId);
-                numberofdeviations++;
+                numberOfDeviations++;
                 UpdateProjectFromProjectMaster(projectMaster);
             }
             else
@@ -277,7 +277,7 @@ public class ProjectService
                 _logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster", project.Name, project.ProjectId);
             }
         }
-        _logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}", numberofdeviations, totalprojects);
+        _logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}", numberOfDeviations, totalNumberOfProjects);
     }
 
 
@@ -289,7 +289,6 @@ public class ProjectService
         ProjectDto projectDto = new()
         {
             Name = projectMaster.Description ?? "",
-            Description = projectMaster.Description ?? "",
             CommonLibraryName = projectMaster.Description ?? "",
             FusionProjectId = projectMaster.Identity,
             Country = projectMaster.Country ?? "",
