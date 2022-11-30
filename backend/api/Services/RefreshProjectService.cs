@@ -2,14 +2,17 @@ namespace api.Services;
 
 public class RefreshProjectService : BackgroundService
 {
-    private const int generalDelay = 1 * 10 * 1000 * 3600; // Each hour
+    private const int generalDelay = 1 * 1000 * 3600; // Each hour
     private readonly ILogger<RefreshProjectService> _logger;
     private readonly IConfiguration _configuration;
-    public RefreshProjectService(ILogger<RefreshProjectService> logger,
+
+    private readonly IServiceScopeFactory _scopeFactory;
+    public RefreshProjectService(IServiceScopeFactory scopeFactory, ILogger<RefreshProjectService> logger,
         IConfiguration configuration)
     {
         _logger = logger;
         _configuration = configuration;
+        _scopeFactory = scopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,10 +26,13 @@ public class RefreshProjectService : BackgroundService
 
     private Task UpdateProjects()
     {
+
+        _logger.LogInformation("HostingService: Running");
         if (Showtime())
         {
-            // here i can write logic for taking backup at midnight
-            Console.WriteLine("Executing background task");
+            using var scope = _scopeFactory.CreateScope();
+            var projectService = scope.ServiceProvider.GetRequiredService<ProjectService>();
+            projectService.UpdateProjectFromProjectMaster();
         }
         return Task.FromResult("Done");
     }
@@ -43,7 +49,7 @@ public class RefreshProjectService : BackgroundService
 
         if ((now > start) && (now < end))
         {
-            _logger.LogInformation("HostingService: Showtime");
+            _logger.LogInformation("HostingService: Running Update Project from Project Master");
             return true;
         }
 
