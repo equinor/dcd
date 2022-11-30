@@ -260,10 +260,10 @@ public class ProjectService
 
     public void UpdateProjectFromProjectMaster()
     {
-        var projectsDtos = GetAllDtos();
+        var projectDtos = GetAllDtos();
         var numberOfDeviations = 0;
-        var totalNumberOfProjects = projectsDtos.Count();
-        foreach (var project in projectsDtos)
+        var totalNumberOfProjects = projectDtos.Count();
+        foreach (var project in projectDtos)
         {
             var projectMaster = GetProjectDtoFromProjectMaster(project.ProjectId);
             if (!project.Equals(projectMaster))
