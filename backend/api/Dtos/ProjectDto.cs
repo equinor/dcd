@@ -36,4 +36,13 @@ public class ProjectDto
     public double DailyEmissionFromDrillingRig { get; set; }
     public double AverageDevelopmentDrillingDays { get; set; }
     public bool HasChanges { get; set; }
+
+    public bool Equals(ProjectDto projectDto)
+    {
+        return (Name == projectDto.Name) && (Description == projectDto.Description) &&
+               (CommonLibraryName == projectDto.CommonLibraryName) && (FusionProjectId == projectDto.FusionProjectId) &&
+               (Country == projectDto.Country) && (ProjectId == projectDto.ProjectId) &&
+               (ProjectCategory == projectDto.ProjectCategory) && (ProjectPhase == projectDto.ProjectPhase);
+
+    }
 }
