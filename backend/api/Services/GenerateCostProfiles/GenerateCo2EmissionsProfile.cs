@@ -29,15 +29,25 @@ public class GenerateCo2EmissionsProfile
         var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
         var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, drainageStrategy);
+
+        var tempProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptionsProfile, flaringsProfile, lossesProfile });
+
+        var convertedValues = tempProfile.Values.Select(v => v / 1000);
+
+        var newProfile = new TimeSeries<double>
+        {
+            StartYear = tempProfile.StartYear,
+            Values = convertedValues.ToArray(),
+        };
+
         var drillingEmissionsProfile = CalculateDrillingEmissions(project, drainageStrategy, wellProject);
 
         var totalProfile =
-            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(
-                TimeSeriesCost.MergeCostProfiles(fuelConsumptionsProfile, flaringsProfile),
-                lossesProfile), drillingEmissionsProfile);
+            TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
         var co2Emission = new Co2Emissions
         {
             StartYear = totalProfile.StartYear,
@@ -118,7 +128,7 @@ public class GenerateCo2EmissionsProfile
             {
                 StartYear = drainageStrategy.ProductionProfileGas.StartYear,
                 Values = wellDrillingSchedules.Values
-                    .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig / 1000000)
+                    .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
                     .ToArray(),
             };
 
