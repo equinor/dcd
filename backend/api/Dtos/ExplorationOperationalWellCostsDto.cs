@@ -9,5 +9,6 @@ namespace api.Dtos
         public double ExplorationProjectDrillingCosts { get; set; }
         public double AppraisalRigMobDemob { get; set; }
         public double AppraisalProjectDrillingCosts { get; set; }
+        public bool HasChanges { get; set; }
     }
 }

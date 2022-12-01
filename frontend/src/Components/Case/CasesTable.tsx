@@ -76,7 +76,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     const order: SortOrder = "asc"
 
     const [columnDefs] = useState([
-        { field: "name", sort: order },
+        { field: "name" },
         {
             field: "productionStrategyOverview",
             cellRenderer: productionStrategyToString,

@@ -37,11 +37,11 @@ interface Props {
     explorationOperationalWellCosts: ExplorationOperationalWellCosts
     setExplorationOperationalWellCosts: Dispatch<SetStateAction<ExplorationOperationalWellCosts | undefined>>
 
-    wellProjectWells: Well[] | undefined
-    setWellProjectWells: Dispatch<SetStateAction<Well[] | undefined>>
+    wellProjectWells: Well[]
+    setWellProjectWells: Dispatch<SetStateAction<Well[]>>
 
-    explorationWells: Well[] | undefined
-    setExplorationWells: Dispatch<SetStateAction<Well[] | undefined>>
+    explorationWells: Well[]
+    setExplorationWells: Dispatch<SetStateAction<Well[]>>
 }
 
 const WellCostsTab = ({
@@ -67,6 +67,7 @@ const WellCostsTab = ({
             <ColumnWrapper>
                 <OperationalWellCosts
                     title="Exploration costs"
+                    project={project}
                     explorationOperationalWellCosts={explorationOperationalWellCosts}
                     setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
                 />
@@ -86,6 +87,7 @@ const WellCostsTab = ({
             <ColumnWrapper>
                 <OperationalWellCosts
                     title="Development costs"
+                    project={project}
                     developmentOperationalWellCosts={developmentOperationalWellCosts}
                     setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
                 />

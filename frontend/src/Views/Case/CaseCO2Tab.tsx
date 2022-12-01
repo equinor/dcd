@@ -88,8 +88,6 @@ function CaseCO2Tab({
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const [isSaving, setIsSaving] = useState<boolean>()
-
     useEffect(() => {
         (async () => {
             try {
@@ -160,26 +158,12 @@ function CaseCO2Tab({
         setTableYears([startYear, endYear])
     }
 
-    const handleSave = async () => {
-        setIsSaving(true)
-        if (topside) {
-            const result = await (await GetTopsideService()).newUpdate(topside)
-            setTopside(result)
-        }
-        setIsSaving(false)
-    }
-
     if (activeTab !== 6) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">CO2 Emissions</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
             <ColumnWrapper>
@@ -194,13 +178,6 @@ function CaseCO2Tab({
                             unit="million Sm³ gas/sd"
                         />
                     </NumberInputField>
-                    <CaseNumberInput
-                        onChange={handleTopsideFlaredGasChange}
-                        defaultValue={topside?.flaredGas}
-                        integer
-                        label="Flared gas"
-                        unit="million Sm³ gas/sd"
-                    />
                 </RowWrapper>
             </ColumnWrapper>
             <ColumnWrapper>

@@ -13,6 +13,7 @@ public class GenerateCessationCostProfile
     private readonly DrainageStrategyService _drainageStrategyService;
     private readonly WellProjectService _wellProjectService;
     private readonly SurfService _surfService;
+    private readonly ProjectService _projectService;
 
     public GenerateCessationCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
@@ -21,12 +22,14 @@ public class GenerateCessationCostProfile
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
         _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
         _surfService = serviceProvider.GetRequiredService<SurfService>();
+        _projectService = serviceProvider.GetRequiredService<ProjectService>();
     }
 
     public CessationCostWrapperDto Generate(Guid caseId)
     {
         var result = new CessationCostWrapperDto();
         var caseItem = _caseService.GetCase(caseId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         var cessationWellsCost = new CessationWellsCost();
         var cessationOffshoreFacilitiesCost = new CessationOffshoreFacilitiesCost();
@@ -38,7 +41,7 @@ public class GenerateCessationCostProfile
         try
         {
             wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-            cessationWellsCost = GenerateCessationWellsCost(wellProject, (int)lastYear);
+            cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear);
             var cessationWellsDto = CaseDtoAdapter.Convert(cessationWellsCost);
             result.CessationWellsCostDto = cessationWellsDto;
         }
@@ -71,13 +74,13 @@ public class GenerateCessationCostProfile
         return result;
     }
 
-    private static CessationWellsCost GenerateCessationWellsCost(WellProject wellProject, int lastYear)
+    private static CessationWellsCost GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear)
     {
         var cessationWells = new CessationWellsCost();
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
         if (linkedWells != null)
         {
-            var pluggingAndAbandonment = wellProject.PluggingAndAbandonment;
+            var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
 
             var sumDrilledWells = 0;
             foreach (var well in linkedWells)
@@ -85,7 +88,7 @@ public class GenerateCessationCostProfile
                 sumDrilledWells += well.DrillingSchedule?.Values.Sum() ?? 0;
             }
             var totalCost = sumDrilledWells * (double)pluggingAndAbandonment;
-            cessationWells.StartYear = lastYear;
+            cessationWells.StartYear = (int)lastYear;
             var cessationWellsValues = new double[] { totalCost / 2, totalCost / 2 };
             cessationWells.Values = cessationWellsValues;
         }

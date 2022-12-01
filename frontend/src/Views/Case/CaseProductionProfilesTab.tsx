@@ -104,8 +104,6 @@ function CaseProductionProfilesTab({
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const [isSaving, setIsSaving] = useState<boolean>()
-
     const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
         const newDrainageStrategy: DrainageStrategy = { ...drainage }
         newDrainageStrategy.netSalesGas = netSalesGas
@@ -236,24 +234,33 @@ function CaseProductionProfilesTab({
         })()
     }, [activeTab])
 
-    const handleSave = async () => {
-        setIsSaving(true)
-        if (drainageStrategy) {
-            const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-            newDrainageStrategy.netSalesGas = netSalesGas
-            newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
-            newDrainageStrategy.productionProfileGas = gas
-            newDrainageStrategy.productionProfileOil = oil
-            newDrainageStrategy.productionProfileWater = water
-            newDrainageStrategy.productionProfileNGL = nGL
-            newDrainageStrategy.productionProfileWaterInjection = waterInjection
-            const result = await (await GetDrainageStrategyService()).newUpdate(newDrainageStrategy)
-            setDrainageStrategy(result)
-        }
-        const updateCaseResult = await (await GetCaseService()).update(caseItem)
-        setCase(updateCaseResult)
-        setIsSaving(false)
-    }
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.productionProfileOil && !oil) { return }
+        newDrainageStrategy.productionProfileOil = oil
+        setDrainageStrategy(newDrainageStrategy)
+    }, [oil])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.productionProfileGas && !gas) { return }
+        newDrainageStrategy.productionProfileGas = gas
+        setDrainageStrategy(newDrainageStrategy)
+    }, [gas])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.productionProfileWater && !water) { return }
+        newDrainageStrategy.productionProfileWater = water
+        setDrainageStrategy(newDrainageStrategy)
+    }, [water])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.productionProfileWaterInjection && !waterInjection) { return }
+        newDrainageStrategy.productionProfileWaterInjection = waterInjection
+        setDrainageStrategy(newDrainageStrategy)
+    }, [waterInjection])
 
     if (activeTab !== 1) { return null }
 
@@ -261,11 +268,6 @@ function CaseProductionProfilesTab({
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Production profiles</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>

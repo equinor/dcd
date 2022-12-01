@@ -24,8 +24,8 @@ public static class CaseAdapter
             DG2Date = caseDto.DG2Date,
             DG3Date = caseDto.DG3Date,
             DG4Date = caseDto.DG4Date,
-            CreateTime = DateTimeOffset.Now,
-            ModifyTime = DateTimeOffset.Now,
+            CreateTime = DateTimeOffset.UtcNow,
+            ModifyTime = DateTimeOffset.UtcNow,
             DrainageStrategyLink = caseDto.DrainageStrategyLink,
             ExplorationLink = caseDto.ExplorationLink,
             WellProjectLink = caseDto.WellProjectLink,
@@ -67,7 +67,7 @@ public static class CaseAdapter
         existing.DG2Date = caseDto.DG2Date;
         existing.DG3Date = caseDto.DG3Date;
         existing.DG4Date = caseDto.DG4Date;
-        existing.ModifyTime = DateTimeOffset.Now;
+        existing.ModifyTime = DateTimeOffset.UtcNow;
         existing.DrainageStrategyLink = caseDto.DrainageStrategyLink;
         existing.ExplorationLink = caseDto.ExplorationLink;
         existing.WellProjectLink = caseDto.WellProjectLink;

@@ -8,6 +8,12 @@ const configuration = {
     CaseService: {
         BASE_URL: "",
     },
+    CaseWithAssetsService: {
+        BASE_URL: "",
+    },
+    TechnicalInputService: {
+        BASE_URL: "",
+    },
     CommonLibraryService: {
         BASE_URL: "",
     },
@@ -66,6 +72,8 @@ const configuration = {
 
 export const buildConfig = (baseUrl: string) => {
     configuration.CaseService.BASE_URL = `${baseUrl}/cases`
+    configuration.CaseWithAssetsService.BASE_URL = `${baseUrl}/case-with-assets`
+    configuration.TechnicalInputService.BASE_URL = `${baseUrl}/technical-input`
     configuration.CommonLibraryService.BASE_URL = `${baseUrl}/common-library`
     configuration.ProjectService.BASE_URL = `${baseUrl}/projects`
     configuration.DrainageStrategyService.BASE_URL = `${baseUrl}/drainage-strategies`

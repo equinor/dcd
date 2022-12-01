@@ -58,8 +58,6 @@ function CaseDescriptionTab({
     setCase,
     activeTab,
 }: Props) {
-    const [isSaving, setIsSaving] = useState<boolean>()
-
     const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
         newCase.description = e.currentTarget.value
@@ -110,25 +108,12 @@ function CaseDescriptionTab({
             setCase(newCase)
         }
     }
-
-    const handleSave = async () => {
-        setIsSaving(true)
-        const updatedCase = Case.Copy(caseItem)
-        const result = await (await GetCaseService()).update(updatedCase)
-        setIsSaving(false)
-        setCase(result)
-    }
     if (activeTab !== 0) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Description</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <ColumnWrapper>
 

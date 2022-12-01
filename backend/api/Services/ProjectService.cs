@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Api.Services.FusionIntegration;
+
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
@@ -25,11 +27,13 @@ public class ProjectService
     private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
     private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
     private readonly ILogger<ProjectService> _logger;
+    private readonly FusionService? _fusionService;
 
-    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, FusionService? fusionService = null)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<ProjectService>();
+        _fusionService = fusionService;
         _wellProjectService = new WellProjectService(_context, this, loggerFactory);
         _drainageStrategyService = new DrainageStrategyService(_context, this, loggerFactory);
         _surfService = new SurfService(_context, this, loggerFactory);
@@ -51,9 +55,18 @@ public class ProjectService
         return GetProjectDto(existingProject.Id);
     }
 
+    public ProjectDto UpdateProjectFromProjectMaster(ProjectDto projectDto)
+    {
+        var existingProject = GetProject(projectDto.ProjectId);
+        ProjectAdapter.ConvertExistingFromProjectMaster(existingProject, projectDto);
+        _context.Projects!.Update(existingProject);
+        _context.SaveChanges();
+        return GetProjectDto(existingProject.Id);
+    }
+
     public ProjectDto CreateProject(Project project)
     {
-        project.CreateDate = DateTimeOffset.UtcNow.Date;
+        project.CreateDate = DateTimeOffset.UtcNow;
         project.Cases = new List<Case>();
         project.DrainageStrategies = new List<DrainageStrategy>();
         project.Substructures = new List<Substructure>();
@@ -62,6 +75,16 @@ public class ProjectService
         project.Transports = new List<Transport>();
         project.WellProjects = new List<WellProject>();
         project.Explorations = new List<Exploration>();
+
+        project.ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts();
+        project.DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts();
+
+        project.CO2EmissionFromFuelGas = 2.34;
+        project.FlaredGasPerProducedVolume = 1.321;
+        project.CO2EmissionsFromFlaredGas = 3.74;
+        project.CO2Vented = 1.96;
+        project.DailyEmissionFromDrillingRig = 100;
+        project.AverageDevelopmentDrillingDays = 50;
 
         Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
             new JsonSerializerSettings()
@@ -100,12 +123,10 @@ public class ProjectService
             {
                 AddAssetsToProject(project);
             }
-            _logger.LogInformation("Get projects");
             return projects;
         }
         else
         {
-            _logger.LogInformation("Get projects");
             return new List<Project>();
         }
     }
@@ -127,7 +148,6 @@ public class ProjectService
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
 
-            _logger.LogInformation(nameof(projectDtos));
             return projectDtos;
         }
         else
@@ -136,13 +156,44 @@ public class ProjectService
         }
     }
 
+    public Project GetProjectWithoutAssets(Guid projectId)
+    {
+        if (_context.Projects != null)
+        {
+            if (projectId == Guid.Empty)
+            {
+                throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+
+            var project = _context.Projects!
+                         .Include(p => p.Cases)
+                         .Include(p => p.Wells)
+                         .Include(p => p.ExplorationOperationalWellCosts)
+                         .Include(p => p.DevelopmentOperationalWellCosts)
+                         .FirstOrDefault(p => p.Id.Equals(projectId));
+
+            if (project == null)
+            {
+                var projectByFusionId = _context.Projects
+                    .Include(c => c.Cases)
+                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+            return project;
+        }
+        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+        throw new NotFoundInDBException("The database contains no projects");
+    }
+
     public Project GetProject(Guid projectId)
     {
         if (_context.Projects != null)
         {
             if (projectId == Guid.Empty)
             {
-                throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+                throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
             var project = _context.Projects!
@@ -151,6 +202,11 @@ public class ProjectService
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
                 .FirstOrDefault(p => p.Id.Equals(projectId));
+
+            if (project?.Cases?.Count > 0)
+            {
+                project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
+            }
 
             if (project == null)
             {
@@ -169,7 +225,7 @@ public class ProjectService
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 }));
             AddAssetsToProject(project);
-            _logger.LogInformation("Add assets to project", project.ToString());
+            _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
             return project;
         }
         _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
@@ -186,8 +242,6 @@ public class ProjectService
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             }));
-
-        _logger.LogInformation(nameof(projectDto));
         return projectDto;
     }
 
@@ -202,5 +256,57 @@ public class ProjectService
         project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
         project.Wells = _wellService.GetWells(project.Id).ToList();
         return project;
+    }
+
+    public void UpdateProjectFromProjectMaster()
+    {
+        var projectDtos = GetAllDtos();
+        var numberOfDeviations = 0;
+        var totalNumberOfProjects = projectDtos.Count();
+        foreach (var project in projectDtos)
+        {
+            var projectMaster = GetProjectDtoFromProjectMaster(project.ProjectId);
+            if (!project.Equals(projectMaster))
+            {
+                _logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name, project.ProjectId);
+                numberOfDeviations++;
+                UpdateProjectFromProjectMaster(projectMaster);
+            }
+            else
+            {
+                _logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster", project.Name, project.ProjectId);
+            }
+        }
+        _logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}", numberOfDeviations, totalNumberOfProjects);
+    }
+
+
+    private ProjectDto GetProjectDtoFromProjectMaster(Guid projectGuid)
+    {
+        if (_fusionService != null)
+        {
+            var projectMaster = _fusionService.ProjectMasterAsync(projectGuid).GetAwaiter().GetResult();
+            var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
+            var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
+            ProjectDto projectDto = new()
+            {
+                Name = projectMaster.Description ?? "",
+                CommonLibraryName = projectMaster.Description ?? "",
+                FusionProjectId = projectMaster.Identity,
+                Country = projectMaster.Country ?? "",
+                Currency = Currency.NOK,
+                PhysUnit = PhysUnit.SI,
+                ProjectId = projectMaster.Identity,
+                ProjectCategory = category,
+                ProjectPhase = phase,
+            };
+            return projectDto;
+        }
+        else
+        {
+            _logger.LogCritical("FusionService is null!");
+            throw new NullReferenceException();
+        }
+
     }
 }

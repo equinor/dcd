@@ -164,9 +164,6 @@ public static class SampleAssetGenerator
             )
             .WithWellProject(new WellProjectBuilder
             {
-                RigMobDemob = 100.0,
-                AnnualWellInterventionCost = 200.0,
-                PluggingAndAbandonment = 300.0,
                 ArtificialLift = ArtificialLift.GasLift
             }
             )
@@ -390,7 +387,6 @@ public static class SampleAssetGenerator
         return new WellProjectBuilder
         {
             Name = "SkarvenWellCase2",
-            AnnualWellInterventionCost = 85e6
         }
         ;
     }

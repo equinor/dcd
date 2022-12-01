@@ -196,9 +196,6 @@ public class WellProjectServiceShould : IDisposable
         {
             Name = "DrainStrat Test",
             ArtificialLift = ArtificialLift.ElectricalSubmergedPumps,
-            RigMobDemob = 2.2,
-            AnnualWellInterventionCost = 3.3,
-            PluggingAndAbandonment = 4.4,
             Project = project,
             ProjectId = project.Id,
         };
@@ -210,9 +207,6 @@ public class WellProjectServiceShould : IDisposable
         {
             Name = "updated name",
             ArtificialLift = ArtificialLift.GasLift,
-            RigMobDemob = 3.3,
-            AnnualWellInterventionCost = 4.4,
-            PluggingAndAbandonment = 5.5,
             Project = project,
             ProjectId = project.Id,
         }

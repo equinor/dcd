@@ -59,7 +59,7 @@ function ProjectMenu({ project }: Props) {
     return (
         <ExpandableDiv>
             <nav>
-                <LinkWithoutStyle to={ProjectPath(fusionContextId!)}>
+                <LinkWithoutStyle to={ProjectPath(currentProject?.externalId!)}>
                     <MenuItem
                         title={project.name!}
                         isSelected={currentProject?.externalId === project.id}
@@ -75,7 +75,7 @@ function ProjectMenu({ project }: Props) {
                         <Item key={`project-menu-item-${index + 1}`}>
                             {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                 <nav>
-                                    <LinkWithoutStyle to={`/${fusionContextId}`}>
+                                    <LinkWithoutStyle to={`/${currentProject?.id}`}>
                                         <ProjectMenuItemComponent
                                             item={projectMenuItem}
                                             projectId={project.id}

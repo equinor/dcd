@@ -78,8 +78,6 @@ function CaseFacilitiesTab({
     transport, setTransport,
     activeTab,
 }: Props) {
-    const [isSaving, setIsSaving] = useState<boolean>()
-
     const handleFacilityOpexChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
         newTopside.facilityOpex = Number(e.currentTarget.value)
@@ -231,43 +229,12 @@ function CaseFacilitiesTab({
         setTransport(newTransport)
     }
 
-    const handleSave = async () => {
-        setIsSaving(true)
-        if (topside) {
-            const result = await (await GetTopsideService()).newUpdate(topside)
-            setTopside(result)
-        }
-        if (surf) {
-            const result = await (await GetSurfService()).newUpdate(surf)
-            setSurf(result)
-        }
-        if (substructure) {
-            const result = await (await GetSubstructureService()).newUpdate(substructure)
-            setSubstrucutre(result)
-        }
-        if (transport) {
-            const result = await (await GetTransportService()).newUpdate(transport)
-            setTransport(result)
-        }
-
-        if (caseItem) {
-            const result = await (await GetCaseService()).update(caseItem)
-            setCase(result)
-        }
-        setIsSaving(false)
-    }
-
     if (activeTab !== 4) { return null }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h2">Facilities</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>
@@ -310,6 +277,7 @@ function CaseFacilitiesTab({
                             defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
                             integer={false}
                             label="Facility opex"
+                            unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
                         />
                     </NumberInputField>
                     <CaseNumberInput
@@ -317,6 +285,7 @@ function CaseFacilitiesTab({
                         defaultValue={surf?.cessationCost}
                         integer={false}
                         label="Cessation cost"
+                        unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
                     />
                 </RowWrapper>
             </ColumnWrapper>

@@ -24,14 +24,15 @@ public class GenerateImportedElectricityProfile
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(drainageStrategy);
+        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
+        var facilitiesAvailability = caseItem.FacilitiesAvailability;
         var calculateImportedElectricity =
-            CalculateImportedElectricity(topside.PeakElectricityImported, fuelConsumptions, flarings, losses);
+            CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, fuelConsumptions, flarings, losses);
 
         var importedElectricity = new ImportedElectricity
         {
@@ -43,7 +44,7 @@ public class GenerateImportedElectricityProfile
         return dto ?? new ImportedElectricityDto();
     }
 
-    private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported,
+    private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability,
         TimeSeries<double> fuelConsumption, TimeSeries<double> flaring,
         TimeSeries<double> losses)
     {
@@ -57,7 +58,7 @@ public class GenerateImportedElectricityProfile
             StartYear = fuelFlaringLosses.StartYear,
             Values =
                 fuelFlaringLosses.Values
-                    .Select(value => value * peakElectricityImportedFromGrid * hoursInOneYear / 1000)
+                    .Select(value => value * peakElectricityImportedFromGrid * facilityAvailability * hoursInOneYear / 1000)
                     .ToArray(),
         };
 
