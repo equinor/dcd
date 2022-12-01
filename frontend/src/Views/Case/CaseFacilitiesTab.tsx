@@ -282,7 +282,7 @@ function CaseFacilitiesTab({
                     </NumberInputField>
                     <CaseNumberInput
                         onChange={handleSurfCessationCostChange}
-                        defaultValue={surf?.cessationCost}
+                        defaultValue={Math.round(Number(surf?.cessationCost) * 10) / 10}
                         integer={false}
                         label="Cessation cost"
                         unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
