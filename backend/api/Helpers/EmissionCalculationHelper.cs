@@ -10,27 +10,42 @@ public static class EmissionCalculationHelper
     public static TimeSeries<double> CalculateTotalFuelConsumptions(Case caseItem, Topside topside,
         DrainageStrategy drainageStrategy)
     {
+        var factor = caseItem.FacilitiesAvailability * topside.FuelConsumption * cd * 1e6;
+
+        var totalUseOfPower = CalculateTotalUseOfPower(topside, drainageStrategy);
+
+        var fuelConsumptionValues = totalUseOfPower.Values.Select(v => v * factor).ToArray();
+        var fuelConsumptions = new TimeSeries<double>
+        {
+            Values = fuelConsumptionValues,
+            StartYear = totalUseOfPower.StartYear,
+        };
+
+        return fuelConsumptions;
+    }
+
+    public static TimeSeries<double> CalculateTotalUseOfPower(Topside topside,
+        DrainageStrategy drainageStrategy)
+    {
         var cO2ShareCO2MaxOil = topside.CO2ShareOilProfile * topside.CO2OnMaxOilProfile;
         var cO2ShareCO2MaxGas = topside.CO2ShareGasProfile * topside.CO2OnMaxGasProfile;
         var cO2ShareCO2MaxWI = topside.CO2ShareWaterInjectionProfile * topside.CO2OnMaxWaterInjectionProfile;
 
         var cO2ShareCO2Max = cO2ShareCO2MaxOil + cO2ShareCO2MaxGas + cO2ShareCO2MaxWI;
 
-        var factor = caseItem.FacilitiesAvailability * topside.FuelConsumption * cd * 1e6;
-
         var totalPowerOil = CalculateTotalUseOfPowerOil(topside, drainageStrategy);
         var totalPowerGas = CalculateTotalUseOfPowerGas(topside, drainageStrategy);
         var totalPowerWI = CalculateTotalUseOfPowerWI(topside, drainageStrategy);
 
         var mergedPowerProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { totalPowerOil, totalPowerGas, totalPowerWI });
-        var fuelConsumptionValues = mergedPowerProfile.Values.Select(v => (v + cO2ShareCO2Max) * factor).ToArray();
-        var fuelConsumptions = new TimeSeries<double>
-        {
-            Values = fuelConsumptionValues,
+
+        var totalUseOFPowerValues = mergedPowerProfile.Values.Select(v => v + cO2ShareCO2Max).ToArray();
+        var totalUseOfPower = new TimeSeries<double> {
             StartYear = mergedPowerProfile.StartYear,
+            Values = totalUseOFPowerValues,
         };
 
-        return fuelConsumptions;
+        return totalUseOfPower;
     }
 
     // Formula: 1. WRP = WR/WIC/cd
