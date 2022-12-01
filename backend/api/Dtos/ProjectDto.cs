@@ -39,7 +39,7 @@ public class ProjectDto
 
     public bool Equals(ProjectDto projectDto)
     {
-        return (Name == projectDto.Name) && (Description == projectDto.Description) &&
+        return (Name == projectDto.Name) &&
                (CommonLibraryName == projectDto.CommonLibraryName) && (FusionProjectId == projectDto.FusionProjectId) &&
                (Country == projectDto.Country) && (ProjectId == projectDto.ProjectId) &&
                (ProjectCategory == projectDto.ProjectCategory) && (ProjectPhase == projectDto.ProjectPhase);
