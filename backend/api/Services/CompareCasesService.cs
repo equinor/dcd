@@ -89,6 +89,8 @@ public class CompareCasesService
     public double CalculateTotalOilProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         var sumOilProduction = 0.0;
+        var million = 1E6;
+        var bblConversionFactor = 6.29;
         try
         {
             if (drainageStrategy.ProductionProfileOil != null)
@@ -103,15 +105,17 @@ public class CompareCasesService
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return sumOilProduction * 6.29 / 1E6;
+            return sumOilProduction * bblConversionFactor / million;
         }
 
-        return sumOilProduction / 1E6;
+        return sumOilProduction / million;
     }
 
     public double CalculateTotalGasProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         var sumGasProduction = 0.0;
+        var billion = 1E9;
+        var scfConversionFactor = 35.315;
         try
         {
             if (drainageStrategy.ProductionProfileGas != null)
@@ -126,17 +130,18 @@ public class CompareCasesService
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return sumGasProduction * 35.315 / 1E9;
+            return sumGasProduction * scfConversionFactor / billion;
         }
 
-        return sumGasProduction / 1E9;
+        return sumGasProduction / billion;
     }
 
     public double CalculateTotalExportedVolumes(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
+        var oilEquivalentFactor = 5.61;
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
         {
-            return CalculateTotalOilProduction(caseItem, project, drainageStrategy, false) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, false) / 5.61;
+            return CalculateTotalOilProduction(caseItem, project, drainageStrategy, false) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, false) / oilEquivalentFactor;
         }
         return CalculateTotalOilProduction(caseItem, project, drainageStrategy, true) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, true);
     }
@@ -211,11 +216,13 @@ public class CompareCasesService
 
     public double CalculateCO2Intensity(Case caseItem, Project project, DrainageStrategy drainageStrategy, Co2EmissionsDto generateCo2EmissionsProfile)
     {
+        var tonnesToKgFactor = 1000;
+        var boeConversionFactor = 6.29;
         var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, true);
         var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
         if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
         {
-            return (totalCo2Emissions / totalExportedVolumes) / 6.29 * 1000;
+            return (totalCo2Emissions / totalExportedVolumes) / boeConversionFactor * tonnesToKgFactor;
         }
         return 0;
     }
