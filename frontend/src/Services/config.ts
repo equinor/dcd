@@ -8,6 +8,12 @@ const configuration = {
     CaseService: {
         BASE_URL: "",
     },
+    CaseWithAssetsService: {
+        BASE_URL: "",
+    },
+    TechnicalInputService: {
+        BASE_URL: "",
+    },
     CommonLibraryService: {
         BASE_URL: "",
     },
@@ -53,10 +59,21 @@ const configuration = {
     ExplorationWellService: {
         BASE_URL: "",
     },
+    ExplorationOperationalWellCostsService: {
+        BASE_URL: "",
+    },
+    DevelopmentOperationalWellCostsService: {
+        BASE_URL: "",
+    },
+    GenerateProfileService: {
+        BASE_URL: "",
+    },
 }
 
 export const buildConfig = (baseUrl: string) => {
     configuration.CaseService.BASE_URL = `${baseUrl}/cases`
+    configuration.CaseWithAssetsService.BASE_URL = `${baseUrl}/case-with-assets`
+    configuration.TechnicalInputService.BASE_URL = `${baseUrl}/technical-input`
     configuration.CommonLibraryService.BASE_URL = `${baseUrl}/common-library`
     configuration.ProjectService.BASE_URL = `${baseUrl}/projects`
     configuration.DrainageStrategyService.BASE_URL = `${baseUrl}/drainage-strategies`
@@ -71,6 +88,9 @@ export const buildConfig = (baseUrl: string) => {
     configuration.WellService.BASE_URL = `${baseUrl}/wells`
     configuration.WellProjectWellService.BASE_URL = `${baseUrl}/well-project-wells`
     configuration.ExplorationWellService.BASE_URL = `${baseUrl}/exploration-wells`
+    configuration.ExplorationOperationalWellCostsService.BASE_URL = `${baseUrl}/exploration-operational-well-costs`
+    configuration.DevelopmentOperationalWellCostsService.BASE_URL = `${baseUrl}/development-operational-well-costs`
+    configuration.GenerateProfileService.BASE_URL = `${baseUrl}/generate-profile`
 }
 
 export const config = Object.freeze(configuration)

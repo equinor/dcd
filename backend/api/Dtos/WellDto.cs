@@ -12,4 +12,6 @@ public class WellDto
     public WellCategory WellCategory { get; set; }
     public double WellCost { get; set; }
     public double DrillingDays { get; set; }
+    public bool HasChanges { get; set; }
+    public bool HasCostChanges { get; set; }
 }

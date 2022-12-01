@@ -16,6 +16,8 @@ public class ProjectDto
     public DateTimeOffset CreateDate { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
+    public ExplorationOperationalWellCostsDto? ExplorationOperationalWellCosts { get; set; }
+    public DevelopmentOperationalWellCostsDto? DevelopmentOperationalWellCosts { get; set; }
     public ICollection<CaseDto>? Cases { get; set; }
     public ICollection<WellDto>? Wells { get; set; }
     public ICollection<ExplorationDto>? Explorations { get; set; }
@@ -26,4 +28,21 @@ public class ProjectDto
     public ICollection<DrainageStrategyDto>? DrainageStrategies { get; set; }
     public ICollection<WellProjectDto>? WellProjects { get; set; }
     public string? SharepointSiteUrl { get; set; }
+    public double CO2RemovedFromGas { get; set; }
+    public double CO2EmissionFromFuelGas { get; set; }
+    public double FlaredGasPerProducedVolume { get; set; }
+    public double CO2EmissionsFromFlaredGas { get; set; }
+    public double CO2Vented { get; set; }
+    public double DailyEmissionFromDrillingRig { get; set; }
+    public double AverageDevelopmentDrillingDays { get; set; }
+    public bool HasChanges { get; set; }
+
+    public bool Equals(ProjectDto projectDto)
+    {
+        return (Name == projectDto.Name) && (Description == projectDto.Description) &&
+               (CommonLibraryName == projectDto.CommonLibraryName) && (FusionProjectId == projectDto.FusionProjectId) &&
+               (Country == projectDto.Country) && (ProjectId == projectDto.ProjectId) &&
+               (ProjectCategory == projectDto.ProjectCategory) && (ProjectPhase == projectDto.ProjectPhase);
+
+    }
 }

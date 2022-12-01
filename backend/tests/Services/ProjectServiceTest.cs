@@ -16,10 +16,13 @@ namespace tests;
 public class ProjectServiceTest : IDisposable
 {
     DatabaseFixture fixture;
+    private readonly IServiceProvider _serviceProvider;
 
     public ProjectServiceTest()
     {
         fixture = new DatabaseFixture();
+        var serviceCollection = new ServiceCollection();
+        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -32,7 +35,7 @@ public class ProjectServiceTest : IDisposable
     {
         var loggerFactory = new LoggerFactory();
         var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.Name);
-        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var projectsFromService = projectService.GetAll().OrderBy(p => p.Name);
         var projectsExpectedActual = projectFromSampleDataGenerator.Zip(projectsFromService);
         Assert.Equal(projectFromSampleDataGenerator.Count(), projectsFromService.Count());
@@ -46,7 +49,7 @@ public class ProjectServiceTest : IDisposable
     public void GetProject()
     {
         var loggerFactory = new LoggerFactory();
-        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         IEnumerable<Project> projectsFromGetAllService = projectService.GetAll();
         var projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects;
         Assert.Equal(projectsFromSampleDataGenerator.Count(), projectsFromGetAllService.Count());
@@ -62,7 +65,7 @@ public class ProjectServiceTest : IDisposable
     public void GetDoesNotExist()
     {
         var loggerFactory = new LoggerFactory();
-        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         Assert.Throws<NotFoundInDBException>(() => projectService.GetProject(new Guid()));
     }
 }

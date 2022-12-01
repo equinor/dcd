@@ -1,7 +1,17 @@
-import { useCurrentUser } from "@equinor/fusion"
+import { useCurrentContext, useHistory } from "@equinor/fusion"
+import { useEffect } from "react"
+import { ProjectPath } from "../Utils/common"
 
 function Welcome(): JSX.Element {
-    const currentUser = useCurrentUser()
+    const history = useHistory()
+    const currentProject = useCurrentContext()
+
+    useEffect(() => {
+        if (currentProject?.externalId) {
+            history.push(ProjectPath(currentProject?.externalId))
+        }
+    }, [currentProject?.externalId])
+
     return (
         <main>
             <h1>Hello</h1>
