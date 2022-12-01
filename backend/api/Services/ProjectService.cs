@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using Api.Services.FusionIntegration;
+
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
@@ -25,11 +27,13 @@ public class ProjectService
     private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
     private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
     private readonly ILogger<ProjectService> _logger;
+    private readonly FusionService? _fusionService;
 
-    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, FusionService? fusionService = null)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<ProjectService>();
+        _fusionService = fusionService;
         _wellProjectService = new WellProjectService(_context, this, loggerFactory);
         _drainageStrategyService = new DrainageStrategyService(_context, this, loggerFactory);
         _surfService = new SurfService(_context, this, loggerFactory);
@@ -46,6 +50,15 @@ public class ProjectService
     {
         var existingProject = GetProject(projectDto.ProjectId);
         ProjectAdapter.ConvertExisting(existingProject, projectDto);
+        _context.Projects!.Update(existingProject);
+        _context.SaveChanges();
+        return GetProjectDto(existingProject.Id);
+    }
+
+    public ProjectDto UpdateProjectFromProjectMaster(ProjectDto projectDto)
+    {
+        var existingProject = GetProject(projectDto.ProjectId);
+        ProjectAdapter.ConvertExistingFromProjectMaster(existingProject, projectDto);
         _context.Projects!.Update(existingProject);
         _context.SaveChanges();
         return GetProjectDto(existingProject.Id);
@@ -242,5 +255,57 @@ public class ProjectService
         project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
         project.Wells = _wellService.GetWells(project.Id).ToList();
         return project;
+    }
+
+    public void UpdateProjectFromProjectMaster()
+    {
+        var projectDtos = GetAllDtos();
+        var numberOfDeviations = 0;
+        var totalNumberOfProjects = projectDtos.Count();
+        foreach (var project in projectDtos)
+        {
+            var projectMaster = GetProjectDtoFromProjectMaster(project.ProjectId);
+            if (!project.Equals(projectMaster))
+            {
+                _logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name, project.ProjectId);
+                numberOfDeviations++;
+                UpdateProjectFromProjectMaster(projectMaster);
+            }
+            else
+            {
+                _logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster", project.Name, project.ProjectId);
+            }
+        }
+        _logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}", numberOfDeviations, totalNumberOfProjects);
+    }
+
+
+    private ProjectDto GetProjectDtoFromProjectMaster(Guid projectGuid)
+    {
+        if (_fusionService != null)
+        {
+            var projectMaster = _fusionService.ProjectMasterAsync(projectGuid).GetAwaiter().GetResult();
+            var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
+            var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
+            ProjectDto projectDto = new()
+            {
+                Name = projectMaster.Description ?? "",
+                CommonLibraryName = projectMaster.Description ?? "",
+                FusionProjectId = projectMaster.Identity,
+                Country = projectMaster.Country ?? "",
+                Currency = Currency.NOK,
+                PhysUnit = PhysUnit.SI,
+                ProjectId = projectMaster.Identity,
+                ProjectCategory = category,
+                ProjectPhase = phase,
+            };
+            return projectDto;
+        }
+        else
+        {
+            _logger.LogCritical("FusionService is null!");
+            throw new NullReferenceException();
+        }
+
     }
 }
