@@ -1,22 +1,15 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import styled from "styled-components"
-import React, {
+import {
     useEffect, useMemo, useRef, useState,
 } from "react"
-import {
-    Typography,
-} from "@equinor/eds-core-react"
 import { AgGridReact } from "ag-grid-react"
-import LinearDataTable from "../../Components/LinearDataTable"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { Project } from "../../models/Project"
 import { GetCompareCasesService } from "../../Services/CompareCasesService"
 
 interface Props {
     project: Project
-    capexYearX: number[]
-    capexYearY: number[][]
-    caseTitles: string[]
 }
 
 interface TableCompareCase {
@@ -37,35 +30,15 @@ interface TableCompareCase {
     cO2Intensity: number,
 }
 
-// const Wrapper = styled.div`
-//     display: flex;
-//     flex-direction: column;
-// `
-
-// const ChartsContainer = styled.div`
-//     display: flex;
-// `
+const Wrapper = styled.div`
+width: 40%;
+float: left;
+padding: 20px;
+`
 
 function ProjectCompareCasesTab({
     project,
-    capexYearX,
-    capexYearY,
-    caseTitles,
 }: Props) {
-    // <Wrapper>
-    //     <ChartsContainer>
-    //         {capexYearX.length !== 0
-    //             ? (
-    //                 <LinearDataTable
-    //                     capexYearX={capexYearX}
-    //                     capexYearY={capexYearY}
-    //                     caseTitles={caseTitles}
-    //                 />
-    //             )
-    //             : <Typography> No cases containing CapEx to display data for</Typography> }
-    //     </ChartsContainer>
-    // </Wrapper>
-
     const gridRef = useRef(null)
 
     const onGridReady = (params: any) => {
@@ -131,7 +104,7 @@ function ProjectCompareCasesTab({
     const columns = () => {
         const columnPinned: any[] = [
             {
-                field: "cases", width: 250, pinned: "left",
+                field: "cases", width: 250, pinned: "left", chartDataType: "category",
             },
         ]
         const nonPinnedColumns: any[] = [
@@ -289,26 +262,102 @@ function ProjectCompareCasesTab({
 
     const [columnDefs] = useState(columns())
 
+    const chartThemes = useMemo<string[]>(() => ["ag-vivid"], [])
+
+    const onFirstDataRendered = (params: any) => {
+        const createNPVRangeChartParams = {
+            cellRange: {
+                rowStartIndex: 0,
+                rowEndIndex: 79,
+                columns: [
+                    "cases",
+                    "npv",
+                ],
+            },
+            chartThemeOverrides: {
+                common: {
+                    title: {
+                        enabled: true,
+                        text: "NPV",
+                    },
+                    subtitle: {
+                        enabled: true,
+                        text: "mill USD",
+                        fontSize: 14,
+                    },
+                    legend: { enabled: false },
+                },
+                column: { axes: { category: { label: { rotation: 0 } } } },
+            },
+            unlinkChart: true,
+            chartType: "groupedColumn",
+            chartContainer: document.querySelector("#myNPVChart"),
+            aggFunc: "sum",
+        }
+        params.api.createRangeChart(createNPVRangeChartParams)
+        const createBreakEvenRangeChartParams = {
+            cellRange: {
+                rowStartIndex: 0,
+                rowEndIndex: 79,
+                columns: [
+                    "cases",
+                    "breakEven",
+                ],
+            },
+            chartThemeOverrides: {
+                common: {
+                    title: {
+                        enabled: true,
+                        text: "Break even",
+                    },
+                    subtitle: {
+                        enabled: true,
+                        text: "USD/bbl",
+                        fontSize: 14,
+                    },
+                    legend: { enabled: false },
+                },
+                column: { axes: { category: { label: { rotation: 0 } } } },
+            },
+            unlinkChart: true,
+            chartType: "groupedColumn",
+            chartContainer: document.querySelector("#myBreakEvenChart"),
+            aggFunc: "sum",
+        }
+        params.api.createRangeChart(createBreakEvenRangeChartParams)
+    }
+
     return (
-        <div
-            style={{
-                display: "flex", flexDirection: "column", width: "100%",
-            }}
-            className="ag-theme-alpine"
-        >
-            <AgGridReact
-                ref={gridRef}
-                rowData={rowData}
-                columnDefs={columnDefs}
-                defaultColDef={defaultColDef}
-                animateRows
-                domLayout="autoHeight"
-                onGridReady={onGridReady}
-                rowSelection="multiple"
-                enableRangeSelection
-                enableCharts
-            />
-        </div>
+        <>
+            <Wrapper>
+                <div id="myNPVChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+            <Wrapper>
+                <div id="myBreakEvenChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+            <div
+                style={{
+                    display: "flex", flexDirection: "column", width: "100%",
+                }}
+                className="ag-theme-alpine"
+            >
+                <AgGridReact
+                    ref={gridRef}
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    animateRows
+                    domLayout="autoHeight"
+                    onGridReady={onGridReady}
+                    rowSelection="multiple"
+                    enableRangeSelection
+                    enableCharts
+                    popupParent={document.body}
+                    chartThemes={chartThemes}
+                    onFirstDataRendered={onFirstDataRendered}
+                />
+            </div>
+        </>
     )
 }
 
