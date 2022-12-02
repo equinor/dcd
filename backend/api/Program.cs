@@ -178,6 +178,7 @@ builder.Services.AddScoped<GenerateCessationCostProfile>();
 builder.Services.AddScoped<GenerateImportedElectricityProfile>();
 builder.Services.AddScoped<GenerateFuelFlaringLossesProfile>();
 builder.Services.AddScoped<GenerateNetSaleGasProfile>();
+builder.Services.AddScoped<CompareCasesService>();
 
 builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<STEAService>();
