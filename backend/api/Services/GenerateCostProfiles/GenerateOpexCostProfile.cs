@@ -52,7 +52,6 @@ public class GenerateOpexCostProfile
         }
 
         var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
-        // if (OPEX == null) { return new OpexCostProfileDto(); }
         var opexCostProfile = new OpexCostProfile
         {
             StartYear = OPEX.StartYear,

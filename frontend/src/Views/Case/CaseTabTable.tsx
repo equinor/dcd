@@ -4,15 +4,11 @@ import {
     SetStateAction,
     useMemo,
     useState,
-    useRef,
     useEffect,
 } from "react"
 
 import { AgGridReact } from "ag-grid-react"
 import "ag-grid-enterprise"
-import {
-    ColDef,
-} from "ag-grid-community"
 import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
@@ -141,7 +137,6 @@ function CaseTabTable({
                 && p.data[prop] !== ""
                 && p.data[prop] !== null
                 && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
-                // eslint-disable-next-line max-len
                 tableTimeSeriesValues.push({
                     year: parseInt(prop, 10),
                     value: Number(p.data[prop].toString().replace(/,/g, ".")),

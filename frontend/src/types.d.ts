@@ -137,6 +137,18 @@ declare namespace Components {
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
         }
+        export interface CompareCasesDto {
+            totalOilProduction?: number; // double
+            totalGasProduction?: number; // double
+            totalExportedVolumes?: number; // double
+            totalStudyCostsPlusOpex?: number; // double
+            totalCessationCosts?: number; // double
+            offshorePlusOnshoreFacilityCosts?: number; // double
+            developmentWellCosts?: number; // double
+            explorationWellCosts?: number; // double
+            totalCo2Emissions?: number; // double
+            co2Intensity?: number; // double
+        }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export interface CountryOfficeCostDto {
             id?: string; // uuid
@@ -734,6 +746,17 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
+    namespace CalculateCompareCasesTotals {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface PathParameters {
+            projectId: Parameters.ProjectId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.CompareCasesDto[];
+        }
+    }
     namespace CopyDrainageStrategy {
         namespace Parameters {
             export type CaseId = string; // uuid

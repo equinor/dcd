@@ -48,7 +48,6 @@ public class GenerateStudyCostProfile
             return new StudyCostProfileWrapperDto();
         }
         var cost = TimeSeriesCost.MergeCostProfiles(feasibility, feed);
-        // if (cost == null) { return new StudyCostProfileDto(); }
         var studyCost = new StudyCostProfile
         {
             StartYear = cost.StartYear,
