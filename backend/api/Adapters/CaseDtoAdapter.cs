@@ -86,6 +86,24 @@ public static class CaseDtoAdapter
         };
     }
 
+        public static OpexCostProfileOverrideDto Convert(OpexCostProfileOverride? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new OpexCostProfileOverrideDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+            Override = opexCost.Override,
+        };
+    }
+
     public static StudyCostProfileDto Convert(StudyCostProfile? studyCost)
     {
         if (studyCost == null)
@@ -100,6 +118,24 @@ public static class CaseDtoAdapter
             EPAVersion = studyCost.EPAVersion,
             StartYear = studyCost.StartYear,
             Values = studyCost.Values,
+        };
+    }
+
+        public static StudyCostProfileOverrideDto Convert(StudyCostProfileOverride? studyCost)
+    {
+        if (studyCost == null)
+        {
+            return null!;
+        }
+
+        return new StudyCostProfileOverrideDto
+        {
+            Id = studyCost.Id,
+            Currency = studyCost.Currency,
+            EPAVersion = studyCost.EPAVersion,
+            StartYear = studyCost.StartYear,
+            Values = studyCost.Values,
+            Override = studyCost.Override,
         };
     }
 }

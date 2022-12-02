@@ -42,6 +42,10 @@ declare namespace Components {
             npv?: number; // double
             breakEven?: number; // double
             host?: string | null;
+            opexCostProfile?: OpexCostProfileDto;
+            opexCostProfileOverride?: OpexCostProfileOverrideDto;
+            studyCostProfile?: StudyCostProfileDto;
+            studyCostProfileOverride?: StudyCostProfileOverrideDto;
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time
@@ -310,6 +314,15 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface OpexCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
             startYear?: number; // int32
@@ -455,6 +468,15 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface StudyCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
         }
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
@@ -691,7 +713,7 @@ declare namespace Paths {
             projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
-            export type $200 = Components.Schemas.CompareCasesDto;
+            export type $200 = Components.Schemas.CompareCasesDto[];
         }
     }
     namespace CalculateOpex {
