@@ -12,11 +12,8 @@ namespace api.Services;
 
 public class CompareCasesService
 {
-    private readonly DcdDbContext _context;
     private readonly ProjectService _projectService;
     private readonly ILogger<CompareCasesService> _logger;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly CaseService _caseService;
     private readonly ExplorationService _explorationService;
     private readonly DrainageStrategyService _drainageStrategyService;
     private readonly GenerateCessationCostProfile _generateCessationCostProfile;
@@ -25,13 +22,10 @@ public class CompareCasesService
     private readonly GenerateOpexCostProfile _generateOpexCostProfile;
     private readonly GenerateStudyCostProfile _generateStudyCostProfile;
 
-    public CompareCasesService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public CompareCasesService(ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
-        _context = context;
         _projectService = projectService;
-        _serviceProvider = serviceProvider;
         _logger = loggerFactory.CreateLogger<CompareCasesService>();
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
         _explorationService = serviceProvider.GetRequiredService<ExplorationService>();
         _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
 
