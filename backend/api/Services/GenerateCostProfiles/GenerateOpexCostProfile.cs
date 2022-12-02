@@ -59,7 +59,7 @@ public class GenerateOpexCostProfile
         };
         var opexDto = CaseDtoAdapter.Convert(opexCostProfile);
         result.OpexCostProfileDto = opexDto;
-        return result ?? new OpexCostProfileWrapperDto();
+        return result;
     }
 
     public WellInterventionCostProfile CalculateWellInterventionCostProfile(Case caseItem, Project project, DrainageStrategy drainageStrategy)

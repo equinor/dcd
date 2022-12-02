@@ -88,7 +88,7 @@ public class GenerateCessationCostProfile
                 sumDrilledWells += well.DrillingSchedule?.Values.Sum() ?? 0;
             }
             var totalCost = sumDrilledWells * (double)pluggingAndAbandonment;
-            cessationWells.StartYear = (int)lastYear;
+            cessationWells.StartYear = lastYear;
             var cessationWellsValues = new double[] { totalCost / 2, totalCost / 2 };
             cessationWells.Values = cessationWellsValues;
         }

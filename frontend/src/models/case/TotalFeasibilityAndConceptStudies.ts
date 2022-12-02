@@ -1,7 +1,7 @@
 import { ITimeSeries } from "../ITimeSeries"
 
 export class TotalFeasibilityAndConceptStudies
-    implements Components.Schemas.TotalFeasibilityAndConceptStudiesDto, ITimeSeries {
+implements Components.Schemas.TotalFeasibilityAndConceptStudiesDto, ITimeSeries {
     id?: string
     startYear?: number
     values?: number[]

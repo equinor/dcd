@@ -1,7 +1,7 @@
 import { ITimeSeries } from "../ITimeSeries"
 
 export class CessationOffshoreFacilitiesCost
-    implements Components.Schemas.CessationOffshoreFacilitiesCostDto, ITimeSeries {
+implements Components.Schemas.CessationOffshoreFacilitiesCostDto, ITimeSeries {
     id?: string
     startYear?: number
     values?: number[]
