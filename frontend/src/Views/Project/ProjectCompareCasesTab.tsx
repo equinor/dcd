@@ -60,7 +60,6 @@ function ProjectCompareCasesTab({
             try {
                 const compareCasesService = await (await GetCompareCasesService()).calculate(project.id)
                 setCompareCasesTotals(compareCasesService)
-                console.log(compareCasesService)
             } catch (error) {
                 console.error("[ProjectView] Error while generating compareCasesTotals", error)
             }
