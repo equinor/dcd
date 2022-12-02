@@ -129,13 +129,18 @@ function CaseSummaryTab({
         (async () => {
             try {
                 if (activeTab === 7) {
-                    // OPEX
-                    const study = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    const opex = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    const cessation = (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                    // setStudyCost(await study)
-                    // setOpexCost(await opex)
-                    // setCessationCost(await cessation)
+                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    const cessationWrapper = (await GetGenerateProfileService())
+                        .generateCessationCost(caseItem.id)
+
+                    const study = StudyCostProfile.fromJSON((await studyWrapper).studyCostProfileDto)
+                    const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
+                    const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)
+
+                    setStudyCost(study)
+                    setOpexCost(opex)
+                    setCessationCost(cessation)
 
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
@@ -183,12 +188,12 @@ function CaseSummaryTab({
             profile: studyCost,
         },
         {
-            profileName: "OPEX cost",
+            profileName: "Offshore facliities operations + well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: opexCost,
         },
         {
-            profileName: "Cessation cost",
+            profileName: "Cessation wells + Cessation offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationCost,
         },
