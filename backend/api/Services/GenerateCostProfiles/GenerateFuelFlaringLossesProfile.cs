@@ -26,19 +26,18 @@ public class GenerateFuelFlaringLossesProfile
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
         var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
+        var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
         var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
 
-        var totalProfile =
-            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(fuelConsumptions, flarings), losses);
-
+        var total = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptions, flaring, losses });
 
         var fuelFlaringLosses = new FuelFlaringAndLosses
         {
-            StartYear = totalProfile.StartYear,
-            Values = totalProfile.Values,
+            StartYear = total.StartYear,
+            Values = total.Values,
         };
 
         var dto = DrainageStrategyDtoAdapter.Convert(fuelFlaringLosses, project.PhysicalUnit);
