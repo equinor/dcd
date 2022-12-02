@@ -86,7 +86,7 @@ public class CompareCasesService
         return caseList;
     }
 
-    public double CalculateTotalOilProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
+    private double CalculateTotalOilProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         var sumOilProduction = 0.0;
         var million = 1E6;
@@ -111,7 +111,7 @@ public class CompareCasesService
         return sumOilProduction / million;
     }
 
-    public double CalculateTotalGasProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
+    private double CalculateTotalGasProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         var sumGasProduction = 0.0;
         var billion = 1E9;
@@ -136,7 +136,7 @@ public class CompareCasesService
         return sumGasProduction / billion;
     }
 
-    public double CalculateTotalExportedVolumes(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
+    private double CalculateTotalExportedVolumes(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
     {
         var oilEquivalentFactor = 5.61;
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
@@ -146,7 +146,7 @@ public class CompareCasesService
         return CalculateTotalOilProduction(caseItem, project, drainageStrategy, true) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, true);
     }
 
-    public double CalculateTotalStudyCostsPlusOpex(Case caseItem)
+    private double CalculateTotalStudyCostsPlusOpex(Case caseItem)
     {
         var generateStudyProfile = _generateStudyCostProfile.Generate(caseItem.Id);
         var generateOpexProfile = _generateOpexCostProfile.Generate(caseItem.Id);
@@ -156,23 +156,23 @@ public class CompareCasesService
         return sumStudyValues + sumOpexValues;
     }
 
-    public double CalculateTotalCessationCosts(Case caseItem)
+    private double CalculateTotalCessationCosts(Case caseItem)
     {
         var generateCessationProfile = _generateCessationCostProfile.Generate(caseItem.Id);
         return generateCessationProfile.Sum;
     }
 
-    public double CalculateOffshorePlusOnshoreFacilityCosts(Case caseItem)
+    private double CalculateOffshorePlusOnshoreFacilityCosts(Case caseItem)
     {
         return _generateStudyCostProfile.SumAllCostFacility(caseItem);
     }
 
-    public double CalculateDevelopmentWellCosts(Case caseItem)
+    private double CalculateDevelopmentWellCosts(Case caseItem)
     {
         return _generateStudyCostProfile.SumWellCost(caseItem);
     }
 
-    public double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
+    private double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
     {
         var sumExplorationWellCost = 0.0;
         var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.Generate(caseItem.Id);
@@ -209,12 +209,12 @@ public class CompareCasesService
         return sumExplorationWellCost;
     }
 
-    public double CalculateTotalCO2Emissions(Case caseItem, Co2EmissionsDto generateCo2EmissionsProfile)
+    private double CalculateTotalCO2Emissions(Case caseItem, Co2EmissionsDto generateCo2EmissionsProfile)
     {
         return generateCo2EmissionsProfile.Sum;
     }
 
-    public double CalculateCO2Intensity(Case caseItem, Project project, DrainageStrategy drainageStrategy, Co2EmissionsDto generateCo2EmissionsProfile)
+    private double CalculateCO2Intensity(Case caseItem, Project project, DrainageStrategy drainageStrategy, Co2EmissionsDto generateCo2EmissionsProfile)
     {
         var tonnesToKgFactor = 1000;
         var boeConversionFactor = 6.29;
