@@ -62,11 +62,9 @@ public static class ProjectAdapter
         existing.CommonLibraryId = projectDto.CommonLibraryId;
         existing.CommonLibraryName = projectDto.CommonLibraryName;
         existing.FusionProjectId = projectDto.FusionProjectId;
-        existing.Description = projectDto.Description;
         existing.Country = projectDto.Country;
         existing.Id = projectDto.ProjectId;
         existing.ProjectCategory = projectDto.ProjectCategory;
         existing.ProjectPhase = projectDto.ProjectPhase;
-
     }
 }
