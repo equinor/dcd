@@ -8,9 +8,10 @@ public class Case
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty!;
     public string Description { get; set; } = string.Empty!;
+    public bool ReferenceCase { get; set; }
+
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; }
-    public bool ReferenceCase { get; set; }
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }
@@ -21,6 +22,7 @@ public class Case
     public DateTimeOffset DG2Date { get; set; }
     public DateTimeOffset DG3Date { get; set; }
     public DateTimeOffset DG4Date { get; set; }
+
     public Project Project { get; set; } = null!;
     public ArtificialLift ArtificialLift { get; set; }
     public ProductionStrategyOverview ProductionStrategyOverview { get; set; }
@@ -33,6 +35,10 @@ public class Case
     public double NPV { get; set; }
     public double BreakEven { get; set; }
     public string? Host { get; set; }
+
+    public StudyCostProfile? StudyCostProfile { get; set; }
+    public OpexCostProfile? OpexCostProfile { get; set; }
+
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
     public Guid WellProjectLink { get; set; } = Guid.Empty;
     public Guid SurfLink { get; set; } = Guid.Empty;
@@ -40,6 +46,7 @@ public class Case
     public Guid TopsideLink { get; set; } = Guid.Empty;
     public Guid TransportLink { get; set; } = Guid.Empty;
     public Guid ExplorationLink { get; set; } = Guid.Empty;
+
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
@@ -70,8 +77,12 @@ public class CessationCost : TimeSeriesCost
 
 public class OpexCostProfile : TimeSeriesCost
 {
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
 }
 
 public class StudyCostProfile : TimeSeriesCost
 {
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
 }
