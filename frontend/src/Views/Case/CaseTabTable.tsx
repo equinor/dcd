@@ -9,11 +9,14 @@ import {
 } from "react"
 
 import { AgGridReact } from "ag-grid-react"
+import "ag-grid-enterprise"
+import {
+    ColDef,
+} from "ag-grid-community"
 import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
-import "ag-grid-enterprise"
 import { isInteger } from "../../Utils/common"
 
 interface Props {
@@ -27,6 +30,7 @@ interface Props {
     tableName: string
     alignedGridsRef?: any[]
     gridRef?: any
+    includeFooter: boolean
 }
 
 function CaseTabTable({
@@ -35,6 +39,7 @@ function CaseTabTable({
     timeSeriesData, dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
+    includeFooter,
 }: Props) {
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
@@ -79,7 +84,7 @@ function CaseTabTable({
     }
 
     const lockIcon = (params: any) => {
-        if (!params.data.set) {
+        if (!params?.data?.set) {
             return <Icon data={lock} color="#007079" />
         }
         return null
@@ -94,7 +99,7 @@ function CaseTabTable({
                 field: "unit", width: 100, editable: false, pinned: "left",
             },
             {
-                field: "total", flex: 2, editable: false, pinned: "right", width: 100,
+                field: "total", flex: 2, editable: false, pinned: "right", width: 100, aggFunc: "sum",
             },
             {
                 headerName: "",
@@ -114,6 +119,7 @@ function CaseTabTable({
                 flex: 1,
                 editable: (params: any) => params.data.set !== undefined,
                 minWidth: 100,
+                aggFunc: "sum",
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -207,6 +213,7 @@ function CaseTabTable({
                 suppressMovableColumns
                 enableCharts
                 alignedGrids={gridRefArrayToAlignedGrid()}
+                groupIncludeTotalFooter={includeFooter}
             />
         </div>
     )

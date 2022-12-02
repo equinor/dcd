@@ -383,12 +383,12 @@ function CaseCostTab({
         {
             profileName: "Cessation - Development wells",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: wellInterventionCostProfile,
+            profile: cessationWellsCost,
         },
         {
             profileName: "Cessation - Offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: offshoreFacilitiesOperationsCostProfile,
+            profile: cessationOffshoreFacilitiesCost,
         },
         {
             profileName: "Cessation cost",
@@ -673,7 +673,9 @@ function CaseCostTab({
                     tableYears={tableYears}
                     tableName="Study costs"
                     gridRef={studyGridRef}
-                    alignedGridsRef={[opexGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
+                    alignedGridsRef={[opexGridRef, cessationGridRef, capexGridRef,
+                        developmentWellsGridRef, explorationWellsGridRef]}
+                    includeFooter={false}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -687,7 +689,9 @@ function CaseCostTab({
                     tableYears={tableYears}
                     tableName="OPEX"
                     gridRef={opexGridRef}
-                    alignedGridsRef={[capexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
+                    alignedGridsRef={[studyGridRef, cessationGridRef, capexGridRef,
+                        developmentWellsGridRef, explorationWellsGridRef]}
+                    includeFooter={false}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -701,7 +705,9 @@ function CaseCostTab({
                     tableYears={tableYears}
                     tableName="Cessation costs"
                     gridRef={cessationCost}
-                    alignedGridsRef={[capexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
+                    alignedGridsRef={[studyGridRef, opexGridRef, capexGridRef,
+                        developmentWellsGridRef, explorationWellsGridRef]}
+                    includeFooter={false}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -715,7 +721,10 @@ function CaseCostTab({
                     tableYears={tableYears}
                     tableName="Offshore facilitiy costs"
                     gridRef={capexGridRef}
-                    alignedGridsRef={[opexGridRef, developmentWellsGridRef, explorationWellsGridRef]}
+                    alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef,
+                        developmentWellsGridRef, explorationWellsGridRef]}
+                    includeFooter
+
                 />
             </TableWrapper>
             <TableWrapper>
@@ -729,7 +738,9 @@ function CaseCostTab({
                     tableYears={tableYears}
                     tableName="Development well costs"
                     gridRef={developmentWellsGridRef}
-                    alignedGridsRef={[opexGridRef, capexGridRef, explorationWellsGridRef]}
+                    alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef, capexGridRef,
+                        explorationWellsGridRef]}
+                    includeFooter
                 />
             </TableWrapper>
             <CaseTabTable
@@ -742,7 +753,9 @@ function CaseCostTab({
                 tableYears={tableYears}
                 tableName="Exploration well costs"
                 gridRef={explorationWellsGridRef}
-                alignedGridsRef={[opexGridRef, capexGridRef, developmentWellsGridRef]}
+                alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef, capexGridRef,
+                    developmentWellsGridRef]}
+                includeFooter
             />
         </>
     )

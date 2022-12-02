@@ -394,6 +394,7 @@ function CaseProductionProfilesTab({
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}
                 tableName="Production profiles"
+                includeFooter={false}
             />
         </>
     )

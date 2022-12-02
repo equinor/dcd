@@ -258,6 +258,7 @@ function CaseSummaryTab({
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="OPEX"
+                    includeFooter={false}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -270,6 +271,7 @@ function CaseSummaryTab({
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="CAPEX"
+                    includeFooter
                 />
             </TableWrapper>
         </>
