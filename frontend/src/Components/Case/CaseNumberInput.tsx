@@ -27,6 +27,7 @@ const CaseNumberInput = ({
             defaultValue={defaultValue}
             disabled={disabled}
             onChange={onChange}
+            min={0}
             onKeyPress={(event: any) => {
                 if (integer && !/\d/.test(event.key)) {
                     event.preventDefault()
