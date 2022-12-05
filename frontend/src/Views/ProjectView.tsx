@@ -130,6 +130,7 @@ const ProjectView = () => {
                 )}
                 <TransparentButton
                     onClick={toggleEditTechnicalInputModal}
+                    variant="outlined"
                 >
                     Edit technical input
                 </TransparentButton>
