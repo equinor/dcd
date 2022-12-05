@@ -59,11 +59,6 @@ const PageTitle = styled(Typography)`
     padding-left: 30px;
 `
 
-const InvisibleButton = styled(Button)`
-    border: 1px solid #007079;
-
-`
-
 const TransparentButton = styled(Button)`
     color: #007079;
     background-color: white;
@@ -381,13 +376,14 @@ const CaseView = () => {
                             >
                                 Edit technical input
                             </TransparentButton>
-                            <InvisibleButton
-                                variant="outlined"
+                            <Button
+                                variant="ghost"
+                                aria-label="case menu"
                                 ref={setMenuAnchorEl}
                                 onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
                             >
                                 <Icon data={more_vertical} />
-                            </InvisibleButton>
+                            </Button>
                         </CaseButtonsWrapper>
                     </ColumnWrapper>
                 </RowWrapper>
