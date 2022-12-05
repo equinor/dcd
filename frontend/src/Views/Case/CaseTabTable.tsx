@@ -117,7 +117,13 @@ function CaseTabTable({
                 },
             },
             {
-                field: "total", flex: 2, editable: false, pinned: "right", width: 100, aggFunc: "sum",
+                field: "total",
+                flex: 2,
+                editable: false,
+                pinned: "right",
+                width: 100,
+                aggFunc: "sum",
+                cellStyle: { fontWeight: "bold" },
             },
             {
                 headerName: "",
@@ -125,7 +131,6 @@ function CaseTabTable({
                 field: "set",
                 pinned: "right",
                 aggFunc: "",
-                cellStyle: { fontWeight: "normal" },
                 editable: false,
                 cellRenderer: lockIcon,
             },
