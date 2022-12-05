@@ -41,7 +41,7 @@ const NumberInput = ({
                 value={value}
                 disabled={disabled}
                 onChange={onChange}
-                onKeyPress={(event) => {
+                onKeyPress={(event: any) => {
                     if (integer && !/\d/.test(event.key)) {
                         event.preventDefault()
                     }

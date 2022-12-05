@@ -54,7 +54,7 @@ public static class SurfAdapter
         existing.TemplateCount = surfDto.TemplateCount;
         existing.ProducerCount = surfDto.ProducerCount;
         existing.GasInjectorCount = surfDto.GasInjectorCount;
-        existing.WaterInjectorCount = surfDto.GasInjectorCount;
+        existing.WaterInjectorCount = surfDto.WaterInjectorCount;
         existing.Currency = surfDto.Currency;
         existing.CostProfile = Convert(surfDto.CostProfile, existing);
         existing.CessationCostProfile = Convert(surfDto.CessationCostProfile, existing);

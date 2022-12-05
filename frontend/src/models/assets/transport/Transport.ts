@@ -19,6 +19,7 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
     ProspVersion?: Date | null
     DG3Date?: Date | null
     DG4Date?: Date | null
+    hasChanges?: boolean
 
     constructor(data?: Components.Schemas.TransportDto) {
         if (data !== undefined) {

@@ -1,8 +1,6 @@
-/* eslint-disable camelcase */
 import {
     Button,
-    Icon,
-    Menu,
+    Progress,
     Tabs, Typography,
 } from "@equinor/eds-core-react"
 import React, {
@@ -11,19 +9,13 @@ import React, {
 } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
-import {
-    add,
-    delete_to_trash, edit, library_add, more_vertical,
-} from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
-import { Case } from "../models/case/Case"
-import OverviewView from "./OverviewView"
-import CompareCasesView from "./CompareCasesView"
-import SettingsView from "./SettingsView"
-import { EditProjectInputModal } from "../Components/EditProjectInput/EditProjectInputModal"
-import { EditTechnicalInputModal } from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import ProjectOverviewTab from "./Project/ProjectOverviewTab"
+import ProjectCompareCasesTab from "./Project/ProjectCompareCasesTab"
+import ProjectSettingsTab from "./Project/ProjectSettingsTab"
+import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -41,10 +33,6 @@ const TopWrapper = styled.div`
 
 const PageTitle = styled(Typography)`
     flex-grow: 1;
-`
-
-const InvisibleButton = styled(Button)`
-    border: 1px solid #007079;
 `
 
 const TransparentButton = styled(Button)`
@@ -66,32 +54,36 @@ const ProjectView = () => {
 
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
-    const [caseItem, setCase] = useState<Case>()
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
-
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const [element, setElement] = useState<HTMLButtonElement>()
 
     const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
     const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
     const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
 
-    const [editProjectModalIsOpen, setEditProjectModalIsOpen] = useState<boolean>(false)
+    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
+
+    const [isSaving, setIsSaving] = useState<boolean>()
+    const [isLoading, setIsLoading] = useState<boolean>()
+    const [isCreating, setIsCreating] = useState<boolean>()
 
     useEffect(() => {
         (async () => {
             try {
+                setIsLoading(true)
                 if (currentProject?.externalId) {
                     let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
                     if (!res || res.id === "") {
-                        res = await (await GetProjectService()).createProjectFromContextId(fusionContextId!)
+                        setIsCreating(true)
+                        res = await (await GetProjectService()).createProjectFromContextId(currentProject.id)
                     }
                     if (res !== undefined) {
                         setPhysicalUnit(res?.physUnit)
                         setCurrency(res?.currency)
                     }
                     setProject(res)
+                    setIsCreating(false)
+                    setIsLoading(false)
                 }
             } catch (error) {
                 // eslint-disable-next-line max-len
@@ -100,135 +92,80 @@ const ProjectView = () => {
         })()
     }, [currentProject?.externalId])
 
-    useEffect(() => {
-        (async () => {
-            try {
-                if (project !== undefined) {
-                    const projectDto = Project.Copy(project)
-                    projectDto.physUnit = physicalUnit
-                    projectDto.currency = currency
-                    projectDto.projectId = currentProject?.externalId!
-                    const cases: Case[] = []
-                    project.cases.forEach((c) => cases.push(Case.Copy(c)))
-                    projectDto.cases = cases
-                    const res = await (await GetProjectService()).updateProject(projectDto)
-                    setProject(res)
-                }
-            } catch (error) {
-                console.error(`[ProjectView] Error while fetching project ${currentProject?.externalId}`, error)
-            }
-        })()
-    }, [physicalUnit, currency])
+    const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
-    const toggleEditProjectModal = () => setEditProjectModalIsOpen(!editProjectModalIsOpen)
-
-    const onMoreClick = (target: any) => {
-        setElement(target)
-        setIsMenuOpen(!isMenuOpen)
+    if (isLoading || !project || project.id === "") {
+        if (isCreating) {
+            return (
+                <>
+                    <Progress.Circular size={16} color="primary" />
+                    <p>Creating project</p>
+                </>
+            )
+        }
+        return (
+            <>
+                <Progress.Circular size={16} color="primary" />
+                <p>Loading project</p>
+            </>
+        )
     }
 
-    if (!project || project.id === "") {
-        return (
-            <p>Retrieving project</p>
-        )
+    const handleSave = async () => {
+        setIsSaving(true)
+        const updatedProject = Project.Copy(project)
+        const result = await (await GetProjectService()).updateProject(updatedProject)
+        setIsSaving(false)
+        setProject(result)
     }
 
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Dots />
+                    </Button>
+                )}
                 <TransparentButton
-                    onClick={() => toggleEditProjectModal()}
+                    onClick={toggleEditTechnicalInputModal}
+                    variant="outlined"
                 >
-                    Edit project input
+                    Edit technical input
                 </TransparentButton>
-                <InvisibleButton
-                    onClick={(e) => onMoreClick(e.target)}
-                >
-                    <Icon data={more_vertical} />
-                </InvisibleButton>
             </TopWrapper>
-            <Menu
-                id="menu-complex"
-                open={isMenuOpen}
-                anchorEl={element}
-                onClose={() => setIsMenuOpen(false)}
-                placement="bottom"
-            >
-                <Menu.Item
-                    onClick={() => console.log("Add new case clicked")}
-                >
-                    <Icon data={add} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Add New Case
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Duplicate clicked")}
-                >
-                    <Icon data={library_add} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Duplicate
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Rename clicked")}
-                >
-                    <Icon data={edit} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Rename
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={() => console.log("Delete clicked")}
-                >
-                    <Icon data={delete_to_trash} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Delete
-                    </Typography>
-                </Menu.Item>
-            </Menu>
             <Wrapper>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>
                         <Tab>Overview </Tab>
                         <Tab>Compare cases</Tab>
-                        <Tab>Workflow</Tab>
                         <Tab>Settings</Tab>
                     </List>
                     <Panels>
                         <StyledTabPanel>
-                            <OverviewView
+                            <ProjectOverviewTab
                                 project={project}
                                 setProject={setProject}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <CompareCasesView
-                                capexYearX={capexYearXLabels}
-                                capexYearY={capexYearYDatas}
-                                caseTitles={capexYearCaseTitles}
+                            <ProjectCompareCasesTab
+                                project={project}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <p>Workflow</p>
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <SettingsView
+                            <ProjectSettingsTab
                                 project={project}
                                 setProject={setProject}
-                                physicalUnit={physicalUnit}
-                                setPhysicalUnit={setPhysicalUnit}
-                                currency={currency}
-                                setCurrency={setCurrency}
                             />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
             </Wrapper>
             <EditTechnicalInputModal
-                toggleEditTechnicalInputModal={toggleEditProjectModal}
-                isOpen={editProjectModalIsOpen}
+                toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
+                isOpen={editTechnicalInputModalIsOpen ?? false}
                 project={project}
                 setProject={setProject}
             />

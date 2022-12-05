@@ -14,10 +14,13 @@ namespace tests;
 public class TopsideServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
+    private readonly IServiceProvider _serviceProvider;
 
     public TopsideServiceShould(DatabaseFixture fixture)
     {
         this.fixture = new DatabaseFixture();
+        var serviceCollection = new ServiceCollection();
+        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -30,7 +33,7 @@ public class TopsideServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var expectedTopsides = fixture.context.Topsides.ToList().Where(o => o.Project.Id == project.Id);
@@ -56,7 +59,7 @@ public class TopsideServiceShould : IDisposable
         var caseId = project.Cases.FirstOrDefault().Id;
         var testTopside = CreateTestTopside(project);
         var loggerFactory = new LoggerFactory();
-        ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
+        ProjectService projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         TopsideService topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
 
         // Act
@@ -76,7 +79,7 @@ public class TopsideServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -91,7 +94,7 @@ public class TopsideServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedTopside = CreateTestTopside(project);
@@ -105,7 +108,7 @@ public class TopsideServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var topsideToDelete = CreateTestTopside(project);
@@ -132,7 +135,7 @@ public class TopsideServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var topsideToDelete = CreateTestTopside(project);
@@ -151,7 +154,7 @@ public class TopsideServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldTopside = CreateTestTopside(project);
@@ -173,7 +176,7 @@ public class TopsideServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
+        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
         var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldTopside = CreateTestTopside(project);
@@ -195,7 +198,6 @@ public class TopsideServiceShould : IDisposable
             DryWeight = 0.3e6,
             OilCapacity = 50e6,
             GasCapacity = 0,
-            FacilitiesAvailability = 0.2,
             ArtificialLift = ArtificialLift.GasLift,
             Maturity = Maturity.B
         }.WithCostProfile(new TopsideCostProfile()
@@ -223,7 +225,6 @@ public class TopsideServiceShould : IDisposable
             DryWeight = 5.3e6,
             OilCapacity = 52e6,
             GasCapacity = 7,
-            FacilitiesAvailability = 1.2,
             ArtificialLift = ArtificialLift.NoArtificialLift,
             Maturity = Maturity.C
         }.WithCostProfile(new TopsideCostProfile()

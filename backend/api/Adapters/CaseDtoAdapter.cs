@@ -5,7 +5,7 @@ namespace api.Adapters;
 
 public static class CaseDtoAdapter
 {
-    public static CaseDto Convert(Case case_, ProjectDto projectDto)
+    public static CaseDto Convert(Case case_)
     {
         var caseDto = new CaseDto
         {
@@ -14,6 +14,11 @@ public static class CaseDtoAdapter
             Name = case_.Name,
             Description = case_.Description,
             ReferenceCase = case_.ReferenceCase,
+            DGADate = case_.DGADate,
+            DGBDate = case_.DGBDate,
+            DGCDate = case_.DGCDate,
+            APXDate = case_.APXDate,
+            APZDate = case_.APZDate,
             DG0Date = case_.DG0Date,
             DG1Date = case_.DG1Date,
             DG2Date = case_.DG2Date,
@@ -34,8 +39,14 @@ public static class CaseDtoAdapter
             GasInjectorCount = case_.GasInjectorCount,
             WaterInjectorCount = case_.WaterInjectorCount,
             FacilitiesAvailability = case_.FacilitiesAvailability,
+            CapexFactorFeasibilityStudies = case_.CapexFactorFeasibilityStudies,
+            CapexFactorFEEDStudies = case_.CapexFactorFEEDStudies,
+            NPV = case_.NPV,
+            BreakEven = case_.BreakEven,
+            Host = case_.Host,
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
+            SharepointFileUrl = case_.SharepointFileUrl,
         };
 
         return caseDto;
@@ -47,7 +58,40 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new CessationCostDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+    public static CessationWellsCostDto Convert(CessationWellsCost? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new CessationWellsCostDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+    public static CessationOffshoreFacilitiesCostDto Convert(CessationOffshoreFacilitiesCost? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new CessationOffshoreFacilitiesCostDto
         {
             Id = opexCost.Id,
             Currency = opexCost.Currency,
@@ -63,7 +107,42 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new OpexCostProfileDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+
+    public static OffshoreFacilitiesOperationsCostProfileDto Convert(OffshoreFacilitiesOperationsCostProfile? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new OffshoreFacilitiesOperationsCostProfileDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+
+    public static WellInterventionCostProfileDto Convert(WellInterventionCostProfile? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new WellInterventionCostProfileDto
         {
             Id = opexCost.Id,
             Currency = opexCost.Currency,
@@ -79,7 +158,40 @@ public static class CaseDtoAdapter
         {
             return null!;
         }
+
         return new StudyCostProfileDto
+        {
+            Id = studyCost.Id,
+            Currency = studyCost.Currency,
+            EPAVersion = studyCost.EPAVersion,
+            StartYear = studyCost.StartYear,
+            Values = studyCost.Values,
+        };
+    }
+    public static TotalFeasibilityAndConceptStudiesDto Convert(TotalFeasibilityAndConceptStudies? studyCost)
+    {
+        if (studyCost == null)
+        {
+            return null!;
+        }
+
+        return new TotalFeasibilityAndConceptStudiesDto
+        {
+            Id = studyCost.Id,
+            Currency = studyCost.Currency,
+            EPAVersion = studyCost.EPAVersion,
+            StartYear = studyCost.StartYear,
+            Values = studyCost.Values,
+        };
+    }
+    public static TotalFEEDStudiesDto Convert(TotalFEEDStudies? studyCost)
+    {
+        if (studyCost == null)
+        {
+            return null!;
+        }
+
+        return new TotalFEEDStudiesDto
         {
             Id = studyCost.Id,
             Currency = studyCost.Currency,
