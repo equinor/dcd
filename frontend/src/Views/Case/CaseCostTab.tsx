@@ -724,7 +724,7 @@ function CaseCostTab({
                     alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef,
                         developmentWellsGridRef, explorationWellsGridRef]}
                     includeFooter
-
+                    totalRowName="Total offshore facility cost"
                 />
             </TableWrapper>
             <TableWrapper>
@@ -741,6 +741,7 @@ function CaseCostTab({
                     alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef, capexGridRef,
                         explorationWellsGridRef]}
                     includeFooter
+                    totalRowName="Total development well cost"
                 />
             </TableWrapper>
             <CaseTabTable
@@ -756,6 +757,7 @@ function CaseCostTab({
                 alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef, capexGridRef,
                     developmentWellsGridRef]}
                 includeFooter
+                totalRowName="Total exploration cost"
             />
         </>
     )

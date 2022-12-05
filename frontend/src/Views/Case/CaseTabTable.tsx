@@ -27,6 +27,7 @@ interface Props {
     alignedGridsRef?: any[]
     gridRef?: any
     includeFooter: boolean
+    totalRowName?: string
 }
 
 function CaseTabTable({
@@ -35,7 +36,7 @@ function CaseTabTable({
     timeSeriesData, dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
-    includeFooter,
+    includeFooter, totalRowName,
 }: Props) {
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
@@ -89,10 +90,24 @@ function CaseTabTable({
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
-                field: "profileName", headerName: tableName, width: 250, editable: false, pinned: "left",
+                field: "profileName",
+                headerName: tableName,
+                width: 250,
+                editable: false,
+                pinned: "left",
+                aggFunc: () => totalRowName ?? "Total",
             },
             {
-                field: "unit", width: 100, editable: false, pinned: "left",
+                field: "unit",
+                width: 100,
+                editable: false,
+                pinned: "left",
+                aggFunc: (params: any) => {
+                    if (params?.values?.length > 0) {
+                        return params.values[0]
+                    }
+                    return ""
+                },
             },
             {
                 field: "total", flex: 2, editable: false, pinned: "right", width: 100, aggFunc: "sum",
