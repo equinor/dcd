@@ -28,6 +28,7 @@ import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
+import { AgChartsTimeseries } from "../../Components/AgGrid/AgChartsTimeseries"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -203,6 +204,17 @@ function CaseProductionProfilesTab({
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
+
+    const productionProfilesChartData = [
+        // for each year, i = startyear; i < endyear; i++
+        // for each value, i = 0; i < value.length; i++
+        {
+            year: startYear,
+            oilProduction: oil?.values![0] ?? 0,
+            gasProduction: gas?.values![0] ?? 0,
+            waterProduction: water?.values![0] ?? 0,
+        },
+    ]
 
     useEffect(() => {
         (async () => {
@@ -385,6 +397,7 @@ function CaseProductionProfilesTab({
                     </Button>
                 </TableYearWrapper>
             </ColumnWrapper>
+            <AgChartsTimeseries data={productionProfilesChartData} />
             <CaseTabTable
                 caseItem={caseItem}
                 project={project}
