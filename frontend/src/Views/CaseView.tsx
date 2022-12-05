@@ -377,6 +377,7 @@ const CaseView = () => {
                             )}
                             <TransparentButton
                                 onClick={() => toggleTechnicalInputModal()}
+                                variant="outlined"
                             >
                                 Edit technical input
                             </TransparentButton>
