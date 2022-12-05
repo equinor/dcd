@@ -87,6 +87,13 @@ function CaseTabTable({
         return null
     }
 
+    const getRowStyle = (params: any) => {
+        if (params.node.footer) {
+            return { fontWeight: "bold" }
+        }
+        return undefined
+    }
+
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
@@ -224,6 +231,7 @@ function CaseTabTable({
                 enableCharts
                 alignedGrids={gridRefArrayToAlignedGrid()}
                 groupIncludeTotalFooter={includeFooter}
+                getRowStyle={getRowStyle}
             />
         </div>
     )
