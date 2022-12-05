@@ -236,6 +236,7 @@ function CaseSummaryTab({
                             defaultValue={caseItem.npv}
                             integer={false}
                             label="NPV before tax"
+                            allowNegative
                         />
                     </NumberInputField>
                     <NumberInputField>

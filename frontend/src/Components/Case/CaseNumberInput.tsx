@@ -9,6 +9,7 @@ interface Props {
     disabled?: boolean
     label: string
     unit?: string
+    allowNegative?: boolean
 }
 
 const CaseNumberInput = ({
@@ -18,6 +19,7 @@ const CaseNumberInput = ({
     disabled,
     label,
     unit,
+    allowNegative,
 }: Props) => (
     <WrapperColumn>
         <Label htmlFor="numberInput" label={label} />
@@ -27,7 +29,7 @@ const CaseNumberInput = ({
             defaultValue={defaultValue}
             disabled={disabled}
             onChange={onChange}
-            min={0}
+            min={allowNegative ? undefined : 0}
             onKeyPress={(event: any) => {
                 if (integer && !/\d/.test(event.key)) {
                     event.preventDefault()
