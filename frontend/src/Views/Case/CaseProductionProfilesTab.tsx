@@ -205,16 +205,36 @@ function CaseProductionProfilesTab({
         setTableYears([startYear, endYear])
     }
 
-    const productionProfilesChartData = [
-        // for each year, i = startyear; i < endyear; i++
-        // for each value, i = 0; i < value.length; i++
-        {
-            year: startYear,
-            oilProduction: oil?.values![0] ?? 0,
-            gasProduction: gas?.values![0] ?? 0,
-            waterProduction: water?.values![0] ?? 0,
-        },
-    ]
+    const productionProfilesChartData = () => {
+        const dataArray = []
+        for (let i = 0; i <= (endYear - startYear); i += 1) {
+            dataArray.push({
+                year: startYear + i,
+                oilProduction: oil?.values![i] ?? 0,
+                gasProduction: gas?.values![i] ?? 0,
+                waterProduction: water?.values![i] ?? 0,
+            })
+        }
+        return dataArray
+    }
+
+    const injectionProfilesChartData = () => {
+        const dataArray = []
+        for (let i = 0; i <= (endYear - startYear); i += 1) {
+            dataArray.push({
+                year: startYear + i,
+                waterInjection: waterInjection?.values![i] ?? 0,
+            })
+        }
+        return dataArray
+    }
+
+    const hostProduction = {
+        type: "line",
+        xKey: "year",
+        yKey: "oilProduction",
+        yName: "Host production",
+    }
 
     useEffect(() => {
         (async () => {
@@ -397,7 +417,23 @@ function CaseProductionProfilesTab({
                     </Button>
                 </TableYearWrapper>
             </ColumnWrapper>
-            <AgChartsTimeseries data={productionProfilesChartData} />
+            <AgChartsTimeseries
+                data={productionProfilesChartData()}
+                chartTitle="Production profiles"
+                barColors={["#243746", "#EB0037", "#A8CED1"]}
+                barProfiles={["oilProduction", "gasProduction", "waterProduction"]}
+                barNames={["Oil production", "Gas production", "Water production"]}
+                unit="MSm3         GSm3         MSm3"
+                lineChart={hostProduction}
+            />
+            <AgChartsTimeseries
+                data={injectionProfilesChartData()}
+                chartTitle="Injection profiles"
+                barColors={["#A8CED1"]}
+                barProfiles={["waterInjection"]}
+                barNames={["Water injection"]}
+                unit="MSm3"
+            />
             <CaseTabTable
                 caseItem={caseItem}
                 project={project}

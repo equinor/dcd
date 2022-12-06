@@ -5,25 +5,21 @@ import { AgChartsReact } from "ag-charts-react"
 
 interface Props {
     data: any
-    barColors?: string[]
-    barNames?: string[]
-    unit?: string
+    chartTitle: string
+    barColors: string[]
+    barProfiles: string[]
+    barNames: string[]
+    unit: string
+    lineChart?: object
 }
 
 export const AgChartsTimeseries = ({
-    data, barColors, barNames, unit,
+    data, chartTitle, barColors, barProfiles, barNames, unit, lineChart,
 }: Props) => {
-    const [options, setOptions] = useState<any>()
-    // const chartThemes = useMemo<string[]>(() => ["ag-vivid"], [])
-
     const figmaTheme = {
         baseTheme: "ag-default",
         palette: {
-            fills: [
-                "#243746",
-                "#EB0037",
-                "#A8CED1",
-            ],
+            fills: barColors,
             strokes: ["black"],
         },
         overrides: {
@@ -31,43 +27,18 @@ export const AgChartsTimeseries = ({
                 title: {
                     fontSize: 24,
                 },
-                // series: {
-                //     column: {
-                //         label: {
-                //             enabled: true,
-                //             color: "black",
-                //         },
-                //     },
-                // },
             },
         },
     }
 
-    const dummyData = [
-        {
-            year: "2020",
-            oilProduction: 450,
-            gasProduction: 560,
-            waterProduction: 600,
-        },
-        {
-            year: "2021",
-            oilProduction: 550,
-            gasProduction: 660,
-            waterProduction: 800,
-        },
-        {
-            year: "2022",
-            oilProduction: 850,
-            gasProduction: 560,
-            waterProduction: 200,
-        },
-    ]
+    function insertIf(condition: any, ...elements: any) {
+        return condition ? elements : []
+    }
 
     const defaultOptions = {
         data,
-        title: { text: "Production profiles" },
-        subtitle: { text: "MSm3         GSm3         MSm3" }, // unit
+        title: { text: chartTitle },
+        subtitle: { text: unit },
         padding: {
             top: 40,
             right: 40,
@@ -79,23 +50,14 @@ export const AgChartsTimeseries = ({
             {
                 type: "column",
                 xKey: "year",
-                yKeys: ["oilProduction", "gasProduction", "waterProduction"],
-                yNames: ["Oil production", "Gas production", "Water production"],
+                yKeys: barProfiles,
+                yNames: barNames,
                 grouped: true,
             },
-            // {
-            //     xKey: "year", yKey: "Gas production", stacked: false,
-            // },
-            // {
-            //     xKey: "year", yKey: "Water production", stacked: false,
-            // },
+            ...insertIf(lineChart !== undefined, lineChart),
         ],
         legend: { position: "bottom", spacing: 40 },
     }
-
-    useEffect(() => {
-        setOptions(defaultOptions)
-    }, [])
 
     return (
         <div style={{ height: 400 }}>
