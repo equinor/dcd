@@ -44,7 +44,7 @@ public class GenerateCo2EmissionsProfile
             Values = convertedValues.ToArray(),
         };
 
-        var drillingEmissionsProfile = CalculateDrillingEmissions(project, drainageStrategy, wellProject);
+        var drillingEmissionsProfile = CalculateDrillingEmissions(project, wellProject);
 
         var totalProfile =
             TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
@@ -96,8 +96,7 @@ public class GenerateCo2EmissionsProfile
         return fuelConsumptionsProfile;
     }
 
-    private static TimeSeriesVolume CalculateDrillingEmissions(Project project, DrainageStrategy drainageStrategy,
-        WellProject wellProject)
+    private static TimeSeriesVolume CalculateDrillingEmissions(Project project, WellProject wellProject)
     {
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory))
             .ToList();
@@ -122,19 +121,14 @@ public class GenerateCo2EmissionsProfile
             wellDrillingSchedules = TimeSeriesCost.MergeCostProfiles(wellDrillingSchedules, timeSeries);
         }
 
-        if (drainageStrategy.ProductionProfileGas != null)
+        var drillingEmission = new ProductionProfileGas
         {
-            var drillingEmission = new ProductionProfileGas
-            {
-                StartYear = drainageStrategy.ProductionProfileGas.StartYear,
-                Values = wellDrillingSchedules.Values
-                    .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
-                    .ToArray(),
-            };
+            StartYear = wellDrillingSchedules.StartYear,
+            Values = wellDrillingSchedules.Values
+                .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
+                .ToArray(),
+        };
 
-            return drillingEmission;
-        }
-
-        return new TimeSeriesVolume();
+        return drillingEmission;
     }
 }
