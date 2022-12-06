@@ -9,7 +9,7 @@ interface Props {
     barColors: string[]
     barProfiles: string[]
     barNames: string[]
-    unit: string
+    unit?: string
     lineChart?: object
 }
 
@@ -17,7 +17,6 @@ export const AgChartsTimeseries = ({
     data, chartTitle, barColors, barProfiles, barNames, unit, lineChart,
 }: Props) => {
     const figmaTheme = {
-        baseTheme: "ag-default",
         palette: {
             fills: barColors,
             strokes: ["black"],
@@ -53,6 +52,16 @@ export const AgChartsTimeseries = ({
                 yKeys: barProfiles,
                 yNames: barNames,
                 grouped: true,
+                highlightStyle: {
+                    fill: "cyan",
+                    stroke: "blue",
+                    strokeWidth: 4,
+                    series: {
+                        enabled: true,
+                        dimOpacity: 0.2,
+                        strokeWidth: 2,
+                    },
+                },
             },
             ...insertIf(lineChart !== undefined, lineChart),
         ],

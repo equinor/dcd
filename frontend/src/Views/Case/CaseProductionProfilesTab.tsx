@@ -422,8 +422,11 @@ function CaseProductionProfilesTab({
                 chartTitle="Production profiles"
                 barColors={["#243746", "#EB0037", "#A8CED1"]}
                 barProfiles={["oilProduction", "gasProduction", "waterProduction"]}
-                barNames={["Oil production", "Gas production", "Water production"]}
-                unit="MSm3         GSm3         MSm3"
+                barNames={[
+                    "Oil production (MSm3)",
+                    "Gas production (GSm3)",
+                    "Water production (MSm3)",
+                ]}
                 lineChart={hostProduction}
             />
             <AgChartsTimeseries
