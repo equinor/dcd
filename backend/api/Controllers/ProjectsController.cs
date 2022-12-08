@@ -1,9 +1,11 @@
 using api.Adapters;
+
+using Api.Authorization;
+
 using api.Dtos;
 using api.Models;
 using api.Services;
 
-using Api.Authorization;
 using Api.Services.FusionIntegration;
 
 using Microsoft.AspNetCore.Authorization;
@@ -17,15 +19,14 @@ namespace api.Controllers;
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class ProjectsController : ControllerBase
 {
-    private readonly ProjectService _projectService;
     private readonly FusionService _fusionService;
+    private readonly ProjectService _projectService;
 
     public ProjectsController(ProjectService projectService, FusionService fusionService)
     {
@@ -39,7 +40,6 @@ public class ProjectsController : ControllerBase
         try
         {
             return _projectService.GetProjectDto(projectId);
-
         }
         catch (NotFoundInDBException)
         {
@@ -72,6 +72,7 @@ public class ProjectsController : ControllerBase
             project.CreateDate = DateTimeOffset.UtcNow;
             return _projectService.CreateProject(project);
         }
+
         return new ProjectDto();
     }
 
@@ -93,5 +94,11 @@ public class ProjectsController : ControllerBase
     public ProjectDto UpdateProject([FromBody] ProjectDto projectDto)
     {
         return _projectService.UpdateProject(projectDto);
+    }
+
+    [HttpPut(Name = "SetReferenceCase")]
+    public ProjectDto SetReferenceCase([FromBody] Guid projectId, Guid caseId)
+    {
+        return _projectService.SetReferenceCase(projectId, caseId);
     }
 }

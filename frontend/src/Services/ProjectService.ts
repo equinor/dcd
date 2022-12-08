@@ -32,6 +32,8 @@ export class __ProjectService extends __BaseService {
         const res = await this.put("", { body })
         return Project.fromJSON(res)
     }
+
+    public async setReferenceCase(body:)
 }
 
 export async function GetProjectService() {

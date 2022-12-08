@@ -16,20 +16,21 @@ namespace api.Services;
 public class ProjectService
 {
     private readonly DcdDbContext _context;
-    private readonly WellProjectService _wellProjectService;
+    private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
     private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly SurfService _surfService;
+    private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
+    private readonly ExplorationService _explorationService;
+    private readonly FusionService? _fusionService;
+    private readonly ILogger<ProjectService> _logger;
     private readonly SubstructureService _substructureService;
+    private readonly SurfService _surfService;
     private readonly TopsideService _topsideService;
     private readonly TransportService _transportService;
-    private readonly ExplorationService _explorationService;
+    private readonly WellProjectService _wellProjectService;
     private readonly WellService _wellService;
-    private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
-    private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
-    private readonly ILogger<ProjectService> _logger;
-    private readonly FusionService? _fusionService;
 
-    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, FusionService? fusionService = null)
+    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider,
+        FusionService? fusionService = null)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<ProjectService>();
@@ -41,9 +42,12 @@ public class ProjectService
         _topsideService = new TopsideService(_context, this, loggerFactory);
         _explorationService = new ExplorationService(_context, this, loggerFactory);
         _transportService = new TransportService(_context, this, loggerFactory);
-        _wellService = new WellService(_context, this, _wellProjectService, _explorationService, serviceProvider, loggerFactory);
-        _explorationOperationalWellCostsService = new ExplorationOperationalWellCostsService(_context, this, loggerFactory);
-        _developmentOperationalWellCostsService = new DevelopmentOperationalWellCostsService(_context, this, loggerFactory);
+        _wellService = new WellService(_context, this, _wellProjectService, _explorationService, serviceProvider,
+            loggerFactory);
+        _explorationOperationalWellCostsService =
+            new ExplorationOperationalWellCostsService(_context, this, loggerFactory);
+        _developmentOperationalWellCostsService =
+            new DevelopmentOperationalWellCostsService(_context, this, loggerFactory);
     }
 
     public ProjectDto UpdateProject(ProjectDto projectDto)
@@ -68,6 +72,7 @@ public class ProjectService
     {
         project.CreateDate = DateTimeOffset.UtcNow;
         project.Cases = new List<Case>();
+        project.ReferenceCaseId = Guid.Empty;
         project.DrainageStrategies = new List<DrainageStrategy>();
         project.Substructures = new List<Substructure>();
         project.Surfs = new List<Surf>();
@@ -87,9 +92,9 @@ public class ProjectService
         project.AverageDevelopmentDrillingDays = 50;
 
         Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
-            new JsonSerializerSettings()
+            new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }));
 
         if (_context.Projects == null)
@@ -103,32 +108,33 @@ public class ProjectService
         {
             _context.Projects.Add(project);
         }
+
         _context.SaveChanges();
         return GetProjectDto(project.Id);
     }
 
     public IEnumerable<Project> GetAll()
     {
-        Activity.Current?.AddBaggage(nameof(_context.Projects), JsonConvert.SerializeObject(_context.Projects, Formatting.None,
-            new JsonSerializerSettings()
+        Activity.Current?.AddBaggage(nameof(_context.Projects), JsonConvert.SerializeObject(_context.Projects,
+            Formatting.None,
+            new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }));
         if (_context.Projects != null)
         {
             var projects = _context.Projects
                 .Include(c => c.Cases);
 
-            foreach (Project project in projects)
+            foreach (var project in projects)
             {
                 AddAssetsToProject(project);
             }
+
             return projects;
         }
-        else
-        {
-            return new List<Project>();
-        }
+
+        return new List<Project>();
     }
 
     public IEnumerable<ProjectDto> GetAllDtos()
@@ -137,23 +143,22 @@ public class ProjectService
         {
             var projects = GetAll();
             var projectDtos = new List<ProjectDto>();
-            foreach (Project project in projects)
+            foreach (var project in projects)
             {
                 var projectDto = ProjectDtoAdapter.Convert(project);
                 projectDtos.Add(projectDto);
             }
+
             Activity.Current?.AddBaggage(nameof(projectDtos), JsonConvert.SerializeObject(projectDtos, Formatting.None,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 }));
 
             return projectDtos;
         }
-        else
-        {
-            return new List<ProjectDto>();
-        }
+
+        return new List<ProjectDto>();
     }
 
     public Project GetProjectWithoutAssets(Guid projectId)
@@ -166,11 +171,11 @@ public class ProjectService
             }
 
             var project = _context.Projects!
-                         .Include(p => p.Cases)
-                         .Include(p => p.Wells)
-                         .Include(p => p.ExplorationOperationalWellCosts)
-                         .Include(p => p.DevelopmentOperationalWellCosts)
-                         .FirstOrDefault(p => p.Id.Equals(projectId));
+                .Include(p => p.Cases)
+                .Include(p => p.Wells)
+                .Include(p => p.ExplorationOperationalWellCosts)
+                .Include(p => p.DevelopmentOperationalWellCosts)
+                .FirstOrDefault(p => p.Id.Equals(projectId));
 
             if (project == null)
             {
@@ -182,6 +187,7 @@ public class ProjectService
 
             return project;
         }
+
         _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
         throw new NotFoundInDBException("The database contains no projects");
     }
@@ -216,17 +222,20 @@ public class ProjectService
                 {
                     throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
                 }
+
                 project = projectByFusionId;
             }
+
             Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
-                new JsonSerializerSettings()
+                new JsonSerializerSettings
                 {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 }));
             AddAssetsToProject(project);
             _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
             return project;
         }
+
         _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
         throw new NotFoundInDBException("The database contains no projects");
     }
@@ -239,7 +248,7 @@ public class ProjectService
         Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
             new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }));
         return projectDto;
     }
@@ -267,16 +276,20 @@ public class ProjectService
             var projectMaster = GetProjectDtoFromProjectMaster(project.ProjectId);
             if (!project.Equals(projectMaster))
             {
-                _logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name, project.ProjectId);
+                _logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name,
+                    project.ProjectId);
                 numberOfDeviations++;
                 UpdateProjectFromProjectMaster(projectMaster);
             }
             else
             {
-                _logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster", project.Name, project.ProjectId);
+                _logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster",
+                    project.Name, project.ProjectId);
             }
         }
-        _logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}", numberOfDeviations, totalNumberOfProjects);
+
+        _logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}",
+            numberOfDeviations, totalNumberOfProjects);
     }
 
 
@@ -301,11 +314,23 @@ public class ProjectService
             };
             return projectDto;
         }
-        else
+
+        _logger.LogCritical("FusionService is null!");
+        throw new NullReferenceException();
+    }
+
+    public ProjectDto SetReferenceCase(Guid projectId, Guid caseId)
+    {
+        if (projectId == Guid.Empty)
         {
-            _logger.LogCritical("FusionService is null!");
-            throw new NullReferenceException();
+            throw new NotFoundInDBException($"Project {projectId} not found");
         }
 
+        var project = GetProjectWithoutAssets(projectId);
+        project.ReferenceCaseId = caseId;
+
+        _context.Projects?.Update(project);
+        _context.SaveChangesAsync();
+        return ProjectDtoAdapter.Convert(project);
     }
 }
