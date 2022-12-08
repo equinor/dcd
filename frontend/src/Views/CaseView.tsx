@@ -63,7 +63,7 @@ const TransparentButton = styled(Button)`
     color: #007079;
     background-color: white;
     border: 1px solid #007079;
-
+    margin-left: 1rem;
 `
 
 const DividerLine = styled.div`
