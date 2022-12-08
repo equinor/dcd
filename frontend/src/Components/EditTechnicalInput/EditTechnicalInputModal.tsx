@@ -105,7 +105,7 @@ const EditTechnicalInputModal = ({
     const [isSaving, setIsSaving] = useState<boolean>()
 
     useEffect(() => {
-        if (project.wells) {
+        if (!wellProjectWells && !explorationWells && project.wells) {
             setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
             setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
 
