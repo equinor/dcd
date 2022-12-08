@@ -87,13 +87,14 @@ function PROSPCaseList({
         filter: true,
         resizable: true,
     }), [])
+    const rowIsChanged = (p: any) => (p.data.surfStateChanged
+            || p.data.substructureStateChanged
+            || p.data.topsideStateChanged
+            || p.data.transportStateChanged
+            || p.data.sharePointFileChanged)
     const caseAutoSelect = (nodeId: string) => {
         const rowNode = gridRef.current?.getRowNode(nodeId)
-        if (rowNode.data.surfStateChanged
-            || rowNode.data.substructureStateChanged
-            || rowNode.data.topsideStateChanged
-            || rowNode.data.transportStateChanged
-            || rowNode.data.sharePointFileChanged) {
+        if (rowIsChanged(rowNode)) {
             rowNode.selected = true
             rowNode.setSelected(true)
             rowNode.selectable = true
@@ -102,7 +103,6 @@ function PROSPCaseList({
             rowNode.setSelected(false)
             rowNode.selectable = false
         }
-        // gridRef.current.refreshCells(rowNode);
         gridRef.current.redrawRows()
     }
     const handleAdvancedSettingsChange = (event: ChangeEvent<HTMLInputElement>, p: any, value: ImportStatusEnum) => {
@@ -197,14 +197,14 @@ function PROSPCaseList({
         caseAutoSelect(p.node?.data.id)
     }
     const fileSelectorRenderer = (p: any) => {
-        const fileName = p.value[0]
+        const fileId = p.value[1]
         console.log("p")
         const items: DriveItem[] = p.value[0]
         return (
             <NativeSelect
                 id="sharePointFile"
                 label=""
-                value={fileName}
+                value={fileId}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFileChange(e, p)}
             >
                 {sharePointFileDropdownOptions(items)}
@@ -212,7 +212,7 @@ function PROSPCaseList({
             </NativeSelect>
         )
     }
-    const fileLinkRenderer = (p:any) => {
+    const fileLinkRenderer = (p: any) => {
         const link = getFileLink(p, p.data.driveItem[1])
         if (link) {
             return (
@@ -300,11 +300,6 @@ function PROSPCaseList({
     const onGridReady = (params: any) => {
         gridRef.current = params.api
     }
-    const isRowSelectable = (p: any) => (p.data.surfStateChanged
-            || p.data.substructureStateChanged
-            || p.data.topsideStateChanged
-            || p.data.transportStateChanged
-            || p.data.sharePointFileChanged)
     const gridDataToDtos = (p: Project) => {
         const dtos: any[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
@@ -351,7 +346,7 @@ function PROSPCaseList({
                     columnDefs={columnDefs}
                     defaultColDef={defaultColDef}
                     rowSelection="multiple"
-                    isRowSelectable={isRowSelectable}
+                    isRowSelectable={rowIsChanged}
                     suppressRowClickSelection
                     animateRows
                     domLayout="autoHeight"
