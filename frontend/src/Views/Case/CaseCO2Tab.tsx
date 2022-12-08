@@ -227,6 +227,7 @@ function CaseCO2Tab({
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}
                 tableName="CO2 emissions"
+                includeFooter={false}
             />
         </>
     )

@@ -29,7 +29,7 @@ public class GenerateImportedElectricityProfile
 
         var facilitiesAvailability = caseItem.FacilitiesAvailability;
 
-        var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(topside, drainageStrategy);
+        var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(topside, drainageStrategy, facilitiesAvailability);
 
         var calculateImportedElectricity =
             CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);

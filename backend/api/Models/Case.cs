@@ -64,14 +64,31 @@ public enum ProductionStrategyOverview
 
 public class CessationCost : TimeSeriesCost
 {
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+}
+public class CessationWellsCost : TimeSeriesCost
+{
+}
+public class CessationOffshoreFacilitiesCost : TimeSeriesCost
+{
 }
 
 public class OpexCostProfile : TimeSeriesCost
 {
 }
+public class WellInterventionCostProfile : TimeSeriesCost
+{
+}
+public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost
+{
+}
 
 public class StudyCostProfile : TimeSeriesCost
+{
+}
+
+public class TotalFeasibilityAndConceptStudies : TimeSeriesCost
+{
+}
+public class TotalFEEDStudies : TimeSeriesCost
 {
 }

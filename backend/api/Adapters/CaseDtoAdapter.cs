@@ -68,6 +68,38 @@ public static class CaseDtoAdapter
             Values = opexCost.Values,
         };
     }
+    public static CessationWellsCostDto Convert(CessationWellsCost? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new CessationWellsCostDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+    public static CessationOffshoreFacilitiesCostDto Convert(CessationOffshoreFacilitiesCost? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new CessationOffshoreFacilitiesCostDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
 
     public static OpexCostProfileDto Convert(OpexCostProfile? opexCost)
     {
@@ -86,6 +118,40 @@ public static class CaseDtoAdapter
         };
     }
 
+    public static OffshoreFacilitiesOperationsCostProfileDto Convert(OffshoreFacilitiesOperationsCostProfile? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new OffshoreFacilitiesOperationsCostProfileDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+
+    public static WellInterventionCostProfileDto Convert(WellInterventionCostProfile? opexCost)
+    {
+        if (opexCost == null)
+        {
+            return null!;
+        }
+
+        return new WellInterventionCostProfileDto
+        {
+            Id = opexCost.Id,
+            Currency = opexCost.Currency,
+            EPAVersion = opexCost.EPAVersion,
+            StartYear = opexCost.StartYear,
+            Values = opexCost.Values,
+        };
+    }
+
     public static StudyCostProfileDto Convert(StudyCostProfile? studyCost)
     {
         if (studyCost == null)
@@ -94,6 +160,38 @@ public static class CaseDtoAdapter
         }
 
         return new StudyCostProfileDto
+        {
+            Id = studyCost.Id,
+            Currency = studyCost.Currency,
+            EPAVersion = studyCost.EPAVersion,
+            StartYear = studyCost.StartYear,
+            Values = studyCost.Values,
+        };
+    }
+    public static TotalFeasibilityAndConceptStudiesDto Convert(TotalFeasibilityAndConceptStudies? studyCost)
+    {
+        if (studyCost == null)
+        {
+            return null!;
+        }
+
+        return new TotalFeasibilityAndConceptStudiesDto
+        {
+            Id = studyCost.Id,
+            Currency = studyCost.Currency,
+            EPAVersion = studyCost.EPAVersion,
+            StartYear = studyCost.StartYear,
+            Values = studyCost.Values,
+        };
+    }
+    public static TotalFEEDStudiesDto Convert(TotalFEEDStudies? studyCost)
+    {
+        if (studyCost == null)
+        {
+            return null!;
+        }
+
+        return new TotalFEEDStudiesDto
         {
             Id = studyCost.Id,
             Currency = studyCost.Currency,

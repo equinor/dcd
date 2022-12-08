@@ -32,7 +32,14 @@ public class RefreshProjectService : BackgroundService
         {
             using var scope = _scopeFactory.CreateScope();
             var projectService = scope.ServiceProvider.GetRequiredService<ProjectService>();
-            projectService.UpdateProjectFromProjectMaster();
+            try
+            {
+                projectService.UpdateProjectFromProjectMaster();
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical("Update from Project Master failed: {}", e);
+            }
         }
         return Task.FromResult("Done");
     }
