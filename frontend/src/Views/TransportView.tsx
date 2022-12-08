@@ -14,7 +14,7 @@ import { Case } from "../models/case/Case"
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTransportService } from "../Services/TransportService"
-import { IsInvalidDate, unwrapCase, unwrapProjectId } from "../Utils/common"
+import { IsDefaultDate, unwrapCase, unwrapProjectId } from "../Utils/common"
 import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
     AssetViewDiv, Wrapper,
@@ -73,11 +73,11 @@ const TransportView = () => {
                 let newTransport = project.transports.find((s) => s.id === transportId)
                 if (newTransport !== undefined) {
                     if (newTransport.DG3Date === null
-                        || IsInvalidDate(newTransport.DG3Date)) {
+                        || IsDefaultDate(newTransport.DG3Date)) {
                         newTransport.DG3Date = caseResult?.DG3Date
                     }
                     if (newTransport.DG4Date === null
-                        || IsInvalidDate(newTransport.DG4Date)) {
+                        || IsDefaultDate(newTransport.DG4Date)) {
                         newTransport.DG4Date = caseResult?.DG4Date
                     }
                     setTransport(newTransport)
@@ -251,6 +251,8 @@ const TransportView = () => {
                 profileName={["Cost profile", "Cessation cost profile"]}
                 profileEnum={project?.currency!}
                 profileType="Cost"
+                readOnlyTimeSeries={[]}
+                readOnlyName={[]}
             />
         </AssetViewDiv>
     )

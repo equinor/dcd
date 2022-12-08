@@ -20,6 +20,7 @@ public class SubstructureDto
     public Concept Concept { get; set; }
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
+    public bool HasChanges { get; set; }
 }
 
 public class SubstructureCostProfileDto : TimeSeriesCostDto

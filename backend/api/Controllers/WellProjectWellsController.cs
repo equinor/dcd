@@ -2,6 +2,8 @@
 using api.Dtos;
 using api.Services;
 
+using Api.Authorization;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -12,6 +14,12 @@ namespace api.Controllers;
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+
+    )]
 public class WellProjectWellsController : ControllerBase
 {
 
@@ -42,5 +50,17 @@ public class WellProjectWellsController : ControllerBase
     public ProjectDto UpdateWellProjectWell([FromBody] WellProjectWellDto wellDto)
     {
         return _wellProjectWellService.UpdateWellProjectWell(wellDto);
+    }
+
+    [HttpPost("multiple", Name = "CreateMultipleWellProjectWells")]
+    public WellProjectWellDto[]? CreateMultipleWellProjectWells([FromBody] WellProjectWellDto[] wellDto)
+    {
+        return _wellProjectWellService.CreateMultipleWellProjectWells(wellDto);
+    }
+
+    [HttpPut("multiple", Name = "UpdateMultipleWellProjectWells")]
+    public WellProjectWellDto[]? UpdateMultipleWellProjectWells([FromQuery] Guid caseId, [FromBody] WellProjectWellDto[] wellDto)
+    {
+        return _wellProjectWellService.UpdateMultipleWellProjectWells(wellDto, caseId);
     }
 }

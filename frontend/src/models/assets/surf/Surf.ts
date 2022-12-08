@@ -5,10 +5,10 @@ import { EMPTY_GUID } from "../../../Utils/constants"
 
 export class Surf implements Components.Schemas.SurfDto, IAsset {
     id?: string | undefined
-    name: string | undefined
+    name?: string | undefined
     projectId?: string | undefined
     costProfile?: SurfCostProfile | undefined
-    cessationCostProfile: SurfCessationCostProfile | undefined
+    cessationCostProfile?: SurfCessationCostProfile | undefined
     cessationCost?: number
     maturity?: Components.Schemas.Maturity | undefined
     infieldPipelineSystemLength?: number | undefined
@@ -28,6 +28,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
     approvedBy?: string | null | undefined
     DG3Date?: Date | null
     DG4Date?: Date | null
+    hasChanges?: boolean
 
     constructor(data?: Components.Schemas.SurfDto) {
         if (data !== undefined) {
