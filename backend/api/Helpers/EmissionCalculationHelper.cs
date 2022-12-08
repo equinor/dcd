@@ -60,7 +60,7 @@ public static class EmissionCalculationHelper
         var wsp = topside.CO2ShareWaterInjectionProfile;
         var wom = topside.CO2OnMaxWaterInjectionProfile;
 
-        if (wr == null || wr.Length == 0 || wic == 0)
+        if (wr == null || wr.Length == 0 || wic == 0 || pe == 0)
         {
             return new TimeSeries<double>();
         }
@@ -87,7 +87,7 @@ public static class EmissionCalculationHelper
         var gsp = topside.CO2ShareGasProfile;
         var gom = topside.CO2OnMaxGasProfile;
 
-        if (gr == null || gr.Length == 0 || gc == 0)
+        if (gr == null || gr.Length == 0 || gc == 0 || pe == 0)
         {
             return new TimeSeries<double>();
         }
@@ -114,7 +114,7 @@ public static class EmissionCalculationHelper
         var osp = topside.CO2ShareOilProfile;
         var oom = topside.CO2OnMaxOilProfile;
 
-        if (or == null || or.Length == 0 || oc == 0)
+        if (or == null || or.Length == 0 || oc == 0 || pe == 0)
         {
             return new TimeSeries<double>();
         }
