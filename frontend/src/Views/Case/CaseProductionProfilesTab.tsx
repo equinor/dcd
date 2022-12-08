@@ -28,7 +28,7 @@ import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
-import { AgChartsTimeseries } from "../../Components/AgGrid/AgChartsTimeseries"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -206,13 +206,13 @@ function CaseProductionProfilesTab({
     }
 
     const productionProfilesChartData = () => {
-        const dataArray = []
-        for (let i = 0; i <= (endYear - startYear); i += 1) {
+        const dataArray: object[] = []
+        for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
-                year: startYear + i,
-                oilProduction: oil?.values![i] ?? 0,
-                gasProduction: gas?.values![i] ?? 0,
-                waterProduction: water?.values![i] ?? 0,
+                year: i,
+                oilProduction: setValueToCorrespondingYear(oil, i, startYear, caseItem.DG4Date.getFullYear()),
+                gasProduction: setValueToCorrespondingYear(gas, i, startYear, caseItem.DG4Date.getFullYear()),
+                waterProduction: setValueToCorrespondingYear(water, i, startYear, caseItem.DG4Date.getFullYear()),
             })
         }
         return dataArray
@@ -220,20 +220,14 @@ function CaseProductionProfilesTab({
 
     const injectionProfilesChartData = () => {
         const dataArray = []
-        for (let i = 0; i <= (endYear - startYear); i += 1) {
+        for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
-                year: startYear + i,
-                waterInjection: waterInjection?.values![i] ?? 0,
+                year: i,
+                waterInjection:
+                    setValueToCorrespondingYear(waterInjection, i, startYear, caseItem.DG4Date.getFullYear()),
             })
         }
         return dataArray
-    }
-
-    const hostProduction = {
-        type: "line",
-        xKey: "year",
-        yKey: "oilProduction",
-        yName: "Host production",
     }
 
     useEffect(() => {
@@ -427,7 +421,6 @@ function CaseProductionProfilesTab({
                     "Gas production (GSm3)",
                     "Water production (MSm3)",
                 ]}
-                lineChart={hostProduction}
             />
             <AgChartsTimeseries
                 data={injectionProfilesChartData()}

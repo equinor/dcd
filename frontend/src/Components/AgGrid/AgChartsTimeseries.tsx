@@ -1,6 +1,3 @@
-import React, { Component, useEffect, useState } from "react"
-import { render } from "react-dom"
-import * as agCharts from "ag-charts-community"
 import { AgChartsReact } from "ag-charts-react"
 
 interface Props {
@@ -11,6 +8,19 @@ interface Props {
     barNames: string[]
     unit?: string
     lineChart?: object
+}
+
+export const setValueToCorrespondingYear = (profile: any, i: number, startYear: number, dg4Year: number) => {
+    if (profile !== undefined && startYear !== undefined) {
+        const profileStartYear: number = Number(profile.startYear) + dg4Year
+        const profileYears: number[] = Array.from(
+            { length: profile.values.length },
+            ((v, x: number) => x + profileStartYear),
+        )
+        const valueYearIndex = profileYears.findIndex((x) => x === i)
+        return profile.values[valueYearIndex] ?? 0
+    }
+    return 0
 }
 
 export const AgChartsTimeseries = ({
