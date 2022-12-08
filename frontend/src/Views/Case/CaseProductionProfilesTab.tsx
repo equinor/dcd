@@ -28,6 +28,7 @@ import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -202,6 +203,31 @@ function CaseProductionProfilesTab({
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
+    }
+
+    const productionProfilesChartData = () => {
+        const dataArray: object[] = []
+        for (let i = startYear; i <= endYear; i += 1) {
+            dataArray.push({
+                year: i,
+                oilProduction: setValueToCorrespondingYear(oil, i, startYear, caseItem.DG4Date.getFullYear()),
+                gasProduction: setValueToCorrespondingYear(gas, i, startYear, caseItem.DG4Date.getFullYear()),
+                waterProduction: setValueToCorrespondingYear(water, i, startYear, caseItem.DG4Date.getFullYear()),
+            })
+        }
+        return dataArray
+    }
+
+    const injectionProfilesChartData = () => {
+        const dataArray = []
+        for (let i = startYear; i <= endYear; i += 1) {
+            dataArray.push({
+                year: i,
+                waterInjection:
+                    setValueToCorrespondingYear(waterInjection, i, startYear, caseItem.DG4Date.getFullYear()),
+            })
+        }
+        return dataArray
     }
 
     useEffect(() => {
@@ -385,6 +411,25 @@ function CaseProductionProfilesTab({
                     </Button>
                 </TableYearWrapper>
             </ColumnWrapper>
+            <AgChartsTimeseries
+                data={productionProfilesChartData()}
+                chartTitle="Production profiles"
+                barColors={["#243746", "#EB0037", "#A8CED1"]}
+                barProfiles={["oilProduction", "gasProduction", "waterProduction"]}
+                barNames={[
+                    "Oil production (MSm3)",
+                    "Gas production (GSm3)",
+                    "Water production (MSm3)",
+                ]}
+            />
+            <AgChartsTimeseries
+                data={injectionProfilesChartData()}
+                chartTitle="Injection profiles"
+                barColors={["#A8CED1"]}
+                barProfiles={["waterInjection"]}
+                barNames={["Water injection"]}
+                unit="MSm3"
+            />
             <CaseTabTable
                 caseItem={caseItem}
                 project={project}
