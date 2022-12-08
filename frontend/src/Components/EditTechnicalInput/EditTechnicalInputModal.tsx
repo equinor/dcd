@@ -69,7 +69,7 @@ const ButtonsWrapper = styled.div`
 `
 
 const CancelButton = styled(Button)`
-    margin-right: 20px;
+    margin-right: 1rem;
 `
 
 type Props = {
@@ -221,14 +221,15 @@ const EditTechnicalInputModal = ({
             <ModalDiv>
                 <TopWrapper>
                     <Typography variant="h2">Edit Technical Input</Typography>
-                    <InvisibleButton
+                    <Button
                         onClick={toggleEditTechnicalInputModal}
+                        variant="ghost"
                     >
                         <Icon
                             color="gray"
                             data={clear}
                         />
-                    </InvisibleButton>
+                    </Button>
                 </TopWrapper>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>
