@@ -8,9 +8,10 @@ import SubstructureView from "../Views/SubstructureView"
 import SurfView from "../Views/SurfView"
 import TopsideView from "../Views/TopsideView"
 import TransportView from "../Views/TransportView"
-import UnauthorizedView from "../Views/UnauthorizedView"
+import UnauthorizedView from "../Views/ErrorPages/UnauthorizedView"
 import Welcome from "../Views/Welcome"
 import WellProjectView from "../Views/WellProjectView"
+import InternalServerErrorView from "../Views/ErrorPages/InternalServerErrorView"
 
 export function AppRouter(): JSX.Element {
     return (
@@ -26,6 +27,12 @@ export function AppRouter(): JSX.Element {
                 exact
             >
                 <UnauthorizedView />
+            </Route>
+            <Route
+                path="/500"
+                exact
+            >
+                <InternalServerErrorView />
             </Route>
             <Route
                 path="/:fusionContextId"
