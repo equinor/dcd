@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Button, Typography } from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 
 const Wrapper = styled.div`
     display: flex;
