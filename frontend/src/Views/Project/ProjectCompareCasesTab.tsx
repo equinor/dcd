@@ -1,12 +1,16 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import styled from "styled-components"
-import {
+import React, {
     useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
+import {
+    Button, Icon, Tabs, Typography,
+} from "@equinor/eds-core-react"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { Project } from "../../models/Project"
 import { GetCompareCasesService } from "../../Services/CompareCasesService"
+import { AgChartThemeOverrides } from "ag-charts-community"
 
 interface Props {
     project: Project
@@ -34,6 +38,27 @@ const Wrapper = styled.div`
 width: 40%;
 float: left;
 padding: 20px;
+`
+const WrapperTabs = styled.div`
+width: 90%;
+float: left;
+flex-direction: row;
+padding: 20px;
+overflow-x: scroll;
+`
+const WrapperRow = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    `
+const { Panel } = Tabs
+const { List, Tab, Panels } = Tabs
+
+const StyledTabPanel = styled(Panel)`
+    padding-top: 0px;
+    border-top: 1px solid LightGray;
 `
 
 function ProjectCompareCasesTab({
@@ -204,10 +229,10 @@ function ProjectCompareCasesTab({
                         width: 225,
                         headerComponentParams: {
                             template:
-                            customUnitHeaderTemplate(
-                                "Offshore + Onshore facility costs",
-                                `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
-                            ),
+                                customUnitHeaderTemplate(
+                                    "Offshore + Onshore facility costs",
+                                    `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+                                ),
                         },
                     },
                     {
@@ -263,77 +288,207 @@ function ProjectCompareCasesTab({
 
     const chartThemes = useMemo<string[]>(() => ["ag-vivid"], [])
 
-    const onFirstDataRendered = (params: any) => {
-        const createNPVRangeChartParams = {
+    const genericChart = (column: string, title: string, unit: string, chartName: string, params: any) => {
+        const createChart = {
             cellRange: {
                 rowStartIndex: 0,
-                rowEndIndex: 79,
+                rowEndIndex: 100,
                 columns: [
                     "cases",
-                    "npv",
+                    column,
                 ],
             },
             chartThemeOverrides: {
                 common: {
                     title: {
                         enabled: true,
-                        text: "NPV",
+                        text: title,
                     },
                     subtitle: {
                         enabled: true,
-                        text: "mill USD",
+                        text: unit,
                         fontSize: 14,
                     },
                     legend: { enabled: false },
                 },
-                column: { axes: { category: { label: { rotation: 0 } } } },
+                column: { axes: { category: { label: { rotation: -20 } } } },
             },
             unlinkChart: true,
             chartType: "groupedColumn",
-            chartContainer: document.querySelector("#myNPVChart"),
+            chartContainer: document.querySelector(chartName),
             aggFunc: "sum",
         }
-        params.api.createRangeChart(createNPVRangeChartParams)
-        const createBreakEvenRangeChartParams = {
-            cellRange: {
-                rowStartIndex: 0,
-                rowEndIndex: 79,
-                columns: [
-                    "cases",
-                    "breakEven",
-                ],
-            },
-            chartThemeOverrides: {
-                common: {
-                    title: {
-                        enabled: true,
-                        text: "Break even",
-                    },
-                    subtitle: {
-                        enabled: true,
-                        text: "USD/bbl",
-                        fontSize: 14,
-                    },
-                    legend: { enabled: false },
-                },
-                column: { axes: { category: { label: { rotation: 0 } } } },
-            },
-            unlinkChart: true,
-            chartType: "groupedColumn",
-            chartContainer: document.querySelector("#myBreakEvenChart"),
-            aggFunc: "sum",
-        }
-        params.api.createRangeChart(createBreakEvenRangeChartParams)
+        params.api.createRangeChart(createChart)
     }
+
+    const onFirstDataRendered = (params: any) => {
+        genericChart("npv", "NPV", "mill USD", "#npvChart", params)
+        genericChart("breakEven", "Break even", "USD/bbl", "#breakEvenChart", params)
+
+        genericChart(
+            "oilProduction",
+            "Oil production",
+            `${project?.physUnit === 0 ? "MSm3" : "mill bbl"}`,
+            "#oilProductionChart",
+            params,
+        )
+        genericChart(
+            "gasProduction",
+            "Gas production",
+            `${project?.physUnit === 0 ? "GSm3" : "Bscf"}`,
+            "#gasProductionChart",
+            params,
+        )
+        genericChart(
+            "totalExportedVolumes",
+            "Total exported volumes",
+            `${project?.physUnit === 0 ? "mill Sm3" : "mill boe"}`,
+            "#totalExportedVolumesChart",
+            params,
+        )
+
+        genericChart(
+            "offshorePlusOnshoreFacilityCosts",
+            "Offshore + Onshore facility costs",
+            `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+            "#offshorePlusOnshoreFacilityCostsChart",
+            params,
+        )
+        genericChart(
+            "developmentCosts",
+            "Development well costs",
+            `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+            "#developmentCosts",
+            params,
+        )
+        genericChart(
+            "explorationWellCosts",
+            "Exploration well costs",
+            `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
+            "#explorationWellCosts",
+            params,
+        )
+
+        genericChart(
+            "totalCO2Emissions",
+            "Total CO2 emissions",
+            "mill tonnes",
+            "#co2EmissionsChart",
+            params,
+        )
+        genericChart(
+            "cO2Intensity",
+            "CO2 intensity",
+            "kg CO2/boe",
+            "#co2IntensityChart",
+            params,
+        )
+    }
+
+    const showKPICharts = () => (
+        <WrapperRow>
+            <Wrapper>
+                <div id="npvChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+            <Wrapper>
+                <div id="breakEvenChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+        </WrapperRow>
+    )
+
+    const showProductionProfileCharts = () => (
+        <WrapperRow>
+            <Wrapper>
+                <div id="oilProductionChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+            <Wrapper>
+                <div id="gasProductionChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+            <Wrapper>
+                <div id="totalExportedVolumesChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+        </WrapperRow>
+    )
+
+    const showInvestmentProfileCharts = () => (
+        <WrapperRow>
+            <Wrapper>
+                <div id="offshorePlusOnshoreFacilityCostsChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+            <Wrapper>
+                <div id="developmentCosts" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+            <Wrapper>
+                <div id="explorationWellCosts" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+        </WrapperRow>
+    )
+
+    const showCO2EmissionsCharts = () => (
+        <WrapperRow>
+            <Wrapper>
+                <div id="co2EmissionsChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+            <Wrapper>
+                <div id="co2IntensityChart" className="ag-theme-alpine my-chart" />
+            </Wrapper>
+        </WrapperRow>
+    )
+
+    // const [activeGraph, setActiveGraph] = useState([0])
+    // console.log(activeGraph)
+    const [activeTab, setActiveTab] = useState(0)
 
     return (
         <>
-            <Wrapper>
-                <div id="myNPVChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-            <Wrapper>
-                <div id="myBreakEvenChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
+            {/* <WrapperRow>
+                <Button.Toggle aria-label="graph actions" onChange={setActiveGraph}>
+                    <Button aria-label="kpi graphs">
+                        KPI
+                    </Button>
+                    <Button aria-label="production profiles graphs">
+                        Production profiles
+                    </Button>
+                    <Button aria-label="investment profiles graphs">
+                        Investment profiles
+                    </Button>
+                    <Button aria-label="co2 emissions graphs">
+                        CO2 emissions
+                    </Button>
+                </Button.Toggle>
+            </WrapperRow>
+            {activeGraph[0]
+            && showKPICharts()}
+            {activeGraph[1]
+            && showProductionProfileCharts()}
+            {activeGraph[2]
+            && showInvestmentProfileCharts()}
+            {activeGraph[3]
+            && showCO2EmissionsCharts()} */}
+            <WrapperTabs>
+                <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                    <List>
+                        <Tab>KPI </Tab>
+                        <Tab>Production profiles</Tab>
+                        <Tab>Investment profiles</Tab>
+                        <Tab>CO2 emissions</Tab>
+                    </List>
+                    <Panels>
+                        <StyledTabPanel>
+                            {showKPICharts()}
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            {showProductionProfileCharts()}
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            {showInvestmentProfileCharts()}
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            {showCO2EmissionsCharts()}
+                        </StyledTabPanel>
+                    </Panels>
+                </Tabs>
+            </WrapperTabs>
             <div
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
