@@ -25,13 +25,45 @@ public class TransportService
         var project = _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.ProspVersion = transportDto.ProspVersion;
-        transport.LastChangedDate = DateTimeOffset.Now;
+        transport.LastChangedDate = DateTimeOffset.UtcNow;
         transport.GasExportPipelineLength = transportDto.GasExportPipelineLength;
         transport.OilExportPipelineLength = transportDto.OilExportPipelineLength;
         _context.Transports!.Add(transport);
         _context.SaveChanges();
         SetCaseLink(transport, sourceCaseId, project);
         return _projectService.GetProjectDto(transport.ProjectId);
+    }
+
+    public Transport NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
+    {
+        var transport = TransportAdapter.Convert(transportDto);
+        var project = _projectService.GetProject(transport.ProjectId);
+        transport.Project = project;
+        transport.LastChangedDate = DateTimeOffset.UtcNow;
+        var createdTransport = _context.Transports!.Add(transport);
+        _context.SaveChanges();
+        SetCaseLink(transport, sourceCaseId, project);
+        return createdTransport.Entity;
+    }
+
+    public TransportDto CopyTransport(Guid transportId, Guid sourceCaseId)
+    {
+        var source = GetTransport(transportId);
+        var newTransportDto = TransportDtoAdapter.Convert(source);
+        newTransportDto.Id = Guid.Empty;
+        if (newTransportDto.CostProfile != null)
+        {
+            newTransportDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newTransportDto.CessationCostProfile != null)
+        {
+            newTransportDto.CessationCostProfile.Id = Guid.Empty;
+        }
+
+        var topside = NewCreateTransport(newTransportDto, sourceCaseId);
+        var dto = TransportDtoAdapter.Convert(topside);
+
+        return dto;
     }
 
     private void SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
@@ -108,9 +140,30 @@ public class TransportService
             _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
 
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Transports!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(updatedTransportDto.ProjectId);
+    }
+
+    public TransportDto NewUpdateTransport(TransportDto updatedTransportDto)
+    {
+        var existing = GetTransport(updatedTransportDto.Id);
+        TransportAdapter.ConvertExisting(existing, updatedTransportDto);
+
+        if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)
+        {
+            _context.TransportCostProfile!.Remove(existing.CostProfile);
+        }
+
+        if (updatedTransportDto.CessationCostProfile == null && existing.CessationCostProfile != null)
+        {
+            _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
+        }
+
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
+        var updatedTransport = _context.Transports!.Update(existing);
+        _context.SaveChanges();
+        return TransportDtoAdapter.Convert(updatedTransport.Entity);
     }
 }
