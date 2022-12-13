@@ -40,7 +40,6 @@ display: flex;
 float: left;
 flex-direction: column;
 padding: 20px;
-overflow-x: scroll;
 `
 const WrapperRow = styled.div`
     display: flex;
