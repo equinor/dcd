@@ -26,6 +26,7 @@ export const AgChartsCompareCases = ({
                     fontSize: 24,
                 },
             },
+            column: { axes: { category: { label: { rotation: -20 } } } },
         },
     }
 
