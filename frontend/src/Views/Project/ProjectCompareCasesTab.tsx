@@ -1,16 +1,16 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import styled from "styled-components"
-import React, {
+import {
     useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
 import {
-    Button, Icon, Tabs, Typography,
+    Tabs,
 } from "@equinor/eds-core-react"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { Project } from "../../models/Project"
 import { GetCompareCasesService } from "../../Services/CompareCasesService"
-import { AgChartThemeOverrides } from "ag-charts-community"
+import { AgChartsCompareCases } from "../../Components/AgGrid/AgChartsCompareCases"
 
 interface Props {
     project: Project
@@ -34,15 +34,11 @@ interface TableCompareCase {
     cO2Intensity: number,
 }
 
-const Wrapper = styled.div`
-width: 40%;
-float: left;
-padding: 20px;
-`
 const WrapperTabs = styled.div`
-width: 90%;
+width: 100%;
+display: flex;
 float: left;
-flex-direction: row;
+flex-direction: column;
 padding: 20px;
 overflow-x: scroll;
 `
@@ -286,205 +282,176 @@ function ProjectCompareCasesTab({
 
     const [columnDefs] = useState(columns())
 
-    const chartThemes = useMemo<string[]>(() => ["ag-vivid"], [])
-
-    const genericChart = (column: string, title: string, unit: string, chartName: string, params: any) => {
-        const createChart = {
-            cellRange: {
-                rowStartIndex: 0,
-                rowEndIndex: 100,
-                columns: [
-                    "cases",
-                    column,
-                ],
-            },
-            chartThemeOverrides: {
-                common: {
-                    title: {
-                        enabled: true,
-                        text: title,
-                    },
-                    subtitle: {
-                        enabled: true,
-                        text: unit,
-                        fontSize: 14,
-                    },
-                    legend: { enabled: false },
-                },
-                column: { axes: { category: { label: { rotation: -20 } } } },
-            },
-            unlinkChart: true,
-            chartType: "groupedColumn",
-            chartContainer: document.querySelector(chartName),
-            aggFunc: "sum",
+    const npvChartData = () => {
+        const dataArray: object[] = []
+        if (compareCasesTotals !== undefined) {
+            for (let i = 0; i < project.cases.length; i += 1) {
+                dataArray.push({
+                    cases: project.cases[i].name,
+                    npv: project.cases[i].npv,
+                })
+            }
         }
-        params.api.createRangeChart(createChart)
+        return dataArray
     }
 
-    const onFirstDataRendered = (params: any) => {
-        genericChart("npv", "NPV", "mill USD", "#npvChart", params)
-        genericChart("breakEven", "Break even", "USD/bbl", "#breakEvenChart", params)
-
-        genericChart(
-            "oilProduction",
-            "Oil production",
-            `${project?.physUnit === 0 ? "MSm3" : "mill bbl"}`,
-            "#oilProductionChart",
-            params,
-        )
-        genericChart(
-            "gasProduction",
-            "Gas production",
-            `${project?.physUnit === 0 ? "GSm3" : "Bscf"}`,
-            "#gasProductionChart",
-            params,
-        )
-        genericChart(
-            "totalExportedVolumes",
-            "Total exported volumes",
-            `${project?.physUnit === 0 ? "mill Sm3" : "mill boe"}`,
-            "#totalExportedVolumesChart",
-            params,
-        )
-
-        genericChart(
-            "offshorePlusOnshoreFacilityCosts",
-            "Offshore + Onshore facility costs",
-            `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
-            "#offshorePlusOnshoreFacilityCostsChart",
-            params,
-        )
-        genericChart(
-            "developmentCosts",
-            "Development well costs",
-            `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
-            "#developmentCosts",
-            params,
-        )
-        genericChart(
-            "explorationWellCosts",
-            "Exploration well costs",
-            `${project?.currency === 1 ? "mill NOK" : "mill USD"}`,
-            "#explorationWellCosts",
-            params,
-        )
-
-        genericChart(
-            "totalCO2Emissions",
-            "Total CO2 emissions",
-            "mill tonnes",
-            "#co2EmissionsChart",
-            params,
-        )
-        genericChart(
-            "cO2Intensity",
-            "CO2 intensity",
-            "kg CO2/boe",
-            "#co2IntensityChart",
-            params,
-        )
+    const breakEvenChartData = () => {
+        const dataArray: object[] = []
+        if (compareCasesTotals !== undefined) {
+            for (let i = 0; i < project.cases.length; i += 1) {
+                dataArray.push({
+                    cases: project.cases[i].name,
+                    breakEven: project.cases[i].breakEven,
+                })
+            }
+        }
+        return dataArray
     }
 
-    const showKPICharts = () => (
-        <WrapperRow>
-            <Wrapper>
-                <div id="npvChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-            <Wrapper>
-                <div id="breakEvenChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-        </WrapperRow>
-    )
+    const productionProfilesChartData = () => {
+        const dataArray: object[] = []
+        if (compareCasesTotals !== undefined) {
+            for (let i = 0; i < project.cases.length; i += 1) {
+                dataArray.push({
+                    cases: project.cases[i].name,
+                    oilProduction: compareCasesTotals[i].totalOilProduction,
+                    gasProduction: compareCasesTotals[i].totalGasProduction,
+                    totalExportedVolumes: compareCasesTotals[i].totalExportedVolumes,
+                })
+            }
+        }
+        return dataArray
+    }
 
-    const showProductionProfileCharts = () => (
-        <WrapperRow>
-            <Wrapper>
-                <div id="oilProductionChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-            <Wrapper>
-                <div id="gasProductionChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-            <Wrapper>
-                <div id="totalExportedVolumesChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-        </WrapperRow>
-    )
+    const investmentProfilesChartData = () => {
+        const dataArray: object[] = []
+        if (compareCasesTotals !== undefined) {
+            for (let i = 0; i < project.cases.length; i += 1) {
+                dataArray.push({
+                    cases: project.cases[i].name,
+                    offshorePlusOnshoreFacilityCosts: compareCasesTotals[i].offshorePlusOnshoreFacilityCosts,
+                    developmentCosts: compareCasesTotals[i].developmentWellCosts,
+                    explorationWellCosts: compareCasesTotals[i].explorationWellCosts,
+                })
+            }
+        }
+        return dataArray
+    }
 
-    const showInvestmentProfileCharts = () => (
-        <WrapperRow>
-            <Wrapper>
-                <div id="offshorePlusOnshoreFacilityCostsChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-            <Wrapper>
-                <div id="developmentCosts" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-            <Wrapper>
-                <div id="explorationWellCosts" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-        </WrapperRow>
-    )
+    const totalCO2EmissionsChartData = () => {
+        const dataArray: object[] = []
+        if (compareCasesTotals !== undefined) {
+            for (let i = 0; i < project.cases.length; i += 1) {
+                dataArray.push({
+                    cases: project.cases[i].name,
+                    totalCO2Emissions: compareCasesTotals[i].totalCo2Emissions,
+                })
+            }
+        }
+        return dataArray
+    }
 
-    const showCO2EmissionsCharts = () => (
-        <WrapperRow>
-            <Wrapper>
-                <div id="co2EmissionsChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-            <Wrapper>
-                <div id="co2IntensityChart" className="ag-theme-alpine my-chart" />
-            </Wrapper>
-        </WrapperRow>
-    )
+    const cO2IntensityChartData = () => {
+        const dataArray: object[] = []
+        if (compareCasesTotals !== undefined) {
+            for (let i = 0; i < project.cases.length; i += 1) {
+                dataArray.push({
+                    cases: project.cases[i].name,
+                    cO2Intensity: compareCasesTotals[i].co2Intensity,
+                })
+            }
+        }
+        return dataArray
+    }
 
-    // const [activeGraph, setActiveGraph] = useState([0])
-    // console.log(activeGraph)
     const [activeTab, setActiveTab] = useState(0)
 
     return (
         <>
-            {/* <WrapperRow>
-                <Button.Toggle aria-label="graph actions" onChange={setActiveGraph}>
-                    <Button aria-label="kpi graphs">
-                        KPI
-                    </Button>
-                    <Button aria-label="production profiles graphs">
-                        Production profiles
-                    </Button>
-                    <Button aria-label="investment profiles graphs">
-                        Investment profiles
-                    </Button>
-                    <Button aria-label="co2 emissions graphs">
-                        CO2 emissions
-                    </Button>
-                </Button.Toggle>
-            </WrapperRow>
-            {activeGraph[0]
-            && showKPICharts()}
-            {activeGraph[1]
-            && showProductionProfileCharts()}
-            {activeGraph[2]
-            && showInvestmentProfileCharts()}
-            {activeGraph[3]
-            && showCO2EmissionsCharts()} */}
             <WrapperTabs>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>
-                        <Tab>KPI </Tab>
+                        <Tab>KPIs</Tab>
                         <Tab>Production profiles</Tab>
                         <Tab>Investment profiles</Tab>
                         <Tab>CO2 emissions</Tab>
                     </List>
                     <Panels>
                         <StyledTabPanel>
-                            {showKPICharts()}
+                            <WrapperRow>
+                                <AgChartsCompareCases
+                                    data={npvChartData()}
+                                    chartTitle="NPV"
+                                    barColors={["#005F57"]}
+                                    barProfiles={["npv"]}
+                                    barNames={["NPV"]}
+                                    unit="mill USD"
+                                    width="50%"
+                                    enableLegend={false}
+                                />
+                                <AgChartsCompareCases
+                                    data={breakEvenChartData()}
+                                    chartTitle="Break even"
+                                    barColors={["#00977B"]}
+                                    barProfiles={["breakEven"]}
+                                    barNames={["Break even"]}
+                                    unit="USD/bbl"
+                                    width="50%"
+                                    enableLegend={false}
+                                />
+                            </WrapperRow>
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            {showProductionProfileCharts()}
+                            <AgChartsCompareCases
+                                data={productionProfilesChartData()}
+                                chartTitle="Production profiles"
+                                barColors={["#243746", "#EB0037", "#8C1159"]}
+                                barProfiles={["oilProduction", "gasProduction", "totalExportedVolumes"]}
+                                barNames={[
+                                    "Oil production (MSm3)",
+                                    "Gas production (GSm3)",
+                                    "Total exported volumes (MSm3)",
+                                ]}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            {showInvestmentProfileCharts()}
+                            <AgChartsCompareCases
+                                data={investmentProfilesChartData()}
+                                chartTitle="Investment profiles"
+                                barColors={["#005F57", "#00977B", "#40D38F"]}
+                                barProfiles={["offshorePlusOnshoreFacilityCosts",
+                                    "developmentCosts", "explorationWellCosts"]}
+                                barNames={[
+                                    "Offshore + Onshore facility costs",
+                                    "Development well costs",
+                                    "Exploration well costs",
+                                ]}
+                                unit={`${project?.currency === 1 ? "mill NOK" : "mill USD"}`}
+                            />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            {showCO2EmissionsCharts()}
+                            <WrapperRow>
+                                <AgChartsCompareCases
+                                    data={totalCO2EmissionsChartData()}
+                                    chartTitle="Total CO2 emissions"
+                                    barColors={["#E24973"]}
+                                    barProfiles={["totalCO2Emissions"]}
+                                    barNames={["Total CO2 emissions"]}
+                                    unit="mill tonnes"
+                                    width="50%"
+                                    enableLegend={false}
+                                />
+                                <AgChartsCompareCases
+                                    data={cO2IntensityChartData()}
+                                    chartTitle="CO2 intensity"
+                                    barColors={["#FF92A8"]}
+                                    barProfiles={["cO2Intensity"]}
+                                    barNames={["CO2 intensity"]}
+                                    unit="kg CO2/boe"
+                                    width="50%"
+                                    enableLegend={false}
+                                />
+                            </WrapperRow>
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
@@ -506,9 +473,6 @@ function ProjectCompareCasesTab({
                     rowSelection="multiple"
                     enableRangeSelection
                     enableCharts
-                    popupParent={document.body}
-                    chartThemes={chartThemes}
-                    onFirstDataRendered={onFirstDataRendered}
                 />
             </div>
         </>
