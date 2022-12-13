@@ -9,11 +9,12 @@ interface Props {
     unit?: string
     lineChart?: object
     width?: string
+    height: number
     enableLegend?: boolean
 }
 
 export const AgChartsCompareCases = ({
-    data, chartTitle, barColors, barProfiles, barNames, unit, lineChart, width, enableLegend,
+    data, chartTitle, barColors, barProfiles, barNames, unit, lineChart, width, height, enableLegend,
 }: Props) => {
     const figmaTheme = {
         palette: {
@@ -69,7 +70,7 @@ export const AgChartsCompareCases = ({
     }
 
     return (
-        <div style={{ height: 400, width }}>
+        <div style={{ height, width }}>
             <AgChartsReact
                 options={defaultOptions}
             />
