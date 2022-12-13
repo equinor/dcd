@@ -22,10 +22,19 @@ import { GetGenerateProfileService } from "../../Services/GenerateProfileService
 import { Topside } from "../../models/assets/topside/Topside"
 import { GetTopsideService } from "../../Services/TopsideService"
 import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
+import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
+import { Wrapper, WrapperColumn } from "../Asset/StyledAssetComponents"
 
 const ColumnWrapper = styled.div`
     display: flex;
     flex-direction: column;
+`
+const GraphWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 40px;
 `
 const TopWrapper = styled.div`
     display: flex;
@@ -158,6 +167,24 @@ function CaseCO2Tab({
         setTableYears([startYear, endYear])
     }
 
+    const co2EmissionsChartData = () => {
+        const dataArray = []
+        for (let i = startYear; i <= endYear; i += 1) {
+            dataArray.push({
+                year: i,
+                co2Emissions:
+                    setValueToCorrespondingYear(co2Emissions, i, startYear, caseItem.DG4Date.getFullYear()),
+            })
+        }
+        return dataArray
+    }
+
+    const co2DistributionChartData = [
+        { profile: "Oil profile", value: topside.cO2ShareOilProfile },
+        { profile: "Gas profile", value: topside.cO2ShareGasProfile },
+        { profile: "Water injection", value: topside.cO2ShareWaterInjectionProfile },
+    ]
+
     if (activeTab !== 6) { return null }
 
     return (
@@ -180,6 +207,53 @@ function CaseCO2Tab({
                     </NumberInputField>
                 </RowWrapper>
             </ColumnWrapper>
+            <RowWrapper>
+                <AgChartsTimeseries
+                    data={co2EmissionsChartData()}
+                    chartTitle="CO2 emissions"
+                    barColors={["#243746"]}
+                    barProfiles={["co2Emissions"]}
+                    barNames={["Annual CO2 emissions"]}
+                    unit="MTPA"
+                    width="70%"
+                    height="600"
+                />
+                <WrapperColumn>
+                    <GraphWrapper>
+                        <Typography
+                            style={{
+                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "500", fontSize: "18px", marginBottom: "30px",
+                            }}
+                        >
+                            Average lifetime CO2 intensity
+
+                        </Typography>
+                        <Typography
+                            style={{
+                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "500", fontSize: "31px",
+                            }}
+                        >
+                            3,5
+
+                        </Typography>
+                        <Typography
+                            style={{
+                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "400", fontSize: "18px", color: "#B4B4B4",
+                            }}
+                        >
+                            kg CO2/boe
+
+                        </Typography>
+                    </GraphWrapper>
+                    <AgChartsPie
+                        data={co2DistributionChartData}
+                        chartTitle="CO2 distribution"
+                        barColors={["#243746", "#EB0037", "#A8CED1"]}
+                        height={400}
+                        width="100%"
+                    />
+                </WrapperColumn>
+            </RowWrapper>
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField

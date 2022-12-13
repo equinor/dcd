@@ -4,29 +4,14 @@ interface Props {
     data: any
     chartTitle: string
     barColors: string[]
-    barProfiles: string[]
-    barNames: string[]
     unit?: string
-    lineChart?: object
     width?: string
-    height?: string
+    height: number
+    enableLegend?: boolean
 }
 
-export const setValueToCorrespondingYear = (profile: any, i: number, startYear: number, dg4Year: number) => {
-    if (profile !== undefined && startYear !== undefined) {
-        const profileStartYear: number = Number(profile.startYear) + dg4Year
-        const profileYears: number[] = Array.from(
-            { length: profile.values.length },
-            ((v, x: number) => x + profileStartYear),
-        )
-        const valueYearIndex = profileYears.findIndex((x) => x === i)
-        return profile.values[valueYearIndex] ?? 0
-    }
-    return 0
-}
-
-export const AgChartsTimeseries = ({
-    data, chartTitle, barColors, barProfiles, barNames, unit, lineChart, width, height,
+export const AgChartsPie = ({
+    data, chartTitle, barColors, unit, width, height, enableLegend,
 }: Props) => {
     const figmaTheme = {
         palette: {
@@ -39,11 +24,8 @@ export const AgChartsTimeseries = ({
                     fontSize: 24,
                 },
             },
+            column: { axes: { category: { label: { rotation: -20 } } } },
         },
-    }
-
-    function insertIf(condition: any, ...elements: any) {
-        return condition ? elements : []
     }
 
     const defaultOptions = {
@@ -59,11 +41,22 @@ export const AgChartsTimeseries = ({
         theme: figmaTheme,
         series: [
             {
-                type: "column",
-                xKey: "year",
-                yKeys: barProfiles,
-                yNames: barNames,
-                grouped: true,
+                type: "pie",
+                calloutLabelKey: "profile",
+                angleKey: "value",
+                innerRadiusOffset: -30,
+                innerLabels: [
+                    {
+                        text: "123",
+                        fontSize: 52,
+                    },
+                    {
+                        text: "kg CO2/boe",
+                        fontSize: 14,
+                        margin: 4,
+                        color: "#B4B4B4",
+                    },
+                ],
                 highlightStyle: {
                     fill: "cyan",
                     stroke: "blue",
@@ -75,13 +68,12 @@ export const AgChartsTimeseries = ({
                     },
                 },
             },
-            ...insertIf(lineChart !== undefined, lineChart),
         ],
-        legend: { position: "bottom", spacing: 40 },
+        legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
     }
 
     return (
-        <div style={{ height: height ?? 400, width }}>
+        <div style={{ height, width }}>
             <AgChartsReact
                 options={defaultOptions}
             />
