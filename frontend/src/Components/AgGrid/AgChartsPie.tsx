@@ -44,7 +44,9 @@ export const AgChartsPie = ({
                 type: "pie",
                 calloutLabelKey: "profile",
                 angleKey: "value",
-                innerRadiusOffset: -30,
+                calloutLabel: { enabled: false },
+                innerRadiusOffset: -25,
+                strokes: ["white"],
                 innerLabels: [
                     {
                         text: "123",
