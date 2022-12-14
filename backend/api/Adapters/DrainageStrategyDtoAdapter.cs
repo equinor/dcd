@@ -28,6 +28,7 @@ public static class DrainageStrategyDtoAdapter
             Co2Emissions = Convert(drainageStrategy.Co2Emissions, unit),
             ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit),
             ImportedElectricity = Convert(drainageStrategy.ImportedElectricity, unit),
+            Co2Intensity = Convert(drainageStrategy.Co2Intensity, unit),
         };
         return drainageStrategyDto;
     }
@@ -200,6 +201,21 @@ public static class DrainageStrategyDtoAdapter
                 Id = importedElectricity.Id,
                 StartYear = importedElectricity.StartYear,
                 Values = ConvertUnitValues(importedElectricity.Values, unit, nameof(ImportedElectricity)),
+            };
+        }
+
+        return null;
+    }
+
+    public static Co2IntensityDto? Convert(Co2Intensity? co2Intensity, PhysUnit unit)
+    {
+        if (co2Intensity != null)
+        {
+            return new Co2IntensityDto
+            {
+                Id = co2Intensity.Id,
+                StartYear = co2Intensity.StartYear,
+                Values = ConvertUnitValues(co2Intensity.Values, unit, nameof(Co2Intensity)),
             };
         }
 

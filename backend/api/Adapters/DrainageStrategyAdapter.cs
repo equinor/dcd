@@ -63,6 +63,12 @@ public static class DrainageStrategyAdapter
                 unit, initialCreate);
         }
 
+        if (drainageStrategyDto.Co2Intensity != null)
+        {
+            drainageStrategy.Co2Intensity =
+                Convert(drainageStrategyDto.Co2Intensity, drainageStrategy, unit, initialCreate);
+        }
+
         return drainageStrategy;
     }
 
@@ -141,6 +147,13 @@ public static class DrainageStrategyAdapter
         {
             existing.ImportedElectricity =
                 Convert(drainageStrategyDto.ImportedElectricity, existing, unit, initialCreate);
+        }
+
+        if (drainageStrategyDto.Co2Intensity != null
+            && (existing.Co2Intensity == null ||
+                !existing.Co2Intensity.Values.SequenceEqual(drainageStrategyDto.Co2Intensity.Values)))
+        {
+            existing.Co2Intensity = Convert(drainageStrategyDto.Co2Intensity, existing, unit, initialCreate);
         }
 
         return existing;
@@ -433,6 +446,30 @@ public static class DrainageStrategyAdapter
                 Values = needToConvertValues || initialCreate
                     ? ConvertUnitValues(importedElectricityDto.Values, unit, nameof(ImportedElectricity))
                     : importedElectricityDto.Values,
+            };
+        return convertedTimeSeries;
+    }
+
+    private static Co2Intensity? Convert(Co2IntensityDto? co2IntensityDto, DrainageStrategy drainageStrategy,
+        PhysUnit unit, bool initialCreate)
+    {
+        var needToConvertValues = drainageStrategy?.Co2Emissions?.Values == null;
+        if (co2IntensityDto != null && drainageStrategy?.Co2Emissions?.Values != null &&
+            !drainageStrategy.Co2Emissions.Values.SequenceEqual(co2IntensityDto.Values))
+        {
+            needToConvertValues = true;
+        }
+
+        var convertedTimeSeries = co2IntensityDto == null || drainageStrategy == null
+            ? null
+            : new Co2Intensity
+            {
+                Id = co2IntensityDto.Id,
+                DrainageStrategy = drainageStrategy,
+                StartYear = co2IntensityDto.StartYear,
+                Values = needToConvertValues || initialCreate
+                    ? ConvertUnitValues(co2IntensityDto.Values, unit, nameof(Co2Intensity))
+                    : co2IntensityDto.Values,
             };
         return convertedTimeSeries;
     }

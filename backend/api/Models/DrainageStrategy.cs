@@ -24,6 +24,7 @@ public class DrainageStrategy
     public Co2Emissions? Co2Emissions { get; set; }
     public ProductionProfileNGL? ProductionProfileNGL { get; set; }
     public ImportedElectricity? ImportedElectricity { get; set; }
+    public Co2Intensity? Co2Intensity { get; set; }
 }
 
 public enum GasSolution
@@ -81,6 +82,12 @@ public class ProductionProfileNGL : TimeSeriesVolume
 }
 
 public class ImportedElectricity : TimeSeriesEnergy
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class Co2Intensity : TimeSeriesMass
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
