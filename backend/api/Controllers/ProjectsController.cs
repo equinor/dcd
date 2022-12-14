@@ -1,11 +1,9 @@
 using api.Adapters;
-
-using Api.Authorization;
-
 using api.Dtos;
 using api.Models;
 using api.Services;
 
+using Api.Authorization;
 using Api.Services.FusionIntegration;
 
 using Microsoft.AspNetCore.Authorization;
