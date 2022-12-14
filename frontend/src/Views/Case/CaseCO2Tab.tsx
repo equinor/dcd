@@ -179,6 +179,13 @@ function CaseCO2Tab({
         return dataArray
     }
 
+    const co2EmissionsTotalString = () => {
+        if (co2Emissions) {
+            return (Math.round(co2Emissions.sum! * 1000) / 1000).toString()
+        }
+        return "0"
+    }
+
     const co2DistributionChartData = [
         { profile: "Oil profile", value: topside.cO2ShareOilProfile },
         { profile: "Gas profile", value: topside.cO2ShareGasProfile },
@@ -251,6 +258,7 @@ function CaseCO2Tab({
                         barColors={["#243746", "#EB0037", "#A8CED1"]}
                         height={400}
                         width="100%"
+                        totalCo2Emission={co2EmissionsTotalString()}
                     />
                 </WrapperColumn>
             </RowWrapper>

@@ -8,10 +8,11 @@ interface Props {
     width?: string
     height: number
     enableLegend?: boolean
+    totalCo2Emission: string | undefined
 }
 
 export const AgChartsPie = ({
-    data, chartTitle, barColors, unit, width, height, enableLegend,
+    data, chartTitle, barColors, unit, width, height, enableLegend, totalCo2Emission,
 }: Props) => {
     const figmaTheme = {
         palette: {
@@ -49,11 +50,11 @@ export const AgChartsPie = ({
                 strokes: ["white"],
                 innerLabels: [
                     {
-                        text: "123",
-                        fontSize: 52,
+                        text: totalCo2Emission ?? "0",
+                        fontSize: 42,
                     },
                     {
-                        text: "kg CO2/boe",
+                        text: "million tonnes",
                         fontSize: 14,
                         margin: 4,
                         color: "#B4B4B4",
