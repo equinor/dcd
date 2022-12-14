@@ -96,9 +96,9 @@ public class ProjectsController : ControllerBase
         return _projectService.UpdateProject(projectDto);
     }
 
-    [HttpPut(Name = "SetReferenceCase")]
-    public ProjectDto SetReferenceCase([FromBody] Guid projectId, Guid caseId)
+    [HttpPut("ReferenceCase", Name = "SetReferenceCase")]
+    public ProjectDto SetReferenceCase([FromBody] ProjectDto projectDto)
     {
-        return _projectService.SetReferenceCase(projectId, caseId);
+        return _projectService.SetReferenceCase(projectDto);
     }
 }

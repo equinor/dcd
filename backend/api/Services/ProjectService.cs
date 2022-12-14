@@ -319,15 +319,15 @@ public class ProjectService
         throw new NullReferenceException();
     }
 
-    public ProjectDto SetReferenceCase(Guid projectId, Guid caseId)
+    public ProjectDto SetReferenceCase(ProjectDto projectDto)
     {
-        if (projectId == Guid.Empty)
+        if (projectDto.ProjectId == Guid.Empty)
         {
-            throw new NotFoundInDBException($"Project {projectId} not found");
+            throw new NotFoundInDBException($"Project {projectDto.ProjectId} not found");
         }
 
-        var project = GetProjectWithoutAssets(projectId);
-        project.ReferenceCaseId = caseId;
+        var project = GetProjectWithoutAssets(projectDto.ProjectId);
+        project.ReferenceCaseId = projectDto.ReferenceCaseId;
 
         _context.Projects?.Update(project);
         _context.SaveChangesAsync();

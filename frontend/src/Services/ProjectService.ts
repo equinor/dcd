@@ -2,7 +2,7 @@ import { Project } from "../models/Project"
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
-import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+import { GetToken, LoginAccessTokenKey } from "../Utils/common"
 
 export class __ProjectService extends __BaseService {
     async getProjects() {
@@ -33,7 +33,13 @@ export class __ProjectService extends __BaseService {
         return Project.fromJSON(res)
     }
 
-    public async setReferenceCase(body:)
+    public async setReferenceCase(body:Components.Schemas.ProjectDto): Promise<Project> {
+        const res: Components.Schemas.ProjectDto = await this.put(
+            "/ReferenceCase",
+            { body },
+        )
+        return Project.fromJSON(res)
+    }
 }
 
 export async function GetProjectService() {
