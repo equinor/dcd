@@ -183,9 +183,18 @@ function CaseCO2Tab({
                 year: i,
                 co2Emissions:
                     setValueToCorrespondingYear(co2Emissions, i, startYear, caseItem.DG4Date.getFullYear()),
+                co2Intensity:
+                    setValueToCorrespondingYear(co2Intensity, i, startYear, caseItem.DG4Date.getFullYear()),
             })
         }
         return dataArray
+    }
+
+    const co2IntensityLine = {
+        type: "line",
+        xKey: "year",
+        yKey: "co2Intensity",
+        yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
     const co2EmissionsTotalString = () => {
@@ -233,13 +242,13 @@ function CaseCO2Tab({
             <RowWrapper>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
-                    chartTitle="CO2 emissions"
-                    barColors={["#243746"]}
+                    chartTitle="Annual CO2 emissions"
+                    barColors={["#243746", "red"]}
                     barProfiles={["co2Emissions"]}
-                    barNames={["Annual CO2 emissions"]}
-                    unit="MTPA"
+                    barNames={["Annual CO2 emissions (million tonnes)"]}
                     width="70%"
                     height="600"
+                    lineChart={co2IntensityLine}
                 />
                 <WrapperColumn>
                     <GraphWrapper>
