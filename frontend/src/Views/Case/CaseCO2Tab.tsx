@@ -195,6 +195,13 @@ function CaseCO2Tab({
         return "0"
     }
 
+    const co2IntensityTotal = () => {
+        if (co2Intensity) {
+            return Math.round(co2Intensity.sum! * 10) / 10
+        }
+        return "0"
+    }
+
     const co2DistributionChartData = [
         { profile: "Oil profile", value: topside.cO2ShareOilProfile },
         { profile: "Gas profile", value: topside.cO2ShareGasProfile },
@@ -249,7 +256,7 @@ function CaseCO2Tab({
                                 display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "500", fontSize: "31px",
                             }}
                         >
-                            3,5
+                            {co2IntensityTotal()}
 
                         </Typography>
                         <Typography
