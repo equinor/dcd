@@ -27,17 +27,27 @@ public class GenerateCo2IntensityProfile
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var totalExportedVolumes = GetTotalExportedVolumes(project,drainageStrategy);
-        var co2EmissionsProfile = GetCo2EmissionsProfile(project, drainageStrategy, caseId);
+        // var co2EmissionsProfile = GetCo2EmissionsProfile(project, drainageStrategy, caseId);
         var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
 
         // Co2emissions / totalExportedVolumes. iterate each value and divide
+        var co2IntensityValues = new List<double>();
+        
+        if (generateCo2EmissionsProfile.StartYear == totalExportedVolumes.StartYear
+            && generateCo2EmissionsProfile.Values.Length == totalExportedVolumes.Values.Length) 
+        {
+            for (var i = 0; i < generateCo2EmissionsProfile.Values.Length; i++)
+            {
+                co2IntensityValues[i] = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i];
+            }
+        }
 
-        var totalProfile =
-            TimeSeriesCost.MergeCostProfiles(totalExportedVolumes, co2EmissionsProfile); // oil+gas. see comparecases
+        // var totalProfile =
+        //     TimeSeriesCost.MergeCostProfiles(totalExportedVolumes, co2EmissionsProfile); // oil+gas. see comparecases
         var co2Intensity = new Co2Intensity
         {
-            StartYear = totalProfile.StartYear,
-            Values = totalProfile.Values,
+            StartYear = generateCo2EmissionsProfile.StartYear,
+            Values = co2IntensityValues.ToArray(),
         };
 
         var dto = DrainageStrategyDtoAdapter.Convert(co2Intensity, project.PhysicalUnit);
@@ -82,8 +92,8 @@ public class GenerateCo2IntensityProfile
         return gas;
     }
 
-    private static TimeSeries<double> GetCo2EmissionsProfile(Project project, DrainageStrategy drainageStrategy, Guid caseId)
-    {
-        // var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
-    }
+    // private static TimeSeries<double> GetCo2EmissionsProfile(Project project, DrainageStrategy drainageStrategy, Guid caseId)
+    // {
+    //     // var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
+    // }
 }
