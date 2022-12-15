@@ -66,7 +66,7 @@ export const AgChartsTimeseries = ({
                     item: {
                         fill: undefined,
                         stroke: undefined,
-                        strokeWidth: 4,
+                        strokeWidth: 1,
                     },
                     series: {
                         enabled: true,
