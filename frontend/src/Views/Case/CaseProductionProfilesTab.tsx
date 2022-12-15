@@ -422,14 +422,17 @@ function CaseProductionProfilesTab({
                     "Water production (MSm3)",
                 ]}
             />
-            <AgChartsTimeseries
-                data={injectionProfilesChartData()}
-                chartTitle="Injection profiles"
-                barColors={["#A8CED1"]}
-                barProfiles={["waterInjection"]}
-                barNames={["Water injection"]}
-                unit="MSm3"
-            />
+            {waterInjection !== undefined
+                && (
+                    <AgChartsTimeseries
+                        data={injectionProfilesChartData()}
+                        chartTitle="Injection profiles"
+                        barColors={["#A8CED1"]}
+                        barProfiles={["waterInjection"]}
+                        barNames={["Water injection"]}
+                        unit="MSm3"
+                    />
+                )}
             <CaseTabTable
                 caseItem={caseItem}
                 project={project}
