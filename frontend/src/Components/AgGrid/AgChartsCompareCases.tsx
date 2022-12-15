@@ -54,9 +54,11 @@ export const AgChartsCompareCases = ({
                 yNames: barNames,
                 grouped: true,
                 highlightStyle: {
-                    fill: "cyan",
-                    stroke: "blue",
-                    strokeWidth: 4,
+                    item: {
+                        fill: undefined,
+                        stroke: undefined,
+                        strokeWidth: 4,
+                    },
                     series: {
                         enabled: true,
                         dimOpacity: 0.2,
