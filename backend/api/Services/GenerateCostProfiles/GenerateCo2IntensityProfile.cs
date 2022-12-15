@@ -27,10 +27,8 @@ public class GenerateCo2IntensityProfile
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var totalExportedVolumes = GetTotalExportedVolumes(project,drainageStrategy);
-        // var co2EmissionsProfile = GetCo2EmissionsProfile(project, drainageStrategy, caseId);
         var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
 
-        // Co2emissions / totalExportedVolumes. iterate each value and divide
         var co2IntensityValues = new List<double>();
         
         if (generateCo2EmissionsProfile.StartYear == totalExportedVolumes.StartYear
@@ -40,12 +38,11 @@ public class GenerateCo2IntensityProfile
             var boeConversionFactor = 6.29;
             for (var i = 0; i < generateCo2EmissionsProfile.Values.Length; i++)
             {
-                co2IntensityValues.Add((generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i]) / boeConversionFactor * tonnesToKgFactor);
+                var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i];
+                co2IntensityValues.Add(dividedProfiles / generateCo2EmissionsProfile.Values.Length / boeConversionFactor * tonnesToKgFactor);
             }
         }
 
-        // var totalProfile =
-        //     TimeSeriesCost.MergeCostProfiles(totalExportedVolumes, co2EmissionsProfile); // oil+gas. see comparecases
         var co2Intensity = new Co2Intensity
         {
             StartYear = generateCo2EmissionsProfile.StartYear,
@@ -73,7 +70,8 @@ public class GenerateCo2IntensityProfile
 
     private static TimeSeries<double> GetOilProfile(Project project, DrainageStrategy drainageStrategy)
     {
-        var oilValues = drainageStrategy.ProductionProfileOil?.Values.Select(v => v / 1E6).ToArray() ?? Array.Empty<double>();
+        var million = 1E6;
+        var oilValues = drainageStrategy.ProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? Array.Empty<double>();
         var oil = new TimeSeries<double>
         {
             Values = oilValues,
@@ -85,7 +83,8 @@ public class GenerateCo2IntensityProfile
     private static TimeSeries<double> GetGasProfile(Project project, DrainageStrategy drainageStrategy)
     {
         var oilEquivalentFactor = 5.61;
-        var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / 1E9 / oilEquivalentFactor ).ToArray() ?? Array.Empty<double>();
+        var billion = 1E9;
+        var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
         var gas = new TimeSeries<double>
         {
             Values = gasValues,
