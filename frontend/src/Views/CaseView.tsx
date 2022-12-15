@@ -1,26 +1,23 @@
 /* eslint-disable camelcase */
 import {
-    Button,
-    Icon,
-    Menu,
-    Progress,
-    Tabs,
-    Typography,
+    Button, Icon, Menu, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
-import {
-    useEffect,
-    useState,
-} from "react"
+import { useEffect, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
-    add, delete_to_trash, edit, library_add, more_vertical,
+    add,
+    bookmark_filled,
+    bookmark_outlined,
+    delete_to_trash,
+    edit,
+    library_add,
+    more_vertical,
 } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
-import CaseAsset from "../Components/Case/CaseAsset"
 import { ProjectPath, unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
@@ -273,6 +270,21 @@ const CaseView = () => {
         )
     }
 
+    const setCaseAsReference = async () => {
+        try {
+            const projectDto = Project.Copy(project)
+            if (projectDto.referenceCaseId === caseItem.id) {
+                projectDto.referenceCaseId = EMPTY_GUID
+            } else {
+                projectDto.referenceCaseId = caseItem.id
+            }
+            const newProject = await (await GetProjectService()).setReferenceCase(projectDto)
+            setProject(newProject)
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
     const handleSave = async () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {}
 
@@ -426,6 +438,27 @@ const CaseView = () => {
                             Delete
                         </Typography>
                     </Menu.Item>
+                    {project.referenceCaseId === caseItem.id
+                        ? (
+                            <Menu.Item
+                                onClick={setCaseAsReference}
+                            >
+                                <Icon data={bookmark_outlined} size={16} />
+                                <Typography group="navigation" variant="menu_title" as="span">
+                                    Remove as reference case
+                                </Typography>
+                            </Menu.Item>
+                        )
+                        : (
+                            <Menu.Item
+                                onClick={setCaseAsReference}
+                            >
+                                <Icon data={bookmark_filled} size={16} />
+                                <Typography group="navigation" variant="menu_title" as="span">
+                                    Set as reference case
+                                </Typography>
+                            </Menu.Item>
+                        )}
                 </Menu>
             </HeaderWrapper>
             <CaseViewDiv>

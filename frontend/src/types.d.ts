@@ -389,6 +389,7 @@ declare namespace Components {
             name?: string | null;
             commonLibraryId?: string; // uuid
             fusionProjectId?: string; // uuid
+            referenceCaseId?: string; // uuid
             commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
@@ -1359,6 +1360,18 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.WellProjectDto;
         namespace Responses {
             export type $200 = Components.Schemas.WellProjectDto;
+        }
+    }
+    namespace SetReferenceCase {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        export type RequestBody = string; // uuid
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateCase {
