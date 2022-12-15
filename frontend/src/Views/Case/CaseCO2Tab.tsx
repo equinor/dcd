@@ -25,6 +25,7 @@ import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
 import { Wrapper, WrapperColumn } from "../Asset/StyledAssetComponents"
+import { Co2Intensity } from "../../models/assets/drainagestrategy/Co2Intensity"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -92,6 +93,7 @@ function CaseCO2Tab({
     activeTab,
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
+    const [co2Intensity, setCo2Intensity] = useState<Co2Intensity>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -101,11 +103,13 @@ function CaseCO2Tab({
         (async () => {
             try {
                 if (activeTab === 6) {
-                    const co2 = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
-                    setCo2Emissions(await co2)
+                    const co2E = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
+                    setCo2Emissions(await co2E)
+                    setCo2Intensity(await co2I)
 
                     SetTableYearsFromProfiles(
-                        [await co2],
+                        [await co2E, await co2I],
                         caseItem.DG4Date.getFullYear(),
                         setStartYear,
                         setEndYear,
@@ -160,6 +164,11 @@ function CaseCO2Tab({
             profileName: "Annual CO2 emissions",
             unit: `${project?.physUnit === 0 ? "MTPA" : "MTPA"}`,
             profile: co2Emissions,
+        },
+        {
+            profileName: "Year-by-year CO2 intensity",
+            unit: `${project?.physUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+            profile: co2Intensity,
         },
     ]
 

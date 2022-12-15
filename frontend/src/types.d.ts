@@ -128,6 +128,12 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
+        export interface Co2IntensityDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
         export interface CommonLibraryProjectDto {
             id?: string; // uuid
             name?: string | null;
@@ -188,6 +194,7 @@ declare namespace Components {
             co2Emissions?: Co2EmissionsDto;
             productionProfileNGL?: ProductionProfileNGLDto;
             importedElectricity?: ImportedElectricityDto;
+            co2Intensity?: Co2IntensityDto;
             hasChanges?: boolean;
         }
         export interface DrillingScheduleDto {

@@ -31,6 +31,7 @@ public class GenerateProfileController : ControllerBase
     private readonly GenerateNetSaleGasProfile _generateNetSaleGasProfile;
     private readonly GenerateOpexCostProfile _generateOpexCostProfile;
     private readonly GenerateStudyCostProfile _generateStudyCostProfile;
+    private readonly GenerateCo2IntensityProfile _generateCo2IntensityProfile;
 
     public GenerateProfileController(IServiceProvider serviceProvider)
     {
@@ -42,6 +43,7 @@ public class GenerateProfileController : ControllerBase
         _generateNetSaleGasProfile = serviceProvider.GetRequiredService<GenerateNetSaleGasProfile>();
         _generateFuelFlaringLossessProfile = serviceProvider.GetRequiredService<GenerateFuelFlaringLossesProfile>();
         _generateImportedElectricityProfile = serviceProvider.GetRequiredService<GenerateImportedElectricityProfile>();
+        _generateCo2IntensityProfile = serviceProvider.GetRequiredService<GenerateCo2IntensityProfile>();
     }
 
     [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
@@ -93,5 +95,11 @@ public class GenerateProfileController : ControllerBase
     public ImportedElectricityDto GenerateImportedElectricity(Guid caseId)
     {
         return _generateImportedElectricityProfile.Generate(caseId);
+    }
+
+    [HttpPost("{caseId}/generateCo2Intensity", Name = "GenerateCo2Intensity")]
+    public Co2IntensityDto GenerateCo2Intensity(Guid caseId)
+    {
+        return _generateCo2IntensityProfile.Generate(caseId);
     }
 }

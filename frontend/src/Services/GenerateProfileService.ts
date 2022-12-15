@@ -7,6 +7,7 @@ import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
 import { ImportedElectricity } from "../models/assets/drainagestrategy/ImportedElectricity"
 import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
 import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
+import { Co2Intensity } from "../models/assets/drainagestrategy/Co2Intensity"
 
 export class __GenerateProfileService extends __BaseService {
     async generateGAndGAdminCost(id: string) {
@@ -55,6 +56,12 @@ export class __GenerateProfileService extends __BaseService {
         // eslint-disable-next-line max-len
         const profile:Components.Schemas.FuelFlaringAndLossesDto = await this.post < Components.Schemas.FuelFlaringAndLossesDto>(`/${id}/generateFuelFlaringLosses`)
         return FuelFlaringAndLosses.fromJson(profile)
+    }
+
+    async generateCo2IntensityProfile(id:string) {
+        // eslint-disable-next-line max-len
+        const profile:Components.Schemas.Co2IntensityDto = await this.post < Components.Schemas.Co2IntensityDto>(`/${id}/generateCo2Intensity`)
+        return Co2Intensity.fromJson(profile)
     }
 }
 
