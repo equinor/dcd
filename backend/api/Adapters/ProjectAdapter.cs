@@ -13,6 +13,7 @@ public static class ProjectAdapter
             CommonLibraryId = projectDto.CommonLibraryId,
             CommonLibraryName = projectDto.CommonLibraryName,
             FusionProjectId = projectDto.FusionProjectId,
+            ReferenceCaseId = projectDto.ReferenceCaseId,
             Description = projectDto.Description,
             Country = projectDto.Country,
             ProjectCategory = projectDto.ProjectCategory,
@@ -21,15 +22,17 @@ public static class ProjectAdapter
             PhysicalUnit = projectDto.PhysUnit,
             Id = projectDto.ProjectId,
             SharepointSiteUrl = projectDto.SharepointSiteUrl,
-            ExplorationOperationalWellCosts = ExplorationOperationalWellCostsAdapter.Convert(projectDto.ExplorationOperationalWellCosts),
-            DevelopmentOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(projectDto.DevelopmentOperationalWellCosts),
+            ExplorationOperationalWellCosts =
+                ExplorationOperationalWellCostsAdapter.Convert(projectDto.ExplorationOperationalWellCosts),
+            DevelopmentOperationalWellCosts =
+                DevelopmentOperationalWellCostsAdapter.Convert(projectDto.DevelopmentOperationalWellCosts),
             CO2RemovedFromGas = projectDto.CO2RemovedFromGas,
             CO2EmissionFromFuelGas = projectDto.CO2EmissionFromFuelGas,
             FlaredGasPerProducedVolume = projectDto.FlaredGasPerProducedVolume,
             CO2EmissionsFromFlaredGas = projectDto.CO2EmissionsFromFlaredGas,
             CO2Vented = projectDto.CO2Vented,
             DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig,
-            AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays
+            AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays,
         };
 
         return project;
