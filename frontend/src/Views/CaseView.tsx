@@ -282,7 +282,6 @@ const CaseView = () => {
         || !wellProject || !surf || !topside
         || !substructure || !transport
         || !explorationWells || !wellProjectWells) {
-            console.log("isLoading:", isLoading)
         return (
             <>
                 <Progress.Circular size={16} color="primary" />
