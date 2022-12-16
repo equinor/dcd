@@ -233,6 +233,26 @@ const CaseView = () => {
 
             setUpdateFromServer(false)
             setIsLoading(false)
+        } else if (project) {
+            const caseResult = project.cases.find((o) => o.id === caseId)
+
+            const surfResult = project?.surfs.find((sur) => sur.id === caseResult?.surfLink)
+            setOriginalSurf(surfResult)
+            setSurf(surfResult)
+
+            const topsideResult = project?.topsides.find((top) => top.id === caseResult?.topsideLink)
+            setOriginalTopside(topsideResult)
+            setTopside(topsideResult)
+
+            const substructureResult = project?.substructures.find((sub) => sub.id === caseResult?.substructureLink)
+            setOriginalSubstructure(substructureResult)
+            setSubstructure(substructureResult)
+
+            const transportResult = project?.transports.find((tran) => tran.id === caseResult?.transportLink)
+            setOriginalTransport(transportResult)
+            setTransport(transportResult)
+
+            setWells(project.wells)
         }
     }, [project])
 
@@ -265,6 +285,7 @@ const CaseView = () => {
         || !wellProject || !surf || !topside
         || !substructure || !transport
         || !explorationWells || !wellProjectWells) {
+            console.log("isLoading:", isLoading)
         return (
             <>
                 <Progress.Circular size={16} color="primary" />
