@@ -33,6 +33,9 @@ export class __BaseService {
             if (error.response.status === 403) {
                 window.location.href = "/apps/conceptapp/403"
             }
+            if (error.response.status === 500) {
+                window.location.href = "/apps/conceptapp/500"
+            }
         })
     }
 

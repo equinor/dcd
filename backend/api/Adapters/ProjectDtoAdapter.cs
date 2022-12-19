@@ -101,6 +101,7 @@ public static class ProjectDtoAdapter
             CommonLibraryId = project.CommonLibraryId,
             CommonLibraryName = project.CommonLibraryName,
             FusionProjectId = project.FusionProjectId,
+            ReferenceCaseId = project.ReferenceCaseId,
             Description = project.Description,
             Country = project.Country,
             CreateDate = project.CreateDate,
@@ -108,8 +109,10 @@ public static class ProjectDtoAdapter
             ProjectPhase = project.ProjectPhase,
             Currency = project.Currency,
             PhysUnit = project.PhysicalUnit,
-            ExplorationOperationalWellCosts = ExplorationOperationalWellCostsDtoAdapter.Convert(project.ExplorationOperationalWellCosts),
-            DevelopmentOperationalWellCosts = DevelopmentOperationalWellCostsDtoAdapter.Convert(project.DevelopmentOperationalWellCosts),
+            ExplorationOperationalWellCosts =
+                ExplorationOperationalWellCostsDtoAdapter.Convert(project.ExplorationOperationalWellCosts),
+            DevelopmentOperationalWellCosts =
+                DevelopmentOperationalWellCostsDtoAdapter.Convert(project.DevelopmentOperationalWellCosts),
             Cases = new List<CaseDto>(),
             Wells = new List<WellDto>(),
             SharepointSiteUrl = project.SharepointSiteUrl,
@@ -119,7 +122,7 @@ public static class ProjectDtoAdapter
             CO2EmissionsFromFlaredGas = project.CO2EmissionsFromFlaredGas,
             CO2Vented = project.CO2Vented,
             DailyEmissionFromDrillingRig = project.DailyEmissionFromDrillingRig,
-            AverageDevelopmentDrillingDays = project.AverageDevelopmentDrillingDays
+            AverageDevelopmentDrillingDays = project.AverageDevelopmentDrillingDays,
         };
     }
 }

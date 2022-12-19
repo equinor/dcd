@@ -1,26 +1,23 @@
 /* eslint-disable camelcase */
 import {
-    Button,
-    Icon,
-    Menu,
-    Progress,
-    Tabs,
-    Typography,
+    Button, Icon, Menu, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
-import {
-    useEffect,
-    useState,
-} from "react"
+import { useEffect, useState } from "react"
 import { useHistory, useLocation, useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
-    add, delete_to_trash, edit, library_add, more_vertical,
+    add,
+    bookmark_filled,
+    bookmark_outlined,
+    delete_to_trash,
+    edit,
+    library_add,
+    more_vertical,
 } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
-import CaseAsset from "../Components/Case/CaseAsset"
 import { ProjectPath, unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
@@ -43,6 +40,8 @@ import { Well } from "../models/Well"
 import { WellProjectWell } from "../models/WellProjectWell"
 import { ExplorationWell } from "../models/ExplorationWell"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
+import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
+import { EMPTY_GUID } from "../Utils/constants"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -57,16 +56,11 @@ const PageTitle = styled(Typography)`
     padding-left: 30px;
 `
 
-const InvisibleButton = styled(Button)`
-    border: 1px solid #007079;
-
-`
-
 const TransparentButton = styled(Button)`
     color: #007079;
     background-color: white;
     border: 1px solid #007079;
-
+    margin-left: 1rem;
 `
 
 const DividerLine = styled.div`
@@ -132,9 +126,21 @@ const CaseView = () => {
     const [substructure, setSubstructure] = useState<Substructure>()
     const [transport, setTransport] = useState<Transport>()
 
+    const [originalCase, setOriginalCase] = useState<Case>()
+    const [originalDrainageStrategy, setOriginalDrainageStrategy] = useState<DrainageStrategy>()
+    const [originalWellProject, setOriginalWellProject] = useState<WellProject>()
+    const [originalExploration, setOriginalExploration] = useState<Exploration>()
+    const [originalSurf, setOriginalSurf] = useState<Surf>()
+    const [originalSubstructure, setOriginalSubstructure] = useState<Substructure>()
+    const [originalTopside, setOriginalTopside] = useState<Topside>()
+    const [originalTransport, setOriginalTransport] = useState<Transport>()
+
     const [wells, setWells] = useState<Well[]>()
     const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>()
     const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
+
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<WellProjectWell[]>()
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<ExplorationWell[]>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
@@ -150,10 +156,13 @@ const CaseView = () => {
     const location = useLocation()
 
     const [isLoading, setIsLoading] = useState<boolean>()
+    const [isSaving, setIsSaving] = useState<boolean>()
+    const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
 
     useEffect(() => {
         (async () => {
             try {
+                setUpdateFromServer(true)
                 setIsLoading(true)
                 const projectId = unwrapProjectId(currentProject?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
@@ -165,7 +174,7 @@ const CaseView = () => {
     }, [currentProject?.externalId, caseId, fusionContextId])
 
     useEffect(() => {
-        if (project) {
+        if (project && updateFromServer) {
             const caseResult = project.cases.find((o) => o.id === caseId)
             if (!caseResult) {
                 if (location.pathname.indexOf("/case") > -1) {
@@ -173,25 +182,74 @@ const CaseView = () => {
                     history.push(projectUrl)
                 }
             }
+            setOriginalCase(caseResult)
             setCase(caseResult)
+
+            const drainageStrategyResult = project?.drainageStrategies
+                .find((drain) => drain.id === caseResult?.drainageStrategyLink)
+            setOriginalDrainageStrategy(drainageStrategyResult)
             setDrainageStrategy(
-                project?.drainageStrategies.find((drain) => drain.id === caseResult?.drainageStrategyLink),
+                drainageStrategyResult,
             )
+
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
+            setOriginalExploration(explorationResult)
             setExploration(explorationResult)
+
             const wellProjectResult = project
                 ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
+            setOriginalWellProject(wellProjectResult)
             setWellProject(wellProjectResult)
-            setSurf(project?.surfs.find((sur) => sur.id === caseResult?.surfLink))
-            setTopside(project?.topsides.find((top) => top.id === caseResult?.topsideLink))
-            setSubstructure(project?.substructures.find((sub) => sub.id === caseResult?.substructureLink))
-            setTransport(project?.transports.find((tran) => tran.id === caseResult?.transportLink))
+
+            const surfResult = project?.surfs.find((sur) => sur.id === caseResult?.surfLink)
+            setOriginalSurf(surfResult)
+            setSurf(surfResult)
+
+            const topsideResult = project?.topsides.find((top) => top.id === caseResult?.topsideLink)
+            setOriginalTopside(topsideResult)
+            setTopside(topsideResult)
+
+            const substructureResult = project?.substructures.find((sub) => sub.id === caseResult?.substructureLink)
+            setOriginalSubstructure(substructureResult)
+            setSubstructure(substructureResult)
+
+            const transportResult = project?.transports.find((tran) => tran.id === caseResult?.transportLink)
+            setOriginalTransport(transportResult)
+            setTransport(transportResult)
 
             setWells(project.wells)
+
+            const wellProjectWellsResult = structuredClone(wellProjectResult?.wellProjectWells)
             setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
+            setOriginalWellProjectWells(wellProjectWellsResult ?? [])
+
+            const explorationWellsResult = structuredClone(explorationResult?.explorationWells)
             setExplorationWells(explorationResult?.explorationWells ?? [])
+            setOriginalExplorationWells(explorationWellsResult ?? [])
+
+            setUpdateFromServer(false)
             setIsLoading(false)
+        } else if (project) {
+            const caseResult = project.cases.find((o) => o.id === caseId)
+
+            const surfResult = project.surfs.find((sur) => sur.id === caseResult?.surfLink)
+            setOriginalSurf(surfResult)
+            setSurf(surfResult)
+
+            const topsideResult = project.topsides.find((top) => top.id === caseResult?.topsideLink)
+            setOriginalTopside(topsideResult)
+            setTopside(topsideResult)
+
+            const substructureResult = project.substructures.find((sub) => sub.id === caseResult?.substructureLink)
+            setOriginalSubstructure(substructureResult)
+            setSubstructure(substructureResult)
+
+            const transportResult = project.transports.find((tran) => tran.id === caseResult?.transportLink)
+            setOriginalTransport(transportResult)
+            setTransport(transportResult)
+
+            setWells(project.wells)
         }
     }, [project])
 
@@ -232,6 +290,106 @@ const CaseView = () => {
         )
     }
 
+    const setCaseAsReference = async () => {
+        try {
+            const projectDto = Project.Copy(project)
+            if (projectDto.referenceCaseId === caseItem.id) {
+                projectDto.referenceCaseId = EMPTY_GUID
+            } else {
+                projectDto.referenceCaseId = caseItem.id
+            }
+            const newProject = await (await GetProjectService()).setReferenceCase(projectDto)
+            setProject(newProject)
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
+    const handleSave = async () => {
+        const dto: Components.Schemas.CaseWithAssetsWrapperDto = {}
+
+        dto.caseDto = caseItem
+        if (!(JSON.stringify(caseItem) === JSON.stringify(originalCase))) {
+            dto.caseDto.hasChanges = true
+        }
+
+        dto.drainageStrategyDto = drainageStrategy
+        if (!(JSON.stringify(drainageStrategy) === JSON.stringify(originalDrainageStrategy))) {
+            dto.drainageStrategyDto.hasChanges = true
+        }
+
+        dto.wellProjectDto = wellProject
+        if (!(JSON.stringify(wellProject) === JSON.stringify(originalWellProject))) {
+            dto.wellProjectDto.hasChanges = true
+        }
+
+        dto.explorationDto = exploration
+        if (!(JSON.stringify(exploration) === JSON.stringify(originalExploration))) {
+            dto.explorationDto.hasChanges = true
+        }
+
+        dto.surfDto = surf
+        if (!(JSON.stringify(surf) === JSON.stringify(originalSurf))) {
+            dto.surfDto.hasChanges = true
+        }
+
+        dto.substructureDto = substructure
+        if (!(JSON.stringify(substructure) === JSON.stringify(originalSubstructure))) {
+            dto.substructureDto.hasChanges = true
+        }
+
+        dto.transportDto = transport
+        if (!(JSON.stringify(transport) === JSON.stringify(originalTransport))) {
+            dto.transportDto.hasChanges = true
+        }
+
+        dto.topsideDto = topside
+        if (!(JSON.stringify(topside) === JSON.stringify(originalTopside))) {
+            dto.topsideDto.hasChanges = true
+        }
+
+        dto.explorationWellDto = explorationWells
+        if (dto.explorationWellDto?.length > 0) {
+            dto.explorationWellDto.forEach((expWellDto, index) => {
+                if (expWellDto.drillingSchedule?.id !== EMPTY_GUID) {
+                    const originalExpWell = originalExplorationWells
+                        ?.find((oew) => oew.explorationId === expWellDto.explorationId
+                            && oew.wellId === expWellDto.wellId)
+
+                    if (!(JSON.stringify(expWellDto) === JSON.stringify(originalExpWell))) {
+                        dto.explorationWellDto![index].hasChanges = true
+                    }
+                }
+            })
+        }
+
+        dto.wellProjectWellDtos = wellProjectWells
+        if (dto.wellProjectWellDtos?.length > 0) {
+            dto.wellProjectWellDtos.forEach((wpWellDto, index: number) => {
+                if (wpWellDto.drillingSchedule?.id !== EMPTY_GUID) {
+                    const originalWpWell = originalWellProjectWells
+                        ?.find((owpw) => owpw.wellProjectId === wpWellDto.wellProjectId
+                            && owpw.wellId === wpWellDto.wellId)
+
+                    if (!(JSON.stringify(wpWellDto) === JSON.stringify(originalWpWell))) {
+                        dto.wellProjectWellDtos![index].hasChanges = true
+                    }
+                }
+            })
+        }
+
+        setIsSaving(true)
+        setUpdateFromServer(true)
+        try {
+            const result = await (await GetCaseWithAssetsService()).update(dto)
+            setProject(result)
+            setIsSaving(false)
+        } catch (e) {
+            setIsSaving(false)
+            console.error("Error when saving case and assets: ", e)
+        }
+    }
+
     return (
         <div>
             <HeaderWrapper>
@@ -239,18 +397,25 @@ const CaseView = () => {
                     <PageTitle variant="h4">{caseItem.name}</PageTitle>
                     <ColumnWrapper>
                         <CaseButtonsWrapper>
+                            {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                                <Button>
+                                    <Progress.Dots />
+                                </Button>
+                            )}
                             <TransparentButton
                                 onClick={() => toggleTechnicalInputModal()}
+                                variant="outlined"
                             >
                                 Edit technical input
                             </TransparentButton>
-                            <InvisibleButton
-                                variant="outlined"
+                            <Button
+                                variant="ghost"
+                                aria-label="case menu"
                                 ref={setMenuAnchorEl}
                                 onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
                             >
                                 <Icon data={more_vertical} />
-                            </InvisibleButton>
+                            </Button>
                         </CaseButtonsWrapper>
                     </ColumnWrapper>
                 </RowWrapper>
@@ -293,6 +458,27 @@ const CaseView = () => {
                             Delete
                         </Typography>
                     </Menu.Item>
+                    {project.referenceCaseId === caseItem.id
+                        ? (
+                            <Menu.Item
+                                onClick={setCaseAsReference}
+                            >
+                                <Icon data={bookmark_outlined} size={16} />
+                                <Typography group="navigation" variant="menu_title" as="span">
+                                    Remove as reference case
+                                </Typography>
+                            </Menu.Item>
+                        )
+                        : (
+                            <Menu.Item
+                                onClick={setCaseAsReference}
+                            >
+                                <Icon data={bookmark_filled} size={16} />
+                                <Typography group="navigation" variant="menu_title" as="span">
+                                    Set as reference case
+                                </Typography>
+                            </Menu.Item>
+                        )}
                 </Menu>
             </HeaderWrapper>
             <CaseViewDiv>
@@ -441,6 +627,9 @@ const CaseView = () => {
                 project={project}
                 setProject={setProject}
                 setWells={setWells}
+                caseId={caseItem.id}
+                setExploration={setExploration}
+                setWellProject={setWellProject}
             />
             <EditCaseModal
                 setProject={setProject}

@@ -21,6 +21,7 @@ export class Exploration implements Components.Schemas.ExplorationDto, IAsset {
     rigMobDemob?: number | undefined
     currency?: Components.Schemas.Currency
     explorationWells?: ExplorationWell[] | null
+    hasChanges?: boolean
 
     constructor(data?: Components.Schemas.ExplorationDto) {
         if (data !== undefined) {

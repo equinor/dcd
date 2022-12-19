@@ -4,10 +4,11 @@ import {
     Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "ag-grid-react"
+import styled from "styled-components"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import "ag-grid-enterprise"
-import styled from "styled-components"
+import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 
 const ButtonWrapper = styled.div`
     margin-top: 20px;
@@ -17,7 +18,7 @@ const ButtonWrapper = styled.div`
 interface Props {
     project: Project
     wells: Well[] | undefined
-    setWells: Dispatch<SetStateAction<Well[] | undefined>>
+    setWells: Dispatch<SetStateAction<Well[]>>
     explorationWells: boolean
 }
 
@@ -150,7 +151,13 @@ function WellListEditTechnicalInput({
             field: "drillingDays", headerName: "Drilling days", width: 110, flex: 1,
         },
         {
-            field: "wellCost", headerName: "Cost", width: 90, flex: 1,
+            field: "wellCost",
+            headerName: "",
+            width: 90,
+            flex: 1,
+            headerComponentParams: {
+                template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`),
+            },
         },
     ])
 

@@ -1,6 +1,6 @@
 import { ITimeSeries } from "../ITimeSeries"
 
-export class CaseCessationCostProfile implements Components.Schemas.CessationCostDto, ITimeSeries {
+export class CessationWellsCost implements Components.Schemas.CessationWellsCostDto, ITimeSeries {
     id?: string
     startYear?: number
     values?: number []
@@ -8,7 +8,7 @@ export class CaseCessationCostProfile implements Components.Schemas.CessationCos
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
 
-    constructor(data?: Components.Schemas.CessationCostDto) {
+    constructor(data?: Components.Schemas.CessationWellsCostDto) {
         if (data !== undefined && data !== null) {
             this.id = data.id
             this.startYear = data.startYear ?? 0
@@ -23,10 +23,10 @@ export class CaseCessationCostProfile implements Components.Schemas.CessationCos
         }
     }
 
-    static fromJSON(data?: Components.Schemas.CessationCostDto): CaseCessationCostProfile | undefined {
+    static fromJSON(data?: Components.Schemas.CessationWellsCostDto): CessationWellsCost | undefined {
         if (data === undefined || data === null) {
             return undefined
         }
-        return new CaseCessationCostProfile(data)
+        return new CessationWellsCost(data)
     }
 }

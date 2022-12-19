@@ -24,14 +24,15 @@ public class GenerateImportedElectricityProfile
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-        var fuelConsumptions =
-            EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
-        var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
-        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
+
+        var facilitiesAvailability = caseItem.FacilitiesAvailability;
+
+        var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(topside, drainageStrategy, facilitiesAvailability);
+
         var calculateImportedElectricity =
-            CalculateImportedElectricity(topside.PeakElectricityImported, fuelConsumptions, flarings, losses);
+            CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
 
         var importedElectricity = new ImportedElectricity
         {
@@ -43,21 +44,18 @@ public class GenerateImportedElectricityProfile
         return dto ?? new ImportedElectricityDto();
     }
 
-    private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported,
-        TimeSeries<double> fuelConsumption, TimeSeries<double> flaring,
-        TimeSeries<double> losses)
+    private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability,
+        TimeSeries<double> totalUseOfPower)
     {
         const int hoursInOneYear = 8766;
         var peakElectricityImportedFromGrid = peakElectricityImported * 1.1;
-        var fuelFlaringLosses =
-            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(fuelConsumption, flaring), losses);
 
         var importedElectricityProfile = new TimeSeriesVolume
         {
-            StartYear = fuelFlaringLosses.StartYear,
+            StartYear = totalUseOfPower.StartYear,
             Values =
-                fuelFlaringLosses.Values
-                    .Select(value => value * peakElectricityImportedFromGrid * hoursInOneYear / 1000)
+                totalUseOfPower.Values
+                    .Select(value => peakElectricityImportedFromGrid * facilityAvailability * hoursInOneYear * value / 1000)
                     .ToArray(),
         };
 

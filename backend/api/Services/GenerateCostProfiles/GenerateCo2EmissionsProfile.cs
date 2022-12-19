@@ -26,18 +26,28 @@ public class GenerateCo2EmissionsProfile
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
         var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, drainageStrategy);
-        var drillingEmissionsProfile = CalculateDrillingEmissions(project, drainageStrategy, wellProject);
+
+        var tempProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptionsProfile, flaringsProfile, lossesProfile });
+
+        var convertedValues = tempProfile.Values.Select(v => v / 1000);
+
+        var newProfile = new TimeSeries<double>
+        {
+            StartYear = tempProfile.StartYear,
+            Values = convertedValues.ToArray(),
+        };
+
+        var drillingEmissionsProfile = CalculateDrillingEmissions(project, wellProject);
 
         var totalProfile =
-            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(
-                TimeSeriesCost.MergeCostProfiles(fuelConsumptionsProfile, flaringsProfile),
-                lossesProfile), drillingEmissionsProfile);
+            TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
         var co2Emission = new Co2Emissions
         {
             StartYear = totalProfile.StartYear,
@@ -86,8 +96,7 @@ public class GenerateCo2EmissionsProfile
         return fuelConsumptionsProfile;
     }
 
-    private static TimeSeriesVolume CalculateDrillingEmissions(Project project, DrainageStrategy drainageStrategy,
-        WellProject wellProject)
+    private static TimeSeriesVolume CalculateDrillingEmissions(Project project, WellProject wellProject)
     {
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory))
             .ToList();
@@ -112,19 +121,14 @@ public class GenerateCo2EmissionsProfile
             wellDrillingSchedules = TimeSeriesCost.MergeCostProfiles(wellDrillingSchedules, timeSeries);
         }
 
-        if (drainageStrategy.ProductionProfileGas != null)
+        var drillingEmission = new ProductionProfileGas
         {
-            var drillingEmission = new ProductionProfileGas
-            {
-                StartYear = drainageStrategy.ProductionProfileGas.StartYear,
-                Values = wellDrillingSchedules.Values
-                    .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig / 1000000)
-                    .ToArray(),
-            };
+            StartYear = wellDrillingSchedules.StartYear,
+            Values = wellDrillingSchedules.Values
+                .Select(well => well * project.AverageDevelopmentDrillingDays * project.DailyEmissionFromDrillingRig)
+                .ToArray(),
+        };
 
-            return drillingEmission;
-        }
-
-        return new TimeSeriesVolume();
+        return drillingEmission;
     }
 }
