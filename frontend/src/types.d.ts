@@ -67,6 +67,19 @@ declare namespace Components {
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
             sharepointFileUrl?: string | null;
+            hasChanges?: boolean;
+        }
+        export interface CaseWithAssetsWrapperDto {
+            caseDto?: CaseDto;
+            drainageStrategyDto?: DrainageStrategyDto;
+            wellProjectDto?: WellProjectDto;
+            explorationDto?: ExplorationDto;
+            surfDto?: SurfDto;
+            substructureDto?: SubstructureDto;
+            topsideDto?: TopsideDto;
+            transportDto?: TransportDto;
+            wellProjectWellDtos?: WellProjectWellDto[] | null;
+            explorationWellDto?: ExplorationWellDto[] | null;
         }
         export interface CessationCostDto {
             id?: string; // uuid
@@ -75,6 +88,11 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface CessationCostWrapperDto {
+            cessationCostDto?: CessationCostDto;
+            cessationWellsCostDto?: CessationWellsCostDto;
+            cessationOffshoreFacilitiesCostDto?: CessationOffshoreFacilitiesCostDto;
         }
         export interface CessationOffshoreFacilities {
             id?: string; // uuid
@@ -87,6 +105,22 @@ declare namespace Components {
             topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
             substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
             transportCessationCostProfileDto?: TransportCessationCostProfileDto;
+        }
+        export interface CessationOffshoreFacilitiesCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface CessationWellsCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface Co2EmissionsDto {
             id?: string; // uuid
@@ -102,6 +136,18 @@ declare namespace Components {
             country?: string | null;
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
+        }
+        export interface CompareCasesDto {
+            totalOilProduction?: number; // double
+            totalGasProduction?: number; // double
+            totalExportedVolumes?: number; // double
+            totalStudyCostsPlusOpex?: number; // double
+            totalCessationCosts?: number; // double
+            offshorePlusOnshoreFacilityCosts?: number; // double
+            developmentWellCosts?: number; // double
+            explorationWellCosts?: number; // double
+            totalCo2Emissions?: number; // double
+            co2Intensity?: number; // double
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export interface CountryOfficeCostDto {
@@ -120,6 +166,7 @@ declare namespace Components {
             rigMobDemob?: number; // double
             annualWellInterventionCostPerWell?: number; // double
             pluggingAndAbandonment?: number; // double
+            hasChanges?: boolean;
         }
         export interface DrainageStrategyDto {
             id?: string; // uuid
@@ -141,6 +188,7 @@ declare namespace Components {
             co2Emissions?: Co2EmissionsDto;
             productionProfileNGL?: ProductionProfileNGLDto;
             importedElectricity?: ImportedElectricityDto;
+            hasChanges?: boolean;
         }
         export interface DrillingScheduleDto {
             id?: string; // uuid
@@ -172,6 +220,7 @@ declare namespace Components {
             rigMobDemob?: number; // double
             currency?: Currency /* int32 */;
             explorationWells?: ExplorationWellDto[] | null;
+            hasChanges?: boolean;
         }
         export interface ExplorationOperationalWellCostsDto {
             id?: string; // uuid
@@ -181,6 +230,7 @@ declare namespace Components {
             explorationProjectDrillingCosts?: number; // double
             appraisalRigMobDemob?: number; // double
             appraisalProjectDrillingCosts?: number; // double
+            hasChanges?: boolean;
         }
         export interface ExplorationWellCostProfileDto {
             id?: string; // uuid
@@ -195,6 +245,7 @@ declare namespace Components {
             drillingSchedule?: DrillingScheduleDto;
             explorationId?: string; // uuid
             wellId?: string; // uuid
+            hasChanges?: boolean;
         }
         export interface FuelFlaringAndLossesDto {
             id?: string; // uuid
@@ -263,6 +314,14 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface OffshoreFacilitiesOperationsCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface OilProducerCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -279,6 +338,11 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface OpexCostProfileWrapperDto {
+            opexCostProfileDto?: OpexCostProfileDto;
+            wellInterventionCostProfileDto?: WellInterventionCostProfileDto;
+            offshoreFacilitiesOperationsCostProfileDto?: OffshoreFacilitiesOperationsCostProfileDto;
         }
         export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
@@ -325,6 +389,7 @@ declare namespace Components {
             name?: string | null;
             commonLibraryId?: string; // uuid
             fusionProjectId?: string; // uuid
+            referenceCaseId?: string; // uuid
             commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
@@ -352,6 +417,7 @@ declare namespace Components {
             cO2Vented?: number; // double
             dailyEmissionFromDrillingRig?: number; // double
             averageDevelopmentDrillingDays?: number; // double
+            hasChanges?: boolean;
         }
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface STEACaseDto {
@@ -425,6 +491,11 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface StudyCostProfileWrapperDto {
+            studyCostProfileDto?: StudyCostProfileDto;
+            totalFeasibilityAndConceptStudiesDto?: TotalFeasibilityAndConceptStudiesDto;
+            totalFEEDStudiesDto?: TotalFEEDStudiesDto;
+        }
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -458,6 +529,7 @@ declare namespace Components {
             concept?: Concept /* int32 */;
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
+            hasChanges?: boolean;
         }
         export interface SurfCessationCostProfileDto {
             id?: string; // uuid
@@ -500,6 +572,16 @@ declare namespace Components {
             approvedBy?: string | null;
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
+            hasChanges?: boolean;
+        }
+        export interface TechnicalInputDto {
+            developmentOperationalWellCostsDto?: DevelopmentOperationalWellCostsDto;
+            explorationOperationalWellCostsDto?: ExplorationOperationalWellCostsDto;
+            wellDtos?: WellDto[] | null;
+            projectDto?: ProjectDto;
+            explorationDto?: ExplorationDto;
+            wellProjectDto?: WellProjectDto;
+            caseId?: string | null; // uuid
         }
         export interface TimeSeriesCostDto {
             id?: string; // uuid
@@ -558,6 +640,23 @@ declare namespace Components {
             dG4Date?: string | null; // date-time
             facilityOpex?: number; // double
             peakElectricityImported?: number; // double
+            hasChanges?: boolean;
+        }
+        export interface TotalFEEDStudiesDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface TotalFeasibilityAndConceptStudiesDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
@@ -591,6 +690,7 @@ declare namespace Components {
             prospVersion?: string | null; // date-time
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
+            hasChanges?: boolean;
         }
         export interface UrlDto {
             url?: string | null;
@@ -614,6 +714,16 @@ declare namespace Components {
             wellCategory?: WellCategory /* int32 */;
             wellCost?: number; // double
             drillingDays?: number; // double
+            hasChanges?: boolean;
+            hasCostChanges?: boolean;
+        }
+        export interface WellInterventionCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface WellProjectDto {
             id?: string; // uuid
@@ -624,40 +734,28 @@ declare namespace Components {
             waterInjectorCostProfile?: WaterInjectorCostProfileDto;
             gasInjectorCostProfile?: GasInjectorCostProfileDto;
             artificialLift?: ArtificialLift /* int32 */;
-            rigMobDemob?: number; // double
-            annualWellInterventionCost?: number; // double
-            pluggingAndAbandonment?: number; // double
             currency?: Currency /* int32 */;
             wellProjectWells?: WellProjectWellDto[] | null;
+            hasChanges?: boolean;
         }
         export interface WellProjectWellDto {
             drillingSchedule?: DrillingScheduleDto;
             wellProjectId?: string; // uuid
             wellId?: string; // uuid
+            hasChanges?: boolean;
         }
     }
 }
 declare namespace Paths {
-    namespace CalculateOpex {
+    namespace CalculateCompareCasesTotals {
         namespace Parameters {
-            export type CaseId = string; // uuid
+            export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
-            export type $200 = Components.Schemas.OpexCostProfileDto;
-        }
-    }
-    namespace CalculateStudy {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.StudyCostProfileDto;
+            export type $200 = Components.Schemas.CompareCasesDto[];
         }
     }
     namespace CopyDrainageStrategy {
@@ -1033,7 +1131,7 @@ declare namespace Paths {
             caseId: Parameters.CaseId /* uuid */;
         }
         namespace Responses {
-            export type $200 = Components.Schemas.CessationCostDto;
+            export type $200 = Components.Schemas.CessationCostWrapperDto;
         }
     }
     namespace GenerateCo2Emissions {
@@ -1089,6 +1187,28 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.NetSalesGasDto;
+        }
+    }
+    namespace GenerateOpex {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.OpexCostProfileWrapperDto;
+        }
+    }
+    namespace GenerateStudy {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.StudyCostProfileWrapperDto;
         }
     }
     namespace GetExplorationWells {
@@ -1242,8 +1362,26 @@ declare namespace Paths {
             export type $200 = Components.Schemas.WellProjectDto;
         }
     }
+    namespace SetReferenceCase {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        export type RequestBody = string; // uuid
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
     namespace UpdateCase {
         export type RequestBody = Components.Schemas.CaseDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateCaseWithAssets {
+        export type RequestBody = Components.Schemas.CaseWithAssetsWrapperDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
@@ -1324,6 +1462,12 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.SurfDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace UpdateTechnicalInput {
+        export type RequestBody = Components.Schemas.TechnicalInputDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.TechnicalInputDto;
         }
     }
     namespace UpdateTopside {

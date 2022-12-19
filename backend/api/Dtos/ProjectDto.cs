@@ -8,6 +8,7 @@ public class ProjectDto
     public string Name { get; set; } = null!;
     public Guid CommonLibraryId { get; set; }
     public Guid FusionProjectId { get; set; }
+    public Guid ReferenceCaseId { get; set; }
     public string CommonLibraryName { get; set; } = null!;
     public string Description { get; set; } = null!;
     public string Country { get; set; } = null!;
@@ -35,4 +36,13 @@ public class ProjectDto
     public double CO2Vented { get; set; }
     public double DailyEmissionFromDrillingRig { get; set; }
     public double AverageDevelopmentDrillingDays { get; set; }
+    public bool HasChanges { get; set; }
+
+    public bool Equals(ProjectDto projectDto)
+    {
+        return Name == projectDto.Name &&
+               CommonLibraryName == projectDto.CommonLibraryName && FusionProjectId == projectDto.FusionProjectId &&
+               Country == projectDto.Country && ProjectId == projectDto.ProjectId &&
+               ProjectCategory == projectDto.ProjectCategory && ProjectPhase == projectDto.ProjectPhase;
+    }
 }

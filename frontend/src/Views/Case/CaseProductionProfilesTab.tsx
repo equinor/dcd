@@ -28,6 +28,7 @@ import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -103,8 +104,6 @@ function CaseProductionProfilesTab({
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-
-    const [isSaving, setIsSaving] = useState<boolean>()
 
     const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
         const newDrainageStrategy: DrainageStrategy = { ...drainage }
@@ -206,6 +205,31 @@ function CaseProductionProfilesTab({
         setTableYears([startYear, endYear])
     }
 
+    const productionProfilesChartData = () => {
+        const dataArray: object[] = []
+        for (let i = startYear; i <= endYear; i += 1) {
+            dataArray.push({
+                year: i,
+                oilProduction: setValueToCorrespondingYear(oil, i, startYear, caseItem.DG4Date.getFullYear()),
+                gasProduction: setValueToCorrespondingYear(gas, i, startYear, caseItem.DG4Date.getFullYear()),
+                waterProduction: setValueToCorrespondingYear(water, i, startYear, caseItem.DG4Date.getFullYear()),
+            })
+        }
+        return dataArray
+    }
+
+    const injectionProfilesChartData = () => {
+        const dataArray = []
+        for (let i = startYear; i <= endYear; i += 1) {
+            dataArray.push({
+                year: i,
+                waterInjection:
+                    setValueToCorrespondingYear(waterInjection, i, startYear, caseItem.DG4Date.getFullYear()),
+            })
+        }
+        return dataArray
+    }
+
     useEffect(() => {
         (async () => {
             try {
@@ -236,24 +260,33 @@ function CaseProductionProfilesTab({
         })()
     }, [activeTab])
 
-    const handleSave = async () => {
-        setIsSaving(true)
-        if (drainageStrategy) {
-            const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-            newDrainageStrategy.netSalesGas = netSalesGas
-            newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
-            newDrainageStrategy.productionProfileGas = gas
-            newDrainageStrategy.productionProfileOil = oil
-            newDrainageStrategy.productionProfileWater = water
-            newDrainageStrategy.productionProfileNGL = nGL
-            newDrainageStrategy.productionProfileWaterInjection = waterInjection
-            const result = await (await GetDrainageStrategyService()).newUpdate(newDrainageStrategy)
-            setDrainageStrategy(result)
-        }
-        const updateCaseResult = await (await GetCaseService()).update(caseItem)
-        setCase(updateCaseResult)
-        setIsSaving(false)
-    }
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.productionProfileOil && !oil) { return }
+        newDrainageStrategy.productionProfileOil = oil
+        setDrainageStrategy(newDrainageStrategy)
+    }, [oil])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.productionProfileGas && !gas) { return }
+        newDrainageStrategy.productionProfileGas = gas
+        setDrainageStrategy(newDrainageStrategy)
+    }, [gas])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.productionProfileWater && !water) { return }
+        newDrainageStrategy.productionProfileWater = water
+        setDrainageStrategy(newDrainageStrategy)
+    }, [water])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.productionProfileWaterInjection && !waterInjection) { return }
+        newDrainageStrategy.productionProfileWaterInjection = waterInjection
+        setDrainageStrategy(newDrainageStrategy)
+    }, [waterInjection])
 
     if (activeTab !== 1) { return null }
 
@@ -261,11 +294,6 @@ function CaseProductionProfilesTab({
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Production profiles</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                    <Button>
-                        <Progress.Dots />
-                    </Button>
-                )}
             </TopWrapper>
             <ColumnWrapper>
                 <RowWrapper>
@@ -383,6 +411,28 @@ function CaseProductionProfilesTab({
                     </Button>
                 </TableYearWrapper>
             </ColumnWrapper>
+            <AgChartsTimeseries
+                data={productionProfilesChartData()}
+                chartTitle="Production profiles"
+                barColors={["#243746", "#EB0037", "#A8CED1"]}
+                barProfiles={["oilProduction", "gasProduction", "waterProduction"]}
+                barNames={[
+                    "Oil production (MSm3)",
+                    "Gas production (GSm3)",
+                    "Water production (MSm3)",
+                ]}
+            />
+            {waterInjection !== undefined
+                && (
+                    <AgChartsTimeseries
+                        data={injectionProfilesChartData()}
+                        chartTitle="Injection profiles"
+                        barColors={["#A8CED1"]}
+                        barProfiles={["waterInjection"]}
+                        barNames={["Water injection"]}
+                        unit="MSm3"
+                    />
+                )}
             <CaseTabTable
                 caseItem={caseItem}
                 project={project}
@@ -392,6 +442,7 @@ function CaseProductionProfilesTab({
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}
                 tableName="Production profiles"
+                includeFooter={false}
             />
         </>
     )

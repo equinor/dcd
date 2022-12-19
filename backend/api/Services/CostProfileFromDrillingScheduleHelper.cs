@@ -73,6 +73,11 @@ public class CostProfileFromDrillingScheduleHelper
         var explorationWellService = _serviceProvider.GetRequiredService<ExplorationWellService>();
         var explorationWells = explorationWellService.GetAll().Where(ew => ew.ExplorationId == exploration.Id);
 
+        return UpdateExplorationCostProfilesForCase(exploration, explorationWells);
+    }
+
+    public ExplorationDto UpdateExplorationCostProfilesForCase(Exploration exploration, IEnumerable<ExplorationWell> explorationWells)
+    {
         var wellService = _serviceProvider.GetRequiredService<WellService>();
         var wellIds = explorationWells.Select(ew => ew.WellId);
         var wells = wellService.GetAll().Where(w => wellIds.Contains(w.Id));
@@ -148,6 +153,11 @@ public class CostProfileFromDrillingScheduleHelper
         var wellProjectWellService = _serviceProvider.GetRequiredService<WellProjectWellService>();
         var wellProjectWells = wellProjectWellService.GetAll().Where(ew => ew.WellProjectId == wellProject.Id);
 
+        return UpdateWellProjectCostProfilesForCase(wellProject, wellProjectWells);
+    }
+
+    public WellProjectDto UpdateWellProjectCostProfilesForCase(WellProject wellProject, IEnumerable<WellProjectWell> wellProjectWells)
+    {
         var wellService = _serviceProvider.GetRequiredService<WellService>();
         var wellIds = wellProjectWells.Select(ew => ew.WellId);
         var wells = wellService.GetAll().Where(w => wellIds.Contains(w.Id));

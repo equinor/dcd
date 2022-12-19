@@ -39,6 +39,7 @@ const TransparentButton = styled(Button)`
     color: #007079;
     background-color: white;
     border: 1px solid #007079;
+    margin-left: 1rem;
 `
 
 const Wrapper = styled.div`
@@ -63,6 +64,7 @@ const ProjectView = () => {
 
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
 
+    const [isSaving, setIsSaving] = useState<boolean>()
     const [isLoading, setIsLoading] = useState<boolean>()
     const [isCreating, setIsCreating] = useState<boolean>()
 
@@ -110,12 +112,26 @@ const ProjectView = () => {
         )
     }
 
+    const handleSave = async () => {
+        setIsSaving(true)
+        const updatedProject = Project.Copy(project)
+        const result = await (await GetProjectService()).updateProject(updatedProject)
+        setIsSaving(false)
+        setProject(result)
+    }
+
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h4">{project.name}</PageTitle>
+                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                    <Button>
+                        <Progress.Dots />
+                    </Button>
+                )}
                 <TransparentButton
                     onClick={toggleEditTechnicalInputModal}
+                    variant="outlined"
                 >
                     Edit technical input
                 </TransparentButton>
@@ -136,9 +152,7 @@ const ProjectView = () => {
                         </StyledTabPanel>
                         <StyledTabPanel>
                             <ProjectCompareCasesTab
-                                capexYearX={capexYearXLabels}
-                                capexYearY={capexYearYDatas}
-                                caseTitles={capexYearCaseTitles}
+                                project={project}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>

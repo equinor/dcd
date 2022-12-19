@@ -1,6 +1,6 @@
 import { DefaultDate } from "../../Utils/common"
 import { EMPTY_GUID } from "../../Utils/constants"
-import { CaseCessationCostProfile } from "./CaseCessationCostProfile"
+import { CessationCostProfile } from "./CessationCostProfile"
 
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
@@ -40,7 +40,7 @@ export class Case implements Components.Schemas.CaseDto {
     breakEven: number // double
     host?: string | null
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
-    cessationCost?: CaseCessationCostProfile
+    cessationCost?: CessationCostProfile
     sharepointFileId?: string | null
     sharepointFileName?: string | null
     sharepointFileUrl?: string | null
@@ -83,7 +83,7 @@ export class Case implements Components.Schemas.CaseDto {
         this.breakEven = data.breakEven ?? 0
         this.host = data.host
         this.productionStrategyOverview = data.productionStrategyOverview ?? 0
-        this.cessationCost = CaseCessationCostProfile.fromJSON(data.cessationCost)
+        this.cessationCost = CessationCostProfile.fromJSON(data.cessationCost)
         this.sharepointFileId = data.sharepointFileId ?? ""
         this.sharepointFileName = data.sharepointFileName ?? ""
         this.sharepointFileUrl = data.sharepointFileUrl ?? ""

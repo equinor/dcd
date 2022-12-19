@@ -28,6 +28,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     productionProfileWater?: ProductionProfileWater | undefined
     productionProfileWaterInjection?: ProductionProfileWaterInjection | undefined
     productionProfileNGL?: ProductionProfileNGL | undefined
+    hasChanges?: boolean
 
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
         if (data !== undefined) {

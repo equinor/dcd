@@ -69,7 +69,7 @@ public class SurfService
         {
             _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Surfs!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(existing.ProjectId);
@@ -89,7 +89,7 @@ public class SurfService
         {
             _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
         }
-        existing.LastChangedDate = DateTimeOffset.Now;
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedSurf = _context.Surfs!.Update(existing);
         _context.SaveChanges();
         return SurfDtoAdapter.Convert(updatedSurf.Entity);
@@ -114,7 +114,7 @@ public class SurfService
         var project = _projectService.GetProject(surf.ProjectId);
         surf.Project = project;
         surf.ProspVersion = surfDto.ProspVersion;
-        surf.LastChangedDate = DateTimeOffset.Now;
+        surf.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Surfs!.Add(surf);
         _context.SaveChanges();
         SetCaseLink(surf, sourceCaseId, project);
@@ -126,7 +126,7 @@ public class SurfService
         var surf = SurfAdapter.Convert(surfDto);
         var project = _projectService.GetProject(surf.ProjectId);
         surf.Project = project;
-        surf.LastChangedDate = DateTimeOffset.Now;
+        surf.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSurf = _context.Surfs!.Add(surf);
         _context.SaveChanges();
         SetCaseLink(surf, sourceCaseId, project);

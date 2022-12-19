@@ -1,3 +1,5 @@
+using System.Net;
+
 using api.Dtos;
 using api.Services;
 using api.Services.GenerateCostProfiles;
@@ -48,22 +50,25 @@ public class GenerateProfileController : ControllerBase
         return _generateGAndGAdminCostProfile.Generate(caseId);
     }
 
-    [HttpPost("{caseId}/calculateOpex", Name = "CalculateOpex")]
-    public OpexCostProfileDto GenerateOPEX(Guid caseId)
+    [HttpPost("{caseId}/generateOpex", Name = "GenerateOpex")]
+    [ProducesResponseType(typeof(OpexCostProfileWrapperDto), (int)HttpStatusCode.OK)]
+    public IActionResult GenerateOPEX(Guid caseId)
     {
-        return _generateOpexCostProfile.Generate(caseId);
+        return Ok(_generateOpexCostProfile.Generate(caseId));
     }
 
-    [HttpPost("{caseId}/calculateStudy", Name = "CalculateStudy")]
-    public StudyCostProfileDto CalculateStudyCost(Guid caseId)
+    [HttpPost("{caseId}/generateStudy", Name = "GenerateStudy")]
+    [ProducesResponseType(typeof(StudyCostProfileWrapperDto), (int)HttpStatusCode.OK)]
+    public IActionResult CalculateStudyCost(Guid caseId)
     {
-        return _generateStudyCostProfile.Generate(caseId);
+        return Ok(_generateStudyCostProfile.Generate(caseId));
     }
 
     [HttpPost("{caseId}/generateCessation", Name = "GenerateCessation")]
-    public CessationCostDto GenerateCessation(Guid caseId)
+    [ProducesResponseType(typeof(CessationCostWrapperDto), (int)HttpStatusCode.OK)]
+    public IActionResult GenerateCessation(Guid caseId)
     {
-        return _generateCessationCostProfile.Generate(caseId);
+        return Ok(_generateCessationCostProfile.Generate(caseId));
     }
 
     [HttpPost("{caseId}/generateNetSaleGas", Name = "GenerateNetSaleGas")]

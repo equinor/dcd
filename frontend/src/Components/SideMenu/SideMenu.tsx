@@ -15,6 +15,8 @@ const SidebarDiv = styled.div`
     border-right: 1px solid lightgrey;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
 `
 
 const Wrapper = styled.div`
