@@ -134,6 +134,9 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
+        export interface Co2IntensityTotalDto {
+            co2IntensityTotal?: number; // double
+        }
         export interface CommonLibraryProjectDto {
             id?: string; // uuid
             name?: string | null;
@@ -1149,6 +1152,32 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.Co2EmissionsDto;
+        }
+    }
+    namespace GenerateCo2Intensity {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.Co2IntensityDto;
+        }
+    }
+    namespace GenerateCo2IntensityTotal {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+            export type ProjectId = string;
+        }
+        export interface PathParameters {
+            projectId: Parameters.ProjectId;
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.Co2IntensityTotalDto;
         }
     }
     namespace GenerateFuelFlaringLosses {

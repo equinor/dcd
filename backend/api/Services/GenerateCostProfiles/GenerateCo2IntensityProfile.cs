@@ -30,7 +30,7 @@ public class GenerateCo2IntensityProfile
         var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
 
         var co2IntensityValues = new List<double>();
-        
+
         if (generateCo2EmissionsProfile.StartYear == totalExportedVolumes.StartYear
             && generateCo2EmissionsProfile.Values.Length == totalExportedVolumes.Values.Length) 
         {
@@ -39,7 +39,7 @@ public class GenerateCo2IntensityProfile
             for (var i = 0; i < generateCo2EmissionsProfile.Values.Length; i++)
             {
                 var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i];
-                co2IntensityValues.Add(dividedProfiles / generateCo2EmissionsProfile.Values.Length / boeConversionFactor * tonnesToKgFactor);
+                co2IntensityValues.Add(dividedProfiles / boeConversionFactor * tonnesToKgFactor);
             }
         }
 

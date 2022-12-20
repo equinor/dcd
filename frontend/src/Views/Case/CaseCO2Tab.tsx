@@ -26,6 +26,9 @@ import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Component
 import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
 import { Wrapper, WrapperColumn } from "../Asset/StyledAssetComponents"
 import { Co2Intensity } from "../../models/assets/drainagestrategy/Co2Intensity"
+import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
+import { GetCo2IntensityTotal } from "../../Services/GenerateCo2IntensityTotal"
+import { Co2IntensityTotal } from "../../models/assets/drainagestrategy/Co2IntensityTotal"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -94,10 +97,12 @@ function CaseCO2Tab({
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
     const [co2Intensity, setCo2Intensity] = useState<Co2Intensity>()
+    const [co2IntensityTotal, setCo2IntensityTotal] = useState<any>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    console.log(project)
 
     useEffect(() => {
         (async () => {
@@ -105,8 +110,12 @@ function CaseCO2Tab({
                 if (activeTab === 6) {
                     const co2E = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
                     const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
+                    const co2ITotal = await (await GetCo2IntensityTotal()).calculate(caseItem.id)
+                    const co2ITotalValue = Object.values(co2ITotal)
+
                     setCo2Emissions(await co2E)
                     setCo2Intensity(await co2I)
+                    setCo2IntensityTotal(co2ITotalValue[0])
 
                     SetTableYearsFromProfiles(
                         [await co2E, await co2I],
@@ -157,6 +166,7 @@ function CaseCO2Tab({
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
+        total?: string
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -169,6 +179,7 @@ function CaseCO2Tab({
             profileName: "Year-by-year CO2 intensity",
             unit: `${project?.physUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
             profile: co2Intensity,
+            total: co2IntensityTotal?.toString(),
         },
     ]
 
@@ -200,13 +211,6 @@ function CaseCO2Tab({
     const co2EmissionsTotalString = () => {
         if (co2Emissions) {
             return (Math.round(co2Emissions.sum! * 1000) / 1000).toString()
-        }
-        return "0"
-    }
-
-    const co2IntensityTotal = () => {
-        if (co2Intensity) {
-            return Math.round(co2Intensity.sum! * 10) / 10
         }
         return "0"
     }
@@ -243,7 +247,7 @@ function CaseCO2Tab({
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
-                    barColors={["#243746", "red"]}
+                    barColors={["#E24973", "#FF92A8"]}
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
                     width="70%"
@@ -265,7 +269,7 @@ function CaseCO2Tab({
                                 display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "500", fontSize: "31px",
                             }}
                         >
-                            {co2IntensityTotal()}
+                            {Math.round(co2IntensityTotal * 10) / 10}
 
                         </Typography>
                         <Typography
