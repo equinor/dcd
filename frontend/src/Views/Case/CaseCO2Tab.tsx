@@ -129,13 +129,15 @@ function CaseCO2Tab({
 
     const handleTopsideFuelConsumptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.fuelConsumption = Number(e.currentTarget.value)
+        newTopside.fuelConsumption = e.currentTarget.value.length > 0
+            ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
 
     const handleTopsideFlaredGasChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.flaredGas = Number(e.currentTarget.value)
+        newTopside.flaredGas = e.currentTarget.value.length > 0
+            ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
 

@@ -164,13 +164,15 @@ function CaseSummaryTab({
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        newCase.npv = Number(e.currentTarget.value)
+        newCase.npv = e.currentTarget.value.length > 0
+            ? Number(e.currentTarget.value) : undefined
         setCase(newCase)
     }
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        newCase.breakEven = Math.max(Number(e.currentTarget.value), 0)
+        newCase.breakEven = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setCase(newCase)
     }
 
