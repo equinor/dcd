@@ -32,7 +32,7 @@ public class GenerateCo2IntensityTotal
         var caseItem = _caseService.GetCase(caseId);
         var project = _projectService.GetProject(caseItem.ProjectId);
         var co2Intensity = 0.0;
-        
+
         DrainageStrategy drainageStrategy;
         drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 

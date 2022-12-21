@@ -26,13 +26,13 @@ public class GenerateCo2IntensityProfile
         var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        var totalExportedVolumes = GetTotalExportedVolumes(project,drainageStrategy);
+        var totalExportedVolumes = GetTotalExportedVolumes(project, drainageStrategy);
         var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
 
         var co2IntensityValues = new List<double>();
 
         if (generateCo2EmissionsProfile.StartYear == totalExportedVolumes.StartYear
-            && generateCo2EmissionsProfile.Values.Length == totalExportedVolumes.Values.Length) 
+            && generateCo2EmissionsProfile.Values.Length == totalExportedVolumes.Values.Length)
         {
             var tonnesToKgFactor = 1000;
             var boeConversionFactor = 6.29;
@@ -82,7 +82,6 @@ public class GenerateCo2IntensityProfile
 
     private static TimeSeries<double> GetGasProfile(Project project, DrainageStrategy drainageStrategy)
     {
-        var oilEquivalentFactor = 5.61;
         var billion = 1E9;
         var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
         var gas = new TimeSeries<double>
