@@ -296,15 +296,21 @@ function CaseCostTab({
 
     const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        const newCapexFactorFeasibilityStudies = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
-        newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
+        const newCapexFactorFeasibilityStudies = e.currentTarget.value.length > 0
+            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        if (newCapexFactorFeasibilityStudies !== undefined) {
+            newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
+        } else { newCase.capexFactorFeasibilityStudies = undefined }
         setCase(newCase)
     }
 
     const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = Case.Copy(caseItem)
-        const newCapexFactorFEEDStudies = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
-        newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
+        const newCapexFactorFEEDStudies = e.currentTarget.value.length > 0
+            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        if (newCapexFactorFEEDStudies !== undefined) {
+            newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
+        } else { newCase.capexFactorFEEDStudies = undefined }
         setCase(newCase)
     }
 
@@ -596,7 +602,8 @@ function CaseCostTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFeasibilityChange}
-                            defaultValue={caseItem.capexFactorFeasibilityStudies * 100}
+                            defaultValue={caseItem.capexFactorFeasibilityStudies
+                                !== undefined ? caseItem.capexFactorFeasibilityStudies * 100 : undefined}
                             integer={false}
                             label="CAPEX factor feasibility studies"
                             unit="%"
@@ -605,7 +612,8 @@ function CaseCostTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFEEDChange}
-                            defaultValue={caseItem.capexFactorFEEDStudies * 100}
+                            defaultValue={caseItem.capexFactorFEEDStudies
+                                !== undefined ? caseItem.capexFactorFEEDStudies * 100 : undefined}
                             integer={false}
                             label="CAPEX factor FEED studies"
                             unit="%"
