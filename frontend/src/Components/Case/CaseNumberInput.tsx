@@ -27,6 +27,7 @@ const CaseNumberInput = ({
             id="numberInput"
             type="number"
             defaultValue={defaultValue}
+            value={defaultValue}
             disabled={disabled}
             onChange={onChange}
             min={allowNegative ? undefined : 0}
