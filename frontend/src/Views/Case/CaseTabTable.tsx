@@ -61,7 +61,7 @@ function CaseTabTable({
                         rowObject.total = Math.round(ts.profile.values.map(
                             (v: number) => (v + Number.EPSILON),
                         ).reduce((x: number, y: number) => x + y) * 1000) / 1000
-                        if (ts.profileName === "Year-by-year CO2 intensity") {
+                        if (ts.total !== undefined) {
                             rowObject.total = Math.round(ts.total * 1000) / 1000
                         }
                     }

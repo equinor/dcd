@@ -9,7 +9,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography, Progress,
+    Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -20,15 +20,12 @@ import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { Co2Emissions } from "../../models/assets/drainagestrategy/Co2Emissions"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { Topside } from "../../models/assets/topside/Topside"
-import { GetTopsideService } from "../../Services/TopsideService"
 import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
-import { Wrapper, WrapperColumn } from "../Asset/StyledAssetComponents"
+import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { Co2Intensity } from "../../models/assets/drainagestrategy/Co2Intensity"
-import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import { GetCo2IntensityTotal } from "../../Services/GenerateCo2IntensityTotal"
-import { Co2IntensityTotal } from "../../models/assets/drainagestrategy/Co2IntensityTotal"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -102,7 +99,6 @@ function CaseCO2Tab({
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-    console.log(project)
 
     useEffect(() => {
         (async () => {
@@ -216,9 +212,9 @@ function CaseCO2Tab({
     }
 
     const co2DistributionChartData = [
-        { profile: "Oil profile", value: topside.cO2ShareOilProfile },
-        { profile: "Gas profile", value: topside.cO2ShareGasProfile },
-        { profile: "Water injection", value: topside.cO2ShareWaterInjectionProfile },
+        { profile: "Placeholder pie", value: 1 },
+        { profile: "Placeholder pie", value: 1 },
+        { profile: "Placeholder pie", value: 1 },
     ]
 
     if (activeTab !== 6) { return null }
