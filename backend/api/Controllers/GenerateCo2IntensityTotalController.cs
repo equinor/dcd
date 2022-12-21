@@ -27,7 +27,7 @@ public class GenerateCo2IntensityTotalController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateCo2IntensityTotal", Name = "GenerateCo2IntensityTotal")]
-    public Co2IntensityTotalDto GenerateCo2IntensityTotal(Guid caseId)
+    public double GenerateCo2IntensityTotal(Guid caseId)
     {
         return _generateCo2IntensityTotal.Calculate(caseId);
     }

@@ -31,21 +31,25 @@ public class GenerateCo2IntensityProfile
 
         var co2IntensityValues = new List<double>();
 
-        if (generateCo2EmissionsProfile.StartYear == totalExportedVolumes.StartYear
-            && generateCo2EmissionsProfile.Values.Length == totalExportedVolumes.Values.Length)
+        var tonnesToKgFactor = 1000;
+        var boeConversionFactor = 6.29;
+        for (var i = 0; i < totalExportedVolumes.Values.Length; i++)
         {
-            var tonnesToKgFactor = 1000;
-            var boeConversionFactor = 6.29;
-            for (var i = 0; i < generateCo2EmissionsProfile.Values.Length; i++)
+            var yearDifference = 0;
+            if (generateCo2EmissionsProfile.StartYear != totalExportedVolumes.StartYear)
             {
-                var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i];
+                yearDifference = totalExportedVolumes.StartYear - generateCo2EmissionsProfile.StartYear;
+            }
+            if ((i + yearDifference < generateCo2EmissionsProfile.Values.Length) && totalExportedVolumes.Values[i] != 0)
+            {
+                var dividedProfiles = generateCo2EmissionsProfile.Values[i + yearDifference] / totalExportedVolumes.Values[i];
                 co2IntensityValues.Add(dividedProfiles / boeConversionFactor * tonnesToKgFactor);
             }
         }
 
         var co2Intensity = new Co2Intensity
         {
-            StartYear = generateCo2EmissionsProfile.StartYear,
+            StartYear = totalExportedVolumes.StartYear,
             Values = co2IntensityValues.ToArray(),
         };
 

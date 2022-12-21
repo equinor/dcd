@@ -27,7 +27,7 @@ public class GenerateCo2IntensityTotal
         _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
     }
 
-    public Co2IntensityTotalDto Calculate(Guid caseId)
+    public double Calculate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var project = _projectService.GetProject(caseItem.ProjectId);
@@ -41,12 +41,8 @@ public class GenerateCo2IntensityTotal
         var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
         var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
         co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
-
-        var co2IntensityTotal = new Co2IntensityTotalDto
-        {
-            Co2IntensityTotal = co2Intensity,
-        };
-        return co2IntensityTotal;
+        
+        return co2Intensity;
     }
 
     private double CalculateTotalOilProduction(Case caseItem, Project project, DrainageStrategy drainageStrategy, Boolean excludeOilFieldConversion)
