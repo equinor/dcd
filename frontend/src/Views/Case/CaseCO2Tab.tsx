@@ -107,11 +107,10 @@ function CaseCO2Tab({
                     const co2E = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
                     const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
                     const co2ITotal = await (await GetCo2IntensityTotal()).calculate(caseItem.id)
-                    const co2ITotalValue = Object.values(co2ITotal)
 
                     setCo2Emissions(await co2E)
                     setCo2Intensity(await co2I)
-                    setCo2IntensityTotal(co2ITotalValue[0])
+                    setCo2IntensityTotal(Number(co2ITotal))
 
                     SetTableYearsFromProfiles(
                         [await co2E, await co2I],
