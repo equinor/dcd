@@ -25,7 +25,6 @@ import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Component
 import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
 import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { Co2Intensity } from "../../models/assets/drainagestrategy/Co2Intensity"
-import { GetCo2IntensityTotal } from "../../Services/GenerateCo2IntensityTotal"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -106,7 +105,7 @@ function CaseCO2Tab({
                 if (activeTab === 6) {
                     const co2E = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
                     const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
-                    const co2ITotal = await (await GetCo2IntensityTotal()).calculate(caseItem.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(caseItem.id)
 
                     setCo2Emissions(await co2E)
                     setCo2Intensity(await co2I)

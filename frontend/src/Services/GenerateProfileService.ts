@@ -63,6 +63,12 @@ export class __GenerateProfileService extends __BaseService {
         const profile: Components.Schemas.Co2IntensityDto = await this.post<Components.Schemas.Co2IntensityDto>(`/${id}/generateCo2Intensity`)
         return Co2Intensity.fromJson(profile)
     }
+
+    async generateCo2IntensityTotal(caseId: string) {
+        // eslint-disable-next-line max-len
+        const res: number = await this.post<number>(`/${caseId}/generateCo2IntensityTotal`)
+        return res
+    }
 }
 
 export async function GetGenerateProfileService() {

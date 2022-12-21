@@ -71,9 +71,6 @@ const configuration = {
     CompareCasesService: {
         BASE_URL: "",
     },
-    GenerateCo2IntensityTotal: {
-        BASE_URL: "",
-    },
 }
 
 export const buildConfig = (baseUrl: string) => {
@@ -98,7 +95,6 @@ export const buildConfig = (baseUrl: string) => {
     configuration.DevelopmentOperationalWellCostsService.BASE_URL = `${baseUrl}/development-operational-well-costs`
     configuration.GenerateProfileService.BASE_URL = `${baseUrl}/generate-profile`
     configuration.CompareCasesService.BASE_URL = `${baseUrl}/compare-cases`
-    configuration.GenerateCo2IntensityTotal.BASE_URL = `${baseUrl}/generate-co2intensity-total`
 }
 
 export const config = Object.freeze(configuration)
