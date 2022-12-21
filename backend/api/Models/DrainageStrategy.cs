@@ -88,5 +88,5 @@ public class ImportedElectricity : TimeSeriesEnergy
 
 public class Co2Intensity : TimeSeriesMass
 {
-    
+
 }

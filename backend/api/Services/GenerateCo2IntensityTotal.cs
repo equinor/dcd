@@ -41,7 +41,7 @@ public class GenerateCo2IntensityTotal
         var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
         var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
         co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
-        
+
         return co2Intensity;
     }
 
