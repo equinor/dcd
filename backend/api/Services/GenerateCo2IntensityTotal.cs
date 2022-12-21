@@ -37,9 +37,6 @@ public class GenerateCo2IntensityTotal
         drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseItem.Id);
-        var totalOilProduction = CalculateTotalOilProduction(caseItem, project, drainageStrategy, false);
-        var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
-        var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
         co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
 
         return co2Intensity;
@@ -105,7 +102,7 @@ public class GenerateCo2IntensityTotal
         return CalculateTotalOilProduction(caseItem, project, drainageStrategy, true) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, true);
     }
 
-    private double CalculateTotalCO2Emissions(Case caseItem, Co2EmissionsDto generateCo2EmissionsProfile)
+    private double CalculateTotalCO2Emissions(Co2EmissionsDto generateCo2EmissionsProfile)
     {
         return generateCo2EmissionsProfile.Sum;
     }
@@ -115,8 +112,8 @@ public class GenerateCo2IntensityTotal
         var tonnesToKgFactor = 1000;
         var boeConversionFactor = 6.29;
         var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, true);
-        var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
-        if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
+        var totalCo2Emissions = CalculateTotalCO2Emissions(generateCo2EmissionsProfile);
+        if (totalExportedVolumes > 0 && totalCo2Emissions > 0)
         {
             return (totalCo2Emissions / totalExportedVolumes) / boeConversionFactor * tonnesToKgFactor;
         }

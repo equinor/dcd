@@ -26,7 +26,7 @@ public class GenerateCo2IntensityProfile
         var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        var totalExportedVolumes = GetTotalExportedVolumes(project, drainageStrategy);
+        var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
         var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
 
         var co2IntensityValues = new List<double>();
@@ -57,10 +57,10 @@ public class GenerateCo2IntensityProfile
         return dto ?? new Co2IntensityDto();
     }
 
-    private static TimeSeries<double> GetTotalExportedVolumes(Project project, DrainageStrategy drainageStrategy)
+    private static TimeSeries<double> GetTotalExportedVolumes(DrainageStrategy drainageStrategy)
     {
-        var oilProfile = GetOilProfile(project, drainageStrategy);
-        var gasProfile = GetGasProfile(project, drainageStrategy);
+        var oilProfile = GetOilProfile(drainageStrategy);
+        var gasProfile = GetGasProfile(drainageStrategy);
 
         var totalProfile =
             TimeSeriesCost.MergeCostProfiles(oilProfile, gasProfile);
@@ -72,7 +72,7 @@ public class GenerateCo2IntensityProfile
         return totalExportedVolumes;
     }
 
-    private static TimeSeries<double> GetOilProfile(Project project, DrainageStrategy drainageStrategy)
+    private static TimeSeries<double> GetOilProfile(DrainageStrategy drainageStrategy)
     {
         var million = 1E6;
         var oilValues = drainageStrategy.ProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? Array.Empty<double>();
@@ -84,7 +84,7 @@ public class GenerateCo2IntensityProfile
         return oil;
     }
 
-    private static TimeSeries<double> GetGasProfile(Project project, DrainageStrategy drainageStrategy)
+    private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
     {
         var billion = 1E9;
         var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
