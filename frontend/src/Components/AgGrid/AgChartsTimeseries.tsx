@@ -65,9 +65,11 @@ export const AgChartsTimeseries = ({
                 yNames: barNames,
                 grouped: true,
                 highlightStyle: {
-                    fill: "cyan",
-                    stroke: "blue",
-                    strokeWidth: 4,
+                    item: {
+                        fill: undefined,
+                        stroke: undefined,
+                        strokeWidth: 1,
+                    },
                     series: {
                         enabled: true,
                         dimOpacity: 0.2,
