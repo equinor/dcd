@@ -94,7 +94,7 @@ function CaseCO2Tab({
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
     const [co2Intensity, setCo2Intensity] = useState<Co2Intensity>()
-    const [co2IntensityTotal, setCo2IntensityTotal] = useState<any>()
+    const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
