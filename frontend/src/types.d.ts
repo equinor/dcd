@@ -93,6 +93,11 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface CessationCostWrapperDto {
+            cessationCostDto?: CessationCostDto;
+            cessationWellsCostDto?: CessationWellsCostDto;
+            cessationOffshoreFacilitiesCostDto?: CessationOffshoreFacilitiesCostDto;
+        }
         export interface CessationOffshoreFacilities {
             id?: string; // uuid
             startYear?: number; // int32
@@ -104,6 +109,22 @@ declare namespace Components {
             topsideCessationCostProfileDto?: TopsideCessationCostProfileDto;
             substructureCessationCostProfileDto?: SubstructureCessationCostProfileDto;
             transportCessationCostProfileDto?: TransportCessationCostProfileDto;
+        }
+        export interface CessationOffshoreFacilitiesCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface CessationWellsCostDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
         }
         export interface Co2EmissionsDto {
             id?: string; // uuid
@@ -297,6 +318,14 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface OffshoreFacilitiesOperationsCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface OilProducerCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -314,14 +343,10 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
-        export interface OpexCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            sum?: number; // double
-            override?: boolean;
+        export interface OpexCostProfileWrapperDto {
+            opexCostProfileDto?: OpexCostProfileDto;
+            wellInterventionCostProfileDto?: WellInterventionCostProfileDto;
+            offshoreFacilitiesOperationsCostProfileDto?: OffshoreFacilitiesOperationsCostProfileDto;
         }
         export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
@@ -368,6 +393,7 @@ declare namespace Components {
             name?: string | null;
             commonLibraryId?: string; // uuid
             fusionProjectId?: string; // uuid
+            referenceCaseId?: string; // uuid
             commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
@@ -469,14 +495,10 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
-        export interface StudyCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            sum?: number; // double
-            override?: boolean;
+        export interface StudyCostProfileWrapperDto {
+            studyCostProfileDto?: StudyCostProfileDto;
+            totalFeasibilityAndConceptStudiesDto?: TotalFeasibilityAndConceptStudiesDto;
+            totalFEEDStudiesDto?: TotalFEEDStudiesDto;
         }
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
@@ -624,6 +646,22 @@ declare namespace Components {
             peakElectricityImported?: number; // double
             hasChanges?: boolean;
         }
+        export interface TotalFEEDStudiesDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface TotalFeasibilityAndConceptStudiesDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -683,6 +721,14 @@ declare namespace Components {
             hasChanges?: boolean;
             hasCostChanges?: boolean;
         }
+        export interface WellInterventionCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
         export interface WellProjectDto {
             id?: string; // uuid
             projectId?: string; // uuid
@@ -714,28 +760,6 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.CompareCasesDto[];
-        }
-    }
-    namespace CalculateOpex {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.OpexCostProfileDto;
-        }
-    }
-    namespace CalculateStudy {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.StudyCostProfileDto;
         }
     }
     namespace CopyDrainageStrategy {
@@ -1111,7 +1135,7 @@ declare namespace Paths {
             caseId: Parameters.CaseId /* uuid */;
         }
         namespace Responses {
-            export type $200 = Components.Schemas.CessationCostDto;
+            export type $200 = Components.Schemas.CessationCostWrapperDto;
         }
     }
     namespace GenerateCo2Emissions {
@@ -1167,6 +1191,28 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.NetSalesGasDto;
+        }
+    }
+    namespace GenerateOpex {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.OpexCostProfileWrapperDto;
+        }
+    }
+    namespace GenerateStudy {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.StudyCostProfileWrapperDto;
         }
     }
     namespace GetExplorationWells {
@@ -1318,6 +1364,18 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.WellProjectDto;
         namespace Responses {
             export type $200 = Components.Schemas.WellProjectDto;
+        }
+    }
+    namespace SetReferenceCase {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface QueryParameters {
+            caseId?: Parameters.CaseId /* uuid */;
+        }
+        export type RequestBody = string; // uuid
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectDto;
         }
     }
     namespace UpdateCase {

@@ -12,7 +12,7 @@ public static class EmissionCalculationHelper
     {
         var factor = caseItem.FacilitiesAvailability * topside.FuelConsumption * cd * 1e6;
 
-        var totalUseOfPower = CalculateTotalUseOfPower(topside, drainageStrategy);
+        var totalUseOfPower = CalculateTotalUseOfPower(topside, drainageStrategy, caseItem.FacilitiesAvailability);
 
         var fuelConsumptionValues = totalUseOfPower.Values.Select(v => v * factor).ToArray();
         var fuelConsumptions = new TimeSeries<double>
@@ -25,7 +25,7 @@ public static class EmissionCalculationHelper
     }
 
     public static TimeSeries<double> CalculateTotalUseOfPower(Topside topside,
-        DrainageStrategy drainageStrategy)
+        DrainageStrategy drainageStrategy, double pe)
     {
         var cO2ShareCO2MaxOil = topside.CO2ShareOilProfile * topside.CO2OnMaxOilProfile;
         var cO2ShareCO2MaxGas = topside.CO2ShareGasProfile * topside.CO2OnMaxGasProfile;
@@ -33,9 +33,9 @@ public static class EmissionCalculationHelper
 
         var cO2ShareCO2Max = cO2ShareCO2MaxOil + cO2ShareCO2MaxGas + cO2ShareCO2MaxWI;
 
-        var totalPowerOil = CalculateTotalUseOfPowerOil(topside, drainageStrategy);
-        var totalPowerGas = CalculateTotalUseOfPowerGas(topside, drainageStrategy);
-        var totalPowerWI = CalculateTotalUseOfPowerWI(topside, drainageStrategy);
+        var totalPowerOil = CalculateTotalUseOfPowerOil(topside, drainageStrategy, pe);
+        var totalPowerGas = CalculateTotalUseOfPowerGas(topside, drainageStrategy, pe);
+        var totalPowerWI = CalculateTotalUseOfPowerWI(topside, drainageStrategy, pe);
 
         var mergedPowerProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { totalPowerOil, totalPowerGas, totalPowerWI });
 
@@ -52,7 +52,7 @@ public static class EmissionCalculationHelper
     // Formula: 1. WRP = WR/WIC/cd
     //          2. WRP*WSP*(1-WOM)
     private static TimeSeries<double> CalculateTotalUseOfPowerWI(Topside topside,
-        DrainageStrategy drainageStrategy)
+        DrainageStrategy drainageStrategy, double pe)
     {
         var wic = topside.WaterInjectionCapacity;
         var wr = drainageStrategy.ProductionProfileWaterInjection?.Values;
@@ -60,12 +60,12 @@ public static class EmissionCalculationHelper
         var wsp = topside.CO2ShareWaterInjectionProfile;
         var wom = topside.CO2OnMaxWaterInjectionProfile;
 
-        if (wr == null || wr.Length == 0 || wic == 0)
+        if (wr == null || wr.Length == 0 || wic == 0 || pe == 0)
         {
             return new TimeSeries<double>();
         }
 
-        var wrp = wr.Select(v => v / wic / cd);
+        var wrp = wr.Select(v => v / wic / cd / pe);
 
         var wrp_wsp_wom = wrp.Select(v => v * wsp * (1 - wom));
 
@@ -79,7 +79,7 @@ public static class EmissionCalculationHelper
 
     // Formula: 1. GRP = GR/GC/cd/1000000
     //          2. GRP*GSP*(1-GOM)
-    private static TimeSeries<double> CalculateTotalUseOfPowerGas(Topside topside, DrainageStrategy drainageStrategy)
+    private static TimeSeries<double> CalculateTotalUseOfPowerGas(Topside topside, DrainageStrategy drainageStrategy, double pe)
     {
         var gc = topside.GasCapacity;
         var gr = drainageStrategy.ProductionProfileGas?.Values;
@@ -87,12 +87,12 @@ public static class EmissionCalculationHelper
         var gsp = topside.CO2ShareGasProfile;
         var gom = topside.CO2OnMaxGasProfile;
 
-        if (gr == null || gr.Length == 0 || gc == 0)
+        if (gr == null || gr.Length == 0 || gc == 0 || pe == 0)
         {
             return new TimeSeries<double>();
         }
 
-        var grp = gr.Select(v => v / gc / cd / 1e6);
+        var grp = gr.Select(v => v / gc / cd / pe / 1e6);
 
         var grp_gsp_gom = grp.Select(v => v * gsp * (1 - gom));
 
@@ -106,7 +106,7 @@ public static class EmissionCalculationHelper
 
     // Formula: 1. WRP = WR/WIC/cd
     //          2. ORP*OSP*(1-OOM)
-    private static TimeSeries<double> CalculateTotalUseOfPowerOil(Topside topside, DrainageStrategy drainageStrategy)
+    private static TimeSeries<double> CalculateTotalUseOfPowerOil(Topside topside, DrainageStrategy drainageStrategy, double pe)
     {
         var oc = topside.OilCapacity;
         var or = drainageStrategy.ProductionProfileOil?.Values;
@@ -114,12 +114,12 @@ public static class EmissionCalculationHelper
         var osp = topside.CO2ShareOilProfile;
         var oom = topside.CO2OnMaxOilProfile;
 
-        if (or == null || or.Length == 0 || oc == 0)
+        if (or == null || or.Length == 0 || oc == 0 || pe == 0)
         {
             return new TimeSeries<double>();
         }
 
-        var orp = or.Select(v => v / oc / cd);
+        var orp = or.Select(v => v / oc / cd / pe);
 
         var orp_osp_oom = orp.Select(v => v * osp * (1 - oom));
 

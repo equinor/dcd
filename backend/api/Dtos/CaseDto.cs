@@ -59,6 +59,12 @@ public class CaseDto
 public class CessationCostDto : TimeSeriesCostDto
 {
 }
+public class CessationWellsCostDto : TimeSeriesCostDto
+{
+}
+public class CessationOffshoreFacilitiesCostDto : TimeSeriesCostDto
+{
+}
 
 public class OpexCostProfileDto : TimeSeriesCostDto
 {
@@ -68,9 +74,43 @@ public class OpexCostProfileOverrideDto : OpexCostProfileDto
 {
     public bool Override { get; set; }
 }
+public class WellInterventionCostProfileDto : TimeSeriesCostDto
+{
+}
+
+public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto
+{
+}
 
 public class StudyCostProfileDto : TimeSeriesCostDto
 {
+}
+public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto
+{
+}
+public class TotalFEEDStudiesDto : TimeSeriesCostDto
+{
+}
+
+public class CessationCostWrapperDto
+{
+    public CessationCostDto? CessationCostDto { get; set; }
+    public CessationWellsCostDto? CessationWellsCostDto { get; set; }
+    public CessationOffshoreFacilitiesCostDto? CessationOffshoreFacilitiesCostDto { get; set; }
+}
+
+public class OpexCostProfileWrapperDto
+{
+    public OpexCostProfileDto? OpexCostProfileDto { get; set; }
+    public WellInterventionCostProfileDto? WellInterventionCostProfileDto { get; set; }
+    public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfileDto { get; set; }
+}
+
+public class StudyCostProfileWrapperDto
+{
+    public StudyCostProfileDto? StudyCostProfileDto { get; set; }
+    public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudiesDto { get; set; }
+    public TotalFEEDStudiesDto? TotalFEEDStudiesDto { get; set; }
 }
 
 public class StudyCostProfileOverrideDto : StudyCostProfileDto

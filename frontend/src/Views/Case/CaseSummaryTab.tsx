@@ -13,7 +13,7 @@ import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
 import { OpexCostProfile } from "../../models/case/OpexCostProfile"
-import { CaseCessationCostProfile } from "../../models/case/CaseCessationCostProfile"
+import { CessationCostProfile } from "../../models/case/CessationCostProfile"
 import { Exploration } from "../../models/assets/exploration/Exploration"
 import { Surf } from "../../models/assets/surf/Surf"
 import { GetSurfService } from "../../Services/SurfService"
@@ -88,7 +88,7 @@ function CaseSummaryTab({
     // OPEX
     const [studyCost, setStudyCost] = useState<StudyCostProfile>()
     const [opexCost, setOpexCost] = useState<OpexCostProfile>()
-    const [cessationCost, setCessationCost] = useState<CaseCessationCostProfile>()
+    const [cessationCost, setCessationCost] = useState<CessationCostProfile>()
 
     // CAPEX
     const [topsideCost, setTopsideCost] = useState<TopsideCostProfile>()
@@ -129,13 +129,18 @@ function CaseSummaryTab({
         (async () => {
             try {
                 if (activeTab === 7) {
-                    // OPEX
-                    const study = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    const opex = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    const cessation = (await GetGenerateProfileService()).generateCessationCost(caseItem.id)
-                    setStudyCost(await study)
-                    setOpexCost(await opex)
-                    setCessationCost(await cessation)
+                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
+                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
+                    const cessationWrapper = (await GetGenerateProfileService())
+                        .generateCessationCost(caseItem.id)
+
+                    const study = StudyCostProfile.fromJSON((await studyWrapper).studyCostProfileDto)
+                    const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
+                    const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)
+
+                    setStudyCost(study)
+                    setOpexCost(opex)
+                    setCessationCost(cessation)
 
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
@@ -147,7 +152,7 @@ function CaseSummaryTab({
                     const transportCostProfile = transport.costProfile
                     setTransportCost(transportCostProfile)
 
-                    setTableYearsFromProfiles([await study, await opex, await cessation,
+                    setTableYearsFromProfiles([
                         topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
                     ])
                 }
@@ -183,12 +188,12 @@ function CaseSummaryTab({
             profile: studyCost,
         },
         {
-            profileName: "OPEX cost",
+            profileName: "Offshore facliities operations + well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: opexCost,
         },
         {
-            profileName: "Cessation cost",
+            profileName: "Cessation wells + Cessation offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationCost,
         },
@@ -236,6 +241,7 @@ function CaseSummaryTab({
                             defaultValue={caseItem.npv}
                             integer={false}
                             label="NPV before tax"
+                            allowNegative
                         />
                     </NumberInputField>
                     <NumberInputField>
@@ -258,6 +264,7 @@ function CaseSummaryTab({
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="OPEX"
+                    includeFooter={false}
                 />
             </TableWrapper>
             <TableWrapper>
@@ -270,6 +277,7 @@ function CaseSummaryTab({
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="CAPEX"
+                    includeFooter
                 />
             </TableWrapper>
         </>

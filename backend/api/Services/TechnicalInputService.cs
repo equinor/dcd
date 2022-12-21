@@ -60,6 +60,8 @@ public class TechnicalInputService
                 technicalInputDto.ExplorationDto = wellResult.Value.explorationDto;
                 technicalInputDto.WellProjectDto = wellResult.Value.wellProjectDto;
             }
+            var project = _projectService.GetProject(technicalInputDto.ProjectDto.ProjectId);
+            technicalInputDto.ProjectDto = ProjectDtoAdapter.Convert(project);
         }
 
         _context.SaveChanges();
@@ -77,7 +79,8 @@ public class TechnicalInputService
             if (wellDto.Id == Guid.Empty)
             {
                 var well = WellAdapter.Convert(wellDto);
-                _context.Wells!.Add(well);
+                var updatedWell = _context.Wells!.Add(well);
+                wellDto.Id = updatedWell.Entity.Id;
 
                 runSaveChanges = true;
             }
@@ -123,7 +126,7 @@ public class TechnicalInputService
         {
             return updatedDto;
         }
-        var item = _projectService.GetProjectWithoutAssets(updatedDto.ProjectId);
+        var item = _projectService.GetProject(updatedDto.ProjectId);
         ProjectAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Projects!.Update(item);
         return ProjectDtoAdapter.Convert(updatedItem.Entity);

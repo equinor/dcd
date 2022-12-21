@@ -144,8 +144,8 @@ public class CompareCasesService
     {
         var generateStudyProfile = _generateStudyCostProfile.Generate(caseItem.Id);
         var generateOpexProfile = _generateOpexCostProfile.Generate(caseItem.Id);
-        var sumStudyValues = generateStudyProfile.Sum;
-        var sumOpexValues = generateOpexProfile.Sum;
+        var sumStudyValues = generateStudyProfile?.StudyCostProfileDto?.Sum ?? 0;
+        var sumOpexValues = generateOpexProfile?.OpexCostProfileDto?.Sum ?? 0;
 
         return sumStudyValues + sumOpexValues;
     }
@@ -153,7 +153,7 @@ public class CompareCasesService
     private double CalculateTotalCessationCosts(Case caseItem)
     {
         var generateCessationProfile = _generateCessationCostProfile.Generate(caseItem.Id);
-        return generateCessationProfile.Sum;
+        return generateCessationProfile?.CessationCostDto?.Sum ?? 0;
     }
 
     private double CalculateOffshorePlusOnshoreFacilityCosts(Case caseItem)

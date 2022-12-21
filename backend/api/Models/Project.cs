@@ -6,6 +6,7 @@ public class Project
     public string Name { get; set; } = string.Empty;
     public Guid CommonLibraryId { get; set; }
     public Guid FusionProjectId { get; set; }
+    public Guid ReferenceCaseId { get; set; }
     public string CommonLibraryName { get; set; } = null!;
     public string Description { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
@@ -38,13 +39,13 @@ public class Project
 public enum PhysUnit
 {
     SI,
-    OilField
+    OilField,
 }
 
 public enum Currency
 {
     NOK = 1,
-    USD = 2
+    USD = 2,
 }
 
 public enum ProjectPhase
@@ -58,7 +59,7 @@ public enum ProjectPhase
     Definition,
     Execution,
     Operation,
-    ScreeningBusinessOpportunities
+    ScreeningBusinessOpportunities,
 }
 
 public enum ProjectCategory
@@ -84,5 +85,5 @@ public enum ProjectCategory
     PowerFromShore,
     TieIn,
     RenewableOther,
-    Ccs
+    Ccs,
 }

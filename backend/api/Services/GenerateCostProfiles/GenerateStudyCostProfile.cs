@@ -27,39 +27,45 @@ public class GenerateStudyCostProfile
         _transportService = serviceProvider.GetRequiredService<TransportService>();
     }
 
-    public StudyCostProfileDto Generate(Guid caseId)
+    public StudyCostProfileWrapperDto Generate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
 
         var sumFacilityCost = SumAllCostFacility(caseItem);
         var sumWellCost = SumWellCost(caseItem);
 
+        var result = new StudyCostProfileWrapperDto();
         var feasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
+        var feasibilityDto = CaseDtoAdapter.Convert(feasibility);
+        result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
+
         var feed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
+        var feedDto = CaseDtoAdapter.Convert(feed);
+        result.TotalFEEDStudiesDto = feedDto;
 
         if (feasibility.Values.Length == 0 && feed.Values.Length == 0)
         {
-            return new StudyCostProfileDto();
+            return new StudyCostProfileWrapperDto();
         }
         var cost = TimeSeriesCost.MergeCostProfiles(feasibility, feed);
-        if (cost == null) { return new StudyCostProfileDto(); }
         var studyCost = new StudyCostProfile
         {
             StartYear = cost.StartYear,
             Values = cost.Values
         };
-        var dto = CaseDtoAdapter.Convert(studyCost);
-        return dto;
+        var study = CaseDtoAdapter.Convert(studyCost);
+        result.StudyCostProfileDto = study;
+        return result;
     }
 
-    public TimeSeries<double> CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    public TotalFeasibilityAndConceptStudies CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
         var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeasibilityStudies;
 
         var dg0 = caseItem.DG0Date;
         var dg2 = caseItem.DG2Date;
 
-        if (dg0.Year == 1 || dg2.Year == 1) { return new TimeSeries<double>(); }
+        if (dg0.Year == 1 || dg2.Year == 1) { return new TotalFeasibilityAndConceptStudies(); }
         if (dg2.DayOfYear == 1) { dg2 = dg2.AddDays(-1); } // Treat the 1st of January as the 31st of December
 
         var totalDays = (dg2 - dg0).Days + 1;
@@ -82,7 +88,7 @@ public class GenerateStudyCostProfile
 
         var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
 
-        var feasibilityAndConceptStudiesCost = new TimeSeries<double>
+        var feasibilityAndConceptStudiesCost = new TotalFeasibilityAndConceptStudies
         {
             StartYear = dg0.Year - caseItem.DG4Date.Year,
             Values = valuesList.ToArray()
@@ -91,14 +97,14 @@ public class GenerateStudyCostProfile
         return feasibilityAndConceptStudiesCost;
     }
 
-    public TimeSeries<double> CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    public TotalFEEDStudies CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
         var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
 
         var dg2 = caseItem.DG2Date;
         var dg3 = caseItem.DG3Date;
 
-        if (dg2.Year == 1 || dg3.Year == 1) { return new TimeSeries<double>(); }
+        if (dg2.Year == 1 || dg3.Year == 1) { return new TotalFEEDStudies(); }
         if (dg3.DayOfYear == 1) { dg3 = dg3.AddDays(-1); } // Treat the 1st of January as the 31st of December
 
         var totalDays = (dg3 - dg2).Days + 1;
@@ -123,7 +129,7 @@ public class GenerateStudyCostProfile
 
         var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
 
-        var feasibilityAndConceptStudiesCost = new TimeSeries<double>
+        var feasibilityAndConceptStudiesCost = new TotalFEEDStudies
         {
             StartYear = dg2.Year - caseItem.DG4Date.Year,
             Values = valuesList.ToArray()

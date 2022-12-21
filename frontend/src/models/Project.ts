@@ -30,6 +30,7 @@ export class Project implements Components.Schemas.ProjectDto {
     wellProjects: WellProject[]
     commonLibraryId: string
     commonLibraryName: string
+    referenceCaseId?: string
     currency: Components.Schemas.Currency
     physUnit: Components.Schemas.PhysUnit
     wells?: Well[] | undefined
@@ -56,6 +57,7 @@ export class Project implements Components.Schemas.ProjectDto {
         this.projectId = data.projectId ?? ""
         this.commonLibraryId = data.commonLibraryId ?? ""
         this.commonLibraryName = data.commonLibraryName ?? ""
+        this.referenceCaseId = data.referenceCaseId ?? ""
         this.name = data.name ?? ""
         this.phase = data.projectPhase
         this.substructures = data.substructures?.map(Substructure.fromJSON) ?? []

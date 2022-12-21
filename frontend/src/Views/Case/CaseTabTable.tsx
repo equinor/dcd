@@ -4,16 +4,15 @@ import {
     SetStateAction,
     useMemo,
     useState,
-    useRef,
     useEffect,
 } from "react"
 
 import { AgGridReact } from "ag-grid-react"
+import "ag-grid-enterprise"
 import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
-import "ag-grid-enterprise"
 import { isInteger } from "../../Utils/common"
 
 interface Props {
@@ -27,6 +26,8 @@ interface Props {
     tableName: string
     alignedGridsRef?: any[]
     gridRef?: any
+    includeFooter: boolean
+    totalRowName?: string
 }
 
 function CaseTabTable({
@@ -35,6 +36,7 @@ function CaseTabTable({
     timeSeriesData, dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
+    includeFooter, totalRowName,
 }: Props) {
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
@@ -79,22 +81,49 @@ function CaseTabTable({
     }
 
     const lockIcon = (params: any) => {
-        if (!params.data.set) {
+        if (!params?.data?.set) {
             return <Icon data={lock} color="#007079" />
         }
         return null
     }
 
+    const getRowStyle = (params: any) => {
+        if (params.node.footer) {
+            return { fontWeight: "bold" }
+        }
+        return undefined
+    }
+
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
-                field: "profileName", headerName: tableName, width: 250, editable: false, pinned: "left",
+                field: "profileName",
+                headerName: tableName,
+                width: 250,
+                editable: false,
+                pinned: "left",
+                aggFunc: () => totalRowName ?? "Total",
             },
             {
-                field: "unit", width: 100, editable: false, pinned: "left",
+                field: "unit",
+                width: 100,
+                editable: false,
+                pinned: "left",
+                aggFunc: (params: any) => {
+                    if (params?.values?.length > 0) {
+                        return params.values[0]
+                    }
+                    return ""
+                },
             },
             {
-                field: "total", flex: 2, editable: false, pinned: "right", width: 100,
+                field: "total",
+                flex: 2,
+                editable: false,
+                pinned: "right",
+                width: 100,
+                aggFunc: "sum",
+                cellStyle: { fontWeight: "bold" },
             },
             {
                 headerName: "",
@@ -102,7 +131,6 @@ function CaseTabTable({
                 field: "set",
                 pinned: "right",
                 aggFunc: "",
-                cellStyle: { fontWeight: "normal" },
                 editable: false,
                 cellRenderer: lockIcon,
             },
@@ -114,6 +142,7 @@ function CaseTabTable({
                 flex: 1,
                 editable: (params: any) => params.data.set !== undefined,
                 minWidth: 100,
+                aggFunc: "sum",
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -135,7 +164,6 @@ function CaseTabTable({
                 && p.data[prop] !== ""
                 && p.data[prop] !== null
                 && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
-                // eslint-disable-next-line max-len
                 tableTimeSeriesValues.push({
                     year: parseInt(prop, 10),
                     value: Number(p.data[prop].toString().replace(/,/g, ".")),
@@ -207,6 +235,8 @@ function CaseTabTable({
                 suppressMovableColumns
                 enableCharts
                 alignedGrids={gridRefArrayToAlignedGrid()}
+                groupIncludeTotalFooter={includeFooter}
+                getRowStyle={getRowStyle}
             />
         </div>
     )
