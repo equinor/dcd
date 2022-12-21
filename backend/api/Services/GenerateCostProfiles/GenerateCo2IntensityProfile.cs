@@ -91,9 +91,4 @@ public class GenerateCo2IntensityProfile
         };
         return gas;
     }
-
-    // private static TimeSeries<double> GetCo2EmissionsProfile(Project project, DrainageStrategy drainageStrategy, Guid caseId)
-    // {
-    //     // var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
-    // }
 }
