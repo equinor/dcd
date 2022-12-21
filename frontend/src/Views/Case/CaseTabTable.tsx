@@ -47,7 +47,7 @@ function CaseTabTable({
             const { profileName, unit } = ts
             rowObject.profileName = profileName
             rowObject.unit = unit
-            rowObject.total = 0
+            rowObject.total = ts.total ?? 0
             rowObject.set = ts.set
             rowObject.profile = ts.profile
             if (ts.profile && ts.profile.values.length > 0) {
@@ -61,6 +61,9 @@ function CaseTabTable({
                         rowObject.total = Math.round(ts.profile.values.map(
                             (v: number) => (v + Number.EPSILON),
                         ).reduce((x: number, y: number) => x + y) * 1000) / 1000
+                        if (ts.total !== undefined) {
+                            rowObject.total = Math.round(ts.total * 1000) / 1000
+                        }
                     }
                 } else {
                     for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {

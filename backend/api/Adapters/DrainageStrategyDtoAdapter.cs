@@ -205,4 +205,19 @@ public static class DrainageStrategyDtoAdapter
 
         return null;
     }
+
+    public static Co2IntensityDto? Convert(Co2Intensity? co2Intensity, PhysUnit unit)
+    {
+        if (co2Intensity == null)
+        {
+            return null;
+        }
+
+        return new Co2IntensityDto
+        {
+            Id = co2Intensity.Id,
+            StartYear = co2Intensity.StartYear,
+            Values = ConvertUnitValues(co2Intensity.Values, unit, nameof(Co2Intensity)),
+        };
+    }
 }

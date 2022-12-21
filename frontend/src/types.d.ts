@@ -128,6 +128,12 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
+        export interface Co2IntensityDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
         export interface CommonLibraryProjectDto {
             id?: string; // uuid
             name?: string | null;
@@ -188,6 +194,7 @@ declare namespace Components {
             co2Emissions?: Co2EmissionsDto;
             productionProfileNGL?: ProductionProfileNGLDto;
             importedElectricity?: ImportedElectricityDto;
+            co2Intensity?: Co2IntensityDto;
             hasChanges?: boolean;
         }
         export interface DrillingScheduleDto {
@@ -1145,6 +1152,28 @@ declare namespace Paths {
             export type $200 = Components.Schemas.Co2EmissionsDto;
         }
     }
+    namespace GenerateCo2Intensity {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.Co2IntensityDto;
+        }
+    }
+    namespace GenerateCo2IntensityTotal {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = number; // double
+        }
+    }
     namespace GenerateFuelFlaringLosses {
         namespace Parameters {
             export type CaseId = string; // uuid
@@ -1363,13 +1392,7 @@ declare namespace Paths {
         }
     }
     namespace SetReferenceCase {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface QueryParameters {
-            caseId?: Parameters.CaseId /* uuid */;
-        }
-        export type RequestBody = string; // uuid
+        export type RequestBody = Components.Schemas.ProjectDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }
