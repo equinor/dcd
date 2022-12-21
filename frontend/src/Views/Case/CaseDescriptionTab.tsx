@@ -66,26 +66,32 @@ function CaseDescriptionTab({
 
     const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        const newfacilitiesAvailability = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
-        newCase.facilitiesAvailability = newfacilitiesAvailability / 100
+        const newfacilitiesAvailability = e.currentTarget.value.length > 0
+            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        if (newfacilitiesAvailability !== undefined) {
+            newCase.facilitiesAvailability = newfacilitiesAvailability / 100
+        } else { newCase.facilitiesAvailability = undefined }
         setCase(newCase)
     }
 
     const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.producerCount = Math.max(Number(e.currentTarget.value), 0)
+        newCase.producerCount = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setCase(newCase)
     }
 
     const handleGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.gasInjectorCount = Math.max(Number(e.currentTarget.value), 0)
+        newCase.gasInjectorCount = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setCase(newCase)
     }
 
     const handletWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        newCase.waterInjectorCount = Math.max(Number(e.currentTarget.value), 0)
+        newCase.waterInjectorCount = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setCase(newCase)
     }
 
@@ -181,7 +187,8 @@ function CaseDescriptionTab({
                     </InputWrapper>
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}
-                        defaultValue={caseItem.facilitiesAvailability * 100}
+                        defaultValue={caseItem.facilitiesAvailability
+                            !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
                         integer={false}
                         label="Facilities availability"
                         unit="%"

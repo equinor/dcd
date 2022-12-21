@@ -33,11 +33,11 @@ export class Case implements Components.Schemas.CaseDto {
     producerCount?: number
     gasInjectorCount?: number
     waterInjectorCount?: number
-    facilitiesAvailability: number
-    capexFactorFeasibilityStudies: number // double
-    capexFactorFEEDStudies: number // double
-    npv: number // double
-    breakEven: number // double
+    facilitiesAvailability?: number
+    capexFactorFeasibilityStudies?: number // double
+    capexFactorFEEDStudies?: number // double
+    npv?: number // double
+    breakEven?: number // double
     host?: string | null
     productionStrategyOverview: Components.Schemas.ProductionStrategyOverview
     cessationCost?: CessationCostProfile

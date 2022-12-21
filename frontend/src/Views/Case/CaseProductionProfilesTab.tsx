@@ -119,8 +119,11 @@ function CaseProductionProfilesTab({
 
     const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase: Case = { ...caseItem }
-        const newfacilitiesAvailability = Math.min(Math.max(Number(e.currentTarget.value), 0), 100)
-        newCase.facilitiesAvailability = newfacilitiesAvailability / 100
+        const newfacilitiesAvailability = e.currentTarget.value.length > 0
+            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        if (newfacilitiesAvailability !== undefined) {
+            newCase.facilitiesAvailability = newfacilitiesAvailability / 100
+        } else { newCase.facilitiesAvailability = undefined }
         setCase(newCase)
     }
 
@@ -300,7 +303,8 @@ function CaseProductionProfilesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={handleCaseFacilitiesAvailabilityChange}
-                            defaultValue={caseItem.facilitiesAvailability * 100}
+                            defaultValue={caseItem.facilitiesAvailability
+                                !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
                             integer={false}
                             label="Facilities availability"
                             unit="%"
