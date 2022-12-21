@@ -2,12 +2,11 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
-    useState,
 } from "react"
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography, Input, Label, Progress,
+    NativeSelect, Typography, Input, Label,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -16,11 +15,6 @@ import { Topside } from "../../models/assets/topside/Topside"
 import { Substructure } from "../../models/assets/substructure/Substructure"
 import { Surf } from "../../models/assets/surf/Surf"
 import { Transport } from "../../models/assets/transport/Transport"
-import { GetTopsideService } from "../../Services/TopsideService"
-import { GetSurfService } from "../../Services/SurfService"
-import { GetSubstructureService } from "../../Services/SubstructureService"
-import { GetTransportService } from "../../Services/TransportService"
-import { GetCaseService } from "../../Services/CaseService"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -80,103 +74,109 @@ function CaseFacilitiesTab({
 }: Props) {
     const handleFacilityOpexChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.facilityOpex = Number(e.currentTarget.value)
+        newTopside.facilityOpex = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
 
     const handleSurfCessationCostChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.cessationCost = Number(e.currentTarget.value)
+        newSurf.cessationCost = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setSurf(newSurf)
     }
 
     const handleTopsideDryWeightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.dryWeight = Math.max(Number(e.currentTarget.value), 0)
+        newTopside.dryWeight = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setTopside(newTopside)
     }
 
     const handleTopsidePeakElectricityImportedChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.peakElectricityImported = Math.max(Number(e.currentTarget.value), 0)
+        newTopside.peakElectricityImported = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setTopside(newTopside)
     }
 
     const handleTopsideProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.producerCount = Number(e.currentTarget.value)
+        newTopside.producerCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
 
     const handleTopsideGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.gasInjectorCount = Number(e.currentTarget.value)
+        newTopside.gasInjectorCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
 
     const handleTopsideWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.waterInjectorCount = Number(e.currentTarget.value)
+        newTopside.waterInjectorCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
 
     const handleTopsideOilCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.oilCapacity = Math.max(Number(e.currentTarget.value), 0)
+        newTopside.oilCapacity = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setTopside(newTopside)
     }
 
     const handleTopsideGasCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.gasCapacity = Math.max(Number(e.currentTarget.value), 0)
+        newTopside.gasCapacity = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setTopside(newTopside)
     }
 
     const handleTopsideWaterInjectionCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
-        newTopside.waterInjectionCapacity = Number(e.currentTarget.value)
+        newTopside.waterInjectionCapacity = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
 
     const handleSurfTemplateCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.templateCount = Math.max(Number(e.currentTarget.value), 0)
+        newSurf.templateCount = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setSurf(newSurf)
     }
 
     const handleSurfRiserCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.riserCount = Math.max(Number(e.currentTarget.value), 0)
+        newSurf.riserCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setSurf(newSurf)
     }
 
     const handleSurfProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.producerCount = Number(e.currentTarget.value)
+        newSurf.producerCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setSurf(newSurf)
     }
 
     const handleSurfGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.gasInjectorCount = Number(e.currentTarget.value)
+        newSurf.gasInjectorCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setSurf(newSurf)
     }
 
     const handleSurfWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.waterInjectorCount = Number(e.currentTarget.value)
+        newSurf.waterInjectorCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : undefined
         setSurf(newSurf)
     }
 
     const handleSurfInfieldPipelineSystemLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.infieldPipelineSystemLength = Math.max(Number(e.currentTarget.value), 0)
+        newSurf.infieldPipelineSystemLength = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setSurf(newSurf)
     }
 
     const handleSurfUmbilicalSystemLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSurf: Surf = { ...surf }
-        newSurf.umbilicalSystemLength = Math.max(Number(e.currentTarget.value), 0)
+        newSurf.umbilicalSystemLength = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setSurf(newSurf)
     }
 
@@ -192,7 +192,8 @@ function CaseFacilitiesTab({
 
     const handleSubstructureDryweightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newSubstructure: Substructure = { ...substructure }
-        newSubstructure.dryWeight = Math.max(Number(e.currentTarget.value), 0)
+        newSubstructure.dryWeight = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setSubstrucutre(newSubstructure)
     }
 
@@ -219,13 +220,15 @@ function CaseFacilitiesTab({
 
     const handleTransportOilExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTransport: Transport = { ...transport }
-        newTransport.oilExportPipelineLength = Math.max(Number(e.currentTarget.value), 0)
+        newTransport.oilExportPipelineLength = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setTransport(newTransport)
     }
 
     const handleTransportGasExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTransport: Transport = { ...transport }
-        newTransport.gasExportPipelineLength = Math.max(Number(e.currentTarget.value), 0)
+        newTransport.gasExportPipelineLength = e.currentTarget.value.length > 0
+            ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setTransport(newTransport)
     }
 
@@ -304,7 +307,7 @@ function CaseFacilitiesTab({
                     <NumberInputField>
                         <CaseNumberInput
                             onChange={() => { }}
-                            defaultValue={caseItem.facilitiesAvailability * 100}
+                            defaultValue={caseItem.facilitiesAvailability ?? 0 * 100}
                             integer
                             disabled
                             label="Facilities availability"
