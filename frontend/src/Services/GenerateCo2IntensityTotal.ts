@@ -5,7 +5,7 @@ import { GetToken, LoginAccessTokenKey } from "../Utils/common"
 export class __GenerateCo2IntensityTotal extends __BaseService {
     async calculate(caseId: string) {
         // eslint-disable-next-line max-len
-        const res: Components.Schemas.Co2IntensityTotalDto = await this.post<Components.Schemas.Co2IntensityTotalDto>(`/${caseId}/generateCo2IntensityTotal`)
+        const res: number = await this.post<number>(`/${caseId}/generateCo2IntensityTotal`)
         return res
     }
 }
