@@ -208,7 +208,7 @@ function CaseCO2Tab({
 
     const co2EmissionsTotalString = () => {
         if (co2Emissions) {
-            return (Math.round(co2Emissions.sum! * 1000) / 1000).toString()
+            return (Math.round(co2Emissions.sum! * 10) / 10).toString()
         }
         return "0"
     }
