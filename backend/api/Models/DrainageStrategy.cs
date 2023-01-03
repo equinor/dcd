@@ -85,3 +85,8 @@ public class ImportedElectricity : TimeSeriesEnergy
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
+
+public class Co2Intensity : TimeSeriesMass
+{
+
+}

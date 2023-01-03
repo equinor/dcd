@@ -9,7 +9,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Typography, Progress,
+    Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -20,12 +20,21 @@ import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { Co2Emissions } from "../../models/assets/drainagestrategy/Co2Emissions"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { Topside } from "../../models/assets/topside/Topside"
-import { GetTopsideService } from "../../Services/TopsideService"
 import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
+import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
+import { WrapperColumn } from "../Asset/StyledAssetComponents"
+import { Co2Intensity } from "../../models/assets/drainagestrategy/Co2Intensity"
 
 const ColumnWrapper = styled.div`
     display: flex;
     flex-direction: column;
+`
+const GraphWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin-bottom: 40px;
 `
 const TopWrapper = styled.div`
     display: flex;
@@ -83,6 +92,8 @@ function CaseCO2Tab({
     activeTab,
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
+    const [co2Intensity, setCo2Intensity] = useState<Co2Intensity>()
+    const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -92,11 +103,16 @@ function CaseCO2Tab({
         (async () => {
             try {
                 if (activeTab === 6) {
-                    const co2 = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
-                    setCo2Emissions(await co2)
+                    const co2E = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(caseItem.id)
+
+                    setCo2Emissions(await co2E)
+                    setCo2Intensity(await co2I)
+                    setCo2IntensityTotal(Number(co2ITotal))
 
                     SetTableYearsFromProfiles(
-                        [await co2],
+                        [await co2E, await co2I],
                         caseItem.DG4Date.getFullYear(),
                         setStartYear,
                         setEndYear,
@@ -146,6 +162,7 @@ function CaseCO2Tab({
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
+        total?: string
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -154,11 +171,51 @@ function CaseCO2Tab({
             unit: `${project?.physUnit === 0 ? "MTPA" : "MTPA"}`,
             profile: co2Emissions,
         },
+        {
+            profileName: "Year-by-year CO2 intensity",
+            unit: `${project?.physUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+            profile: co2Intensity,
+            total: co2IntensityTotal?.toString(),
+        },
     ]
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
+
+    const co2EmissionsChartData = () => {
+        const dataArray = []
+        for (let i = startYear; i <= endYear; i += 1) {
+            dataArray.push({
+                year: i,
+                co2Emissions:
+                    setValueToCorrespondingYear(co2Emissions, i, startYear, caseItem.DG4Date.getFullYear()),
+                co2Intensity:
+                    setValueToCorrespondingYear(co2Intensity, i, startYear, caseItem.DG4Date.getFullYear()),
+            })
+        }
+        return dataArray
+    }
+
+    const co2IntensityLine = {
+        type: "line",
+        xKey: "year",
+        yKey: "co2Intensity",
+        yName: "Year-by-year CO2 intensity (kg CO2/boe)",
+    }
+
+    const co2EmissionsTotalString = () => {
+        if (co2Emissions) {
+            return (Math.round(co2Emissions.sum! * 10) / 10).toString()
+        }
+        return "0"
+    }
+
+    const co2DistributionChartData = [
+        { profile: "Placeholder pie", value: 1 },
+        { profile: "Placeholder pie", value: 1 },
+        { profile: "Placeholder pie", value: 1 },
+    ]
 
     if (activeTab !== 6) { return null }
 
@@ -182,6 +239,54 @@ function CaseCO2Tab({
                     </NumberInputField>
                 </RowWrapper>
             </ColumnWrapper>
+            <RowWrapper>
+                <AgChartsTimeseries
+                    data={co2EmissionsChartData()}
+                    chartTitle="Annual CO2 emissions"
+                    barColors={["#E24973", "#FF92A8"]}
+                    barProfiles={["co2Emissions"]}
+                    barNames={["Annual CO2 emissions (million tonnes)"]}
+                    width="70%"
+                    height="600"
+                    lineChart={co2IntensityLine}
+                />
+                <WrapperColumn>
+                    <GraphWrapper>
+                        <Typography
+                            style={{
+                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "500", fontSize: "18px", marginBottom: "30px",
+                            }}
+                        >
+                            Average lifetime CO2 intensity
+
+                        </Typography>
+                        <Typography
+                            style={{
+                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "500", fontSize: "31px",
+                            }}
+                        >
+                            {Math.round(co2IntensityTotal * 10) / 10}
+
+                        </Typography>
+                        <Typography
+                            style={{
+                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "400", fontSize: "18px", color: "#B4B4B4",
+                            }}
+                        >
+                            kg CO2/boe
+
+                        </Typography>
+                    </GraphWrapper>
+                    <AgChartsPie
+                        data={co2DistributionChartData}
+                        chartTitle="CO2 distribution"
+                        barColors={["#243746", "#EB0037", "#A8CED1"]}
+                        height={400}
+                        width="100%"
+                        totalCo2Emission={co2EmissionsTotalString()}
+                    />
+                </WrapperColumn>
+            </RowWrapper>
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField

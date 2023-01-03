@@ -7,6 +7,7 @@ import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
 import { ImportedElectricity } from "../models/assets/drainagestrategy/ImportedElectricity"
 import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
 import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
+import { Co2Intensity } from "../models/assets/drainagestrategy/Co2Intensity"
 
 export class __GenerateProfileService extends __BaseService {
     async generateGAndGAdminCost(id: string) {
@@ -33,28 +34,40 @@ export class __GenerateProfileService extends __BaseService {
         return costProfiles
     }
 
-    async generateNetSaleProfile(id:string) {
+    async generateNetSaleProfile(id: string) {
         // eslint-disable-next-line max-len
         const profile: Components.Schemas.NetSalesGasDto = await this.post<Components.Schemas.NetSalesGasDto>(`/${id}/generateNetSaleGas`)
         return NetSalesGas.fromJson(profile)
     }
 
-    async generateImportedElectricityProfile(id:string) {
+    async generateImportedElectricityProfile(id: string) {
         // eslint-disable-next-line max-len
         const profile: Components.Schemas.ImportedElectricityDto = await this.post<Components.Schemas.ImportedElectricityDto>(`/${id}/generateImportedElectricity`)
         return ImportedElectricity.fromJson(profile)
     }
 
-    async generateCo2EmissionsProfile(id:string) {
+    async generateCo2EmissionsProfile(id: string) {
         // eslint-disable-next-line max-len
         const profile: Components.Schemas.Co2EmissionsDto = await this.post<Components.Schemas.Co2EmissionsDto>(`/${id}/generateCo2Emissions`)
         return Co2Emissions.fromJson(profile)
     }
 
-    async generateFuelFlaringLossesProfile(id:string) {
+    async generateFuelFlaringLossesProfile(id: string) {
         // eslint-disable-next-line max-len
-        const profile:Components.Schemas.FuelFlaringAndLossesDto = await this.post < Components.Schemas.FuelFlaringAndLossesDto>(`/${id}/generateFuelFlaringLosses`)
+        const profile: Components.Schemas.FuelFlaringAndLossesDto = await this.post<Components.Schemas.FuelFlaringAndLossesDto>(`/${id}/generateFuelFlaringLosses`)
         return FuelFlaringAndLosses.fromJson(profile)
+    }
+
+    async generateCo2IntensityProfile(id: string) {
+        // eslint-disable-next-line max-len
+        const profile: Components.Schemas.Co2IntensityDto = await this.post<Components.Schemas.Co2IntensityDto>(`/${id}/generateCo2Intensity`)
+        return Co2Intensity.fromJson(profile)
+    }
+
+    async generateCo2IntensityTotal(caseId: string) {
+        // eslint-disable-next-line max-len
+        const res: number = await this.post<number>(`/${caseId}/generateCo2IntensityTotal`)
+        return res
     }
 }
 

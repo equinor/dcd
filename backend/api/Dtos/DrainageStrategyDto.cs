@@ -23,6 +23,7 @@ public class DrainageStrategyDto
     public Co2EmissionsDto? Co2Emissions { get; set; }
     public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
     public ImportedElectricityDto? ImportedElectricity { get; set; }
+    public Co2IntensityDto? Co2Intensity { get; set; }
     public bool HasChanges { get; set; }
 }
 
@@ -59,5 +60,9 @@ public class ImportedElectricityDto : TimeSeriesEnergyDto
 }
 
 public class ProductionProfileNGLDto : TimeSeriesVolumeDto
+{
+}
+
+public class Co2IntensityDto : TimeSeriesMassDto
 {
 }
