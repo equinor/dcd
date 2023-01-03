@@ -25,6 +25,7 @@ import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Component
 import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
 import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { Co2Intensity } from "../../models/assets/drainagestrategy/Co2Intensity"
+import { Co2DrillingFlaringFuelTotals } from "../../models/assets/drainagestrategy/Co2DrillingFlaringFuelTotals"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -94,6 +95,7 @@ function CaseCO2Tab({
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
     const [co2Intensity, setCo2Intensity] = useState<Co2Intensity>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
+    const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Co2DrillingFlaringFuelTotals>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -106,10 +108,12 @@ function CaseCO2Tab({
                     const co2E = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
                     const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
                     const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(caseItem.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(caseItem.id)
 
                     setCo2Emissions(await co2E)
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))
+                    setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
                     SetTableYearsFromProfiles(
                         [await co2E, await co2I],
@@ -124,6 +128,7 @@ function CaseCO2Tab({
             }
         })()
     }, [activeTab])
+    console.log(co2DrillingFlaringFuelTotals)
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -212,9 +217,9 @@ function CaseCO2Tab({
     }
 
     const co2DistributionChartData = [
-        { profile: "Placeholder pie", value: 1 },
-        { profile: "Placeholder pie", value: 1 },
-        { profile: "Placeholder pie", value: 1 },
+        { profile: "Drilling", value: co2DrillingFlaringFuelTotals?.co2Drilling },
+        { profile: "Flaring", value: co2DrillingFlaringFuelTotals?.co2Flaring },
+        { profile: "Fuel", value: co2DrillingFlaringFuelTotals?.co2Fuel },
     ]
 
     if (activeTab !== 6) { return null }

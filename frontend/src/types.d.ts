@@ -122,6 +122,11 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface Co2DrillingFlaringFuelTotalsDto {
+            co2Drilling?: number; // double
+            co2Fuel?: number; // double
+            co2Flaring?: number; // double
+        }
         export interface Co2EmissionsDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -1139,6 +1144,17 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.CessationCostWrapperDto;
+        }
+    }
+    namespace GenerateCo2DrillingFlaringFuelTotals {
+        namespace Parameters {
+            export type CaseId = string; // uuid
+        }
+        export interface PathParameters {
+            caseId: Parameters.CaseId /* uuid */;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.Co2DrillingFlaringFuelTotalsDto;
         }
     }
     namespace GenerateCo2Emissions {
