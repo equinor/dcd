@@ -209,6 +209,35 @@ function CaseCO2Tab({
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
+    const chartAxes = [
+        {
+            type: "category",
+            position: "bottom",
+        },
+        {
+            type: "number",
+            position: "left",
+            keys: ["co2Emissions"],
+            title: {
+                text: "CO2 emissions",
+            },
+            label: {
+                formatter: (params: any) => `${params.value}`, // emission values
+            },
+        },
+        {
+            type: "number",
+            position: "right",
+            keys: ["co2Intensity"],
+            title: {
+                text: "Year-by-year CO2 intensity",
+            },
+            label: {
+                formatter: (params: any) => `${params.value}`, // intensity values
+            },
+        },
+    ]
+
     const co2EmissionsTotalString = () => {
         if (co2Emissions) {
             return (Math.round(co2Emissions.sum! * 10) / 10).toString()
@@ -254,6 +283,7 @@ function CaseCO2Tab({
                     width="70%"
                     height="600"
                     lineChart={co2IntensityLine}
+                    axesData={chartAxes}
                 />
                 <WrapperColumn>
                     <GraphWrapper>
