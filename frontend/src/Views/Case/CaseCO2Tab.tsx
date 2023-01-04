@@ -128,7 +128,6 @@ function CaseCO2Tab({
             }
         })()
     }, [activeTab])
-    console.log(co2DrillingFlaringFuelTotals)
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
