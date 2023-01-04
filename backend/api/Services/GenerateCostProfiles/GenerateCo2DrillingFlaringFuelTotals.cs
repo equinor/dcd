@@ -54,7 +54,7 @@ public class GenerateCo2DrillingFlaringFuelTotals
             StartYear = flarings.StartYear,
             Values = flarings.Values.Select(flare => flare * project.CO2EmissionsFromFlaredGas).ToArray(),
         };
-        return flaringsProfile.Values.Sum();
+        return flaringsProfile.Values.Sum() / 1000;
     }
 
     private static double GetFuelConsumptionsProfileTotal(Project project, Case caseItem, Topside topside,
@@ -68,7 +68,7 @@ public class GenerateCo2DrillingFlaringFuelTotals
             StartYear = fuelConsumptions.StartYear,
             Values = fuelConsumptions.Values.Select(fuel => fuel * project.CO2EmissionFromFuelGas).ToArray(),
         };
-        return fuelConsumptionsProfile.Values.Sum();
+        return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
     private static double CalculateDrillingEmissionsTotal(Project project, WellProject wellProject)

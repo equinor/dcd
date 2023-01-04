@@ -319,6 +319,7 @@ function CaseCO2Tab({
                         height={400}
                         width="100%"
                         totalCo2Emission={co2EmissionsTotalString()}
+                        unit="million tonnes"
                     />
                 </WrapperColumn>
             </RowWrapper>
