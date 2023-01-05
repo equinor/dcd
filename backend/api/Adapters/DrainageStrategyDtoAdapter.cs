@@ -220,19 +220,4 @@ public static class DrainageStrategyDtoAdapter
             Values = ConvertUnitValues(co2Intensity.Values, unit, nameof(Co2Intensity)),
         };
     }
-
-    public static Co2DrillingFlaringFuelTotalsDto? Convert(Co2DrillingFlaringFuelTotals? co2DrillingFlaringFuelTotals, PhysUnit unit)
-    {
-        if (co2DrillingFlaringFuelTotals == null)
-        {
-            return null;
-        }
-
-        return new Co2DrillingFlaringFuelTotalsDto
-        {
-            Co2Drilling = co2DrillingFlaringFuelTotals.Co2Drilling,
-            Co2Flaring = co2DrillingFlaringFuelTotals.Co2Flaring,
-            Co2Fuel = co2DrillingFlaringFuelTotals.Co2Fuel,
-        };
-    }
 }

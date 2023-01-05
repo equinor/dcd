@@ -90,10 +90,3 @@ public class Co2Intensity : TimeSeriesMass
 {
 
 }
-
-public class Co2DrillingFlaringFuelTotals
-{
-    public double Co2Drilling { get; set; }
-    public double Co2Fuel { get; set; }
-    public double Co2Flaring { get; set; }
-}

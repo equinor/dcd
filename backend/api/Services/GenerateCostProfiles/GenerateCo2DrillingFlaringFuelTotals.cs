@@ -34,15 +34,14 @@ public class GenerateCo2DrillingFlaringFuelTotals
         var flaringsTotal = GetFlaringsProfileTotal(project, drainageStrategy);
         var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(project, wellProject);
 
-        var co2DrillingFlaringFuelTotals = new Co2DrillingFlaringFuelTotals
+        var co2DrillingFlaringFuelTotals = new Co2DrillingFlaringFuelTotalsDto
         {
             Co2Drilling = drillingEmissionsTotal,
             Co2Flaring = flaringsTotal,
             Co2Fuel = fuelConsumptionsTotal,
         };
 
-        var dto = DrainageStrategyDtoAdapter.Convert(co2DrillingFlaringFuelTotals, project.PhysicalUnit);
-        return dto ?? new Co2DrillingFlaringFuelTotalsDto();
+        return co2DrillingFlaringFuelTotals ?? new Co2DrillingFlaringFuelTotalsDto();
     }
 
     private static double GetFlaringsProfileTotal(Project project, DrainageStrategy drainageStrategy)
