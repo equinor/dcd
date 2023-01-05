@@ -102,7 +102,7 @@ public class GenerateCo2EmissionsProfile
             .ToList();
         if (linkedWells == null)
         {
-            return new TimeSeriesVolume();
+            return new TimeSeriesVolume(); // test
         }
 
         var wellDrillingSchedules = new TimeSeries<double>();
