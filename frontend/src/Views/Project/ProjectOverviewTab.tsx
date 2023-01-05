@@ -4,6 +4,7 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
+    FormEventHandler,
 } from "react"
 import styled from "styled-components"
 import {
@@ -73,7 +74,7 @@ function ProjectOverviewTab({
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleDescriptionChange: FormEventHandler<any> = async (e) => {
         const newProject: Project = { ...project }
         newProject.description = e.currentTarget.value
         setProject(newProject)
@@ -109,7 +110,7 @@ function ProjectOverviewTab({
                             id="description"
                             placeholder="Enter a description"
                             onInput={handleDescriptionChange}
-                            value={project.description}
+                            value={project.description ?? undefined}
                             cols={100}
                             rows={8}
                         />
