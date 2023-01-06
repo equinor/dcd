@@ -9,7 +9,7 @@ import {
 
 import { AgGridReact } from "ag-grid-react"
 import "ag-grid-enterprise"
-import { lock } from "@equinor/eds-icons"
+import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -43,22 +43,26 @@ function CaseTabTable({
     const profilesToRowData = () => {
         const tableRows: any[] = []
         timeSeriesData.forEach((ts) => {
+            const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}
             const { profileName, unit } = ts
             rowObject.profileName = profileName
             rowObject.unit = unit
             rowObject.total = ts.total ?? 0
-            rowObject.set = ts.set
-            rowObject.profile = ts.profile
-            if (ts.profile && ts.profile.values.length > 0) {
+            rowObject.set = isOverridden ? ts.overrideProfileSet : ts.set
+            rowObject.profile = isOverridden ? ts.overrideProfile : ts.profile
+            rowObject.override = ts.overrideProfile?.override === true
+            if (rowObject.profile && rowObject.profile.values.length > 0) {
                 let j = 0
                 if (tableName === "Production profiles" || tableName === "CO2 emissions") {
-                    for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {
-                        rowObject[(dg4Year + i).toString()] = ts.profile.values.map(
+                    for (let i = rowObject.profile.startYear;
+                        i < rowObject.profile.startYear + rowObject.profile.values.length;
+                        i += 1) {
+                        rowObject[(dg4Year + i).toString()] = rowObject.profile.values.map(
                             (v: number) => Math.round((v + Number.EPSILON) * 1000) / 1000,
                         )[j]
                         j += 1
-                        rowObject.total = Math.round(ts.profile.values.map(
+                        rowObject.total = Math.round(rowObject.profile.values.map(
                             (v: number) => (v + Number.EPSILON),
                         ).reduce((x: number, y: number) => x + y) * 1000) / 1000
                         if (ts.total !== undefined) {
@@ -66,12 +70,14 @@ function CaseTabTable({
                         }
                     }
                 } else {
-                    for (let i = ts.profile.startYear; i < ts.profile.startYear + ts.profile.values.length; i += 1) {
-                        rowObject[(dg4Year + i).toString()] = ts.profile.values.map(
+                    for (let i = rowObject.profile.startYear;
+                        i < rowObject.profile.startYear + rowObject.profile.values.length;
+                        i += 1) {
+                        rowObject[(dg4Year + i).toString()] = rowObject.profile.values.map(
                             (v: number) => Math.round((v + Number.EPSILON) * 10) / 10,
                         )[j]
                         j += 1
-                        rowObject.total = Math.round(ts.profile.values.map(
+                        rowObject.total = Math.round(rowObject.profile.values.map(
                             (v: number) => (v + Number.EPSILON),
                         ).reduce((x: number, y: number) => x + y) * 10) / 10
                     }
@@ -84,8 +90,30 @@ function CaseTabTable({
     }
 
     const lockIcon = (params: any) => {
-        if (!params?.data?.set) {
-            return <Icon data={lock} color="#007079" />
+        const handleLockIconClick = () => {
+            if (params?.data?.override !== undefined) {
+                // eslint-disable-next-line no-param-reassign
+                params.data.override = !params.data.override
+                params.api.redrawRows()
+                params.api.refreshCells()
+            }
+        }
+        if (!params?.data?.overridable) {
+            return params?.data?.override ? (
+                <Icon
+                    data={lock}
+                    color="#007079"
+                    onClick={handleLockIconClick}
+                />
+            )
+                : (
+                    <Icon
+                        data={lock_open}
+                        color="#007079"
+                        opacity={0.5}
+                        onClick={handleLockIconClick}
+                    />
+                )
         }
         return null
     }
@@ -138,12 +166,13 @@ function CaseTabTable({
                 cellRenderer: lockIcon,
             },
         ]
+        const useGeneratedProfile = (params: any) => !(params.data.profile?.override)
         const yearDefs: any[] = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => params.data.set !== undefined,
+                editable: (params: any) => useGeneratedProfile(params),
                 minWidth: 100,
                 aggFunc: "sum",
             })

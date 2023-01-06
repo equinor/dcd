@@ -29,6 +29,7 @@ import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
+import { ImportedElectricityOverride } from "../../models/assets/drainagestrategy/ImportedElectricityOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -97,6 +98,8 @@ function CaseProductionProfilesTab({
     const [nGL, setNGL] = useState<ProductionProfileNGL>()
     const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
 
+    const [importedElectricityOverride, setImportedElectricityOverride] = useState<ImportedElectricityOverride>()
+
     const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
     const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
@@ -114,6 +117,8 @@ function CaseProductionProfilesTab({
         newDrainageStrategy.productionProfileWater = water
         newDrainageStrategy.productionProfileNGL = nGL
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
+
+        newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
     }
 
@@ -159,7 +164,10 @@ function CaseProductionProfilesTab({
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
+        overrideProfile?: ITimeSeries | undefined
+        overridable?: boolean
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -201,7 +209,16 @@ function CaseProductionProfilesTab({
             profileName: "Imported electricity",
             unit: "GWh",
             profile: importedElectricity,
+            overridable: true,
+            overrideProfile: importedElectricityOverride,
+            overrideProfileSet: setImportedElectricityOverride,
         },
+        // {
+        //     profileName: "Imported electricity override",
+        //     unit: "GWh",
+        //     profile: importedElectricityOverride,
+        //     set: setImportedElectricityOverride,
+        // },
     ]
 
     const handleTableYearsClick = () => {
@@ -247,15 +264,16 @@ function CaseProductionProfilesTab({
                     setImportedElectricity(await importedElectricityProfile)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                        drainageStrategy.productionProfileWaterInjection,
+                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+                    drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
                     setWater(drainageStrategy.productionProfileWater)
                     setNGL(drainageStrategy.productionProfileNGL)
                     setWaterInjection(drainageStrategy.productionProfileWaterInjection)
+                    setImportedElectricityOverride(drainageStrategy.importedElectricityOverride)
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -290,6 +308,13 @@ function CaseProductionProfilesTab({
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
         setDrainageStrategy(newDrainageStrategy)
     }, [waterInjection])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.importedElectricityOverride && !importedElectricityOverride) { return }
+        newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
+        setDrainageStrategy(newDrainageStrategy)
+    }, [importedElectricityOverride])
 
     if (activeTab !== 1) { return null }
 
