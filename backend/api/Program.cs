@@ -181,6 +181,7 @@ builder.Services.AddScoped<GenerateNetSaleGasProfile>();
 builder.Services.AddScoped<GenerateCo2IntensityProfile>();
 builder.Services.AddScoped<GenerateCo2IntensityTotal>();
 builder.Services.AddScoped<CompareCasesService>();
+builder.Services.AddScoped<GenerateCo2DrillingFlaringFuelTotals>();
 
 builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<STEAService>();
