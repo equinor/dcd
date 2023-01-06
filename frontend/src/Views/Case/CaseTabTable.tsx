@@ -14,6 +14,7 @@ import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { isInteger } from "../../Utils/common"
+import { ModalNoFocus } from "../../Components/ModalNoFocus"
 
 interface Props {
     project: Project,
@@ -38,6 +39,7 @@ function CaseTabTable({
     alignedGridsRef, gridRef,
     includeFooter, totalRowName,
 }: Props) {
+    const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
     const profilesToRowData = () => {
@@ -92,6 +94,7 @@ function CaseTabTable({
     const lockIcon = (params: any) => {
         const handleLockIconClick = () => {
             if (params?.data?.override !== undefined) {
+                setOverrideModalOpen(true)
                 // eslint-disable-next-line no-param-reassign
                 params.data.override = !params.data.override
                 params.api.redrawRows()
@@ -247,30 +250,33 @@ function CaseTabTable({
     }
 
     return (
-        <div
-            style={{
-                display: "flex", flexDirection: "column", width: "100%",
-            }}
-            className="ag-theme-alpine"
-        >
-            <AgGridReact
-                ref={gridRef}
-                rowData={rowData}
-                columnDefs={columnDefs}
-                defaultColDef={defaultColDef}
-                animateRows
-                domLayout="autoHeight"
-                enableCellChangeFlash
-                rowSelection="multiple"
-                enableRangeSelection
-                suppressCopySingleCellRanges
-                suppressMovableColumns
-                enableCharts
-                alignedGrids={gridRefArrayToAlignedGrid()}
-                groupIncludeTotalFooter={includeFooter}
-                getRowStyle={getRowStyle}
-            />
-        </div>
+        <>
+            <ModalNoFocus isOpen={overrideModalOpen} title={false ? "Edit case" : "Add new case"} />
+            <div
+                style={{
+                    display: "flex", flexDirection: "column", width: "100%",
+                }}
+                className="ag-theme-alpine"
+            >
+                <AgGridReact
+                    ref={gridRef}
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    animateRows
+                    domLayout="autoHeight"
+                    enableCellChangeFlash
+                    rowSelection="multiple"
+                    enableRangeSelection
+                    suppressCopySingleCellRanges
+                    suppressMovableColumns
+                    enableCharts
+                    alignedGrids={gridRefArrayToAlignedGrid()}
+                    groupIncludeTotalFooter={includeFooter}
+                    getRowStyle={getRowStyle}
+                />
+            </div>
+        </>
     )
 }
 
