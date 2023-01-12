@@ -15,6 +15,7 @@ import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { isInteger } from "../../Utils/common"
 import { ModalNoFocus } from "../../Components/ModalNoFocus"
+import { OverrideTimeSeriesPrompt } from "../../Components/OverrideTimeSeriesPrompt"
 
 interface Props {
     project: Project,
@@ -251,7 +252,11 @@ function CaseTabTable({
 
     return (
         <>
-            <ModalNoFocus isOpen={overrideModalOpen} title={false ? "Edit case" : "Add new case"} />
+            <OverrideTimeSeriesPrompt
+                isOpen={overrideModalOpen}
+                setIsOpen={setOverrideModalOpen}
+                profileName="Warning"
+            />
             <div
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
