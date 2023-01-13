@@ -63,6 +63,12 @@ public static class DrainageStrategyAdapter
                 unit, initialCreate);
         }
 
+        if (drainageStrategyDto.ImportedElectricityOverride != null)
+        {
+            drainageStrategy.ImportedElectricityOverride = Convert(drainageStrategyDto.ImportedElectricityOverride, drainageStrategy,
+                unit, initialCreate);
+        }
+
         return drainageStrategy;
     }
 
@@ -141,6 +147,16 @@ public static class DrainageStrategyAdapter
         {
             existing.ImportedElectricity =
                 Convert(drainageStrategyDto.ImportedElectricity, existing, unit, initialCreate);
+        }
+
+        // TODO: Check if this is necessary or can be improved
+        if ((drainageStrategyDto.ImportedElectricityOverride != null
+            && (existing.ImportedElectricityOverride?.Values
+            .SequenceEqual(drainageStrategyDto.ImportedElectricityOverride.Values) != true)) ||
+            existing.ImportedElectricityOverride?.Override != drainageStrategyDto?.ImportedElectricityOverride?.Override)
+        {
+            existing.ImportedElectricityOverride =
+                Convert(drainageStrategyDto.ImportedElectricityOverride, existing, unit, initialCreate);
         }
 
         return existing;
@@ -429,6 +445,31 @@ public static class DrainageStrategyAdapter
             {
                 Id = importedElectricityDto.Id,
                 DrainageStrategy = drainageStrategy,
+                StartYear = importedElectricityDto.StartYear,
+                Values = needToConvertValues || initialCreate
+                    ? ConvertUnitValues(importedElectricityDto.Values, unit, nameof(ImportedElectricity))
+                    : importedElectricityDto.Values,
+            };
+        return convertedTimeSeries;
+    }
+
+    private static ImportedElectricityOverride? Convert(ImportedElectricityOverrideDto? importedElectricityDto,
+    DrainageStrategy drainageStrategy, PhysUnit unit, bool initialCreate)
+    {
+        var needToConvertValues = drainageStrategy?.ImportedElectricity?.Values == null;
+        if (importedElectricityDto != null && drainageStrategy?.ImportedElectricity?.Values != null &&
+            !drainageStrategy.ImportedElectricity.Values.SequenceEqual(importedElectricityDto.Values))
+        {
+            needToConvertValues = true;
+        }
+
+        var convertedTimeSeries = importedElectricityDto == null || drainageStrategy == null
+            ? null
+            : new ImportedElectricityOverride
+            {
+                Id = importedElectricityDto.Id,
+                DrainageStrategy = drainageStrategy,
+                Override = importedElectricityDto.Override,
                 StartYear = importedElectricityDto.StartYear,
                 Values = needToConvertValues || initialCreate
                     ? ConvertUnitValues(importedElectricityDto.Values, unit, nameof(ImportedElectricity))

@@ -28,6 +28,7 @@ public static class DrainageStrategyDtoAdapter
             Co2Emissions = Convert(drainageStrategy.Co2Emissions, unit),
             ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit),
             ImportedElectricity = Convert(drainageStrategy.ImportedElectricity, unit),
+            ImportedElectricityOverride = Convert(drainageStrategy.ImportedElectricityOverride, unit)
         };
         return drainageStrategyDto;
     }
@@ -205,6 +206,23 @@ public static class DrainageStrategyDtoAdapter
 
         return null;
     }
+
+    public static ImportedElectricityOverrideDto? Convert(ImportedElectricityOverride? importedElectricity, PhysUnit unit)
+    {
+        if (importedElectricity == null)
+        {
+            return null;
+        }
+
+        return new ImportedElectricityOverrideDto
+        {
+            Id = importedElectricity.Id,
+            StartYear = importedElectricity.StartYear,
+            Override = importedElectricity.Override,
+            Values = ConvertUnitValues(importedElectricity.Values, unit, nameof(ImportedElectricity)),
+        };
+    }
+
 
     public static Co2IntensityDto? Convert(Co2Intensity? co2Intensity, PhysUnit unit)
     {

@@ -34,6 +34,8 @@ public class DrainageStrategyService
                 .Include(c => c.NetSalesGas)
                 .Include(c => c.Co2Emissions)
                 .Include(c => c.ProductionProfileNGL)
+                .Include(c => c.ImportedElectricity)
+                .Include(c => c.ImportedElectricityOverride)
                 .Where(d => d.Project.Id.Equals(projectId));
         }
         else
@@ -108,6 +110,10 @@ public class DrainageStrategyService
         if (newDrainageStrategyDto.ImportedElectricity != null)
         {
             newDrainageStrategyDto.ImportedElectricity.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.ImportedElectricityOverride != null)
+        {
+            newDrainageStrategyDto.ImportedElectricityOverride.Id = Guid.Empty;
         }
 
         var drainageStrategy = NewCreateDrainageStrategy(newDrainageStrategyDto, sourceCaseId);
@@ -249,6 +255,8 @@ public class DrainageStrategyService
             .Include(c => c.NetSalesGas)
             .Include(c => c.Co2Emissions)
             .Include(c => c.ProductionProfileNGL)
+            .Include(c => c.ImportedElectricity)
+            .Include(c => c.ImportedElectricityOverride)
             .FirstOrDefault(o => o.Id == drainageStrategyId);
         if (drainageStrategy == null)
         {

@@ -7,13 +7,14 @@ public static class CaseAdapter
 {
     public static Case Convert(CaseDto caseDto)
     {
-        return new Case
+        var caseItem = new Case
         {
             Id = caseDto.Id,
             ProjectId = caseDto.ProjectId,
             Name = caseDto.Name,
             Description = caseDto.Description,
             ReferenceCase = caseDto.ReferenceCase,
+
             DGADate = caseDto.DGADate,
             DGBDate = caseDto.DGBDate,
             DGCDate = caseDto.DGCDate,
@@ -24,8 +25,10 @@ public static class CaseAdapter
             DG2Date = caseDto.DG2Date,
             DG3Date = caseDto.DG3Date,
             DG4Date = caseDto.DG4Date,
+
             CreateTime = DateTimeOffset.UtcNow,
             ModifyTime = DateTimeOffset.UtcNow,
+
             DrainageStrategyLink = caseDto.DrainageStrategyLink,
             ExplorationLink = caseDto.ExplorationLink,
             WellProjectLink = caseDto.WellProjectLink,
@@ -33,6 +36,7 @@ public static class CaseAdapter
             TopsideLink = caseDto.TopsideLink,
             SubstructureLink = caseDto.SubstructureLink,
             TransportLink = caseDto.TransportLink,
+
             ArtificialLift = caseDto.ArtificialLift,
             ProductionStrategyOverview = caseDto.ProductionStrategyOverview,
             ProducerCount = caseDto.ProducerCount,
@@ -44,10 +48,13 @@ public static class CaseAdapter
             NPV = caseDto.NPV,
             BreakEven = caseDto.BreakEven,
             Host = caseDto.Host,
+
             SharepointFileId = caseDto.SharepointFileId,
             SharepointFileName = caseDto.SharepointFileName,
             SharepointFileUrl = caseDto.SharepointFileUrl,
         };
+
+        return caseItem;
     }
 
     public static void ConvertExisting(Case existing, CaseDto caseDto)
