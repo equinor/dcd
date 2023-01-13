@@ -48,7 +48,6 @@ function CaseTabTable({
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
-        console.log("timeSeriesData: ", timeSeriesData)
         timeSeriesData.forEach((ts) => {
             const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}

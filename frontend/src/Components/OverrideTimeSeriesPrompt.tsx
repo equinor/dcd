@@ -41,7 +41,6 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
         if (profile !== undefined && setProfile !== undefined) {
             const newProfile = { ...profile }
             newProfile.override = !profile.override
-            console.log(newProfile)
             setProfile(newProfile)
         }
         setIsOpen(!isOpen)
@@ -59,7 +58,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
             }}
             />
             <ModalDiv>
-                {profileName && <Typography variant="h6">{profileName}</Typography>}
+                <Typography variant="h6">Warning</Typography>
                 <div>{children}</div>
                 <p>
                     Are you sure you want to
@@ -67,7 +66,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                     <br />
                     {profileName.toLowerCase()}
                     ?
-                    The time series
+                    The time series will
                     <br />
                     {profile.override ? "be " : "no longer be "}
                     calculated automatically
