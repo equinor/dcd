@@ -54,12 +54,6 @@ public static class CaseAdapter
             SharepointFileUrl = caseDto.SharepointFileUrl,
         };
 
-        caseItem.StudyCostProfile = Convert(caseDto.StudyCostProfile, caseItem);
-        caseItem.StudyCostProfileOverride = Convert(caseDto.StudyCostProfileOverride, caseItem);
-
-        caseItem.OpexCostProfile = Convert(caseDto.OpexCostProfile, caseItem);
-        caseItem.OpexCostProfileOverride = Convert(caseDto.OpexCostProfileOverride, caseItem);
-
         return caseItem;
     }
 
@@ -101,87 +95,5 @@ public static class CaseAdapter
         existing.Host = caseDto.Host;
         existing.SharepointFileId = caseDto.SharepointFileId;
         existing.SharepointFileName = caseDto.SharepointFileName;
-    }
-
-    private static StudyCostProfile? Convert(StudyCostProfileDto? costprofileDto, Case caseItem)
-    {
-        if (costprofileDto == null)
-        {
-            return null;
-        }
-
-        var costProfile = new StudyCostProfile
-        {
-            Id = costprofileDto.Id,
-            Currency = costprofileDto.Currency,
-            EPAVersion = costprofileDto.EPAVersion,
-            Case = caseItem,
-            StartYear = costprofileDto.StartYear,
-            Values = costprofileDto.Values,
-        };
-
-        return costProfile;
-    }
-
-    private static StudyCostProfileOverride? Convert(StudyCostProfileOverrideDto? costprofileDto, Case caseItem)
-    {
-        if (costprofileDto == null)
-        {
-            return null;
-        }
-
-        var costProfile = new StudyCostProfileOverride
-        {
-            Id = costprofileDto.Id,
-            Currency = costprofileDto.Currency,
-            EPAVersion = costprofileDto.EPAVersion,
-            Case = caseItem,
-            StartYear = costprofileDto.StartYear,
-            Values = costprofileDto.Values,
-            Override = costprofileDto.Override,
-        };
-
-        return costProfile;
-    }
-
-    private static OpexCostProfile? Convert(OpexCostProfileDto? costprofileDto, Case caseItem)
-    {
-        if (costprofileDto == null)
-        {
-            return null;
-        }
-
-        var costProfile = new OpexCostProfile
-        {
-            Id = costprofileDto.Id,
-            Currency = costprofileDto.Currency,
-            EPAVersion = costprofileDto.EPAVersion,
-            Case = caseItem,
-            StartYear = costprofileDto.StartYear,
-            Values = costprofileDto.Values,
-        };
-
-        return costProfile;
-    }
-
-    private static OpexCostProfileOverride? Convert(OpexCostProfileOverrideDto? costprofileDto, Case caseItem)
-    {
-        if (costprofileDto == null)
-        {
-            return null;
-        }
-
-        var costProfile = new OpexCostProfileOverride
-        {
-            Id = costprofileDto.Id,
-            Currency = costprofileDto.Currency,
-            EPAVersion = costprofileDto.EPAVersion,
-            Case = caseItem,
-            StartYear = costprofileDto.StartYear,
-            Values = costprofileDto.Values,
-            Override = costprofileDto.Override,
-        };
-
-        return costProfile;
     }
 }

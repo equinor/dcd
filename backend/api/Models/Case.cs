@@ -36,11 +36,6 @@ public class Case
     public double BreakEven { get; set; }
     public string? Host { get; set; }
 
-    public StudyCostProfile? StudyCostProfile { get; set; }
-    public StudyCostProfileOverride? StudyCostProfileOverride { get; set; }
-    public OpexCostProfile? OpexCostProfile { get; set; }
-    public OpexCostProfileOverride? OpexCostProfileOverride { get; set; }
-
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
     public Guid WellProjectLink { get; set; } = Guid.Empty;
     public Guid SurfLink { get; set; } = Guid.Empty;
@@ -83,14 +78,8 @@ public class CessationOffshoreFacilitiesCost : TimeSeriesCost
 
 public class OpexCostProfile : TimeSeriesCost
 {
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
 }
 
-public class OpexCostProfileOverride : OpexCostProfile
-{
-    public bool Override { get; set; }
-}
 public class WellInterventionCostProfile : TimeSeriesCost
 {
 }
@@ -100,13 +89,6 @@ public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost
 
 public class StudyCostProfile : TimeSeriesCost
 {
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
-}
-
-public class StudyCostProfileOverride : StudyCostProfile
-{
-    public bool Override { get; set; }
 }
 
 public class TotalFeasibilityAndConceptStudies : TimeSeriesCost

@@ -21,11 +21,6 @@ public class CaseDto
     public double BreakEven { get; set; }
     public string? Host { get; set; }
 
-    public OpexCostProfileDto? OpexCostProfile { get; set; }
-    public OpexCostProfileOverrideDto? OpexCostProfileOverride { get; set; }
-    public StudyCostProfileDto? StudyCostProfile { get; set; }
-    public StudyCostProfileOverrideDto? StudyCostProfileOverride { get; set; }
-
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }
@@ -70,10 +65,6 @@ public class OpexCostProfileDto : TimeSeriesCostDto
 {
 }
 
-public class OpexCostProfileOverrideDto : OpexCostProfileDto
-{
-    public bool Override { get; set; }
-}
 public class WellInterventionCostProfileDto : TimeSeriesCostDto
 {
 }
@@ -111,11 +102,6 @@ public class StudyCostProfileWrapperDto
     public StudyCostProfileDto? StudyCostProfileDto { get; set; }
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudiesDto { get; set; }
     public TotalFEEDStudiesDto? TotalFEEDStudiesDto { get; set; }
-}
-
-public class StudyCostProfileOverrideDto : StudyCostProfileDto
-{
-    public bool Override { get; set; }
 }
 
 public class CapexYear
