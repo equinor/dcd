@@ -132,7 +132,7 @@ function CaseProductionProfilesTab({
         setCase(newCase)
     }
 
-    const handleDrainageStrategyGasSolutinChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+    const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
             const newGasSolution: Components.Schemas.GasSolution = Number(e.currentTarget.value) as Components.Schemas.GasSolution
@@ -213,12 +213,6 @@ function CaseProductionProfilesTab({
             overrideProfile: importedElectricityOverride,
             overrideProfileSet: setImportedElectricityOverride,
         },
-        // {
-        //     profileName: "Imported electricity override",
-        //     unit: "GWh",
-        //     profile: importedElectricityOverride,
-        //     set: setImportedElectricityOverride,
-        // },
     ]
 
     const handleTableYearsClick = () => {
@@ -264,9 +258,9 @@ function CaseProductionProfilesTab({
                     setImportedElectricity(await importedElectricityProfile)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                    drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
+                        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+                        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+                        drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
@@ -338,7 +332,7 @@ function CaseProductionProfilesTab({
                     <NativeSelectField
                         id="gasSolution"
                         label="Gas solution"
-                        onChange={handleDrainageStrategyGasSolutinChange}
+                        onChange={handleDrainageStrategyGasSolutionChange}
                         value={drainageStrategy?.gasSolution}
                     >
                         <option key={0} value={0}>Export</option>

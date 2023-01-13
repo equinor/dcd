@@ -150,9 +150,10 @@ public static class DrainageStrategyAdapter
         }
 
         // TODO: Check if this is necessary or can be improved
-        if (drainageStrategyDto.ImportedElectricityOverride != null
+        if ((drainageStrategyDto.ImportedElectricityOverride != null
             && (existing.ImportedElectricityOverride?.Values
-            .SequenceEqual(drainageStrategyDto.ImportedElectricityOverride.Values) != true))
+            .SequenceEqual(drainageStrategyDto.ImportedElectricityOverride.Values) != true)) ||
+            existing.ImportedElectricityOverride?.Override != drainageStrategyDto?.ImportedElectricityOverride?.Override)
         {
             existing.ImportedElectricityOverride =
                 Convert(drainageStrategyDto.ImportedElectricityOverride, existing, unit, initialCreate);
@@ -468,6 +469,7 @@ public static class DrainageStrategyAdapter
             {
                 Id = importedElectricityDto.Id,
                 DrainageStrategy = drainageStrategy,
+                Override = importedElectricityDto.Override,
                 StartYear = importedElectricityDto.StartYear,
                 Values = needToConvertValues || initialCreate
                     ? ConvertUnitValues(importedElectricityDto.Values, unit, nameof(ImportedElectricity))

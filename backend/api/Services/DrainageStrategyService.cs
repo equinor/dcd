@@ -111,6 +111,10 @@ public class DrainageStrategyService
         {
             newDrainageStrategyDto.ImportedElectricity.Id = Guid.Empty;
         }
+        if (newDrainageStrategyDto.ImportedElectricityOverride != null)
+        {
+            newDrainageStrategyDto.ImportedElectricityOverride.Id = Guid.Empty;
+        }
 
         var drainageStrategy = NewCreateDrainageStrategy(newDrainageStrategyDto, sourceCaseId);
         var dto = DrainageStrategyDtoAdapter.Convert(drainageStrategy, unit);

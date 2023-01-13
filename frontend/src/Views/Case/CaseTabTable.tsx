@@ -14,8 +14,8 @@ import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { isInteger } from "../../Utils/common"
-import { ModalNoFocus } from "../../Components/ModalNoFocus"
 import { OverrideTimeSeriesPrompt } from "../../Components/OverrideTimeSeriesPrompt"
+import { EMPTY_GUID } from "../../Utils/constants"
 
 interface Props {
     project: Project,
@@ -41,10 +41,14 @@ function CaseTabTable({
     includeFooter, totalRowName,
 }: Props) {
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
+    const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
+    const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
+    const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
+        console.log("timeSeriesData: ", timeSeriesData)
         timeSeriesData.forEach((ts) => {
             const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}
@@ -55,6 +59,12 @@ function CaseTabTable({
             rowObject.set = isOverridden ? ts.overrideProfileSet : ts.set
             rowObject.profile = isOverridden ? ts.overrideProfile : ts.profile
             rowObject.override = ts.overrideProfile?.override === true
+
+            rowObject.overrideProfileSet = ts.overrideProfileSet
+            rowObject.overrideProfile = ts.overrideProfile ?? {
+                id: EMPTY_GUID, startYear: 0, values: [], override: false,
+            }
+
             if (rowObject.profile && rowObject.profile.values.length > 0) {
                 let j = 0
                 if (tableName === "Production profiles" || tableName === "CO2 emissions") {
@@ -92,18 +102,37 @@ function CaseTabTable({
         return tableRows
     }
 
+    useEffect(() => {
+        console.log("----------------------------")
+        console.log("useEffect")
+        console.log("overrideModalOpen:", overrideModalOpen)
+        console.log("overrideModalProfileSet:", overrideModalProfileSet)
+        console.log("overrideProfile:", overrideProfile)
+        console.log("----------------------------")
+    }, [overrideModalOpen, overrideModalProfileSet, overrideProfile])
+
     const lockIcon = (params: any) => {
         const handleLockIconClick = () => {
+            console.log("----------------------------")
+            console.log("handleLockIconClick")
+            console.log("overrideModalOpen:", overrideModalOpen)
+            console.log("overrideModalProfileSet:", overrideModalProfileSet)
+            console.log("overrideProfile:", overrideProfile)
+            console.log("--- --- --- --- --- --- ---")
+            console.log(params)
+            console.log("---------------------------")
             if (params?.data?.override !== undefined) {
                 setOverrideModalOpen(true)
-                // eslint-disable-next-line no-param-reassign
-                params.data.override = !params.data.override
+                setOverrideModalProfileName(params.data.profileName)
+                setOverrideModalProfileSet(() => params.data.overrideProfileSet)
+                setOverrideProfile(params.data.overrideProfile)
+
                 params.api.redrawRows()
                 params.api.refreshCells()
             }
         }
-        if (!params?.data?.overridable) {
-            return params?.data?.override ? (
+        if (params.data.overrideProfileSet !== undefined) {
+            return !overrideProfile?.override ? (
                 <Icon
                     data={lock}
                     color="#007079"
@@ -170,13 +199,21 @@ function CaseTabTable({
                 cellRenderer: lockIcon,
             },
         ]
-        const useGeneratedProfile = (params: any) => !(params.data.profile?.override)
+        const isEditable = (params: any) => {
+            if (params.data.overrideProfileSet === undefined) {
+                return true
+            }
+            if (params.data.overrideProfile.override) {
+                return true
+            }
+            return false
+        }
         const yearDefs: any[] = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => useGeneratedProfile(params),
+                editable: (params: any) => isEditable(params),
                 minWidth: 100,
                 aggFunc: "sum",
             })
@@ -255,7 +292,9 @@ function CaseTabTable({
             <OverrideTimeSeriesPrompt
                 isOpen={overrideModalOpen}
                 setIsOpen={setOverrideModalOpen}
-                profileName="Warning"
+                profileName={overrideModalProfileName}
+                setProfile={overrideModalProfileSet}
+                profile={overrideProfile}
             />
             <div
                 style={{

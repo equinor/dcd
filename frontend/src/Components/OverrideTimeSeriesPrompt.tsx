@@ -1,10 +1,10 @@
 
 import {
-    Dispatch, SetStateAction, useEffect, useState, FunctionComponent,
+    Dispatch, SetStateAction, FunctionComponent,
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Icon, Progress, Tabs, Typography,
+    Button, Typography,
 } from "@equinor/eds-core-react"
 
 const ModalDiv = styled.div`
@@ -22,14 +22,24 @@ type Props = {
     profileName: string;
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
+    setProfile: Dispatch<SetStateAction<any>> | undefined;
+    profile: any
 }
 
 export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
-    isOpen, setIsOpen, profileName, children,
+    isOpen, setIsOpen, profileName, children, setProfile, profile,
 }) => {
     if (!isOpen) return null
     const toggleIsOpen = () => {
-        // eslint-disable-next-line no-param-reassign
+        setIsOpen(!isOpen)
+    }
+    const toggleLock = () => {
+        if (profile !== undefined && setProfile !== undefined) {
+            const newProfile = { ...profile }
+            newProfile.override = !profile.override
+            console.log(newProfile)
+            setProfile(newProfile)
+        }
         setIsOpen(!isOpen)
     }
     return (
@@ -48,13 +58,16 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                 {profileName && <Typography variant="h6">{profileName}</Typography>}
                 <div>{children}</div>
                 <p>
-                    Are you sure you want to unlock the
+                    Are you sure you want to
+                    {profile.override ? " lock " : " unlock "}
+                    the
                     <br />
                     {profileName}
                     ?
                     The cost will
                     <br />
-                    no longer be calculated automatically
+                    {profile.override ? "be " : "no longer be "}
+                    calculated automatically
                 </p>
                 <Button
                     type="button"
@@ -63,7 +76,10 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                 >
                     No, cancel
                 </Button>
-                <Button onClick={toggleIsOpen}>Yes, unlock</Button>
+                <Button onClick={toggleLock}>
+                    Yes,
+                    {profile.override ? " lock" : " unlock"}
+                </Button>
             </ModalDiv>
         </>
     )
