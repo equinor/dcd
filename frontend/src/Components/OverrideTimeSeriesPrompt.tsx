@@ -18,6 +18,10 @@ const ModalDiv = styled.div`
     border: 2px solid gray;
 `
 
+const LockButton = styled(Button)`
+    margin-left: 4rem;
+`
+
 type Props = {
     profileName: string;
     isOpen: boolean;
@@ -50,7 +54,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                 left: 0,
                 right: 0,
                 bottom: 0,
-                backgroundColor: "rgba(0,0,0, .7)",
+                backgroundColor: "rgba(0,0,0, 0.3)",
                 zIndex: 1000,
             }}
             />
@@ -60,11 +64,10 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                 <p>
                     Are you sure you want to
                     {profile.override ? " lock " : " unlock "}
-                    the
                     <br />
-                    {profileName}
+                    {profileName.toLowerCase()}
                     ?
-                    The cost will
+                    The time series
                     <br />
                     {profile.override ? "be " : "no longer be "}
                     calculated automatically
@@ -76,10 +79,10 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                 >
                     No, cancel
                 </Button>
-                <Button onClick={toggleLock}>
+                <LockButton onClick={toggleLock}>
                     Yes,
                     {profile.override ? " lock" : " unlock"}
-                </Button>
+                </LockButton>
             </ModalDiv>
         </>
     )

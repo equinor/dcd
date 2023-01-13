@@ -131,6 +131,9 @@ function CaseTabTable({
                     />
                 )
         }
+        if (!params?.data?.set) {
+            return <Icon data={lock} color="#007079" />
+        }
         return null
     }
 
@@ -183,7 +186,7 @@ function CaseTabTable({
             },
         ]
         const isEditable = (params: any) => {
-            if (params.data.overrideProfileSet === undefined) {
+            if (params.data.overrideProfileSet === undefined && params.data.set !== undefined) {
                 return true
             }
             if (params.data.overrideProfile.override) {
