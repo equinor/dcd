@@ -102,25 +102,8 @@ function CaseTabTable({
         return tableRows
     }
 
-    useEffect(() => {
-        console.log("----------------------------")
-        console.log("useEffect")
-        console.log("overrideModalOpen:", overrideModalOpen)
-        console.log("overrideModalProfileSet:", overrideModalProfileSet)
-        console.log("overrideProfile:", overrideProfile)
-        console.log("----------------------------")
-    }, [overrideModalOpen, overrideModalProfileSet, overrideProfile])
-
     const lockIcon = (params: any) => {
         const handleLockIconClick = () => {
-            console.log("----------------------------")
-            console.log("handleLockIconClick")
-            console.log("overrideModalOpen:", overrideModalOpen)
-            console.log("overrideModalProfileSet:", overrideModalProfileSet)
-            console.log("overrideProfile:", overrideProfile)
-            console.log("--- --- --- --- --- --- ---")
-            console.log(params)
-            console.log("---------------------------")
             if (params?.data?.override !== undefined) {
                 setOverrideModalOpen(true)
                 setOverrideModalProfileName(params.data.profileName)
@@ -131,19 +114,19 @@ function CaseTabTable({
                 params.api.refreshCells()
             }
         }
-        if (params.data.overrideProfileSet !== undefined) {
-            return !overrideProfile?.override ? (
+        if (params.data?.overrideProfileSet !== undefined) {
+            return (params.data.overrideProfile?.override) ? (
                 <Icon
-                    data={lock}
+                    data={lock_open}
+                    opacity={0.5}
                     color="#007079"
                     onClick={handleLockIconClick}
                 />
             )
                 : (
                     <Icon
-                        data={lock_open}
+                        data={lock}
                         color="#007079"
-                        opacity={0.5}
                         onClick={handleLockIconClick}
                     />
                 )
