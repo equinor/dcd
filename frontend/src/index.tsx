@@ -20,5 +20,3 @@ registerApp("conceptapp", {
     },
     name: "DCD Concept App",
 })
-
-if (module.hot) module.hot.accept()

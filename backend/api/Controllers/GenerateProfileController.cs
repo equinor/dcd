@@ -33,6 +33,7 @@ public class GenerateProfileController : ControllerBase
     private readonly GenerateStudyCostProfile _generateStudyCostProfile;
     private readonly GenerateCo2IntensityProfile _generateCo2IntensityProfile;
     private readonly GenerateCo2IntensityTotal _generateCo2IntensityTotal;
+    private readonly GenerateCo2DrillingFlaringFuelTotals _generateCo2DrillingFlaringFuelTotals;
 
     public GenerateProfileController(IServiceProvider serviceProvider)
     {
@@ -46,6 +47,7 @@ public class GenerateProfileController : ControllerBase
         _generateImportedElectricityProfile = serviceProvider.GetRequiredService<GenerateImportedElectricityProfile>();
         _generateCo2IntensityProfile = serviceProvider.GetRequiredService<GenerateCo2IntensityProfile>();
         _generateCo2IntensityTotal = serviceProvider.GetRequiredService<GenerateCo2IntensityTotal>();
+        _generateCo2DrillingFlaringFuelTotals = serviceProvider.GetRequiredService<GenerateCo2DrillingFlaringFuelTotals>();
     }
 
     [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
@@ -109,5 +111,11 @@ public class GenerateProfileController : ControllerBase
     public double GenerateCo2IntensityTotal(Guid caseId)
     {
         return _generateCo2IntensityTotal.Calculate(caseId);
+    }
+
+    [HttpPost("{caseId}/generateCo2DrillingFlaringFuelTotals", Name = "GenerateCo2DrillingFlaringFuelTotals")]
+    public Co2DrillingFlaringFuelTotalsDto GenerateCo2DrillingFlaringFuelTotals(Guid caseId)
+    {
+        return _generateCo2DrillingFlaringFuelTotals.Generate(caseId);
     }
 }
