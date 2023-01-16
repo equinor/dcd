@@ -50,7 +50,7 @@ public class GenerateNetSaleGasProfile
             return new TimeSeries<double>();
         }
 
-        if (drainageStrategy.GasSolution != 0)
+        if (drainageStrategy.GasSolution > 0)
         {
             return new TimeSeries<double>();
         }
