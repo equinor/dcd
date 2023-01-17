@@ -50,6 +50,11 @@ public class GenerateNetSaleGasProfile
             return new TimeSeries<double>();
         }
 
+        if (drainageStrategy.GasSolution == GasSolution.Injection)
+        {
+            return new TimeSeries<double>();
+        }
+
         var fuelFlaringLosses =
             TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(fuelConsumption, flarings), losses);
 
