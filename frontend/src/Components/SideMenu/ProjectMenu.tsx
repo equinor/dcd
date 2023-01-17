@@ -77,6 +77,7 @@ function ProjectMenu({ project }: Props) {
                                 <nav>
                                     <LinkWithoutStyle to={`/${currentProject?.id}`}>
                                         <ProjectMenuItemComponent
+                                            project={project}
                                             item={projectMenuItem}
                                             projectId={project.id}
                                         />
@@ -85,6 +86,7 @@ function ProjectMenu({ project }: Props) {
                             )}
                             {projectMenuItem.name === ProjectMenuItemType.CASES && (
                                 <ProjectMenuItemComponent
+                                    project={project}
                                     item={projectMenuItem}
                                     projectId={project.id}
                                     subItems={project.cases}

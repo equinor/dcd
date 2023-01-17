@@ -16,6 +16,7 @@ import {
 import { useHistory, useParams } from "react-router-dom"
 import { AgGridReact } from "ag-grid-react"
 import {
+    bookmark_outlined,
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
@@ -93,13 +94,21 @@ const CasesTable = ({ project, setProject }: Props) => {
 
     const [rowData, setRowData] = useState<TableCase[]>()
 
+    const withReferenceCase = (c: any) => {
+        if (project.referenceCaseId === c.id) {
+            // return <Icon data={bookmark_outlined} />
+            return "*"
+        }
+        return ""
+    }
+
     const casesToRowData = () => {
         if (project.cases) {
             const tableCases: TableCase[] = []
             project.cases.forEach((c) => {
                 const tableCase: TableCase = {
                     id: c.id!,
-                    name: c.name ?? "",
+                    name: `${c.name}${withReferenceCase(c)}` ?? "",
                     description: c.description ?? "",
                     productionStrategyOverview: c.productionStrategyOverview,
                     producerCount: c.producerCount ?? 0,

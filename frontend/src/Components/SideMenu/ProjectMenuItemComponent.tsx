@@ -1,12 +1,15 @@
+/* eslint-disable camelcase */
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
-import { IconData } from "@equinor/eds-icons"
+import { bookmark_filled, bookmark_outlined, IconData } from "@equinor/eds-icons"
 
 import { useCurrentContext } from "@equinor/fusion"
 import { ProjectMenuItemType } from "./ProjectMenu"
 import MenuItem from "./MenuItem"
 import { CasePath } from "../../Utils/common"
+import { Project } from "../../models/Project"
+import { Icon } from "@equinor/eds-core-react"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -40,12 +43,15 @@ export type ProjectMenuItem = {
 }
 
 interface Props {
+    project: Project
     item: ProjectMenuItem
     projectId: string
     subItems?: Components.Schemas.CaseDto[]
 }
 
-function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
+function ProjectMenuItemComponent({
+    item, projectId, subItems, project,
+}: Props) {
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
@@ -58,6 +64,14 @@ function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
     useEffect(() => {
         setIsOpen(isSelected)
     }, [isSelected])
+
+    const withReferenceCase = (c: any) => {
+        if (project.referenceCaseId === c.id) {
+            return bookmark_filled
+            // return "*"
+        }
+        return undefined
+    }
 
     return (
         <ExpandableDiv>
@@ -79,9 +93,11 @@ function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
                                 )}
                                 >
                                     <MenuItem
-                                        title={subItem.name ? subItem.name : "Untitled"}
+                                        // eslint-disable-next-line max-len
+                                        title={`${subItem.name}`}
                                         isSelected={isSelected && caseId === subItem.id}
                                         padding="0.25rem 2rem"
+                                        referenceCaseIcon={withReferenceCase(subItem)}
                                     />
                                 </LinkWithoutStyle>
                             </nav>

@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 // eslint-disable-next-line camelcase
 import { chevron_down, chevron_right, IconData } from "@equinor/eds-icons"
@@ -33,10 +32,11 @@ interface Props {
     isOpen?: boolean
     onClick?: () => void
     padding?: string
+    referenceCaseIcon?: IconData
 }
 
 function MenuItem({
-    title, isSelected, icon, isOpen, onClick, padding,
+    title, isSelected, icon, isOpen, onClick, padding, referenceCaseIcon,
 }: Props) {
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
 
@@ -45,6 +45,7 @@ function MenuItem({
             <MenuTitle>
                 {icon && <MenuIcon data={icon} color={isSelected ? selectedColor : ""} />}
                 <Typography color={isSelected ? selectedColor : ""}>{title}</Typography>
+                {referenceCaseIcon && <MenuIcon data={referenceCaseIcon} />}
             </MenuTitle>
             {/* eslint-disable-next-line camelcase */}
             {onClick !== undefined && <MenuIcon data={isOpen ? chevron_down : chevron_right} />}

@@ -15,6 +15,7 @@ import {
     more_vertical,
 } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
+import { tokens } from "@equinor/eds-tokens"
 import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
@@ -42,6 +43,7 @@ import { ExplorationWell } from "../models/ExplorationWell"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
+import { Wrapper } from "./Asset/StyledAssetComponents"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -107,6 +109,11 @@ const RowWrapper = styled.div`
     display: flex;
     flex-direction: row;
     margin-bottom: 78px;
+`
+const MenuIcon = styled(Icon)`
+    color: ${tokens.colors.text.static_icons__secondary.rgba};
+    margin-right: 0.5rem;
+    margin-bottom: -0.5rem;
 `
 
 const CaseView = () => {
@@ -390,11 +397,24 @@ const CaseView = () => {
         }
     }
 
+    const withReferenceCase = (c: any) => {
+        if (project.referenceCaseId === c.id) {
+            return bookmark_filled
+            // return "*"
+        }
+        return undefined
+    }
+
     return (
         <div>
             <HeaderWrapper>
                 <RowWrapper>
-                    <PageTitle variant="h4">{caseItem.name}</PageTitle>
+                    <PageTitle variant="h4">
+                        {caseItem.name}
+                        {" "}
+                        <MenuIcon data={withReferenceCase(caseItem)} />
+                        {" "}
+                    </PageTitle>
                     <ColumnWrapper>
                         <CaseButtonsWrapper>
                             {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
