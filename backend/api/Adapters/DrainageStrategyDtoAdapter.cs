@@ -26,11 +26,43 @@ public static class DrainageStrategyDtoAdapter
             FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses, unit),
             NetSalesGas = Convert(drainageStrategy.NetSalesGas, unit),
             Co2Emissions = Convert(drainageStrategy.Co2Emissions, unit),
+            Co2EmissionsOverride = Convert<Co2EmissionsOverrideDto, Co2EmissionsOverride>(drainageStrategy.Co2EmissionsOverride, unit),
             ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit),
             ImportedElectricity = Convert(drainageStrategy.ImportedElectricity, unit),
             ImportedElectricityOverride = Convert(drainageStrategy.ImportedElectricityOverride, unit)
         };
         return drainageStrategyDto;
+    }
+
+    private static TDto? Convert<TDto, TModel>(TModel? model, PhysUnit unit)
+        where TDto : TimeSeriesDto<double>, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeries<double>, ITimeSeriesOverride
+    {
+        if (model != null) {
+            return new TDto {
+                Id = model.Id,
+                Override = model.Override,
+                StartYear = model.StartYear,
+                Values = ConvertUnitValues(model.Values, unit, nameof(model))
+            };
+        }
+        return null;
+    }
+
+
+        private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
+    {
+        if (productionProfileOil != null)
+        {
+            return new ProductionProfileOilDto
+            {
+                Id = productionProfileOil.Id,
+                StartYear = productionProfileOil.StartYear,
+                Values = ConvertUnitValues(productionProfileOil.Values, unit, nameof(ProductionProfileOil)),
+            };
+        }
+
+        return null;
     }
 
     private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
@@ -70,20 +102,7 @@ public static class DrainageStrategyDtoAdapter
         return values;
     }
 
-    private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
-    {
-        if (productionProfileOil != null)
-        {
-            return new ProductionProfileOilDto
-            {
-                Id = productionProfileOil.Id,
-                StartYear = productionProfileOil.StartYear,
-                Values = ConvertUnitValues(productionProfileOil.Values, unit, nameof(ProductionProfileOil)),
-            };
-        }
 
-        return null;
-    }
 
     private static ProductionProfileGasDto? Convert(ProductionProfileGas? productionProfileGas, PhysUnit unit)
     {

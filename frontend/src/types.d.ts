@@ -42,10 +42,6 @@ declare namespace Components {
             npv?: number; // double
             breakEven?: number; // double
             host?: string | null;
-            opexCostProfile?: OpexCostProfileDto;
-            opexCostProfileOverride?: OpexCostProfileOverrideDto;
-            studyCostProfile?: StudyCostProfileDto;
-            studyCostProfileOverride?: StudyCostProfileOverrideDto;
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time
@@ -137,6 +133,13 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
+        export interface Co2EmissionsOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            override?: boolean;
+        }
         export interface Co2IntensityDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -201,6 +204,7 @@ declare namespace Components {
             fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
             netSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
+            co2EmissionsOverride?: Co2EmissionsOverrideDto;
             productionProfileNGL?: ProductionProfileNGLDto;
             importedElectricity?: ImportedElectricityDto;
             importedElectricityOverride?: ImportedElectricityOverrideDto;
@@ -363,15 +367,6 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
-        export interface OpexCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            sum?: number; // double
-            override?: boolean;
-        }
         export interface OpexCostProfileWrapperDto {
             opexCostProfileDto?: OpexCostProfileDto;
             wellInterventionCostProfileDto?: WellInterventionCostProfileDto;
@@ -523,15 +518,6 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
-        }
-        export interface StudyCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            sum?: number; // double
-            override?: boolean;
         }
         export interface StudyCostProfileWrapperDto {
             studyCostProfileDto?: StudyCostProfileDto;

@@ -142,3 +142,8 @@ public class TimeSeriesCost : TimeSeries<double>
 public class TimeSeriesSchedule : TimeSeries<int>
 {
 }
+
+public interface ITimeSeriesOverride
+{
+    bool Override { get; set; }
+}

@@ -133,6 +133,16 @@ public static class DrainageStrategyAdapter
             existing.Co2Emissions = Convert(drainageStrategyDto.Co2Emissions, existing, unit, initialCreate);
         }
 
+        if ((drainageStrategyDto.Co2EmissionsOverride != null
+            && (existing.Co2EmissionsOverride?.Values
+            .SequenceEqual(drainageStrategyDto.Co2EmissionsOverride.Values) != true)) ||
+            existing.Co2EmissionsOverride?.Override != drainageStrategyDto?.Co2EmissionsOverride?.Override)
+        {
+            existing.Co2EmissionsOverride =
+                Convert<Co2EmissionsOverrideDto, Co2EmissionsOverride>(drainageStrategyDto.Co2EmissionsOverride, existing, existing.Co2EmissionsOverride, unit, initialCreate);
+                existing.Co2EmissionsOverride.DrainageStrategy = existing;
+        }
+
         if (drainageStrategyDto.ProductionProfileNGL != null
             && (existing.ProductionProfileNGL == null ||
                 !existing.ProductionProfileNGL.Values.SequenceEqual(drainageStrategyDto.ProductionProfileNGL.Values)))
@@ -160,6 +170,34 @@ public static class DrainageStrategyAdapter
         }
 
         return existing;
+    }
+
+        private static TModel Convert<TDto, TModel>(TDto overrideDto,
+        DrainageStrategy drainageStrategy, TimeSeries<double> existingProfile,
+         PhysUnit unit, bool initialCreate)
+        where TDto : TimeSeriesDto<double>, ITimeSeriesOverrideDto
+        where TModel : TimeSeries<double>, ITimeSeriesOverride, new()
+    {
+        var needToConvertValues = existingProfile?.Values == null;
+        if (overrideDto != null && existingProfile?.Values != null &&
+            !existingProfile.Values.SequenceEqual(overrideDto.Values))
+        {
+            needToConvertValues = true;
+        }
+
+        var convertedTimeSeries = overrideDto == null || drainageStrategy == null
+            ? null
+            : new TModel
+            {
+                Id = overrideDto.Id,
+                // DrainageStrategy = drainageStrategy,
+                Override = overrideDto.Override,
+                StartYear = overrideDto.StartYear,
+                Values = needToConvertValues || initialCreate
+                    ? ConvertUnitValues(overrideDto.Values, unit, nameof(Co2Emissions))
+                    : overrideDto.Values,
+            };
+        return convertedTimeSeries;
     }
 
     private static DrainageStrategy DrainagestrategyDtoToDrainagestrategy(DrainageStrategy? existing,
@@ -405,6 +443,31 @@ public static class DrainageStrategyAdapter
         return convertedTimeSeries;
     }
 
+    private static Co2EmissionsOverride? Convert(Co2EmissionsOverrideDto? co2EmissionsOverrideDto,
+        DrainageStrategy drainageStrategy, PhysUnit unit, bool initialCreate)
+    {
+        var needToConvertValues = drainageStrategy?.Co2EmissionsOverride?.Values == null;
+        if (co2EmissionsOverrideDto != null && drainageStrategy?.Co2EmissionsOverride?.Values != null &&
+            !drainageStrategy.Co2EmissionsOverride.Values.SequenceEqual(co2EmissionsOverrideDto.Values))
+        {
+            needToConvertValues = true;
+        }
+
+        var convertedTimeSeries = co2EmissionsOverrideDto == null || drainageStrategy == null
+            ? null
+            : new Co2EmissionsOverride
+            {
+                Id = co2EmissionsOverrideDto.Id,
+                DrainageStrategy = drainageStrategy,
+                Override = co2EmissionsOverrideDto.Override,
+                StartYear = co2EmissionsOverrideDto.StartYear,
+                Values = needToConvertValues || initialCreate
+                    ? ConvertUnitValues(co2EmissionsOverrideDto.Values, unit, nameof(Co2Emissions))
+                    : co2EmissionsOverrideDto.Values,
+            };
+        return convertedTimeSeries;
+    }
+
     private static ProductionProfileNGL? Convert(ProductionProfileNGLDto? productionProfileNGLDto,
         DrainageStrategy drainageStrategy, PhysUnit unit, bool initialCreate)
     {
@@ -456,9 +519,9 @@ public static class DrainageStrategyAdapter
     private static ImportedElectricityOverride? Convert(ImportedElectricityOverrideDto? importedElectricityDto,
     DrainageStrategy drainageStrategy, PhysUnit unit, bool initialCreate)
     {
-        var needToConvertValues = drainageStrategy?.ImportedElectricity?.Values == null;
-        if (importedElectricityDto != null && drainageStrategy?.ImportedElectricity?.Values != null &&
-            !drainageStrategy.ImportedElectricity.Values.SequenceEqual(importedElectricityDto.Values))
+        var needToConvertValues = drainageStrategy?.ImportedElectricityOverride?.Values == null;
+        if (importedElectricityDto != null && drainageStrategy?.ImportedElectricityOverride?.Values != null &&
+            !drainageStrategy.ImportedElectricityOverride.Values.SequenceEqual(importedElectricityDto.Values))
         {
             needToConvertValues = true;
         }

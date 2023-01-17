@@ -592,6 +592,8 @@ const CaseView = () => {
                                     activeTab={activeTab}
                                     topside={topside}
                                     setTopside={setTopside}
+                                    drainageStrategy={drainageStrategy}
+                                    setDrainageStrategy={setDrainageStrategy}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>

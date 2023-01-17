@@ -26,6 +26,8 @@ import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
 import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { Co2Intensity } from "../../models/assets/drainagestrategy/Co2Intensity"
 import { Co2DrillingFlaringFuelTotals } from "../../models/assets/drainagestrategy/Co2DrillingFlaringFuelTotals"
+import { Co2EmissionsOverride } from "../../models/assets/drainagestrategy/Co2EmissionsOverride"
+import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -83,6 +85,8 @@ interface Props {
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     topside: Topside,
     setTopside: Dispatch<SetStateAction<Topside | undefined>>,
+    drainageStrategy: DrainageStrategy,
+    setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
     activeTab: number
 }
 
@@ -90,12 +94,14 @@ function CaseCO2Tab({
     project, setProject,
     caseItem, setCase,
     topside, setTopside,
-    activeTab,
+    activeTab, drainageStrategy, setDrainageStrategy,
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
     const [co2Intensity, setCo2Intensity] = useState<Co2Intensity>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Co2DrillingFlaringFuelTotals>()
+
+    const [co2EmissionsOverride, setCo2EmissionsOverride] = useState<Co2EmissionsOverride>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -165,8 +171,11 @@ function CaseCO2Tab({
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
         total?: string
+        overrideProfile?: ITimeSeries | undefined
+        overridable?: boolean
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -174,6 +183,9 @@ function CaseCO2Tab({
             profileName: "Annual CO2 emissions",
             unit: `${project?.physUnit === 0 ? "MTPA" : "MTPA"}`,
             profile: co2Emissions,
+            overridable: true,
+            overrideProfile: co2EmissionsOverride,
+            overrideProfileSet: setCo2EmissionsOverride,
         },
         {
             profileName: "Year-by-year CO2 intensity",
@@ -249,6 +261,13 @@ function CaseCO2Tab({
         { profile: "Flaring", value: co2DrillingFlaringFuelTotals?.co2Flaring },
         { profile: "Fuel", value: co2DrillingFlaringFuelTotals?.co2Fuel },
     ]
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.co2EmissionsOverride && !co2EmissionsOverride) { return }
+        newDrainageStrategy.co2EmissionsOverride = co2EmissionsOverride
+        setDrainageStrategy(newDrainageStrategy)
+    }, [co2EmissionsOverride])
 
     if (activeTab !== 6) { return null }
 
