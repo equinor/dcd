@@ -53,7 +53,7 @@ public class GenerateCo2IntensityProfile
             Values = co2IntensityValues.ToArray(),
         };
 
-        var dto = DrainageStrategyDtoAdapter.Convert(co2Intensity, project.PhysicalUnit);
+        var dto = DrainageStrategyDtoAdapter.Convert<Co2IntensityDto, Co2Intensity>(co2Intensity, project.PhysicalUnit);
         return dto ?? new Co2IntensityDto();
     }
 

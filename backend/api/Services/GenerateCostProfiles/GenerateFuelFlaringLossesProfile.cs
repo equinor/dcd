@@ -40,7 +40,7 @@ public class GenerateFuelFlaringLossesProfile
             Values = total.Values,
         };
 
-        var dto = DrainageStrategyDtoAdapter.Convert(fuelFlaringLosses, project.PhysicalUnit);
+        var dto = DrainageStrategyDtoAdapter.Convert<FuelFlaringAndLossesDto, FuelFlaringAndLosses>(fuelFlaringLosses, project.PhysicalUnit);
         return dto ?? new FuelFlaringAndLossesDto();
     }
 }
