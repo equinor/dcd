@@ -410,9 +410,9 @@ const CaseView = () => {
             <HeaderWrapper>
                 <RowWrapper>
                     <PageTitle variant="h4">
-                        {caseItem.name}
-                        {" "}
                         <MenuIcon data={withReferenceCase(caseItem)} />
+                        {" "}
+                        {caseItem.name}
                         {" "}
                     </PageTitle>
                     <ColumnWrapper>

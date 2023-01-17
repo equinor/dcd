@@ -44,8 +44,8 @@ function MenuItem({
         <Wrapper onClick={onClick} padding={padding}>
             <MenuTitle>
                 {icon && <MenuIcon data={icon} color={isSelected ? selectedColor : ""} />}
+                {referenceCaseIcon && <MenuIcon data={referenceCaseIcon} size={16} />}
                 <Typography color={isSelected ? selectedColor : ""}>{title}</Typography>
-                {referenceCaseIcon && <MenuIcon data={referenceCaseIcon} />}
             </MenuTitle>
             {/* eslint-disable-next-line camelcase */}
             {onClick !== undefined && <MenuIcon data={isOpen ? chevron_down : chevron_right} />}
