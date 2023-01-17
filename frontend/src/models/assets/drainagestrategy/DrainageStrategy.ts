@@ -50,7 +50,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.gasSolution = data.gasSolution
             this.netSalesGas = NetSalesGas.fromJson(data.netSalesGas)
             this.co2Emissions = Co2Emissions.fromJson(data.co2Emissions)
-            this.co2EmissionsOverride = Co2EmissionsOverride.fromJson(data.co2Emissions)
+            this.co2EmissionsOverride = Co2EmissionsOverride.fromJson(data.co2EmissionsOverride)
             this.fuelFlaringAndLosses = FuelFlaringAndLosses.fromJson(data.fuelFlaringAndLosses)
             this.productionProfileGas = ProductionProfileGas.fromJson(data.productionProfileGas)
             this.productionProfileOil = ProductionProfileOil.fromJson(data.productionProfileOil)

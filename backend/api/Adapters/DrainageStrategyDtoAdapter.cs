@@ -38,19 +38,21 @@ public static class DrainageStrategyDtoAdapter
         where TDto : TimeSeriesDto<double>, ITimeSeriesOverrideDto, new()
         where TModel : TimeSeries<double>, ITimeSeriesOverride
     {
-        if (model != null) {
-            return new TDto {
+        if (model != null)
+        {
+            return new TDto
+            {
                 Id = model.Id,
                 Override = model.Override,
                 StartYear = model.StartYear,
-                Values = ConvertUnitValues(model.Values, unit, nameof(model))
+                Values = ConvertUnitValues(model.Values, unit, model.GetType().Name)
             };
         }
         return null;
     }
 
 
-        private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
+    private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
     {
         if (productionProfileOil != null)
         {
@@ -67,7 +69,7 @@ public static class DrainageStrategyDtoAdapter
 
     private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
     {
-        string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
+        string[] MTPA_Units = { nameof(Co2Emissions), nameof(Co2EmissionsOverride), nameof(ProductionProfileNGL) };
         string[] BBL_Units =
             { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
         string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };

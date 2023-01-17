@@ -128,6 +128,7 @@ function CaseCO2Tab({
                         setEndYear,
                         setTableYears,
                     )
+                    setCo2EmissionsOverride(drainageStrategy.co2EmissionsOverride)
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
