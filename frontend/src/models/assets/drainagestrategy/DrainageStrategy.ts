@@ -8,6 +8,8 @@ import { ProductionProfileWaterInjection } from "./ProductionProfileWaterInjecti
 import { ProductionProfileNGL } from "./ProductionProfileNGL"
 import { IAsset } from "../IAsset"
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { ImportedElectricity } from "./ImportedElectricity"
+import { ImportedElectricityOverride } from "./ImportedElectricityOverride"
 
 export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
     id?: string
@@ -28,6 +30,8 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     productionProfileWater?: ProductionProfileWater | undefined
     productionProfileWaterInjection?: ProductionProfileWaterInjection | undefined
     productionProfileNGL?: ProductionProfileNGL | undefined
+    importedElectricity?: ImportedElectricity
+    importedElectricityOverride?: ImportedElectricityOverride
     hasChanges?: boolean
 
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
@@ -51,6 +55,8 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.productionProfileNGL = ProductionProfileNGL.fromJson(data.productionProfileNGL)
             this.productionProfileWaterInjection = ProductionProfileWaterInjection
                 .fromJson(data.productionProfileWaterInjection)
+            this.importedElectricity = ImportedElectricity.fromJson(data.importedElectricity)
+            this.importedElectricityOverride = ImportedElectricityOverride.fromJson(data.importedElectricityOverride)
         } else {
             this.id = EMPTY_GUID
             this.name = ""

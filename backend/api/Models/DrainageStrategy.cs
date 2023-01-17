@@ -24,6 +24,7 @@ public class DrainageStrategy
     public Co2Emissions? Co2Emissions { get; set; }
     public ProductionProfileNGL? ProductionProfileNGL { get; set; }
     public ImportedElectricity? ImportedElectricity { get; set; }
+    public ImportedElectricityOverride? ImportedElectricityOverride { get; set; }
 }
 
 public enum GasSolution
@@ -84,6 +85,13 @@ public class ImportedElectricity : TimeSeriesEnergy
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class ImportedElectricityOverride : TimeSeriesEnergy
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    public bool Override { get; set; }
 }
 
 public class Co2Intensity : TimeSeriesMass

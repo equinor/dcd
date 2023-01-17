@@ -8,6 +8,7 @@ import { ImportedElectricity } from "../models/assets/drainagestrategy/ImportedE
 import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
 import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
 import { Co2Intensity } from "../models/assets/drainagestrategy/Co2Intensity"
+import { Co2DrillingFlaringFuelTotals } from "../models/assets/drainagestrategy/Co2DrillingFlaringFuelTotals"
 
 export class __GenerateProfileService extends __BaseService {
     async generateGAndGAdminCost(id: string) {
@@ -68,6 +69,12 @@ export class __GenerateProfileService extends __BaseService {
         // eslint-disable-next-line max-len
         const res: number = await this.post<number>(`/${caseId}/generateCo2IntensityTotal`)
         return res
+    }
+
+    async generateCo2DrillingFlaringFuelTotals(caseId: string) {
+        // eslint-disable-next-line max-len
+        const res: Components.Schemas.Co2DrillingFlaringFuelTotalsDto = await this.post<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>(`/${caseId}/generateCo2DrillingFlaringFuelTotals`)
+        return Co2DrillingFlaringFuelTotals.fromJson(res)
     }
 }
 
