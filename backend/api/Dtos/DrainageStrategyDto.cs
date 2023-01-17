@@ -70,7 +70,7 @@ public class ImportedElectricityDto : TimeSeriesEnergyDto
 {
 }
 
-public class ImportedElectricityOverrideDto : ImportedElectricityDto
+public class ImportedElectricityOverrideDto : ImportedElectricityDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
 }

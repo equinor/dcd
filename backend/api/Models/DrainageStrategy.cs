@@ -37,68 +37,68 @@ public enum GasSolution
     Injection,
 }
 
-public class ProductionProfileOil : TimeSeriesVolume
+public class ProductionProfileOil : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class ProductionProfileGas : TimeSeriesVolume
+public class ProductionProfileGas : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class ProductionProfileWater : TimeSeriesVolume
+public class ProductionProfileWater : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class ProductionProfileWaterInjection : TimeSeriesVolume
+public class ProductionProfileWaterInjection : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class FuelFlaringAndLosses : TimeSeriesVolume
+public class FuelFlaringAndLosses : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class NetSalesGas : TimeSeriesVolume
+public class NetSalesGas : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class Co2Emissions : TimeSeriesMass
+public class Co2Emissions : TimeSeriesMass, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class Co2EmissionsOverride : TimeSeriesMass, ITimeSeriesOverride
+public class Co2EmissionsOverride : TimeSeriesMass, ITimeSeriesOverride, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
     public bool Override { get; set; }
 }
 
-public class ProductionProfileNGL : TimeSeriesVolume
+public class ProductionProfileNGL : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class ImportedElectricity : TimeSeriesEnergy
+public class ImportedElectricity : TimeSeriesEnergy, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
-public class ImportedElectricityOverride : TimeSeriesEnergy
+public class ImportedElectricityOverride : TimeSeriesEnergy, ITimeSeriesOverride, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
@@ -108,4 +108,9 @@ public class ImportedElectricityOverride : TimeSeriesEnergy
 public class Co2Intensity : TimeSeriesMass
 {
 
+}
+
+public interface IDrainageStrategyTimeSeries
+{
+    DrainageStrategy DrainageStrategy { get; set; }
 }
