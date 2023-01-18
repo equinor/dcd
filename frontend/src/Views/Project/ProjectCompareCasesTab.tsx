@@ -142,23 +142,23 @@ function ProjectCompareCasesTab({
                 })
                 productionProfilesObject.push({
                     cases: project.cases[i].name,
-                    oilProduction: compareCasesTotals[i].totalOilProduction,
-                    gasProduction: compareCasesTotals[i].totalGasProduction,
-                    totalExportedVolumes: compareCasesTotals[i].totalExportedVolumes,
+                    oilProduction: compareCasesTotals[i]?.totalOilProduction,
+                    gasProduction: compareCasesTotals[i]?.totalGasProduction,
+                    totalExportedVolumes: compareCasesTotals[i]?.totalExportedVolumes,
                 })
                 investmentProfilesObject.push({
                     cases: project.cases[i].name,
-                    offshorePlusOnshoreFacilityCosts: compareCasesTotals[i].offshorePlusOnshoreFacilityCosts,
-                    developmentCosts: compareCasesTotals[i].developmentWellCosts,
-                    explorationWellCosts: compareCasesTotals[i].explorationWellCosts,
+                    offshorePlusOnshoreFacilityCosts: compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts,
+                    developmentCosts: compareCasesTotals[i]?.developmentWellCosts,
+                    explorationWellCosts: compareCasesTotals[i]?.explorationWellCosts,
                 })
                 totalCo2EmissionsObject.push({
                     cases: project.cases[i].name,
-                    totalCO2Emissions: compareCasesTotals[i].totalCo2Emissions,
+                    totalCO2Emissions: compareCasesTotals[i]?.totalCo2Emissions,
                 })
                 co2IntensityObject.push({
                     cases: project.cases[i].name,
-                    cO2Intensity: compareCasesTotals[i].co2Intensity,
+                    cO2Intensity: compareCasesTotals[i]?.co2Intensity,
                 })
             }
         }
