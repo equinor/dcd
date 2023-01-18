@@ -27,7 +27,19 @@ public class GenerateCo2IntensityProfile
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
-        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
+
+        TimeSeries<double> generateCo2EmissionsProfile = new();
+        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+        {
+            generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2EmissionsOverride.StartYear;
+            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values;
+        }
+        else
+        {
+            var generatedCo2 = _generateCo2EmissionsProfile.Generate(caseId);
+            generateCo2EmissionsProfile.StartYear = generatedCo2.StartYear;
+            generateCo2EmissionsProfile.Values = generatedCo2.Values;
+        }
 
         var co2IntensityValues = new List<double>();
 
