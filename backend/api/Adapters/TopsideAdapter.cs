@@ -43,12 +43,17 @@ public static class TopsideAdapter
 
         if (topsideDto.CostProfile != null)
         {
-            topside.CostProfile = Convert(topsideDto.CostProfile, topside);
+            topside.CostProfile = Convert<TopsideCostProfileDto, TopsideCostProfile>(topsideDto.CostProfile, topside);
+        }
+
+        if (topsideDto.CostProfileOverride != null)
+        {
+            topside.CostProfileOverride = ConvertOverride<TopsideCostProfileOverrideDto, TopsideCostProfileOverride>(topsideDto.CostProfileOverride, topside);
         }
 
         if (topsideDto.CessationCostProfile != null)
         {
-            topside.CessationCostProfile = Convert(topsideDto.CessationCostProfile, topside);
+            topside.CessationCostProfile = Convert<TopsideCessationCostProfileDto, TopsideCessationCostProfile>(topsideDto.CessationCostProfile, topside);
         }
 
         return topside;
@@ -66,8 +71,9 @@ public static class TopsideAdapter
         existing.ArtificialLift = topsideDto.ArtificialLift;
         existing.Maturity = topsideDto.Maturity;
         existing.Currency = topsideDto.Currency;
-        existing.CostProfile = Convert(topsideDto.CostProfile, existing);
-        existing.CessationCostProfile = Convert(topsideDto.CessationCostProfile, existing);
+        existing.CostProfile = Convert<TopsideCostProfileDto, TopsideCostProfile>(topsideDto.CostProfile, existing);
+        existing.CostProfileOverride = ConvertOverride<TopsideCostProfileOverrideDto, TopsideCostProfileOverride>(topsideDto.CostProfileOverride, existing);
+        existing.CessationCostProfile = Convert<TopsideCessationCostProfileDto, TopsideCessationCostProfile>(topsideDto.CessationCostProfile, existing);
         existing.FuelConsumption = topsideDto.FuelConsumption;
         existing.FlaredGas = topsideDto.FlaredGas;
         existing.ProducerCount = topsideDto.ProducerCount;
@@ -90,44 +96,38 @@ public static class TopsideAdapter
         existing.PeakElectricityImported = topsideDto.PeakElectricityImported;
     }
 
-    private static TopsideCostProfile? Convert(TopsideCostProfileDto? costprofile, Topside topside)
+    private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, Topside topside)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+        where TModel : TimeSeriesCost, ITimeSeriesOverride, ITopsideTimeSeries, new()
     {
-        if (costprofile == null)
-        {
-            return null;
-        }
+        if (dto == null) { return null; }
 
-        var topsideCostProfile = new TopsideCostProfile
+        return new TModel
         {
-            Id = costprofile.Id,
-            Currency = costprofile.Currency,
-            EPAVersion = costprofile.EPAVersion,
+            Id = dto.Id,
+            Override = dto.Override,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
             Topside = topside,
-            StartYear = costprofile.StartYear,
-            Values = costprofile.Values,
         };
-
-        return topsideCostProfile;
     }
 
-    private static TopsideCessationCostProfile? Convert(TopsideCessationCostProfileDto? topsideCessationCostProfileDto,
-        Topside topside)
+    private static TModel? Convert<TDto, TModel>(TDto? dto, Topside topside)
+        where TDto : TimeSeriesCostDto
+        where TModel : TimeSeriesCost, ITopsideTimeSeries, new()
     {
-        if (topsideCessationCostProfileDto == null)
-        {
-            return null;
-        }
+        if (dto == null) { return null; }
 
-        var topsideCessationCostProfile = new TopsideCessationCostProfile
+        return new TModel
         {
-            Id = topsideCessationCostProfileDto.Id,
-            Currency = topsideCessationCostProfileDto.Currency,
-            EPAVersion = topsideCessationCostProfileDto.EPAVersion,
+            Id = dto.Id,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
             Topside = topside,
-            StartYear = topsideCessationCostProfileDto.StartYear,
-            Values = topsideCessationCostProfileDto.Values,
         };
-
-        return topsideCessationCostProfile;
     }
 }
