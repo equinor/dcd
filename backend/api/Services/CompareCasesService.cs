@@ -38,7 +38,7 @@ public class CompareCasesService
 
     public IEnumerable<CompareCasesDto> Calculate(Guid projectId)
     {
-        var project = _projectService.GetProject(projectId);
+        var project = _projectService.GetProjectWithoutAssetsNoTracking(projectId);
         var caseList = new List<CompareCasesDto>();
         if (project.Cases != null)
         {
