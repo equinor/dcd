@@ -98,7 +98,6 @@ function CaseProductionProfilesTab({
     const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
 
     const [importedElectricityOverride, setImportedElectricityOverride] = useState<ImportedElectricityOverride>()
-    const [co2EmissionsOverride, setCo2EmissionsOverride] = useState<Co2EmissionsOverride>()
 
     const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
     const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
@@ -119,7 +118,6 @@ function CaseProductionProfilesTab({
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
 
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
-        newDrainageStrategy.co2EmissionsOverride = co2EmissionsOverride
         setDrainageStrategy(newDrainageStrategy)
     }
 
@@ -311,13 +309,6 @@ function CaseProductionProfilesTab({
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [importedElectricityOverride])
-
-    useEffect(() => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        if (newDrainageStrategy.co2EmissionsOverride && !co2EmissionsOverride) { return }
-        newDrainageStrategy.co2EmissionsOverride = co2EmissionsOverride
-        setDrainageStrategy(newDrainageStrategy)
-    }, [co2EmissionsOverride])
 
     if (activeTab !== 1) { return null }
 
