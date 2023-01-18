@@ -200,3 +200,8 @@ public class TimeSeriesScheduleDto : TimeSeriesDto<int>
 {
 
 }
+
+public interface ITimeSeriesOverrideDto
+{
+    bool Override { get; set; }
+}
