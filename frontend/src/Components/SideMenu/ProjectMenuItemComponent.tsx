@@ -92,8 +92,7 @@ function ProjectMenuItemComponent({
                                 )}
                                 >
                                     <MenuItem
-                                        // eslint-disable-next-line max-len
-                                        title={`${subItem.name}`}
+                                        title={subItem.name ? subItem.name : "Untitled"}
                                         isSelected={isSelected && caseId === subItem.id}
                                         padding="0.25rem 2rem"
                                         referenceCaseIcon={withReferenceCase(subItem)}
