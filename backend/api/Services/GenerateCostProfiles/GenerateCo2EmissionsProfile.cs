@@ -54,7 +54,7 @@ public class GenerateCo2EmissionsProfile
             Values = totalProfile.Values,
         };
 
-        var dto = DrainageStrategyDtoAdapter.Convert(co2Emission, project.PhysicalUnit);
+        var dto = DrainageStrategyDtoAdapter.Convert<Co2EmissionsDto, Co2Emissions>(co2Emission, project.PhysicalUnit);
         return dto ?? new Co2EmissionsDto();
     }
 

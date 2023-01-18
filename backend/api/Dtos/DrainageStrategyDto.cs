@@ -20,10 +20,15 @@ public class DrainageStrategyDto
     public ProductionProfileWaterInjectionDto? ProductionProfileWaterInjection { get; set; }
     public FuelFlaringAndLossesDto? FuelFlaringAndLosses { get; set; }
     public NetSalesGasDto? NetSalesGas { get; set; }
+
     public Co2EmissionsDto? Co2Emissions { get; set; }
+    public Co2EmissionsOverrideDto? Co2EmissionsOverride { get; set; }
+
     public ProductionProfileNGLDto? ProductionProfileNGL { get; set; }
+
     public ImportedElectricityDto? ImportedElectricity { get; set; }
     public ImportedElectricityOverrideDto? ImportedElectricityOverride { get; set; }
+
     public Co2IntensityDto? Co2Intensity { get; set; }
     public bool HasChanges { get; set; }
 }
@@ -56,11 +61,16 @@ public class Co2EmissionsDto : TimeSeriesMassDto
 {
 }
 
+public class Co2EmissionsOverrideDto : TimeSeriesMassDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
+
 public class ImportedElectricityDto : TimeSeriesEnergyDto
 {
 }
 
-public class ImportedElectricityOverrideDto : ImportedElectricityDto
+public class ImportedElectricityOverrideDto : ImportedElectricityDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
 }

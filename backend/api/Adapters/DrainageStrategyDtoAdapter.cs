@@ -19,23 +19,57 @@ public static class DrainageStrategyDtoAdapter
             ProducerCount = drainageStrategy.ProducerCount,
             GasInjectorCount = drainageStrategy.GasInjectorCount,
             WaterInjectorCount = drainageStrategy.WaterInjectorCount,
-            ProductionProfileOil = Convert(drainageStrategy.ProductionProfileOil, unit),
-            ProductionProfileGas = Convert(drainageStrategy.ProductionProfileGas, unit),
-            ProductionProfileWater = Convert(drainageStrategy.ProductionProfileWater, unit),
-            ProductionProfileWaterInjection = Convert(drainageStrategy.ProductionProfileWaterInjection, unit),
-            FuelFlaringAndLosses = Convert(drainageStrategy.FuelFlaringAndLosses, unit),
-            NetSalesGas = Convert(drainageStrategy.NetSalesGas, unit),
-            Co2Emissions = Convert(drainageStrategy.Co2Emissions, unit),
-            ProductionProfileNGL = Convert(drainageStrategy.ProductionProfileNGL, unit),
-            ImportedElectricity = Convert(drainageStrategy.ImportedElectricity, unit),
-            ImportedElectricityOverride = Convert(drainageStrategy.ImportedElectricityOverride, unit)
+            ProductionProfileOil = Convert<ProductionProfileOilDto, ProductionProfileOil>(drainageStrategy.ProductionProfileOil, unit),
+            ProductionProfileGas = Convert<ProductionProfileGasDto, ProductionProfileGas>(drainageStrategy.ProductionProfileGas, unit),
+            ProductionProfileWater = Convert<ProductionProfileWaterDto, ProductionProfileWater>(drainageStrategy.ProductionProfileWater, unit),
+            ProductionProfileWaterInjection = Convert<ProductionProfileWaterInjectionDto, ProductionProfileWaterInjection>(drainageStrategy.ProductionProfileWaterInjection, unit),
+            FuelFlaringAndLosses = Convert<FuelFlaringAndLossesDto, FuelFlaringAndLosses>(drainageStrategy.FuelFlaringAndLosses, unit),
+            NetSalesGas = Convert<NetSalesGasDto, NetSalesGas>(drainageStrategy.NetSalesGas, unit),
+            Co2Emissions = Convert<Co2EmissionsDto, Co2Emissions>(drainageStrategy.Co2Emissions, unit),
+            Co2EmissionsOverride = ConvertOverride<Co2EmissionsOverrideDto, Co2EmissionsOverride>(drainageStrategy.Co2EmissionsOverride, unit),
+            ProductionProfileNGL = Convert<ProductionProfileNGLDto, ProductionProfileNGL>(drainageStrategy.ProductionProfileNGL, unit),
+            ImportedElectricity = Convert<ImportedElectricityDto, ImportedElectricity>(drainageStrategy.ImportedElectricity, unit),
+            ImportedElectricityOverride = ConvertOverride<ImportedElectricityOverrideDto, ImportedElectricityOverride>(drainageStrategy.ImportedElectricityOverride, unit)
         };
         return drainageStrategyDto;
     }
 
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model, PhysUnit unit)
+        where TDto : TimeSeriesDto<double>, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeries<double>, ITimeSeriesOverride
+    {
+        if (model != null)
+        {
+            return new TDto
+            {
+                Id = model.Id,
+                Override = model.Override,
+                StartYear = model.StartYear,
+                Values = ConvertUnitValues(model.Values, unit, model.GetType().Name)
+            };
+        }
+        return null;
+    }
+
+    public static TDto? Convert<TDto, TModel>(TModel? model, PhysUnit unit)
+    where TDto : TimeSeriesDto<double>, new()
+    where TModel : TimeSeries<double>
+    {
+        if (model != null)
+        {
+            return new TDto
+            {
+                Id = model.Id,
+                StartYear = model.StartYear,
+                Values = ConvertUnitValues(model.Values, unit, model.GetType().Name)
+            };
+        }
+        return null;
+    }
+
     private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
     {
-        string[] MTPA_Units = { nameof(Co2Emissions), nameof(ProductionProfileNGL) };
+        string[] MTPA_Units = { nameof(Co2Emissions), nameof(Co2EmissionsOverride), nameof(ProductionProfileNGL) };
         string[] BBL_Units =
             { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
         string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
@@ -68,174 +102,5 @@ public static class DrainageStrategyDtoAdapter
         }
 
         return values;
-    }
-
-    private static ProductionProfileOilDto? Convert(ProductionProfileOil? productionProfileOil, PhysUnit unit)
-    {
-        if (productionProfileOil != null)
-        {
-            return new ProductionProfileOilDto
-            {
-                Id = productionProfileOil.Id,
-                StartYear = productionProfileOil.StartYear,
-                Values = ConvertUnitValues(productionProfileOil.Values, unit, nameof(ProductionProfileOil)),
-            };
-        }
-
-        return null;
-    }
-
-    private static ProductionProfileGasDto? Convert(ProductionProfileGas? productionProfileGas, PhysUnit unit)
-    {
-        if (productionProfileGas != null)
-        {
-            return new ProductionProfileGasDto
-            {
-                Id = productionProfileGas.Id,
-                StartYear = productionProfileGas.StartYear,
-                Values = ConvertUnitValues(productionProfileGas.Values, unit, nameof(ProductionProfileGas)),
-            };
-        }
-
-        return null;
-    }
-
-    private static ProductionProfileWaterDto? Convert(ProductionProfileWater? productionProfileWater, PhysUnit unit)
-    {
-        if (productionProfileWater != null)
-        {
-            return new ProductionProfileWaterDto
-            {
-                Id = productionProfileWater.Id,
-                StartYear = productionProfileWater.StartYear,
-                Values = ConvertUnitValues(productionProfileWater.Values, unit, nameof(ProductionProfileWater)),
-            };
-        }
-
-        return null;
-    }
-
-    private static ProductionProfileWaterInjectionDto? Convert(
-        ProductionProfileWaterInjection? productionProfileWaterInjection, PhysUnit unit)
-    {
-        if (productionProfileWaterInjection != null)
-        {
-            return new ProductionProfileWaterInjectionDto
-            {
-                Id = productionProfileWaterInjection.Id,
-                StartYear = productionProfileWaterInjection.StartYear,
-                Values = ConvertUnitValues(productionProfileWaterInjection.Values, unit,
-                    nameof(ProductionProfileWaterInjection)),
-            };
-        }
-
-        return null;
-    }
-
-    public static FuelFlaringAndLossesDto? Convert(FuelFlaringAndLosses? fuelFlaringAndLosses, PhysUnit unit)
-    {
-        if (fuelFlaringAndLosses != null)
-        {
-            return new FuelFlaringAndLossesDto
-            {
-                Id = fuelFlaringAndLosses.Id,
-                StartYear = fuelFlaringAndLosses.StartYear,
-                Values = ConvertUnitValues(fuelFlaringAndLosses.Values, unit, nameof(FuelFlaringAndLosses)),
-            };
-        }
-
-        return null;
-    }
-
-    public static NetSalesGasDto? Convert(NetSalesGas? netSalesGas, PhysUnit unit)
-    {
-        if (netSalesGas != null)
-        {
-            return new NetSalesGasDto
-            {
-                Id = netSalesGas.Id,
-                StartYear = netSalesGas.StartYear,
-                Values = ConvertUnitValues(netSalesGas.Values, unit, nameof(NetSalesGas)),
-            };
-        }
-
-        return null;
-    }
-
-    public static Co2EmissionsDto? Convert(Co2Emissions? co2Emissions, PhysUnit unit)
-    {
-        if (co2Emissions != null)
-        {
-            return new Co2EmissionsDto
-            {
-                Id = co2Emissions.Id,
-                StartYear = co2Emissions.StartYear,
-                Values = ConvertUnitValues(co2Emissions.Values, unit, nameof(Co2Emissions)),
-            };
-        }
-
-        return null;
-    }
-
-    private static ProductionProfileNGLDto? Convert(ProductionProfileNGL? productionProfileNGL, PhysUnit unit)
-    {
-        if (productionProfileNGL != null)
-        {
-            return new ProductionProfileNGLDto
-            {
-                Id = productionProfileNGL.Id,
-                StartYear = productionProfileNGL.StartYear,
-                Values = ConvertUnitValues(productionProfileNGL.Values, unit, nameof(ProductionProfileNGL)),
-            };
-        }
-
-        return null;
-    }
-
-    public static ImportedElectricityDto? Convert(ImportedElectricity? importedElectricity, PhysUnit unit)
-    {
-        if (importedElectricity != null)
-        {
-            return new ImportedElectricityDto
-            {
-                Id = importedElectricity.Id,
-                StartYear = importedElectricity.StartYear,
-                Values = ConvertUnitValues(importedElectricity.Values, unit, nameof(ImportedElectricity)),
-            };
-        }
-
-        return null;
-    }
-
-    public static ImportedElectricityOverrideDto? Convert(ImportedElectricityOverride? importedElectricity, PhysUnit unit)
-    {
-        if (importedElectricity == null)
-        {
-            return null;
-        }
-
-        return new ImportedElectricityOverrideDto
-        {
-            Id = importedElectricity.Id,
-            StartYear = importedElectricity.StartYear,
-            Override = importedElectricity.Override,
-            Values = ConvertUnitValues(importedElectricity.Values, unit, nameof(ImportedElectricity)),
-        };
-    }
-
-
-    public static Co2IntensityDto? Convert(Co2Intensity? co2Intensity, PhysUnit unit)
-    {
-        if (co2Intensity == null)
-        {
-            return null;
-        }
-
-        return new Co2IntensityDto
-        {
-            Id = co2Intensity.Id,
-            StartYear = co2Intensity.StartYear,
-            Values = ConvertUnitValues(co2Intensity.Values, unit, nameof(Co2Intensity)),
-        };
     }
 }

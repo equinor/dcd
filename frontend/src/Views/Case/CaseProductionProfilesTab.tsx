@@ -28,6 +28,7 @@ import { GetGenerateProfileService } from "../../Services/GenerateProfileService
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 import { ImportedElectricityOverride } from "../../models/assets/drainagestrategy/ImportedElectricityOverride"
+import { Co2EmissionsOverride } from "../../models/assets/drainagestrategy/Co2EmissionsOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -259,6 +260,7 @@ function CaseProductionProfilesTab({
                         drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
                         drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
                         drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
+                        drainageStrategy.co2EmissionsOverride,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
