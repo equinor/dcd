@@ -16,6 +16,7 @@ import {
 } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
+import { Tooltip } from "@material-ui/core"
 import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
@@ -113,7 +114,7 @@ const RowWrapper = styled.div`
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.5rem;
-    margin-bottom: -0.5rem;
+    margin-bottom: -0.2rem;
 `
 
 const CaseView = () => {
@@ -397,10 +398,9 @@ const CaseView = () => {
         }
     }
 
-    const withReferenceCase = (c: any) => {
-        if (project.referenceCaseId === c.id) {
+    const withReferenceCase = () => {
+        if (project.referenceCaseId === caseItem.id) {
             return bookmark_filled
-            // return "*"
         }
         return undefined
     }
@@ -410,10 +410,12 @@ const CaseView = () => {
             <HeaderWrapper>
                 <RowWrapper>
                     <PageTitle variant="h4">
-                        <MenuIcon data={withReferenceCase(caseItem)} />
-                        {" "}
+                        {project.referenceCaseId === caseItem.id && (
+                            <Tooltip title="Reference case">
+                                <MenuIcon data={withReferenceCase()} size={18} />
+                            </Tooltip>
+                        )}
                         {caseItem.name}
-                        {" "}
                     </PageTitle>
                     <ColumnWrapper>
                         <CaseButtonsWrapper>

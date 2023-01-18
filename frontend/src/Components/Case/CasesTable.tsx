@@ -16,6 +16,7 @@ import {
 import { useHistory, useParams } from "react-router-dom"
 import { AgGridReact } from "ag-grid-react"
 import {
+    bookmark_filled,
     bookmark_outlined,
     delete_to_trash, edit, folder, library_add, more_vertical,
 } from "@equinor/eds-icons"
@@ -24,6 +25,8 @@ import { CasePath, ProductionStrategyOverviewToString } from "../../Utils/common
 import { GetCaseService } from "../../Services/CaseService"
 import "ag-grid-enterprise"
 import EditCaseModal from "./EditCaseModal"
+import { EMPTY_GUID } from "../../Utils/constants"
+import { GetProjectService } from "../../Services/ProjectService"
 
 interface Props {
     project: Project
@@ -76,8 +79,15 @@ const CasesTable = ({ project, setProject }: Props) => {
     type SortOrder = "desc" | "asc" | null
     const order: SortOrder = "asc"
 
+    // const withReferenceCase2 = () => (
+    //     <>
+    //         <Icon data={bookmark_filled} />
+    //         <Typography>test</Typography>
+    //     </>
+    // )
+
     const [columnDefs] = useState([
-        { field: "name" },
+        { field: "name" }, // cellRenderer: withReferenceCase2
         {
             field: "productionStrategyOverview",
             cellRenderer: productionStrategyToString,
@@ -164,6 +174,21 @@ const CasesTable = ({ project, setProject }: Props) => {
         }
     }
 
+    const setCaseAsReference = async () => {
+        try {
+            const projectDto = Project.Copy(project)
+            if (projectDto.referenceCaseId === selectedCaseId) {
+                projectDto.referenceCaseId = EMPTY_GUID
+            } else {
+                projectDto.referenceCaseId = selectedCaseId
+            }
+            const newProject = await (await GetProjectService()).setReferenceCase(projectDto)
+            setProject(newProject)
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
     return (
         <div
             style={{
@@ -218,6 +243,27 @@ const CasesTable = ({ project, setProject }: Props) => {
                         Delete
                     </Typography>
                 </Menu.Item>
+                {project.referenceCaseId === selectedCaseId
+                    ? (
+                        <Menu.Item
+                            onClick={setCaseAsReference}
+                        >
+                            <Icon data={bookmark_outlined} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Remove as reference case
+                            </Typography>
+                        </Menu.Item>
+                    )
+                    : (
+                        <Menu.Item
+                            onClick={setCaseAsReference}
+                        >
+                            <Icon data={bookmark_filled} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Set as reference case
+                            </Typography>
+                        </Menu.Item>
+                    )}
             </Menu>
             <EditCaseModal
                 setProject={setProject}

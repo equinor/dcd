@@ -1,7 +1,7 @@
 import styled from "styled-components"
 // eslint-disable-next-line camelcase
 import { chevron_down, chevron_right, IconData } from "@equinor/eds-icons"
-import { Icon, Typography } from "@equinor/eds-core-react"
+import { Icon, Tooltip, Typography } from "@equinor/eds-core-react"
 import { tokens } from "@equinor/eds-tokens"
 
 const Wrapper = styled.div<{ padding?: string }>`
@@ -44,7 +44,12 @@ function MenuItem({
         <Wrapper onClick={onClick} padding={padding}>
             <MenuTitle>
                 {icon && <MenuIcon data={icon} color={isSelected ? selectedColor : ""} />}
-                {referenceCaseIcon && <MenuIcon data={referenceCaseIcon} size={16} />}
+                {referenceCaseIcon
+                && (
+                    <Tooltip title="Reference case">
+                        <MenuIcon data={referenceCaseIcon} size={16} />
+                    </Tooltip>
+                )}
                 <Typography color={isSelected ? selectedColor : ""}>{title}</Typography>
             </MenuTitle>
             {/* eslint-disable-next-line camelcase */}
