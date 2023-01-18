@@ -10,6 +10,7 @@ import { IAsset } from "../IAsset"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { ImportedElectricity } from "./ImportedElectricity"
 import { ImportedElectricityOverride } from "./ImportedElectricityOverride"
+import { Co2EmissionsOverride } from "./Co2EmissionsOverride"
 
 export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
     id?: string
@@ -24,6 +25,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     gasSolution?: Components.Schemas.GasSolution /* int32 */
     netSalesGas?: NetSalesGas | undefined
     co2Emissions?: Co2Emissions | undefined
+    co2EmissionsOverride?: Co2EmissionsOverride | undefined
     fuelFlaringAndLosses?: FuelFlaringAndLosses | undefined
     productionProfileGas?: ProductionProfileGas | undefined
     productionProfileOil?: ProductionProfileOil | undefined
@@ -48,6 +50,7 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.gasSolution = data.gasSolution
             this.netSalesGas = NetSalesGas.fromJson(data.netSalesGas)
             this.co2Emissions = Co2Emissions.fromJson(data.co2Emissions)
+            this.co2EmissionsOverride = Co2EmissionsOverride.fromJson(data.co2EmissionsOverride)
             this.fuelFlaringAndLosses = FuelFlaringAndLosses.fromJson(data.fuelFlaringAndLosses)
             this.productionProfileGas = ProductionProfileGas.fromJson(data.productionProfileGas)
             this.productionProfileOil = ProductionProfileOil.fromJson(data.productionProfileOil)
