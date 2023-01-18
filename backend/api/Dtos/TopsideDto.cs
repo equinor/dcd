@@ -8,6 +8,7 @@ public class TopsideDto
     public string Name { get; set; } = string.Empty!;
     public Guid ProjectId { get; set; }
     public TopsideCostProfileDto? CostProfile { get; set; }
+    public TopsideCostProfileOverrideDto? CostProfileOverride { get; set; }
     public TopsideCessationCostProfileDto? CessationCostProfile { get; set; }
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
@@ -41,6 +42,11 @@ public class TopsideDto
 
 public class TopsideCostProfileDto : TimeSeriesCostDto
 {
+}
+
+public class TopsideCostProfileOverrideDto : TopsideCostProfileDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class TopsideCessationCostProfileDto : TimeSeriesCostDto
