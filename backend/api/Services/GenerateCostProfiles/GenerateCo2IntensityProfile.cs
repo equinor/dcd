@@ -32,7 +32,7 @@ public class GenerateCo2IntensityProfile
         if (drainageStrategy.Co2EmissionsOverride?.Override == true)
         {
             generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2EmissionsOverride.StartYear;
-            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values;
+            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values.Select(v => v / 1E6).ToArray();
         }
         else
         {
@@ -43,25 +43,29 @@ public class GenerateCo2IntensityProfile
 
         var co2IntensityValues = new List<double>();
 
-        var tonnesToKgFactor = 1000;
-        var boeConversionFactor = 6.29;
-        for (var i = 0; i < totalExportedVolumes.Values.Length; i++)
+        const int tonnesToKgFactor = 1000;
+        const double boeConversionFactor = 6.29;
+        var yearDifference = 0;
+        if (generateCo2EmissionsProfile.StartYear != totalExportedVolumes.StartYear)
         {
-            var yearDifference = 0;
-            if (generateCo2EmissionsProfile.StartYear != totalExportedVolumes.StartYear)
+            yearDifference = generateCo2EmissionsProfile.StartYear - totalExportedVolumes.StartYear;
+        }
+        for (var i = 0; i < generateCo2EmissionsProfile.Values.Length; i++)
+        {
+            if (yearDifference + i < 0) { continue; }
+
+            if ((i + yearDifference < totalExportedVolumes.Values.Length) && totalExportedVolumes.Values[i + yearDifference] != 0)
             {
-                yearDifference = totalExportedVolumes.StartYear - generateCo2EmissionsProfile.StartYear;
-            }
-            if ((i + yearDifference < generateCo2EmissionsProfile.Values.Length) && totalExportedVolumes.Values[i] != 0)
-            {
-                var dividedProfiles = generateCo2EmissionsProfile.Values[i + yearDifference] / totalExportedVolumes.Values[i];
+                var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i + yearDifference];
                 co2IntensityValues.Add(dividedProfiles / boeConversionFactor * tonnesToKgFactor);
             }
         }
 
+        var co2YearOffset = yearDifference < 0 ? yearDifference : 0;
+
         var co2Intensity = new Co2Intensity
         {
-            StartYear = totalExportedVolumes.StartYear,
+            StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset,
             Values = co2IntensityValues.ToArray(),
         };
 

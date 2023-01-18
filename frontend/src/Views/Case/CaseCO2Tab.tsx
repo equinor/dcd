@@ -122,7 +122,7 @@ function CaseCO2Tab({
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
                     SetTableYearsFromProfiles(
-                        [await co2E, await co2I],
+                        [await co2E, await co2I, drainageStrategy.co2EmissionsOverride?.override ? drainageStrategy.co2EmissionsOverride : undefined],
                         caseItem.DG4Date.getFullYear(),
                         setStartYear,
                         setEndYear,
