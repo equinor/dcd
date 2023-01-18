@@ -202,11 +202,12 @@ function CaseCO2Tab({
 
     const co2EmissionsChartData = () => {
         const dataArray = []
+        const useOverride = co2EmissionsOverride !== undefined && co2EmissionsOverride.override
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
                 co2Emissions:
-                    setValueToCorrespondingYear(co2Emissions, i, startYear, caseItem.DG4Date.getFullYear()),
+                    setValueToCorrespondingYear(useOverride ? co2EmissionsOverride : co2Emissions, i, startYear, caseItem.DG4Date.getFullYear()),
                 co2Intensity:
                     setValueToCorrespondingYear(co2Intensity, i, startYear, caseItem.DG4Date.getFullYear()),
             })
