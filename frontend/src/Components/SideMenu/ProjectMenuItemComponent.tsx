@@ -68,7 +68,6 @@ function ProjectMenuItemComponent({
     const withReferenceCase = (c: any) => {
         if (project.referenceCaseId === c.id) {
             return bookmark_filled
-            // return "*"
         }
         return undefined
     }
