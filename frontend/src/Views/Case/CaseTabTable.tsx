@@ -303,6 +303,7 @@ function CaseTabTable({
                     alignedGrids={gridRefArrayToAlignedGrid()}
                     groupIncludeTotalFooter={includeFooter}
                     getRowStyle={getRowStyle}
+                    suppressLastEmptyLineOnPaste
                 />
             </div>
         </>
