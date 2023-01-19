@@ -168,7 +168,6 @@ const CasesTable = ({ project, setProject }: Props) => {
                 projectDto.referenceCaseId = selectedCaseId
             }
             const newProject = await (await GetProjectService()).setReferenceCase(projectDto)
-            setProject(newProject)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
