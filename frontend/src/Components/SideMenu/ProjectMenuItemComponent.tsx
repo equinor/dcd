@@ -1,15 +1,14 @@
 /* eslint-disable camelcase */
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
-import { bookmark_filled, bookmark_outlined, IconData } from "@equinor/eds-icons"
+import { bookmark_filled, IconData } from "@equinor/eds-icons"
 
 import { useCurrentContext } from "@equinor/fusion"
 import { ProjectMenuItemType } from "./ProjectMenu"
 import MenuItem from "./MenuItem"
 import { CasePath } from "../../Utils/common"
 import { Project } from "../../models/Project"
-import { Icon } from "@equinor/eds-core-react"
 
 const ExpandableDiv = styled.div`
     display: flex;

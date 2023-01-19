@@ -44,7 +44,6 @@ import { ExplorationWell } from "../models/ExplorationWell"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
-import { Wrapper } from "./Asset/StyledAssetComponents"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
