@@ -92,14 +92,14 @@ const CasesTable = ({ project, setProject }: Props) => {
     const nameWithReferenceCase = (p: any) => (
         <span>
             {p.node.data.referenceCaseId === p.node.data.id
-                    && (
-                        <Tooltip title="Reference case">
-                            <MenuIcon data={bookmark_filled} size={16} />
-                        </Tooltip>
-                    )}
+                && (
+                    <Tooltip title="Reference case">
+                        <MenuIcon data={bookmark_filled} size={16} />
+                    </Tooltip>
+                )}
             <span>{p.value}</span>
         </span>
-        )
+    )
 
     const [columnDefs] = useState([
         { field: "name", cellRenderer: nameWithReferenceCase },
