@@ -1,8 +1,7 @@
-/* eslint-disable camelcase */
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
-import { bookmark_filled, IconData } from "@equinor/eds-icons"
+import { IconData } from "@equinor/eds-icons"
 
 import { useCurrentContext } from "@equinor/fusion"
 import { ProjectMenuItemType } from "./ProjectMenu"
@@ -64,13 +63,6 @@ function ProjectMenuItemComponent({
         setIsOpen(isSelected)
     }, [isSelected])
 
-    const withReferenceCase = (c: any) => {
-        if (project.referenceCaseId === c.id) {
-            return bookmark_filled
-        }
-        return undefined
-    }
-
     return (
         <ExpandableDiv>
             <MenuItem
@@ -94,7 +86,9 @@ function ProjectMenuItemComponent({
                                         title={subItem.name ? subItem.name : "Untitled"}
                                         isSelected={isSelected && caseId === subItem.id}
                                         padding="0.25rem 2rem"
-                                        referenceCaseIcon={withReferenceCase(subItem)}
+                                        project={project}
+                                        caseItem={subItem}
+                                        referenceCaseIcon
                                     />
                                 </LinkWithoutStyle>
                             </nav>
