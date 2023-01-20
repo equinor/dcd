@@ -88,7 +88,6 @@ function ProjectMenuItemComponent({
                                         padding="0.25rem 2rem"
                                         project={project}
                                         caseItem={subItem}
-                                        referenceCaseIcon
                                     />
                                 </LinkWithoutStyle>
                             </nav>

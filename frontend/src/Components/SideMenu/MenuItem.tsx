@@ -35,13 +35,12 @@ interface Props {
     isOpen?: boolean
     onClick?: () => void
     padding?: string
-    referenceCaseIcon?: boolean
     project?: Project
     caseItem?: Components.Schemas.CaseDto
 }
 
 function MenuItem({
-    title, isSelected, icon, isOpen, onClick, padding, referenceCaseIcon, project, caseItem,
+    title, isSelected, icon, isOpen, onClick, padding, project, caseItem,
 }: Props) {
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
 
@@ -49,7 +48,7 @@ function MenuItem({
         <Wrapper onClick={onClick} padding={padding}>
             <MenuTitle>
                 {icon && <MenuIcon data={icon} color={isSelected ? selectedColor : ""} />}
-                {(project?.referenceCaseId === caseItem?.id) && referenceCaseIcon
+                {(project?.referenceCaseId === caseItem?.id) && caseItem
                 && (
                     <Tooltip title="Reference case">
                         <MenuIcon data={bookmark_filled} size={16} />
