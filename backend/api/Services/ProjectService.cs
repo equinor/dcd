@@ -365,7 +365,7 @@ public class ProjectService
             throw new NotFoundInDBException($"Project {projectDto.ProjectId} not found");
         }
 
-        var project = GetProjectWithoutAssets(projectDto.ProjectId);
+        var project = GetProject(projectDto.ProjectId);
         project.ReferenceCaseId = projectDto.ReferenceCaseId;
 
         _context.Projects?.Update(project);
