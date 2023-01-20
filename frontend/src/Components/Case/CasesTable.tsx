@@ -51,10 +51,11 @@ interface TableCase {
     gasInjectorCount: number,
     waterInjectorCount: number,
     createdAt?: string
+    referenceCaseId?: string
 }
 
 const CasesTable = ({ project, setProject }: Props) => {
-    const gridRef = useRef(null)
+    const gridRef = useRef<any>(null)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
@@ -90,15 +91,15 @@ const CasesTable = ({ project, setProject }: Props) => {
 
     const nameWithReferenceCase = (p: any) => (
         <span>
-            {project.referenceCaseId === p.node.data.id
-                        && (
-                            <Tooltip title="Reference case">
-                                <MenuIcon data={bookmark_filled} size={16} />
-                            </Tooltip>
-                        )}
+            {p.node.data.referenceCaseId === p.node.data.id
+                    && (
+                        <Tooltip title="Reference case">
+                            <MenuIcon data={bookmark_filled} size={16} />
+                        </Tooltip>
+                    )}
             <span>{p.value}</span>
         </span>
-    )
+        )
 
     const [columnDefs] = useState([
         { field: "name", cellRenderer: nameWithReferenceCase },
@@ -131,6 +132,7 @@ const CasesTable = ({ project, setProject }: Props) => {
                     waterInjectorCount: c.waterInjectorCount ?? 0,
                     gasInjectorCount: c.gasInjectorCount ?? 0,
                     createdAt: c.createdAt?.toISOString().substring(0, 10),
+                    referenceCaseId: project.referenceCaseId,
                 }
                 tableCases.push(tableCase)
             })
@@ -189,6 +191,7 @@ const CasesTable = ({ project, setProject }: Props) => {
                 projectDto.referenceCaseId = selectedCaseId
             }
             const newProject = await (await GetProjectService()).setReferenceCase(projectDto)
+            setProject(newProject)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
