@@ -25,6 +25,9 @@ import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Component
 import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
 import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { Co2Intensity } from "../../models/assets/drainagestrategy/Co2Intensity"
+import { Co2DrillingFlaringFuelTotals } from "../../models/assets/drainagestrategy/Co2DrillingFlaringFuelTotals"
+import { Co2EmissionsOverride } from "../../models/assets/drainagestrategy/Co2EmissionsOverride"
+import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -82,6 +85,8 @@ interface Props {
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     topside: Topside,
     setTopside: Dispatch<SetStateAction<Topside | undefined>>,
+    drainageStrategy: DrainageStrategy,
+    setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
     activeTab: number
 }
 
@@ -89,11 +94,14 @@ function CaseCO2Tab({
     project, setProject,
     caseItem, setCase,
     topside, setTopside,
-    activeTab,
+    activeTab, drainageStrategy, setDrainageStrategy,
 }: Props) {
     const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
     const [co2Intensity, setCo2Intensity] = useState<Co2Intensity>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
+    const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Co2DrillingFlaringFuelTotals>()
+
+    const [co2EmissionsOverride, setCo2EmissionsOverride] = useState<Co2EmissionsOverride>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -106,18 +114,21 @@ function CaseCO2Tab({
                     const co2E = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
                     const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
                     const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(caseItem.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(caseItem.id)
 
                     setCo2Emissions(await co2E)
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))
+                    setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
                     SetTableYearsFromProfiles(
-                        [await co2E, await co2I],
+                        [await co2E, await co2I, drainageStrategy.co2EmissionsOverride?.override ? drainageStrategy.co2EmissionsOverride : undefined],
                         caseItem.DG4Date.getFullYear(),
                         setStartYear,
                         setEndYear,
                         setTableYears,
                     )
+                    setCo2EmissionsOverride(drainageStrategy.co2EmissionsOverride)
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -161,8 +172,11 @@ function CaseCO2Tab({
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
         total?: string
+        overrideProfile?: ITimeSeries | undefined
+        overridable?: boolean
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -170,6 +184,9 @@ function CaseCO2Tab({
             profileName: "Annual CO2 emissions",
             unit: `${project?.physUnit === 0 ? "MTPA" : "MTPA"}`,
             profile: co2Emissions,
+            overridable: true,
+            overrideProfile: co2EmissionsOverride,
+            overrideProfileSet: setCo2EmissionsOverride,
         },
         {
             profileName: "Year-by-year CO2 intensity",
@@ -185,11 +202,12 @@ function CaseCO2Tab({
 
     const co2EmissionsChartData = () => {
         const dataArray = []
+        const useOverride = co2EmissionsOverride !== undefined && co2EmissionsOverride.override
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
                 co2Emissions:
-                    setValueToCorrespondingYear(co2Emissions, i, startYear, caseItem.DG4Date.getFullYear()),
+                    setValueToCorrespondingYear(useOverride ? co2EmissionsOverride : co2Emissions, i, startYear, caseItem.DG4Date.getFullYear()),
                 co2Intensity:
                     setValueToCorrespondingYear(co2Intensity, i, startYear, caseItem.DG4Date.getFullYear()),
             })
@@ -204,6 +222,35 @@ function CaseCO2Tab({
         yName: "Year-by-year CO2 intensity (kg CO2/boe)",
     }
 
+    const chartAxes = [
+        {
+            type: "category",
+            position: "bottom",
+        },
+        {
+            type: "number",
+            position: "left",
+            keys: ["co2Emissions"],
+            title: {
+                text: "CO2 emissions",
+            },
+            label: {
+                formatter: (params: any) => `${params.value}`, // emission values
+            },
+        },
+        {
+            type: "number",
+            position: "right",
+            keys: ["co2Intensity"],
+            title: {
+                text: "Year-by-year CO2 intensity",
+            },
+            label: {
+                formatter: (params: any) => `${params.value}`, // intensity values
+            },
+        },
+    ]
+
     const co2EmissionsTotalString = () => {
         if (co2Emissions) {
             return (Math.round(co2Emissions.sum! * 10) / 10).toString()
@@ -212,10 +259,17 @@ function CaseCO2Tab({
     }
 
     const co2DistributionChartData = [
-        { profile: "Placeholder pie", value: 1 },
-        { profile: "Placeholder pie", value: 1 },
-        { profile: "Placeholder pie", value: 1 },
+        { profile: "Drilling", value: co2DrillingFlaringFuelTotals?.co2Drilling },
+        { profile: "Flaring", value: co2DrillingFlaringFuelTotals?.co2Flaring },
+        { profile: "Fuel", value: co2DrillingFlaringFuelTotals?.co2Fuel },
     ]
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.co2EmissionsOverride && !co2EmissionsOverride) { return }
+        newDrainageStrategy.co2EmissionsOverride = co2EmissionsOverride
+        setDrainageStrategy(newDrainageStrategy)
+    }, [co2EmissionsOverride])
 
     if (activeTab !== 6) { return null }
 
@@ -249,6 +303,7 @@ function CaseCO2Tab({
                     width="70%"
                     height="600"
                     lineChart={co2IntensityLine}
+                    axesData={chartAxes}
                 />
                 <WrapperColumn>
                     <GraphWrapper>
@@ -284,6 +339,7 @@ function CaseCO2Tab({
                         height={400}
                         width="100%"
                         totalCo2Emission={co2EmissionsTotalString()}
+                        unit="million tonnes"
                     />
                 </WrapperColumn>
             </RowWrapper>

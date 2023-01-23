@@ -180,7 +180,46 @@ public class ProjectService
             if (project == null)
             {
                 var projectByFusionId = _context.Projects
-                    .Include(c => c.Cases)
+                    .Include(p => p.Cases)
+                    .Include(p => p.Wells)
+                    .Include(p => p.ExplorationOperationalWellCosts)
+                    .Include(p => p.DevelopmentOperationalWellCosts)
+                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+            return project;
+        }
+
+        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+        throw new NotFoundInDBException("The database contains no projects");
+    }
+
+    public Project GetProjectWithoutAssetsNoTracking(Guid projectId)
+    {
+        if (_context.Projects != null)
+        {
+            if (projectId == Guid.Empty)
+            {
+                throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+            var project = _context.Projects
+                .AsNoTracking()
+                .Include(p => p.Cases)
+                .Include(p => p.Wells)
+                .Include(p => p.ExplorationOperationalWellCosts)
+                .Include(p => p.DevelopmentOperationalWellCosts)
+                .FirstOrDefault(p => p.Id.Equals(projectId));
+
+            if (project == null)
+            {
+                var projectByFusionId = _context.Projects
+                    .AsNoTracking()
+                    .Include(p => p.Cases)
+                    .Include(p => p.Wells)
+                    .Include(p => p.ExplorationOperationalWellCosts)
+                    .Include(p => p.DevelopmentOperationalWellCosts)
                     .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
                 project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
             }
@@ -326,7 +365,7 @@ public class ProjectService
             throw new NotFoundInDBException($"Project {projectDto.ProjectId} not found");
         }
 
-        var project = GetProjectWithoutAssets(projectDto.ProjectId);
+        var project = GetProject(projectDto.ProjectId);
         project.ReferenceCaseId = projectDto.ReferenceCaseId;
 
         _context.Projects?.Update(project);

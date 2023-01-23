@@ -2,12 +2,14 @@ import { SubstructureCostProfile } from "./SubstructureCostProfile"
 import { SubstructureCessationCostProfile } from "./SubstructureCessationCostProfile"
 import { IAsset } from "../IAsset"
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { SubstructureCostProfileOverride } from "./SubstructureCostProfileOverride"
 
 export class Substructure implements Components.Schemas.SubstructureDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: SubstructureCostProfile | undefined
+    costProfileOverride?: SubstructureCostProfileOverride | undefined
     cessationCostProfile?: SubstructureCessationCostProfile | undefined
     dryWeight?: number | undefined
     maturity?: Components.Schemas.Maturity | undefined
@@ -28,6 +30,7 @@ export class Substructure implements Components.Schemas.SubstructureDto, IAsset 
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = SubstructureCostProfile.fromJSON(data.costProfile)
+            this.costProfileOverride = SubstructureCostProfileOverride.fromJSON(data.costProfileOverride)
             this.cessationCostProfile = SubstructureCessationCostProfile
                 .fromJSON(data.cessationCostProfile)
             this.dryWeight = data.dryWeight

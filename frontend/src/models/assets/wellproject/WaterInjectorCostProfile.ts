@@ -9,7 +9,6 @@ export class WaterInjectorCostProfile implements Components.Schemas.WaterInjecto
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
-    override?: boolean
 
     constructor(data?: Components.Schemas.WaterInjectorCostProfileDto) {
         if (data !== undefined && data !== null) {
@@ -20,7 +19,6 @@ export class WaterInjectorCostProfile implements Components.Schemas.WaterInjecto
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
             this.sum = data.sum
-            this.override = data.override
         } else {
             this.id = EMPTY_GUID
             this.startYear = 0

@@ -13,6 +13,7 @@ import {
     ChangeEventHandler,
     MouseEventHandler,
     useEffect,
+    FormEventHandler,
 } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import styled from "styled-components"
@@ -127,7 +128,7 @@ const EditCaseModal = ({
         setCaseName(e.currentTarget.value)
     }
 
-    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleDescriptionChange: FormEventHandler<any> = async (e) => {
         setDescription(e.currentTarget.value)
     }
 

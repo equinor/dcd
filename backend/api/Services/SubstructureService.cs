@@ -27,6 +27,7 @@ public class SubstructureService
         {
             return _context.Substructures
                 .Include(c => c.CostProfile)
+                .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
                 .Where(c => c.Project.Id.Equals(projectId));
         }
@@ -67,6 +68,10 @@ public class SubstructureService
         if (newSubstructureDto.CostProfile != null)
         {
             newSubstructureDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newSubstructureDto.CostProfileOverride != null)
+        {
+            newSubstructureDto.CostProfileOverride.Id = Guid.Empty;
         }
         if (newSubstructureDto.CessationCostProfile != null)
         {
@@ -157,6 +162,7 @@ public class SubstructureService
         var substructure = _context.Substructures!
             .Include(c => c.Project)
             .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .FirstOrDefault(o => o.Id == substructureId);
         if (substructure == null)

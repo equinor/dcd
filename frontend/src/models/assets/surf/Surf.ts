@@ -2,12 +2,14 @@ import { SurfCostProfile } from "./SurfCostProfile"
 import { SurfCessationCostProfile } from "./SurfCessationCostProfile"
 import { IAsset } from "../IAsset"
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { SurfCostProfileOverride } from "./SurfCostProfileOverride"
 
 export class Surf implements Components.Schemas.SurfDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: SurfCostProfile | undefined
+    costProfileOverride?: SurfCostProfileOverride | undefined
     cessationCostProfile?: SurfCessationCostProfile | undefined
     cessationCost?: number
     maturity?: Components.Schemas.Maturity | undefined
@@ -38,6 +40,7 @@ export class Surf implements Components.Schemas.SurfDto, IAsset {
             this.cessationCostProfile = SurfCessationCostProfile.fromJSON(data.cessationCostProfile)
             this.cessationCost = data.cessationCost
             this.costProfile = SurfCostProfile.fromJSON(data.costProfile)
+            this.costProfileOverride = SurfCostProfileOverride.fromJSON(data.costProfileOverride)
             this.maturity = data.maturity
             this.infieldPipelineSystemLength = data.infieldPipelineSystemLength
             this.umbilicalSystemLength = data.umbilicalSystemLength

@@ -10,6 +10,7 @@ interface Props {
     lineChart?: object
     width?: string
     height?: string
+    axesData?: any
 }
 
 export const setValueToCorrespondingYear = (profile: any, i: number, startYear: number, dg4Year: number) => {
@@ -26,7 +27,7 @@ export const setValueToCorrespondingYear = (profile: any, i: number, startYear: 
 }
 
 export const AgChartsTimeseries = ({
-    data, chartTitle, barColors, barProfiles, barNames, unit, lineChart, width, height,
+    data, chartTitle, barColors, barProfiles, barNames, unit, lineChart, width, height, axesData,
 }: Props) => {
     const figmaTheme = {
         palette: {
@@ -42,14 +43,18 @@ export const AgChartsTimeseries = ({
         },
     }
 
-    function insertIf(condition: any, ...elements: any) {
+    function insertIf(condition: any, addAxes: boolean, ...elements: any) {
+        if (addAxes) {
+            const axesObject = { axes: axesData }
+            return condition ? axesObject : []
+        }
         return condition ? elements : []
     }
 
     const defaultOptions = {
         data,
-        title: { text: chartTitle },
-        subtitle: { text: unit },
+        title: { text: chartTitle ?? "" },
+        subtitle: { text: unit ?? "" },
         padding: {
             top: 40,
             right: 40,
@@ -77,8 +82,9 @@ export const AgChartsTimeseries = ({
                     },
                 },
             },
-            ...insertIf(lineChart !== undefined, lineChart),
+            ...insertIf(lineChart !== undefined, false, lineChart),
         ],
+        ...insertIf(axesData !== undefined, true, axesData),
         legend: { position: "bottom", spacing: 40 },
     }
 

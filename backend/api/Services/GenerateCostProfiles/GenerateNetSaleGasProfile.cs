@@ -38,7 +38,7 @@ public class GenerateNetSaleGasProfile
             Values = calculateNetSaleGas.Values,
         };
 
-        var dto = DrainageStrategyDtoAdapter.Convert(netSaleGas, project.PhysicalUnit);
+        var dto = DrainageStrategyDtoAdapter.Convert<NetSalesGasDto, NetSalesGas>(netSaleGas, project.PhysicalUnit);
         return dto ?? new NetSalesGasDto();
     }
 
@@ -46,6 +46,11 @@ public class GenerateNetSaleGasProfile
         TimeSeries<double> fuelConsumption, TimeSeries<double> flarings, TimeSeries<double> losses)
     {
         if (drainageStrategy.ProductionProfileGas == null)
+        {
+            return new TimeSeries<double>();
+        }
+
+        if (drainageStrategy.GasSolution == GasSolution.Injection)
         {
             return new TimeSeries<double>();
         }

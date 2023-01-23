@@ -20,6 +20,7 @@ public class CaseDto
     public double NPV { get; set; }
     public double BreakEven { get; set; }
     public string? Host { get; set; }
+
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }
@@ -32,6 +33,7 @@ public class CaseDto
     public DateTimeOffset DG4Date { get; set; }
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; }
+
     public Guid DrainageStrategyLink { get; set; }
     public Guid WellProjectLink { get; set; }
     public Guid SurfLink { get; set; }
@@ -39,6 +41,7 @@ public class CaseDto
     public Guid TopsideLink { get; set; }
     public Guid TransportLink { get; set; }
     public Guid ExplorationLink { get; set; }
+
     public double Capex { get; set; }
     public CapexYear? CapexYear { get; set; }
     public CessationCostDto? CessationCost { get; set; }

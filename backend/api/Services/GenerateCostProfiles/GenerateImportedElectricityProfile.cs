@@ -40,7 +40,7 @@ public class GenerateImportedElectricityProfile
             Values = calculateImportedElectricity.Values,
         };
 
-        var dto = DrainageStrategyDtoAdapter.Convert(importedElectricity, project.PhysicalUnit);
+        var dto = DrainageStrategyDtoAdapter.Convert<ImportedElectricityDto, ImportedElectricity>(importedElectricity, project.PhysicalUnit);
         return dto ?? new ImportedElectricityDto();
     }
 

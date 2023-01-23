@@ -37,8 +37,8 @@ export const AgChartsCompareCases = ({
 
     const defaultOptions = {
         data,
-        title: { text: chartTitle },
-        subtitle: { text: unit },
+        title: { text: chartTitle ?? "" },
+        subtitle: { text: unit ?? "" },
         padding: {
             top: 40,
             right: 40,

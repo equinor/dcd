@@ -9,6 +9,7 @@ public class Topside
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
     public TopsideCostProfile? CostProfile { get; set; }
+    public TopsideCostProfileOverride? CostProfileOverride { get; set; }
     public TopsideCessationCostProfile? CessationCostProfile { get; set; }
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
@@ -39,14 +40,26 @@ public class Topside
     public double PeakElectricityImported { get; set; }
 }
 
-public class TopsideCostProfile : TimeSeriesCost
+public class TopsideCostProfile : TimeSeriesCost, ITopsideTimeSeries
 {
     [ForeignKey("Topside.Id")]
     public Topside Topside { get; set; } = null!;
 }
 
-public class TopsideCessationCostProfile : TimeSeriesCost
+public class TopsideCostProfileOverride : TimeSeriesCost, ITimeSeriesOverride, ITopsideTimeSeries
 {
     [ForeignKey("Topside.Id")]
     public Topside Topside { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class TopsideCessationCostProfile : TimeSeriesCost, ITopsideTimeSeries
+{
+    [ForeignKey("Topside.Id")]
+    public Topside Topside { get; set; } = null!;
+}
+
+public interface ITopsideTimeSeries
+{
+    Topside Topside { get; set; }
 }

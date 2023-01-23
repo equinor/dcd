@@ -14,7 +14,6 @@ import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
-import { GetDrainageStrategyService } from "../../Services/DrainageStrategyService"
 import CaseTabTable from "./CaseTabTable"
 import { NetSalesGas } from "../../models/assets/drainagestrategy/NetSalesGas"
 import { FuelFlaringAndLosses } from "../../models/assets/drainagestrategy/FuelFlaringAndLosses"
@@ -23,12 +22,13 @@ import { ProductionProfileOil } from "../../models/assets/drainagestrategy/Produ
 import { ProductionProfileWater } from "../../models/assets/drainagestrategy/ProductionProfileWater"
 import { ProductionProfileNGL } from "../../models/assets/drainagestrategy/ProductionProfileNGL"
 import { ProductionProfileWaterInjection } from "../../models/assets/drainagestrategy/ProductionProfileWaterInjection"
-import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
+import { ImportedElectricityOverride } from "../../models/assets/drainagestrategy/ImportedElectricityOverride"
+import { Co2EmissionsOverride } from "../../models/assets/drainagestrategy/Co2EmissionsOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -97,6 +97,8 @@ function CaseProductionProfilesTab({
     const [nGL, setNGL] = useState<ProductionProfileNGL>()
     const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
 
+    const [importedElectricityOverride, setImportedElectricityOverride] = useState<ImportedElectricityOverride>()
+
     const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
     const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
@@ -114,6 +116,8 @@ function CaseProductionProfilesTab({
         newDrainageStrategy.productionProfileWater = water
         newDrainageStrategy.productionProfileNGL = nGL
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
+
+        newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
     }
 
@@ -127,7 +131,7 @@ function CaseProductionProfilesTab({
         setCase(newCase)
     }
 
-    const handleDrainageStrategyGasSolutinChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+    const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
             const newGasSolution: Components.Schemas.GasSolution = Number(e.currentTarget.value) as Components.Schemas.GasSolution
@@ -159,7 +163,10 @@ function CaseProductionProfilesTab({
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
+        overrideProfile?: ITimeSeries | undefined
+        overridable?: boolean
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -201,6 +208,9 @@ function CaseProductionProfilesTab({
             profileName: "Imported electricity",
             unit: "GWh",
             profile: importedElectricity,
+            overridable: true,
+            overrideProfile: importedElectricityOverride,
+            overrideProfileSet: setImportedElectricityOverride,
         },
     ]
 
@@ -249,13 +259,15 @@ function CaseProductionProfilesTab({
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
                         drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
                         drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                        drainageStrategy.productionProfileWaterInjection,
+                        drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
+                        drainageStrategy.co2EmissionsOverride,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
                     setWater(drainageStrategy.productionProfileWater)
                     setNGL(drainageStrategy.productionProfileNGL)
                     setWaterInjection(drainageStrategy.productionProfileWaterInjection)
+                    setImportedElectricityOverride(drainageStrategy.importedElectricityOverride)
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -291,6 +303,13 @@ function CaseProductionProfilesTab({
         setDrainageStrategy(newDrainageStrategy)
     }, [waterInjection])
 
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.importedElectricityOverride && !importedElectricityOverride) { return }
+        newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
+        setDrainageStrategy(newDrainageStrategy)
+    }, [importedElectricityOverride])
+
     if (activeTab !== 1) { return null }
 
     return (
@@ -313,7 +332,7 @@ function CaseProductionProfilesTab({
                     <NativeSelectField
                         id="gasSolution"
                         label="Gas solution"
-                        onChange={handleDrainageStrategyGasSolutinChange}
+                        onChange={handleDrainageStrategyGasSolutionChange}
                         value={drainageStrategy?.gasSolution}
                     >
                         <option key={0} value={0}>Export</option>

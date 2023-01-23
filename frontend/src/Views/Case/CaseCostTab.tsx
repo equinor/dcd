@@ -4,7 +4,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Progress, Typography,
+    Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -12,7 +12,6 @@ import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
 import { OpexCostProfile } from "../../models/case/OpexCostProfile"
@@ -21,9 +20,7 @@ import { SeismicAcquisitionAndProcessing } from "../../models/assets/exploration
 import { CountryOfficeCost } from "../../models/assets/exploration/CountryOfficeCost"
 import { GAndGAdminCost } from "../../models/assets/exploration/GAndGAdminCost"
 import { Exploration } from "../../models/assets/exploration/Exploration"
-import { GetExplorationService } from "../../Services/ExplorationService"
 import { Surf } from "../../models/assets/surf/Surf"
-import { GetSurfService } from "../../Services/SurfService"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Substructure } from "../../models/assets/substructure/Substructure"
 import { Topside } from "../../models/assets/topside/Topside"
@@ -32,10 +29,6 @@ import { TopsideCostProfile } from "../../models/assets/topside/TopsideCostProfi
 import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
 import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
 import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
-import { GetTopsideService } from "../../Services/TopsideService"
-import { GetSubstructureService } from "../../Services/SubstructureService"
-import { GetTransportService } from "../../Services/TransportService"
-import { GetWellProjectService } from "../../Services/WellProjectService"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { GasProducerCostProfile } from "../../models/assets/wellproject/GasProducerCostProfile"
 import { OilProducerCostProfile } from "../../models/assets/wellproject/OilProducerCostProfile"
@@ -50,6 +43,14 @@ import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasib
 import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
 import { CessationWellsCost } from "../../models/case/CessationWellsCost"
 import { CessationOffshoreFacilitiesCost } from "../../models/case/CessationOffshoreFacilitiesCost"
+import { TopsideCostProfileOverride } from "../../models/assets/topside/TopsideCostProfileOverride"
+import { SurfCostProfileOverride } from "../../models/assets/surf/SurfCostProfileOverride"
+import { SubstructureCostProfileOverride } from "../../models/assets/substructure/SubstructureCostProfileOverride"
+import { TransportCostProfileOverride } from "../../models/assets/transport/TransportCostProfileOverride"
+import { OilProducerCostProfileOverride } from "../../models/assets/wellproject/OilProducerCostProfileOverride"
+import { GasProducerCostProfileOverride } from "../../models/assets/wellproject/GasProducerCostProfileOverride"
+import { WaterInjectorCostProfileOverride } from "../../models/assets/wellproject/WaterInjectorCostProfileOverride"
+import { GasInjectorCostProfileOverride } from "../../models/assets/wellproject/GasInjectorCostProfileOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -147,15 +148,30 @@ function CaseCostTab({
 
     // CAPEX
     const [topsideCost, setTopsideCost] = useState<TopsideCostProfile>()
+    const [topsideCostOverride, setTopsideCostOverride] = useState<TopsideCostProfileOverride>()
     const [surfCost, setSurfCost] = useState<SurfCostProfile>()
+    const [surfCostOverride, setSurfCostOverride] = useState<SurfCostProfileOverride>()
     const [substructureCost, setSubstructureCost] = useState<SubstructureCostProfile>()
+    const [substructureCostOverride, setSubstructureCostOverride] = useState<SubstructureCostProfileOverride>()
     const [transportCost, setTransportCost] = useState<TransportCostProfile>()
+    const [transportCostOverride, setTransportCostOverride] = useState<TransportCostProfileOverride>()
 
     // Development
     const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<OilProducerCostProfile>()
+    const [wellProjectOilProducerCostOverride,
+        setWellProjectOilProducerCostOverride] = useState<OilProducerCostProfileOverride>()
+
     const [wellProjectGasProducerCost, setWellProjectGasProducerCost] = useState<GasProducerCostProfile>()
+    const [wellProjectGasProducerCostOverride,
+        setWellProjectGasProducerCostOverride] = useState<GasProducerCostProfileOverride>()
+
     const [wellProjectWaterInjectorCost, setWellProjectWaterInjectorCost] = useState<WaterInjectorCostProfile>()
+    const [wellProjectWaterInjectorCostOverride,
+        setWellProjectWaterInjectorCostOverride] = useState<WaterInjectorCostProfileOverride>()
+
     const [wellProjectGasInjectorCost, setWellProjectGasInjectorCost] = useState<GasInjectorCostProfile>()
+    const [wellProjectGasInjectorCostOverride,
+        setWellProjectGasInjectorCostOverride] = useState<GasInjectorCostProfileOverride>()
 
     // Exploration
     const [explorationWellCost, setExplorationWellCost] = useState<ExplorationWellCostProfile>()
@@ -219,22 +235,39 @@ function CaseCostTab({
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
                     setTopsideCost(topsideCostProfile)
+                    const topsideCostProfileOverride = topside.costProfileOverride
+                    setTopsideCostOverride(topsideCostProfileOverride)
+
                     const surfCostProfile = surf.costProfile
                     setSurfCost(surfCostProfile)
+                    const surfCostProfileOverride = surf.costProfileOverride
+                    setSurfCostOverride(surfCostProfileOverride)
+
                     const substructureCostProfile = substructure.costProfile
                     setSubstructureCost(substructureCostProfile)
+                    const substructureCostProfileOverride = substructure.costProfileOverride
+                    setSubstructureCostOverride(substructureCostProfileOverride)
+
                     const transportCostProfile = transport.costProfile
                     setTransportCost(transportCostProfile)
+                    const transportCostProfileOverride = transport.costProfileOverride
+                    setTransportCostOverride(transportCostProfileOverride)
 
                     // Development
                     const {
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
+                        oilProducerCostProfileOverride, gasProducerCostProfileOverride,
+                        waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
                     } = wellProject
                     setWellProjectOilProducerCost(oilProducerCostProfile)
+                    setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
                     setWellProjectGasProducerCost(gasProducerCostProfile)
+                    setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
                     setWellProjectWaterInjectorCost(waterInjectorCostProfile)
+                    setWellProjectWaterInjectorCostOverride(waterInjectorCostProfileOverride)
                     setWellProjectGasInjectorCost(gasInjectorCostProfile)
+                    setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
 
                     // Exploration
                     const {
@@ -252,8 +285,11 @@ function CaseCostTab({
 
                     SetTableYearsFromProfiles([study, opex, cessation,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
+                        surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
+                        oilProducerCostProfileOverride, gasProducerCostProfileOverride,
+                        waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
                         seismicAcquisitionAndProcessing, countryOffice, await gAndGAdmin,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
@@ -281,11 +317,17 @@ function CaseCostTab({
         const {
             oilProducerCostProfile, gasProducerCostProfile,
             waterInjectorCostProfile, gasInjectorCostProfile,
+            oilProducerCostProfileOverride, gasProducerCostProfileOverride,
+            waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
         } = wellProject
         setWellProjectOilProducerCost(oilProducerCostProfile)
+        setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
         setWellProjectGasProducerCost(gasProducerCostProfile)
+        setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
         setWellProjectWaterInjectorCost(waterInjectorCostProfile)
+        setWellProjectWaterInjectorCostOverride(waterInjectorCostProfileOverride)
         setWellProjectGasInjectorCost(gasInjectorCostProfile)
+        setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
     }, [wellProject])
 
     const updatedAndSetSurf = (surfItem: Surf) => {
@@ -346,7 +388,10 @@ function CaseCostTab({
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
+        overrideProfile?: ITimeSeries | undefined
+        overridable?: boolean
     }
 
     const studyTimeSeriesData: ITimeSeriesData[] = [
@@ -408,25 +453,33 @@ function CaseCostTab({
             profileName: "Subsea production system",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: surfCost,
-            set: setSurfCost,
+            overridable: true,
+            overrideProfile: surfCostOverride,
+            overrideProfileSet: setSurfCostOverride,
         },
         {
             profileName: "Topside",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: topsideCost,
-            set: setTopsideCost,
+            overridable: true,
+            overrideProfile: topsideCostOverride,
+            overrideProfileSet: setTopsideCostOverride,
         },
         {
             profileName: "Substructure",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: substructureCost,
-            set: setSubstructureCost,
+            overridable: true,
+            overrideProfile: substructureCostOverride,
+            overrideProfileSet: setSubstructureCostOverride,
         },
         {
             profileName: "Transport system",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: transportCost,
-            set: setTransportCost,
+            overridable: true,
+            overrideProfile: transportCostOverride,
+            overrideProfileSet: setTransportCostOverride,
         },
     ]
 
@@ -435,25 +488,33 @@ function CaseCostTab({
             profileName: "Oil producer cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectOilProducerCost,
-            set: setWellProjectOilProducerCost,
+            overridable: true,
+            overrideProfile: wellProjectOilProducerCostOverride,
+            overrideProfileSet: setWellProjectOilProducerCostOverride,
         },
         {
             profileName: "Gas producer cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectGasProducerCost,
-            set: setWellProjectGasProducerCost,
+            overridable: true,
+            overrideProfile: wellProjectGasProducerCostOverride,
+            overrideProfileSet: setWellProjectGasProducerCostOverride,
         },
         {
             profileName: "Water injector cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectWaterInjectorCost,
-            set: setWellProjectWaterInjectorCost,
+            overridable: true,
+            overrideProfile: wellProjectWaterInjectorCostOverride,
+            overrideProfileSet: setWellProjectWaterInjectorCostOverride,
         },
         {
             profileName: "Gas injector cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectGasInjectorCost,
-            set: setWellProjectGasInjectorCost,
+            overridable: true,
+            overrideProfile: wellProjectGasInjectorCostOverride,
+            overrideProfileSet: setWellProjectGasInjectorCostOverride,
         },
     ]
 
@@ -528,11 +589,46 @@ function CaseCostTab({
     }, [transportCost])
 
     useEffect(() => {
+        const newSurf: Surf = { ...surf }
+        if (newSurf.costProfileOverride && !surfCostOverride) { return }
+        newSurf.costProfileOverride = surfCostOverride
+        setSurf(newSurf)
+    }, [surfCostOverride])
+
+    useEffect(() => {
+        const newTopside: Topside = { ...topside }
+        if (newTopside.costProfileOverride && !topsideCostOverride) { return }
+        newTopside.costProfileOverride = topsideCostOverride
+        setTopside(newTopside)
+    }, [topsideCostOverride])
+
+    useEffect(() => {
+        const newSubstructure: Substructure = { ...substructure }
+        if (newSubstructure.costProfileOverride && !substructureCostOverride) { return }
+        newSubstructure.costProfileOverride = substructureCostOverride
+        setSubstructure(newSubstructure)
+    }, [substructureCostOverride])
+
+    useEffect(() => {
+        const newTransport: Transport = { ...transport }
+        if (newTransport.costProfileOverride && !transportCostOverride) { return }
+        newTransport.costProfileOverride = transportCostOverride
+        setTransport(newTransport)
+    }, [transportCostOverride])
+
+    useEffect(() => {
         const newWellProject: WellProject = { ...wellProject }
         if (newWellProject.oilProducerCostProfile && !wellProjectOilProducerCost) { return }
         newWellProject.oilProducerCostProfile = wellProjectOilProducerCost
         setWellProject(newWellProject)
     }, [wellProjectOilProducerCost])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
+        if (newWellProject.oilProducerCostProfileOverride && !wellProjectOilProducerCostOverride) { return }
+        newWellProject.oilProducerCostProfileOverride = wellProjectOilProducerCostOverride
+        setWellProject(newWellProject)
+    }, [wellProjectOilProducerCostOverride])
 
     useEffect(() => {
         const newWellProject: WellProject = { ...wellProject }
@@ -543,6 +639,13 @@ function CaseCostTab({
 
     useEffect(() => {
         const newWellProject: WellProject = { ...wellProject }
+        if (newWellProject.gasProducerCostProfileOverride && !wellProjectGasProducerCostOverride) { return }
+        newWellProject.gasProducerCostProfileOverride = wellProjectGasProducerCostOverride
+        setWellProject(newWellProject)
+    }, [wellProjectGasProducerCostOverride])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
         if (newWellProject.waterInjectorCostProfile && !wellProjectWaterInjectorCost) { return }
         newWellProject.waterInjectorCostProfile = wellProjectWaterInjectorCost
         setWellProject(newWellProject)
@@ -550,10 +653,24 @@ function CaseCostTab({
 
     useEffect(() => {
         const newWellProject: WellProject = { ...wellProject }
+        if (newWellProject.waterInjectorCostProfileOverride && !wellProjectWaterInjectorCostOverride) { return }
+        newWellProject.waterInjectorCostProfileOverride = wellProjectWaterInjectorCostOverride
+        setWellProject(newWellProject)
+    }, [wellProjectWaterInjectorCostOverride])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
         if (newWellProject.gasInjectorCostProfile && !wellProjectGasInjectorCost) { return }
         newWellProject.gasInjectorCostProfile = wellProjectGasInjectorCost
         setWellProject(newWellProject)
     }, [wellProjectGasInjectorCost])
+
+    useEffect(() => {
+        const newWellProject: WellProject = { ...wellProject }
+        if (newWellProject.gasInjectorCostProfileOverride && !wellProjectGasInjectorCostOverride) { return }
+        newWellProject.gasInjectorCostProfileOverride = wellProjectGasInjectorCostOverride
+        setWellProject(newWellProject)
+    }, [wellProjectGasInjectorCostOverride])
 
     useEffect(() => {
         const newExploration: Exploration = { ...exploration }
