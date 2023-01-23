@@ -56,7 +56,13 @@ public class GenerateNetSaleGasProfile
         }
 
         var fuelFlaringLosses =
-            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(fuelConsumption, flarings), losses);
+            TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumption, flarings, losses });
+
+        if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
+        {
+            fuelFlaringLosses.StartYear = drainageStrategy.FuelFlaringAndLossesOverride.StartYear;
+            fuelFlaringLosses.Values = drainageStrategy.FuelFlaringAndLossesOverride.Values;
+        }
 
         var negativeFuelFlaringLosses = new TimeSeriesVolume
         {

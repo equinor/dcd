@@ -20,7 +20,9 @@ public class DrainageStrategy
     public ProductionProfileWater? ProductionProfileWater { get; set; }
     public ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
     public FuelFlaringAndLosses? FuelFlaringAndLosses { get; set; }
+    public FuelFlaringAndLossesOverride? FuelFlaringAndLossesOverride { get; set; }
     public NetSalesGas? NetSalesGas { get; set; }
+    public NetSalesGasOverride? NetSalesGasOverride { get; set; }
 
     public Co2Emissions? Co2Emissions { get; set; }
     public Co2EmissionsOverride? Co2EmissionsOverride { get; set; }
@@ -67,10 +69,24 @@ public class FuelFlaringAndLosses : TimeSeriesVolume, IDrainageStrategyTimeSerie
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
+public class FuelFlaringAndLossesOverride : TimeSeriesVolume, IDrainageStrategyTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
 public class NetSalesGas : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class NetSalesGasOverride : TimeSeriesVolume, IDrainageStrategyTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+    public bool Override { get; set; }
 }
 
 public class Co2Emissions : TimeSeriesMass, IDrainageStrategyTimeSeries

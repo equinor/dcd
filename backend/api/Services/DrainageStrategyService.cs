@@ -31,7 +31,9 @@ public class DrainageStrategyService
                 .Include(c => c.ProductionProfileWater)
                 .Include(c => c.ProductionProfileWaterInjection)
                 .Include(c => c.FuelFlaringAndLosses)
+                .Include(c => c.FuelFlaringAndLossesOverride)
                 .Include(c => c.NetSalesGas)
+                .Include(c => c.NetSalesGasOverride)
                 .Include(c => c.Co2Emissions)
                 .Include(c => c.Co2EmissionsOverride)
                 .Include(c => c.ProductionProfileNGL)
@@ -96,9 +98,17 @@ public class DrainageStrategyService
         {
             newDrainageStrategyDto.FuelFlaringAndLosses.Id = Guid.Empty;
         }
+        if (newDrainageStrategyDto.FuelFlaringAndLossesOverride != null)
+        {
+            newDrainageStrategyDto.FuelFlaringAndLossesOverride.Id = Guid.Empty;
+        }
         if (newDrainageStrategyDto.NetSalesGas != null)
         {
             newDrainageStrategyDto.NetSalesGas.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.NetSalesGasOverride != null)
+        {
+            newDrainageStrategyDto.NetSalesGasOverride.Id = Guid.Empty;
         }
         if (newDrainageStrategyDto.Co2Emissions != null)
         {
@@ -257,7 +267,9 @@ public class DrainageStrategyService
             .Include(c => c.ProductionProfileWater)
             .Include(c => c.ProductionProfileWaterInjection)
             .Include(c => c.FuelFlaringAndLosses)
+            .Include(c => c.FuelFlaringAndLossesOverride)
             .Include(c => c.NetSalesGas)
+            .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
             .Include(c => c.Co2EmissionsOverride)
             .Include(c => c.ProductionProfileNGL)
