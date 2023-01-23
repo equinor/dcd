@@ -369,7 +369,7 @@ public class ProjectService
         project.ReferenceCaseId = projectDto.ReferenceCaseId;
 
         _context.Projects?.Update(project);
-        _context.SaveChangesAsync();
+        _context.SaveChanges();
         return ProjectDtoAdapter.Convert(project);
     }
 }
