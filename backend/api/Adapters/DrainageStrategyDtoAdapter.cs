@@ -24,7 +24,9 @@ public static class DrainageStrategyDtoAdapter
             ProductionProfileWater = Convert<ProductionProfileWaterDto, ProductionProfileWater>(drainageStrategy.ProductionProfileWater, unit),
             ProductionProfileWaterInjection = Convert<ProductionProfileWaterInjectionDto, ProductionProfileWaterInjection>(drainageStrategy.ProductionProfileWaterInjection, unit),
             FuelFlaringAndLosses = Convert<FuelFlaringAndLossesDto, FuelFlaringAndLosses>(drainageStrategy.FuelFlaringAndLosses, unit),
+            FuelFlaringAndLossesOverride = ConvertOverride<FuelFlaringAndLossesOverrideDto, FuelFlaringAndLossesOverride>(drainageStrategy.FuelFlaringAndLossesOverride, unit),
             NetSalesGas = Convert<NetSalesGasDto, NetSalesGas>(drainageStrategy.NetSalesGas, unit),
+            NetSalesGasOverride = ConvertOverride<NetSalesGasOverrideDto, NetSalesGasOverride>(drainageStrategy.NetSalesGasOverride, unit),
             Co2Emissions = Convert<Co2EmissionsDto, Co2Emissions>(drainageStrategy.Co2Emissions, unit),
             Co2EmissionsOverride = ConvertOverride<Co2EmissionsOverrideDto, Co2EmissionsOverride>(drainageStrategy.Co2EmissionsOverride, unit),
             ProductionProfileNGL = Convert<ProductionProfileNGLDto, ProductionProfileNGL>(drainageStrategy.ProductionProfileNGL, unit),
@@ -72,7 +74,7 @@ public static class DrainageStrategyDtoAdapter
         string[] MTPA_Units = { nameof(Co2Emissions), nameof(Co2EmissionsOverride), nameof(ProductionProfileNGL) };
         string[] BBL_Units =
             { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
-        string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
+        string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(FuelFlaringAndLossesOverride), nameof(NetSalesGas), nameof(NetSalesGasOverride) };
 
         // Per now - the timeseriestypes which use millions are the same in both SI and Oilfield
         if (SCF_Units.Contains(type))

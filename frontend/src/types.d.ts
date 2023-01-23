@@ -202,7 +202,9 @@ declare namespace Components {
             productionProfileWater?: ProductionProfileWaterDto;
             productionProfileWaterInjection?: ProductionProfileWaterInjectionDto;
             fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
+            fuelFlaringAndLossesOverride?: FuelFlaringAndLossesOverrideDto;
             netSalesGas?: NetSalesGasDto;
+            netSalesGasOverride?: NetSalesGasOverrideDto;
             co2Emissions?: Co2EmissionsDto;
             co2EmissionsOverride?: Co2EmissionsOverrideDto;
             productionProfileNGL?: ProductionProfileNGLDto;
@@ -273,6 +275,13 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
+        }
+        export interface FuelFlaringAndLossesOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            override?: boolean;
         }
         export interface GAndGAdminCostDto {
             id?: string; // uuid
@@ -349,6 +358,13 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
+        }
+        export interface NetSalesGasOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            override?: boolean;
         }
         export interface OffshoreFacilitiesCostProfileDto {
             id?: string; // uuid

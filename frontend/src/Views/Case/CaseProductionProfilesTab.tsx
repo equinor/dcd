@@ -29,6 +29,8 @@ import { ImportedElectricity } from "../../models/assets/drainagestrategy/Import
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 import { ImportedElectricityOverride } from "../../models/assets/drainagestrategy/ImportedElectricityOverride"
 import { Co2EmissionsOverride } from "../../models/assets/drainagestrategy/Co2EmissionsOverride"
+import { NetSalesGasOverride } from "../../models/assets/drainagestrategy/NetSalesGasOverride"
+import { FuelFlaringAndLossesOverride } from "../../models/assets/drainagestrategy/FuelFlaringAndLossesOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -97,11 +99,14 @@ function CaseProductionProfilesTab({
     const [nGL, setNGL] = useState<ProductionProfileNGL>()
     const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
 
-    const [importedElectricityOverride, setImportedElectricityOverride] = useState<ImportedElectricityOverride>()
-
     const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
-    const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
+    const [netSalesGasOverride, setNetSalesGasOverride] = useState<NetSalesGasOverride>()
+
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
+    const [fuelFlaringAndLossesOverride, setFuelFlaringAndLossesOverride] = useState<FuelFlaringAndLossesOverride>()
+
+    const [importedElectricityOverride, setImportedElectricityOverride] = useState<ImportedElectricityOverride>()
+    const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -110,7 +115,9 @@ function CaseProductionProfilesTab({
     const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
         const newDrainageStrategy: DrainageStrategy = { ...drainage }
         newDrainageStrategy.netSalesGas = netSalesGas
+        newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
+        newDrainageStrategy.fuelFlaringAndLossesOverride = fuelFlaringAndLossesOverride
         newDrainageStrategy.productionProfileGas = gas
         newDrainageStrategy.productionProfileOil = oil
         newDrainageStrategy.productionProfileWater = water
@@ -195,14 +202,20 @@ function CaseProductionProfilesTab({
             profile: waterInjection,
         },
         {
-            profileName: "Fuel flaring and losses",
+            profileName: "Fuel, flaring and losses",
             unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             profile: fuelFlaringAndLosses,
+            overridable: true,
+            overrideProfile: fuelFlaringAndLossesOverride,
+            overrideProfileSet: setFuelFlaringAndLossesOverride,
         },
         {
             profileName: "Net sales gas",
             unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             profile: netSalesGas,
+            overridable: true,
+            overrideProfile: netSalesGasOverride,
+            overrideProfileSet: setNetSalesGasOverride,
         },
         {
             profileName: "Imported electricity",
@@ -257,17 +270,21 @@ function CaseProductionProfilesTab({
                     setImportedElectricity(await importedElectricityProfile)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                        drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
-                        drainageStrategy.co2EmissionsOverride,
+                    drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
+                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+                    drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
+                    drainageStrategy.co2EmissionsOverride,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
                     setWater(drainageStrategy.productionProfileWater)
                     setNGL(drainageStrategy.productionProfileNGL)
                     setWaterInjection(drainageStrategy.productionProfileWaterInjection)
+
                     setImportedElectricityOverride(drainageStrategy.importedElectricityOverride)
+                    setNetSalesGasOverride(drainageStrategy.netSalesGasOverride)
+                    setFuelFlaringAndLossesOverride(drainageStrategy.fuelFlaringAndLossesOverride)
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -309,6 +326,20 @@ function CaseProductionProfilesTab({
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [importedElectricityOverride])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.fuelFlaringAndLossesOverride && !fuelFlaringAndLossesOverride) { return }
+        newDrainageStrategy.fuelFlaringAndLossesOverride = fuelFlaringAndLossesOverride
+        setDrainageStrategy(newDrainageStrategy)
+    }, [fuelFlaringAndLossesOverride])
+
+    useEffect(() => {
+        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+        if (newDrainageStrategy.netSalesGasOverride && !netSalesGasOverride) { return }
+        newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
+        setDrainageStrategy(newDrainageStrategy)
+    }, [netSalesGasOverride])
 
     if (activeTab !== 1) { return null }
 

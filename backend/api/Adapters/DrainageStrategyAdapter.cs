@@ -39,10 +39,22 @@ public static class DrainageStrategyAdapter
                 unit, initialCreate);
         }
 
+        if (drainageStrategyDto.FuelFlaringAndLossesOverride != null)
+        {
+            drainageStrategy.FuelFlaringAndLossesOverride = ConvertOverride<FuelFlaringAndLossesOverrideDto, FuelFlaringAndLossesOverride>(drainageStrategyDto.FuelFlaringAndLossesOverride, drainageStrategy, null,
+                unit, initialCreate);
+        }
+
         if (drainageStrategyDto.NetSalesGas != null)
         {
             drainageStrategy.NetSalesGas =
                 Convert<NetSalesGasDto, NetSalesGas>(drainageStrategyDto.NetSalesGas, drainageStrategy, null, unit, initialCreate);
+        }
+
+        if (drainageStrategyDto.NetSalesGasOverride != null)
+        {
+            drainageStrategy.NetSalesGasOverride =
+                ConvertOverride<NetSalesGasOverrideDto, NetSalesGasOverride>(drainageStrategyDto.NetSalesGasOverride, drainageStrategy, null, unit, initialCreate);
         }
 
         if (drainageStrategyDto.Co2Emissions != null)
@@ -121,10 +133,26 @@ public static class DrainageStrategyAdapter
                 Convert<FuelFlaringAndLossesDto, FuelFlaringAndLosses>(drainageStrategyDto.FuelFlaringAndLosses, existing, existing.FuelFlaringAndLosses, unit, initialCreate);
         }
 
+        if ((drainageStrategyDto.FuelFlaringAndLossesOverride != null
+            && (existing.FuelFlaringAndLossesOverride?.Values
+            .SequenceEqual(drainageStrategyDto.FuelFlaringAndLossesOverride.Values) != true)) ||
+            existing.FuelFlaringAndLossesOverride?.Override != drainageStrategyDto.FuelFlaringAndLossesOverride?.Override)
+        {
+            existing.FuelFlaringAndLossesOverride =
+                ConvertOverride<FuelFlaringAndLossesOverrideDto, FuelFlaringAndLossesOverride>(drainageStrategyDto.FuelFlaringAndLossesOverride, existing, existing.FuelFlaringAndLossesOverride, unit, initialCreate);
+        }
+
         if (drainageStrategyDto.NetSalesGas != null
             && (existing.NetSalesGas?.Values.SequenceEqual(drainageStrategyDto.NetSalesGas.Values) != true))
         {
             existing.NetSalesGas = Convert<NetSalesGasDto, NetSalesGas>(drainageStrategyDto.NetSalesGas, existing, existing.NetSalesGas, unit, initialCreate);
+        }
+
+        if ((drainageStrategyDto.NetSalesGasOverride != null
+            && (existing.NetSalesGasOverride?.Values.SequenceEqual(drainageStrategyDto.NetSalesGasOverride.Values) != true)) ||
+            existing.NetSalesGasOverride?.Override != drainageStrategyDto.NetSalesGasOverride?.Override)
+        {
+            existing.NetSalesGasOverride = ConvertOverride<NetSalesGasOverrideDto, NetSalesGasOverride>(drainageStrategyDto.NetSalesGasOverride, existing, existing.NetSalesGasOverride, unit, initialCreate);
         }
 
         if (drainageStrategyDto.Co2Emissions != null
@@ -268,7 +296,7 @@ public static class DrainageStrategyAdapter
         string[] MTPA_Units = { nameof(Co2Emissions), nameof(Co2EmissionsOverride), nameof(ProductionProfileNGL) };
         string[] BBL_Units =
             { nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection) };
-        string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(NetSalesGas) };
+        string[] SCF_Units = { nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(FuelFlaringAndLossesOverride), nameof(NetSalesGas), nameof(NetSalesGasOverride) };
 
         // Per now - the timeseriestypes which use millions are the same in both SI and Oilfield
         if (SCF_Units.Contains(type))
