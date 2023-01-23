@@ -36,6 +36,11 @@ public class Case
     public double BreakEven { get; set; }
     public string? Host { get; set; }
 
+    public TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
+    public TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
+    public TotalFEEDStudies? TotalFEEDStudies { get; set; }
+    public TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
+
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
     public Guid WellProjectLink { get; set; } = Guid.Empty;
     public Guid SurfLink { get; set; } = Guid.Empty;
@@ -91,9 +96,32 @@ public class StudyCostProfile : TimeSeriesCost
 {
 }
 
-public class TotalFeasibilityAndConceptStudies : TimeSeriesCost
+public class TotalFeasibilityAndConceptStudies : TimeSeriesCost, ICaseTimeSeries
 {
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
 }
-public class TotalFEEDStudies : TimeSeriesCost
+public class TotalFeasibilityAndConceptStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+    public bool Override { get; set; }
+
+}
+public class TotalFEEDStudies : TimeSeriesCost, ICaseTimeSeries
+{
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+}
+public class TotalFEEDStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+    public bool Override { get; set; }
+
+}
+
+public interface ICaseTimeSeries
+{
+    Case Case { get; set; }
 }

@@ -51,6 +51,8 @@ import { OilProducerCostProfileOverride } from "../../models/assets/wellproject/
 import { GasProducerCostProfileOverride } from "../../models/assets/wellproject/GasProducerCostProfileOverride"
 import { WaterInjectorCostProfileOverride } from "../../models/assets/wellproject/WaterInjectorCostProfileOverride"
 import { GasInjectorCostProfileOverride } from "../../models/assets/wellproject/GasInjectorCostProfileOverride"
+import { TotalFeasibilityAndConceptStudiesOverride } from "../../models/case/TotalFeasibilityAndConceptStudiesOverride"
+import { TotalFEEDStudiesOverride } from "../../models/case/TotalFEEDStudiesOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -132,9 +134,14 @@ function CaseCostTab({
 }: Props) {
     // OPEX
     const [studyCost, setStudyCost] = useState<StudyCostProfile>()
+
     const [totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies] = useState<TotalFeasibilityAndConceptStudies>()
+    const [totalFeasibilityAndConceptStudiesOverride,
+        setTotalFeasibilityAndConceptStudiesOverride] = useState<TotalFeasibilityAndConceptStudiesOverride>()
+
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<TotalFEEDStudies>()
+    const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<TotalFEEDStudiesOverride>()
 
     const [opexCost, setOpexCost] = useState<OpexCostProfile>()
     const [offshoreFacilitiesOperationsCostProfile,
@@ -211,7 +218,9 @@ function CaseCostTab({
 
                     setStudyCost(study)
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
+                    setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
                     setTotalFEEDStudies(totalFEED)
+                    setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
 
                     const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
                     const wellIntervention = WellInterventionCostProfile
@@ -284,6 +293,7 @@ function CaseCostTab({
                     setGAndGAdminCost(await gAndGAdmin)
 
                     SetTableYearsFromProfiles([study, opex, cessation,
+                        totalFeasibilityAndConceptStudiesOverride, totalFEEDStudiesOverride,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                         surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
                         oilProducerCostProfile, gasProducerCostProfile,
@@ -399,11 +409,17 @@ function CaseCostTab({
             profileName: "Feasibility & conceptual stud.",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalFeasibilityAndConceptStudies,
+            overridable: true,
+            overrideProfile: totalFeasibilityAndConceptStudiesOverride,
+            overrideProfileSet: setTotalFeasibilityAndConceptStudiesOverride,
         },
         {
             profileName: "FEED studies (DG2-DG3)",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalFEEDStudies,
+            overridable: true,
+            overrideProfile: totalFEEDStudiesOverride,
+            overrideProfileSet: setTotalFEEDStudiesOverride,
         },
         {
             profileName: "Study cost",
@@ -559,6 +575,20 @@ function CaseCostTab({
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
+
+    useEffect(() => {
+        const newCase: Case = Case.Copy(caseItem)
+        if (newCase.totalFeasibilityAndConceptStudiesOverride && !totalFeasibilityAndConceptStudiesOverride) { return }
+        newCase.totalFeasibilityAndConceptStudiesOverride = totalFeasibilityAndConceptStudiesOverride
+        setCase(newCase)
+    }, [totalFeasibilityAndConceptStudiesOverride])
+
+    useEffect(() => {
+        const newCase: Case = Case.Copy(caseItem)
+        if (newCase.totalFEEDStudiesOverride && !totalFEEDStudiesOverride) { return }
+        newCase.totalFEEDStudiesOverride = totalFEEDStudiesOverride
+        setCase(newCase)
+    }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
         const newSurf: Surf = { ...surf }

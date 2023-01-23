@@ -54,6 +54,10 @@ declare namespace Components {
             dG4Date?: string; // date-time
             createTime?: string; // date-time
             modifyTime?: string; // date-time
+            totalFeasibilityAndConceptStudies?: TotalFeasibilityAndConceptStudiesDto;
+            totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverrideDto;
+            totalFEEDStudies?: TotalFEEDStudiesDto;
+            totalFEEDStudiesOverride?: TotalFEEDStudiesOverrideDto;
             drainageStrategyLink?: string; // uuid
             wellProjectLink?: string; // uuid
             surfLink?: string; // uuid
@@ -748,6 +752,15 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface TotalFEEDStudiesOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export interface TotalFeasibilityAndConceptStudiesDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -755,6 +768,15 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface TotalFeasibilityAndConceptStudiesOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
         }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid

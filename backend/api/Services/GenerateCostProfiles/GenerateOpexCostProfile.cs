@@ -32,10 +32,10 @@ public class GenerateOpexCostProfile
 
         var result = new OpexCostProfileWrapperDto();
         var wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
-        var wellInterventionCostDto = CaseDtoAdapter.Convert(wellInterventionCost);
+        var wellInterventionCostDto = CaseDtoAdapter.Convert<WellInterventionCostProfileDto, WellInterventionCostProfile>(wellInterventionCost);
 
         var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
-        var offshoreFacilitiesOperationsCostDto = CaseDtoAdapter.Convert(offshoreFacilitiesOperationsCost);
+        var offshoreFacilitiesOperationsCostDto = CaseDtoAdapter.Convert<OffshoreFacilitiesOperationsCostProfileDto, OffshoreFacilitiesOperationsCostProfile>(offshoreFacilitiesOperationsCost);
 
         result.WellInterventionCostProfileDto = wellInterventionCostDto;
         result.OffshoreFacilitiesOperationsCostProfileDto = offshoreFacilitiesOperationsCostDto;
@@ -57,7 +57,7 @@ public class GenerateOpexCostProfile
             StartYear = OPEX.StartYear,
             Values = OPEX.Values
         };
-        var opexDto = CaseDtoAdapter.Convert(opexCostProfile);
+        var opexDto = CaseDtoAdapter.Convert<OpexCostProfileDto, OpexCostProfile>(opexCostProfile);
         result.OpexCostProfileDto = opexDto;
         return result;
     }

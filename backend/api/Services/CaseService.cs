@@ -141,6 +141,23 @@ public class CaseService
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
         caseItem.Id = new Guid();
 
+        if (caseItem.TotalFeasibilityAndConceptStudies != null)
+        {
+            caseItem.TotalFeasibilityAndConceptStudies.Id = Guid.Empty;
+        }
+        if (caseItem.TotalFeasibilityAndConceptStudiesOverride != null)
+        {
+            caseItem.TotalFeasibilityAndConceptStudiesOverride.Id = Guid.Empty;
+        }
+        if (caseItem.TotalFEEDStudies != null)
+        {
+            caseItem.TotalFEEDStudies.Id = Guid.Empty;
+        }
+        if (caseItem.TotalFEEDStudiesOverride != null)
+        {
+            caseItem.TotalFEEDStudiesOverride.Id = Guid.Empty;
+        }
+
         var project = _projectService.GetProject(caseItem.ProjectId);
         caseItem.Project = project;
 
@@ -192,6 +209,10 @@ public class CaseService
     public Case GetCaseNoTracking(Guid caseId)
     {
         var caseItem = _context.Cases!.AsNoTracking()
+            .Include(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TotalFEEDStudies)
+            .Include(c => c.TotalFEEDStudiesOverride)
             .FirstOrDefault(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -203,6 +224,10 @@ public class CaseService
     public Case GetCase(Guid caseId)
     {
         var caseItem = _context.Cases!
+            .Include(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(c => c.TotalFEEDStudies)
+            .Include(c => c.TotalFEEDStudiesOverride)
             .FirstOrDefault(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -215,7 +240,11 @@ public class CaseService
     {
         if (_context.Cases != null)
         {
-            return _context.Cases;
+            return _context.Cases
+                    .Include(c => c.TotalFeasibilityAndConceptStudies)
+                    .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+                    .Include(c => c.TotalFEEDStudies)
+                    .Include(c => c.TotalFEEDStudiesOverride);
         }
         else
         {

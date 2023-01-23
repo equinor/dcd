@@ -42,7 +42,7 @@ public class GenerateCessationCostProfile
         {
             wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
             cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear);
-            var cessationWellsDto = CaseDtoAdapter.Convert(cessationWellsCost);
+            var cessationWellsDto = CaseDtoAdapter.Convert<CessationWellsCostDto, CessationWellsCost>(cessationWellsCost);
             result.CessationWellsCostDto = cessationWellsDto;
         }
         catch (ArgumentException)
@@ -55,7 +55,7 @@ public class GenerateCessationCostProfile
         {
             surf = _surfService.GetSurf(caseItem.SurfLink);
             cessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(surf, (int)lastYear);
-            var cessationOffshoreFacilitiesCostDto = CaseDtoAdapter.Convert(cessationOffshoreFacilitiesCost);
+            var cessationOffshoreFacilitiesCostDto = CaseDtoAdapter.Convert<CessationOffshoreFacilitiesCostDto, CessationOffshoreFacilitiesCost>(cessationOffshoreFacilitiesCost);
             result.CessationOffshoreFacilitiesCostDto = cessationOffshoreFacilitiesCostDto;
         }
         catch (ArgumentException)
@@ -69,7 +69,7 @@ public class GenerateCessationCostProfile
             StartYear = cessationTimeSeries.StartYear,
             Values = cessationTimeSeries.Values
         };
-        var cessationDto = CaseDtoAdapter.Convert(cessation);
+        var cessationDto = CaseDtoAdapter.Convert<CessationCostDto, CessationCost>(cessation);
         result.CessationCostDto = cessationDto;
         return result;
     }

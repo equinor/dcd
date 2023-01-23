@@ -34,6 +34,11 @@ public class CaseDto
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; }
 
+    public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
+    public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
+    public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
+    public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+
     public Guid DrainageStrategyLink { get; set; }
     public Guid WellProjectLink { get; set; }
     public Guid SurfLink { get; set; }
@@ -79,8 +84,16 @@ public class StudyCostProfileDto : TimeSeriesCostDto
 public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto
 {
 }
+public class TotalFeasibilityAndConceptStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
 public class TotalFEEDStudiesDto : TimeSeriesCostDto
 {
+}
+public class TotalFEEDStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class CessationCostWrapperDto

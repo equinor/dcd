@@ -241,7 +241,10 @@ public class ProjectService
             }
 
             var project = _context.Projects!
-                .Include(p => p.Cases)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)

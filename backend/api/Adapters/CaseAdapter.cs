@@ -54,6 +54,12 @@ public static class CaseAdapter
             SharepointFileUrl = caseDto.SharepointFileUrl,
         };
 
+        caseItem.TotalFeasibilityAndConceptStudies = Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(caseDto.TotalFeasibilityAndConceptStudies, caseItem);
+        caseItem.TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>(caseDto.TotalFeasibilityAndConceptStudiesOverride, caseItem);
+
+        caseItem.TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(caseDto.TotalFEEDStudies, caseItem);
+        caseItem.TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseDto.TotalFEEDStudiesOverride, caseItem);
+
         return caseItem;
     }
 
@@ -64,6 +70,7 @@ public static class CaseAdapter
         existing.Name = caseDto.Name;
         existing.Description = caseDto.Description;
         existing.ReferenceCase = caseDto.ReferenceCase;
+
         existing.DGADate = caseDto.DGADate;
         existing.DGBDate = caseDto.DGBDate;
         existing.DGCDate = caseDto.DGCDate;
@@ -75,6 +82,7 @@ public static class CaseAdapter
         existing.DG3Date = caseDto.DG3Date;
         existing.DG4Date = caseDto.DG4Date;
         existing.ModifyTime = DateTimeOffset.UtcNow;
+
         existing.DrainageStrategyLink = caseDto.DrainageStrategyLink;
         existing.ExplorationLink = caseDto.ExplorationLink;
         existing.WellProjectLink = caseDto.WellProjectLink;
@@ -83,6 +91,7 @@ public static class CaseAdapter
         existing.SubstructureLink = caseDto.SubstructureLink;
         existing.TransportLink = caseDto.TransportLink;
         existing.ArtificialLift = caseDto.ArtificialLift;
+
         existing.ProductionStrategyOverview = caseDto.ProductionStrategyOverview;
         existing.ProducerCount = caseDto.ProducerCount;
         existing.GasInjectorCount = caseDto.GasInjectorCount;
@@ -93,7 +102,49 @@ public static class CaseAdapter
         existing.NPV = caseDto.NPV;
         existing.BreakEven = caseDto.BreakEven;
         existing.Host = caseDto.Host;
+
         existing.SharepointFileId = caseDto.SharepointFileId;
         existing.SharepointFileName = caseDto.SharepointFileName;
+
+        existing.TotalFeasibilityAndConceptStudies = Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(caseDto.TotalFeasibilityAndConceptStudies, existing);
+        existing.TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>(caseDto.TotalFeasibilityAndConceptStudiesOverride, existing);
+
+        existing.TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(caseDto.TotalFEEDStudies, existing);
+        existing.TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseDto.TotalFEEDStudiesOverride, existing);
+    }
+
+    private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, Case caseItem)
+    where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+    where TModel : TimeSeriesCost, ITimeSeriesOverride, ICaseTimeSeries, new()
+    {
+        if (dto == null) { return null; }
+
+        return new TModel
+        {
+            Id = dto.Id,
+            Override = dto.Override,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
+            Case = caseItem,
+        };
+    }
+
+    private static TModel? Convert<TDto, TModel>(TDto? dto, Case caseItem)
+        where TDto : TimeSeriesCostDto
+        where TModel : TimeSeriesCost, ICaseTimeSeries, new()
+    {
+        if (dto == null) { return null; }
+
+        return new TModel
+        {
+            Id = dto.Id,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
+            Case = caseItem,
+        };
     }
 }
