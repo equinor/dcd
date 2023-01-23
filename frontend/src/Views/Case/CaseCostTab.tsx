@@ -421,11 +421,6 @@ function CaseCostTab({
             overrideProfile: totalFEEDStudiesOverride,
             overrideProfileSet: setTotalFEEDStudiesOverride,
         },
-        {
-            profileName: "Study cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: studyCost,
-        },
     ]
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
@@ -830,7 +825,8 @@ function CaseCostTab({
                     gridRef={studyGridRef}
                     alignedGridsRef={[opexGridRef, cessationGridRef, capexGridRef,
                         developmentWellsGridRef, explorationWellsGridRef]}
-                    includeFooter={false}
+                    includeFooter
+                    totalRowName="Study cost"
                 />
             </TableWrapper>
             <TableWrapper>
