@@ -1,6 +1,10 @@
 import { DefaultDate } from "../../Utils/common"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { CessationCostProfile } from "./CessationCostProfile"
+import { TotalFeasibilityAndConceptStudies } from "./TotalFeasibilityAndConceptStudies"
+import { TotalFeasibilityAndConceptStudiesOverride } from "./TotalFeasibilityAndConceptStudiesOverride"
+import { TotalFEEDStudies } from "./TotalFEEDStudies"
+import { TotalFEEDStudiesOverride } from "./TotalFEEDStudiesOverride"
 
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
@@ -44,6 +48,10 @@ export class Case implements Components.Schemas.CaseDto {
     sharepointFileId?: string | null
     sharepointFileName?: string | null
     sharepointFileUrl?: string | null
+    totalFeasibilityAndConceptStudies?: TotalFeasibilityAndConceptStudies | undefined
+    totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverride | undefined
+    totalFEEDStudies?: TotalFEEDStudies | undefined
+    totalFEEDStudiesOverride?: TotalFEEDStudiesOverride | undefined
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -87,6 +95,12 @@ export class Case implements Components.Schemas.CaseDto {
         this.sharepointFileId = data.sharepointFileId ?? ""
         this.sharepointFileName = data.sharepointFileName ?? ""
         this.sharepointFileUrl = data.sharepointFileUrl ?? ""
+        this.totalFeasibilityAndConceptStudies = TotalFeasibilityAndConceptStudies
+            .fromJSON(data.totalFeasibilityAndConceptStudies)
+        this.totalFeasibilityAndConceptStudiesOverride = TotalFeasibilityAndConceptStudiesOverride
+            .fromJSON(data.totalFeasibilityAndConceptStudiesOverride)
+        this.totalFEEDStudies = TotalFEEDStudies.fromJSON(data.totalFEEDStudies)
+        this.totalFEEDStudiesOverride = TotalFEEDStudiesOverride.fromJSON(data.totalFEEDStudiesOverride)
     }
 
     static Copy(data: Case) {

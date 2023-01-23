@@ -36,11 +36,11 @@ public class GenerateStudyCostProfile
 
         var result = new StudyCostProfileWrapperDto();
         var feasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
-        var feasibilityDto = CaseDtoAdapter.Convert(feasibility);
+        var feasibilityDto = CaseDtoAdapter.Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(feasibility);
         result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
 
         var feed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
-        var feedDto = CaseDtoAdapter.Convert(feed);
+        var feedDto = CaseDtoAdapter.Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(feed);
         result.TotalFEEDStudiesDto = feedDto;
 
         if (feasibility.Values.Length == 0 && feed.Values.Length == 0)
@@ -53,7 +53,7 @@ public class GenerateStudyCostProfile
             StartYear = cost.StartYear,
             Values = cost.Values
         };
-        var study = CaseDtoAdapter.Convert(studyCost);
+        var study = CaseDtoAdapter.Convert<StudyCostProfileDto, StudyCostProfile>(studyCost);
         result.StudyCostProfileDto = study;
         return result;
     }

@@ -14,6 +14,7 @@ public static class CaseDtoAdapter
             Name = case_.Name,
             Description = case_.Description,
             ReferenceCase = case_.ReferenceCase,
+
             DGADate = case_.DGADate,
             DGBDate = case_.DGBDate,
             DGCDate = case_.DGCDate,
@@ -26,6 +27,7 @@ public static class CaseDtoAdapter
             DG4Date = case_.DG4Date,
             CreateTime = case_.CreateTime,
             ModifyTime = case_.ModifyTime,
+
             DrainageStrategyLink = case_.DrainageStrategyLink,
             WellProjectLink = case_.WellProjectLink,
             SurfLink = case_.SurfLink,
@@ -33,6 +35,7 @@ public static class CaseDtoAdapter
             TopsideLink = case_.TopsideLink,
             TransportLink = case_.TransportLink,
             ExplorationLink = case_.ExplorationLink,
+
             ArtificialLift = case_.ArtificialLift,
             ProductionStrategyOverview = case_.ProductionStrategyOverview,
             ProducerCount = case_.ProducerCount,
@@ -44,160 +47,52 @@ public static class CaseDtoAdapter
             NPV = case_.NPV,
             BreakEven = case_.BreakEven,
             Host = case_.Host,
+
             SharepointFileId = case_.SharepointFileId,
             SharepointFileName = case_.SharepointFileName,
             SharepointFileUrl = case_.SharepointFileUrl,
+
+            TotalFeasibilityAndConceptStudies = Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(case_.TotalFeasibilityAndConceptStudies),
+            TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto,
+                TotalFeasibilityAndConceptStudiesOverride>(case_.TotalFeasibilityAndConceptStudiesOverride),
+
+            TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(case_.TotalFEEDStudies),
+            TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(case_.TotalFEEDStudiesOverride),
         };
 
         return caseDto;
     }
 
-    public static CessationCostDto Convert(CessationCost? opexCost)
+    public static TDto? Convert<TDto, TModel>(TModel? model)
+    where TDto : TimeSeriesCostDto, new()
+    where TModel : TimeSeriesCost
     {
-        if (opexCost == null)
-        {
-            return null!;
-        }
+        if (model == null) { return null; }
 
-        return new CessationCostDto
+        return new TDto
         {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-    public static CessationWellsCostDto Convert(CessationWellsCost? opexCost)
-    {
-        if (opexCost == null)
-        {
-            return null!;
-        }
-
-        return new CessationWellsCostDto
-        {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-    public static CessationOffshoreFacilitiesCostDto Convert(CessationOffshoreFacilitiesCost? opexCost)
-    {
-        if (opexCost == null)
-        {
-            return null!;
-        }
-
-        return new CessationOffshoreFacilitiesCostDto
-        {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
+            Id = model.Id,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
     }
 
-    public static OpexCostProfileDto Convert(OpexCostProfile? opexCost)
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeriesCost, ITimeSeriesOverride
     {
-        if (opexCost == null)
-        {
-            return null!;
-        }
+        if (model == null) { return null; }
 
-        return new OpexCostProfileDto
+        return new TDto
         {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-
-    public static OffshoreFacilitiesOperationsCostProfileDto Convert(OffshoreFacilitiesOperationsCostProfile? opexCost)
-    {
-        if (opexCost == null)
-        {
-            return null!;
-        }
-
-        return new OffshoreFacilitiesOperationsCostProfileDto
-        {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-
-    public static WellInterventionCostProfileDto Convert(WellInterventionCostProfile? opexCost)
-    {
-        if (opexCost == null)
-        {
-            return null!;
-        }
-
-        return new WellInterventionCostProfileDto
-        {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-
-    public static StudyCostProfileDto Convert(StudyCostProfile? studyCost)
-    {
-        if (studyCost == null)
-        {
-            return null!;
-        }
-
-        return new StudyCostProfileDto
-        {
-            Id = studyCost.Id,
-            Currency = studyCost.Currency,
-            EPAVersion = studyCost.EPAVersion,
-            StartYear = studyCost.StartYear,
-            Values = studyCost.Values,
-        };
-    }
-    public static TotalFeasibilityAndConceptStudiesDto Convert(TotalFeasibilityAndConceptStudies? studyCost)
-    {
-        if (studyCost == null)
-        {
-            return null!;
-        }
-
-        return new TotalFeasibilityAndConceptStudiesDto
-        {
-            Id = studyCost.Id,
-            Currency = studyCost.Currency,
-            EPAVersion = studyCost.EPAVersion,
-            StartYear = studyCost.StartYear,
-            Values = studyCost.Values,
-        };
-    }
-    public static TotalFEEDStudiesDto Convert(TotalFEEDStudies? studyCost)
-    {
-        if (studyCost == null)
-        {
-            return null!;
-        }
-
-        return new TotalFEEDStudiesDto
-        {
-            Id = studyCost.Id,
-            Currency = studyCost.Currency,
-            EPAVersion = studyCost.EPAVersion,
-            StartYear = studyCost.StartYear,
-            Values = studyCost.Values,
+            Id = model.Id,
+            Override = model.Override,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
     }
 }
