@@ -4,7 +4,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Progress, Typography,
+    Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -12,7 +12,6 @@ import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { StudyCostProfile } from "../../models/case/StudyCostProfile"
 import { OpexCostProfile } from "../../models/case/OpexCostProfile"
@@ -21,9 +20,7 @@ import { SeismicAcquisitionAndProcessing } from "../../models/assets/exploration
 import { CountryOfficeCost } from "../../models/assets/exploration/CountryOfficeCost"
 import { GAndGAdminCost } from "../../models/assets/exploration/GAndGAdminCost"
 import { Exploration } from "../../models/assets/exploration/Exploration"
-import { GetExplorationService } from "../../Services/ExplorationService"
 import { Surf } from "../../models/assets/surf/Surf"
-import { GetSurfService } from "../../Services/SurfService"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Substructure } from "../../models/assets/substructure/Substructure"
 import { Topside } from "../../models/assets/topside/Topside"
@@ -32,10 +29,6 @@ import { TopsideCostProfile } from "../../models/assets/topside/TopsideCostProfi
 import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
 import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
 import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
-import { GetTopsideService } from "../../Services/TopsideService"
-import { GetSubstructureService } from "../../Services/SubstructureService"
-import { GetTransportService } from "../../Services/TransportService"
-import { GetWellProjectService } from "../../Services/WellProjectService"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { GasProducerCostProfile } from "../../models/assets/wellproject/GasProducerCostProfile"
 import { OilProducerCostProfile } from "../../models/assets/wellproject/OilProducerCostProfile"
