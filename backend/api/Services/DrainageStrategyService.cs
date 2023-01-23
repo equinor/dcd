@@ -104,6 +104,10 @@ public class DrainageStrategyService
         {
             newDrainageStrategyDto.Co2Emissions.Id = Guid.Empty;
         }
+        if (newDrainageStrategyDto.Co2EmissionsOverride != null)
+        {
+            newDrainageStrategyDto.Co2EmissionsOverride.Id = Guid.Empty;
+        }
         if (newDrainageStrategyDto.ProductionProfileNGL != null)
         {
             newDrainageStrategyDto.ProductionProfileNGL.Id = Guid.Empty;

@@ -1,9 +1,11 @@
-import React from "react"
+/* eslint-disable camelcase */
 import styled from "styled-components"
-// eslint-disable-next-line camelcase
-import { chevron_down, chevron_right, IconData } from "@equinor/eds-icons"
-import { Icon, Typography } from "@equinor/eds-core-react"
+import {
+    bookmark_filled, chevron_down, chevron_right, IconData,
+} from "@equinor/eds-icons"
+import { Icon, Tooltip, Typography } from "@equinor/eds-core-react"
 import { tokens } from "@equinor/eds-tokens"
+import { Project } from "../../models/Project"
 
 const Wrapper = styled.div<{ padding?: string }>`
     display: flex;
@@ -33,10 +35,12 @@ interface Props {
     isOpen?: boolean
     onClick?: () => void
     padding?: string
+    project?: Project
+    caseItem?: Components.Schemas.CaseDto
 }
 
 function MenuItem({
-    title, isSelected, icon, isOpen, onClick, padding,
+    title, isSelected, icon, isOpen, onClick, padding, project, caseItem,
 }: Props) {
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
 
@@ -44,6 +48,12 @@ function MenuItem({
         <Wrapper onClick={onClick} padding={padding}>
             <MenuTitle>
                 {icon && <MenuIcon data={icon} color={isSelected ? selectedColor : ""} />}
+                {(project?.referenceCaseId === caseItem?.id) && caseItem
+                && (
+                    <Tooltip title="Reference case">
+                        <MenuIcon data={bookmark_filled} size={16} />
+                    </Tooltip>
+                )}
                 <Typography color={isSelected ? selectedColor : ""}>{title}</Typography>
             </MenuTitle>
             {/* eslint-disable-next-line camelcase */}
