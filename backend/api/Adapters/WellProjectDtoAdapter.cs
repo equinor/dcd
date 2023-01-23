@@ -16,92 +16,51 @@ public static class WellProjectDtoAdapter
             Currency = wellProject.Currency,
             WellProjectWells = wellProject.WellProjectWells?.Select(wc => WellProjectWellDtoAdapter.Convert(wc)).ToList()
         };
-        if (wellProject.OilProducerCostProfile != null)
-        {
-            wellProjectDto.OilProducerCostProfile = Convert(wellProject.OilProducerCostProfile);
-        }
-        if (wellProject.GasProducerCostProfile != null)
-        {
-            wellProjectDto.GasProducerCostProfile = Convert(wellProject.GasProducerCostProfile);
-        }
-        if (wellProject.WaterInjectorCostProfile != null)
-        {
-            wellProjectDto.WaterInjectorCostProfile = Convert(wellProject.WaterInjectorCostProfile);
-        }
-        if (wellProject.GasInjectorCostProfile != null)
-        {
-            wellProjectDto.GasInjectorCostProfile = Convert(wellProject.GasInjectorCostProfile);
-        }
+        wellProjectDto.OilProducerCostProfile = Convert<OilProducerCostProfileDto, OilProducerCostProfile>(wellProject.OilProducerCostProfile);
+        wellProjectDto.OilProducerCostProfileOverride = ConvertOverride<OilProducerCostProfileOverrideDto, OilProducerCostProfileOverride>(wellProject.OilProducerCostProfileOverride);
+
+        wellProjectDto.GasProducerCostProfile = Convert<GasProducerCostProfileDto, GasProducerCostProfile>(wellProject.GasProducerCostProfile);
+        wellProjectDto.GasProducerCostProfileOverride = ConvertOverride<GasProducerCostProfileOverrideDto, GasProducerCostProfileOverride>(wellProject.GasProducerCostProfileOverride);
+
+        wellProjectDto.WaterInjectorCostProfile = Convert<WaterInjectorCostProfileDto, WaterInjectorCostProfile>(wellProject.WaterInjectorCostProfile);
+        wellProjectDto.WaterInjectorCostProfileOverride = ConvertOverride<WaterInjectorCostProfileOverrideDto, WaterInjectorCostProfileOverride>(wellProject.WaterInjectorCostProfileOverride);
+
+        wellProjectDto.GasInjectorCostProfile = Convert<GasInjectorCostProfileDto, GasInjectorCostProfile>(wellProject.GasInjectorCostProfile);
+        wellProjectDto.GasInjectorCostProfileOverride = ConvertOverride<GasInjectorCostProfileOverrideDto, GasInjectorCostProfileOverride>(wellProject.GasInjectorCostProfileOverride);
+
         return wellProjectDto;
     }
 
-    private static OilProducerCostProfileDto? Convert(OilProducerCostProfile? costProfile)
+    public static TDto? Convert<TDto, TModel>(TModel? model)
+    where TDto : TimeSeriesCostDto, new()
+    where TModel : TimeSeriesCost
     {
-        if (costProfile == null)
+        if (model == null) { return null; }
+
+        return new TDto
         {
-            return null!;
-        }
-        var wellProjectCostProfileDto = new OilProducerCostProfileDto
-        {
-            Id = costProfile.Id,
-            EPAVersion = costProfile.EPAVersion,
-            Currency = costProfile.Currency,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values,
-            // Override = costProfile.Override,
+            Id = model.Id,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
-        return wellProjectCostProfileDto;
-    }
-    private static GasProducerCostProfileDto? Convert(GasProducerCostProfile? costProfile)
-    {
-        if (costProfile == null)
-        {
-            return null!;
-        }
-        var wellProjectCostProfileDto = new GasProducerCostProfileDto
-        {
-            Id = costProfile.Id,
-            EPAVersion = costProfile.EPAVersion,
-            Currency = costProfile.Currency,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values,
-            // Override = costProfile.Override,
-        };
-        return wellProjectCostProfileDto;
-    }
-    private static WaterInjectorCostProfileDto? Convert(WaterInjectorCostProfile? costProfile)
-    {
-        if (costProfile == null)
-        {
-            return null!;
-        }
-        var wellProjectCostProfileDto = new WaterInjectorCostProfileDto
-        {
-            Id = costProfile.Id,
-            EPAVersion = costProfile.EPAVersion,
-            Currency = costProfile.Currency,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values,
-            // Override = costProfile.Override,
-        };
-        return wellProjectCostProfileDto;
-    }
-    private static GasInjectorCostProfileDto? Convert(GasInjectorCostProfile? costProfile)
-    {
-        if (costProfile == null)
-        {
-            return null!;
-        }
-        var wellProjectCostProfileDto = new GasInjectorCostProfileDto
-        {
-            Id = costProfile.Id,
-            EPAVersion = costProfile.EPAVersion,
-            Currency = costProfile.Currency,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values,
-            // Override = costProfile.Override,
-        };
-        return wellProjectCostProfileDto;
     }
 
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeriesCost, ITimeSeriesOverride
+    {
+        if (model == null) { return null; }
+
+        return new TDto
+        {
+            Id = model.Id,
+            Override = model.Override,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
+        };
+    }
 }
