@@ -2,7 +2,7 @@ import { EMPTY_GUID } from "../../../Utils/constants"
 import { ITimeSeries } from "../../ITimeSeries"
 
 export class GasInjectorCostProfileOverride
-    implements Components.Schemas.GasInjectorCostProfileOverrideDto, ITimeSeries {
+implements Components.Schemas.GasInjectorCostProfileOverrideDto, ITimeSeries {
     id?: string
     startYear?: number
     name?: string

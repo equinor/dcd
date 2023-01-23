@@ -230,34 +230,34 @@ public class GenerateStudyCostProfile
             {
                 sumWellCost += wellProject.OilProducerCostProfileOverride.Values.Sum();
             }
-            else if (wellProject?.OilProducerCostProfile != null)
+            else if (wellProject.OilProducerCostProfile != null)
             {
                 sumWellCost += wellProject.OilProducerCostProfile.Values.Sum();
             }
 
-            if (wellProject?.GasProducerCostProfileOverride?.Override == true)
+            if (wellProject.GasProducerCostProfileOverride?.Override == true)
             {
                 sumWellCost += wellProject.GasProducerCostProfileOverride.Values.Sum();
             }
-            else if (wellProject?.GasProducerCostProfile != null)
+            else if (wellProject.GasProducerCostProfile != null)
             {
                 sumWellCost += wellProject.GasProducerCostProfile.Values.Sum();
             }
 
-            if (wellProject?.WaterInjectorCostProfileOverride?.Override == true)
+            if (wellProject.WaterInjectorCostProfileOverride?.Override == true)
             {
                 sumWellCost += wellProject.WaterInjectorCostProfileOverride.Values.Sum();
             }
-            else if (wellProject?.WaterInjectorCostProfile != null)
+            else if (wellProject.WaterInjectorCostProfile != null)
             {
                 sumWellCost += wellProject.WaterInjectorCostProfile.Values.Sum();
             }
 
-            if (wellProject?.GasInjectorCostProfileOverride?.Override == true)
+            if (wellProject.GasInjectorCostProfileOverride?.Override == true)
             {
                 sumWellCost += wellProject.GasInjectorCostProfileOverride.Values.Sum();
             }
-            else if (wellProject?.GasInjectorCostProfile != null)
+            else if (wellProject.GasInjectorCostProfile != null)
             {
                 sumWellCost += wellProject.GasInjectorCostProfile.Values.Sum();
             }
