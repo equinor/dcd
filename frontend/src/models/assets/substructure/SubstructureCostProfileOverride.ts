@@ -1,7 +1,7 @@
 import { ITimeSeries } from "../../ITimeSeries"
 
 export class SubstructureCostProfileOverride
-    implements Components.Schemas.SubstructureCostProfileOverrideDto, ITimeSeries {
+implements Components.Schemas.SubstructureCostProfileOverrideDto, ITimeSeries {
     id?: string
     startYear?: number
     name?: string

@@ -44,7 +44,7 @@ public class TopsideCostProfileDto : TimeSeriesCostDto
 {
 }
 
-public class TopsideCostProfileOverrideDto : TopsideCostProfileDto, ITimeSeriesOverrideDto
+public class TopsideCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
 }

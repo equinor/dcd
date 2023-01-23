@@ -24,6 +24,8 @@ export class SurfCostProfileOverride implements Components.Schemas.SurfCostProfi
             this.id = "00000000-0000-0000-0000-000000000000"
             this.startYear = 0
             this.values = []
+            this.name = "Cost profile"
+            this.epaVersion = ""
         }
     }
 

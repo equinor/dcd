@@ -232,7 +232,6 @@ function CaseCostTab({
 
                     const surfCostProfile = surf.costProfile
                     setSurfCost(surfCostProfile)
-                    debugger
                     const surfCostProfileOverride = surf.costProfileOverride
                     setSurfCostOverride(surfCostProfileOverride)
 
@@ -533,7 +532,6 @@ function CaseCostTab({
 
     useEffect(() => {
         const newSurf: Surf = { ...surf }
-        debugger
         if (newSurf.costProfile && !surfCost) { return }
         newSurf.costProfile = surfCost
         setSurf(newSurf)
