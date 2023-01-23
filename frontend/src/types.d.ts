@@ -289,9 +289,25 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface GasInjectorCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
             override?: boolean;
         }
         export interface GasProducerCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface GasProducerCostProfileOverrideDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -351,6 +367,14 @@ declare namespace Components {
             sum?: number; // double
         }
         export interface OilProducerCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+        }
+        export interface OilProducerCostProfileOverrideDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -770,6 +794,14 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
             sum?: number; // double
+        }
+        export interface WaterInjectorCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
             override?: boolean;
         }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
@@ -798,9 +830,13 @@ declare namespace Components {
             projectId?: string; // uuid
             name?: string | null;
             oilProducerCostProfile?: OilProducerCostProfileDto;
+            oilProducerCostProfileOverride?: OilProducerCostProfileOverrideDto;
             gasProducerCostProfile?: GasProducerCostProfileDto;
+            gasProducerCostProfileOverride?: GasProducerCostProfileOverrideDto;
             waterInjectorCostProfile?: WaterInjectorCostProfileDto;
+            waterInjectorCostProfileOverride?: WaterInjectorCostProfileOverrideDto;
             gasInjectorCostProfile?: GasInjectorCostProfileDto;
+            gasInjectorCostProfileOverride?: GasInjectorCostProfileOverrideDto;
             artificialLift?: ArtificialLift /* int32 */;
             currency?: Currency /* int32 */;
             wellProjectWells?: WellProjectWellDto[] | null;
