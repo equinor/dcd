@@ -146,7 +146,11 @@ public class GenerateStudyCostProfile
         try
         {
             substructure = _substructureService.GetSubstructure(caseItem.SubstructureLink);
-            if (substructure.CostProfile != null)
+            if (substructure.CostProfileOverride?.Override == true)
+            {
+                sumFacilityCost += substructure.CostProfileOverride.Values.Sum();
+            }
+            else if (substructure.CostProfile != null)
             {
                 sumFacilityCost += substructure.CostProfile.Values.Sum();
             }
@@ -160,7 +164,11 @@ public class GenerateStudyCostProfile
         try
         {
             surf = _surfService.GetSurf(caseItem.SurfLink);
-            if (surf.CostProfile != null)
+            if (surf.CostProfileOverride?.Override == true)
+            {
+                sumFacilityCost += surf.CostProfileOverride.Values.Sum();
+            }
+            else if (surf.CostProfile != null)
             {
                 sumFacilityCost += surf.CostProfile.Values.Sum();
             }
@@ -174,7 +182,11 @@ public class GenerateStudyCostProfile
         try
         {
             topside = _topsideService.GetTopside(caseItem.TopsideLink);
-            if (topside.CostProfile != null)
+            if (topside.CostProfileOverride?.Override == true)
+            {
+                sumFacilityCost += topside.CostProfileOverride.Values.Sum();
+            }
+            else if (topside.CostProfile != null)
             {
                 sumFacilityCost += topside.CostProfile.Values.Sum();
             }
@@ -188,7 +200,11 @@ public class GenerateStudyCostProfile
         try
         {
             transport = _transportService.GetTransport(caseItem.TransportLink);
-            if (transport.CostProfile != null)
+            if (transport.CostProfileOverride?.Override == true)
+            {
+                sumFacilityCost += transport.CostProfileOverride.Values.Sum();
+            }
+            else if (transport.CostProfile != null)
             {
                 sumFacilityCost += transport.CostProfile.Values.Sum();
             }

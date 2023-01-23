@@ -21,43 +21,45 @@ public static class TransportDtoAdapter
             CostYear = transport.CostYear,
             Source = transport.Source,
             ProspVersion = transport.ProspVersion,
-            CostProfile = Convert(transport.CostProfile),
-            CessationCostProfile = Convert(transport.CessationCostProfile),
+            CostProfile = Convert<TransportCostProfileDto, TransportCostProfile>(transport.CostProfile),
+            CostProfileOverride = ConvertOverride<TransportCostProfileOverrideDto, TransportCostProfileOverride>(transport.CostProfileOverride),
+            CessationCostProfile = Convert<TransportCessationCostProfileDto, TransportCessationCostProfile>(transport.CessationCostProfile),
             DG3Date = transport.DG3Date,
             DG4Date = transport.DG4Date
         };
         return transportDto;
     }
 
-    private static TransportCostProfileDto? Convert(TransportCostProfile? costprofile)
+    public static TDto? Convert<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, new()
+        where TModel : TimeSeriesCost
     {
-        if (costprofile == null)
+        if (model == null) { return null; }
+
+        return new TDto
         {
-            return null;
-        }
-        return new TransportCostProfileDto()
-        {
-            Id = costprofile.Id,
-            Currency = costprofile.Currency,
-            EPAVersion = costprofile.EPAVersion,
-            StartYear = costprofile.StartYear,
-            Values = costprofile.Values,
+            Id = model.Id,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
     }
 
-    private static TransportCessationCostProfileDto? Convert(TransportCessationCostProfile? transportCessationCostProfile)
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeriesCost, ITimeSeriesOverride
     {
-        if (transportCessationCostProfile == null)
+        if (model == null) { return null; }
+
+        return new TDto
         {
-            return null;
-        }
-        return new TransportCessationCostProfileDto()
-        {
-            Id = transportCessationCostProfile.Id,
-            Currency = transportCessationCostProfile.Currency,
-            EPAVersion = transportCessationCostProfile.EPAVersion,
-            StartYear = transportCessationCostProfile.StartYear,
-            Values = transportCessationCostProfile.Values,
+            Id = model.Id,
+            Override = model.Override,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
     }
 }

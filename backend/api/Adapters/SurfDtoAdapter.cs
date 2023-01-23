@@ -24,7 +24,7 @@ public static class SurfDtoAdapter
             GasInjectorCount = surf.GasInjectorCount,
             WaterInjectorCount = surf.WaterInjectorCount,
             Currency = surf.Currency,
-            CostProfile = Convert(surf.CostProfile),
+
             LastChangedDate = surf.LastChangedDate,
             CostYear = surf.CostYear,
             Source = surf.Source,
@@ -37,55 +37,52 @@ public static class SurfDtoAdapter
 
         if (surf.CostProfile != null)
         {
-            surfDto.CostProfile = Convert(surf.CostProfile);
+            surfDto.CostProfile = Convert<SurfCostProfileDto, SurfCostProfile>(surf.CostProfile);
+        }
+
+        if (surf.CostProfileOverride != null)
+        {
+            surfDto.CostProfileOverride = ConvertOverride<SurfCostProfileOverrideDto, SurfCostProfileOverride>(surf.CostProfileOverride);
         }
 
         if (surf.CessationCostProfile != null)
         {
-            surfDto.CessationCostProfile = Convert(surf.CessationCostProfile);
+            surfDto.CessationCostProfile = Convert<SurfCessationCostProfileDto, SurfCessationCostProfile>(surf.CessationCostProfile);
         }
 
         return surfDto;
     }
 
-    private static SurfCostProfileDto? Convert(SurfCostProfile? costprofile)
+    public static TDto? Convert<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, new()
+        where TModel : TimeSeriesCost
     {
+        if (model == null) { return null; }
 
-        if (costprofile == null)
+        return new TDto
         {
-            return null;
-        }
-
-        var surfCostProfile = new SurfCostProfileDto
-        {
-            Id = costprofile.Id,
-            Currency = costprofile.Currency,
-            EPAVersion = costprofile.EPAVersion,
-            Values = costprofile.Values,
-            StartYear = costprofile.StartYear
+            Id = model.Id,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
-        return surfCostProfile;
-
     }
 
-    private static SurfCessationCostProfileDto? Convert(SurfCessationCostProfile? surfCessationCostProfile)
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeriesCost, ITimeSeriesOverride
     {
+        if (model == null) { return null; }
 
-        if (surfCessationCostProfile == null)
+        return new TDto
         {
-            return null;
-        }
-
-        SurfCessationCostProfileDto surfCessationCostProfileDto = new SurfCessationCostProfileDto
-        {
-            Id = surfCessationCostProfile.Id,
-            Currency = surfCessationCostProfile.Currency,
-            EPAVersion = surfCessationCostProfile.EPAVersion,
-            Values = surfCessationCostProfile.Values,
-            StartYear = surfCessationCostProfile.StartYear
+            Id = model.Id,
+            Override = model.Override,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
-
-        return surfCessationCostProfileDto;
-
     }
 }

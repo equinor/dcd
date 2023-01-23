@@ -26,6 +26,7 @@ public class TopsideService
         {
             return _context.Topsides
                 .Include(c => c.CostProfile)
+                .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
                 .Where(c => c.Project.Id.Equals(projectId));
         }
@@ -43,6 +44,10 @@ public class TopsideService
         if (newTopsideDto.CostProfile != null)
         {
             newTopsideDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newTopsideDto.CostProfileOverride != null)
+        {
+            newTopsideDto.CostProfileOverride.Id = Guid.Empty;
         }
         if (newTopsideDto.CessationCostProfile != null)
         {
@@ -157,6 +162,7 @@ public class TopsideService
         var topside = _context.Topsides!
             .Include(c => c.Project)
             .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .FirstOrDefault(o => o.Id == topsideId);
         if (topside == null)

@@ -50,6 +50,10 @@ import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasib
 import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
 import { CessationWellsCost } from "../../models/case/CessationWellsCost"
 import { CessationOffshoreFacilitiesCost } from "../../models/case/CessationOffshoreFacilitiesCost"
+import { TopsideCostProfileOverride } from "../../models/assets/topside/TopsideCostProfileOverride"
+import { SurfCostProfileOverride } from "../../models/assets/surf/SurfCostProfileOverride"
+import { SubstructureCostProfileOverride } from "../../models/assets/substructure/SubstructureCostProfileOverride"
+import { TransportCostProfileOverride } from "../../models/assets/transport/TransportCostProfileOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -147,9 +151,13 @@ function CaseCostTab({
 
     // CAPEX
     const [topsideCost, setTopsideCost] = useState<TopsideCostProfile>()
+    const [topsideCostOverride, setTopsideCostOverride] = useState<TopsideCostProfileOverride>()
     const [surfCost, setSurfCost] = useState<SurfCostProfile>()
+    const [surfCostOverride, setSurfCostOverride] = useState<SurfCostProfileOverride>()
     const [substructureCost, setSubstructureCost] = useState<SubstructureCostProfile>()
+    const [substructureCostOverride, setSubstructureCostOverride] = useState<SubstructureCostProfileOverride>()
     const [transportCost, setTransportCost] = useState<TransportCostProfile>()
+    const [transportCostOverride, setTransportCostOverride] = useState<TransportCostProfileOverride>()
 
     // Development
     const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<OilProducerCostProfile>()
@@ -219,12 +227,23 @@ function CaseCostTab({
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
                     setTopsideCost(topsideCostProfile)
+                    const topsideCostProfileOverride = topside.costProfileOverride
+                    setTopsideCostOverride(topsideCostProfileOverride)
+
                     const surfCostProfile = surf.costProfile
                     setSurfCost(surfCostProfile)
+                    const surfCostProfileOverride = surf.costProfileOverride
+                    setSurfCostOverride(surfCostProfileOverride)
+
                     const substructureCostProfile = substructure.costProfile
                     setSubstructureCost(substructureCostProfile)
+                    const substructureCostProfileOverride = substructure.costProfileOverride
+                    setSubstructureCostOverride(substructureCostProfileOverride)
+
                     const transportCostProfile = transport.costProfile
                     setTransportCost(transportCostProfile)
+                    const transportCostProfileOverride = transport.costProfileOverride
+                    setTransportCostOverride(transportCostProfileOverride)
 
                     // Development
                     const {
@@ -252,6 +271,7 @@ function CaseCostTab({
 
                     SetTableYearsFromProfiles([study, opex, cessation,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
+                        surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
                         oilProducerCostProfile, gasProducerCostProfile,
                         waterInjectorCostProfile, gasInjectorCostProfile,
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
@@ -346,7 +366,10 @@ function CaseCostTab({
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
         profile: ITimeSeries | undefined
+        overrideProfile?: ITimeSeries | undefined
+        overridable?: boolean
     }
 
     const studyTimeSeriesData: ITimeSeriesData[] = [
@@ -408,25 +431,33 @@ function CaseCostTab({
             profileName: "Subsea production system",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: surfCost,
-            set: setSurfCost,
+            overridable: true,
+            overrideProfile: surfCostOverride,
+            overrideProfileSet: setSurfCostOverride,
         },
         {
             profileName: "Topside",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: topsideCost,
-            set: setTopsideCost,
+            overridable: true,
+            overrideProfile: topsideCostOverride,
+            overrideProfileSet: setTopsideCostOverride,
         },
         {
             profileName: "Substructure",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: substructureCost,
-            set: setSubstructureCost,
+            overridable: true,
+            overrideProfile: substructureCostOverride,
+            overrideProfileSet: setSubstructureCostOverride,
         },
         {
             profileName: "Transport system",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: transportCost,
-            set: setTransportCost,
+            overridable: true,
+            overrideProfile: transportCostOverride,
+            overrideProfileSet: setTransportCostOverride,
         },
     ]
 
@@ -526,6 +557,34 @@ function CaseCostTab({
         newTransport.costProfile = transportCost
         setTransport(newTransport)
     }, [transportCost])
+
+    useEffect(() => {
+        const newSurf: Surf = { ...surf }
+        if (newSurf.costProfileOverride && !surfCostOverride) { return }
+        newSurf.costProfileOverride = surfCostOverride
+        setSurf(newSurf)
+    }, [surfCostOverride])
+
+    useEffect(() => {
+        const newTopside: Topside = { ...topside }
+        if (newTopside.costProfileOverride && !topsideCostOverride) { return }
+        newTopside.costProfileOverride = topsideCostOverride
+        setTopside(newTopside)
+    }, [topsideCostOverride])
+
+    useEffect(() => {
+        const newSubstructure: Substructure = { ...substructure }
+        if (newSubstructure.costProfileOverride && !substructureCostOverride) { return }
+        newSubstructure.costProfileOverride = substructureCostOverride
+        setSubstructure(newSubstructure)
+    }, [substructureCostOverride])
+
+    useEffect(() => {
+        const newTransport: Transport = { ...transport }
+        if (newTransport.costProfileOverride && !transportCostOverride) { return }
+        newTransport.costProfileOverride = transportCostOverride
+        setTransport(newTransport)
+    }, [transportCostOverride])
 
     useEffect(() => {
         const newWellProject: WellProject = { ...wellProject }

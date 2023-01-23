@@ -2,12 +2,14 @@ import { TopsideCostProfile } from "./TopsideCostProfile"
 import { TopsideCessationCostProfile } from "./TopsideCessationCostProfile"
 import { IAsset } from "../IAsset"
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { TopsideCostProfileOverride } from "./TopsideCostProfileOverride"
 
 export class Topside implements Components.Schemas.TopsideDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: TopsideCostProfile | undefined
+    costProfileOverride?: TopsideCostProfileOverride | undefined
     cessationCostProfile?: TopsideCessationCostProfile | undefined
     dryWeight?: number | undefined
     oilCapacity?: number | undefined
@@ -44,6 +46,7 @@ export class Topside implements Components.Schemas.TopsideDto, IAsset {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = TopsideCostProfile.fromJSON(data.costProfile)
+            this.costProfileOverride = TopsideCostProfileOverride.fromJSON(data.costProfileOverride)
             this.cessationCostProfile = TopsideCessationCostProfile
                 .fromJSON(data.cessationCostProfile)
             this.artificialLift = data.artificialLift ?? 0

@@ -25,8 +25,9 @@ public static class SubstructureAdapter
             DG4Date = substructureDto.DG4Date
         };
 
-        substructure.CostProfile = Convert(substructureDto.CostProfile, substructure);
-        substructure.CessationCostProfile = Convert(substructureDto.CessationCostProfile, substructure);
+        substructure.CostProfile = Convert<SubstructureCostProfileDto, SubstructureCostProfile>(substructureDto.CostProfile, substructure);
+        substructure.CostProfileOverride = ConvertOverride<SubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>(substructureDto.CostProfileOverride, substructure);
+        substructure.CessationCostProfile = Convert<SubstructureCessationCostProfileDto, SubstructureCessationCostProfile>(substructureDto.CessationCostProfile, substructure);
 
         return substructure;
     }
@@ -48,43 +49,43 @@ public static class SubstructureAdapter
         existing.DG3Date = substructureDto.DG3Date;
         existing.DG4Date = substructureDto.DG4Date;
 
-        existing.CostProfile = Convert(substructureDto.CostProfile, existing);
-        existing.CessationCostProfile = Convert(substructureDto.CessationCostProfile, existing);
+        existing.CostProfile = Convert<SubstructureCostProfileDto, SubstructureCostProfile>(substructureDto.CostProfile, existing);
+        existing.CostProfileOverride = ConvertOverride<SubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>(substructureDto.CostProfileOverride, existing);
+        existing.CessationCostProfile = Convert<SubstructureCessationCostProfileDto, SubstructureCessationCostProfile>(substructureDto.CessationCostProfile, existing);
     }
 
-    private static SubstructureCostProfile? Convert(SubstructureCostProfileDto? costprofile, Substructure substructure)
+    private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, Substructure substructure)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+        where TModel : TimeSeriesCost, ITimeSeriesOverride, ISubstructureTimeSeries, new()
     {
-        if (costprofile == null)
+        if (dto == null) { return null; }
+
+        return new TModel
         {
-            return null;
-        }
-        var substructureCostProfile = new SubstructureCostProfile
-        {
+            Id = dto.Id,
+            Override = dto.Override,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
             Substructure = substructure,
-            Id = costprofile.Id,
-            EPAVersion = costprofile.EPAVersion,
-            Currency = costprofile.Currency,
-            StartYear = costprofile.StartYear,
-            Values = costprofile.Values
         };
-        return substructureCostProfile;
     }
 
-    private static SubstructureCessationCostProfile? Convert(SubstructureCessationCostProfileDto? substructureCessationCostProfileDto, Substructure substructure)
+    private static TModel? Convert<TDto, TModel>(TDto? dto, Substructure substructure)
+        where TDto : TimeSeriesCostDto
+        where TModel : TimeSeriesCost, ISubstructureTimeSeries, new()
     {
-        if (substructureCessationCostProfileDto == null)
+        if (dto == null) { return null; }
+
+        return new TModel
         {
-            return null;
-        }
-        SubstructureCessationCostProfile substructureCessationCostProfile = new SubstructureCessationCostProfile
-        {
+            Id = dto.Id,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
             Substructure = substructure,
-            Id = substructureCessationCostProfileDto.Id,
-            EPAVersion = substructureCessationCostProfileDto.EPAVersion,
-            Currency = substructureCessationCostProfileDto.Currency,
-            StartYear = substructureCessationCostProfileDto.StartYear,
-            Values = substructureCessationCostProfileDto.Values
         };
-        return substructureCessationCostProfile;
     }
 }
