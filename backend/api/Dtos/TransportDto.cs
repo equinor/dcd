@@ -7,6 +7,7 @@ public class TransportDto
     public string Name { get; set; } = string.Empty!;
     public Guid ProjectId { get; set; }
     public TransportCostProfileDto? CostProfile { get; set; }
+    public TransportCostProfileOverrideDto? CostProfileOverride { get; set; }
     public TransportCessationCostProfileDto? CessationCostProfile { get; set; }
     public Maturity Maturity { get; set; }
     public double GasExportPipelineLength { get; set; }
@@ -24,6 +25,10 @@ public class TransportDto
 public class TransportCostProfileDto : TimeSeriesCostDto
 {
 
+}
+public class TransportCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class TransportCessationCostProfileDto : TimeSeriesCostDto

@@ -17,8 +17,9 @@ public static class SubstructureDtoAdapter
             Currency = substructure.Currency,
             ApprovedBy = substructure.ApprovedBy,
             CostYear = substructure.CostYear,
-            CostProfile = Convert(substructure.CostProfile),
-            CessationCostProfile = Convert(substructure.CessationCostProfile),
+            CostProfile = Convert<SubstructureCostProfileDto, SubstructureCostProfile>(substructure.CostProfile),
+            CostProfileOverride = ConvertOverride<SubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>(substructure.CostProfileOverride),
+            CessationCostProfile = Convert<SubstructureCessationCostProfileDto, SubstructureCessationCostProfile>(substructure.CessationCostProfile),
             ProspVersion = substructure.ProspVersion,
             Source = substructure.Source,
             LastChangedDate = substructure.LastChangedDate,
@@ -29,37 +30,36 @@ public static class SubstructureDtoAdapter
         return substructureDto;
     }
 
-    private static SubstructureCostProfileDto? Convert(SubstructureCostProfile? costProfile)
+    public static TDto? Convert<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, new()
+        where TModel : TimeSeriesCost
     {
-        if (costProfile == null)
+        if (model == null) { return null; }
+
+        return new TDto
         {
-            return null;
-        }
-        var substructureCostProfile = new SubstructureCostProfileDto
-        {
-            Id = costProfile.Id,
-            EPAVersion = costProfile.EPAVersion,
-            Currency = costProfile.Currency,
-            StartYear = costProfile.StartYear,
-            Values = costProfile.Values
+            Id = model.Id,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
-        return substructureCostProfile;
     }
 
-    private static SubstructureCessationCostProfileDto? Convert(SubstructureCessationCostProfile? substructureCessationCostProfile)
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeriesCost, ITimeSeriesOverride
     {
-        if (substructureCessationCostProfile == null)
+        if (model == null) { return null; }
+
+        return new TDto
         {
-            return null;
-        }
-        SubstructureCessationCostProfileDto substructureCessationCostProfileDto = new SubstructureCessationCostProfileDto
-        {
-            Id = substructureCessationCostProfile.Id,
-            EPAVersion = substructureCessationCostProfile.EPAVersion,
-            Currency = substructureCessationCostProfile.Currency,
-            StartYear = substructureCessationCostProfile.StartYear,
-            Values = substructureCessationCostProfile.Values
+            Id = model.Id,
+            Override = model.Override,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
-        return substructureCessationCostProfileDto;
     }
 }

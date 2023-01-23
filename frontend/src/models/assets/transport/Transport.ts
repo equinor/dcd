@@ -2,12 +2,14 @@ import { EMPTY_GUID } from "../../../Utils/constants"
 import { IAsset } from "../IAsset"
 import { TransportCessationCostProfile } from "./TransportCessationCostProfile"
 import { TransportCostProfile } from "./TransportCostProfile"
+import { TransportCostProfileOverride } from "./TransportCostProfileOverride"
 
 export class Transport implements Components.Schemas.TransportDto, IAsset {
     id?: string | undefined
     name?: string | undefined
     projectId?: string | undefined
     costProfile?: TransportCostProfile | undefined
+    costProfileOverride?: TransportCostProfileOverride | undefined
     cessationCostProfile?: TransportCessationCostProfile | undefined
     maturity?: Components.Schemas.Maturity | undefined
     gasExportPipelineLength?: number | undefined
@@ -27,6 +29,7 @@ export class Transport implements Components.Schemas.TransportDto, IAsset {
             this.name = data.name ?? ""
             this.projectId = data.projectId
             this.costProfile = TransportCostProfile.fromJSON(data.costProfile)
+            this.costProfileOverride = TransportCostProfileOverride.fromJSON(data.costProfileOverride)
             this.cessationCostProfile = TransportCessationCostProfile
                 .fromJSON(data.cessationCostProfile)
             this.maturity = data.maturity

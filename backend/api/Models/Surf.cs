@@ -10,6 +10,8 @@ public class Surf
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
     public SurfCostProfile? CostProfile { get; set; }
+    public SurfCostProfileOverride? CostProfileOverride { get; set; }
+
 
     public SurfCessationCostProfile? CessationCostProfile { get; set; }
     public double CessationCost { get; set; }
@@ -33,13 +35,20 @@ public class Surf
     public DateTimeOffset? DG4Date { get; set; }
 }
 
-public class SurfCostProfile : TimeSeriesCost
+public class SurfCostProfile : TimeSeriesCost, ISurfTimeSeries
 {
     [ForeignKey("Surf.Id")]
     public Surf Surf { get; set; } = null!;
 }
 
-public class SurfCessationCostProfile : TimeSeriesCost
+public class SurfCostProfileOverride : TimeSeriesCost, ISurfTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("Surf.Id")]
+    public Surf Surf { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class SurfCessationCostProfile : TimeSeriesCost, ISurfTimeSeries
 {
     [ForeignKey("Surf.Id")]
     public Surf Surf { get; set; } = null!;
@@ -61,4 +70,9 @@ public enum ProductionFlowline
     SSClad_PIP,
     Cr13_PIP,
     HDPELinedCS
+}
+
+public interface ISurfTimeSeries
+{
+    Surf Surf { get; set; }
 }

@@ -540,11 +540,21 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface SubstructureCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export interface SubstructureDto {
             id?: string; // uuid
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SubstructureCostProfileDto;
+            costProfileOverride?: SubstructureCostProfileOverrideDto;
             cessationCostProfile?: SubstructureCessationCostProfileDto;
             dryWeight?: number; // double
             maturity?: Maturity /* int32 */;
@@ -575,11 +585,21 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface SurfCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export interface SurfDto {
             id?: string; // uuid
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: SurfCostProfileDto;
+            costProfileOverride?: SurfCostProfileOverrideDto;
             cessationCostProfile?: SurfCessationCostProfileDto;
             cessationCost?: number; // double
             maturity?: Maturity /* int32 */;
@@ -635,11 +655,21 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface TopsideCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export interface TopsideDto {
             id?: string; // uuid
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TopsideCostProfileDto;
+            costProfileOverride?: TopsideCostProfileOverrideDto;
             cessationCostProfile?: TopsideCessationCostProfileDto;
             dryWeight?: number; // double
             oilCapacity?: number; // double
@@ -702,11 +732,21 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             sum?: number; // double
         }
+        export interface TransportCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            sum?: number; // double
+            override?: boolean;
+        }
         export interface TransportDto {
             id?: string; // uuid
             name?: string | null;
             projectId?: string; // uuid
             costProfile?: TransportCostProfileDto;
+            costProfileOverride?: TransportCostProfileOverrideDto;
             cessationCostProfile?: TransportCessationCostProfileDto;
             maturity?: Maturity /* int32 */;
             gasExportPipelineLength?: number; // double

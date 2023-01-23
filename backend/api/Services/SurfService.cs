@@ -26,6 +26,7 @@ public class SurfService
         {
             return _context.Surfs
                 .Include(c => c.CostProfile)
+                .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
                 .Where(c => c.Project.Id.Equals(projectId));
         }
@@ -43,6 +44,10 @@ public class SurfService
         if (newSurfDto.CostProfile != null)
         {
             newSurfDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newSurfDto.CostProfileOverride != null)
+        {
+            newSurfDto.CostProfileOverride.Id = Guid.Empty;
         }
         if (newSurfDto.CessationCostProfile != null)
         {
@@ -99,6 +104,7 @@ public class SurfService
     {
         var surf = _context.Surfs!
             .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .FirstOrDefault(o => o.Id == surfId);
         if (surf == null)

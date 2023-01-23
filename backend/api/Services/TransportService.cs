@@ -55,6 +55,10 @@ public class TransportService
         {
             newTransportDto.CostProfile.Id = Guid.Empty;
         }
+        if (newTransportDto.CostProfileOverride != null)
+        {
+            newTransportDto.CostProfileOverride.Id = Guid.Empty;
+        }
         if (newTransportDto.CessationCostProfile != null)
         {
             newTransportDto.CessationCostProfile.Id = Guid.Empty;
@@ -90,6 +94,7 @@ public class TransportService
     {
         var transport = _context.Transports!
             .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .FirstOrDefault(c => c.Id == transportId);
         if (transport == null)
@@ -116,6 +121,7 @@ public class TransportService
         {
             return _context.Transports
                 .Include(c => c.CostProfile)
+                .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
                 .Where(c => c.Project.Id.Equals(projectId));
         }

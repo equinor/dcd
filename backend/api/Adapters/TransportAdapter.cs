@@ -27,12 +27,17 @@ public static class TransportAdapter
 
         if (transportDto.CostProfile != null)
         {
-            transport.CostProfile = Convert(transportDto.CostProfile, transport);
+            transport.CostProfile = Convert<TransportCostProfileDto, TransportCostProfile>(transportDto.CostProfile, transport);
+        }
+
+        if (transportDto.CostProfileOverride != null)
+        {
+            transport.CostProfileOverride = ConvertOverride<TransportCostProfileOverrideDto, TransportCostProfileOverride>(transportDto.CostProfileOverride, transport);
         }
 
         if (transportDto.CessationCostProfile != null)
         {
-            transport.CessationCostProfile = Convert(transportDto.CessationCostProfile, transport);
+            transport.CessationCostProfile = Convert<TransportCessationCostProfileDto, TransportCessationCostProfile>(transportDto.CessationCostProfile, transport);
         }
         return transport;
     }
@@ -46,8 +51,9 @@ public static class TransportAdapter
         existing.GasExportPipelineLength = transportDto.GasExportPipelineLength;
         existing.OilExportPipelineLength = transportDto.OilExportPipelineLength;
         existing.Currency = transportDto.Currency;
-        existing.CostProfile = Convert(transportDto.CostProfile, existing);
-        existing.CessationCostProfile = Convert(transportDto.CessationCostProfile, existing);
+        existing.CostProfile = Convert<TransportCostProfileDto, TransportCostProfile>(transportDto.CostProfile, existing);
+        existing.CostProfileOverride = ConvertOverride<TransportCostProfileOverrideDto, TransportCostProfileOverride>(transportDto.CostProfileOverride, existing);
+        existing.CessationCostProfile = Convert<TransportCessationCostProfileDto, TransportCessationCostProfile>(transportDto.CessationCostProfile, existing);
         existing.LastChangedDate = transportDto.LastChangedDate;
         existing.CostYear = transportDto.CostYear;
         existing.Source = transportDto.Source;
@@ -56,43 +62,38 @@ public static class TransportAdapter
         existing.DG4Date = transportDto.DG4Date;
     }
 
-    private static TransportCostProfile? Convert(TransportCostProfileDto? costprofile, Transport transport)
+    private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, Transport transport)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+        where TModel : TimeSeriesCost, ITimeSeriesOverride, ITransportTimeSeries, new()
     {
-        if (costprofile == null)
-        {
-            return null;
-        }
+        if (dto == null) { return null; }
 
-        var transportCostProfile = new TransportCostProfile
+        return new TModel
         {
-            Id = costprofile.Id,
-            Currency = costprofile.Currency,
-            EPAVersion = costprofile.EPAVersion,
+            Id = dto.Id,
+            Override = dto.Override,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
             Transport = transport,
-            StartYear = costprofile.StartYear,
-            Values = costprofile.Values,
         };
-
-        return transportCostProfile;
     }
 
-    private static TransportCessationCostProfile? Convert(TransportCessationCostProfileDto? transportCessationCostProfileDto, Transport transport)
+    private static TModel? Convert<TDto, TModel>(TDto? dto, Transport transport)
+        where TDto : TimeSeriesCostDto
+        where TModel : TimeSeriesCost, ITransportTimeSeries, new()
     {
-        if (transportCessationCostProfileDto == null)
-        {
-            return null;
-        }
+        if (dto == null) { return null; }
 
-        TransportCessationCostProfile transportCessationCostProfile = new TransportCessationCostProfile
+        return new TModel
         {
-            Id = transportCessationCostProfileDto.Id,
-            Currency = transportCessationCostProfileDto.Currency,
-            EPAVersion = transportCessationCostProfileDto.EPAVersion,
+            Id = dto.Id,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
             Transport = transport,
-            StartYear = transportCessationCostProfileDto.StartYear,
-            Values = transportCessationCostProfileDto.Values,
         };
-
-        return transportCessationCostProfile;
     }
 }
