@@ -157,16 +157,24 @@ function CaseSummaryTab({
                     setCessationCost(cessation)
 
                     // CAPEX
-                    const topsideCostProfile = topside.costProfile
+                    const topsideCostProfile = topside.costProfileOverride?.override
+                        ? topside.costProfileOverride : topside.costProfile
                     setTopsideCost(topsideCostProfile)
-                    const surfCostProfile = surf.costProfile
+
+                    const surfCostProfile = surf.costProfileOverride?.override
+                        ? surf.costProfileOverride : surf.costProfile
                     setSurfCost(surfCostProfile)
-                    const substructureCostProfile = substructure.costProfile
+
+                    const substructureCostProfile = substructure.costProfileOverride?.override
+                        ? substructure.costProfileOverride : substructure.costProfile
                     setSubstructureCost(substructureCostProfile)
-                    const transportCostProfile = transport.costProfile
+
+                    const transportCostProfile = transport.costProfileOverride?.override
+                        ? transport.costProfileOverride : transport.costProfile
                     setTransportCost(transportCostProfile)
 
                     setTableYearsFromProfiles([
+                        totalStudy, opex, cessation,
                         topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
                     ])
                 }
