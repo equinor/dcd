@@ -6,25 +6,26 @@ using api.Models;
 
 namespace api.Services;
 
-public class GenerateStudyCostProfile
+public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 {
-    private readonly CaseService _caseService;
+    private readonly ICaseService _caseService;
     private readonly ILogger<CaseService> _logger;
-    private readonly WellProjectService _wellProjectService;
-    private readonly TopsideService _topsideService;
-    private readonly SubstructureService _substructureService;
-    private readonly SurfService _surfService;
-    private readonly TransportService _transportService;
+    private readonly IWellProjectService _wellProjectService;
+    private readonly ITopsideService _topsideService;
+    private readonly ISubstructureService _substructureService;
+    private readonly ISurfService _surfService;
+    private readonly ITransportService _transportService;
 
-    public GenerateStudyCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public GenerateStudyCostProfile(ILoggerFactory loggerFactory, ICaseService caseService, IWellProjectService wellProjectService, ITopsideService topsideService,
+        ISubstructureService substructureService, ISurfService surfService, ITransportService transportService)
     {
         _logger = loggerFactory.CreateLogger<CaseService>();
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
-        _topsideService = serviceProvider.GetRequiredService<TopsideService>();
-        _substructureService = serviceProvider.GetRequiredService<SubstructureService>();
-        _surfService = serviceProvider.GetRequiredService<SurfService>();
-        _transportService = serviceProvider.GetRequiredService<TransportService>();
+        _caseService = caseService;
+        _wellProjectService = wellProjectService;
+        _topsideService = topsideService;
+        _substructureService = substructureService;
+        _surfService = surfService;
+        _transportService = transportService;
     }
 
     public StudyCostProfileWrapperDto Generate(Guid caseId)

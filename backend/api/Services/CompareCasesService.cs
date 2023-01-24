@@ -10,30 +10,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class CompareCasesService
+public class CompareCasesService : ICompareCasesService
 {
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<CompareCasesService> _logger;
-    private readonly ExplorationService _explorationService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly GenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly GenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
-    private readonly GenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly GenerateOpexCostProfile _generateOpexCostProfile;
-    private readonly GenerateStudyCostProfile _generateStudyCostProfile;
+    private readonly IExplorationService _explorationService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
+    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
+    private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
+    private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
 
-    public CompareCasesService(ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public CompareCasesService(IProjectService projectService, ILoggerFactory loggerFactory, IExplorationService explorationService, IDrainageStrategyService drainageStrategyService,
+    IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile, IGenerateStudyCostProfile generateStudyCostProfile, IGenerateOpexCostProfile generateOpexCostProfile,
+    IGenerateCessationCostProfile generateCessationCostProfile, IGenerateCo2EmissionsProfile generateCo2EmissionsProfile)
     {
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<CompareCasesService>();
-        _explorationService = serviceProvider.GetRequiredService<ExplorationService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
+        _explorationService = explorationService;
+        _drainageStrategyService = drainageStrategyService;
 
-        _generateGAndGAdminCostProfile = serviceProvider.GetRequiredService<GenerateGAndGAdminCostProfile>();
-        _generateStudyCostProfile = serviceProvider.GetRequiredService<GenerateStudyCostProfile>();
-        _generateOpexCostProfile = serviceProvider.GetRequiredService<GenerateOpexCostProfile>();
-        _generateCessationCostProfile = serviceProvider.GetRequiredService<GenerateCessationCostProfile>();
-        _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
+        _generateGAndGAdminCostProfile = generateGAndGAdminCostProfile;
+        _generateStudyCostProfile = generateStudyCostProfile;
+        _generateOpexCostProfile = generateOpexCostProfile;
+        _generateCessationCostProfile = generateCessationCostProfile;
+        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }
 
     public IEnumerable<CompareCasesDto> Calculate(Guid projectId)

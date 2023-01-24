@@ -23,10 +23,10 @@ namespace api.Controllers;
 )]
 public class ProjectsController : ControllerBase
 {
-    private readonly FusionService _fusionService;
-    private readonly ProjectService _projectService;
+    private readonly IFusionService _fusionService;
+    private readonly IProjectService _projectService;
 
-    public ProjectsController(ProjectService projectService, FusionService fusionService)
+    public ProjectsController(IProjectService projectService, IFusionService fusionService)
     {
         _projectService = projectService;
         _fusionService = fusionService;

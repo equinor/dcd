@@ -7,18 +7,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class ExplorationWellService
+public class ExplorationWellService : IExplorationWellService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IProjectService _projectService;
+    private readonly ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper;
+    private readonly IExplorationService explorationService;
     private readonly ILogger<CaseService> _logger;
 
-    public ExplorationWellService(DcdDbContext context, ProjectService projectService, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+    public ExplorationWellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory,
+        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, IExplorationService explorationService)
     {
         _context = context;
         _projectService = projectService;
-        _serviceProvider = serviceProvider;
+        this.costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
+        this.explorationService = explorationService;
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
@@ -63,10 +66,8 @@ public class ExplorationWellService
             projectDto = UpdateExplorationWell(explorationWellDto);
         }
 
-        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
-        var explorationDto = costProfileHelper.UpdateExplorationCostProfilesForCase(caseId);
+        var explorationDto = costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
 
-        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
         explorationService.NewUpdateExploration(explorationDto);
 
         if (projectDto != null && explorationId != null)

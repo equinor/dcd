@@ -23,9 +23,9 @@ namespace api.Controllers;
     )]
 public class ExplorationsController : ControllerBase
 {
-    private readonly ExplorationService _explorationService;
+    private readonly IExplorationService _explorationService;
 
-    public ExplorationsController(ExplorationService explorationService)
+    public ExplorationsController(IExplorationService explorationService)
     {
         _explorationService = explorationService;
     }

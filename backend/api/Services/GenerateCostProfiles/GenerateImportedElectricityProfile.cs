@@ -5,19 +5,20 @@ using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateImportedElectricityProfile
+public class GenerateImportedElectricityProfile : IGenerateImportedElectricityProfile
 {
-    private readonly CaseService _caseService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly ProjectService _projectService;
-    private readonly TopsideService _topsideService;
+    private readonly ICaseService _caseService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IProjectService _projectService;
+    private readonly ITopsideService _topsideService;
 
-    public GenerateImportedElectricityProfile(IServiceProvider serviceProvider)
+    public GenerateImportedElectricityProfile(ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService)
     {
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _topsideService = serviceProvider.GetRequiredService<TopsideService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
+        _caseService = caseService;
+        _projectService = projectService;
+        _topsideService = topsideService;
+        _drainageStrategyService = drainageStrategyService;
     }
 
     public ImportedElectricityDto Generate(Guid caseId)

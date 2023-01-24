@@ -20,9 +20,9 @@ namespace api.Controllers;
 )]
 public class TechnicalInputController : ControllerBase
 {
-    private readonly TechnicalInputService _technicalInputService;
+    private readonly ITechnicalInputService _technicalInputService;
 
-    public TechnicalInputController(TechnicalInputService technicalInputService)
+    public TechnicalInputController(ITechnicalInputService technicalInputService)
     {
         _technicalInputService = technicalInputService;
     }

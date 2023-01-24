@@ -7,19 +7,19 @@ using api.Models;
 
 namespace api.Services;
 
-public class GenerateGAndGAdminCostProfile
+public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
 {
-    private readonly ProjectService _projectService;
-    private readonly CaseService _caseService;
-    private readonly ILogger<CaseService> _logger;
-    private readonly ExplorationService _explorationService;
+    private readonly IProjectService _projectService;
+    private readonly ICaseService _caseService;
+    private readonly ILogger<GenerateGAndGAdminCostProfile> _logger;
+    private readonly IExplorationService _explorationService;
 
-    public GenerateGAndGAdminCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public GenerateGAndGAdminCostProfile(ILoggerFactory loggerFactory, IProjectService projectService, ICaseService caseService, IExplorationService explorationService)
     {
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _logger = loggerFactory.CreateLogger<CaseService>();
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _explorationService = serviceProvider.GetRequiredService<ExplorationService>();
+        _projectService = projectService;
+        _logger = loggerFactory.CreateLogger<GenerateGAndGAdminCostProfile>();
+        _caseService = caseService;
+        _explorationService = explorationService;
     }
 
     public GAndGAdminCostDto Generate(Guid caseId)

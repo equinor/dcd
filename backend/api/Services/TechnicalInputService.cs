@@ -7,24 +7,24 @@ using api.Models;
 
 namespace api.Services;
 
-public class TechnicalInputService
+public class TechnicalInputService : ITechnicalInputService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
-    private readonly CaseService _caseService;
-    private readonly WellProjectService _wellProjectService;
-    private readonly ExplorationService _explorationService;
-    private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
-    private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
-    private readonly WellService _wellService;
-    private readonly CostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
+    private readonly IProjectService _projectService;
+    private readonly ICaseService _caseService;
+    private readonly IWellProjectService _wellProjectService;
+    private readonly IExplorationService _explorationService;
+    private readonly IExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
+    private readonly IDevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
+    private readonly IWellService _wellService;
+    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<CaseService> _logger;
 
-    public TechnicalInputService(DcdDbContext context, ProjectService projectService, CaseService caseService,
-    WellProjectService wellProjectService, ExplorationService explorationService,
-    ExplorationOperationalWellCostsService explorationOperationalWellCostsService,
-    DevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
-    WellService wellService, CostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
+    public TechnicalInputService(DcdDbContext context, IProjectService projectService, ICaseService caseService,
+    IWellProjectService wellProjectService, IExplorationService explorationService,
+    IExplorationOperationalWellCostsService explorationOperationalWellCostsService,
+    IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
+    IWellService wellService, ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
     ILoggerFactory loggerFactory)
     {
         _context = context;

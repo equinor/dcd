@@ -4,23 +4,24 @@ using api.Models;
 
 namespace api.Services;
 
-public class GenerateOpexCostProfile
+public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 {
-    private readonly CaseService _caseService;
-    private readonly ProjectService _projectService;
-    private readonly ILogger<CaseService> _logger;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly WellProjectService _wellProjectService;
-    private readonly TopsideService _topsideService;
+    private readonly ICaseService _caseService;
+    private readonly IProjectService _projectService;
+    private readonly ILogger<GenerateOpexCostProfile> _logger;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IWellProjectService _wellProjectService;
+    private readonly ITopsideService _topsideService;
 
-    public GenerateOpexCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public GenerateOpexCostProfile(ILoggerFactory loggerFactory, ICaseService caseService, IProjectService projectService, IDrainageStrategyService drainageStrategyService,
+        IWellProjectService wellProjectService, ITopsideService topsideService)
     {
-        _logger = loggerFactory.CreateLogger<CaseService>();
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
-        _topsideService = serviceProvider.GetRequiredService<TopsideService>();
+        _logger = loggerFactory.CreateLogger<GenerateOpexCostProfile>();
+        _projectService = projectService;
+        _drainageStrategyService = drainageStrategyService;
+        _caseService = caseService;
+        _wellProjectService = wellProjectService;
+        _topsideService = topsideService;
     }
 
     public OpexCostProfileWrapperDto Generate(Guid caseId)

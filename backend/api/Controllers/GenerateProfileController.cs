@@ -23,31 +23,36 @@ namespace api.Controllers;
 )]
 public class GenerateProfileController : ControllerBase
 {
-    private readonly GenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly GenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
-    private readonly GenerateFuelFlaringLossesProfile _generateFuelFlaringLossessProfile;
-    private readonly GenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly GenerateImportedElectricityProfile _generateImportedElectricityProfile;
-    private readonly GenerateNetSaleGasProfile _generateNetSaleGasProfile;
-    private readonly GenerateOpexCostProfile _generateOpexCostProfile;
-    private readonly GenerateStudyCostProfile _generateStudyCostProfile;
-    private readonly GenerateCo2IntensityProfile _generateCo2IntensityProfile;
-    private readonly GenerateCo2IntensityTotal _generateCo2IntensityTotal;
-    private readonly GenerateCo2DrillingFlaringFuelTotals _generateCo2DrillingFlaringFuelTotals;
+    private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
+    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly IGenerateFuelFlaringLossesProfile _generateFuelFlaringLossessProfile;
+    private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
+    private readonly IGenerateImportedElectricityProfile _generateImportedElectricityProfile;
+    private readonly IGenerateNetSaleGasProfile _generateNetSaleGasProfile;
+    private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
+    private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
+    private readonly IGenerateCo2IntensityProfile _generateCo2IntensityProfile;
+    private readonly IGenerateCo2IntensityTotal _generateCo2IntensityTotal;
+    private readonly IGenerateCo2DrillingFlaringFuelTotals _generateCo2DrillingFlaringFuelTotals;
 
-    public GenerateProfileController(IServiceProvider serviceProvider)
+    public GenerateProfileController(IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile, IGenerateStudyCostProfile generateStudyCostProfile,
+        IGenerateOpexCostProfile generateOpexCostProfile, IGenerateCessationCostProfile generateCessationCostProfile,
+        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile, IGenerateNetSaleGasProfile generateNetSaleGasProfile,
+        IGenerateFuelFlaringLossesProfile generateFuelFlaringLossesProfile, IGenerateImportedElectricityProfile generateImportedElectricityProfile,
+        IGenerateCo2IntensityProfile generateCo2IntensityProfile, IGenerateCo2IntensityTotal generateCo2IntensityTotal,
+        IGenerateCo2DrillingFlaringFuelTotals generateCo2DrillingFlaringFuelTotals)
     {
-        _generateGAndGAdminCostProfile = serviceProvider.GetRequiredService<GenerateGAndGAdminCostProfile>();
-        _generateStudyCostProfile = serviceProvider.GetRequiredService<GenerateStudyCostProfile>();
-        _generateOpexCostProfile = serviceProvider.GetRequiredService<GenerateOpexCostProfile>();
-        _generateCessationCostProfile = serviceProvider.GetRequiredService<GenerateCessationCostProfile>();
-        _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
-        _generateNetSaleGasProfile = serviceProvider.GetRequiredService<GenerateNetSaleGasProfile>();
-        _generateFuelFlaringLossessProfile = serviceProvider.GetRequiredService<GenerateFuelFlaringLossesProfile>();
-        _generateImportedElectricityProfile = serviceProvider.GetRequiredService<GenerateImportedElectricityProfile>();
-        _generateCo2IntensityProfile = serviceProvider.GetRequiredService<GenerateCo2IntensityProfile>();
-        _generateCo2IntensityTotal = serviceProvider.GetRequiredService<GenerateCo2IntensityTotal>();
-        _generateCo2DrillingFlaringFuelTotals = serviceProvider.GetRequiredService<GenerateCo2DrillingFlaringFuelTotals>();
+        _generateGAndGAdminCostProfile = generateGAndGAdminCostProfile;
+        _generateStudyCostProfile = generateStudyCostProfile;
+        _generateOpexCostProfile = generateOpexCostProfile;
+        _generateCessationCostProfile = generateCessationCostProfile;
+        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
+        _generateNetSaleGasProfile = generateNetSaleGasProfile;
+        _generateFuelFlaringLossessProfile = generateFuelFlaringLossesProfile;
+        _generateImportedElectricityProfile = generateImportedElectricityProfile;
+        _generateCo2IntensityProfile = generateCo2IntensityProfile;
+        _generateCo2IntensityTotal = generateCo2IntensityTotal;
+        _generateCo2DrillingFlaringFuelTotals = generateCo2DrillingFlaringFuelTotals;
     }
 
     [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]

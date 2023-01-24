@@ -7,34 +7,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class CostProfileFromDrillingScheduleHelper
+public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingScheduleHelper
 {
-    private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
-    private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<ExplorationService> _logger;
+    private readonly ICaseService caseService;
+    private readonly IExplorationService explorationService;
+    private readonly IWellProjectService wellProjectService;
+    private readonly DcdDbContext context;
 
-    public CostProfileFromDrillingScheduleHelper(DcdDbContext context, ProjectService
-        projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public CostProfileFromDrillingScheduleHelper(DcdDbContext context, ILoggerFactory loggerFactory,
+        ICaseService caseService, IExplorationService explorationService, IWellProjectService wellProjectService)
     {
-        _context = context;
-        _projectService = projectService;
-        _serviceProvider = serviceProvider;
         _logger = loggerFactory.CreateLogger<ExplorationService>();
+        this.caseService = caseService;
+        this.explorationService = explorationService;
+        this.wellProjectService = wellProjectService;
+        this.context = context;
     }
 
     public void UpdateCostProfilesForWells(List<Guid> wellIds)
     {
-        var explorationWellService = _serviceProvider.GetRequiredService<ExplorationWellService>();
-        var explorationWells = explorationWellService.GetAll().Where(ew => wellIds.Contains(ew.WellId));
+        var explorationWells = GetAllExplorationWells().Where(ew => wellIds.Contains(ew.WellId));
 
-        var wellProjectWellService = _serviceProvider.GetRequiredService<WellProjectWellService>();
-        var wellProjectWells = wellProjectWellService.GetAll().Where(wpw => wellIds.Contains(wpw.WellId));
+        var wellProjectWells = GetAllWellProjectWells().Where(wpw => wellIds.Contains(wpw.WellId));
 
         var uniqueExplorationIds = explorationWells.Select(ew => ew.ExplorationId).Distinct();
         var uniqueWellProjectIds = wellProjectWells.Select(wpw => wpw.WellProjectId).Distinct();
 
-        var caseService = _serviceProvider.GetRequiredService<CaseService>();
         var explorationCases = caseService.GetAll().Where(c => uniqueExplorationIds.Contains(c.ExplorationLink));
         var wellProjectCases = caseService.GetAll().Where(c => uniqueWellProjectIds.Contains(c.WellProjectLink));
 
@@ -55,32 +54,52 @@ public class CostProfileFromDrillingScheduleHelper
             updatedWellProjectDtoList.Add(wellProjectDto);
         }
 
-        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
         explorationService.UpdateMultiple(updatedExplorationDtoList.ToArray());
 
-        var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
         wellProjectService.UpdateMultiple(updatedWellProjectDtoList.ToArray());
     }
 
     public ExplorationDto UpdateExplorationCostProfilesForCase(Guid caseId)
     {
-        var caseService = _serviceProvider.GetRequiredService<CaseService>();
         var caseItem = caseService.GetCase(caseId);
 
-        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
         var exploration = explorationService.GetExploration(caseItem.ExplorationLink);
 
-        var explorationWellService = _serviceProvider.GetRequiredService<ExplorationWellService>();
-        var explorationWells = explorationWellService.GetAll().Where(ew => ew.ExplorationId == exploration.Id);
+        var explorationWells = GetAllExplorationWells().Where(ew => ew.ExplorationId == exploration.Id);
 
         return UpdateExplorationCostProfilesForCase(exploration, explorationWells);
     }
 
+    public IEnumerable<ExplorationWell> GetAllExplorationWells()
+    {
+        if (context.ExplorationWell != null)
+        {
+            return context.ExplorationWell.Include(ew => ew.DrillingSchedule);
+        }
+        else
+        {
+            _logger.LogInformation("No ExplorationWells existing");
+            return new List<ExplorationWell>();
+        }
+    }
+
+    public IEnumerable<WellProjectWell> GetAllWellProjectWells()
+    {
+        if (context.WellProjectWell != null)
+        {
+            return context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
+        }
+        else
+        {
+            _logger.LogInformation("No WellProjectWells existing");
+            return new List<WellProjectWell>();
+        }
+    }
+
     public ExplorationDto UpdateExplorationCostProfilesForCase(Exploration exploration, IEnumerable<ExplorationWell> explorationWells)
     {
-        var wellService = _serviceProvider.GetRequiredService<WellService>();
         var wellIds = explorationWells.Select(ew => ew.WellId);
-        var wells = wellService.GetAll().Where(w => wellIds.Contains(w.Id));
+        var wells = GetAllWells().Where(w => wellIds.Contains(w.Id));
 
         var explorationCategoryWells = wells.Where(w => w.WellCategory == WellCategory.Exploration_Well).ToList();
         var explorationWellExplorationCategoryWells = explorationWells.Where(ew => explorationCategoryWells.Exists(w => w.Id == ew.WellId)).ToList();
@@ -144,23 +163,31 @@ public class CostProfileFromDrillingScheduleHelper
 
     public WellProjectDto UpdateWellProjectCostProfilesForCase(Guid caseId)
     {
-        var caseService = _serviceProvider.GetRequiredService<CaseService>();
         var caseItem = caseService.GetCase(caseId);
 
-        var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
         var wellProject = wellProjectService.GetWellProject(caseItem.WellProjectLink);
-
-        var wellProjectWellService = _serviceProvider.GetRequiredService<WellProjectWellService>();
-        var wellProjectWells = wellProjectWellService.GetAll().Where(ew => ew.WellProjectId == wellProject.Id);
+        var wellProjectWells = GetAllWellProjectWells().Where(ew => ew.WellProjectId == wellProject.Id);
 
         return UpdateWellProjectCostProfilesForCase(wellProject, wellProjectWells);
     }
 
+    public IEnumerable<Well> GetAllWells()
+    {
+        if (context.Wells != null)
+        {
+            return context.Wells;
+        }
+        else
+        {
+            _logger.LogInformation("No Wells existing");
+            return new List<Well>();
+        }
+    }
+
     public WellProjectDto UpdateWellProjectCostProfilesForCase(WellProject wellProject, IEnumerable<WellProjectWell> wellProjectWells)
     {
-        var wellService = _serviceProvider.GetRequiredService<WellService>();
         var wellIds = wellProjectWells.Select(ew => ew.WellId);
-        var wells = wellService.GetAll().Where(w => wellIds.Contains(w.Id));
+        var wells = GetAllWells().Where(w => wellIds.Contains(w.Id));
 
         var oilProducerWells = wells.Where(w => w.WellCategory == WellCategory.Oil_Producer).ToList();
         var wellProjectWellOilProducer = wellProjectWells.Where(ew => oilProducerWells.Exists(w => w.Id == ew.WellId)).ToList();
