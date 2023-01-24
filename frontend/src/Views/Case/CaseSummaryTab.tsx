@@ -26,6 +26,9 @@ import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
 import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
 import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
 import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
+import { MergeTimeseries } from "../../Utils/common"
+import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
+import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasibilityAndConceptStudies"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -86,7 +89,7 @@ function CaseSummaryTab({
     activeTab,
 }: Props) {
     // OPEX
-    const [studyCost, setStudyCost] = useState<StudyCostProfile>()
+    const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<OpexCostProfile>()
     const [cessationCost, setCessationCost] = useState<CessationCostProfile>()
 
@@ -134,11 +137,22 @@ function CaseSummaryTab({
                     const cessationWrapper = (await GetGenerateProfileService())
                         .generateCessationCost(caseItem.id)
 
-                    const study = StudyCostProfile.fromJSON((await studyWrapper).studyCostProfileDto)
                     const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
                     const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)
 
-                    setStudyCost(study)
+                    let feasibility = TotalFeasibilityAndConceptStudies
+                        .fromJSON((await studyWrapper).totalFeasibilityAndConceptStudiesDto)
+                    let feed = TotalFEEDStudies.fromJSON((await studyWrapper).totalFEEDStudiesDto)
+                    if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
+                        feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
+                    }
+                    if (caseItem.totalFEEDStudiesOverride?.override === true) {
+                        feed = caseItem.totalFEEDStudiesOverride
+                    }
+
+                    const totalStudy = MergeTimeseries(feasibility, feed)
+                    setTotalStudyCost(totalStudy)
+
                     setOpexCost(opex)
                     setCessationCost(cessation)
 
@@ -187,7 +201,7 @@ function CaseSummaryTab({
         {
             profileName: "Study cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: studyCost,
+            profile: totalStudyCost,
         },
         {
             profileName: "Offshore facliities operations + well intervention",

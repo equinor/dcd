@@ -137,7 +137,7 @@ export const ProductionStrategyOverviewToString = (value?: Components.Schemas.Pr
 
 export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
-const zip = (t1: number[], t2: number[]) => t1.map((t1Value, index) => t1Value + t2[index])
+const zip = (t1: number[], t2: number[]) => t1.map((t1Value, index) => t1Value + (t2[index] ?? 0))
 
 const MergeCostProfileData = (t1: number[], t2: number[], offset: number): number[] => {
     let doubleList: number[] = []
@@ -153,14 +153,10 @@ const MergeCostProfileData = (t1: number[], t2: number[], offset: number): numbe
     }
     doubleList = doubleList.concat(t1.slice(0, offset))
 
-    const a = _.takeRight([1, 2, 3], 2)
-
     if (t1.length - offset === t2.length) {
         doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), (t2)))
     } else if (t1.length - offset > t2.length) {
         doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), t2))
-        const remaining = t1.length - offset - t2.length
-        doubleList = doubleList.concat(_.takeRight(t1, remaining))
     } else {
         doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), t2))
         const remaining = t2.length - (t1.length - offset)
@@ -170,7 +166,6 @@ const MergeCostProfileData = (t1: number[], t2: number[], offset: number): numbe
 }
 
 export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    debugger
     const t1Year = t1?.startYear ?? 0
     const t2Year = t2?.startYear ?? 0
     const t1Values = t1?.values
