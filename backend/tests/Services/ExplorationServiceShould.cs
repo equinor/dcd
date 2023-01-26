@@ -1,13 +1,9 @@
-using System;
-using System.Linq;
-
 using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
 
 using Xunit;
-
 
 namespace tests;
 
@@ -28,29 +24,6 @@ public class ExplorationServiceShould : IDisposable
     {
         fixture.Dispose();
     }
-
-    // [Fact]
-    // public void GetExplorations()
-    // {
-    //     // Arrange
-    //     var loggerFactory = new LoggerFactory();
-    //     var projectService = new ProjectService(fixture.context, loggerFactory);
-    //     var explorationService = new ExplorationService(fixture.context, projectService, loggerFactory);
-    //     var project = fixture.context.Projects.FirstOrDefault();
-    //     var expectedExplorations = fixture.context.Explorations.ToList().Where(o => o.Project.Id == project.Id);
-
-    //     // Act
-    //     var actualExplorations = explorationService.GetExplorations(project.Id);
-
-    //     // Assert
-    //     Assert.Equal(expectedExplorations.Count(), actualExplorations.Count());
-    //     var explorationsExpectedAndActual = expectedExplorations.OrderBy(d => d.Name)
-    //         .Zip(actualExplorations.OrderBy(d => d.Name));
-    //     foreach (var explorationPair in explorationsExpectedAndActual)
-    //     {
-    //         TestHelper.CompareExplorations(explorationPair.First, explorationPair.Second);
-    //     }
-    // }
 
     [Fact]
     public void CreateNewExploration()
@@ -116,10 +89,10 @@ public class ExplorationServiceShould : IDisposable
         var projectResult = explorationService.UpdateExploration(ExplorationDtoAdapter.Convert(updatedExploration));
 
 
-        //     // Assert
-        //     var actualExploration = projectResult.Explorations.FirstOrDefault(o => o.Name == updatedExploration.Name);
-        //     Assert.NotNull(actualExploration);
-        //     TestHelper.CompareExplorations(updatedExploration, actualExploration);
+        // Assert
+        var actualExploration = projectResult.Explorations.FirstOrDefault(o => o.Name == updatedExploration.Name);
+        Assert.NotNull(actualExploration);
+        TestHelper.CompareExplorations(updatedExploration, actualExploration);
     }
 
     private static Exploration CreateTestExploration(Project project)

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
@@ -10,24 +6,17 @@ using api.Services;
 
 using Xunit;
 
-
 namespace tests;
 
 [Collection("Database collection")]
 public class SurfServiceTest
 {
     readonly DatabaseFixture fixture;
-    readonly IOrderedEnumerable<api.SampleData.Builders.ProjectBuilder> projectsFromSampleDataGenerator;
 
-    private readonly IServiceProvider _serviceProvider;
-
-    public SurfServiceTest(DatabaseFixture fixture)
+    public SurfServiceTest()
     {
         //arrange
-        this.fixture = new DatabaseFixture();
-        projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.Name);
-        var serviceCollection = new ServiceCollection();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
+        fixture = new DatabaseFixture();
     }
 
     public Surf InitializeTestSurf()
@@ -46,16 +35,6 @@ public class SurfServiceTest
         var surfService = new SurfService(fixture.context, projectService, loggerFactory);
         return surfService;
     }
-
-    // [Fact]
-    // public void GetAllSurf()
-    // {
-    //     var loggerFactory = new LoggerFactory();
-    //     ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
-    //     SurfService surfService = new SurfService(fixture.context, projectService, loggerFactory);
-    //     var project = projectsFromSampleDataGenerator.First();
-    //     surfService.GetSurfs(project.Id);
-    // }
 
     [Fact]
     public void CreateNewSurf()
@@ -178,7 +157,6 @@ public class SurfServiceTest
         // Assert
         Assert.Throws<ArgumentException>(() => surfService.DeleteSurf(testSurf.Id));
     }
-
 
     private static Surf CreateTestSurf(Project project)
     {
