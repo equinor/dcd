@@ -13,13 +13,13 @@ public class CaseService : ICaseService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
-    private readonly IDrainageStrategyService drainageStrategyService;
-    private readonly ITopsideService topsideService;
-    private readonly ISurfService surfService;
-    private readonly ISubstructureService substructureService;
-    private readonly ITransportService transportService;
-    private readonly IExplorationService explorationService;
-    private readonly IWellProjectService wellProjectService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly ITopsideService _topsideService;
+    private readonly ISurfService _surfService;
+    private readonly ISubstructureService _substructureService;
+    private readonly ITransportService _transportService;
+    private readonly IExplorationService _explorationService;
+    private readonly IWellProjectService _wellProjectService;
     private readonly ILogger<CaseService> _logger;
 
     public CaseService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, IDrainageStrategyService drainageStrategyService,
@@ -28,13 +28,13 @@ public class CaseService : ICaseService
     {
         _context = context;
         _projectService = projectService;
-        this.drainageStrategyService = drainageStrategyService;
-        this.topsideService = topsideService;
-        this.surfService = surfService;
-        this.substructureService = substructureService;
-        this.transportService = transportService;
-        this.explorationService = explorationService;
-        this.wellProjectService = wellProjectService;
+        _drainageStrategyService = drainageStrategyService;
+        _topsideService = topsideService;
+        _surfService = surfService;
+        _substructureService = substructureService;
+        _transportService = transportService;
+        _explorationService = explorationService;
+        _wellProjectService = wellProjectService;
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
@@ -69,7 +69,7 @@ public class CaseService : ICaseService
             Name = "Drainage strategy",
             Description = ""
         };
-        var drainageStrategy = drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
+        var drainageStrategy = _drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
         case_.DrainageStrategyLink = drainageStrategy.Id;
 
         var topsideDto = new TopsideDto
@@ -77,7 +77,7 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Topside",
         };
-        var topside = topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
+        var topside = _topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
         case_.TopsideLink = topside.Id;
 
         var surfDto = new SurfDto
@@ -85,7 +85,7 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Surf",
         };
-        var surf = surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
+        var surf = _surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
         case_.SurfLink = surf.Id;
 
         var substructureDto = new SubstructureDto
@@ -93,7 +93,7 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Substructure",
         };
-        var substructure = substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
+        var substructure = _substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
         case_.SubstructureLink = substructure.Id;
 
         var transportDto = new TransportDto
@@ -101,7 +101,7 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Transport",
         };
-        var transport = transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
+        var transport = _transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
         case_.TransportLink = transport.Id;
 
         var explorationDto = new ExplorationDto
@@ -109,7 +109,7 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Exploration",
         };
-        var exploration = explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
+        var exploration = _explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
         case_.ExplorationLink = exploration.Id;
 
         var wellProjectDto = new WellProjectDto
@@ -117,7 +117,7 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "WellProject",
         };
-        var wellProject = wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
+        var wellProject = _wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
         case_.WellProjectLink = wellProject.Id;
 
         return _projectService.GetProjectDto(project.Id);

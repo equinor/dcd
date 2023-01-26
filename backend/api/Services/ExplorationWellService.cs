@@ -11,8 +11,8 @@ public class ExplorationWellService : IExplorationWellService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
-    private readonly ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper;
-    private readonly IExplorationService explorationService;
+    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
+    private readonly IExplorationService _explorationService;
     private readonly ILogger<CaseService> _logger;
 
     public ExplorationWellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory,
@@ -20,8 +20,8 @@ public class ExplorationWellService : IExplorationWellService
     {
         _context = context;
         _projectService = projectService;
-        this.costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
-        this.explorationService = explorationService;
+        _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
+        _explorationService = explorationService;
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
@@ -66,9 +66,9 @@ public class ExplorationWellService : IExplorationWellService
             projectDto = UpdateExplorationWell(explorationWellDto);
         }
 
-        var explorationDto = costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
+        var explorationDto = _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
 
-        explorationService.NewUpdateExploration(explorationDto);
+        _explorationService.NewUpdateExploration(explorationDto);
 
         if (projectDto != null && explorationId != null)
         {

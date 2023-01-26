@@ -11,8 +11,8 @@ public class WellProjectWellService : IWellProjectWellService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
-    private readonly ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper;
-    private readonly IWellProjectService wellProjectService;
+    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
+    private readonly IWellProjectService _wellProjectService;
     private readonly ILogger<CaseService> _logger;
 
     public WellProjectWellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory,
@@ -20,8 +20,8 @@ public class WellProjectWellService : IWellProjectWellService
     {
         _context = context;
         _projectService = projectService;
-        this.costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
-        this.wellProjectService = wellProjectService;
+        _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
+        _wellProjectService = wellProjectService;
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
@@ -81,9 +81,9 @@ public class WellProjectWellService : IWellProjectWellService
             projectDto = UpdateWellProjectWell(wellProjectWellDto);
         }
 
-        var wellProjectDto = costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
+        var wellProjectDto = _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
 
-        wellProjectService.NewUpdateWellProject(wellProjectDto);
+        _wellProjectService.NewUpdateWellProject(wellProjectDto);
 
         if (projectDto != null && wellProjectId != null)
         {

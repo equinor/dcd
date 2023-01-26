@@ -10,13 +10,10 @@ namespace tests;
 public class DrainageStrategyServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
-    private readonly IServiceProvider _serviceProvider;
 
     public DrainageStrategyServiceShould()
     {
         fixture = new DatabaseFixture();
-        var serviceCollection = new ServiceCollection();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()

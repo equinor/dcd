@@ -11,13 +11,10 @@ namespace tests;
 public class ExplorationServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
-    private readonly IServiceProvider _serviceProvider;
 
-    public ExplorationServiceShould(DatabaseFixture fixture)
+    public ExplorationServiceShould()
     {
-        this.fixture = new DatabaseFixture();
-        var serviceCollection = new ServiceCollection();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
+        fixture = new DatabaseFixture();
     }
 
     public void Dispose()

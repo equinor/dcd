@@ -15,15 +15,15 @@ using Newtonsoft.Json;
 
 public class FusionService : IFusionService
 {
-    private readonly IFusionContextResolver fusionContextResolver;
-    private readonly ILogger<FusionService> logger;
+    private readonly IFusionContextResolver _fusionContextResolver;
+    private readonly ILogger<FusionService> _logger;
 
     public FusionService(
         IFusionContextResolver fusionContextResolver,
         ILogger<FusionService> logger)
     {
-        this.fusionContextResolver = fusionContextResolver;
-        this.logger = logger;
+        _fusionContextResolver = fusionContextResolver;
+        _logger = logger;
     }
 
     public async Task<FusionProjectMaster> ProjectMasterAsync(Guid contextId)
@@ -58,7 +58,7 @@ public class FusionService : IFusionService
 
     private async Task<FusionContext?> ResolveProjectMasterContext(Guid contextId)
     {
-        FusionContext? projectMasterContext = await fusionContextResolver.ResolveContextAsync(contextId, FusionContextType.ProjectMaster);
+        FusionContext? projectMasterContext = await _fusionContextResolver.ResolveContextAsync(contextId, FusionContextType.ProjectMaster);
 
         Console.WriteLine("ResolveProjectMasterContext - contextId: " + contextId);
         Console.WriteLine("ResolveProjectMasterContext - projectMasterContext: " + projectMasterContext);
@@ -66,7 +66,7 @@ public class FusionService : IFusionService
         // thus attempt to query for the ProjectMaster "directly" if not found.
         if (projectMasterContext == null)
         {
-            IEnumerable<FusionContext> queryContextsAsync = await fusionContextResolver.QueryContextsAsync(
+            IEnumerable<FusionContext> queryContextsAsync = await _fusionContextResolver.QueryContextsAsync(
                 query =>
                 {
                     query

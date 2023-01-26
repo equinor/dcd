@@ -17,7 +17,6 @@ public class SurfService : ISurfService
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SurfService>();
-
     }
 
     public SurfDto CopySurf(Guid surfId, Guid sourceCaseId)

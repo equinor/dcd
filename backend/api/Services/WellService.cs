@@ -11,14 +11,14 @@ public class WellService : IWellService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
-    private readonly ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper;
+    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<CaseService> _logger;
 
     public WellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper)
     {
         _context = context;
         _projectService = projectService;
-        this.costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
+        _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
@@ -60,7 +60,7 @@ public class WellService : IWellService
 
         _context.SaveChanges();
 
-        costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWellDtos.Select(w => w.Id).ToList());
+        _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWellDtos.Select(w => w.Id).ToList());
 
         return updatedWellDtoList.ToArray();
     }

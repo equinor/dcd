@@ -10,19 +10,19 @@ namespace api.Services;
 public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingScheduleHelper
 {
     private readonly ILogger<ExplorationService> _logger;
-    private readonly ICaseService caseService;
-    private readonly IExplorationService explorationService;
-    private readonly IWellProjectService wellProjectService;
-    private readonly DcdDbContext context;
+    private readonly ICaseService _caseService;
+    private readonly IExplorationService _explorationService;
+    private readonly IWellProjectService _wellProjectService;
+    private readonly DcdDbContext _context;
 
     public CostProfileFromDrillingScheduleHelper(DcdDbContext context, ILoggerFactory loggerFactory,
         ICaseService caseService, IExplorationService explorationService, IWellProjectService wellProjectService)
     {
         _logger = loggerFactory.CreateLogger<ExplorationService>();
-        this.caseService = caseService;
-        this.explorationService = explorationService;
-        this.wellProjectService = wellProjectService;
-        this.context = context;
+        _caseService = caseService;
+        _explorationService = explorationService;
+        _wellProjectService = wellProjectService;
+        _context = context;
     }
 
     public void UpdateCostProfilesForWells(List<Guid> wellIds)
@@ -34,8 +34,8 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         var uniqueExplorationIds = explorationWells.Select(ew => ew.ExplorationId).Distinct();
         var uniqueWellProjectIds = wellProjectWells.Select(wpw => wpw.WellProjectId).Distinct();
 
-        var explorationCases = caseService.GetAll().Where(c => uniqueExplorationIds.Contains(c.ExplorationLink));
-        var wellProjectCases = caseService.GetAll().Where(c => uniqueWellProjectIds.Contains(c.WellProjectLink));
+        var explorationCases = _caseService.GetAll().Where(c => uniqueExplorationIds.Contains(c.ExplorationLink));
+        var wellProjectCases = _caseService.GetAll().Where(c => uniqueWellProjectIds.Contains(c.WellProjectLink));
 
         var explorationCaseIds = explorationCases.Select(c => c.Id).Distinct();
         var wellProjectCaseIds = wellProjectCases.Select(c => c.Id).Distinct();
@@ -54,16 +54,16 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
             updatedWellProjectDtoList.Add(wellProjectDto);
         }
 
-        explorationService.UpdateMultiple(updatedExplorationDtoList.ToArray());
+        _explorationService.UpdateMultiple(updatedExplorationDtoList.ToArray());
 
-        wellProjectService.UpdateMultiple(updatedWellProjectDtoList.ToArray());
+        _wellProjectService.UpdateMultiple(updatedWellProjectDtoList.ToArray());
     }
 
     public ExplorationDto UpdateExplorationCostProfilesForCase(Guid caseId)
     {
-        var caseItem = caseService.GetCase(caseId);
+        var caseItem = _caseService.GetCase(caseId);
 
-        var exploration = explorationService.GetExploration(caseItem.ExplorationLink);
+        var exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
 
         var explorationWells = GetAllExplorationWells().Where(ew => ew.ExplorationId == exploration.Id);
 
@@ -72,9 +72,9 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     public IEnumerable<ExplorationWell> GetAllExplorationWells()
     {
-        if (context.ExplorationWell != null)
+        if (_context.ExplorationWell != null)
         {
-            return context.ExplorationWell.Include(ew => ew.DrillingSchedule);
+            return _context.ExplorationWell.Include(ew => ew.DrillingSchedule);
         }
         else
         {
@@ -85,9 +85,9 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     public IEnumerable<WellProjectWell> GetAllWellProjectWells()
     {
-        if (context.WellProjectWell != null)
+        if (_context.WellProjectWell != null)
         {
-            return context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
+            return _context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
         }
         else
         {
@@ -163,9 +163,9 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     public WellProjectDto UpdateWellProjectCostProfilesForCase(Guid caseId)
     {
-        var caseItem = caseService.GetCase(caseId);
+        var caseItem = _caseService.GetCase(caseId);
 
-        var wellProject = wellProjectService.GetWellProject(caseItem.WellProjectLink);
+        var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
         var wellProjectWells = GetAllWellProjectWells().Where(ew => ew.WellProjectId == wellProject.Id);
 
         return UpdateWellProjectCostProfilesForCase(wellProject, wellProjectWells);
@@ -173,9 +173,9 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     public IEnumerable<Well> GetAllWells()
     {
-        if (context.Wells != null)
+        if (_context.Wells != null)
         {
-            return context.Wells;
+            return _context.Wells;
         }
         else
         {

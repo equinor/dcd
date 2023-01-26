@@ -10,15 +10,15 @@ namespace api.Services
     {
         private readonly DcdDbContext _context;
         private readonly IProjectService _projectService;
-        private readonly IDrainageStrategyService drainageStrategyService;
-        private readonly ITopsideService topsideService;
-        private readonly ISurfService surfService;
-        private readonly ISubstructureService substructureService;
-        private readonly ITransportService transportService;
-        private readonly IExplorationService explorationService;
-        private readonly IWellProjectService wellProjectService;
-        private readonly IWellProjectWellService wellProjectWellService;
-        private readonly IExplorationWellService explorationWellService;
+        private readonly IDrainageStrategyService _drainageStrategyService;
+        private readonly ITopsideService _topsideService;
+        private readonly ISurfService _surfService;
+        private readonly ISubstructureService _substructureService;
+        private readonly ITransportService _transportService;
+        private readonly IExplorationService _explorationService;
+        private readonly IWellProjectService _wellProjectService;
+        private readonly IWellProjectWellService _wellProjectWellService;
+        private readonly IExplorationWellService _explorationWellService;
         private readonly ILogger<CaseService> _logger;
 
         public DuplicateCaseService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, IDrainageStrategyService drainageStrategyService,
@@ -27,15 +27,15 @@ namespace api.Services
         {
             _context = context;
             _projectService = projectService;
-            this.drainageStrategyService = drainageStrategyService;
-            this.topsideService = topsideService;
-            this.surfService = surfService;
-            this.substructureService = substructureService;
-            this.transportService = transportService;
-            this.explorationService = explorationService;
-            this.wellProjectService = wellProjectService;
-            this.wellProjectWellService = wellProjectWellService;
-            this.explorationWellService = explorationWellService;
+            _drainageStrategyService = drainageStrategyService;
+            _topsideService = topsideService;
+            _surfService = surfService;
+            _substructureService = substructureService;
+            _transportService = transportService;
+            _explorationService = explorationService;
+            _wellProjectService = wellProjectService;
+            _wellProjectWellService = wellProjectWellService;
+            _explorationWellService = explorationWellService;
             _logger = loggerFactory.CreateLogger<CaseService>();
         }
 
@@ -88,17 +88,17 @@ namespace api.Services
             caseItem.Name += " - copy";
             _context.Cases!.Add(caseItem);
 
-            drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
-            topsideService.CopyTopside(caseItem.TopsideLink, caseItem.Id);
-            surfService.CopySurf(caseItem.SurfLink, caseItem.Id);
-            substructureService.CopySubstructure(caseItem.SubstructureLink, caseItem.Id);
-            transportService.CopyTransport(caseItem.TransportLink, caseItem.Id);
+            _drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
+            _topsideService.CopyTopside(caseItem.TopsideLink, caseItem.Id);
+            _surfService.CopySurf(caseItem.SurfLink, caseItem.Id);
+            _substructureService.CopySubstructure(caseItem.SubstructureLink, caseItem.Id);
+            _transportService.CopyTransport(caseItem.TransportLink, caseItem.Id);
 
-            var newWellProject = wellProjectService.CopyWellProject(caseItem.WellProjectLink, caseItem.Id);
-            var newExploration = explorationService.CopyExploration(caseItem.ExplorationLink, caseItem.Id);
+            var newWellProject = _wellProjectService.CopyWellProject(caseItem.WellProjectLink, caseItem.Id);
+            var newExploration = _explorationService.CopyExploration(caseItem.ExplorationLink, caseItem.Id);
 
-            wellProjectWellService.CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
-            explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
+            _wellProjectWellService.CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
+            _explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
 
             _context.SaveChanges();
             return _projectService.GetProjectDto(project.Id);

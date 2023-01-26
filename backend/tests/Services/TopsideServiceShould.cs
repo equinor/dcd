@@ -14,7 +14,7 @@ public class TopsideServiceShould : IDisposable
 
     public TopsideServiceShould()
     {
-        this.fixture = new DatabaseFixture();
+        fixture = new DatabaseFixture();
     }
 
     public void Dispose()

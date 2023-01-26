@@ -12,25 +12,25 @@ namespace tests;
 [Collection("Database collection")]
 public class CaseShould : IClassFixture<CaseServiceFixture>
 {
-    private readonly CaseServiceFixture caseServiceFixture;
+    private readonly CaseServiceFixture _caseServiceFixture;
 
     public CaseShould(CaseServiceFixture caseServiceFixture)
     {
-        this.caseServiceFixture = caseServiceFixture;
+        _caseServiceFixture = caseServiceFixture;
     }
 
     [Fact]
     public void CreateNewCase()
     {
         var loggerFactory = new LoggerFactory();
-        var project = caseServiceFixture.DbContext.Projects.FirstOrDefault();
+        var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        ProjectService projectService = new ProjectService(caseServiceFixture.DbContext, loggerFactory);
-        ICaseService caseService = caseServiceFixture.CaseService;
+        ProjectService projectService = new ProjectService(_caseServiceFixture.DbContext, loggerFactory);
+        ICaseService caseService = _caseServiceFixture.CaseService;
 
         caseService.CreateCase(CaseDtoAdapter.Convert(actual));
 
-        var cases = caseServiceFixture.DbContext.Projects.FirstOrDefault(o =>
+        var cases = _caseServiceFixture.DbContext.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Cases;
         var expected = cases.FirstOrDefault(o => o.Name ==
                 actual.Name);
@@ -47,12 +47,12 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     public void UpdateCase()
     {
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(caseServiceFixture.DbContext, loggerFactory);
-        var caseService = caseServiceFixture.CaseService;
-        var project = caseServiceFixture.DbContext.Projects.FirstOrDefault();
+        var projectService = new ProjectService(_caseServiceFixture.DbContext, loggerFactory);
+        var caseService = _caseServiceFixture.CaseService;
+        var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var oldCase = CreateCase(project);
-        caseServiceFixture.DbContext.Cases.Add(oldCase);
-        caseServiceFixture.DbContext.SaveChanges();
+        _caseServiceFixture.DbContext.Cases.Add(oldCase);
+        _caseServiceFixture.DbContext.SaveChanges();
         var updatedCase = CreateUpdatedCase(project, oldCase);
 
         // Act
@@ -68,14 +68,14 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     public void DeleteCase()
     {
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(caseServiceFixture.DbContext, loggerFactory);
-        var caseService = caseServiceFixture.CaseService;
-        var project = caseServiceFixture.DbContext.Projects.FirstOrDefault();
+        var projectService = new ProjectService(_caseServiceFixture.DbContext, loggerFactory);
+        var caseService = _caseServiceFixture.CaseService;
+        var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
         caseItem.Name = "case to be deleted";
         caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
 
-        var cases = caseServiceFixture.DbContext.Projects.FirstOrDefault(o =>
+        var cases = _caseServiceFixture.DbContext.Projects.FirstOrDefault(o =>
         o.Name == project.Name).Cases;
         var expected = cases.FirstOrDefault(o => o.Name ==
                 caseItem.Name);
@@ -91,8 +91,8 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     public void DeleteNonExistentCase()
     {
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(caseServiceFixture.DbContext, loggerFactory);
-        var caseService = caseServiceFixture.CaseService;
+        var projectService = new ProjectService(_caseServiceFixture.DbContext, loggerFactory);
+        var caseService = _caseServiceFixture.CaseService;
 
         Assert.Throws<NotFoundInDBException>(() => caseService.DeleteCase(new Guid()));
     }
