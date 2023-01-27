@@ -70,32 +70,6 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return UpdateExplorationCostProfilesForCase(exploration, explorationWells);
     }
 
-    public IEnumerable<ExplorationWell> GetAllExplorationWells()
-    {
-        if (_context.ExplorationWell != null)
-        {
-            return _context.ExplorationWell.Include(ew => ew.DrillingSchedule);
-        }
-        else
-        {
-            _logger.LogInformation("No ExplorationWells existing");
-            return new List<ExplorationWell>();
-        }
-    }
-
-    public IEnumerable<WellProjectWell> GetAllWellProjectWells()
-    {
-        if (_context.WellProjectWell != null)
-        {
-            return _context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
-        }
-        else
-        {
-            _logger.LogInformation("No WellProjectWells existing");
-            return new List<WellProjectWell>();
-        }
-    }
-
     public ExplorationDto UpdateExplorationCostProfilesForCase(Exploration exploration, IEnumerable<ExplorationWell> explorationWells)
     {
         var wellIds = explorationWells.Select(ew => ew.WellId);
@@ -169,19 +143,6 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         var wellProjectWells = GetAllWellProjectWells().Where(ew => ew.WellProjectId == wellProject.Id);
 
         return UpdateWellProjectCostProfilesForCase(wellProject, wellProjectWells);
-    }
-
-    public IEnumerable<Well> GetAllWells()
-    {
-        if (_context.Wells != null)
-        {
-            return _context.Wells;
-        }
-        else
-        {
-            _logger.LogInformation("No Wells existing");
-            return new List<Well>();
-        }
     }
 
     public WellProjectDto UpdateWellProjectCostProfilesForCase(WellProject wellProject, IEnumerable<WellProjectWell> wellProjectWells)
@@ -260,4 +221,42 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return mergedCostProfile;
     }
 
+    public IEnumerable<Well> GetAllWells()
+    {
+        if (_context.Wells != null)
+        {
+            return _context.Wells;
+        }
+        else
+        {
+            _logger.LogInformation("No Wells existing");
+            return new List<Well>();
+        }
+    }
+
+    public IEnumerable<ExplorationWell> GetAllExplorationWells()
+    {
+        if (_context.ExplorationWell != null)
+        {
+            return _context.ExplorationWell.Include(ew => ew.DrillingSchedule);
+        }
+        else
+        {
+            _logger.LogInformation("No ExplorationWells existing");
+            return new List<ExplorationWell>();
+        }
+    }
+
+    public IEnumerable<WellProjectWell> GetAllWellProjectWells()
+    {
+        if (_context.WellProjectWell != null)
+        {
+            return _context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
+        }
+        else
+        {
+            _logger.LogInformation("No WellProjectWells existing");
+            return new List<WellProjectWell>();
+        }
+    }
 }

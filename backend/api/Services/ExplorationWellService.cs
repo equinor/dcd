@@ -13,7 +13,7 @@ public class ExplorationWellService : IExplorationWellService
     private readonly IProjectService _projectService;
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly IExplorationService _explorationService;
-    private readonly ILogger<CaseService> _logger;
+    private readonly ILogger<ExplorationWellService> _logger;
 
     public ExplorationWellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory,
         ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, IExplorationService explorationService)
@@ -22,7 +22,7 @@ public class ExplorationWellService : IExplorationWellService
         _projectService = projectService;
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
         _explorationService = explorationService;
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _logger = loggerFactory.CreateLogger<ExplorationWellService>();
     }
 
     public ProjectDto CreateExplorationWell(ExplorationWellDto explorationWellDto)

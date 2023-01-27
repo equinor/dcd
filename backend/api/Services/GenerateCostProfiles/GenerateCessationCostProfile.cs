@@ -9,7 +9,7 @@ namespace api.Services;
 public class GenerateCessationCostProfile : IGenerateCessationCostProfile
 {
     private readonly ICaseService _caseService;
-    private readonly ILogger<CaseService> _logger;
+    private readonly ILogger<GenerateCessationCostProfile> _logger;
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IWellProjectService _wellProjectService;
     private readonly ISurfService _surfService;
@@ -18,7 +18,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
     public GenerateCessationCostProfile(ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
         IWellProjectService wellProjectService, ISurfService surfService, IProjectService projectService)
     {
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _logger = loggerFactory.CreateLogger<GenerateCessationCostProfile>();
         _caseService = caseService;
         _drainageStrategyService = drainageStrategyService;
         _wellProjectService = wellProjectService;

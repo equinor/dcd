@@ -12,14 +12,14 @@ public class WellService : IWellService
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
-    private readonly ILogger<CaseService> _logger;
+    private readonly ILogger<WellService> _logger;
 
     public WellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper)
     {
         _context = context;
         _projectService = projectService;
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _logger = loggerFactory.CreateLogger<WellService>();
     }
 
     public ProjectDto CreateWell(WellDto wellDto)

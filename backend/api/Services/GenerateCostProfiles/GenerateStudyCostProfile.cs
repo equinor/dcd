@@ -9,7 +9,7 @@ namespace api.Services;
 public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 {
     private readonly ICaseService _caseService;
-    private readonly ILogger<CaseService> _logger;
+    private readonly ILogger<GenerateStudyCostProfile> _logger;
     private readonly IWellProjectService _wellProjectService;
     private readonly ITopsideService _topsideService;
     private readonly ISubstructureService _substructureService;
@@ -19,7 +19,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
     public GenerateStudyCostProfile(ILoggerFactory loggerFactory, ICaseService caseService, IWellProjectService wellProjectService, ITopsideService topsideService,
         ISubstructureService substructureService, ISurfService surfService, ITransportService transportService)
     {
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _logger = loggerFactory.CreateLogger<GenerateStudyCostProfile>();
         _caseService = caseService;
         _wellProjectService = wellProjectService;
         _topsideService = topsideService;

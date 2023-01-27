@@ -22,11 +22,10 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     [Fact]
     public void CreateNewCase()
     {
-        var loggerFactory = new LoggerFactory();
         var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        ProjectService projectService = new ProjectService(_caseServiceFixture.DbContext, loggerFactory);
-        ICaseService caseService = _caseServiceFixture.CaseService;
+        var projectService = _caseServiceFixture.ProjectService;
+        var caseService = _caseServiceFixture.CaseService;
 
         caseService.CreateCase(CaseDtoAdapter.Convert(actual));
 
@@ -46,8 +45,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     [Fact]
     public void UpdateCase()
     {
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(_caseServiceFixture.DbContext, loggerFactory);
+        var projectService = _caseServiceFixture.ProjectService;
         var caseService = _caseServiceFixture.CaseService;
         var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var oldCase = CreateCase(project);
@@ -67,8 +65,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     [Fact]
     public void DeleteCase()
     {
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(_caseServiceFixture.DbContext, loggerFactory);
+        var projectService = _caseServiceFixture.ProjectService;
         var caseService = _caseServiceFixture.CaseService;
         var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
@@ -90,8 +87,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     [Fact]
     public void DeleteNonExistentCase()
     {
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(_caseServiceFixture.DbContext, loggerFactory);
+        var projectService = _caseServiceFixture.ProjectService;
         var caseService = _caseServiceFixture.CaseService;
 
         Assert.Throws<NotFoundInDBException>(() => caseService.DeleteCase(new Guid()));

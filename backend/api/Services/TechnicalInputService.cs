@@ -18,7 +18,7 @@ public class TechnicalInputService : ITechnicalInputService
     private readonly IDevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
     private readonly IWellService _wellService;
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
-    private readonly ILogger<CaseService> _logger;
+    private readonly ILogger<TechnicalInputService> _logger;
 
     public TechnicalInputService(DcdDbContext context, IProjectService projectService, ICaseService caseService,
     IWellProjectService wellProjectService, IExplorationService explorationService,
@@ -42,7 +42,7 @@ public class TechnicalInputService : ITechnicalInputService
 
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
 
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _logger = loggerFactory.CreateLogger<TechnicalInputService>();
     }
 
     public TechnicalInputDto UpdateTehnicalInput(TechnicalInputDto technicalInputDto)

@@ -22,6 +22,14 @@ public class CaseServiceFixture : IDisposable
         }
     }
 
+    public IProjectService ProjectService
+    {
+        get
+        {
+            return _serviceProvider.GetService<IProjectService>();
+        }
+    }
+
     public DcdDbContext DbContext
     {
         get
@@ -52,7 +60,6 @@ public class CaseServiceFixture : IDisposable
 
         services.AddLogging(l => l.AddProvider(NullLoggerProvider.Instance));
 
-        services.AddScoped<ProjectService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
@@ -66,7 +73,6 @@ public class CaseServiceFixture : IDisposable
         services.AddScoped<IExplorationWellService, ExplorationWellService>();
         services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
         services.AddScoped<ITransportService, TransportService>();
-        services.AddScoped<CaseService>();
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<IDuplicateCaseService, DuplicateCaseService>();
         services.AddScoped<IExplorationOperationalWellCostsService, ExplorationOperationalWellCostsService>();

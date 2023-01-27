@@ -22,7 +22,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
     private readonly IExplorationWellService _explorationWellService;
     private readonly IWellProjectWellService _wellProjectWellService;
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
-    private readonly ILogger<CaseService> _logger;
+    private readonly ILogger<CaseWithAssetsService> _logger;
 
     public CaseWithAssetsService(DcdDbContext context, IProjectService projectService, ICaseService caseService,
     IDrainageStrategyService drainageStrategyService, IWellProjectService wellProjectService, IExplorationService explorationService,
@@ -49,7 +49,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
 
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _logger = loggerFactory.CreateLogger<CaseWithAssetsService>();
     }
 
     public ProjectDto UpdateCaseWithAssets(CaseWithAssetsWrapperDto wrapper)

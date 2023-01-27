@@ -21,7 +21,6 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 
 using Serilog;
-using Serilog.Enrichers;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -150,7 +149,6 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 
-builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
@@ -164,7 +162,6 @@ builder.Services.AddScoped<IWellProjectWellService, WellProjectWellService>();
 builder.Services.AddScoped<IExplorationWellService, ExplorationWellService>();
 builder.Services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
 builder.Services.AddScoped<ITransportService, TransportService>();
-builder.Services.AddScoped<CaseService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IDuplicateCaseService, DuplicateCaseService>();
 builder.Services.AddScoped<IExplorationOperationalWellCostsService, ExplorationOperationalWellCostsService>();
@@ -228,7 +225,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer",
                 },
             },
-            new string[] { }
+            Array.Empty<string>()
         },
     });
 });

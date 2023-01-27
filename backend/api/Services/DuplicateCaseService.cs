@@ -19,7 +19,7 @@ namespace api.Services
         private readonly IWellProjectService _wellProjectService;
         private readonly IWellProjectWellService _wellProjectWellService;
         private readonly IExplorationWellService _explorationWellService;
-        private readonly ILogger<CaseService> _logger;
+        private readonly ILogger<DuplicateCaseService> _logger;
 
         public DuplicateCaseService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, IDrainageStrategyService drainageStrategyService,
             ITopsideService topsideService, ISurfService surfService, ISubstructureService substructureService, ITransportService transportService,
@@ -36,7 +36,7 @@ namespace api.Services
             _wellProjectService = wellProjectService;
             _wellProjectWellService = wellProjectWellService;
             _explorationWellService = explorationWellService;
-            _logger = loggerFactory.CreateLogger<CaseService>();
+            _logger = loggerFactory.CreateLogger<DuplicateCaseService>();
         }
 
         public Case GetCaseNoTracking(Guid caseId)
