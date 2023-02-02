@@ -38,3 +38,6 @@ stages:
         ContainerTag: "release"
         DynatraceToken: $(dynatracePreProdToken)
         DynatraceTenantId: $(dynatracePreProdTenantId)
+        SpAzureClientId: $(SpPreProdAzureClientId)
+        SpAzureClientSecret: $(SpPreProdAzureClientSecret)
+        AzureTenantId: $(SpAzureTenantId)
