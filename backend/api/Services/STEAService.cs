@@ -10,12 +10,12 @@ namespace api.Services;
 public class STEAService
 {
 
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<STEAService> _logger;
 
-    public STEAService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public STEAService(DcdDbContext context, ILoggerFactory loggerFactory, IProjectService projectService)
     {
-        _projectService = new ProjectService(context, loggerFactory, serviceProvider);
+        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<STEAService>();
     }
 

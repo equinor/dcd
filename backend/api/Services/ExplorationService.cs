@@ -7,40 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class ExplorationService
+public class ExplorationService : IExplorationService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
 
     private readonly ILogger<ExplorationService> _logger;
 
-    public ExplorationService(DcdDbContext context, ProjectService
-        projectService, ILoggerFactory loggerFactory)
+    public ExplorationService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<ExplorationService>();
     }
 
-    public IEnumerable<Exploration> GetExplorations(Guid projectId)
-    {
-        if (_context.Explorations != null)
-        {
-            return _context.Explorations
-                .Include(c => c.ExplorationWellCostProfile)
-                .Include(c => c.AppraisalWellCostProfile)
-                .Include(c => c.SidetrackCostProfile)
-                .Include(c => c.GAndGAdminCost)
-                .Include(c => c.SeismicAcquisitionAndProcessing)
-                .Include(c => c.CountryOfficeCost)
-                .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
-                .Where(d => d.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<Exploration>();
-        }
-    }
 
     public ExplorationDto CopyExploration(Guid explorationId, Guid sourceCaseId)
     {

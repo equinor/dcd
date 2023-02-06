@@ -20,8 +20,8 @@ namespace api.Controllers;
 )]
 public class CompareCasesController : ControllerBase
 {
-    private readonly CompareCasesService _compareCasesService;
-    public CompareCasesController(CompareCasesService compareCasesService)
+    private readonly ICompareCasesService _compareCasesService;
+    public CompareCasesController(ICompareCasesService compareCasesService)
     {
         _compareCasesService = compareCasesService;
     }

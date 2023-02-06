@@ -23,7 +23,7 @@ public class PROSPController : ControllerBase
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
     private readonly ILogger<PROSPController> _logger;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ProspExcelImportService _prospExcelImportService;
     private readonly ProspSharepointImportService _prospSharepointImportService;
 
@@ -32,7 +32,7 @@ public class PROSPController : ControllerBase
         GraphServiceClient graphService,
         IConfiguration config,
         ProspSharepointImportService prospSharepointImportImportService,
-        ProjectService projectService,
+        IProjectService projectService,
         ILoggerFactory loggerFactory)
     {
         _prospExcelImportService = prospExcelImportService;

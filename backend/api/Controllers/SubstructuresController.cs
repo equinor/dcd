@@ -23,9 +23,9 @@ namespace api.Controllers;
     )]
 public class SubstructuresController : ControllerBase
 {
-    private readonly SubstructureService _substructureService;
+    private readonly ISubstructureService _substructureService;
 
-    public SubstructuresController(SubstructureService substructureService)
+    public SubstructuresController(ISubstructureService substructureService)
     {
         _substructureService = substructureService;
     }

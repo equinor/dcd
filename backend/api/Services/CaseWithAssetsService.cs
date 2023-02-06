@@ -7,28 +7,28 @@ using api.Models;
 
 namespace api.Services;
 
-public class CaseWithAssetsService
+public class CaseWithAssetsService : ICaseWithAssetsService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
-    private readonly CaseService _caseService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly WellProjectService _wellProjectService;
-    private readonly ExplorationService _explorationService;
-    private readonly SurfService _surfService;
-    private readonly SubstructureService _substructureService;
-    private readonly TransportService _transportService;
-    private readonly TopsideService _topsideService;
-    private readonly ExplorationWellService _explorationWellService;
-    private readonly WellProjectWellService _wellProjectWellService;
-    private readonly CostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
-    private readonly ILogger<CaseService> _logger;
+    private readonly IProjectService _projectService;
+    private readonly ICaseService _caseService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IWellProjectService _wellProjectService;
+    private readonly IExplorationService _explorationService;
+    private readonly ISurfService _surfService;
+    private readonly ISubstructureService _substructureService;
+    private readonly ITransportService _transportService;
+    private readonly ITopsideService _topsideService;
+    private readonly IExplorationWellService _explorationWellService;
+    private readonly IWellProjectWellService _wellProjectWellService;
+    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
+    private readonly ILogger<CaseWithAssetsService> _logger;
 
-    public CaseWithAssetsService(DcdDbContext context, ProjectService projectService, CaseService caseService,
-    DrainageStrategyService drainageStrategyService, WellProjectService wellProjectService, ExplorationService explorationService,
-    SurfService surfService, SubstructureService substructureService, TransportService transportService, TopsideService topsideService,
-    ExplorationWellService explorationWellService, WellProjectWellService wellProjectWellService,
-    CostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
+    public CaseWithAssetsService(DcdDbContext context, IProjectService projectService, ICaseService caseService,
+    IDrainageStrategyService drainageStrategyService, IWellProjectService wellProjectService, IExplorationService explorationService,
+    ISurfService surfService, ISubstructureService substructureService, ITransportService transportService, ITopsideService topsideService,
+    IExplorationWellService explorationWellService, IWellProjectWellService wellProjectWellService,
+    ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
     ILoggerFactory loggerFactory)
     {
         _context = context;
@@ -49,7 +49,7 @@ public class CaseWithAssetsService
 
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
 
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _logger = loggerFactory.CreateLogger<CaseWithAssetsService>();
     }
 
     public ProjectDto UpdateCaseWithAssets(CaseWithAssetsWrapperDto wrapper)

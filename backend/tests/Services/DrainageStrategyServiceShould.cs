@@ -1,28 +1,19 @@
-using System;
-using System.Linq;
-
 using api.Adapters;
-using api.Dtos;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
 
 using Xunit;
-
-
 namespace tests;
 
 [Collection("Database collection")]
 public class DrainageStrategyServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
-    private readonly IServiceProvider _serviceProvider;
 
     public DrainageStrategyServiceShould()
     {
         fixture = new DatabaseFixture();
-        var serviceCollection = new ServiceCollection();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -31,34 +22,11 @@ public class DrainageStrategyServiceShould : IDisposable
     }
 
     [Fact]
-    public void GetDrainageStrategies()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var expectedStrategies = fixture.context.DrainageStrategies.ToList().Where(o => o.Project.Id == project.Id);
-
-        // Act
-        var actualStrategies = drainageStrategyService.GetDrainageStrategies(project.Id);
-
-        // Assert
-        Assert.Equal(expectedStrategies.Count(), actualStrategies.Count());
-        var drainageStrategiesExpectedAndActual = expectedStrategies.OrderBy(d => d.Name)
-            .Zip(actualStrategies.OrderBy(d => d.Name));
-        foreach (var drainageStrategyPair in drainageStrategiesExpectedAndActual)
-        {
-            TestHelper.CompareDrainageStrategies(drainageStrategyPair.First, drainageStrategyPair.Second);
-        }
-    }
-
-    [Fact]
     public void CreateNewDrainageStrategy()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -81,7 +49,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -97,7 +65,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedStrategy = CreateTestDrainageStrategy(project);
@@ -112,7 +80,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
@@ -139,7 +107,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var drainageStrategyToDelete = CreateTestDrainageStrategy(project);
@@ -155,7 +123,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldStrategy = CreateTestDrainageStrategy(project);
@@ -177,7 +145,7 @@ public class DrainageStrategyServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldStrategy = CreateTestDrainageStrategy(project);

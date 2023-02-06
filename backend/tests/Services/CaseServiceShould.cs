@@ -1,50 +1,35 @@
-using System;
-using System.Collections;
-using System.Linq;
-
 using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
 using api.Services;
 
-using NuGet.Frameworks;
+using tests.Fixtures;
 
 using Xunit;
-
 
 namespace tests;
 
 [Collection("Database collection")]
-public class CaseShould : IDisposable
+public class CaseShould : IClassFixture<CaseServiceFixture>
 {
-    private readonly DatabaseFixture fixture;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly CaseServiceFixture _caseServiceFixture;
 
-    public CaseShould(DatabaseFixture fixture)
+    public CaseShould(CaseServiceFixture caseServiceFixture)
     {
-        this.fixture = new DatabaseFixture();
-        var serviceCollection = new ServiceCollection();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
-    }
-
-    public void Dispose()
-    {
-        fixture.Dispose();
+        _caseServiceFixture = caseServiceFixture;
     }
 
     [Fact]
     public void CreateNewCase()
     {
-        var loggerFactory = new LoggerFactory();
-        var project = fixture.context.Projects.FirstOrDefault();
+        var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        ProjectService projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        CaseService caseService = new
-            CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
+        var projectService = _caseServiceFixture.ProjectService;
+        var caseService = _caseServiceFixture.CaseService;
 
         caseService.CreateCase(CaseDtoAdapter.Convert(actual));
 
-        var cases = fixture.context.Projects.FirstOrDefault(o =>
+        var cases = _caseServiceFixture.DbContext.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Cases;
         var expected = cases.FirstOrDefault(o => o.Name ==
                 actual.Name);
@@ -60,13 +45,12 @@ public class CaseShould : IDisposable
     [Fact]
     public void UpdateCase()
     {
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
-        var project = fixture.context.Projects.FirstOrDefault();
+        var projectService = _caseServiceFixture.ProjectService;
+        var caseService = _caseServiceFixture.CaseService;
+        var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var oldCase = CreateCase(project);
-        fixture.context.Cases.Add(oldCase);
-        fixture.context.SaveChanges();
+        _caseServiceFixture.DbContext.Cases.Add(oldCase);
+        _caseServiceFixture.DbContext.SaveChanges();
         var updatedCase = CreateUpdatedCase(project, oldCase);
 
         // Act
@@ -81,14 +65,14 @@ public class CaseShould : IDisposable
     [Fact]
     public void DeleteCase()
     {
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
-        var project = fixture.context.Projects.FirstOrDefault();
+        var projectService = _caseServiceFixture.ProjectService;
+        var caseService = _caseServiceFixture.CaseService;
+        var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
+        caseItem.Name = "case to be deleted";
         caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
 
-        var cases = fixture.context.Projects.FirstOrDefault(o =>
+        var cases = _caseServiceFixture.DbContext.Projects.FirstOrDefault(o =>
         o.Name == project.Name).Cases;
         var expected = cases.FirstOrDefault(o => o.Name ==
                 caseItem.Name);
@@ -103,33 +87,11 @@ public class CaseShould : IDisposable
     [Fact]
     public void DeleteNonExistentCase()
     {
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
+        var projectService = _caseServiceFixture.ProjectService;
+        var caseService = _caseServiceFixture.CaseService;
 
         Assert.Throws<NotFoundInDBException>(() => caseService.DeleteCase(new Guid()));
     }
-
-    // [Fact]
-    // public void DuplicateCase()
-    // {
-    //     var loggerFactory = new LoggerFactory();
-    //     var projectService = new ProjectService(fixture.context, loggerFactory);
-    //     var caseService = new CaseService(fixture.context, projectService, loggerFactory, _serviceProvider);
-
-    //     var project = fixture.context.Projects.FirstOrDefault();
-    //     var caseItem = CreateCase(project);
-    //     caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
-
-    //     var cases = fixture.context.Projects.FirstOrDefault(o =>
-    //         o.Name == project.Name).Cases;
-    //     var expected = cases.Where(o => o.Description ==
-    //             caseItem.Description);
-    //     Assert.True(expected.Count() == 1);
-
-    //     caseService.DuplicateCase(expected.First().Id);
-    //     Assert.True(expected.Count() == 2);
-    // }
 
     private static Case CreateUpdatedCase(Project project, Case oldCase)
     {

@@ -16,11 +16,11 @@ public class TimeSeries<T>
     {
         get
         {
-            if (this.InternalData == null || InternalData == "")
+            if (InternalData == null || InternalData == "")
             {
                 return Array.Empty<T>();
             }
-            string[] tab = this.InternalData.Split(';');
+            string[] tab = InternalData.Split(';');
             return Array.ConvertAll(InternalData.Split(';'), new Converter<string, T>(convertStringToGeneric));
         }
         set

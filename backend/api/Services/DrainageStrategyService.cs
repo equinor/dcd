@@ -8,43 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class DrainageStrategyService
+public class DrainageStrategyService : IDrainageStrategyService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<DrainageStrategyService> _logger;
 
-    public DrainageStrategyService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+    public DrainageStrategyService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
-    }
-
-    public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
-    {
-        if (_context.DrainageStrategies != null)
-        {
-            return _context.DrainageStrategies
-                .Include(c => c.ProductionProfileOil)
-                .Include(c => c.ProductionProfileGas)
-                .Include(c => c.ProductionProfileWater)
-                .Include(c => c.ProductionProfileWaterInjection)
-                .Include(c => c.FuelFlaringAndLosses)
-                .Include(c => c.FuelFlaringAndLossesOverride)
-                .Include(c => c.NetSalesGas)
-                .Include(c => c.NetSalesGasOverride)
-                .Include(c => c.Co2Emissions)
-                .Include(c => c.Co2EmissionsOverride)
-                .Include(c => c.ProductionProfileNGL)
-                .Include(c => c.ImportedElectricity)
-                .Include(c => c.ImportedElectricityOverride)
-                .Where(d => d.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<DrainageStrategy>();
-        }
     }
 
     public ProjectDto CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)

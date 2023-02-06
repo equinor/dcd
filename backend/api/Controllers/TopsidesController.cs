@@ -23,9 +23,9 @@ namespace api.Controllers;
     )]
 public class TopsidesController : ControllerBase
 {
-    private readonly TopsideService _topsideService;
+    private readonly ITopsideService _topsideService;
 
-    public TopsidesController(TopsideService topsideService)
+    public TopsidesController(ITopsideService topsideService)
     {
         _topsideService = topsideService;
     }
