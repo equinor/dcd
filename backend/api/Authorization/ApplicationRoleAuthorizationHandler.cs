@@ -8,16 +8,16 @@ using Microsoft.AspNetCore.Authorization;
 
 public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<ApplicationRoleRequirement>
 {
-    private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
 
     public ApplicationRoleAuthorizationHandler(IHttpContextAccessor httpContextAccessor)
     {
-        this.httpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;
     }
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
     {
-        var requestPath = httpContextAccessor.HttpContext?.Request.Path;
+        var requestPath = _httpContextAccessor.HttpContext?.Request.Path;
 
         if (context.User.Identity?.IsAuthenticated != true)
         {

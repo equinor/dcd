@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class TransportService
+public class TransportService : ITransportService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<TransportService> _logger;
 
-    public TransportService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+    public TransportService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
@@ -112,22 +112,6 @@ public class TransportService
             {
                 c.TransportLink = Guid.Empty;
             }
-        }
-    }
-
-    public IEnumerable<Transport> GetTransports(Guid projectId)
-    {
-        if (_context.Transports != null)
-        {
-            return _context.Transports
-                .Include(c => c.CostProfile)
-                .Include(c => c.CostProfileOverride)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<Transport>();
         }
     }
 

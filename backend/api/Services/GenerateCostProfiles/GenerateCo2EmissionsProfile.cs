@@ -5,21 +5,22 @@ using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateCo2EmissionsProfile
+public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
 {
-    private readonly CaseService _caseService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly ProjectService _projectService;
-    private readonly TopsideService _topsideService;
-    private readonly WellProjectService _wellProjectService;
+    private readonly ICaseService _caseService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IProjectService _projectService;
+    private readonly ITopsideService _topsideService;
+    private readonly IWellProjectService _wellProjectService;
 
-    public GenerateCo2EmissionsProfile(IServiceProvider serviceProvider)
+    public GenerateCo2EmissionsProfile(ICaseService caseService, IDrainageStrategyService drainageStrategyService, IProjectService projectService,
+        ITopsideService topsideService, IWellProjectService wellProjectService)
     {
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _topsideService = serviceProvider.GetRequiredService<TopsideService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
-        _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
+        _caseService = caseService;
+        _projectService = projectService;
+        _topsideService = topsideService;
+        _drainageStrategyService = drainageStrategyService;
+        _wellProjectService = wellProjectService;
     }
 
     public Co2EmissionsDto Generate(Guid caseId)

@@ -7,23 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class WellService
+public class WellService : IWellService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly WellProjectService _wellProjectService;
-    private readonly ExplorationService _explorationService;
-    private readonly ILogger<CaseService> _logger;
+    private readonly IProjectService _projectService;
+    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
+    private readonly ILogger<WellService> _logger;
 
-    public WellService(DcdDbContext context, ProjectService projectService, WellProjectService wellProjectService, ExplorationService explorationService, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+    public WellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper)
     {
         _context = context;
         _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<CaseService>();
-        _serviceProvider = serviceProvider;
-        _wellProjectService = wellProjectService;
-        _explorationService = explorationService;
+        _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
+        _logger = loggerFactory.CreateLogger<WellService>();
     }
 
     public ProjectDto CreateWell(WellDto wellDto)
@@ -64,8 +60,7 @@ public class WellService
 
         _context.SaveChanges();
 
-        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
-        costProfileHelper.UpdateCostProfilesForWells(updatedWellDtos.Select(w => w.Id).ToList());
+        _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWellDtos.Select(w => w.Id).ToList());
 
         return updatedWellDtoList.ToArray();
     }

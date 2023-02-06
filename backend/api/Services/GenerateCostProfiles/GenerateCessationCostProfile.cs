@@ -6,23 +6,24 @@ using api.Models;
 
 namespace api.Services;
 
-public class GenerateCessationCostProfile
+public class GenerateCessationCostProfile : IGenerateCessationCostProfile
 {
-    private readonly CaseService _caseService;
-    private readonly ILogger<CaseService> _logger;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly WellProjectService _wellProjectService;
-    private readonly SurfService _surfService;
-    private readonly ProjectService _projectService;
+    private readonly ICaseService _caseService;
+    private readonly ILogger<GenerateCessationCostProfile> _logger;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IWellProjectService _wellProjectService;
+    private readonly ISurfService _surfService;
+    private readonly IProjectService _projectService;
 
-    public GenerateCessationCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public GenerateCessationCostProfile(ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
+        IWellProjectService wellProjectService, ISurfService surfService, IProjectService projectService)
     {
-        _logger = loggerFactory.CreateLogger<CaseService>();
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
-        _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
-        _surfService = serviceProvider.GetRequiredService<SurfService>();
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
+        _logger = loggerFactory.CreateLogger<GenerateCessationCostProfile>();
+        _caseService = caseService;
+        _drainageStrategyService = drainageStrategyService;
+        _wellProjectService = wellProjectService;
+        _surfService = surfService;
+        _projectService = projectService;
     }
 
     public CessationCostWrapperDto Generate(Guid caseId)

@@ -20,8 +20,8 @@ namespace api.Controllers
     )]
     public class DevelopmentOperationalWellCostsController : ControllerBase
     {
-        private readonly DevelopmentOperationalWellCostsService _operationalWellCostsService;
-        public DevelopmentOperationalWellCostsController(DevelopmentOperationalWellCostsService operationalWellCostsService)
+        private readonly IDevelopmentOperationalWellCostsService _operationalWellCostsService;
+        public DevelopmentOperationalWellCostsController(IDevelopmentOperationalWellCostsService operationalWellCostsService)
         {
             _operationalWellCostsService = operationalWellCostsService;
         }

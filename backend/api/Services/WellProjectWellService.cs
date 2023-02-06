@@ -7,20 +7,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class WellProjectWellService
+public class WellProjectWellService : IWellProjectWellService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IProjectService _projectService;
+    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
+    private readonly IWellProjectService _wellProjectService;
+    private readonly ILogger<WellProjectWellService> _logger;
 
-    private readonly ILogger<CaseService> _logger;
-
-    public WellProjectWellService(DcdDbContext context, ProjectService projectService, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+    public WellProjectWellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory,
+        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, IWellProjectService wellProjectService)
     {
         _context = context;
         _projectService = projectService;
-        _serviceProvider = serviceProvider;
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
+        _wellProjectService = wellProjectService;
+        _logger = loggerFactory.CreateLogger<WellProjectWellService>();
     }
 
     public ProjectDto CreateWellProjectWell(WellProjectWellDto wellProjectWellDto)
@@ -79,11 +81,9 @@ public class WellProjectWellService
             projectDto = UpdateWellProjectWell(wellProjectWellDto);
         }
 
-        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
-        var wellProjectDto = costProfileHelper.UpdateWellProjectCostProfilesForCase(caseId);
+        var wellProjectDto = _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
 
-        var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
-        wellProjectService.NewUpdateWellProject(wellProjectDto);
+        _wellProjectService.NewUpdateWellProject(wellProjectDto);
 
         if (projectDto != null && wellProjectId != null)
         {

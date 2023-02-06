@@ -20,9 +20,9 @@ namespace api.Controllers;
 )]
 public class CaseWithAssetsController : ControllerBase
 {
-    private readonly CaseWithAssetsService _caseWithAssetsService;
+    private readonly ICaseWithAssetsService _caseWithAssetsService;
 
-    public CaseWithAssetsController(CaseWithAssetsService caseWithAssetsService)
+    public CaseWithAssetsController(ICaseWithAssetsService caseWithAssetsService)
     {
         _caseWithAssetsService = caseWithAssetsService;
     }
