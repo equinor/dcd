@@ -149,29 +149,6 @@ public class CaseService : ICaseService
         return _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public Case GetCaseNoTracking(Guid caseId)
-    {
-        var caseItem = _context.Cases!.AsNoTracking()
-            .Include(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
-            .Include(c => c.TotalFEEDStudies)
-            .Include(c => c.TotalFEEDStudiesOverride)
-            .Include(c => c.WellInterventionCostProfile)
-            .Include(c => c.WellInterventionCostProfileOverride)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
-            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-            .Include(c => c.CessationWellsCost)
-            .Include(c => c.CessationWellsCostOverride)
-            .Include(c => c.CessationOffshoreFacilitiesCost)
-            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-            .FirstOrDefault(c => c.Id == caseId);
-        if (caseItem == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
-        }
-        return caseItem;
-    }
-
     public Case GetCase(Guid caseId)
     {
         var caseItem = _context.Cases!

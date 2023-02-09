@@ -341,23 +341,6 @@ function CaseCostTab({
         setCountryOfficeCost(countryOffice)
     }, [exploration])
 
-    useEffect(() => {
-        const {
-            oilProducerCostProfile, gasProducerCostProfile,
-            waterInjectorCostProfile, gasInjectorCostProfile,
-            oilProducerCostProfileOverride, gasProducerCostProfileOverride,
-            waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
-        } = wellProject
-        setWellProjectOilProducerCost(oilProducerCostProfile)
-        setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
-        setWellProjectGasProducerCost(gasProducerCostProfile)
-        setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
-        setWellProjectWaterInjectorCost(waterInjectorCostProfile)
-        setWellProjectWaterInjectorCostOverride(waterInjectorCostProfileOverride)
-        setWellProjectGasInjectorCost(gasInjectorCostProfile)
-        setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
-    }, [wellProject])
-
     const updatedAndSetSurf = (surfItem: Surf) => {
         const newSurf: Surf = { ...surfItem }
         newSurf.costProfile = surfCost

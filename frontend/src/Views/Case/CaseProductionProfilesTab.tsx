@@ -28,7 +28,6 @@ import { GetGenerateProfileService } from "../../Services/GenerateProfileService
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 import { ImportedElectricityOverride } from "../../models/assets/drainagestrategy/ImportedElectricityOverride"
-import { Co2EmissionsOverride } from "../../models/assets/drainagestrategy/Co2EmissionsOverride"
 import { NetSalesGasOverride } from "../../models/assets/drainagestrategy/NetSalesGasOverride"
 import { FuelFlaringAndLossesOverride } from "../../models/assets/drainagestrategy/FuelFlaringAndLossesOverride"
 
@@ -476,7 +475,7 @@ function CaseProductionProfilesTab({
                     "Water production (MSm3)",
                 ]}
             />
-            {waterInjection !== undefined
+            {(waterInjection !== undefined && waterInjection!.values!.length > 0)
                 && (
                     <AgChartsTimeseries
                         data={injectionProfilesChartData()}
