@@ -54,11 +54,14 @@ public static class CaseAdapter
             SharepointFileUrl = caseDto.SharepointFileUrl,
         };
 
-        caseItem.TotalFeasibilityAndConceptStudies = Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(caseDto.TotalFeasibilityAndConceptStudies, caseItem);
-        caseItem.TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>(caseDto.TotalFeasibilityAndConceptStudiesOverride, caseItem);
+        caseItem.CessationWellsCostOverride = ConvertOverride<CessationWellsCostOverrideDto, CessationWellsCostOverride>(caseDto.CessationWellsCostOverride, caseItem);
+        caseItem.CessationOffshoreFacilitiesCostOverride = ConvertOverride<CessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>(caseDto.CessationOffshoreFacilitiesCostOverride, caseItem);
 
-        caseItem.TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(caseDto.TotalFEEDStudies, caseItem);
+        caseItem.TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>(caseDto.TotalFeasibilityAndConceptStudiesOverride, caseItem);
         caseItem.TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseDto.TotalFEEDStudiesOverride, caseItem);
+
+        caseItem.WellInterventionCostProfileOverride = ConvertOverride<WellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>(caseDto.WellInterventionCostProfileOverride, caseItem);
+        caseItem.OffshoreFacilitiesOperationsCostProfileOverride = ConvertOverride<OffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>(caseDto.OffshoreFacilitiesOperationsCostProfileOverride, caseItem);
 
         return caseItem;
     }
@@ -106,18 +109,21 @@ public static class CaseAdapter
         existing.SharepointFileId = caseDto.SharepointFileId;
         existing.SharepointFileName = caseDto.SharepointFileName;
 
-        existing.TotalFeasibilityAndConceptStudies = Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(caseDto.TotalFeasibilityAndConceptStudies, existing);
-        existing.TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>(caseDto.TotalFeasibilityAndConceptStudiesOverride, existing);
+        existing.CessationWellsCostOverride = ConvertOverride<CessationWellsCostOverrideDto, CessationWellsCostOverride>(caseDto.CessationWellsCostOverride, existing);
+        existing.CessationOffshoreFacilitiesCostOverride = ConvertOverride<CessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>(caseDto.CessationOffshoreFacilitiesCostOverride, existing);
 
-        existing.TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(caseDto.TotalFEEDStudies, existing);
+        existing.TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>(caseDto.TotalFeasibilityAndConceptStudiesOverride, existing);
         existing.TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseDto.TotalFEEDStudiesOverride, existing);
+
+        existing.WellInterventionCostProfileOverride = ConvertOverride<WellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>(caseDto.WellInterventionCostProfileOverride, existing);
+        existing.OffshoreFacilitiesOperationsCostProfileOverride = ConvertOverride<OffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>(caseDto.OffshoreFacilitiesOperationsCostProfileOverride, existing);
     }
 
     private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, Case caseItem)
     where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
     where TModel : TimeSeriesCost, ITimeSeriesOverride, ICaseTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {
@@ -135,7 +141,7 @@ public static class CaseAdapter
         where TDto : TimeSeriesCostDto
         where TModel : TimeSeriesCost, ICaseTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {

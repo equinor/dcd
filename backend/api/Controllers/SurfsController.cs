@@ -23,10 +23,10 @@ namespace api.Controllers;
     )]
 public class SurfsController : ControllerBase
 {
-    private readonly SurfService _surfService;
+    private readonly ISurfService _surfService;
 
 
-    public SurfsController(SurfService surfService)
+    public SurfsController(ISurfService surfService)
     {
         _surfService = surfService;
     }

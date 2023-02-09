@@ -8,37 +8,34 @@ using api.Services.GenerateCostProfiles;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Services;
+namespace api.Services.GenerateCostProfiles;
 
-public class GenerateCo2IntensityTotal
+public class GenerateCo2IntensityTotal : IGenerateCo2IntensityTotal
 {
-    private readonly CaseService _caseService;
-    private readonly ProjectService _projectService;
+    private readonly ICaseService _caseService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<GenerateCo2IntensityTotal> _logger;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly GenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
 
-    public GenerateCo2IntensityTotal(ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public GenerateCo2IntensityTotal(IProjectService projectService, ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
+        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile)
     {
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
+        _caseService = caseService;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<GenerateCo2IntensityTotal>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
-        _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
+        _drainageStrategyService = drainageStrategyService;
+        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }
 
     public double Calculate(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var project = _projectService.GetProject(caseItem.ProjectId);
-        var co2Intensity = 0.0;
+        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        DrainageStrategy drainageStrategy;
-        drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-
-        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseItem.Id);
-        co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
-
+        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        double co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
         return co2Intensity;
     }
 

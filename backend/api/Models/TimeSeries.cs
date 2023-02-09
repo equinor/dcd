@@ -1,12 +1,15 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-
 
 namespace api.Models;
 
 public class TimeSeries<T>
 {
+    public TimeSeries()
+    {
+        Values = Array.Empty<T>();
+    }
+
     public Guid Id { get; set; }
     public int StartYear { get; set; }
 
@@ -16,21 +19,21 @@ public class TimeSeries<T>
     {
         get
         {
-            if (this.InternalData == null || InternalData == "")
+            if (string.IsNullOrEmpty(InternalData))
             {
                 return Array.Empty<T>();
             }
-            string[] tab = this.InternalData.Split(';');
-            return Array.ConvertAll(InternalData.Split(';'), new Converter<string, T>(convertStringToGeneric));
+            string[] tab = InternalData.Split(';');
+            return Array.ConvertAll(InternalData.Split(';'), new Converter<string, T>(ConvertStringToGeneric));
         }
         set
         {
             var _data = value;
-            InternalData = String.Join(";", _data.Select(p => p!.ToString()).ToArray());
+            InternalData = string.Join(";", _data.Select(p => p!.ToString()).ToArray());
         }
     }
 
-    private static T convertStringToGeneric(string pf)
+    private static T ConvertStringToGeneric(string pf)
     {
         return (T)Convert.ChangeType(pf, typeof(T));
     }
@@ -38,17 +41,14 @@ public class TimeSeries<T>
 
 public class TimeSeriesVolume : TimeSeries<double>
 {
-
 }
 
 public class TimeSeriesMass : TimeSeries<double>
 {
-
 }
 
 public class TimeSeriesEnergy : TimeSeries<double>
 {
-
 }
 
 public class TimeSeriesCost : TimeSeries<double>

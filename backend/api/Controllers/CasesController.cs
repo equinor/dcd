@@ -20,11 +20,13 @@ namespace api.Controllers;
 )]
 public class CasesController : ControllerBase
 {
-    private readonly CaseService _caseService;
+    private readonly ICaseService _caseService;
+    private readonly IDuplicateCaseService _duplicateCaseService;
 
-    public CasesController(CaseService caseService)
+    public CasesController(ICaseService caseService, IDuplicateCaseService duplicateCaseService)
     {
         _caseService = caseService;
+        _duplicateCaseService = duplicateCaseService;
     }
 
     [HttpPost(Name = "CreateCase")]
@@ -42,7 +44,7 @@ public class CasesController : ControllerBase
     [HttpPost("copy", Name = "Duplicate")]
     public ProjectDto DuplicateCase([FromQuery] Guid copyCaseId)
     {
-        return _caseService.DuplicateCase(copyCaseId);
+        return _duplicateCaseService.DuplicateCase(copyCaseId);
     }
 
     [HttpPut(Name = "UpdateCase")]

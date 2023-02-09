@@ -16,12 +16,12 @@ public static class ExplorationAdapter
             RigMobDemob = explorationDto.RigMobDemob,
             Currency = explorationDto.Currency,
         };
-        exploration.ExplorationWellCostProfile = Convert(explorationDto.ExplorationWellCostProfile, exploration);
-        exploration.AppraisalWellCostProfile = Convert(explorationDto.AppraisalWellCostProfile, exploration);
-        exploration.SidetrackCostProfile = Convert(explorationDto.SidetrackCostProfile, exploration);
-        exploration.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, exploration);
-        exploration.SeismicAcquisitionAndProcessing = Convert(explorationDto.SeismicAcquisitionAndProcessing, exploration);
-        exploration.CountryOfficeCost = Convert(explorationDto.CountryOfficeCost, exploration);
+        exploration.ExplorationWellCostProfile = Convert<ExplorationWellCostProfileDto, ExplorationWellCostProfile>(explorationDto.ExplorationWellCostProfile, exploration);
+        exploration.AppraisalWellCostProfile = Convert<AppraisalWellCostProfileDto, AppraisalWellCostProfile>(explorationDto.AppraisalWellCostProfile, exploration);
+        exploration.SidetrackCostProfile = Convert<SidetrackCostProfileDto, SidetrackCostProfile>(explorationDto.SidetrackCostProfile, exploration);
+        exploration.GAndGAdminCost = Convert<GAndGAdminCostDto, GAndGAdminCost>(explorationDto.GAndGAdminCost, exploration);
+        exploration.SeismicAcquisitionAndProcessing = Convert<SeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>(explorationDto.SeismicAcquisitionAndProcessing, exploration);
+        exploration.CountryOfficeCost = Convert<CountryOfficeCostDto, CountryOfficeCost>(explorationDto.CountryOfficeCost, exploration);
         return exploration;
     }
 
@@ -32,117 +32,46 @@ public static class ExplorationAdapter
         existing.Name = explorationDto.Name;
         existing.RigMobDemob = explorationDto.RigMobDemob;
         existing.Currency = explorationDto.Currency;
-        existing.ExplorationWellCostProfile = Convert(explorationDto.ExplorationWellCostProfile, existing);
-        existing.AppraisalWellCostProfile = Convert(explorationDto.AppraisalWellCostProfile, existing);
-        existing.SidetrackCostProfile = Convert(explorationDto.SidetrackCostProfile, existing);
-        existing.GAndGAdminCost = Convert(explorationDto.GAndGAdminCost, existing);
-        existing.SeismicAcquisitionAndProcessing = Convert(explorationDto.SeismicAcquisitionAndProcessing, existing);
-        existing.CountryOfficeCost = Convert(explorationDto.CountryOfficeCost, existing);
+        existing.ExplorationWellCostProfile = Convert<ExplorationWellCostProfileDto, ExplorationWellCostProfile>(explorationDto.ExplorationWellCostProfile, existing);
+        existing.AppraisalWellCostProfile = Convert<AppraisalWellCostProfileDto, AppraisalWellCostProfile>(explorationDto.AppraisalWellCostProfile, existing);
+        existing.SidetrackCostProfile = Convert<SidetrackCostProfileDto, SidetrackCostProfile>(explorationDto.SidetrackCostProfile, existing);
+        existing.GAndGAdminCost = Convert<GAndGAdminCostDto, GAndGAdminCost>(explorationDto.GAndGAdminCost, existing);
+        existing.SeismicAcquisitionAndProcessing = Convert<SeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>(explorationDto.SeismicAcquisitionAndProcessing, existing);
+        existing.CountryOfficeCost = Convert<CountryOfficeCostDto, CountryOfficeCost>(explorationDto.CountryOfficeCost, existing);
     }
 
-
-    private static ExplorationWellCostProfile Convert(ExplorationWellCostProfileDto? costProfileDto, Exploration exploration)
+    private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, Exploration exploration)
+    where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+    where TModel : TimeSeriesCost, ITimeSeriesOverride, IExplorationTimeSeries, new()
     {
-        if (costProfileDto == null)
+        if (dto == null) { return new TModel(); }
+
+        return new TModel
         {
-            return null!;
-        }
-        return new ExplorationWellCostProfile
-        {
-            Id = costProfileDto.Id,
-            Currency = costProfileDto.Currency,
-            EPAVersion = costProfileDto.EPAVersion,
+            Id = dto.Id,
+            Override = dto.Override,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
             Exploration = exploration,
-            StartYear = costProfileDto.StartYear,
-            Values = costProfileDto.Values,
-            Override = costProfileDto.Override,
         };
     }
 
-    private static AppraisalWellCostProfile Convert(AppraisalWellCostProfileDto? costProfileDto, Exploration exploration)
+    private static TModel? Convert<TDto, TModel>(TDto? dto, Exploration exploration)
+        where TDto : TimeSeriesCostDto
+        where TModel : TimeSeriesCost, IExplorationTimeSeries, new()
     {
-        if (costProfileDto == null)
-        {
-            return null!;
-        }
-        return new AppraisalWellCostProfile
-        {
-            Id = costProfileDto.Id,
-            Currency = costProfileDto.Currency,
-            EPAVersion = costProfileDto.EPAVersion,
-            Exploration = exploration,
-            StartYear = costProfileDto.StartYear,
-            Values = costProfileDto.Values,
-            Override = costProfileDto.Override,
-        };
-    }
+        if (dto == null) { return new TModel(); }
 
-    private static SidetrackCostProfile Convert(SidetrackCostProfileDto? costProfileDto, Exploration exploration)
-    {
-        if (costProfileDto == null)
+        return new TModel
         {
-            return null!;
-        }
-        return new SidetrackCostProfile
-        {
-            Id = costProfileDto.Id,
-            Currency = costProfileDto.Currency,
-            EPAVersion = costProfileDto.EPAVersion,
+            Id = dto.Id,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
             Exploration = exploration,
-            StartYear = costProfileDto.StartYear,
-            Values = costProfileDto.Values,
-            Override = costProfileDto.Override,
-        };
-    }
-
-    private static GAndGAdminCost Convert(GAndGAdminCostDto? gAndGAdminCostDto, Exploration exploration)
-    {
-        if (gAndGAdminCostDto == null)
-        {
-            return null!;
-        }
-        return new GAndGAdminCost
-        {
-            Id = gAndGAdminCostDto.Id,
-            Currency = gAndGAdminCostDto.Currency,
-            EPAVersion = gAndGAdminCostDto.EPAVersion,
-            Exploration = exploration,
-            Values = gAndGAdminCostDto.Values,
-            StartYear = gAndGAdminCostDto.StartYear
-        };
-    }
-
-    private static SeismicAcquisitionAndProcessing Convert(SeismicAcquisitionAndProcessingDto? seismicAcquisitionAndProcessing, Exploration exploration)
-    {
-        if (seismicAcquisitionAndProcessing == null)
-        {
-            return null!;
-        }
-        return new SeismicAcquisitionAndProcessing
-        {
-            Id = seismicAcquisitionAndProcessing.Id,
-            Currency = seismicAcquisitionAndProcessing.Currency,
-            EPAVersion = seismicAcquisitionAndProcessing.EPAVersion,
-            Exploration = exploration,
-            Values = seismicAcquisitionAndProcessing.Values,
-            StartYear = seismicAcquisitionAndProcessing.StartYear
-        };
-    }
-
-    private static CountryOfficeCost Convert(CountryOfficeCostDto? countryOfficeCost, Exploration exploration)
-    {
-        if (countryOfficeCost == null)
-        {
-            return null!;
-        }
-        return new CountryOfficeCost
-        {
-            Id = countryOfficeCost.Id,
-            Currency = countryOfficeCost.Currency,
-            EPAVersion = countryOfficeCost.EPAVersion,
-            Exploration = exploration,
-            Values = countryOfficeCost.Values,
-            StartYear = countryOfficeCost.StartYear
         };
     }
 }

@@ -8,14 +8,14 @@ public class WellProject
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
-    public OilProducerCostProfile? OilProducerCostProfile { get; set; }
-    public OilProducerCostProfileOverride? OilProducerCostProfileOverride { get; set; }
-    public GasProducerCostProfile? GasProducerCostProfile { get; set; }
-    public GasProducerCostProfileOverride? GasProducerCostProfileOverride { get; set; }
-    public WaterInjectorCostProfile? WaterInjectorCostProfile { get; set; }
-    public WaterInjectorCostProfileOverride? WaterInjectorCostProfileOverride { get; set; }
-    public GasInjectorCostProfile? GasInjectorCostProfile { get; set; }
-    public GasInjectorCostProfileOverride? GasInjectorCostProfileOverride { get; set; }
+    public OilProducerCostProfile? OilProducerCostProfile { get; set; } = new();
+    public OilProducerCostProfileOverride? OilProducerCostProfileOverride { get; set; } = new();
+    public GasProducerCostProfile? GasProducerCostProfile { get; set; } = new();
+    public GasProducerCostProfileOverride? GasProducerCostProfileOverride { get; set; } = new();
+    public WaterInjectorCostProfile? WaterInjectorCostProfile { get; set; } = new();
+    public WaterInjectorCostProfileOverride? WaterInjectorCostProfileOverride { get; set; } = new();
+    public GasInjectorCostProfile? GasInjectorCostProfile { get; set; } = new();
+    public GasInjectorCostProfileOverride? GasInjectorCostProfileOverride { get; set; } = new();
     public ArtificialLift ArtificialLift { get; set; }
     public Currency Currency { get; set; }
     public ICollection<WellProjectWell>? WellProjectWells { get; set; }

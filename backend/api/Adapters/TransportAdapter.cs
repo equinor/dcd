@@ -66,7 +66,7 @@ public static class TransportAdapter
         where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
         where TModel : TimeSeriesCost, ITimeSeriesOverride, ITransportTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {
@@ -84,7 +84,7 @@ public static class TransportAdapter
         where TDto : TimeSeriesCostDto
         where TModel : TimeSeriesCost, ITransportTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {

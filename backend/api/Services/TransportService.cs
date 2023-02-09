@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class TransportService
+public class TransportService : ITransportService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<TransportService> _logger;
 
-    public TransportService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+    public TransportService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
@@ -115,36 +115,10 @@ public class TransportService
         }
     }
 
-    public IEnumerable<Transport> GetTransports(Guid projectId)
-    {
-        if (_context.Transports != null)
-        {
-            return _context.Transports
-                .Include(c => c.CostProfile)
-                .Include(c => c.CostProfileOverride)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<Transport>();
-        }
-    }
-
     public ProjectDto UpdateTransport(TransportDto updatedTransportDto)
     {
         var existing = GetTransport(updatedTransportDto.Id);
         TransportAdapter.ConvertExisting(existing, updatedTransportDto);
-
-        if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.TransportCostProfile!.Remove(existing.CostProfile);
-        }
-
-        if (updatedTransportDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Transports!.Update(existing);
@@ -156,16 +130,6 @@ public class TransportService
     {
         var existing = GetTransport(updatedTransportDto.Id);
         TransportAdapter.ConvertExisting(existing, updatedTransportDto);
-
-        if (updatedTransportDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.TransportCostProfile!.Remove(existing.CostProfile);
-        }
-
-        if (updatedTransportDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.TransportCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedTransport = _context.Transports!.Update(existing);

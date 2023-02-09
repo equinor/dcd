@@ -21,7 +21,6 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 
 using Serilog;
-using Serilog.Enrichers;
 
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
@@ -150,41 +149,42 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 
-builder.Services.AddScoped<ProjectService>();
-builder.Services.AddScoped<FusionService>();
-builder.Services.AddScoped<DrainageStrategyService>();
-builder.Services.AddScoped<WellProjectService>();
-builder.Services.AddScoped<ExplorationService>();
-builder.Services.AddScoped<SurfService>();
-builder.Services.AddScoped<SubstructureService>();
-builder.Services.AddScoped<TopsideService>();
-builder.Services.AddScoped<WellService>();
-builder.Services.AddScoped<WellProjectWellService>();
-builder.Services.AddScoped<ExplorationWellService>();
-builder.Services.AddScoped<CostProfileFromDrillingScheduleHelper>();
-builder.Services.AddScoped<TransportService>();
-builder.Services.AddScoped<CaseService>();
-builder.Services.AddScoped<ExplorationOperationalWellCostsService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IFusionService, FusionService>();
+builder.Services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
+builder.Services.AddScoped<IWellProjectService, WellProjectService>();
+builder.Services.AddScoped<IExplorationService, ExplorationService>();
+builder.Services.AddScoped<ISurfService, SurfService>();
+builder.Services.AddScoped<ISubstructureService, SubstructureService>();
+builder.Services.AddScoped<ITopsideService, TopsideService>();
+builder.Services.AddScoped<IWellService, WellService>();
+builder.Services.AddScoped<IWellProjectWellService, WellProjectWellService>();
+builder.Services.AddScoped<IExplorationWellService, ExplorationWellService>();
+builder.Services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
+builder.Services.AddScoped<ITransportService, TransportService>();
+builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<IDuplicateCaseService, DuplicateCaseService>();
+builder.Services.AddScoped<IExplorationOperationalWellCostsService, ExplorationOperationalWellCostsService>();
 
-builder.Services.AddScoped<DevelopmentOperationalWellCostsService>();
-builder.Services.AddScoped<CaseWithAssetsService>();
+builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
+builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
 
-builder.Services.AddScoped<TechnicalInputService>();
-builder.Services.AddScoped<GenerateOpexCostProfile>();
-builder.Services.AddScoped<GenerateStudyCostProfile>();
-builder.Services.AddScoped<GenerateCo2EmissionsProfile>();
-builder.Services.AddScoped<GenerateGAndGAdminCostProfile>();
-builder.Services.AddScoped<GenerateCessationCostProfile>();
-builder.Services.AddScoped<GenerateImportedElectricityProfile>();
-builder.Services.AddScoped<GenerateFuelFlaringLossesProfile>();
-builder.Services.AddScoped<GenerateNetSaleGasProfile>();
-builder.Services.AddScoped<GenerateCo2IntensityProfile>();
-builder.Services.AddScoped<GenerateCo2IntensityTotal>();
-builder.Services.AddScoped<CompareCasesService>();
-builder.Services.AddScoped<GenerateCo2DrillingFlaringFuelTotals>();
+builder.Services.AddScoped<ITechnicalInputService, TechnicalInputService>();
+builder.Services.AddScoped<IGenerateOpexCostProfile, GenerateOpexCostProfile>();
+builder.Services.AddScoped<IGenerateStudyCostProfile, GenerateStudyCostProfile>();
+builder.Services.AddScoped<IGenerateCo2EmissionsProfile, GenerateCo2EmissionsProfile>();
+builder.Services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
+builder.Services.AddScoped<IGenerateCessationCostProfile, GenerateCessationCostProfile>();
+builder.Services.AddScoped<IGenerateImportedElectricityProfile, GenerateImportedElectricityProfile>();
+builder.Services.AddScoped<IGenerateFuelFlaringLossesProfile, GenerateFuelFlaringLossesProfile>();
+builder.Services.AddScoped<IGenerateNetSaleGasProfile, GenerateNetSaleGasProfile>();
+builder.Services.AddScoped<IGenerateCo2IntensityProfile, GenerateCo2IntensityProfile>();
+builder.Services.AddScoped<IGenerateCo2IntensityTotal, GenerateCo2IntensityTotal>();
+builder.Services.AddScoped<ICompareCasesService, CompareCasesService>();
+builder.Services.AddScoped<IGenerateCo2DrillingFlaringFuelTotals, GenerateCo2DrillingFlaringFuelTotals>();
+builder.Services.AddScoped<ISTEAService, STEAService>();
 
 builder.Services.AddHostedService<RefreshProjectService>();
-builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 
@@ -225,7 +225,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer",
                 },
             },
-            new string[] { }
+            Array.Empty<string>()
         },
     });
 });

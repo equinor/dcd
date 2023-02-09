@@ -100,7 +100,7 @@ public static class TopsideAdapter
         where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
         where TModel : TimeSeriesCost, ITimeSeriesOverride, ITopsideTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {
@@ -118,7 +118,7 @@ public static class TopsideAdapter
         where TDto : TimeSeriesCostDto
         where TModel : TimeSeriesCost, ITopsideTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {

@@ -9,18 +9,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class CaseService
+public class CaseService : ICaseService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly ITopsideService _topsideService;
+    private readonly ISurfService _surfService;
+    private readonly ISubstructureService _substructureService;
+    private readonly ITransportService _transportService;
+    private readonly IExplorationService _explorationService;
+    private readonly IWellProjectService _wellProjectService;
     private readonly ILogger<CaseService> _logger;
-    private readonly IServiceProvider _serviceProvider;
 
-    public CaseService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public CaseService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, IDrainageStrategyService drainageStrategyService,
+        ITopsideService topsideService, ISurfService surfService, ISubstructureService substructureService, ITransportService transportService,
+        IExplorationService explorationService, IWellProjectService wellProjectService)
     {
         _context = context;
         _projectService = projectService;
-        _serviceProvider = serviceProvider;
+        _drainageStrategyService = drainageStrategyService;
+        _topsideService = topsideService;
+        _surfService = surfService;
+        _substructureService = substructureService;
+        _transportService = transportService;
+        _explorationService = explorationService;
+        _wellProjectService = wellProjectService;
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
@@ -40,21 +54,13 @@ public class CaseService
 
     public ProjectDto NewCreateCase(CaseDto caseDto)
     {
-        var drainageStrategyService = _serviceProvider.GetRequiredService<DrainageStrategyService>();
-        var topsideService = _serviceProvider.GetRequiredService<TopsideService>();
-        var surfService = _serviceProvider.GetRequiredService<SurfService>();
-        var substructureService = _serviceProvider.GetRequiredService<SubstructureService>();
-        var transportService = _serviceProvider.GetRequiredService<TransportService>();
-        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
-        var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
+        var caseItem = CaseAdapter.Convert(caseDto);
+        var project = _projectService.GetProject(caseItem.ProjectId);
+        caseItem.Project = project;
+        caseItem.CapexFactorFeasibilityStudies = 0.015;
+        caseItem.CapexFactorFEEDStudies = 0.015;
 
-        var case_ = CaseAdapter.Convert(caseDto);
-        var project = _projectService.GetProject(case_.ProjectId);
-        case_.Project = project;
-        case_.CapexFactorFeasibilityStudies = 0.015;
-        case_.CapexFactorFEEDStudies = 0.015;
-
-        var createdCase = _context.Cases!.Add(case_);
+        var createdCase = _context.Cases!.Add(caseItem);
         _context.SaveChanges();
 
         var drainageStrategyDto = new DrainageStrategyDto
@@ -63,120 +69,57 @@ public class CaseService
             Name = "Drainage strategy",
             Description = ""
         };
-        var drainageStrategy = drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
-        case_.DrainageStrategyLink = drainageStrategy.Id;
+        var drainageStrategy = _drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
+        caseItem.DrainageStrategyLink = drainageStrategy.Id;
 
         var topsideDto = new TopsideDto
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Topside",
         };
-        var topside = topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
-        case_.TopsideLink = topside.Id;
+        var topside = _topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
+        caseItem.TopsideLink = topside.Id;
 
         var surfDto = new SurfDto
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Surf",
         };
-        var surf = surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
-        case_.SurfLink = surf.Id;
+        var surf = _surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
+        caseItem.SurfLink = surf.Id;
 
         var substructureDto = new SubstructureDto
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Substructure",
         };
-        var substructure = substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
-        case_.SubstructureLink = substructure.Id;
+        var substructure = _substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
+        caseItem.SubstructureLink = substructure.Id;
 
         var transportDto = new TransportDto
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Transport",
         };
-        var transport = transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
-        case_.TransportLink = transport.Id;
+        var transport = _transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
+        caseItem.TransportLink = transport.Id;
 
         var explorationDto = new ExplorationDto
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Exploration",
         };
-        var exploration = explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
-        case_.ExplorationLink = exploration.Id;
+        var exploration = _explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
+        caseItem.ExplorationLink = exploration.Id;
 
         var wellProjectDto = new WellProjectDto
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "WellProject",
         };
-        var wellProject = wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
-        case_.WellProjectLink = wellProject.Id;
+        var wellProject = _wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
+        caseItem.WellProjectLink = wellProject.Id;
 
-        return _projectService.GetProjectDto(project.Id);
-    }
-
-    public ProjectDto DuplicateCase(Guid caseId)
-    {
-        var drainageStrategyService = _serviceProvider.GetRequiredService<DrainageStrategyService>();
-
-        var topsideService = _serviceProvider.GetRequiredService<TopsideService>();
-        var surfService = _serviceProvider.GetRequiredService<SurfService>();
-        var substructureService = _serviceProvider.GetRequiredService<SubstructureService>();
-        var transportService = _serviceProvider.GetRequiredService<TransportService>();
-
-        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
-        var wellProjectService = _serviceProvider.GetRequiredService<WellProjectService>();
-
-        var wellProjectWellService = _serviceProvider.GetRequiredService<WellProjectWellService>();
-        var explorationWellService = _serviceProvider.GetRequiredService<ExplorationWellService>();
-
-        var caseItem = GetCaseNoTracking(caseId);
-
-        var sourceWellProjectId = caseItem.WellProjectLink;
-        var sourceExplorationId = caseItem.ExplorationLink;
-
-        caseItem.CreateTime = DateTimeOffset.UtcNow;
-        caseItem.ModifyTime = DateTimeOffset.UtcNow;
-        caseItem.Id = new Guid();
-
-        if (caseItem.TotalFeasibilityAndConceptStudies != null)
-        {
-            caseItem.TotalFeasibilityAndConceptStudies.Id = Guid.Empty;
-        }
-        if (caseItem.TotalFeasibilityAndConceptStudiesOverride != null)
-        {
-            caseItem.TotalFeasibilityAndConceptStudiesOverride.Id = Guid.Empty;
-        }
-        if (caseItem.TotalFEEDStudies != null)
-        {
-            caseItem.TotalFEEDStudies.Id = Guid.Empty;
-        }
-        if (caseItem.TotalFEEDStudiesOverride != null)
-        {
-            caseItem.TotalFEEDStudiesOverride.Id = Guid.Empty;
-        }
-
-        var project = _projectService.GetProject(caseItem.ProjectId);
-        caseItem.Project = project;
-
-        caseItem.Name += " - copy";
-        _context.Cases!.Add(caseItem);
-
-        drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
-        topsideService.CopyTopside(caseItem.TopsideLink, caseItem.Id);
-        surfService.CopySurf(caseItem.SurfLink, caseItem.Id);
-        substructureService.CopySubstructure(caseItem.SubstructureLink, caseItem.Id);
-        transportService.CopyTransport(caseItem.TransportLink, caseItem.Id);
-
-        var newWellProject = wellProjectService.CopyWellProject(caseItem.WellProjectLink, caseItem.Id);
-        var newExploration = explorationService.CopyExploration(caseItem.ExplorationLink, caseItem.Id);
-
-        wellProjectWellService.CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
-        explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
-
-        _context.SaveChanges();
         return _projectService.GetProjectDto(project.Id);
     }
 
@@ -213,6 +156,14 @@ public class CaseService
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.WellInterventionCostProfile)
+            .Include(c => c.WellInterventionCostProfileOverride)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.CessationWellsCost)
+            .Include(c => c.CessationWellsCostOverride)
+            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .FirstOrDefault(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -228,6 +179,14 @@ public class CaseService
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.WellInterventionCostProfile)
+            .Include(c => c.WellInterventionCostProfileOverride)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.CessationWellsCost)
+            .Include(c => c.CessationWellsCostOverride)
+            .Include(c => c.CessationOffshoreFacilitiesCost)
+            .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .FirstOrDefault(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -244,7 +203,15 @@ public class CaseService
                     .Include(c => c.TotalFeasibilityAndConceptStudies)
                     .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                     .Include(c => c.TotalFEEDStudies)
-                    .Include(c => c.TotalFEEDStudiesOverride);
+                    .Include(c => c.TotalFEEDStudiesOverride)
+                    .Include(c => c.WellInterventionCostProfile)
+                    .Include(c => c.WellInterventionCostProfileOverride)
+                    .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+                    .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                    .Include(c => c.CessationWellsCost)
+                    .Include(c => c.CessationWellsCostOverride)
+                    .Include(c => c.CessationOffshoreFacilitiesCost)
+                    .Include(c => c.CessationOffshoreFacilitiesCostOverride);
         }
         else
         {

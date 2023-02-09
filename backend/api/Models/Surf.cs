@@ -9,11 +9,9 @@ public class Surf
 
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
-    public SurfCostProfile? CostProfile { get; set; }
-    public SurfCostProfileOverride? CostProfileOverride { get; set; }
-
-
-    public SurfCessationCostProfile? CessationCostProfile { get; set; }
+    public SurfCostProfile? CostProfile { get; set; } = new();
+    public SurfCostProfileOverride? CostProfileOverride { get; set; } = new();
+    public SurfCessationCostProfile? CessationCostProfile { get; set; } = new();
     public double CessationCost { get; set; }
     public Maturity Maturity { get; set; }
     public double InfieldPipelineSystemLength { get; set; }

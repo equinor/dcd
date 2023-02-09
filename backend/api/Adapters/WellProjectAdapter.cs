@@ -75,7 +75,7 @@ public static class WellProjectAdapter
     where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
     where TModel : TimeSeriesCost, ITimeSeriesOverride, IWellProjectTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {
@@ -93,7 +93,7 @@ public static class WellProjectAdapter
         where TDto : TimeSeriesCostDto
         where TModel : TimeSeriesCost, IWellProjectTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {

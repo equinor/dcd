@@ -1,4 +1,3 @@
-
 using api.Adapters;
 using api.Models;
 using api.SampleData.Builders;
@@ -6,20 +5,15 @@ using api.Services;
 
 using Xunit;
 
-
 namespace tests;
 
 [Collection("Database collection")]
 public class SubstructureServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
-    private readonly IServiceProvider _serviceProvider;
-
     public SubstructureServiceShould()
     {
         fixture = new DatabaseFixture();
-        var serviceCollection = new ServiceCollection();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -28,34 +22,11 @@ public class SubstructureServiceShould : IDisposable
     }
 
     [Fact]
-    public void GetSubstructures()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var expectedSubstructures = fixture.context.Substructures.ToList().Where(o => o.Project.Id == project.Id);
-
-        // Act
-        var actualSubstructures = substructureService.GetSubstructures(project.Id);
-
-        // Assert
-        Assert.Equal(expectedSubstructures.Count(), actualSubstructures.Count());
-        var substructuresExpectedAndActual = expectedSubstructures.OrderBy(d => d.Name)
-            .Zip(actualSubstructures.OrderBy(d => d.Name));
-        foreach (var substructurePair in substructuresExpectedAndActual)
-        {
-            TestHelper.CompareSubstructures(substructurePair.First, substructurePair.Second);
-        }
-    }
-
-    [Fact]
     public void CreateNewSubstructure()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -77,7 +48,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -92,7 +63,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedSubstructure = CreateTestSubstructure(project);
@@ -106,7 +77,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var substructureToDelete = CreateTestSubstructure(project);
@@ -128,7 +99,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
 
         // Act, assert
@@ -140,7 +111,7 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldSubstructure = CreateTestSubstructure(project);
@@ -152,10 +123,10 @@ public class SubstructureServiceShould : IDisposable
         // Act
         var projectResult = substructureService.UpdateSubstructure(SubstructureDtoAdapter.Convert(updatedSubstructure));
 
-        //     // Assert
-        //     var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Id == oldSubstructure.Id);
-        //     Assert.NotNull(actualSubstructure);
-        //     // TestHelper.CompareSubstructures(updatedSubstructure, actualSubstructure);
+        // Assert
+        var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Id == oldSubstructure.Id);
+        Assert.NotNull(actualSubstructure);
+        TestHelper.CompareSubstructures(updatedSubstructure, actualSubstructure);
     }
 
     [Fact]
@@ -163,16 +134,17 @@ public class SubstructureServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldSubstructure = CreateTestSubstructure(project);
         fixture.context.Substructures.Add(oldSubstructure);
         fixture.context.SaveChanges();
         var updatedSubstructure = CreateUpdatedSubstructure(project, oldSubstructure);
+        updatedSubstructure.Id = new Guid();
 
-        //     // Act, assert
-        //     Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(updatedSubstructure));
+        // Act, assert
+        Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(SubstructureDtoAdapter.Convert(updatedSubstructure)));
     }
 
     private static Substructure CreateTestSubstructure(Project project)
@@ -192,7 +164,6 @@ public class SubstructureServiceShould : IDisposable
                 Values = new double[] { 23.4, 238.9, 32.3 }
             }
             );
-
     }
 
     private static Substructure CreateUpdatedSubstructure(Project project, Substructure oldSubstructure)
@@ -213,6 +184,5 @@ public class SubstructureServiceShould : IDisposable
                 Values = new double[] { 23.4, 28.9, 32.3 }
             }
             );
-
     }
 }

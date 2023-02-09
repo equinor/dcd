@@ -7,33 +7,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class TopsideService
+public class TopsideService : ITopsideService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<TopsideService> _logger;
 
-    public TopsideService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+    public TopsideService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TopsideService>();
-    }
-
-    public IEnumerable<Topside> GetTopsides(Guid projectId)
-    {
-        if (_context.Topsides != null)
-        {
-            return _context.Topsides
-                .Include(c => c.CostProfile)
-                .Include(c => c.CostProfileOverride)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<Topside>();
-        }
     }
 
     public TopsideDto CopyTopside(Guid topsideId, Guid sourceCaseId)
@@ -122,15 +106,6 @@ public class TopsideService
         var existing = GetTopside(updatedTopsideDto.Id);
         TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
 
-        if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.TopsideCostProfiles!.Remove(existing.CostProfile);
-        }
-
-        if (updatedTopsideDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Topsides!.Update(existing);
         _context.SaveChanges();
@@ -142,15 +117,6 @@ public class TopsideService
         var existing = GetTopside(updatedTopsideDto.Id);
         TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
 
-        if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.TopsideCostProfiles!.Remove(existing.CostProfile);
-        }
-
-        if (updatedTopsideDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedTopside = _context.Topsides!.Update(existing);
         _context.SaveChanges();

@@ -21,7 +21,6 @@ public class WellProjectDto
     public bool HasChanges { get; set; }
 }
 
-
 public class OilProducerCostProfileDto : TimeSeriesCostDto
 {
 }

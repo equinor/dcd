@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-
 using api.Adapters;
 using api.Dtos;
 using api.Models;
@@ -9,20 +6,16 @@ using api.Services;
 
 using Xunit;
 
-
 namespace tests;
 
 [Collection("Database collection")]
 public class WellProjectServiceShould : IDisposable
 {
     private readonly DatabaseFixture fixture;
-    private readonly IServiceProvider _serviceProvider;
 
     public WellProjectServiceShould()
     {
         fixture = new DatabaseFixture();
-        var serviceCollection = new ServiceCollection();
-        _serviceProvider = serviceCollection.BuildServiceProvider();
     }
 
     public void Dispose()
@@ -31,34 +24,11 @@ public class WellProjectServiceShould : IDisposable
     }
 
     [Fact]
-    public void GetWellProjects()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
-        var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var expectedWellProjects = fixture.context.WellProjects.ToList().Where(o => o.Project.Id == project.Id);
-
-        // Act
-        var actualWellProjects = wellProjectService.GetWellProjects(project.Id);
-
-        // Assert
-        Assert.Equal(expectedWellProjects.Count(), actualWellProjects.Count());
-        var wellProjectsExpectedAndActual = expectedWellProjects.OrderBy(d => d.Name)
-            .Zip(actualWellProjects.OrderBy(d => d.Name));
-        foreach (var wellProjectPair in wellProjectsExpectedAndActual)
-        {
-            TestHelper.CompareWellProjects(wellProjectPair.First, wellProjectPair.Second);
-        }
-    }
-
-    [Fact]
     public void CreateNewWellProject()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -80,7 +50,7 @@ public class WellProjectServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
@@ -95,7 +65,7 @@ public class WellProjectServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var expectedWellProject = CreateTestWellProject(project);
@@ -109,7 +79,7 @@ public class WellProjectServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var wellProjectToDelete = CreateTestWellProject(project);
@@ -136,7 +106,7 @@ public class WellProjectServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var wellProjectToDelete = CreateTestWellProject(project);
@@ -155,7 +125,7 @@ public class WellProjectServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldWellProject = CreateTestWellProject(project);
@@ -178,7 +148,7 @@ public class WellProjectServiceShould : IDisposable
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory, _serviceProvider);
+        var projectService = new ProjectService(fixture.context, loggerFactory);
         var wellProjectService = new WellProjectService(fixture.context, projectService, loggerFactory);
         var project = fixture.context.Projects.FirstOrDefault();
         var oldWellProject = CreateTestWellProject(project);
