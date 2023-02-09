@@ -28,8 +28,9 @@ public class CaseWithAssetsController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateCaseWithAssets")]
-    public ProjectDto UpdateCaseWithAssets([FromBody] CaseWithAssetsWrapperDto caseWrapperDto)
+    public async Task<ActionResult<ProjectDto>> UpdateCaseWithAssetsAsync([FromBody] CaseWithAssetsWrapperDto caseWrapperDto)
     {
-        return _caseWithAssetsService.UpdateCaseWithAssets(caseWrapperDto);
+        var dto = await _caseWithAssetsService.UpdateCaseWithAssetsAsync(caseWrapperDto);
+        return Ok(dto);
     }
 }

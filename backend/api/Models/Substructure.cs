@@ -8,9 +8,9 @@ public class Substructure
     public string Name { get; set; } = string.Empty!;
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
-    public SubstructureCostProfile? CostProfile { get; set; }
-    public SubstructureCostProfileOverride? CostProfileOverride { get; set; }
-    public SubstructureCessationCostProfile? CessationCostProfile { get; set; }
+    public SubstructureCostProfile? CostProfile { get; set; } = new();
+    public SubstructureCostProfileOverride? CostProfileOverride { get; set; } = new();
+    public SubstructureCessationCostProfile? CessationCostProfile { get; set; } = new();
     public double DryWeight { get; set; }
     public Maturity Maturity { get; set; }
     public Currency Currency { get; set; }

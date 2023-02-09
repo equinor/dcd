@@ -63,29 +63,61 @@ public class GenerateProfileController : ControllerBase
 
     [HttpPost("{caseId}/generateOpex", Name = "GenerateOpex")]
     [ProducesResponseType(typeof(OpexCostProfileWrapperDto), (int)HttpStatusCode.OK)]
-    public IActionResult GenerateOPEX(Guid caseId)
+    public async Task<ActionResult<OpexCostProfileWrapperDto>> GenerateOPEXAsync(Guid caseId)
     {
-        return Ok(_generateOpexCostProfile.Generate(caseId));
+        try
+        {
+            var dto = await _generateOpexCostProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateStudy", Name = "GenerateStudy")]
     [ProducesResponseType(typeof(StudyCostProfileWrapperDto), (int)HttpStatusCode.OK)]
-    public IActionResult CalculateStudyCost(Guid caseId)
+    public async Task<ActionResult<StudyCostProfileWrapperDto>> GenerateStudyAsync(Guid caseId)
     {
-        return Ok(_generateStudyCostProfile.Generate(caseId));
+        try
+        {
+            var dto = await _generateStudyCostProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateCessation", Name = "GenerateCessation")]
     [ProducesResponseType(typeof(CessationCostWrapperDto), (int)HttpStatusCode.OK)]
-    public IActionResult GenerateCessation(Guid caseId)
+    public async Task<ActionResult<CessationCostWrapperDto>> GenerateCessationAsync(Guid caseId)
     {
-        return Ok(_generateCessationCostProfile.Generate(caseId));
+        try
+        {
+            var dto = await _generateCessationCostProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateNetSaleGas", Name = "GenerateNetSaleGas")]
-    public NetSalesGasDto? GenerateNetSaleGas(Guid caseId)
+    public async Task<ActionResult<NetSalesGasDto>> GenerateNetSaleGasAsync(Guid caseId)
     {
-        return _generateNetSaleGasProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateNetSaleGasProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateFuelFlaringLosses", Name = "GenerateFuelFlaringLosses")]
@@ -95,15 +127,31 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateCo2Emissions", Name = "GenerateCo2Emissions")]
-    public Co2EmissionsDto GenerateCo2Emissions(Guid caseId)
+    public async Task<ActionResult<Co2EmissionsDto>> GenerateCo2EmissionsAsync(Guid caseId)
     {
-        return _generateCo2EmissionsProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateCo2EmissionsProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateImportedElectricity", Name = "GenerateImportedElectricity")]
-    public ImportedElectricityDto GenerateImportedElectricity(Guid caseId)
+    public async Task<ActionResult<ImportedElectricityDto>> GenerateImportedElectricityAsync(Guid caseId)
     {
-        return _generateImportedElectricityProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateImportedElectricityProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateCo2Intensity", Name = "GenerateCo2Intensity")]

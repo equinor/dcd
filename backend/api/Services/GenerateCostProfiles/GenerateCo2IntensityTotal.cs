@@ -8,7 +8,7 @@ using api.Services.GenerateCostProfiles;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Services;
+namespace api.Services.GenerateCostProfiles;
 
 public class GenerateCo2IntensityTotal : IGenerateCo2IntensityTotal
 {
@@ -32,14 +32,10 @@ public class GenerateCo2IntensityTotal : IGenerateCo2IntensityTotal
     {
         var caseItem = _caseService.GetCase(caseId);
         var project = _projectService.GetProject(caseItem.ProjectId);
-        var co2Intensity = 0.0;
+        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        DrainageStrategy drainageStrategy;
-        drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-
-        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseItem.Id);
-        co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
-
+        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        double co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
         return co2Intensity;
     }
 

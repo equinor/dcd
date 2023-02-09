@@ -46,6 +46,14 @@ namespace api.Services
                 .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                 .Include(c => c.TotalFEEDStudies)
                 .Include(c => c.TotalFEEDStudiesOverride)
+                .Include(c => c.WellInterventionCostProfile)
+                .Include(c => c.WellInterventionCostProfileOverride)
+                .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+                .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                .Include(c => c.CessationWellsCost)
+                .Include(c => c.CessationWellsCostOverride)
+                .Include(c => c.CessationOffshoreFacilitiesCost)
+                .Include(c => c.CessationOffshoreFacilitiesCostOverride)
                 .FirstOrDefault(c => c.Id == caseId);
             if (caseItem == null)
             {
@@ -80,6 +88,38 @@ namespace api.Services
             if (caseItem.TotalFEEDStudiesOverride != null)
             {
                 caseItem.TotalFEEDStudiesOverride.Id = Guid.Empty;
+            }
+            if (caseItem.CessationWellsCost != null)
+            {
+                caseItem.CessationWellsCost.Id = Guid.Empty;
+            }
+            if (caseItem.CessationWellsCostOverride != null)
+            {
+                caseItem.CessationWellsCostOverride.Id = Guid.Empty;
+            }
+            if (caseItem.CessationOffshoreFacilitiesCost != null)
+            {
+                caseItem.CessationOffshoreFacilitiesCost.Id = Guid.Empty;
+            }
+            if (caseItem.CessationOffshoreFacilitiesCostOverride != null)
+            {
+                caseItem.CessationOffshoreFacilitiesCostOverride.Id = Guid.Empty;
+            }
+            if (caseItem.WellInterventionCostProfile != null)
+            {
+                caseItem.WellInterventionCostProfile.Id = Guid.Empty;
+            }
+            if (caseItem.WellInterventionCostProfileOverride != null)
+            {
+                caseItem.WellInterventionCostProfileOverride.Id = Guid.Empty;
+            }
+            if (caseItem.OffshoreFacilitiesOperationsCostProfile != null)
+            {
+                caseItem.OffshoreFacilitiesOperationsCostProfile.Id = Guid.Empty;
+            }
+            if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride != null)
+            {
+                caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Id = Guid.Empty;
             }
 
             var project = _projectService.GetProject(caseItem.ProjectId);

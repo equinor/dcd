@@ -8,7 +8,7 @@ namespace api.Services
         void CreateAndUpdateExplorationWells(ExplorationWellDto[] explorationWellDtos, Guid caseId);
         void CreateAndUpdateWellProjectWells(WellProjectWellDto[] wellProjectWellDtos, Guid caseId);
         CaseDto UpdateCase(CaseDto updatedDto);
-        ProjectDto UpdateCaseWithAssets(CaseWithAssetsWrapperDto wrapper);
+        Task<ProjectDto> UpdateCaseWithAssetsAsync(CaseWithAssetsWrapperDto wrapper);
         DrainageStrategyDto UpdateDrainageStrategy(DrainageStrategyDto updatedDto, PhysUnit unit);
         ExplorationDto UpdateExploration(ExplorationDto updatedDto);
         SubstructureDto UpdateSubstructure(SubstructureDto updatedDto);

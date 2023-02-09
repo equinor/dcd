@@ -20,8 +20,6 @@ public class TopsideService : ITopsideService
         _logger = loggerFactory.CreateLogger<TopsideService>();
     }
 
-
-
     public TopsideDto CopyTopside(Guid topsideId, Guid sourceCaseId)
     {
         var source = GetTopside(topsideId);
@@ -108,15 +106,6 @@ public class TopsideService : ITopsideService
         var existing = GetTopside(updatedTopsideDto.Id);
         TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
 
-        if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.TopsideCostProfiles!.Remove(existing.CostProfile);
-        }
-
-        if (updatedTopsideDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Topsides!.Update(existing);
         _context.SaveChanges();
@@ -128,15 +117,6 @@ public class TopsideService : ITopsideService
         var existing = GetTopside(updatedTopsideDto.Id);
         TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
 
-        if (updatedTopsideDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.TopsideCostProfiles!.Remove(existing.CostProfile);
-        }
-
-        if (updatedTopsideDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.TopsideCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedTopside = _context.Topsides!.Update(existing);
         _context.SaveChanges();

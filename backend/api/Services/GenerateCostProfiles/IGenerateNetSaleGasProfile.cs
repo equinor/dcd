@@ -4,6 +4,6 @@ namespace api.Services.GenerateCostProfiles
 {
     public interface IGenerateNetSaleGasProfile
     {
-        NetSalesGasDto Generate(Guid caseId);
+        Task<NetSalesGasDto> GenerateAsync(Guid caseId);
     }
 }

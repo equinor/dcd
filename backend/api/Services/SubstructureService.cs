@@ -105,15 +105,6 @@ public class SubstructureService : ISubstructureService
 
         SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
 
-        if (updatedSubstructureDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
-        }
-
-        if (updatedSubstructureDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Update(existing);
         _context.SaveChanges();
@@ -126,15 +117,6 @@ public class SubstructureService : ISubstructureService
 
         SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
 
-        if (updatedSubstructureDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
-        }
-
-        if (updatedSubstructureDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedSubstructure = _context.Substructures!.Update(existing);
         _context.SaveChanges();

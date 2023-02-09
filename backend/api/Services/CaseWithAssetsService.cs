@@ -52,7 +52,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         _logger = loggerFactory.CreateLogger<CaseWithAssetsService>();
     }
 
-    public ProjectDto UpdateCaseWithAssets(CaseWithAssetsWrapperDto wrapper)
+    public async Task<ProjectDto> UpdateCaseWithAssetsAsync(CaseWithAssetsWrapperDto wrapper)
     {
         var project = _projectService.GetProjectWithoutAssets(wrapper.CaseDto.ProjectId);
 
@@ -76,7 +76,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             CreateAndUpdateWellProjectWells(wrapper.WellProjectWellDtos, updatedCaseDto.Id);
         }
 
-        _context.SaveChanges();
+        var saveResult = await _context.SaveChangesAsync();
         return _projectService.GetProjectDto(updatedCaseDto.ProjectId);
     }
 

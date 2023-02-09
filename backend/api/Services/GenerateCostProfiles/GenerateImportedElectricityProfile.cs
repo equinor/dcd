@@ -1,4 +1,5 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
@@ -11,17 +12,19 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
+    private readonly DcdDbContext _context;
 
-    public GenerateImportedElectricityProfile(ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
+    public GenerateImportedElectricityProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
         IDrainageStrategyService drainageStrategyService)
     {
+        _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
     }
 
-    public ImportedElectricityDto Generate(Guid caseId)
+    public async Task<ImportedElectricityDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
@@ -35,14 +38,21 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
         var calculateImportedElectricity =
             CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
 
-        var importedElectricity = new ImportedElectricity
-        {
-            StartYear = calculateImportedElectricity.StartYear,
-            Values = calculateImportedElectricity.Values,
-        };
+        var importedElectricity = drainageStrategy.ImportedElectricity ?? new ImportedElectricity();
+
+        importedElectricity.StartYear = calculateImportedElectricity.StartYear;
+        importedElectricity.Values = calculateImportedElectricity.Values;
+
+        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, importedElectricity);
 
         var dto = DrainageStrategyDtoAdapter.Convert<ImportedElectricityDto, ImportedElectricity>(importedElectricity, project.PhysicalUnit);
         return dto ?? new ImportedElectricityDto();
+    }
+
+    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
+    {
+        drainageStrategy.ImportedElectricity = importedElectricity;
+        return await _context.SaveChangesAsync();
     }
 
     private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability,

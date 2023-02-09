@@ -1,4 +1,5 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
@@ -12,10 +13,12 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
     private readonly IWellProjectService _wellProjectService;
+    private readonly DcdDbContext _context;
 
-    public GenerateCo2EmissionsProfile(ICaseService caseService, IDrainageStrategyService drainageStrategyService, IProjectService projectService,
+    public GenerateCo2EmissionsProfile(DcdDbContext context, ICaseService caseService, IDrainageStrategyService drainageStrategyService, IProjectService projectService,
         ITopsideService topsideService, IWellProjectService wellProjectService)
     {
+        _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
@@ -23,7 +26,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
         _wellProjectService = wellProjectService;
     }
 
-    public Co2EmissionsDto Generate(Guid caseId)
+    public async Task<Co2EmissionsDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
@@ -51,12 +54,22 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
             TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
         var co2Emission = new Co2Emissions
         {
+            Id = drainageStrategy.Co2Emissions?.Id ?? Guid.Empty,
+            DrainageStrategy = drainageStrategy,
             StartYear = totalProfile.StartYear,
             Values = totalProfile.Values,
         };
 
+        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, co2Emission);
+
         var dto = DrainageStrategyDtoAdapter.Convert<Co2EmissionsDto, Co2Emissions>(co2Emission, project.PhysicalUnit);
         return dto ?? new Co2EmissionsDto();
+    }
+
+    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, Co2Emissions co2Emissions)
+    {
+        drainageStrategy.Co2Emissions = co2Emissions;
+        return await _context.SaveChangesAsync();
     }
 
     private static TimeSeriesVolume GetLossesProfile(Project project, DrainageStrategy drainageStrategy)

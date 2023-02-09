@@ -182,9 +182,9 @@ builder.Services.AddScoped<IGenerateCo2IntensityProfile, GenerateCo2IntensityPro
 builder.Services.AddScoped<IGenerateCo2IntensityTotal, GenerateCo2IntensityTotal>();
 builder.Services.AddScoped<ICompareCasesService, CompareCasesService>();
 builder.Services.AddScoped<IGenerateCo2DrillingFlaringFuelTotals, GenerateCo2DrillingFlaringFuelTotals>();
+builder.Services.AddScoped<ISTEAService, STEAService>();
 
 builder.Services.AddHostedService<RefreshProjectService>();
-builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 

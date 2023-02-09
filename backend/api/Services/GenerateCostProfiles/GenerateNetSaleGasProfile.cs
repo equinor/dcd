@@ -1,4 +1,5 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
@@ -11,17 +12,19 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
+    private readonly DcdDbContext _context;
 
-    public GenerateNetSaleGasProfile(ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
+    public GenerateNetSaleGasProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
         IDrainageStrategyService drainageStrategyService)
     {
+        _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
     }
 
-    public NetSalesGasDto Generate(Guid caseId)
+    public async Task<NetSalesGasDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
@@ -33,14 +36,21 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
         var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
         var calculateNetSaleGas = CalculateNetSaleGas(drainageStrategy, fuelConsumptions, flarings, losses);
 
-        var netSaleGas = new NetSalesGas
-        {
-            StartYear = calculateNetSaleGas.StartYear,
-            Values = calculateNetSaleGas.Values,
-        };
+        var netSaleGas = drainageStrategy.NetSalesGas ?? new NetSalesGas();
+
+        netSaleGas.StartYear = calculateNetSaleGas.StartYear;
+        netSaleGas.Values = calculateNetSaleGas.Values;
+
+        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, netSaleGas);
 
         var dto = DrainageStrategyDtoAdapter.Convert<NetSalesGasDto, NetSalesGas>(netSaleGas, project.PhysicalUnit);
         return dto ?? new NetSalesGasDto();
+    }
+
+    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
+    {
+        drainageStrategy.NetSalesGas = netSalesGas;
+        return await _context.SaveChangesAsync();
     }
 
     private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,
