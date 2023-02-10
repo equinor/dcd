@@ -106,7 +106,7 @@ stages:
                   inputs:
                       targetType: "inline"
                       script: |
-                          $AzureClientId = "${{ parameters.SpAzureClientId }}"
+                          $AzureClientId = "${{ parameters.Tjollahopp }}"
                           $AzureTenantId = "${{ parameters.AzureTenantId }}"
                           $AzureClientSecret = "${{ parameters.SpAzureClientSecret }}"
                           $url = 'https://api.radix.equinor.com/api/v1/applications/dcd/jobs/$(radixJobName)'
