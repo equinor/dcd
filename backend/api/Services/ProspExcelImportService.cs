@@ -508,6 +508,7 @@ public class ProspExcelImportService
             Id = surfLink,
             CostProfile = null,
             ProjectId = caseItem.ProjectId,
+            Source = Source.ConceptApp,
         };
 
         var dto = SurfDtoAdapter.Convert(surf);
@@ -526,6 +527,7 @@ public class ProspExcelImportService
             Id = topsideLink,
             CostProfile = null,
             ProjectId = caseItem.ProjectId,
+            Source = Source.ConceptApp,
         };
 
         var dto = TopsideDtoAdapter.Convert(topside);
@@ -544,6 +546,7 @@ public class ProspExcelImportService
             Id = substructureLink,
             CostProfile = null,
             ProjectId = caseItem.ProjectId,
+            Source = Source.ConceptApp,
         };
 
         var dto = SubstructureDtoAdapter.Convert(substructure);
@@ -562,6 +565,7 @@ public class ProspExcelImportService
             Id = transportLink,
             CostProfile = null,
             ProjectId = caseItem.ProjectId,
+            Source = Source.ConceptApp,
         };
 
         var dto = TransportDtoAdapter.Convert(transport);

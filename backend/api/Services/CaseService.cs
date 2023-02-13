@@ -76,6 +76,7 @@ public class CaseService : ICaseService
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Topside",
+            Source = Source.ConceptApp,
         };
         var topside = _topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
         caseItem.TopsideLink = topside.Id;
@@ -84,6 +85,7 @@ public class CaseService : ICaseService
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Surf",
+            Source = Source.ConceptApp,
         };
         var surf = _surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
         caseItem.SurfLink = surf.Id;
@@ -92,6 +94,7 @@ public class CaseService : ICaseService
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Substructure",
+            Source = Source.ConceptApp,
         };
         var substructure = _substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
         caseItem.SubstructureLink = substructure.Id;
@@ -100,6 +103,7 @@ public class CaseService : ICaseService
         {
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Transport",
+            Source = Source.ConceptApp,
         };
         var transport = _transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
         caseItem.TransportLink = transport.Id;
