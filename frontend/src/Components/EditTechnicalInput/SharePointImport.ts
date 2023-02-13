@@ -33,7 +33,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         const surfId = caseItem.surfLink
         const surf = project.surfs.find((s) => s.id === surfId)
         if (!surf) { return ImportStatusEnum.NotSelected }
-        if (surf.name !== "ImportedSurf" && SharePointImport.mapSource(surf.source) === "ConceptApp"
+        if (SharePointImport.mapSource(surf.source) === "ConceptApp"
             && caseItem.sharepointFileName !== "") { return ImportStatusEnum.NotSelected }
 
         return ImportStatusEnum.Selected
@@ -43,8 +43,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         const substructureId = caseItem.substructureLink
         const substructure = project.substructures.find((s) => s.id === substructureId)
         if (!substructure) { return ImportStatusEnum.NotSelected }
-        if (substructure.name !== "ImportedSubstructure"
-            && SharePointImport.mapSource(substructure.source) === "ConceptApp"
+        if (SharePointImport.mapSource(substructure.source) === "ConceptApp"
             && caseItem.sharepointFileName !== "") { return ImportStatusEnum.NotSelected }
 
         return ImportStatusEnum.Selected
@@ -54,7 +53,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         const topsideId = caseItem.topsideLink
         const topside = project.topsides.find((s) => s.id === topsideId)
         if (!topside) { return ImportStatusEnum.NotSelected }
-        if (topside.name !== "ImportedTopside" && SharePointImport.mapSource(topside.source) === "ConceptApp"
+        if (SharePointImport.mapSource(topside.source) === "ConceptApp"
             && caseItem.sharepointFileName !== "") { return ImportStatusEnum.NotSelected }
 
         return ImportStatusEnum.Selected
@@ -64,7 +63,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         const transportId = caseItem.transportLink
         const transport = project.transports.find((s) => s.id === transportId)
         if (!transport) { return ImportStatusEnum.NotSelected }
-        if (transport.name !== "ImportedTransport" && SharePointImport.mapSource(transport.source) === "ConceptApp"
+        if (SharePointImport.mapSource(transport.source) === "ConceptApp"
             && caseItem.sharepointFileName !== "") { return ImportStatusEnum.NotSelected }
 
         return ImportStatusEnum.Selected
