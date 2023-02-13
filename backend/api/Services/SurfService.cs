@@ -7,32 +7,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class SurfService
+public class SurfService : ISurfService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<SurfService> _logger;
-    public SurfService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+    public SurfService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SurfService>();
-
-    }
-
-    public IEnumerable<Surf> GetSurfs(Guid projectId)
-    {
-        if (_context.Surfs != null)
-        {
-            return _context.Surfs
-                .Include(c => c.CostProfile)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<Surf>();
-        }
     }
 
     public SurfDto CopySurf(Guid surfId, Guid sourceCaseId)
@@ -43,6 +27,10 @@ public class SurfService
         if (newSurfDto.CostProfile != null)
         {
             newSurfDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newSurfDto.CostProfileOverride != null)
+        {
+            newSurfDto.CostProfileOverride.Id = Guid.Empty;
         }
         if (newSurfDto.CessationCostProfile != null)
         {
@@ -60,15 +48,6 @@ public class SurfService
         var existing = GetSurf(updatedSurfDto.Id);
         SurfAdapter.ConvertExisting(existing, updatedSurfDto);
 
-        if (updatedSurfDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.SurfCostProfile!.Remove(existing.CostProfile);
-        }
-
-        if (updatedSurfDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Surfs!.Update(existing);
         _context.SaveChanges();
@@ -80,15 +59,6 @@ public class SurfService
         var existing = GetSurf(updatedSurfDto.Id);
         SurfAdapter.ConvertExisting(existing, updatedSurfDto);
 
-        if (updatedSurfDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.SurfCostProfile!.Remove(existing.CostProfile);
-        }
-
-        if (updatedSurfDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedSurf = _context.Surfs!.Update(existing);
         _context.SaveChanges();
@@ -99,6 +69,7 @@ public class SurfService
     {
         var surf = _context.Surfs!
             .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .FirstOrDefault(o => o.Id == surfId);
         if (surf == null)

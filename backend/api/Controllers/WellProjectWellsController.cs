@@ -23,9 +23,9 @@ namespace api.Controllers;
 public class WellProjectWellsController : ControllerBase
 {
 
-    private readonly WellProjectWellService _wellProjectWellService;
+    private readonly IWellProjectWellService _wellProjectWellService;
 
-    public WellProjectWellsController(WellProjectWellService wellProjectWellService)
+    public WellProjectWellsController(IWellProjectWellService wellProjectWellService)
     {
         _wellProjectWellService = wellProjectWellService;
     }

@@ -8,6 +8,11 @@ import { ProductionProfileWaterInjection } from "./ProductionProfileWaterInjecti
 import { ProductionProfileNGL } from "./ProductionProfileNGL"
 import { IAsset } from "../IAsset"
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { ImportedElectricity } from "./ImportedElectricity"
+import { ImportedElectricityOverride } from "./ImportedElectricityOverride"
+import { Co2EmissionsOverride } from "./Co2EmissionsOverride"
+import { FuelFlaringAndLossesOverride } from "./FuelFlaringAndLossesOverride"
+import { NetSalesGasOverride } from "./NetSalesGasOverride"
 
 export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto, IAsset {
     id?: string
@@ -21,13 +26,18 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
     artificialLift?: Components.Schemas.ArtificialLift
     gasSolution?: Components.Schemas.GasSolution /* int32 */
     netSalesGas?: NetSalesGas | undefined
+    netSalesGasOverride?: NetSalesGasOverride | undefined
     co2Emissions?: Co2Emissions | undefined
+    co2EmissionsOverride?: Co2EmissionsOverride | undefined
     fuelFlaringAndLosses?: FuelFlaringAndLosses | undefined
+    fuelFlaringAndLossesOverride?: FuelFlaringAndLossesOverride | undefined
     productionProfileGas?: ProductionProfileGas | undefined
     productionProfileOil?: ProductionProfileOil | undefined
     productionProfileWater?: ProductionProfileWater | undefined
     productionProfileWaterInjection?: ProductionProfileWaterInjection | undefined
     productionProfileNGL?: ProductionProfileNGL | undefined
+    importedElectricity?: ImportedElectricity
+    importedElectricityOverride?: ImportedElectricityOverride
     hasChanges?: boolean
 
     constructor(data?: Components.Schemas.DrainageStrategyDto) {
@@ -43,14 +53,19 @@ export class DrainageStrategy implements Components.Schemas.DrainageStrategyDto,
             this.artificialLift = data.artificialLift
             this.gasSolution = data.gasSolution
             this.netSalesGas = NetSalesGas.fromJson(data.netSalesGas)
+            this.netSalesGasOverride = NetSalesGasOverride.fromJson(data.netSalesGasOverride)
             this.co2Emissions = Co2Emissions.fromJson(data.co2Emissions)
+            this.co2EmissionsOverride = Co2EmissionsOverride.fromJson(data.co2EmissionsOverride)
             this.fuelFlaringAndLosses = FuelFlaringAndLosses.fromJson(data.fuelFlaringAndLosses)
+            this.fuelFlaringAndLossesOverride = FuelFlaringAndLossesOverride.fromJson(data.fuelFlaringAndLossesOverride)
             this.productionProfileGas = ProductionProfileGas.fromJson(data.productionProfileGas)
             this.productionProfileOil = ProductionProfileOil.fromJson(data.productionProfileOil)
             this.productionProfileWater = ProductionProfileWater.fromJson(data.productionProfileWater)
             this.productionProfileNGL = ProductionProfileNGL.fromJson(data.productionProfileNGL)
             this.productionProfileWaterInjection = ProductionProfileWaterInjection
                 .fromJson(data.productionProfileWaterInjection)
+            this.importedElectricity = ImportedElectricity.fromJson(data.importedElectricity)
+            this.importedElectricityOverride = ImportedElectricityOverride.fromJson(data.importedElectricityOverride)
         } else {
             this.id = EMPTY_GUID
             this.name = ""

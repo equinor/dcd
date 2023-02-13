@@ -7,6 +7,7 @@ public class SurfDto
     public string Name { get; set; } = string.Empty!;
     public Guid ProjectId { get; set; }
     public SurfCostProfileDto? CostProfile { get; set; }
+    public SurfCostProfileOverrideDto? CostProfileOverride { get; set; }
     public SurfCessationCostProfileDto? CessationCostProfile { get; set; }
     public double CessationCost { get; set; }
     public Maturity Maturity { get; set; }
@@ -33,6 +34,11 @@ public class SurfDto
 public class SurfCostProfileDto : TimeSeriesCostDto
 {
 
+}
+
+public class SurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class SurfCessationCostProfileDto : TimeSeriesCostDto

@@ -7,19 +7,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class ExplorationWellService
+public class ExplorationWellService : IExplorationWellService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<CaseService> _logger;
+    private readonly IProjectService _projectService;
+    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
+    private readonly IExplorationService _explorationService;
+    private readonly ILogger<ExplorationWellService> _logger;
 
-    public ExplorationWellService(DcdDbContext context, ProjectService projectService, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+    public ExplorationWellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory,
+        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, IExplorationService explorationService)
     {
         _context = context;
         _projectService = projectService;
-        _serviceProvider = serviceProvider;
-        _logger = loggerFactory.CreateLogger<CaseService>();
+        _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
+        _explorationService = explorationService;
+        _logger = loggerFactory.CreateLogger<ExplorationWellService>();
     }
 
     public ProjectDto CreateExplorationWell(ExplorationWellDto explorationWellDto)
@@ -63,11 +66,9 @@ public class ExplorationWellService
             projectDto = UpdateExplorationWell(explorationWellDto);
         }
 
-        var costProfileHelper = _serviceProvider.GetRequiredService<CostProfileFromDrillingScheduleHelper>();
-        var explorationDto = costProfileHelper.UpdateExplorationCostProfilesForCase(caseId);
+        var explorationDto = _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
 
-        var explorationService = _serviceProvider.GetRequiredService<ExplorationService>();
-        explorationService.NewUpdateExploration(explorationDto);
+        _explorationService.NewUpdateExploration(explorationDto);
 
         if (projectDto != null && explorationId != null)
         {

@@ -8,32 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class SubstructureService
+public class SubstructureService : ISubstructureService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<SubstructureService> _logger;
 
-    public SubstructureService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+    public SubstructureService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SubstructureService>();
-    }
-
-    public IEnumerable<Substructure> GetSubstructures(Guid projectId)
-    {
-        if (_context.Substructures != null)
-        {
-            return _context.Substructures
-                .Include(c => c.CostProfile)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<Substructure>();
-        }
     }
 
     public ProjectDto CreateSubstructure(Substructure substructure, Guid sourceCaseId)
@@ -67,6 +52,10 @@ public class SubstructureService
         if (newSubstructureDto.CostProfile != null)
         {
             newSubstructureDto.CostProfile.Id = Guid.Empty;
+        }
+        if (newSubstructureDto.CostProfileOverride != null)
+        {
+            newSubstructureDto.CostProfileOverride.Id = Guid.Empty;
         }
         if (newSubstructureDto.CessationCostProfile != null)
         {
@@ -116,15 +105,6 @@ public class SubstructureService
 
         SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
 
-        if (updatedSubstructureDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
-        }
-
-        if (updatedSubstructureDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Update(existing);
         _context.SaveChanges();
@@ -137,15 +117,6 @@ public class SubstructureService
 
         SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
 
-        if (updatedSubstructureDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.SubstructureCostProfiles!.Remove(existing.CostProfile);
-        }
-
-        if (updatedSubstructureDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.SubstructureCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedSubstructure = _context.Substructures!.Update(existing);
         _context.SaveChanges();
@@ -157,6 +128,7 @@ public class SubstructureService
         var substructure = _context.Substructures!
             .Include(c => c.Project)
             .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .FirstOrDefault(o => o.Id == substructureId);
         if (substructure == null)

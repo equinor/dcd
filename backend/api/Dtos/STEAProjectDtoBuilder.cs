@@ -9,10 +9,12 @@ public static class STEAProjectDtoBuilder
 {
     public static STEAProjectDto Build(ProjectDto project, List<STEACaseDto> sTEACaseDtos)
     {
-        var sTEAprojectDto = new STEAProjectDto();
-        sTEAprojectDto.Name = project.Name;
-        sTEAprojectDto.STEACases = new List<STEACaseDto>();
-        int[] startYears = new int[sTEACaseDtos.Count()];
+        var sTEAprojectDto = new STEAProjectDto
+        {
+            Name = project.Name,
+            STEACases = new List<STEACaseDto>()
+        };
+        int[] startYears = new int[sTEACaseDtos.Count];
         int counter = 0;
         foreach (STEACaseDto c in sTEACaseDtos)
         {

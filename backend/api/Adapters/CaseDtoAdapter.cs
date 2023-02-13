@@ -5,199 +5,107 @@ namespace api.Adapters;
 
 public static class CaseDtoAdapter
 {
-    public static CaseDto Convert(Case case_)
+    public static CaseDto Convert(Case caseItem)
     {
         var caseDto = new CaseDto
         {
-            Id = case_.Id,
-            ProjectId = case_.ProjectId,
-            Name = case_.Name,
-            Description = case_.Description,
-            ReferenceCase = case_.ReferenceCase,
-            DGADate = case_.DGADate,
-            DGBDate = case_.DGBDate,
-            DGCDate = case_.DGCDate,
-            APXDate = case_.APXDate,
-            APZDate = case_.APZDate,
-            DG0Date = case_.DG0Date,
-            DG1Date = case_.DG1Date,
-            DG2Date = case_.DG2Date,
-            DG3Date = case_.DG3Date,
-            DG4Date = case_.DG4Date,
-            CreateTime = case_.CreateTime,
-            ModifyTime = case_.ModifyTime,
-            DrainageStrategyLink = case_.DrainageStrategyLink,
-            WellProjectLink = case_.WellProjectLink,
-            SurfLink = case_.SurfLink,
-            SubstructureLink = case_.SubstructureLink,
-            TopsideLink = case_.TopsideLink,
-            TransportLink = case_.TransportLink,
-            ExplorationLink = case_.ExplorationLink,
-            ArtificialLift = case_.ArtificialLift,
-            ProductionStrategyOverview = case_.ProductionStrategyOverview,
-            ProducerCount = case_.ProducerCount,
-            GasInjectorCount = case_.GasInjectorCount,
-            WaterInjectorCount = case_.WaterInjectorCount,
-            FacilitiesAvailability = case_.FacilitiesAvailability,
-            CapexFactorFeasibilityStudies = case_.CapexFactorFeasibilityStudies,
-            CapexFactorFEEDStudies = case_.CapexFactorFEEDStudies,
-            NPV = case_.NPV,
-            BreakEven = case_.BreakEven,
-            Host = case_.Host,
-            SharepointFileId = case_.SharepointFileId,
-            SharepointFileName = case_.SharepointFileName,
-            SharepointFileUrl = case_.SharepointFileUrl,
+            Id = caseItem.Id,
+            ProjectId = caseItem.ProjectId,
+            Name = caseItem.Name,
+            Description = caseItem.Description,
+            ReferenceCase = caseItem.ReferenceCase,
+
+            DGADate = caseItem.DGADate,
+            DGBDate = caseItem.DGBDate,
+            DGCDate = caseItem.DGCDate,
+            APXDate = caseItem.APXDate,
+            APZDate = caseItem.APZDate,
+            DG0Date = caseItem.DG0Date,
+            DG1Date = caseItem.DG1Date,
+            DG2Date = caseItem.DG2Date,
+            DG3Date = caseItem.DG3Date,
+            DG4Date = caseItem.DG4Date,
+            CreateTime = caseItem.CreateTime,
+            ModifyTime = caseItem.ModifyTime,
+
+            DrainageStrategyLink = caseItem.DrainageStrategyLink,
+            WellProjectLink = caseItem.WellProjectLink,
+            SurfLink = caseItem.SurfLink,
+            SubstructureLink = caseItem.SubstructureLink,
+            TopsideLink = caseItem.TopsideLink,
+            TransportLink = caseItem.TransportLink,
+            ExplorationLink = caseItem.ExplorationLink,
+
+            ArtificialLift = caseItem.ArtificialLift,
+            ProductionStrategyOverview = caseItem.ProductionStrategyOverview,
+            ProducerCount = caseItem.ProducerCount,
+            GasInjectorCount = caseItem.GasInjectorCount,
+            WaterInjectorCount = caseItem.WaterInjectorCount,
+            FacilitiesAvailability = caseItem.FacilitiesAvailability,
+            CapexFactorFeasibilityStudies = caseItem.CapexFactorFeasibilityStudies,
+            CapexFactorFEEDStudies = caseItem.CapexFactorFEEDStudies,
+            NPV = caseItem.NPV,
+            BreakEven = caseItem.BreakEven,
+            Host = caseItem.Host,
+
+            SharepointFileId = caseItem.SharepointFileId,
+            SharepointFileName = caseItem.SharepointFileName,
+            SharepointFileUrl = caseItem.SharepointFileUrl,
+
+            CessationWellsCost = Convert<CessationWellsCostDto, CessationWellsCost>(caseItem.CessationWellsCost),
+            CessationWellsCostOverride = ConvertOverride<CessationWellsCostOverrideDto, CessationWellsCostOverride>(caseItem.CessationWellsCostOverride),
+
+            CessationOffshoreFacilitiesCost = Convert<CessationOffshoreFacilitiesCostDto, CessationOffshoreFacilitiesCost>(caseItem.CessationOffshoreFacilitiesCost),
+            CessationOffshoreFacilitiesCostOverride = ConvertOverride<CessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>(caseItem.CessationOffshoreFacilitiesCostOverride),
+
+            TotalFeasibilityAndConceptStudies = Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(caseItem.TotalFeasibilityAndConceptStudies),
+            TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto,
+                TotalFeasibilityAndConceptStudiesOverride>(caseItem.TotalFeasibilityAndConceptStudiesOverride),
+
+            TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(caseItem.TotalFEEDStudies),
+            TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseItem.TotalFEEDStudiesOverride),
+
+            WellInterventionCostProfile = Convert<WellInterventionCostProfileDto, WellInterventionCostProfile>(caseItem.WellInterventionCostProfile),
+            WellInterventionCostProfileOverride = ConvertOverride<WellInterventionCostProfileOverrideDto,
+                WellInterventionCostProfileOverride>(caseItem.WellInterventionCostProfileOverride),
+
+            OffshoreFacilitiesOperationsCostProfile = Convert<OffshoreFacilitiesOperationsCostProfileDto, OffshoreFacilitiesOperationsCostProfile>(caseItem.OffshoreFacilitiesOperationsCostProfile),
+            OffshoreFacilitiesOperationsCostProfileOverride = ConvertOverride<OffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>(caseItem.OffshoreFacilitiesOperationsCostProfileOverride),
         };
 
         return caseDto;
     }
 
-    public static CessationCostDto Convert(CessationCost? opexCost)
+    public static TDto? Convert<TDto, TModel>(TModel? model)
+    where TDto : TimeSeriesCostDto, new()
+    where TModel : TimeSeriesCost
     {
-        if (opexCost == null)
-        {
-            return null!;
-        }
+        if (model == null) { return null; }
 
-        return new CessationCostDto
+        return new TDto
         {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-    public static CessationWellsCostDto Convert(CessationWellsCost? opexCost)
-    {
-        if (opexCost == null)
-        {
-            return null!;
-        }
-
-        return new CessationWellsCostDto
-        {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-    public static CessationOffshoreFacilitiesCostDto Convert(CessationOffshoreFacilitiesCost? opexCost)
-    {
-        if (opexCost == null)
-        {
-            return null!;
-        }
-
-        return new CessationOffshoreFacilitiesCostDto
-        {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
+            Id = model.Id,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
     }
 
-    public static OpexCostProfileDto Convert(OpexCostProfile? opexCost)
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeriesCost, ITimeSeriesOverride
     {
-        if (opexCost == null)
-        {
-            return null!;
-        }
+        if (model == null) { return null; }
 
-        return new OpexCostProfileDto
+        return new TDto
         {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-
-    public static OffshoreFacilitiesOperationsCostProfileDto Convert(OffshoreFacilitiesOperationsCostProfile? opexCost)
-    {
-        if (opexCost == null)
-        {
-            return null!;
-        }
-
-        return new OffshoreFacilitiesOperationsCostProfileDto
-        {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-
-    public static WellInterventionCostProfileDto Convert(WellInterventionCostProfile? opexCost)
-    {
-        if (opexCost == null)
-        {
-            return null!;
-        }
-
-        return new WellInterventionCostProfileDto
-        {
-            Id = opexCost.Id,
-            Currency = opexCost.Currency,
-            EPAVersion = opexCost.EPAVersion,
-            StartYear = opexCost.StartYear,
-            Values = opexCost.Values,
-        };
-    }
-
-    public static StudyCostProfileDto Convert(StudyCostProfile? studyCost)
-    {
-        if (studyCost == null)
-        {
-            return null!;
-        }
-
-        return new StudyCostProfileDto
-        {
-            Id = studyCost.Id,
-            Currency = studyCost.Currency,
-            EPAVersion = studyCost.EPAVersion,
-            StartYear = studyCost.StartYear,
-            Values = studyCost.Values,
-        };
-    }
-    public static TotalFeasibilityAndConceptStudiesDto Convert(TotalFeasibilityAndConceptStudies? studyCost)
-    {
-        if (studyCost == null)
-        {
-            return null!;
-        }
-
-        return new TotalFeasibilityAndConceptStudiesDto
-        {
-            Id = studyCost.Id,
-            Currency = studyCost.Currency,
-            EPAVersion = studyCost.EPAVersion,
-            StartYear = studyCost.StartYear,
-            Values = studyCost.Values,
-        };
-    }
-    public static TotalFEEDStudiesDto Convert(TotalFEEDStudies? studyCost)
-    {
-        if (studyCost == null)
-        {
-            return null!;
-        }
-
-        return new TotalFEEDStudiesDto
-        {
-            Id = studyCost.Id,
-            Currency = studyCost.Currency,
-            EPAVersion = studyCost.EPAVersion,
-            StartYear = studyCost.StartYear,
-            Values = studyCost.Values,
+            Id = model.Id,
+            Override = model.Override,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
     }
 }

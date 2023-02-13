@@ -19,8 +19,9 @@ public static class TopsideDtoAdapter
             ArtificialLift = topside.ArtificialLift,
             Maturity = topside.Maturity,
             Currency = topside.Currency,
-            CostProfile = Convert(topside.CostProfile),
-            CessationCostProfile = Convert(topside.CessationCostProfile),
+            CostProfile = Convert<TopsideCostProfileDto, TopsideCostProfile>(topside.CostProfile),
+            CostProfileOverride = ConvertOverride<TopsideCostProfileOverrideDto, TopsideCostProfileOverride>(topside.CostProfileOverride),
+            CessationCostProfile = Convert<TopsideCessationCostProfileDto, TopsideCessationCostProfile>(topside.CessationCostProfile),
             FuelConsumption = topside.FuelConsumption,
             FlaredGas = topside.FlaredGas,
             ProducerCount = topside.ProducerCount,
@@ -45,39 +46,36 @@ public static class TopsideDtoAdapter
         return topsideDto;
     }
 
-    private static TopsideCostProfileDto? Convert(TopsideCostProfile? costProfile)
+    public static TDto? Convert<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, new()
+        where TModel : TimeSeriesCost
     {
-        if (costProfile == null)
-        {
-            return null;
-        }
+        if (model == null) { return null; }
 
-        var topsideCostProfile = new TopsideCostProfileDto
+        return new TDto
         {
-            Id = costProfile.Id,
-            Currency = costProfile.Currency,
-            EPAVersion = costProfile.EPAVersion,
-            Values = costProfile.Values,
-            StartYear = costProfile.StartYear,
+            Id = model.Id,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
-        return topsideCostProfile;
     }
 
-    private static TopsideCessationCostProfileDto? Convert(TopsideCessationCostProfile? topsideCessationCostProfile)
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeriesCost, ITimeSeriesOverride
     {
-        if (topsideCessationCostProfile == null)
-        {
-            return null;
-        }
+        if (model == null) { return null; }
 
-        var topsideCostProfile = new TopsideCessationCostProfileDto
+        return new TDto
         {
-            Id = topsideCessationCostProfile.Id,
-            Currency = topsideCessationCostProfile.Currency,
-            EPAVersion = topsideCessationCostProfile.EPAVersion,
-            Values = topsideCessationCostProfile.Values,
-            StartYear = topsideCessationCostProfile.StartYear,
+            Id = model.Id,
+            Override = model.Override,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
         };
-        return topsideCostProfile;
     }
 }

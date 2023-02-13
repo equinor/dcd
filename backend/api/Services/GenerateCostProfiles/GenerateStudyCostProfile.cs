@@ -1,46 +1,53 @@
 using System.Globalization;
 
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Models;
 
 namespace api.Services;
 
-public class GenerateStudyCostProfile
+public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 {
-    private readonly CaseService _caseService;
-    private readonly ILogger<CaseService> _logger;
-    private readonly WellProjectService _wellProjectService;
-    private readonly TopsideService _topsideService;
-    private readonly SubstructureService _substructureService;
-    private readonly SurfService _surfService;
-    private readonly TransportService _transportService;
+    private readonly ICaseService _caseService;
+    private readonly ILogger<GenerateStudyCostProfile> _logger;
+    private readonly IWellProjectService _wellProjectService;
+    private readonly ITopsideService _topsideService;
+    private readonly ISubstructureService _substructureService;
+    private readonly ISurfService _surfService;
+    private readonly ITransportService _transportService;
+    private readonly DcdDbContext _context;
 
-    public GenerateStudyCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public GenerateStudyCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, ICaseService caseService, IWellProjectService wellProjectService, ITopsideService topsideService,
+        ISubstructureService substructureService, ISurfService surfService, ITransportService transportService)
     {
-        _logger = loggerFactory.CreateLogger<CaseService>();
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _wellProjectService = serviceProvider.GetRequiredService<WellProjectService>();
-        _topsideService = serviceProvider.GetRequiredService<TopsideService>();
-        _substructureService = serviceProvider.GetRequiredService<SubstructureService>();
-        _surfService = serviceProvider.GetRequiredService<SurfService>();
-        _transportService = serviceProvider.GetRequiredService<TransportService>();
+        _context = context;
+        _logger = loggerFactory.CreateLogger<GenerateStudyCostProfile>();
+        _caseService = caseService;
+        _wellProjectService = wellProjectService;
+        _topsideService = topsideService;
+        _substructureService = substructureService;
+        _surfService = surfService;
+        _transportService = transportService;
     }
 
-    public StudyCostProfileWrapperDto Generate(Guid caseId)
+    public async Task<StudyCostProfileWrapperDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
 
         var sumFacilityCost = SumAllCostFacility(caseItem);
         var sumWellCost = SumWellCost(caseItem);
 
-        var result = new StudyCostProfileWrapperDto();
         var feasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
-        var feasibilityDto = CaseDtoAdapter.Convert(feasibility);
-        result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
-
         var feed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
-        var feedDto = CaseDtoAdapter.Convert(feed);
+
+        var saveResult = await UpdateCaseAndSaveAsync(caseItem, feasibility, feed);
+
+        var result = new StudyCostProfileWrapperDto();
+        var feasibilityDto = CaseDtoAdapter.Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(feasibility);
+        var feedDto = CaseDtoAdapter.Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(feed);
+
+        result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
         result.TotalFEEDStudiesDto = feedDto;
 
         if (feasibility.Values.Length == 0 && feed.Values.Length == 0)
@@ -53,9 +60,16 @@ public class GenerateStudyCostProfile
             StartYear = cost.StartYear,
             Values = cost.Values
         };
-        var study = CaseDtoAdapter.Convert(studyCost);
+        var study = CaseDtoAdapter.Convert<StudyCostProfileDto, StudyCostProfile>(studyCost);
         result.StudyCostProfileDto = study;
         return result;
+    }
+
+    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies)
+    {
+        caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
+        caseItem.TotalFEEDStudies = totalFEEDStudies;
+        return await _context.SaveChangesAsync();
     }
 
     public TotalFeasibilityAndConceptStudies CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
@@ -146,7 +160,11 @@ public class GenerateStudyCostProfile
         try
         {
             substructure = _substructureService.GetSubstructure(caseItem.SubstructureLink);
-            if (substructure.CostProfile != null)
+            if (substructure.CostProfileOverride?.Override == true)
+            {
+                sumFacilityCost += substructure.CostProfileOverride.Values.Sum();
+            }
+            else if (substructure.CostProfile != null)
             {
                 sumFacilityCost += substructure.CostProfile.Values.Sum();
             }
@@ -160,7 +178,11 @@ public class GenerateStudyCostProfile
         try
         {
             surf = _surfService.GetSurf(caseItem.SurfLink);
-            if (surf.CostProfile != null)
+            if (surf.CostProfileOverride?.Override == true)
+            {
+                sumFacilityCost += surf.CostProfileOverride.Values.Sum();
+            }
+            else if (surf.CostProfile != null)
             {
                 sumFacilityCost += surf.CostProfile.Values.Sum();
             }
@@ -174,7 +196,11 @@ public class GenerateStudyCostProfile
         try
         {
             topside = _topsideService.GetTopside(caseItem.TopsideLink);
-            if (topside.CostProfile != null)
+            if (topside.CostProfileOverride?.Override == true)
+            {
+                sumFacilityCost += topside.CostProfileOverride.Values.Sum();
+            }
+            else if (topside.CostProfile != null)
             {
                 sumFacilityCost += topside.CostProfile.Values.Sum();
             }
@@ -188,7 +214,11 @@ public class GenerateStudyCostProfile
         try
         {
             transport = _transportService.GetTransport(caseItem.TransportLink);
-            if (transport.CostProfile != null)
+            if (transport.CostProfileOverride?.Override == true)
+            {
+                sumFacilityCost += transport.CostProfileOverride.Values.Sum();
+            }
+            else if (transport.CostProfile != null)
             {
                 sumFacilityCost += transport.CostProfile.Values.Sum();
             }
@@ -210,19 +240,38 @@ public class GenerateStudyCostProfile
         {
             wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
-            if (wellProject?.OilProducerCostProfile != null)
+            if (wellProject.OilProducerCostProfileOverride?.Override == true)
+            {
+                sumWellCost += wellProject.OilProducerCostProfileOverride.Values.Sum();
+            }
+            else if (wellProject.OilProducerCostProfile != null)
             {
                 sumWellCost += wellProject.OilProducerCostProfile.Values.Sum();
             }
-            if (wellProject?.GasProducerCostProfile != null)
+
+            if (wellProject.GasProducerCostProfileOverride?.Override == true)
+            {
+                sumWellCost += wellProject.GasProducerCostProfileOverride.Values.Sum();
+            }
+            else if (wellProject.GasProducerCostProfile != null)
             {
                 sumWellCost += wellProject.GasProducerCostProfile.Values.Sum();
             }
-            if (wellProject?.WaterInjectorCostProfile != null)
+
+            if (wellProject.WaterInjectorCostProfileOverride?.Override == true)
+            {
+                sumWellCost += wellProject.WaterInjectorCostProfileOverride.Values.Sum();
+            }
+            else if (wellProject.WaterInjectorCostProfile != null)
             {
                 sumWellCost += wellProject.WaterInjectorCostProfile.Values.Sum();
             }
-            if (wellProject?.GasInjectorCostProfile != null)
+
+            if (wellProject.GasInjectorCostProfileOverride?.Override == true)
+            {
+                sumWellCost += wellProject.GasInjectorCostProfileOverride.Values.Sum();
+            }
+            else if (wellProject.GasInjectorCostProfile != null)
             {
                 sumWellCost += wellProject.GasInjectorCostProfile.Values.Sum();
             }

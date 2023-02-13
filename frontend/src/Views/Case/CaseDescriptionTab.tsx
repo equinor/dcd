@@ -3,6 +3,7 @@ import {
     SetStateAction,
     ChangeEventHandler,
     useState,
+    FormEventHandler,
 } from "react"
 import styled from "styled-components"
 
@@ -58,7 +59,7 @@ function CaseDescriptionTab({
     setCase,
     activeTab,
 }: Props) {
-    const handleDescriptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleDescriptionChange: FormEventHandler<any> = async (e) => {
         const newCase: Case = { ...caseItem }
         newCase.description = e.currentTarget.value
         setCase(newCase)
@@ -138,7 +139,7 @@ function CaseDescriptionTab({
                             onChange={handleProducerCountChange}
                             defaultValue={caseItem.producerCount}
                             integer
-                            label="Oil producer wells"
+                            label="Production wells"
                         />
                     </InputWrapper>
                     <InputWrapper>
@@ -147,14 +148,14 @@ function CaseDescriptionTab({
                             defaultValue={caseItem.waterInjectorCount}
                             integer
                             disabled={false}
-                            label="Water injector count"
+                            label="Water injector wells"
                         />
                     </InputWrapper>
                     <CaseNumberInput
                         onChange={handleGasInjectorCountChange}
                         defaultValue={caseItem.gasInjectorCount}
                         integer
-                        label="Gas injector count"
+                        label="Gas injector wells"
                     />
                 </RowWrapper>
                 <RowWrapper>

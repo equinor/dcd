@@ -11,6 +11,9 @@ public class STEACaseDto
 
     public ProductionAndSalesVolumesDto ProductionAndSalesVolumes { get; set; } = null!;
     public OffshoreFacilitiesCostProfileDto OffshoreFacilitiesCostProfileDto { get; set; } = null!;
+
+    public StudyCostProfileDto StudyCostProfile { get; set; } = null!;
+    public OpexCostProfileDto OpexCostProfile { get; set; } = null!;
 }
 
 public class CapexDto : TimeSeriesCostDto
@@ -18,7 +21,7 @@ public class CapexDto : TimeSeriesCostDto
     public TimeSeriesCostDto Drilling { get; set; } = null!;
 
     public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = null!;
-    public CessationOffshoreFacilities CessationOffshoreFacilities { get; set; } = null!;
+    public CessationCostDto CessationCost { get; set; } = null!;
 }
 
 public class ProductionAndSalesVolumesDto
@@ -27,17 +30,9 @@ public class ProductionAndSalesVolumesDto
     public ProductionProfileOilDto TotalAndAnnualOil { get; set; } = null!;
     public NetSalesGasDto TotalAndAnnualSalesGas { get; set; } = null!;
     public Co2EmissionsDto Co2Emissions { get; set; } = null!;
+    public ImportedElectricityDto ImportedElectricity { get; set; } = null!;
 }
 
 public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto
 {
-
-}
-
-public class CessationOffshoreFacilities : TimeSeriesCostDto
-{
-    public SurfCessationCostProfileDto SurfCessationCostProfileDto { get; set; } = null!;
-    public TopsideCessationCostProfileDto TopsideCessationCostProfileDto { get; set; } = null!;
-    public SubstructureCessationCostProfileDto SubstructureCessationCostProfileDto { get; set; } = null!;
-    public TransportCessationCostProfileDto TransportCessationCostProfileDto { get; set; } = null!;
 }

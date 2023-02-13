@@ -8,8 +8,9 @@ public class Substructure
     public string Name { get; set; } = string.Empty!;
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
-    public SubstructureCostProfile? CostProfile { get; set; }
-    public SubstructureCessationCostProfile? CessationCostProfile { get; set; }
+    public SubstructureCostProfile? CostProfile { get; set; } = new();
+    public SubstructureCostProfileOverride? CostProfileOverride { get; set; } = new();
+    public SubstructureCessationCostProfile? CessationCostProfile { get; set; } = new();
     public double DryWeight { get; set; }
     public Maturity Maturity { get; set; }
     public Currency Currency { get; set; }
@@ -40,14 +41,26 @@ public enum Concept
     SUBSEA_TO_SHORE
 }
 
-public class SubstructureCostProfile : TimeSeriesCost
+public class SubstructureCostProfile : TimeSeriesCost, ISubstructureTimeSeries
 {
     [ForeignKey("Substructure.Id")]
     public Substructure Substructure { get; set; } = null!;
 }
 
-public class SubstructureCessationCostProfile : TimeSeriesCost
+public class SubstructureCostProfileOverride : TimeSeriesCost, ISubstructureTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Substructure.Id")]
     public Substructure Substructure { get; set; } = null!;
+    public bool Override { get; set; }
+}
+
+public class SubstructureCessationCostProfile : TimeSeriesCost, ISubstructureTimeSeries
+{
+    [ForeignKey("Substructure.Id")]
+    public Substructure Substructure { get; set; } = null!;
+}
+
+public interface ISubstructureTimeSeries
+{
+    Substructure Substructure { get; set; }
 }

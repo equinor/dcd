@@ -1,26 +1,30 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateNetSaleGasProfile
+public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
 {
-    private readonly CaseService _caseService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly ProjectService _projectService;
-    private readonly TopsideService _topsideService;
+    private readonly ICaseService _caseService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IProjectService _projectService;
+    private readonly ITopsideService _topsideService;
+    private readonly DcdDbContext _context;
 
-    public GenerateNetSaleGasProfile(IServiceProvider serviceProvider)
+    public GenerateNetSaleGasProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService)
     {
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _topsideService = serviceProvider.GetRequiredService<TopsideService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
+        _context = context;
+        _caseService = caseService;
+        _projectService = projectService;
+        _topsideService = topsideService;
+        _drainageStrategyService = drainageStrategyService;
     }
 
-    public NetSalesGasDto Generate(Guid caseId)
+    public async Task<NetSalesGasDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
@@ -32,14 +36,21 @@ public class GenerateNetSaleGasProfile
         var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
         var calculateNetSaleGas = CalculateNetSaleGas(drainageStrategy, fuelConsumptions, flarings, losses);
 
-        var netSaleGas = new NetSalesGas
-        {
-            StartYear = calculateNetSaleGas.StartYear,
-            Values = calculateNetSaleGas.Values,
-        };
+        var netSaleGas = drainageStrategy.NetSalesGas ?? new NetSalesGas();
 
-        var dto = DrainageStrategyDtoAdapter.Convert(netSaleGas, project.PhysicalUnit);
+        netSaleGas.StartYear = calculateNetSaleGas.StartYear;
+        netSaleGas.Values = calculateNetSaleGas.Values;
+
+        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, netSaleGas);
+
+        var dto = DrainageStrategyDtoAdapter.Convert<NetSalesGasDto, NetSalesGas>(netSaleGas, project.PhysicalUnit);
         return dto ?? new NetSalesGasDto();
+    }
+
+    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
+    {
+        drainageStrategy.NetSalesGas = netSalesGas;
+        return await _context.SaveChangesAsync();
     }
 
     private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,
@@ -50,8 +61,19 @@ public class GenerateNetSaleGasProfile
             return new TimeSeries<double>();
         }
 
+        if (drainageStrategy.GasSolution == GasSolution.Injection)
+        {
+            return new TimeSeries<double>();
+        }
+
         var fuelFlaringLosses =
-            TimeSeriesCost.MergeCostProfiles(TimeSeriesCost.MergeCostProfiles(fuelConsumption, flarings), losses);
+            TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumption, flarings, losses });
+
+        if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
+        {
+            fuelFlaringLosses.StartYear = drainageStrategy.FuelFlaringAndLossesOverride.StartYear;
+            fuelFlaringLosses.Values = drainageStrategy.FuelFlaringAndLossesOverride.Values;
+        }
 
         var negativeFuelFlaringLosses = new TimeSeriesVolume
         {

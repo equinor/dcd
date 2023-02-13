@@ -1,4 +1,6 @@
+import _ from "lodash"
 import { Case } from "../models/case/Case"
+import { ITimeSeries } from "../models/ITimeSeries"
 import { Well } from "../models/Well"
 
 export const LoginAccessTokenKey = "loginAccessToken"
@@ -134,3 +136,63 @@ export const ProductionStrategyOverviewToString = (value?: Components.Schemas.Pr
 }
 
 export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
+
+const zip = (t1: number[], t2: number[]) => t1.map((t1Value, index) => t1Value + (t2[index] ?? 0))
+
+const MergeCostProfileData = (t1: number[], t2: number[], offset: number): number[] => {
+    let doubleList: number[] = []
+    if (offset > t1.length) {
+        doubleList = doubleList.concat(t1)
+        const zeros = offset - t1.length
+
+        const zeroList = new Array(zeros).fill(0)
+
+        doubleList = doubleList.concat(zeroList)
+        doubleList = doubleList.concat(t2)
+        return doubleList
+    }
+    doubleList = doubleList.concat(t1.slice(0, offset))
+
+    if (t1.length - offset === t2.length) {
+        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), (t2)))
+    } else if (t1.length - offset > t2.length) {
+        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), t2))
+    } else {
+        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), t2))
+        const remaining = t2.length - (t1.length - offset)
+        doubleList = doubleList.concat(_.takeRight(t2, remaining))
+    }
+    return doubleList
+}
+
+export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
+    const t1Year = t1?.startYear ?? 0
+    const t2Year = t2?.startYear ?? 0
+    const t1Values = t1?.values
+    const t2Values = t2?.values
+
+    if (!t1Values || t1Values.length === 0) {
+        if (!t2Values || t2Values.length === 0) {
+            return { startYear: 0, values: [] }
+        }
+        return t2
+    }
+    if (!t2Values || t2Values.length === 0) {
+        return t1
+    }
+
+    const offset = t1Year < t2Year ? t2Year - t1Year : t1Year - t2Year
+
+    let values: number[] = []
+    if (t1Year < t2Year) {
+        values = MergeCostProfileData(t1Values, t2Values, offset)
+    } else {
+        values = MergeCostProfileData(t2Values, t1Values, offset)
+    }
+
+    const timeSeries = {
+        startYear: Math.min(t1Year, t2Year),
+        values,
+    }
+    return timeSeries
+}

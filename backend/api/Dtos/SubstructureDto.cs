@@ -8,6 +8,7 @@ public class SubstructureDto
     public string Name { get; set; } = string.Empty!;
     public Guid ProjectId { get; set; }
     public SubstructureCostProfileDto? CostProfile { get; set; }
+    public SubstructureCostProfileOverrideDto? CostProfileOverride { get; set; }
     public SubstructureCessationCostProfileDto? CessationCostProfile { get; set; }
     public double DryWeight { get; set; }
     public Maturity Maturity { get; set; }
@@ -25,6 +26,10 @@ public class SubstructureDto
 
 public class SubstructureCostProfileDto : TimeSeriesCostDto
 {
+}
+public class SubstructureCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class SubstructureCessationCostProfileDto : TimeSeriesCostDto

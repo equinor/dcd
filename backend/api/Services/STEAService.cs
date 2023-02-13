@@ -3,27 +3,23 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
-using Api.Services.FusionIntegration;
-
 namespace api.Services;
 
-public class STEAService
+public class STEAService : ISTEAService
 {
-
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<STEAService> _logger;
 
-    public STEAService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public STEAService(DcdDbContext context, ILoggerFactory loggerFactory, IProjectService projectService)
     {
-        _projectService = new ProjectService(context, loggerFactory, serviceProvider);
+        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<STEAService>();
     }
 
     public STEAProjectDto GetInputToSTEA(Guid ProjectId)
     {
-
         var project = _projectService.GetProject(ProjectId);
-        List<STEACaseDto> sTEACaseDtos = new List<STEACaseDto>();
+        var sTEACaseDtos = new List<STEACaseDto>();
         foreach (Case c in project.Cases!)
         {
             ProjectDto projectDto = ProjectDtoAdapter.Convert(project);
@@ -33,5 +29,4 @@ public class STEAService
         }
         return STEAProjectDtoBuilder.Build(ProjectDtoAdapter.Convert(project), sTEACaseDtos);
     }
-
 }

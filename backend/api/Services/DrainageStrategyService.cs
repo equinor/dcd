@@ -8,38 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class DrainageStrategyService
+public class DrainageStrategyService : IDrainageStrategyService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<DrainageStrategyService> _logger;
 
-    public DrainageStrategyService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+    public DrainageStrategyService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
-    }
-
-    public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
-    {
-        if (_context.DrainageStrategies != null)
-        {
-            return _context.DrainageStrategies
-                .Include(c => c.ProductionProfileOil)
-                .Include(c => c.ProductionProfileGas)
-                .Include(c => c.ProductionProfileWater)
-                .Include(c => c.ProductionProfileWaterInjection)
-                .Include(c => c.FuelFlaringAndLosses)
-                .Include(c => c.NetSalesGas)
-                .Include(c => c.Co2Emissions)
-                .Include(c => c.ProductionProfileNGL)
-                .Where(d => d.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<DrainageStrategy>();
-        }
     }
 
     public ProjectDto CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
@@ -93,13 +72,25 @@ public class DrainageStrategyService
         {
             newDrainageStrategyDto.FuelFlaringAndLosses.Id = Guid.Empty;
         }
+        if (newDrainageStrategyDto.FuelFlaringAndLossesOverride != null)
+        {
+            newDrainageStrategyDto.FuelFlaringAndLossesOverride.Id = Guid.Empty;
+        }
         if (newDrainageStrategyDto.NetSalesGas != null)
         {
             newDrainageStrategyDto.NetSalesGas.Id = Guid.Empty;
         }
+        if (newDrainageStrategyDto.NetSalesGasOverride != null)
+        {
+            newDrainageStrategyDto.NetSalesGasOverride.Id = Guid.Empty;
+        }
         if (newDrainageStrategyDto.Co2Emissions != null)
         {
             newDrainageStrategyDto.Co2Emissions.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.Co2EmissionsOverride != null)
+        {
+            newDrainageStrategyDto.Co2EmissionsOverride.Id = Guid.Empty;
         }
         if (newDrainageStrategyDto.ProductionProfileNGL != null)
         {
@@ -108,6 +99,10 @@ public class DrainageStrategyService
         if (newDrainageStrategyDto.ImportedElectricity != null)
         {
             newDrainageStrategyDto.ImportedElectricity.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.ImportedElectricityOverride != null)
+        {
+            newDrainageStrategyDto.ImportedElectricityOverride.Id = Guid.Empty;
         }
 
         var drainageStrategy = NewCreateDrainageStrategy(newDrainageStrategyDto, sourceCaseId);
@@ -154,39 +149,6 @@ public class DrainageStrategyService
 
         DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
 
-        if (updatedDrainageStrategyDto.ProductionProfileOil == null && existing.ProductionProfileOil != null)
-        {
-            _context.ProductionProfileOil!.Remove(existing.ProductionProfileOil);
-        }
-        if (updatedDrainageStrategyDto.ProductionProfileGas == null && existing.ProductionProfileGas != null)
-        {
-            _context.ProductionProfileGas!.Remove(existing.ProductionProfileGas);
-        }
-        if (updatedDrainageStrategyDto.ProductionProfileWater == null && existing.ProductionProfileWater != null)
-        {
-            _context.ProductionProfileWater!.Remove(existing.ProductionProfileWater);
-        }
-        if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null && existing.ProductionProfileWaterInjection != null)
-        {
-            _context.ProductionProfileWaterInjection!.Remove(existing.ProductionProfileWaterInjection);
-        }
-        if (updatedDrainageStrategyDto.FuelFlaringAndLosses == null && existing.FuelFlaringAndLosses != null)
-        {
-            _context.FuelFlaringAndLosses!.Remove(existing.FuelFlaringAndLosses);
-        }
-        if (updatedDrainageStrategyDto.NetSalesGas == null && existing.NetSalesGas != null)
-        {
-            _context.NetSalesGas!.Remove(existing.NetSalesGas);
-        }
-        if (updatedDrainageStrategyDto.Co2Emissions == null && existing.Co2Emissions != null)
-        {
-            _context.Co2Emissions!.Remove(existing.Co2Emissions);
-        }
-        if (updatedDrainageStrategyDto.ProductionProfileNGL == null && existing.ProductionProfileNGL != null)
-        {
-            _context.ProductionProfileNGL!.Remove(existing.ProductionProfileNGL);
-        }
-
         _context.DrainageStrategies!.Update(existing);
         _context.SaveChanges();
         return _projectService.GetProjectDto(existing.ProjectId);
@@ -198,39 +160,6 @@ public class DrainageStrategyService
         var unit = _projectService.GetProject(existing.ProjectId).PhysicalUnit;
 
         DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
-
-        if (updatedDrainageStrategyDto.ProductionProfileOil == null && existing.ProductionProfileOil != null)
-        {
-            _context.ProductionProfileOil!.Remove(existing.ProductionProfileOil);
-        }
-        if (updatedDrainageStrategyDto.ProductionProfileGas == null && existing.ProductionProfileGas != null)
-        {
-            _context.ProductionProfileGas!.Remove(existing.ProductionProfileGas);
-        }
-        if (updatedDrainageStrategyDto.ProductionProfileWater == null && existing.ProductionProfileWater != null)
-        {
-            _context.ProductionProfileWater!.Remove(existing.ProductionProfileWater);
-        }
-        if (updatedDrainageStrategyDto.ProductionProfileWaterInjection == null && existing.ProductionProfileWaterInjection != null)
-        {
-            _context.ProductionProfileWaterInjection!.Remove(existing.ProductionProfileWaterInjection);
-        }
-        if (updatedDrainageStrategyDto.FuelFlaringAndLosses == null && existing.FuelFlaringAndLosses != null)
-        {
-            _context.FuelFlaringAndLosses!.Remove(existing.FuelFlaringAndLosses);
-        }
-        if (updatedDrainageStrategyDto.NetSalesGas == null && existing.NetSalesGas != null)
-        {
-            _context.NetSalesGas!.Remove(existing.NetSalesGas);
-        }
-        if (updatedDrainageStrategyDto.Co2Emissions == null && existing.Co2Emissions != null)
-        {
-            _context.Co2Emissions!.Remove(existing.Co2Emissions);
-        }
-        if (updatedDrainageStrategyDto.ProductionProfileNGL == null && existing.ProductionProfileNGL != null)
-        {
-            _context.ProductionProfileNGL!.Remove(existing.ProductionProfileNGL);
-        }
 
         var updatedDrainageStrategy = _context.DrainageStrategies!.Update(existing);
         _context.SaveChanges();
@@ -246,9 +175,14 @@ public class DrainageStrategyService
             .Include(c => c.ProductionProfileWater)
             .Include(c => c.ProductionProfileWaterInjection)
             .Include(c => c.FuelFlaringAndLosses)
+            .Include(c => c.FuelFlaringAndLossesOverride)
             .Include(c => c.NetSalesGas)
+            .Include(c => c.NetSalesGasOverride)
             .Include(c => c.Co2Emissions)
+            .Include(c => c.Co2EmissionsOverride)
             .Include(c => c.ProductionProfileNGL)
+            .Include(c => c.ImportedElectricity)
+            .Include(c => c.ImportedElectricityOverride)
             .FirstOrDefault(o => o.Id == drainageStrategyId);
         if (drainageStrategy == null)
         {

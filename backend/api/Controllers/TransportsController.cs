@@ -23,9 +23,9 @@ namespace api.Controllers;
     )]
 public class TransportsController : ControllerBase
 {
-    private readonly TransportService _transportService;
+    private readonly ITransportService _transportService;
 
-    public TransportsController(TransportService transportService)
+    public TransportsController(ITransportService transportService)
     {
         _transportService = transportService;
     }

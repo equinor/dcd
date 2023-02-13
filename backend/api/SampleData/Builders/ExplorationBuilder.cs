@@ -8,7 +8,7 @@ public class ExplorationBuilder : Exploration
     public ExplorationBuilder WithGAndGAdminCost(GAndGAdminCost d)
     {
         d.Exploration = this;
-        this.GAndGAdminCost = d;
+        GAndGAdminCost = d;
         return this;
     }
 }

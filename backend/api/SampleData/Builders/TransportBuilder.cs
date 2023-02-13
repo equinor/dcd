@@ -7,14 +7,14 @@ public class TransportBuilder : Transport
     public TransportBuilder WithCostProfile(TransportCostProfile costProfile)
     {
         costProfile.Transport = this;
-        this.CostProfile = costProfile;
+        CostProfile = costProfile;
         return this;
     }
 
     public TransportBuilder WithTransportCessationCostProfile(TransportCessationCostProfile transportCessationCostProfile)
     {
         transportCessationCostProfile.Transport = this;
-        this.CessationCostProfile = transportCessationCostProfile;
+        CessationCostProfile = transportCessationCostProfile;
         return this;
     }
 }

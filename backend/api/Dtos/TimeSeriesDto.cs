@@ -12,11 +12,9 @@ public class TimeSeriesDto<T>
 
 }
 
-public class TimeSeriesCostDto : TimeSeriesDto<double>
+public class TimeSeriesDoubleDto : TimeSeriesDto<double>
 {
-    public string EPAVersion { get; set; } = string.Empty;
-    public Currency Currency { get; set; }
-    public double Sum
+    public virtual double Sum
     {
         get
         {
@@ -27,9 +25,13 @@ public class TimeSeriesCostDto : TimeSeriesDto<double>
             }
             return s;
         }
-        private set
-        { }
     }
+}
+
+public class TimeSeriesCostDto : TimeSeriesDoubleDto
+{
+    public string EPAVersion { get; set; } = string.Empty;
+    public Currency Currency { get; set; }
 
     public TimeSeriesCostDto AddValues(TimeSeriesCostDto timeSeriesCost)
     {
@@ -150,53 +152,21 @@ public class TimeSeriesCostDto : TimeSeriesDto<double>
     }
 }
 
-public class TimeSeriesVolumeDto : TimeSeriesDto<double>
+public class TimeSeriesVolumeDto : TimeSeriesDoubleDto
 {
-    public double Sum
-    {
-        get
-        {
-            double s = 0.0;
-            if (Values != null)
-            {
-                Array.ForEach(Values, i => s += i);
-            }
-            return s;
-        }
-    }
 }
-public class TimeSeriesMassDto : TimeSeriesDto<double>
+public class TimeSeriesMassDto : TimeSeriesDoubleDto
 {
-    public double Sum
-    {
-        get
-        {
-            double s = 0.0;
-            if (Values != null)
-            {
-                Array.ForEach(Values, i => s += i);
-            }
-            return s;
-        }
-    }
 }
-public class TimeSeriesEnergyDto : TimeSeriesDto<double>
+public class TimeSeriesEnergyDto : TimeSeriesDoubleDto
 {
-    public double Sum
-    {
-        get
-        {
-            double s = 0.0;
-            if (Values != null)
-            {
-                Array.ForEach(Values, i => s += i);
-            }
-            return s;
-        }
-    }
 }
 
 public class TimeSeriesScheduleDto : TimeSeriesDto<int>
 {
+}
 
+public interface ITimeSeriesOverrideDto
+{
+    bool Override { get; set; }
 }

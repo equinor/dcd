@@ -20,6 +20,7 @@ public class CaseDto
     public double NPV { get; set; }
     public double BreakEven { get; set; }
     public string? Host { get; set; }
+
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }
@@ -32,6 +33,22 @@ public class CaseDto
     public DateTimeOffset DG4Date { get; set; }
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; }
+
+    public CessationWellsCostDto? CessationWellsCost { get; set; }
+    public CessationWellsCostOverrideDto? CessationWellsCostOverride { get; set; }
+    public CessationOffshoreFacilitiesCostDto? CessationOffshoreFacilitiesCost { get; set; }
+    public CessationOffshoreFacilitiesCostOverrideDto? CessationOffshoreFacilitiesCostOverride { get; set; }
+
+    public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
+    public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
+    public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
+    public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+
+    public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
+    public WellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
+    public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfile { get; set; }
+    public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
+
     public Guid DrainageStrategyLink { get; set; }
     public Guid WellProjectLink { get; set; }
     public Guid SurfLink { get; set; }
@@ -39,6 +56,7 @@ public class CaseDto
     public Guid TopsideLink { get; set; }
     public Guid TransportLink { get; set; }
     public Guid ExplorationLink { get; set; }
+
     public double Capex { get; set; }
     public CapexYear? CapexYear { get; set; }
     public CessationCostDto? CessationCost { get; set; }
@@ -54,8 +72,16 @@ public class CessationCostDto : TimeSeriesCostDto
 public class CessationWellsCostDto : TimeSeriesCostDto
 {
 }
+public class CessationWellsCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
 public class CessationOffshoreFacilitiesCostDto : TimeSeriesCostDto
 {
+}
+public class CessationOffshoreFacilitiesCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class OpexCostProfileDto : TimeSeriesCostDto
@@ -66,8 +92,18 @@ public class WellInterventionCostProfileDto : TimeSeriesCostDto
 {
 }
 
+public class WellInterventionCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
+
 public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto
 {
+}
+
+public class OffshoreFacilitiesOperationsCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class StudyCostProfileDto : TimeSeriesCostDto
@@ -76,8 +112,16 @@ public class StudyCostProfileDto : TimeSeriesCostDto
 public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto
 {
 }
+public class TotalFeasibilityAndConceptStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
 public class TotalFEEDStudiesDto : TimeSeriesCostDto
 {
+}
+public class TotalFEEDStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class CessationCostWrapperDto
