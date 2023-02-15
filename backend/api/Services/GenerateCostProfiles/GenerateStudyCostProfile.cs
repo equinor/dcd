@@ -38,8 +38,16 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         var sumFacilityCost = SumAllCostFacility(caseItem);
         var sumWellCost = SumWellCost(caseItem);
 
-        var feasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
-        var feed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
+        var newFeasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
+        var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
+
+        var feasibility = caseItem.TotalFeasibilityAndConceptStudies ?? newFeasibility;
+        feasibility.StartYear = newFeasibility.StartYear;
+        feasibility.Values = newFeasibility.Values;
+
+        var feed = caseItem.TotalFEEDStudies ?? newFeed;
+        feed.StartYear = newFeed.StartYear;
+        feed.Values = newFeed.Values;
 
         var saveResult = await UpdateCaseAndSaveAsync(caseItem, feasibility, feed);
 

@@ -5,6 +5,7 @@ import {
     ChangeEventHandler,
     useState,
     useEffect,
+    useRef,
 } from "react"
 import styled from "styled-components"
 
@@ -88,6 +89,9 @@ interface Props {
     drainageStrategy: DrainageStrategy,
     setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
     activeTab: number
+
+    co2Emissions: Co2Emissions | undefined,
+    setCo2Emissions: Dispatch<SetStateAction<Co2Emissions | undefined>>,
 }
 
 function CaseCO2Tab({
@@ -95,8 +99,8 @@ function CaseCO2Tab({
     caseItem, setCase,
     topside, setTopside,
     activeTab, drainageStrategy, setDrainageStrategy,
+    co2Emissions, setCo2Emissions,
 }: Props) {
-    const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
     const [co2Intensity, setCo2Intensity] = useState<Co2Intensity>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Co2DrillingFlaringFuelTotals>()
@@ -107,22 +111,23 @@ function CaseCO2Tab({
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
+    const co2GridRef = useRef<any>(null)
+
     useEffect(() => {
         (async () => {
             try {
                 if (activeTab === 6) {
-                    const co2E = (await GetGenerateProfileService()).generateCo2EmissionsProfile(caseItem.id)
                     const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
                     const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(caseItem.id)
                     const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(caseItem.id)
 
-                    setCo2Emissions(await co2E)
+                    setCo2Emissions(drainageStrategy.co2Emissions)
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
                     SetTableYearsFromProfiles(
-                        [await co2E, await co2I, drainageStrategy.co2EmissionsOverride?.override ? drainageStrategy.co2EmissionsOverride : undefined],
+                        [drainageStrategy.co2Emissions, await co2I, drainageStrategy.co2EmissionsOverride?.override ? drainageStrategy.co2EmissionsOverride : undefined],
                         caseItem.DG4Date.getFullYear(),
                         setStartYear,
                         setEndYear,
@@ -135,6 +140,12 @@ function CaseCO2Tab({
             }
         })()
     }, [activeTab])
+
+    useEffect(() => {
+        if (co2GridRef.current && co2GridRef.current.api && co2GridRef.current.api.refreshCells) {
+            co2GridRef.current.api.refreshCells()
+        }
+    }, [co2Emissions])
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -391,6 +402,7 @@ function CaseCO2Tab({
                 tableYears={tableYears}
                 tableName="CO2 emissions"
                 includeFooter={false}
+                gridRef={co2GridRef}
             />
         </>
     )

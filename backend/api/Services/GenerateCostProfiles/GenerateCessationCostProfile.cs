@@ -49,7 +49,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         try
         {
             wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-            cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear);
+            cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear, cessationWellsCost);
             var cessationWellsDto = CaseDtoAdapter.Convert<CessationWellsCostDto, CessationWellsCost>(cessationWellsCost);
             result.CessationWellsCostDto = cessationWellsDto;
         }
@@ -62,7 +62,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         try
         {
             surf = _surfService.GetSurf(caseItem.SurfLink);
-            cessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(surf, (int)lastYear);
+            cessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(surf, (int)lastYear, cessationOffshoreFacilitiesCost);
             var cessationOffshoreFacilitiesCostDto = CaseDtoAdapter.Convert<CessationOffshoreFacilitiesCostDto, CessationOffshoreFacilitiesCost>(cessationOffshoreFacilitiesCost);
             result.CessationOffshoreFacilitiesCostDto = cessationOffshoreFacilitiesCostDto;
         }
@@ -91,9 +91,8 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         return await _context.SaveChangesAsync();
     }
 
-    private static CessationWellsCost GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear)
+    private static CessationWellsCost GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear, CessationWellsCost cessationWells)
     {
-        var cessationWells = new CessationWellsCost();
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
         if (linkedWells != null)
         {
@@ -112,10 +111,8 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         return cessationWells;
     }
 
-    private static CessationOffshoreFacilitiesCost GenerateCessationOffshoreFacilitiesCost(Surf surf, int lastYear)
+    private static CessationOffshoreFacilitiesCost GenerateCessationOffshoreFacilitiesCost(Surf surf, int lastYear, CessationOffshoreFacilitiesCost cessationOffshoreFacilities)
     {
-        var cessationOffshoreFacilities = new CessationOffshoreFacilitiesCost();
-
         var surfCessationCost = surf.CessationCost;
 
         cessationOffshoreFacilities.StartYear = lastYear + 1;

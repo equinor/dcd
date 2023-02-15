@@ -4,6 +4,6 @@ namespace api.Services
 {
     public interface IGenerateGAndGAdminCostProfile
     {
-        GAndGAdminCostDto Generate(Guid caseId);
+        Task<GAndGAdminCostDto> GenerateAsync(Guid caseId);
     }
 }
