@@ -75,7 +75,6 @@ type Props = {
 const ProjectModal = ({
     passedInProject, passedInProjects, isOpen, closeModal,
 }: Props) => {
-  //  const navigate = useNavigate()
     const [projects, setProjects] = useState<Components.Schemas.CommonLibraryProjectDto[]
         | undefined>(passedInProjects ?? undefined)
     const [selectedProject, setSelectedProject] = useState<Components.Schemas.CommonLibraryProjectDto

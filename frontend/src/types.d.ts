@@ -344,6 +344,16 @@ declare namespace Components {
             override?: boolean;
         }
         export type GasSolution = 0 | 1; // int32
+        export interface GeneratedProfilesDto {
+            studyCostProfileWrapperDto?: StudyCostProfileWrapperDto;
+            opexCostProfileWrapperDto?: OpexCostProfileWrapperDto;
+            cessationCostWrapperDto?: CessationCostWrapperDto;
+            co2EmissionsDto?: Co2EmissionsDto;
+            gAndGAdminCostDto?: GAndGAdminCostDto;
+            importedElectricityDto?: ImportedElectricityDto;
+            fuelFlaringAndLossesDto?: FuelFlaringAndLossesDto;
+            netSalesGasDto?: NetSalesGasDto;
+        }
         export interface Identity {
             [name: string]: any;
             displayName?: string | null;
@@ -516,6 +526,10 @@ declare namespace Components {
             hasChanges?: boolean;
         }
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
+        export interface ProjectWithGeneratedProfilesDto {
+            projectDto?: ProjectDto;
+            generatedProfilesDto?: GeneratedProfilesDto;
+        }
         export interface STEACaseDto {
             name?: string | null;
             startYear?: number; // int32
@@ -1587,7 +1601,7 @@ declare namespace Paths {
     namespace UpdateCaseWithAssets {
         export type RequestBody = Components.Schemas.CaseWithAssetsWrapperDto;
         namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
+            export type $200 = Components.Schemas.ProjectWithGeneratedProfilesDto;
         }
     }
     namespace UpdateDevelopmentOperationalWellCosts {

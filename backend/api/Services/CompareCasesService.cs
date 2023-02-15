@@ -171,7 +171,7 @@ public class CompareCasesService : ICompareCasesService
     private double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
     {
         var sumExplorationWellCost = 0.0;
-        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.Generate(caseItem.Id);
+        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
         sumExplorationWellCost += generateGAndGAdminProfile.Sum;
 
         try

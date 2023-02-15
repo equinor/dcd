@@ -342,6 +342,18 @@ public static class STEACaseDtoBuilder
                 {
                     costProfileDtos.Add(exploration.SidetrackCostProfile);
                 }
+                if (exploration.GAndGAdminCost?.Values.Length > 0)
+                {
+                    costProfileDtos.Add(exploration.GAndGAdminCost);
+                }
+                if (exploration.SeismicAcquisitionAndProcessing?.Values.Length > 0)
+                {
+                    costProfileDtos.Add(exploration.SeismicAcquisitionAndProcessing);
+                }
+                if (exploration.CountryOfficeCost?.Values.Length > 0)
+                {
+                    costProfileDtos.Add(exploration.CountryOfficeCost);
+                }
 
                 var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
 

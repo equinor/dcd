@@ -56,9 +56,17 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
-    public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
+    public async Task<ActionResult<GAndGAdminCostDto>> GenerateGAndGAdminCostAsync(Guid caseId)
     {
-        return _generateGAndGAdminCostProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateGAndGAdminCostProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateOpex", Name = "GenerateOpex")]
@@ -121,9 +129,17 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateFuelFlaringLosses", Name = "GenerateFuelFlaringLosses")]
-    public FuelFlaringAndLossesDto GenerateFuelFlaringLosses(Guid caseId)
+    public async Task<ActionResult<FuelFlaringAndLossesDto>> GenerateFuelFlaringLossesAsync(Guid caseId)
     {
-        return _generateFuelFlaringLossessProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateFuelFlaringLossessProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateCo2Emissions", Name = "GenerateCo2Emissions")]

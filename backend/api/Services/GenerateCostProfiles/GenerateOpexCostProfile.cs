@@ -35,18 +35,21 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
         var result = new OpexCostProfileWrapperDto();
 
-        WellInterventionCostProfile? wellInterventionCost;
-        OffshoreFacilitiesOperationsCostProfile? offshoreFacilitiesOperationsCost;
-
-        if (drainageStrategy != null)
-        {
-            wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
-            offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
-        }
-        else
+        if (drainageStrategy == null)
         {
             throw new NotFoundInDBException(string.Format("DrainageStrategy {0} not found in database.", caseItem.DrainageStrategyLink));
         }
+
+        var newWellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
+        var newOffshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
+
+        var wellInterventionCost = caseItem.WellInterventionCostProfile ?? new WellInterventionCostProfile();
+        wellInterventionCost.StartYear = newWellInterventionCost.StartYear;
+        wellInterventionCost.Values = newWellInterventionCost.Values;
+
+        var offshoreFacilitiesOperationsCost = caseItem.OffshoreFacilitiesOperationsCostProfile ?? new OffshoreFacilitiesOperationsCostProfile();
+        offshoreFacilitiesOperationsCost.StartYear = newOffshoreFacilitiesOperationsCost.StartYear;
+        offshoreFacilitiesOperationsCost.Values = newOffshoreFacilitiesOperationsCost.Values;
 
         var saveResult = await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost);
 

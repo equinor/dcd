@@ -1,4 +1,5 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
@@ -11,17 +12,19 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
+    private readonly DcdDbContext _context;
 
-    public GenerateFuelFlaringLossesProfile(ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
+    public GenerateFuelFlaringLossesProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
         IDrainageStrategyService drainageStrategyService)
     {
+        _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
     }
 
-    public FuelFlaringAndLossesDto Generate(Guid caseId)
+    public async Task<FuelFlaringAndLossesDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
@@ -35,13 +38,19 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
 
         var total = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptions, flaring, losses });
 
-        var fuelFlaringLosses = new FuelFlaringAndLosses
-        {
-            StartYear = total.StartYear,
-            Values = total.Values,
-        };
+        var fuelFlaringLosses = drainageStrategy.FuelFlaringAndLosses ?? new FuelFlaringAndLosses();
+        fuelFlaringLosses.StartYear = total.StartYear;
+        fuelFlaringLosses.Values = total.Values;
+
+        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, fuelFlaringLosses);
 
         var dto = DrainageStrategyDtoAdapter.Convert<FuelFlaringAndLossesDto, FuelFlaringAndLosses>(fuelFlaringLosses, project.PhysicalUnit);
         return dto ?? new FuelFlaringAndLossesDto();
+    }
+
+    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
+    {
+        drainageStrategy.FuelFlaringAndLosses = fuelFlaringAndLosses;
+        return await _context.SaveChangesAsync();
     }
 }

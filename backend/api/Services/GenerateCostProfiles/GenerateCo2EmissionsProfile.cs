@@ -52,13 +52,10 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
 
         var totalProfile =
             TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
-        var co2Emission = new Co2Emissions
-        {
-            Id = drainageStrategy.Co2Emissions?.Id ?? Guid.Empty,
-            DrainageStrategy = drainageStrategy,
-            StartYear = totalProfile.StartYear,
-            Values = totalProfile.Values,
-        };
+        var co2Emission = drainageStrategy.Co2Emissions ?? new Co2Emissions();
+
+        co2Emission.StartYear = totalProfile.StartYear;
+        co2Emission.Values = totalProfile.Values;
 
         var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, co2Emission);
 
