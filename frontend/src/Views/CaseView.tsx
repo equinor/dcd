@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable camelcase */
 import {
     Button, Icon, Menu, Progress, Tabs, Typography,
@@ -15,6 +16,8 @@ import {
     more_vertical,
 } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
+import { tokens } from "@equinor/eds-tokens"
+import { Tooltip } from "@material-ui/core"
 import { Project } from "../models/Project"
 import { Case } from "../models/case/Case"
 import { GetProjectService } from "../Services/ProjectService"
@@ -42,6 +45,17 @@ import { ExplorationWell } from "../models/ExplorationWell"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
+import { CessationOffshoreFacilitiesCost } from "../models/case/CessationOffshoreFacilitiesCost"
+import { CessationWellsCost } from "../models/case/CessationWellsCost"
+import { OffshoreFacilitiesOperationsCostProfile } from "../models/case/OffshoreFacilitiesOperationsCostProfile"
+import { TotalFeasibilityAndConceptStudies } from "../models/case/TotalFeasibilityAndConceptStudies"
+import { TotalFEEDStudies } from "../models/case/TotalFEEDStudies"
+import { WellInterventionCostProfile } from "../models/case/WellInterventionCostProfile"
+import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
+import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
+import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
+import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
+import { ImportedElectricity } from "../models/assets/drainagestrategy/ImportedElectricity"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -108,6 +122,11 @@ const RowWrapper = styled.div`
     flex-direction: row;
     margin-bottom: 78px;
 `
+const MenuIcon = styled(Icon)`
+    color: ${tokens.colors.text.static_icons__secondary.rgba};
+    margin-right: 0.5rem;
+    margin-bottom: -0.2rem;
+`
 
 const CaseView = () => {
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
@@ -141,6 +160,28 @@ const CaseView = () => {
 
     const [originalWellProjectWells, setOriginalWellProjectWells] = useState<WellProjectWell[]>()
     const [originalExplorationWells, setOriginalExplorationWells] = useState<ExplorationWell[]>()
+
+    const [totalFeasibilityAndConceptStudies,
+        setTotalFeasibilityAndConceptStudies] = useState<TotalFeasibilityAndConceptStudies>()
+
+    const [totalFEEDStudies, setTotalFEEDStudies] = useState<TotalFEEDStudies>()
+
+    const [offshoreFacilitiesOperationsCostProfile,
+        setOffshoreFacilitiesOperationsCostProfile] = useState<OffshoreFacilitiesOperationsCostProfile>()
+
+    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<WellInterventionCostProfile>()
+
+    const [cessationWellsCost, setCessationWellsCost] = useState<CessationWellsCost>()
+    const [cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost] = useState<CessationOffshoreFacilitiesCost>()
+
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
+
+    const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
+
+    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
+    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
+    const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
@@ -382,7 +423,35 @@ const CaseView = () => {
         setUpdateFromServer(true)
         try {
             const result = await (await GetCaseWithAssetsService()).update(dto)
-            setProject(result)
+            const projectResult = Project.fromJSON(result.projectDto!)
+            setProject(projectResult)
+            if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {
+                setTotalFeasibilityAndConceptStudies(TotalFeasibilityAndConceptStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto))
+                setTotalFEEDStudies(TotalFEEDStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto))
+            }
+            if (result.generatedProfilesDto?.opexCostProfileWrapperDto !== null && result.generatedProfilesDto?.opexCostProfileWrapperDto !== undefined) {
+                setOffshoreFacilitiesOperationsCostProfile(OffshoreFacilitiesOperationsCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto))
+                setWellInterventionCostProfile(WellInterventionCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.wellInterventionCostProfileDto))
+            }
+            if (result.generatedProfilesDto?.cessationCostWrapperDto !== null && result.generatedProfilesDto?.cessationCostWrapperDto !== undefined) {
+                setCessationWellsCost(CessationWellsCost.fromJSON(result.generatedProfilesDto.cessationCostWrapperDto.cessationWellsCostDto))
+                setCessationOffshoreFacilitiesCost(CessationOffshoreFacilitiesCost.fromJSON(result.generatedProfilesDto.cessationCostWrapperDto.cessationOffshoreFacilitiesCostDto))
+            }
+            if (result.generatedProfilesDto?.gAndGAdminCostDto !== null && result.generatedProfilesDto?.gAndGAdminCostDto !== undefined) {
+                setGAndGAdminCost(GAndGAdminCost.fromJSON(result.generatedProfilesDto.gAndGAdminCostDto))
+            }
+            if (result.generatedProfilesDto?.co2EmissionsDto !== null && result.generatedProfilesDto?.co2EmissionsDto !== undefined) {
+                setCo2Emissions(Co2Emissions.fromJson(result.generatedProfilesDto.co2EmissionsDto))
+            }
+            if (result.generatedProfilesDto?.fuelFlaringAndLossesDto !== null && result.generatedProfilesDto?.fuelFlaringAndLossesDto !== undefined) {
+                setFuelFlaringAndLosses(FuelFlaringAndLosses.fromJson(result.generatedProfilesDto.fuelFlaringAndLossesDto))
+            }
+            if (result.generatedProfilesDto?.netSalesGasDto !== null && result.generatedProfilesDto?.netSalesGasDto !== undefined) {
+                setNetSalesGas(NetSalesGas.fromJson(result.generatedProfilesDto.netSalesGasDto))
+            }
+            if (result.generatedProfilesDto?.importedElectricityDto !== null && result.generatedProfilesDto?.importedElectricityDto !== undefined) {
+                setImportedElectricity(ImportedElectricity.fromJson(result.generatedProfilesDto.importedElectricityDto))
+            }
             setIsSaving(false)
         } catch (e) {
             setIsSaving(false)
@@ -390,11 +459,25 @@ const CaseView = () => {
         }
     }
 
+    const withReferenceCase = () => {
+        if (project.referenceCaseId === caseItem.id) {
+            return bookmark_filled
+        }
+        return undefined
+    }
+
     return (
         <div>
             <HeaderWrapper>
                 <RowWrapper>
-                    <PageTitle variant="h4">{caseItem.name}</PageTitle>
+                    <PageTitle variant="h4">
+                        {project.referenceCaseId === caseItem.id && (
+                            <Tooltip title="Reference case">
+                                <MenuIcon data={withReferenceCase()} size={18} />
+                            </Tooltip>
+                        )}
+                        {caseItem.name}
+                    </PageTitle>
                     <ColumnWrapper>
                         <CaseButtonsWrapper>
                             {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
@@ -515,6 +598,12 @@ const CaseView = () => {
                                     drainageStrategy={drainageStrategy}
                                     setDrainageStrategy={setDrainageStrategy}
                                     activeTab={activeTab}
+                                    fuelFlaringAndLosses={fuelFlaringAndLosses}
+                                    setFuelFlaringAndLosses={setFuelFlaringAndLosses}
+                                    netSalesGas={netSalesGas}
+                                    setNetSalesGas={setNetSalesGas}
+                                    importedElectricity={importedElectricity}
+                                    setImportedElectricity={setImportedElectricity}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -581,6 +670,20 @@ const CaseView = () => {
                                     setTransport={setTransport}
                                     drainageStrategy={drainageStrategy}
                                     activeTab={activeTab}
+                                    totalFeasibilityAndConceptStudies={totalFeasibilityAndConceptStudies}
+                                    setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
+                                    totalFEEDStudies={totalFEEDStudies}
+                                    setTotalFEEDStudies={setTotalFEEDStudies}
+                                    offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
+                                    setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
+                                    wellInterventionCostProfile={wellInterventionCostProfile}
+                                    setWellInterventionCostProfile={setWellInterventionCostProfile}
+                                    cessationWellsCost={cessationWellsCost}
+                                    setCessationWellsCost={setCessationWellsCost}
+                                    cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
+                                    setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
+                                    gAndGAdminCost={gAndGAdminCost}
+                                    setGAndGAdminCost={setGAndGAdminCost}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -592,6 +695,10 @@ const CaseView = () => {
                                     activeTab={activeTab}
                                     topside={topside}
                                     setTopside={setTopside}
+                                    drainageStrategy={drainageStrategy}
+                                    setDrainageStrategy={setDrainageStrategy}
+                                    co2Emissions={co2Emissions}
+                                    setCo2Emissions={setCo2Emissions}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>

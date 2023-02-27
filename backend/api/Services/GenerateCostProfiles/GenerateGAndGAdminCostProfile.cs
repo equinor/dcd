@@ -1,28 +1,31 @@
 using System.Globalization;
 
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Models;
 
 
 namespace api.Services;
 
-public class GenerateGAndGAdminCostProfile
+public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
 {
-    private readonly ProjectService _projectService;
-    private readonly CaseService _caseService;
-    private readonly ILogger<CaseService> _logger;
-    private readonly ExplorationService _explorationService;
+    private readonly IProjectService _projectService;
+    private readonly ICaseService _caseService;
+    private readonly ILogger<GenerateGAndGAdminCostProfile> _logger;
+    private readonly IExplorationService _explorationService;
+    private readonly DcdDbContext _context;
 
-    public GenerateGAndGAdminCostProfile(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public GenerateGAndGAdminCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, IProjectService projectService, ICaseService caseService, IExplorationService explorationService)
     {
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _logger = loggerFactory.CreateLogger<CaseService>();
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _explorationService = serviceProvider.GetRequiredService<ExplorationService>();
+        _context = context;
+        _projectService = projectService;
+        _logger = loggerFactory.CreateLogger<GenerateGAndGAdminCostProfile>();
+        _caseService = caseService;
+        _explorationService = explorationService;
     }
 
-    public GAndGAdminCostDto Generate(Guid caseId)
+    public async Task<GAndGAdminCostDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
 
@@ -53,10 +56,10 @@ public class GenerateGAndGAdminCostProfile
                 var totalMinutesLastYear = new TimeSpan(365, 0, 0, 0).TotalMinutes;
                 var percentageOfLastYear = lastYearMinutes / totalMinutesLastYear;
 
-                var gAndGAdminCost = new GAndGAdminCost
-                {
-                    StartYear = (int)earliestYear - caseItem.DG4Date.Year
-                };
+                var gAndGAdminCost = exploration.GAndGAdminCost ?? new GAndGAdminCost();
+
+                gAndGAdminCost.StartYear = (int)earliestYear - caseItem.DG4Date.Year;
+
                 var years = lastYear.Year - (int)earliestYear;
                 var values = new List<double>();
                 for (int i = 0; i < years; i++)
@@ -65,10 +68,19 @@ public class GenerateGAndGAdminCostProfile
                 }
                 values.Add(countryCost * percentageOfLastYear);
                 gAndGAdminCost.Values = values.ToArray();
+
+                var saveResult = await UpdateExplorationAndSaveAsync(exploration, gAndGAdminCost);
+
                 return ExplorationDtoAdapter.Convert(gAndGAdminCost);
             }
         }
         return new GAndGAdminCostDto();
+    }
+
+    private async Task<int> UpdateExplorationAndSaveAsync(Exploration exploration, GAndGAdminCost gAndGAdminCost)
+    {
+        exploration.GAndGAdminCost = gAndGAdminCost;
+        return await _context.SaveChangesAsync();
     }
 
     private static double MapCountry(string country)

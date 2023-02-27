@@ -1,6 +1,18 @@
 import { DefaultDate } from "../../Utils/common"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { CessationCostProfile } from "./CessationCostProfile"
+import { CessationOffshoreFacilitiesCost } from "./CessationOffshoreFacilitiesCost"
+import { CessationOffshoreFacilitiesCostOverride } from "./CessationOffshoreFacilitiesCostOverride"
+import { CessationWellsCost } from "./CessationWellsCost"
+import { CessationWellsCostOverride } from "./CessationWellsCostOverride"
+import { OffshoreFacilitiesOperationsCostProfile } from "./OffshoreFacilitiesOperationsCostProfile"
+import { OffshoreFacilitiesOperationsCostProfileOverride } from "./OffshoreFacilitiesOperationsCostProfileOverride"
+import { TotalFeasibilityAndConceptStudies } from "./TotalFeasibilityAndConceptStudies"
+import { TotalFeasibilityAndConceptStudiesOverride } from "./TotalFeasibilityAndConceptStudiesOverride"
+import { TotalFEEDStudies } from "./TotalFEEDStudies"
+import { TotalFEEDStudiesOverride } from "./TotalFEEDStudiesOverride"
+import { WellInterventionCostProfile } from "./WellInterventionCostProfile"
+import { WellInterventionCostProfileOverride } from "./WellInterventionCostProfileOverride"
 
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
@@ -44,6 +56,18 @@ export class Case implements Components.Schemas.CaseDto {
     sharepointFileId?: string | null
     sharepointFileName?: string | null
     sharepointFileUrl?: string | null
+    cessationWellsCost?: CessationWellsCost | undefined
+    cessationWellsCostOverride?: CessationWellsCostOverride | undefined
+    cessationOffshoreFacilitiesCost?: CessationOffshoreFacilitiesCost | undefined
+    cessationOffshoreFacilitiesCostOverride?: CessationOffshoreFacilitiesCostOverride | undefined
+    totalFeasibilityAndConceptStudies?: TotalFeasibilityAndConceptStudies | undefined
+    totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverride | undefined
+    totalFEEDStudies?: TotalFEEDStudies | undefined
+    totalFEEDStudiesOverride?: TotalFEEDStudiesOverride | undefined
+    wellInterventionCostProfile?: WellInterventionCostProfile | undefined
+    wellInterventionCostProfileOverride?: WellInterventionCostProfileOverride | undefined
+    offshoreFacilitiesOperationsCostProfile?: OffshoreFacilitiesOperationsCostProfile | undefined
+    offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverride | undefined
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -87,6 +111,28 @@ export class Case implements Components.Schemas.CaseDto {
         this.sharepointFileId = data.sharepointFileId ?? ""
         this.sharepointFileName = data.sharepointFileName ?? ""
         this.sharepointFileUrl = data.sharepointFileUrl ?? ""
+
+        this.cessationWellsCost = CessationWellsCost.fromJSON(data.cessationWellsCost)
+        this.cessationWellsCostOverride = CessationWellsCostOverride.fromJSON(data.cessationWellsCostOverride)
+        this.cessationOffshoreFacilitiesCost = CessationOffshoreFacilitiesCost
+            .fromJSON(data.cessationOffshoreFacilitiesCost)
+        this.cessationOffshoreFacilitiesCostOverride = CessationOffshoreFacilitiesCostOverride
+            .fromJSON(data.cessationOffshoreFacilitiesCostOverride)
+
+        this.totalFeasibilityAndConceptStudies = TotalFeasibilityAndConceptStudies
+            .fromJSON(data.totalFeasibilityAndConceptStudies)
+        this.totalFeasibilityAndConceptStudiesOverride = TotalFeasibilityAndConceptStudiesOverride
+            .fromJSON(data.totalFeasibilityAndConceptStudiesOverride)
+        this.totalFEEDStudies = TotalFEEDStudies.fromJSON(data.totalFEEDStudies)
+        this.totalFEEDStudiesOverride = TotalFEEDStudiesOverride.fromJSON(data.totalFEEDStudiesOverride)
+
+        this.wellInterventionCostProfile = WellInterventionCostProfile.fromJSON(data.wellInterventionCostProfile)
+        this.wellInterventionCostProfileOverride = WellInterventionCostProfileOverride
+            .fromJSON(data.wellInterventionCostProfileOverride)
+        this.offshoreFacilitiesOperationsCostProfile = OffshoreFacilitiesOperationsCostProfile
+            .fromJSON(data.offshoreFacilitiesOperationsCostProfile)
+        this.offshoreFacilitiesOperationsCostProfileOverride = OffshoreFacilitiesOperationsCostProfileOverride
+            .fromJSON(data.offshoreFacilitiesOperationsCostProfileOverride)
     }
 
     static Copy(data: Case) {

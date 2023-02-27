@@ -10,35 +10,37 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class CompareCasesService
+public class CompareCasesService : ICompareCasesService
 {
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<CompareCasesService> _logger;
-    private readonly ExplorationService _explorationService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly GenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly GenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
-    private readonly GenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly GenerateOpexCostProfile _generateOpexCostProfile;
-    private readonly GenerateStudyCostProfile _generateStudyCostProfile;
+    private readonly IExplorationService _explorationService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
+    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
+    private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
+    private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
 
-    public CompareCasesService(ProjectService projectService, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public CompareCasesService(IProjectService projectService, ILoggerFactory loggerFactory, IExplorationService explorationService, IDrainageStrategyService drainageStrategyService,
+    IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile, IGenerateStudyCostProfile generateStudyCostProfile, IGenerateOpexCostProfile generateOpexCostProfile,
+    IGenerateCessationCostProfile generateCessationCostProfile, IGenerateCo2EmissionsProfile generateCo2EmissionsProfile)
     {
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<CompareCasesService>();
-        _explorationService = serviceProvider.GetRequiredService<ExplorationService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
+        _explorationService = explorationService;
+        _drainageStrategyService = drainageStrategyService;
 
-        _generateGAndGAdminCostProfile = serviceProvider.GetRequiredService<GenerateGAndGAdminCostProfile>();
-        _generateStudyCostProfile = serviceProvider.GetRequiredService<GenerateStudyCostProfile>();
-        _generateOpexCostProfile = serviceProvider.GetRequiredService<GenerateOpexCostProfile>();
-        _generateCessationCostProfile = serviceProvider.GetRequiredService<GenerateCessationCostProfile>();
-        _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
+        _generateGAndGAdminCostProfile = generateGAndGAdminCostProfile;
+        _generateStudyCostProfile = generateStudyCostProfile;
+        _generateOpexCostProfile = generateOpexCostProfile;
+        _generateCessationCostProfile = generateCessationCostProfile;
+        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }
 
     public IEnumerable<CompareCasesDto> Calculate(Guid projectId)
     {
-        var project = _projectService.GetProject(projectId);
+        var project = _projectService.GetProjectWithoutAssetsNoTracking(projectId);
         var caseList = new List<CompareCasesDto>();
         if (project.Cases != null)
         {
@@ -48,7 +50,7 @@ public class CompareCasesService
             {
                 drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
                 exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
-                var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseItem.Id);
+                var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
 
                 var totalOilProduction = CalculateTotalOilProduction(caseItem, project, drainageStrategy, false);
                 var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
@@ -142,8 +144,8 @@ public class CompareCasesService
 
     private double CalculateTotalStudyCostsPlusOpex(Case caseItem)
     {
-        var generateStudyProfile = _generateStudyCostProfile.Generate(caseItem.Id);
-        var generateOpexProfile = _generateOpexCostProfile.Generate(caseItem.Id);
+        var generateStudyProfile = _generateStudyCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        var generateOpexProfile = _generateOpexCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
         var sumStudyValues = generateStudyProfile?.StudyCostProfileDto?.Sum ?? 0;
         var sumOpexValues = generateOpexProfile?.OpexCostProfileDto?.Sum ?? 0;
 
@@ -152,7 +154,7 @@ public class CompareCasesService
 
     private double CalculateTotalCessationCosts(Case caseItem)
     {
-        var generateCessationProfile = _generateCessationCostProfile.Generate(caseItem.Id);
+        var generateCessationProfile = _generateCessationCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
         return generateCessationProfile?.CessationCostDto?.Sum ?? 0;
     }
 
@@ -169,7 +171,7 @@ public class CompareCasesService
     private double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
     {
         var sumExplorationWellCost = 0.0;
-        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.Generate(caseItem.Id);
+        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
         sumExplorationWellCost += generateGAndGAdminProfile.Sum;
 
         try

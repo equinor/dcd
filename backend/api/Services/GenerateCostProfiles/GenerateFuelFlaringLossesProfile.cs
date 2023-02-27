@@ -1,26 +1,30 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateFuelFlaringLossesProfile
+public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfile
 {
-    private readonly CaseService _caseService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly ProjectService _projectService;
-    private readonly TopsideService _topsideService;
+    private readonly ICaseService _caseService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IProjectService _projectService;
+    private readonly ITopsideService _topsideService;
+    private readonly DcdDbContext _context;
 
-    public GenerateFuelFlaringLossesProfile(IServiceProvider serviceProvider)
+    public GenerateFuelFlaringLossesProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService)
     {
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _topsideService = serviceProvider.GetRequiredService<TopsideService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
+        _context = context;
+        _caseService = caseService;
+        _projectService = projectService;
+        _topsideService = topsideService;
+        _drainageStrategyService = drainageStrategyService;
     }
 
-    public FuelFlaringAndLossesDto Generate(Guid caseId)
+    public async Task<FuelFlaringAndLossesDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
@@ -34,13 +38,19 @@ public class GenerateFuelFlaringLossesProfile
 
         var total = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptions, flaring, losses });
 
-        var fuelFlaringLosses = new FuelFlaringAndLosses
-        {
-            StartYear = total.StartYear,
-            Values = total.Values,
-        };
+        var fuelFlaringLosses = drainageStrategy.FuelFlaringAndLosses ?? new FuelFlaringAndLosses();
+        fuelFlaringLosses.StartYear = total.StartYear;
+        fuelFlaringLosses.Values = total.Values;
 
-        var dto = DrainageStrategyDtoAdapter.Convert(fuelFlaringLosses, project.PhysicalUnit);
+        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, fuelFlaringLosses);
+
+        var dto = DrainageStrategyDtoAdapter.Convert<FuelFlaringAndLossesDto, FuelFlaringAndLosses>(fuelFlaringLosses, project.PhysicalUnit);
         return dto ?? new FuelFlaringAndLossesDto();
+    }
+
+    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
+    {
+        drainageStrategy.FuelFlaringAndLosses = fuelFlaringAndLosses;
+        return await _context.SaveChangesAsync();
     }
 }

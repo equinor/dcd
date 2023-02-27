@@ -34,8 +34,9 @@ public static class SurfAdapter
             CessationCost = surfDto.CessationCost,
         };
 
-        surf.CostProfile = Convert(surfDto.CostProfile, surf);
-        surf.CessationCostProfile = Convert(surfDto.CessationCostProfile, surf);
+        surf.CostProfile = Convert<SurfCostProfileDto, SurfCostProfile>(surfDto.CostProfile, surf);
+        surf.CostProfileOverride = ConvertOverride<SurfCostProfileOverrideDto, SurfCostProfileOverride>(surfDto.CostProfileOverride, surf);
+        surf.CessationCostProfile = Convert<SurfCessationCostProfileDto, SurfCessationCostProfile>(surfDto.CessationCostProfile, surf);
 
         return surf;
     }
@@ -56,8 +57,9 @@ public static class SurfAdapter
         existing.GasInjectorCount = surfDto.GasInjectorCount;
         existing.WaterInjectorCount = surfDto.WaterInjectorCount;
         existing.Currency = surfDto.Currency;
-        existing.CostProfile = Convert(surfDto.CostProfile, existing);
-        existing.CessationCostProfile = Convert(surfDto.CessationCostProfile, existing);
+        existing.CostProfile = Convert<SurfCostProfileDto, SurfCostProfile>(surfDto.CostProfile, existing);
+        existing.CostProfileOverride = ConvertOverride<SurfCostProfileOverrideDto, SurfCostProfileOverride>(surfDto.CostProfileOverride, existing);
+        existing.CessationCostProfile = Convert<SurfCessationCostProfileDto, SurfCessationCostProfile>(surfDto.CessationCostProfile, existing);
         existing.LastChangedDate = surfDto.LastChangedDate;
         existing.CostYear = surfDto.CostYear;
         existing.Source = surfDto.Source;
@@ -68,44 +70,38 @@ public static class SurfAdapter
         existing.CessationCost = surfDto.CessationCost;
     }
 
-    private static SurfCostProfile? Convert(SurfCostProfileDto? costprofile, Surf surf)
+    private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, Surf surf)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+        where TModel : TimeSeriesCost, ITimeSeriesOverride, ISurfTimeSeries, new()
     {
-        if (costprofile == null)
+        if (dto == null) { return new TModel(); }
+
+        return new TModel
         {
-            return null;
-        }
-        var surfCostProfile = new SurfCostProfile
-        {
-            Id = costprofile.Id,
-            Currency = costprofile.Currency,
-            EPAVersion = costprofile.EPAVersion,
-            StartYear = costprofile.StartYear,
-            Values = costprofile.Values,
-            Surf = surf
+            Id = dto.Id,
+            Override = dto.Override,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
+            Surf = surf,
         };
-        return surfCostProfile;
     }
 
-    private static SurfCessationCostProfile? Convert(SurfCessationCostProfileDto? cessationCostProfileDto, Surf surf)
+    private static TModel? Convert<TDto, TModel>(TDto? dto, Surf surf)
+        where TDto : TimeSeriesCostDto
+        where TModel : TimeSeriesCost, ISurfTimeSeries, new()
     {
+        if (dto == null) { return new TModel(); }
 
-        if (cessationCostProfileDto == null)
+        return new TModel
         {
-            return null;
-        }
-
-        SurfCessationCostProfile surfCessationCostProfile = new SurfCessationCostProfile
-        {
-            Id = cessationCostProfileDto.Id,
-            Currency = cessationCostProfileDto.Currency,
-            EPAVersion = cessationCostProfileDto.EPAVersion,
-            StartYear = cessationCostProfileDto.StartYear,
-            Values = cessationCostProfileDto.Values,
-            Surf = surf
+            Id = dto.Id,
+            StartYear = dto.StartYear,
+            Currency = dto.Currency,
+            EPAVersion = dto.EPAVersion,
+            Values = dto.Values,
+            Surf = surf,
         };
-
-        return surfCessationCostProfile;
     }
-
-
 }

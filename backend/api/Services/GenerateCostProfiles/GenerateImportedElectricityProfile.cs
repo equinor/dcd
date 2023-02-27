@@ -1,26 +1,30 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateImportedElectricityProfile
+public class GenerateImportedElectricityProfile : IGenerateImportedElectricityProfile
 {
-    private readonly CaseService _caseService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly ProjectService _projectService;
-    private readonly TopsideService _topsideService;
+    private readonly ICaseService _caseService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IProjectService _projectService;
+    private readonly ITopsideService _topsideService;
+    private readonly DcdDbContext _context;
 
-    public GenerateImportedElectricityProfile(IServiceProvider serviceProvider)
+    public GenerateImportedElectricityProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService)
     {
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _topsideService = serviceProvider.GetRequiredService<TopsideService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
+        _context = context;
+        _caseService = caseService;
+        _projectService = projectService;
+        _topsideService = topsideService;
+        _drainageStrategyService = drainageStrategyService;
     }
 
-    public ImportedElectricityDto Generate(Guid caseId)
+    public async Task<ImportedElectricityDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var topside = _topsideService.GetTopside(caseItem.TopsideLink);
@@ -34,14 +38,21 @@ public class GenerateImportedElectricityProfile
         var calculateImportedElectricity =
             CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
 
-        var importedElectricity = new ImportedElectricity
-        {
-            StartYear = calculateImportedElectricity.StartYear,
-            Values = calculateImportedElectricity.Values,
-        };
+        var importedElectricity = drainageStrategy.ImportedElectricity ?? new ImportedElectricity();
 
-        var dto = DrainageStrategyDtoAdapter.Convert(importedElectricity, project.PhysicalUnit);
+        importedElectricity.StartYear = calculateImportedElectricity.StartYear;
+        importedElectricity.Values = calculateImportedElectricity.Values;
+
+        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, importedElectricity);
+
+        var dto = DrainageStrategyDtoAdapter.Convert<ImportedElectricityDto, ImportedElectricity>(importedElectricity, project.PhysicalUnit);
         return dto ?? new ImportedElectricityDto();
+    }
+
+    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
+    {
+        drainageStrategy.ImportedElectricity = importedElectricity;
+        return await _context.SaveChangesAsync();
     }
 
     private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability,

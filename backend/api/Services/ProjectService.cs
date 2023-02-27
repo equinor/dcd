@@ -13,41 +13,18 @@ using Newtonsoft.Json;
 
 namespace api.Services;
 
-public class ProjectService
+public class ProjectService : IProjectService
 {
     private readonly DcdDbContext _context;
-    private readonly DevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly ExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
-    private readonly ExplorationService _explorationService;
-    private readonly FusionService? _fusionService;
+    private readonly IFusionService? _fusionService;
     private readonly ILogger<ProjectService> _logger;
-    private readonly SubstructureService _substructureService;
-    private readonly SurfService _surfService;
-    private readonly TopsideService _topsideService;
-    private readonly TransportService _transportService;
-    private readonly WellProjectService _wellProjectService;
-    private readonly WellService _wellService;
 
-    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory, IServiceProvider serviceProvider,
+    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory,
         FusionService? fusionService = null)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<ProjectService>();
         _fusionService = fusionService;
-        _wellProjectService = new WellProjectService(_context, this, loggerFactory);
-        _drainageStrategyService = new DrainageStrategyService(_context, this, loggerFactory);
-        _surfService = new SurfService(_context, this, loggerFactory);
-        _substructureService = new SubstructureService(_context, this, loggerFactory);
-        _topsideService = new TopsideService(_context, this, loggerFactory);
-        _explorationService = new ExplorationService(_context, this, loggerFactory);
-        _transportService = new TransportService(_context, this, loggerFactory);
-        _wellService = new WellService(_context, this, _wellProjectService, _explorationService, serviceProvider,
-            loggerFactory);
-        _explorationOperationalWellCostsService =
-            new ExplorationOperationalWellCostsService(_context, this, loggerFactory);
-        _developmentOperationalWellCostsService =
-            new DevelopmentOperationalWellCostsService(_context, this, loggerFactory);
     }
 
     public ProjectDto UpdateProject(ProjectDto projectDto)
@@ -180,7 +157,46 @@ public class ProjectService
             if (project == null)
             {
                 var projectByFusionId = _context.Projects
-                    .Include(c => c.Cases)
+                    .Include(p => p.Cases)
+                    .Include(p => p.Wells)
+                    .Include(p => p.ExplorationOperationalWellCosts)
+                    .Include(p => p.DevelopmentOperationalWellCosts)
+                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+            return project;
+        }
+
+        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+        throw new NotFoundInDBException("The database contains no projects");
+    }
+
+    public Project GetProjectWithoutAssetsNoTracking(Guid projectId)
+    {
+        if (_context.Projects != null)
+        {
+            if (projectId == Guid.Empty)
+            {
+                throw new NotFoundInDBException($"Project {projectId} not found");
+            }
+
+            var project = _context.Projects
+                .AsNoTracking()
+                .Include(p => p.Cases)
+                .Include(p => p.Wells)
+                .Include(p => p.ExplorationOperationalWellCosts)
+                .Include(p => p.DevelopmentOperationalWellCosts)
+                .FirstOrDefault(p => p.Id.Equals(projectId));
+
+            if (project == null)
+            {
+                var projectByFusionId = _context.Projects
+                    .AsNoTracking()
+                    .Include(p => p.Cases)
+                    .Include(p => p.Wells)
+                    .Include(p => p.ExplorationOperationalWellCosts)
+                    .Include(p => p.DevelopmentOperationalWellCosts)
                     .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
                 project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
             }
@@ -202,7 +218,18 @@ public class ProjectService
             }
 
             var project = _context.Projects!
-                .Include(p => p.Cases)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
+                .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
+                .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
@@ -253,19 +280,6 @@ public class ProjectService
         return projectDto;
     }
 
-    private Project AddAssetsToProject(Project project)
-    {
-        project.WellProjects = _wellProjectService.GetWellProjects(project.Id).ToList();
-        project.DrainageStrategies = _drainageStrategyService.GetDrainageStrategies(project.Id).ToList();
-        project.Surfs = _surfService.GetSurfs(project.Id).ToList();
-        project.Substructures = _substructureService.GetSubstructures(project.Id).ToList();
-        project.Topsides = _topsideService.GetTopsides(project.Id).ToList();
-        project.Transports = _transportService.GetTransports(project.Id).ToList();
-        project.Explorations = _explorationService.GetExplorations(project.Id).ToList();
-        project.Wells = _wellService.GetWells(project.Id).ToList();
-        return project;
-    }
-
     public void UpdateProjectFromProjectMaster()
     {
         var projectDtos = GetAllDtos();
@@ -291,7 +305,6 @@ public class ProjectService
         _logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}",
             numberOfDeviations, totalNumberOfProjects);
     }
-
 
     private ProjectDto GetProjectDtoFromProjectMaster(Guid projectGuid)
     {
@@ -326,11 +339,168 @@ public class ProjectService
             throw new NotFoundInDBException($"Project {projectDto.ProjectId} not found");
         }
 
-        var project = GetProjectWithoutAssets(projectDto.ProjectId);
+        var project = GetProject(projectDto.ProjectId);
         project.ReferenceCaseId = projectDto.ReferenceCaseId;
 
         _context.Projects?.Update(project);
-        _context.SaveChangesAsync();
+        _context.SaveChanges();
         return ProjectDtoAdapter.Convert(project);
+    }
+
+    private Project AddAssetsToProject(Project project)
+    {
+        project.WellProjects = GetWellProjects(project.Id).ToList();
+        project.DrainageStrategies = GetDrainageStrategies(project.Id).ToList();
+        project.Surfs = GetSurfs(project.Id).ToList();
+        project.Substructures = GetSubstructures(project.Id).ToList();
+        project.Topsides = GetTopsides(project.Id).ToList();
+        project.Transports = GetTransports(project.Id).ToList();
+        project.Explorations = GetExplorations(project.Id).ToList();
+        project.Wells = GetWells(project.Id).ToList();
+        return project;
+    }
+
+    public IEnumerable<Well> GetWells(Guid projectId)
+    {
+        if (_context.Wells != null)
+        {
+            return _context.Wells
+                .Where(d => d.ProjectId.Equals(projectId));
+        }
+        else
+        {
+            return new List<Well>();
+        }
+    }
+
+    public IEnumerable<Exploration> GetExplorations(Guid projectId)
+    {
+        if (_context.Explorations != null)
+        {
+            return _context.Explorations
+                .Include(c => c.ExplorationWellCostProfile)
+                .Include(c => c.AppraisalWellCostProfile)
+                .Include(c => c.SidetrackCostProfile)
+                .Include(c => c.GAndGAdminCost)
+                .Include(c => c.SeismicAcquisitionAndProcessing)
+                .Include(c => c.CountryOfficeCost)
+                .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
+                .Where(d => d.Project.Id.Equals(projectId));
+        }
+        else
+        {
+            return new List<Exploration>();
+        }
+    }
+    public IEnumerable<Transport> GetTransports(Guid projectId)
+    {
+        if (_context.Transports != null)
+        {
+            return _context.Transports
+                .Include(c => c.CostProfile)
+                .Include(c => c.CostProfileOverride)
+                .Include(c => c.CessationCostProfile)
+                .Where(c => c.Project.Id.Equals(projectId));
+        }
+        else
+        {
+            return new List<Transport>();
+        }
+    }
+
+    public IEnumerable<Topside> GetTopsides(Guid projectId)
+    {
+        if (_context.Topsides != null)
+        {
+            return _context.Topsides
+                .Include(c => c.CostProfile)
+                .Include(c => c.CostProfileOverride)
+                .Include(c => c.CessationCostProfile)
+                .Where(c => c.Project.Id.Equals(projectId));
+        }
+        else
+        {
+            return new List<Topside>();
+        }
+    }
+
+    public IEnumerable<Surf> GetSurfs(Guid projectId)
+    {
+        if (_context.Surfs != null)
+        {
+            return _context.Surfs
+                .Include(c => c.CostProfile)
+                .Include(c => c.CostProfileOverride)
+                .Include(c => c.CessationCostProfile)
+                .Where(c => c.Project.Id.Equals(projectId));
+        }
+        else
+        {
+            return new List<Surf>();
+        }
+    }
+
+    public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
+    {
+        if (_context.DrainageStrategies != null)
+        {
+            return _context.DrainageStrategies
+                .Include(c => c.ProductionProfileOil)
+                .Include(c => c.ProductionProfileGas)
+                .Include(c => c.ProductionProfileWater)
+                .Include(c => c.ProductionProfileWaterInjection)
+                .Include(c => c.FuelFlaringAndLosses)
+                .Include(c => c.FuelFlaringAndLossesOverride)
+                .Include(c => c.NetSalesGas)
+                .Include(c => c.NetSalesGasOverride)
+                .Include(c => c.Co2Emissions)
+                .Include(c => c.Co2EmissionsOverride)
+                .Include(c => c.ProductionProfileNGL)
+                .Include(c => c.ImportedElectricity)
+                .Include(c => c.ImportedElectricityOverride)
+                .Where(d => d.Project.Id.Equals(projectId));
+        }
+        else
+        {
+            return new List<DrainageStrategy>();
+        }
+    }
+
+    public IEnumerable<WellProject> GetWellProjects(Guid projectId)
+    {
+        if (_context.WellProjects != null)
+        {
+            return _context.WellProjects
+                .Include(c => c.OilProducerCostProfile)
+                .Include(c => c.OilProducerCostProfileOverride)
+                .Include(c => c.GasProducerCostProfile)
+                .Include(c => c.GasProducerCostProfileOverride)
+                .Include(c => c.WaterInjectorCostProfile)
+                .Include(c => c.WaterInjectorCostProfileOverride)
+                .Include(c => c.GasInjectorCostProfile)
+                .Include(c => c.GasInjectorCostProfileOverride)
+                .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
+                .Where(d => d.Project.Id.Equals(projectId));
+        }
+        else
+        {
+            return new List<WellProject>();
+        }
+    }
+
+    public IEnumerable<Substructure> GetSubstructures(Guid projectId)
+    {
+        if (_context.Substructures != null)
+        {
+            return _context.Substructures
+                .Include(c => c.CostProfile)
+                .Include(c => c.CostProfileOverride)
+                .Include(c => c.CessationCostProfile)
+                .Where(c => c.Project.Id.Equals(projectId));
+        }
+        else
+        {
+            return new List<Substructure>();
+        }
     }
 }

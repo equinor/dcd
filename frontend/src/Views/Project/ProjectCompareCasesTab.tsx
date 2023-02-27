@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-unsafe-optional-chaining */
 import styled from "styled-components"
 import {
@@ -5,12 +6,21 @@ import {
 } from "react"
 import { AgGridReact } from "ag-grid-react"
 import {
-    Tabs,
+    Icon,
+    Tabs, Tooltip,
 } from "@equinor/eds-core-react"
+import { bookmark_filled } from "@equinor/eds-icons"
+import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { Project } from "../../models/Project"
 import { GetCompareCasesService } from "../../Services/CompareCasesService"
 import { AgChartsCompareCases } from "../../Components/AgGrid/AgChartsCompareCases"
+
+const MenuIcon = styled(Icon)`
+    color: ${tokens.colors.text.static_icons__secondary.rgba};
+    margin-right: 0.5rem;
+    margin-bottom: -0.2rem;
+`
 
 interface Props {
     project: Project
@@ -142,23 +152,23 @@ function ProjectCompareCasesTab({
                 })
                 productionProfilesObject.push({
                     cases: project.cases[i].name,
-                    oilProduction: compareCasesTotals[i].totalOilProduction,
-                    gasProduction: compareCasesTotals[i].totalGasProduction,
-                    totalExportedVolumes: compareCasesTotals[i].totalExportedVolumes,
+                    oilProduction: compareCasesTotals[i]?.totalOilProduction,
+                    gasProduction: compareCasesTotals[i]?.totalGasProduction,
+                    totalExportedVolumes: compareCasesTotals[i]?.totalExportedVolumes,
                 })
                 investmentProfilesObject.push({
                     cases: project.cases[i].name,
-                    offshorePlusOnshoreFacilityCosts: compareCasesTotals[i].offshorePlusOnshoreFacilityCosts,
-                    developmentCosts: compareCasesTotals[i].developmentWellCosts,
-                    explorationWellCosts: compareCasesTotals[i].explorationWellCosts,
+                    offshorePlusOnshoreFacilityCosts: compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts,
+                    developmentCosts: compareCasesTotals[i]?.developmentWellCosts,
+                    explorationWellCosts: compareCasesTotals[i]?.explorationWellCosts,
                 })
                 totalCo2EmissionsObject.push({
                     cases: project.cases[i].name,
-                    totalCO2Emissions: compareCasesTotals[i].totalCo2Emissions,
+                    totalCO2Emissions: compareCasesTotals[i]?.totalCo2Emissions,
                 })
                 co2IntensityObject.push({
                     cases: project.cases[i].name,
-                    cO2Intensity: compareCasesTotals[i].co2Intensity,
+                    cO2Intensity: compareCasesTotals[i]?.co2Intensity,
                 })
             }
         }
@@ -175,10 +185,26 @@ function ProjectCompareCasesTab({
         generateAllCharts()
     }, [project.cases, compareCasesTotals])
 
+    const nameWithReferenceCase = (p: any) => (
+        <span>
+            {project.referenceCaseId === p.node.data.id
+                        && (
+                            <Tooltip title="Reference case">
+                                <MenuIcon data={bookmark_filled} size={16} />
+                            </Tooltip>
+                        )}
+            <span>{p.value}</span>
+        </span>
+    )
+
     const columns = () => {
         const columnPinned: any[] = [
             {
-                field: "cases", width: 250, pinned: "left", chartDataType: "category",
+                field: "cases",
+                width: 250,
+                pinned: "left",
+                chartDataType: "category",
+                cellRenderer: nameWithReferenceCase,
             },
         ]
         const nonPinnedColumns: any[] = [

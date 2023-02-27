@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services
 {
-    public class DevelopmentOperationalWellCostsService
+    public class DevelopmentOperationalWellCostsService : IDevelopmentOperationalWellCostsService
     {
         private readonly DcdDbContext _context;
-        private readonly ProjectService _projectService;
+        private readonly IProjectService _projectService;
         private readonly ILogger<SurfService> _logger;
-        public DevelopmentOperationalWellCostsService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+        public DevelopmentOperationalWellCostsService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
         {
             _context = context;
             _projectService = projectService;

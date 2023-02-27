@@ -7,35 +7,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class WellProjectService
+public class WellProjectService : IWellProjectService
 {
     private readonly DcdDbContext _context;
-    private readonly ProjectService _projectService;
+    private readonly IProjectService _projectService;
     private readonly ILogger<WellProjectService> _logger;
 
-    public WellProjectService(DcdDbContext context, ProjectService projectService, ILoggerFactory loggerFactory)
+    public WellProjectService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<WellProjectService>();
-    }
-
-    public IEnumerable<WellProject> GetWellProjects(Guid projectId)
-    {
-        if (_context.WellProjects != null)
-        {
-            return _context.WellProjects
-                .Include(c => c.OilProducerCostProfile)
-                .Include(c => c.GasProducerCostProfile)
-                .Include(c => c.WaterInjectorCostProfile)
-                .Include(c => c.GasInjectorCostProfile)
-                .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
-                .Where(d => d.Project.Id.Equals(projectId));
-        }
-        else
-        {
-            return new List<WellProject>();
-        }
     }
 
     public WellProjectDto CopyWellProject(Guid wellProjectId, Guid sourceCaseId)
@@ -47,17 +29,36 @@ public class WellProjectService
         {
             newWellProjectDto.OilProducerCostProfile.Id = Guid.Empty;
         }
+        if (newWellProjectDto.OilProducerCostProfileOverride != null)
+        {
+            newWellProjectDto.OilProducerCostProfileOverride.Id = Guid.Empty;
+        }
+
         if (newWellProjectDto.GasProducerCostProfile != null)
         {
             newWellProjectDto.GasProducerCostProfile.Id = Guid.Empty;
         }
+        if (newWellProjectDto.GasProducerCostProfileOverride != null)
+        {
+            newWellProjectDto.GasProducerCostProfileOverride.Id = Guid.Empty;
+        }
+
         if (newWellProjectDto.WaterInjectorCostProfile != null)
         {
             newWellProjectDto.WaterInjectorCostProfile.Id = Guid.Empty;
         }
+        if (newWellProjectDto.WaterInjectorCostProfileOverride != null)
+        {
+            newWellProjectDto.WaterInjectorCostProfileOverride.Id = Guid.Empty;
+        }
+
         if (newWellProjectDto.GasInjectorCostProfile != null)
         {
             newWellProjectDto.GasInjectorCostProfile.Id = Guid.Empty;
+        }
+        if (newWellProjectDto.GasInjectorCostProfileOverride != null)
+        {
+            newWellProjectDto.GasInjectorCostProfileOverride.Id = Guid.Empty;
         }
 
         var wellProject = NewCreateWellProject(newWellProjectDto, sourceCaseId);
@@ -166,9 +167,13 @@ public class WellProjectService
     {
         var wellProject = _context.WellProjects!
             .Include(c => c.OilProducerCostProfile)
+            .Include(c => c.OilProducerCostProfileOverride)
             .Include(c => c.GasProducerCostProfile)
+            .Include(c => c.GasProducerCostProfileOverride)
             .Include(c => c.WaterInjectorCostProfile)
+            .Include(c => c.WaterInjectorCostProfileOverride)
             .Include(c => c.GasInjectorCostProfile)
+            .Include(c => c.GasInjectorCostProfileOverride)
             .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
             .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.Well)
             .FirstOrDefault(o => o.Id == wellProjectId);

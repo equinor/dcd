@@ -23,9 +23,9 @@ namespace api.Controllers;
 public class ExplorationWellsController : ControllerBase
 {
 
-    private readonly ExplorationWellService _explorationWellService;
+    private readonly IExplorationWellService _explorationWellService;
 
-    public ExplorationWellsController(ExplorationWellService explorationWellService)
+    public ExplorationWellsController(IExplorationWellService explorationWellService)
     {
         _explorationWellService = explorationWellService;
     }

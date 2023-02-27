@@ -39,8 +39,8 @@ function App(): JSX.Element {
         <ErrorBoundary>
             <ConceptAppAuthProvider>
                 {(() => {
-                    // eslint-disable-next-line max-len
-                    if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === null || runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === undefined) {
+                    if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === null
+                        || runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === undefined) {
                         return (
                             <>
                                 <Progress.Circular size={16} color="primary" />

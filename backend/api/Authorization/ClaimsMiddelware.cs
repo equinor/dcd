@@ -8,17 +8,15 @@ namespace Api.Authorization;
 
 public class ClaimsMiddelware
 {
-
     public static string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-    private ILogger<ClaimsMiddelware> _logger;
-    private readonly RequestDelegate nextMiddleware;
+    private readonly ILogger<ClaimsMiddelware> _logger;
+    private readonly RequestDelegate _nextMiddleware;
     public ClaimsMiddelware(RequestDelegate nextMiddleware,
         ILogger<ClaimsMiddelware> logger,
         IConfiguration configuration)
     {
-        this.nextMiddleware = nextMiddleware;
+        _nextMiddleware = nextMiddleware;
         _logger = logger;
-
     }
     public async Task InvokeAsync(HttpContext httpContext)
     {
@@ -36,8 +34,7 @@ public class ClaimsMiddelware
             _logger.LogError("Unauthenticated access attempted on: " + httpContext.Request.Path);
         }
 
-        await nextMiddleware(httpContext);
-
+        await _nextMiddleware(httpContext);
     }
 
     private void SetAppRoleClaims(HttpContext httpContext)

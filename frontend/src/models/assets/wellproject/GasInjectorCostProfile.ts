@@ -9,7 +9,6 @@ export class GasInjectorCostProfile implements Components.Schemas.GasInjectorCos
     epaVersion?: string | null
     currency?: Components.Schemas.Currency | undefined
     sum?: number | undefined
-    override?: boolean
 
     constructor(data?: Components.Schemas.GasInjectorCostProfileDto) {
         if (data !== undefined && data !== null) {
@@ -20,7 +19,6 @@ export class GasInjectorCostProfile implements Components.Schemas.GasInjectorCos
             this.epaVersion = data.epaVersion ?? ""
             this.currency = data.currency
             this.sum = data.sum
-            this.override = data.override
         } else {
             this.id = EMPTY_GUID
             this.startYear = 0

@@ -20,16 +20,17 @@ namespace api.Controllers;
 )]
 public class CaseWithAssetsController : ControllerBase
 {
-    private readonly CaseWithAssetsService _caseWithAssetsService;
+    private readonly ICaseWithAssetsService _caseWithAssetsService;
 
-    public CaseWithAssetsController(CaseWithAssetsService caseWithAssetsService)
+    public CaseWithAssetsController(ICaseWithAssetsService caseWithAssetsService)
     {
         _caseWithAssetsService = caseWithAssetsService;
     }
 
     [HttpPut(Name = "UpdateCaseWithAssets")]
-    public ProjectDto UpdateCaseWithAssets([FromBody] CaseWithAssetsWrapperDto caseWrapperDto)
+    public async Task<ActionResult<ProjectWithGeneratedProfilesDto>> UpdateCaseWithAssetsAsync([FromBody] CaseWithAssetsWrapperDto caseWrapperDto)
     {
-        return _caseWithAssetsService.UpdateCaseWithAssets(caseWrapperDto);
+        var dto = await _caseWithAssetsService.UpdateCaseWithAssetsAsync(caseWrapperDto);
+        return Ok(dto);
     }
 }

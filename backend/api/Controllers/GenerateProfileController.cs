@@ -23,80 +23,151 @@ namespace api.Controllers;
 )]
 public class GenerateProfileController : ControllerBase
 {
-    private readonly GenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly GenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
-    private readonly GenerateFuelFlaringLossesProfile _generateFuelFlaringLossessProfile;
-    private readonly GenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly GenerateImportedElectricityProfile _generateImportedElectricityProfile;
-    private readonly GenerateNetSaleGasProfile _generateNetSaleGasProfile;
-    private readonly GenerateOpexCostProfile _generateOpexCostProfile;
-    private readonly GenerateStudyCostProfile _generateStudyCostProfile;
-    private readonly GenerateCo2IntensityProfile _generateCo2IntensityProfile;
-    private readonly GenerateCo2IntensityTotal _generateCo2IntensityTotal;
+    private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
+    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly IGenerateFuelFlaringLossesProfile _generateFuelFlaringLossessProfile;
+    private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
+    private readonly IGenerateImportedElectricityProfile _generateImportedElectricityProfile;
+    private readonly IGenerateNetSaleGasProfile _generateNetSaleGasProfile;
+    private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
+    private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
+    private readonly IGenerateCo2IntensityProfile _generateCo2IntensityProfile;
+    private readonly IGenerateCo2IntensityTotal _generateCo2IntensityTotal;
+    private readonly IGenerateCo2DrillingFlaringFuelTotals _generateCo2DrillingFlaringFuelTotals;
 
-    public GenerateProfileController(IServiceProvider serviceProvider)
+    public GenerateProfileController(IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile, IGenerateStudyCostProfile generateStudyCostProfile,
+        IGenerateOpexCostProfile generateOpexCostProfile, IGenerateCessationCostProfile generateCessationCostProfile,
+        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile, IGenerateNetSaleGasProfile generateNetSaleGasProfile,
+        IGenerateFuelFlaringLossesProfile generateFuelFlaringLossesProfile, IGenerateImportedElectricityProfile generateImportedElectricityProfile,
+        IGenerateCo2IntensityProfile generateCo2IntensityProfile, IGenerateCo2IntensityTotal generateCo2IntensityTotal,
+        IGenerateCo2DrillingFlaringFuelTotals generateCo2DrillingFlaringFuelTotals)
     {
-        _generateGAndGAdminCostProfile = serviceProvider.GetRequiredService<GenerateGAndGAdminCostProfile>();
-        _generateStudyCostProfile = serviceProvider.GetRequiredService<GenerateStudyCostProfile>();
-        _generateOpexCostProfile = serviceProvider.GetRequiredService<GenerateOpexCostProfile>();
-        _generateCessationCostProfile = serviceProvider.GetRequiredService<GenerateCessationCostProfile>();
-        _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
-        _generateNetSaleGasProfile = serviceProvider.GetRequiredService<GenerateNetSaleGasProfile>();
-        _generateFuelFlaringLossessProfile = serviceProvider.GetRequiredService<GenerateFuelFlaringLossesProfile>();
-        _generateImportedElectricityProfile = serviceProvider.GetRequiredService<GenerateImportedElectricityProfile>();
-        _generateCo2IntensityProfile = serviceProvider.GetRequiredService<GenerateCo2IntensityProfile>();
-        _generateCo2IntensityTotal = serviceProvider.GetRequiredService<GenerateCo2IntensityTotal>();
+        _generateGAndGAdminCostProfile = generateGAndGAdminCostProfile;
+        _generateStudyCostProfile = generateStudyCostProfile;
+        _generateOpexCostProfile = generateOpexCostProfile;
+        _generateCessationCostProfile = generateCessationCostProfile;
+        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
+        _generateNetSaleGasProfile = generateNetSaleGasProfile;
+        _generateFuelFlaringLossessProfile = generateFuelFlaringLossesProfile;
+        _generateImportedElectricityProfile = generateImportedElectricityProfile;
+        _generateCo2IntensityProfile = generateCo2IntensityProfile;
+        _generateCo2IntensityTotal = generateCo2IntensityTotal;
+        _generateCo2DrillingFlaringFuelTotals = generateCo2DrillingFlaringFuelTotals;
     }
 
     [HttpPost("{caseId}/generateGAndGAdminCost", Name = "GenerateGAndGAdminCost")]
-    public GAndGAdminCostDto GenerateGAndGAdminCost(Guid caseId)
+    public async Task<ActionResult<GAndGAdminCostDto>> GenerateGAndGAdminCostAsync(Guid caseId)
     {
-        return _generateGAndGAdminCostProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateGAndGAdminCostProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateOpex", Name = "GenerateOpex")]
     [ProducesResponseType(typeof(OpexCostProfileWrapperDto), (int)HttpStatusCode.OK)]
-    public IActionResult GenerateOPEX(Guid caseId)
+    public async Task<ActionResult<OpexCostProfileWrapperDto>> GenerateOPEXAsync(Guid caseId)
     {
-        return Ok(_generateOpexCostProfile.Generate(caseId));
+        try
+        {
+            var dto = await _generateOpexCostProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateStudy", Name = "GenerateStudy")]
     [ProducesResponseType(typeof(StudyCostProfileWrapperDto), (int)HttpStatusCode.OK)]
-    public IActionResult CalculateStudyCost(Guid caseId)
+    public async Task<ActionResult<StudyCostProfileWrapperDto>> GenerateStudyAsync(Guid caseId)
     {
-        return Ok(_generateStudyCostProfile.Generate(caseId));
+        try
+        {
+            var dto = await _generateStudyCostProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateCessation", Name = "GenerateCessation")]
     [ProducesResponseType(typeof(CessationCostWrapperDto), (int)HttpStatusCode.OK)]
-    public IActionResult GenerateCessation(Guid caseId)
+    public async Task<ActionResult<CessationCostWrapperDto>> GenerateCessationAsync(Guid caseId)
     {
-        return Ok(_generateCessationCostProfile.Generate(caseId));
+        try
+        {
+            var dto = await _generateCessationCostProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateNetSaleGas", Name = "GenerateNetSaleGas")]
-    public NetSalesGasDto? GenerateNetSaleGas(Guid caseId)
+    public async Task<ActionResult<NetSalesGasDto>> GenerateNetSaleGasAsync(Guid caseId)
     {
-        return _generateNetSaleGasProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateNetSaleGasProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateFuelFlaringLosses", Name = "GenerateFuelFlaringLosses")]
-    public FuelFlaringAndLossesDto GenerateFuelFlaringLosses(Guid caseId)
+    public async Task<ActionResult<FuelFlaringAndLossesDto>> GenerateFuelFlaringLossesAsync(Guid caseId)
     {
-        return _generateFuelFlaringLossessProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateFuelFlaringLossessProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateCo2Emissions", Name = "GenerateCo2Emissions")]
-    public Co2EmissionsDto GenerateCo2Emissions(Guid caseId)
+    public async Task<ActionResult<Co2EmissionsDto>> GenerateCo2EmissionsAsync(Guid caseId)
     {
-        return _generateCo2EmissionsProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateCo2EmissionsProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateImportedElectricity", Name = "GenerateImportedElectricity")]
-    public ImportedElectricityDto GenerateImportedElectricity(Guid caseId)
+    public async Task<ActionResult<ImportedElectricityDto>> GenerateImportedElectricityAsync(Guid caseId)
     {
-        return _generateImportedElectricityProfile.Generate(caseId);
+        try
+        {
+            var dto = await _generateImportedElectricityProfile.GenerateAsync(caseId);
+            return Ok(dto);
+        }
+        catch (NotFoundInDBException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost("{caseId}/generateCo2Intensity", Name = "GenerateCo2Intensity")]
@@ -109,5 +180,11 @@ public class GenerateProfileController : ControllerBase
     public double GenerateCo2IntensityTotal(Guid caseId)
     {
         return _generateCo2IntensityTotal.Calculate(caseId);
+    }
+
+    [HttpPost("{caseId}/generateCo2DrillingFlaringFuelTotals", Name = "GenerateCo2DrillingFlaringFuelTotals")]
+    public Co2DrillingFlaringFuelTotalsDto GenerateCo2DrillingFlaringFuelTotals(Guid caseId)
+    {
+        return _generateCo2DrillingFlaringFuelTotals.Generate(caseId);
     }
 }

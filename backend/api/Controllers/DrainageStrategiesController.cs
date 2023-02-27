@@ -22,9 +22,9 @@ namespace api.Controllers;
     )]
 public class DrainageStrategiesController : ControllerBase
 {
-    private readonly DrainageStrategyService _drainageStrategyService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
 
-    public DrainageStrategiesController(DrainageStrategyService drainageStrategyService)
+    public DrainageStrategiesController(IDrainageStrategyService drainageStrategyService)
     {
         _drainageStrategyService = drainageStrategyService;
     }

@@ -14,18 +14,18 @@ namespace api.Services;
 public class ProspExcelImportService
 {
     private const string SheetName = "main";
-    private readonly CaseService _caseService;
-    private readonly ProjectService _projectService;
+    private readonly ICaseService _caseService;
+    private readonly IProjectService _projectService;
     private readonly Prosp _prospConfig;
-    private readonly SubstructureService _substructureService;
-    private readonly SurfService _surfService;
-    private readonly TopsideService _topsideService;
-    private readonly TransportService _transportService;
+    private readonly ISubstructureService _substructureService;
+    private readonly ISurfService _surfService;
+    private readonly ITopsideService _topsideService;
+    private readonly ITransportService _transportService;
 
 
-    public ProspExcelImportService(ProjectService projectService, CaseService caseService, ILoggerFactory loggerFactory,
-        SurfService surfService,
-        SubstructureService substructureService, TopsideService topsideService, TransportService transportService,
+    public ProspExcelImportService(IProjectService projectService, ICaseService caseService, ILoggerFactory loggerFactory,
+        ISurfService surfService,
+        ISubstructureService substructureService, ITopsideService topsideService, ITransportService transportService,
         IConfiguration config)
     {
         _projectService = projectService;
@@ -508,6 +508,7 @@ public class ProspExcelImportService
             Id = surfLink,
             CostProfile = null,
             ProjectId = caseItem.ProjectId,
+            Source = Source.ConceptApp,
         };
 
         var dto = SurfDtoAdapter.Convert(surf);
@@ -526,6 +527,7 @@ public class ProspExcelImportService
             Id = topsideLink,
             CostProfile = null,
             ProjectId = caseItem.ProjectId,
+            Source = Source.ConceptApp,
         };
 
         var dto = TopsideDtoAdapter.Convert(topside);
@@ -544,6 +546,7 @@ public class ProspExcelImportService
             Id = substructureLink,
             CostProfile = null,
             ProjectId = caseItem.ProjectId,
+            Source = Source.ConceptApp,
         };
 
         var dto = SubstructureDtoAdapter.Convert(substructure);
@@ -562,6 +565,7 @@ public class ProspExcelImportService
             Id = transportLink,
             CostProfile = null,
             ProjectId = caseItem.ProjectId,
+            Source = Source.ConceptApp,
         };
 
         var dto = TransportDtoAdapter.Convert(transport);

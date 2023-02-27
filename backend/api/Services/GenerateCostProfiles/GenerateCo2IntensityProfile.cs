@@ -5,19 +5,20 @@ using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateCo2IntensityProfile
+public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
 {
-    private readonly CaseService _caseService;
-    private readonly DrainageStrategyService _drainageStrategyService;
-    private readonly ProjectService _projectService;
-    private readonly GenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly ICaseService _caseService;
+    private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IProjectService _projectService;
+    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
 
-    public GenerateCo2IntensityProfile(IServiceProvider serviceProvider)
+    public GenerateCo2IntensityProfile(ICaseService caseService, IDrainageStrategyService drainageStrategyService, IProjectService projectService,
+        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile)
     {
-        _caseService = serviceProvider.GetRequiredService<CaseService>();
-        _projectService = serviceProvider.GetRequiredService<ProjectService>();
-        _drainageStrategyService = serviceProvider.GetRequiredService<DrainageStrategyService>();
-        _generateCo2EmissionsProfile = serviceProvider.GetRequiredService<GenerateCo2EmissionsProfile>();
+        _caseService = caseService;
+        _projectService = projectService;
+        _drainageStrategyService = drainageStrategyService;
+        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }
 
     public Co2IntensityDto Generate(Guid caseId)
@@ -27,33 +28,49 @@ public class GenerateCo2IntensityProfile
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
-        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseId);
+
+        TimeSeries<double> generateCo2EmissionsProfile = new();
+        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+        {
+            generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2EmissionsOverride.StartYear;
+            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values.Select(v => v / 1E6).ToArray();
+        }
+        else
+        {
+            var generatedCo2 = _generateCo2EmissionsProfile.GenerateAsync(caseId).GetAwaiter().GetResult();
+            generateCo2EmissionsProfile.StartYear = generatedCo2.StartYear;
+            generateCo2EmissionsProfile.Values = generatedCo2.Values;
+        }
 
         var co2IntensityValues = new List<double>();
 
-        var tonnesToKgFactor = 1000;
-        var boeConversionFactor = 6.29;
-        for (var i = 0; i < totalExportedVolumes.Values.Length; i++)
+        const int tonnesToKgFactor = 1000;
+        const double boeConversionFactor = 6.29;
+        var yearDifference = 0;
+        if (generateCo2EmissionsProfile.StartYear != totalExportedVolumes.StartYear)
         {
-            var yearDifference = 0;
-            if (generateCo2EmissionsProfile.StartYear != totalExportedVolumes.StartYear)
+            yearDifference = generateCo2EmissionsProfile.StartYear - totalExportedVolumes.StartYear;
+        }
+        for (var i = 0; i < generateCo2EmissionsProfile.Values.Length; i++)
+        {
+            if (yearDifference + i < 0) { continue; }
+
+            if ((i + yearDifference < totalExportedVolumes.Values.Length) && totalExportedVolumes.Values[i + yearDifference] != 0)
             {
-                yearDifference = totalExportedVolumes.StartYear - generateCo2EmissionsProfile.StartYear;
-            }
-            if ((i + yearDifference < generateCo2EmissionsProfile.Values.Length) && totalExportedVolumes.Values[i] != 0)
-            {
-                var dividedProfiles = generateCo2EmissionsProfile.Values[i + yearDifference] / totalExportedVolumes.Values[i];
+                var dividedProfiles = generateCo2EmissionsProfile.Values[i] / totalExportedVolumes.Values[i + yearDifference];
                 co2IntensityValues.Add(dividedProfiles / boeConversionFactor * tonnesToKgFactor);
             }
         }
 
+        var co2YearOffset = yearDifference < 0 ? yearDifference : 0;
+
         var co2Intensity = new Co2Intensity
         {
-            StartYear = totalExportedVolumes.StartYear,
+            StartYear = generateCo2EmissionsProfile.StartYear - co2YearOffset,
             Values = co2IntensityValues.ToArray(),
         };
 
-        var dto = DrainageStrategyDtoAdapter.Convert(co2Intensity, project.PhysicalUnit);
+        var dto = DrainageStrategyDtoAdapter.Convert<Co2IntensityDto, Co2Intensity>(co2Intensity, project.PhysicalUnit);
         return dto ?? new Co2IntensityDto();
     }
 
