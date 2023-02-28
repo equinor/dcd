@@ -52,6 +52,7 @@ function PROSPCaseList({
     const gridRef = useRef<any>(null)
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
+
     const casesToRowData = () => {
         if (project.cases) {
             const tableCases: RowData[] = []
@@ -81,6 +82,9 @@ function PROSPCaseList({
     }
     useEffect(() => {
         casesToRowData()
+        if (gridRef.current.redrawRows) {
+            gridRef.current.redrawRows()
+        }
     }, [project, driveItems])
 
     const defaultColDef = useMemo(() => ({
