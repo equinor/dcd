@@ -8,12 +8,12 @@ public class Exploration
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
     public string Name { get; set; } = string.Empty;
-    public ExplorationWellCostProfile? ExplorationWellCostProfile { get; set; } = new();
-    public AppraisalWellCostProfile? AppraisalWellCostProfile { get; set; } = new();
-    public SidetrackCostProfile? SidetrackCostProfile { get; set; } = new();
-    public SeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; } = new();
-    public CountryOfficeCost? CountryOfficeCost { get; set; } = new();
-    public GAndGAdminCost? GAndGAdminCost { get; set; } = new();
+    public ExplorationWellCostProfile? ExplorationWellCostProfile { get; set; }
+    public AppraisalWellCostProfile? AppraisalWellCostProfile { get; set; }
+    public SidetrackCostProfile? SidetrackCostProfile { get; set; }
+    public SeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
+    public CountryOfficeCost? CountryOfficeCost { get; set; }
+    public GAndGAdminCost? GAndGAdminCost { get; set; }
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
     public ICollection<ExplorationWell>? ExplorationWells { get; set; }
