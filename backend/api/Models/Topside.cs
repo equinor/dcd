@@ -8,9 +8,9 @@ public class Topside
     public string Name { get; set; } = string.Empty!;
     public Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
-    public TopsideCostProfile? CostProfile { get; set; } = new();
-    public TopsideCostProfileOverride? CostProfileOverride { get; set; } = new();
-    public TopsideCessationCostProfile? CessationCostProfile { get; set; } = new();
+    public TopsideCostProfile? CostProfile { get; set; }
+    public TopsideCostProfileOverride? CostProfileOverride { get; set; }
+    public TopsideCessationCostProfile? CessationCostProfile { get; set; }
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
     public double GasCapacity { get; set; }
