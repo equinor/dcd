@@ -58,7 +58,7 @@
         "react-focus-on": "^3.5.4",
         "react-plotly.js": "^2.5.1",
         "react-router-dom": "^5.3.3",
-        "styled-components": "^5.3.6"
+        "styled-components": "^5.3.7"
     },
     "scripts": {
         "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
