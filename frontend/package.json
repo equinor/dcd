@@ -28,8 +28,8 @@
         "@equinor/eds-core-react": "^0.25.0",
         "@equinor/eds-icons": "^0.14.0",
         "@equinor/eds-tokens": "^0.7.1",
-        "@equinor/fusion": "^3.3.21",
-        "@equinor/fusion-components": "^2.5.28",
+        "@equinor/fusion": "^3.4.9",
+        "@equinor/fusion-components": "^2.10.4",
         "@equinor/fusion-framework-module-ag-grid": "^1.0.19",
         "@equinor/fusion-framework-react-app": "^2.0.30",
         "@equinor/fusion-react-ag-grid-addons": "^0.3.2",
@@ -90,7 +90,7 @@
         ]
     },
     "devDependencies": {
-        "@equinor/fusion-cli": "^3.0.0-beta.32.0",
+        "@equinor/fusion-cli": "3.0.0-beta.34",
         "@testing-library/jest-dom": "^5.16.2",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
