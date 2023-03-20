@@ -21,7 +21,7 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 
 using Serilog;
-
+// test
 var configBuilder = new ConfigurationBuilder();
 var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString =
