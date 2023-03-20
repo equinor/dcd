@@ -92,7 +92,10 @@ builder.Services.AddCors(options =>
                 "https://fusion.equinor.com",
                 "https://pro-s-portal-ci.azurewebsites.net",
                 "https://pro-s-portal-fqa.azurewebsites.net",
-                "https://pro-s-portal-fprd.azurewebsites.net"
+                "https://pro-s-portal-fprd.azurewebsites.net",
+                "https://fusion-s-portal-ci.azurewebsites.net",
+                "https://fusion-s-portal-fqa.azurewebsites.net",
+                "https://fusion-s-portal-fprd.azurewebsites.net"
             ).SetIsOriginAllowedToAllowWildcardSubdomains();
         });
 });
