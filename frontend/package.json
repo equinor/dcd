@@ -31,7 +31,11 @@
         "@equinor/fusion": "^3.4.9",
         "@equinor/fusion-components": "^2.10.4",
         "@equinor/fusion-framework-module-ag-grid": "^1.0.19",
+        "@equinor/fusion-framework-react": "^2.2.0",
         "@equinor/fusion-framework-react-app": "^2.0.30",
+        "@equinor/fusion-framework-react-module": "^2.0.2",
+        "@equinor/fusion-observable": "^7.0.3",
+        "@equinor/fusion-query": "^2.0.7",
         "@equinor/fusion-react-ag-grid-addons": "^0.3.2",
         "@equinor/fusion-react-icon": "^0.2.15",
         "@equinor/fusion-react-textarea": "^0.5.14",
@@ -90,7 +94,7 @@
         ]
     },
     "devDependencies": {
-        "@equinor/fusion-cli": "3.0.0-beta.34",
+        "@equinor/fusion-cli": "3.0.0-beta.37",
         "@testing-library/jest-dom": "^5.16.2",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
