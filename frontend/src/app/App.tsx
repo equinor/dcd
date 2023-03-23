@@ -1,6 +1,5 @@
-import { Progress } from "@equinor/eds-core-react"
 import {
-    useAppConfig, useCurrentUser, useFusionEnvironment, useFusionContext,
+    useAppConfig, useCurrentUser, useFusionEnvironment,
 } from "@equinor/fusion"
 import { ErrorBoundary } from "@equinor/fusion-components"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
@@ -47,7 +46,6 @@ function App(): JSX.Element {
     }
 
     console.log("Concept App version: ", APP_VERSION)
-    console.log("runtimeConfig", runtimeConfig)
 
     return (
         <ErrorBoundary>
