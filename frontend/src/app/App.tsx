@@ -1,10 +1,12 @@
-import { Progress } from "@equinor/eds-core-react"
-import { useAppConfig, useCurrentUser, useFusionEnvironment } from "@equinor/fusion"
+import {
+    useAppConfig, useCurrentUser, useFusionEnvironment,
+} from "@equinor/fusion"
 import { ErrorBoundary } from "@equinor/fusion-components"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import ConceptAppAuthProvider from "../auth/ConceptAppAuthProvider"
 import { buildConfig } from "../Services/config"
 import { StoreAppId, StoreAppScope } from "../Utils/common"
+import { ResolveConfiguration } from "../Utils/config"
 import { APP_VERSION } from "../version"
 import { AppRouter } from "./AppRouter"
 import { FusionRouterBootstrap } from "./FusionRouterBootstrap"
@@ -23,14 +25,24 @@ function App(): JSX.Element {
     useAgGridStyles()
     const user = useCurrentUser()
     const runtimeConfig = useAppConfig()
-    if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {
-        buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
-    }
+    const fusionEnvironment = useFusionEnvironment()
 
-    if (runtimeConfig.value?.environment) {
-        const values: any = { ...runtimeConfig.value.environment }
-        StoreAppId(values.APP_ID)
-        StoreAppScope(values.BACKEND_APP_SCOPE)
+    const config = ResolveConfiguration(fusionEnvironment.env)
+
+    if (runtimeConfig.value !== undefined && runtimeConfig.value !== null) {
+        if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {
+            buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
+        }
+
+        if (runtimeConfig.value?.environment) {
+            const values: any = { ...runtimeConfig.value.environment }
+            StoreAppId(values.APP_ID)
+            StoreAppScope(values.BACKEND_APP_SCOPE)
+        }
+    } else {
+        buildConfig(config.REACT_APP_API_BASE_URL)
+        StoreAppId(config.APP_ID)
+        StoreAppScope(config.BACKEND_APP_SCOPE[0])
     }
 
     console.log("Concept App version: ", APP_VERSION)
@@ -38,25 +50,9 @@ function App(): JSX.Element {
     return (
         <ErrorBoundary>
             <ConceptAppAuthProvider>
-                {(() => {
-                    if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === null
-                        || runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === undefined) {
-                        return (
-                            <>
-                                <Progress.Circular size={16} color="primary" />
-                                <p>Fetching Fusion app config</p>
-                            </>
-                        )
-                    }
-
-                    buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
-
-                    return (
-                        <FusionRouterBootstrap>
-                            <AppRouter />
-                        </FusionRouterBootstrap>
-                    )
-                })()}
+                <FusionRouterBootstrap>
+                    <AppRouter />
+                </FusionRouterBootstrap>
             </ConceptAppAuthProvider>
         </ErrorBoundary>
     )
