@@ -80,7 +80,7 @@
         "dev": "jest",
         "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
         "autogenerate-models": "dtsgen --out ./src/types.d.ts --url http://localhost:5000/swagger/v1/swagger.json",
-        "autogenerate-models-build": "dtsgen --out ./src/types-azuredevops.d.ts --url https://ase-dcd-backend-dev.azurewebsites.net/swagger/v1/swagger.json"
+        "autogenerate-models-build": "dtsgen --out ./src/types-azuredevops.d.ts --url https://backend-dcd-dev.radix.equinor.com/swagger/v1/swagger.json"
     },
     "eslintConfig": {
         "extends": [
