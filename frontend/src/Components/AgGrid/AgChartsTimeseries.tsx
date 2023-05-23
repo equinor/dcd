@@ -51,7 +51,7 @@ export const AgChartsTimeseries = ({
         return condition ? elements : []
     }
 
-    const defaultOptions = {
+    const defaultOptions: any = {
         data,
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },
