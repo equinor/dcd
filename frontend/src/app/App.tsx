@@ -51,7 +51,7 @@ function App(): JSX.Element {
         <ErrorBoundary>
             <ConceptAppAuthProvider>
                 <FusionRouterBootstrap>
-                <AppRouter />
+                    <AppRouter />
                 </FusionRouterBootstrap>
             </ConceptAppAuthProvider>
         </ErrorBoundary>

@@ -7,6 +7,6 @@ import { configurator } from "./config"
 registerLegacy("conceptapp", {
     render: createComponent(App, configurator),
     AppComponent: App,
-  })
+})
 
 if (module.hot) module.hot.accept()
