@@ -37,7 +37,7 @@
         "@equinor/eds-tokens": "^0.7.1",
         "@equinor/eds-utils": "^0.7.0",
         "@equinor/fusion": "^3.4.9",
-        "@equinor/fusion-cli": "3.0.0-beta.39",
+        "@equinor/fusion-cli": "3.0.0",
         "@equinor/fusion-components": "2.10.6",
         "@equinor/fusion-framework-module-ag-grid": "^4.0.0",
         "@equinor/fusion-framework-module-navigation": "^2.1.1",
