@@ -133,8 +133,6 @@ builder.Services.AddFusionIntegration(options =>
     Console.WriteLine("Fusion environment: " + fusionEnvironment);
     options.UseServiceInformation("ConceptApp", fusionEnvironment);
 
-    options.AddFusionAuthorization();
-
     options.UseDefaultEndpointResolver(fusionEnvironment);
     options.UseDefaultTokenProvider(opts =>
     {
