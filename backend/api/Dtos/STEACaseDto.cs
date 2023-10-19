@@ -3,34 +3,34 @@ namespace api.Dtos;
 
 public class STEACaseDto
 {
-    public string Name { get; set; } = null!;
+    public string Name { get; set; } = string.Empty;
     public int StartYear { get; set; }
-    public TimeSeriesCostDto Exploration { get; set; } = null!;
+    public TimeSeriesCostDto Exploration { get; set; } = new();
 
-    public CapexDto Capex { get; set; } = null!;
+    public CapexDto Capex { get; set; } = new();
 
-    public ProductionAndSalesVolumesDto ProductionAndSalesVolumes { get; set; } = null!;
-    public OffshoreFacilitiesCostProfileDto OffshoreFacilitiesCostProfileDto { get; set; } = null!;
+    public ProductionAndSalesVolumesDto ProductionAndSalesVolumes { get; set; } = new();
+    public OffshoreFacilitiesCostProfileDto OffshoreFacilitiesCostProfileDto { get; set; } = new();
 
-    public StudyCostProfileDto StudyCostProfile { get; set; } = null!;
-    public OpexCostProfileDto OpexCostProfile { get; set; } = null!;
+    public StudyCostProfileDto StudyCostProfile { get; set; } = new();
+    public OpexCostProfileDto OpexCostProfile { get; set; } = new();
 }
 
 public class CapexDto : TimeSeriesCostDto
 {
-    public TimeSeriesCostDto Drilling { get; set; } = null!;
+    public TimeSeriesCostDto Drilling { get; set; } = new();
 
-    public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = null!;
-    public CessationCostDto CessationCost { get; set; } = null!;
+    public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = new();
+    public CessationCostDto CessationCost { get; set; } = new();
 }
 
 public class ProductionAndSalesVolumesDto
 {
     public int StartYear { get; set; }
-    public ProductionProfileOilDto TotalAndAnnualOil { get; set; } = null!;
-    public NetSalesGasDto TotalAndAnnualSalesGas { get; set; } = null!;
-    public Co2EmissionsDto Co2Emissions { get; set; } = null!;
-    public ImportedElectricityDto ImportedElectricity { get; set; } = null!;
+    public ProductionProfileOilDto TotalAndAnnualOil { get; set; } = new();
+    public NetSalesGasDto TotalAndAnnualSalesGas { get; set; } = new();
+    public Co2EmissionsDto Co2Emissions { get; set; } = new();
+    public ImportedElectricityDto ImportedElectricity { get; set; } = new();
 }
 
 public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto

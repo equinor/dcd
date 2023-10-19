@@ -36,20 +36,20 @@ public class Case
     public double BreakEven { get; set; }
     public string? Host { get; set; }
 
-    public CessationWellsCost? CessationWellsCost { get; set; } = new();
-    public CessationWellsCostOverride? CessationWellsCostOverride { get; set; } = new();
-    public CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; } = new();
-    public CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; } = new();
+    public CessationWellsCost? CessationWellsCost { get; set; }
+    public CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
+    public CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; }
+    public CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
 
-    public TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; } = new();
-    public TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; } = new();
-    public TotalFEEDStudies? TotalFEEDStudies { get; set; } = new();
-    public TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; } = new();
+    public TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
+    public TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
+    public TotalFEEDStudies? TotalFEEDStudies { get; set; }
+    public TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
 
-    public WellInterventionCostProfile? WellInterventionCostProfile { get; set; } = new();
-    public WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; } = new();
-    public OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; } = new();
-    public OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; } = new();
+    public WellInterventionCostProfile? WellInterventionCostProfile { get; set; }
+    public WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; }
+    public OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; }
+    public OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
 
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
     public Guid WellProjectLink { get; set; } = Guid.Empty;

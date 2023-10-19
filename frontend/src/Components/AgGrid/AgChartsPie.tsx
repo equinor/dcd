@@ -29,7 +29,7 @@ export const AgChartsPie = ({
         },
     }
 
-    const defaultOptions = {
+    const defaultOptions: any = {
         data,
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },

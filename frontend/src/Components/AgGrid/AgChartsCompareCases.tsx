@@ -35,7 +35,7 @@ export const AgChartsCompareCases = ({
         return condition ? elements : []
     }
 
-    const defaultOptions = {
+    const defaultOptions: any = {
         data,
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },

@@ -1,28 +1,32 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "sourceMap": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+    "compilerOptions": {
+        "declaration": true,
+        "importHelpers": true,
+        "sourceMap": true,
+        "module": "ESNext",
+        "outDir": "lib",
+        "rootDir": "src",
+        "strict": true,
+        "target": "ES6",
+        "composite": false,
+        "skipLibCheck": true,
+        "jsx": "react-jsx",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "noEmit": true,
+        "moduleResolution": "node"
+    },
+    "include": [
+        "src",
+        "./src/types.d.ts",
+        "src/**/*",
+        "./css-modules.d.ts"
     ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
-  },
-  "include": [
-    "src",
-    "./src/types.d.ts"
-  ]
+    "typedocOptions": {
+        "entryPoints": [
+            "src/pages/Dashboard.tsx",
+            "src/pages/contract/GeneralPage.tsx"
+        ],
+        "out": "docs"
+    }
 }
