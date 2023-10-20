@@ -89,7 +89,7 @@ List known technical debt in current version and a comment on how it will be han
 #### Version 1
 - Created a table with persons with root access to application --> use an AccessIT group for this in next version
 
-## Access to application and data - UNDER CONSTRUCTION
+## Access to application and data
 AD groups that can view data (AccessIT groups work in progress)
 |Name|Description|User types|How to check|
 |-|-|-|-|
