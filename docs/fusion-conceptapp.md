@@ -5,7 +5,7 @@
 - Product Owner: [Atle Svandal](mailto:atsv@equinor.com)
 - EA Architect and Fusion Architect: [Eirik Eikeberg](mailto:eriei@equinor.com)
 - Development & Ops: [Team It's A Feature](https://github.com/equinor/fusion-architecture-contracts/blob/main/teams/teamiaf.md)
-- Application Users, Business Area: Early phase?
+- Application Users, Business Area: Projects and project members, Early phase?
 - Launch date, version in production: 28.10.2022, v1.0.2
 - Are any specialties or any deviations from default worth mentioning. e.g access rights, classification of data, usage,etc
     - The user needs to be added to an approved AD group in order to access the application.
@@ -18,11 +18,6 @@ Concept App is a Fusion application that lets the user create and mature early p
 
 - 12.04.2022 - Initial version created for MVP
 - 01.10.2022 - Soft release of version 1.0
-
-### Actions
-- [   ] Any outstanding action from review
-- [ X ] A completed action
-
 
 ## Technical Description
 
