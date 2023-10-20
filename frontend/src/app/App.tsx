@@ -1,7 +1,6 @@
 import {
     useAppConfig, useCurrentUser, useFusionEnvironment,
 } from "@equinor/fusion"
-import { ErrorBoundary } from "@equinor/fusion-components"
 import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import ConceptAppAuthProvider from "../auth/ConceptAppAuthProvider"
 import { buildConfig } from "../Services/config"
@@ -48,13 +47,11 @@ function App(): JSX.Element {
     console.log("Concept App version: ", APP_VERSION)
 
     return (
-        <ErrorBoundary>
-            <ConceptAppAuthProvider>
-                <FusionRouterBootstrap>
-                    <AppRouter />
-                </FusionRouterBootstrap>
-            </ConceptAppAuthProvider>
-        </ErrorBoundary>
+        <ConceptAppAuthProvider>
+            <FusionRouterBootstrap>
+                <AppRouter />
+            </FusionRouterBootstrap>
+        </ConceptAppAuthProvider>
     )
 }
 
