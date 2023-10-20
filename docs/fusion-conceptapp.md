@@ -21,7 +21,7 @@ Concept App is a Fusion application that lets the user create and mature early p
 
 ## Technical Description
 
-- See C4 diagrams for details on technologies used, and the [repo](https://github.com/equinor/dcd) for details on build pipelines, test environments etc.
+- See [C4 diagrams](https://github.com/equinor/dcd/blob/main/README.md#architecture-diagrams) for details on technologies used, and the [repo](https://github.com/equinor/dcd) for details on build pipelines, test environments etc.
 
 ### Software Development
 
