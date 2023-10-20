@@ -24,6 +24,35 @@
             "dboh@equinor.com"
         ]
     },
+    "scripts": {
+        "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
+        "prebuild": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
+        "start": "fusion start-app",
+        "build": "fusion build-app",
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "dev": "jest",
+        "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
+        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url http://localhost:5000/swagger/v1/swagger.json",
+        "autogenerate-models-build": "dtsgen --out ./src/types-azuredevops.d.ts --url https://backend-dcd-dev.radix.equinor.com/swagger/v1/swagger.json"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
     "dependencies": {
         "@ag-grid-community/client-side-row-model": "^27.3.0",
         "@ag-grid-community/core": "^27.3.0",
@@ -37,7 +66,6 @@
         "@equinor/eds-tokens": "^0.7.1",
         "@equinor/eds-utils": "^0.7.0",
         "@equinor/fusion": "^3.4.9",
-        "@equinor/fusion-cli": "3.0.0-beta.39",
         "@equinor/fusion-components": "2.10.6",
         "@equinor/fusion-framework-module-ag-grid": "^4.0.0",
         "@equinor/fusion-framework-module-navigation": "^2.1.1",
@@ -72,38 +100,10 @@
         "react-plotly.js": "^2.5.1",
         "react-popper": "^2.3.0",
         "react-router-dom": "^5.3.3",
-        "styled-components": "^5.3.6"
-    },
-    "scripts": {
-        "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
-        "prebuild": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
-        "start": "fusion start-app",
-        "build": "fusion build-app",
-        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-        "dev": "jest",
-        "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
-        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url http://localhost:5000/swagger/v1/swagger.json",
-        "autogenerate-models-build": "dtsgen --out ./src/types-azuredevops.d.ts --url https://backend-dcd-dev.radix.equinor.com/swagger/v1/swagger.json"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
+        "styled-components": "^5.3.7"
     },
     "devDependencies": {
+        "@equinor/fusion-cli": "3.1.0",
         "@testing-library/jest-dom": "^5.16.2",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
@@ -118,7 +118,6 @@
         "@types/styled-components": "^5.1.18",
         "@typescript-eslint/eslint-plugin": "^5.45.0",
         "@typescript-eslint/parser": "^5.45.0",
-        "cypress": "^9.1.0",
         "dotenv-webpack": "^7.1.0",
         "dtsgenerator": "^3.15.0",
         "eslint": "^8.9.0",
