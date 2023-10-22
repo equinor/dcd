@@ -66,7 +66,6 @@
         "@equinor/eds-tokens": "^0.7.1",
         "@equinor/eds-utils": "^0.7.0",
         "@equinor/fusion": "^3.4.9",
-        "@equinor/fusion-components": "2.10.6",
         "@equinor/fusion-framework-module-ag-grid": "^4.0.0",
         "@equinor/fusion-framework-module-navigation": "^2.1.1",
         "@equinor/fusion-framework-react-app": "^4.0.14",
