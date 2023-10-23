@@ -74,7 +74,7 @@ System context diagram for the DCD application.
 Container diagram for the DCD application.
 ![SysContextDiagram](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/equinor/dcd///main/DCD_C4Container.iuml)
 
-## Access to application and data - UNDER CONSTRUCTION
+## Access to application and data
 
 AD groups that can view data (AccessIT groups work in progress)
 |Name|Description|User types|How to check|
