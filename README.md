@@ -15,6 +15,10 @@
 The application supports collecting time series values for cost profiles for offshore facilities, exploration, drilling (well)
 and volume profiles for drainage stragegy and creating these as assets on business cases to be compared for projects.
 
+## Runbook
+
+[Runbook](https://github.com/equinor/dcd/blob/main/docs/runbook.md) is found in this repo.
+
 ## Architechture
 
 The application is split between the [frontend app](#frontend) hosted in Fusion, and the [backend app](#backend) hosted in Radix. Authentication is based on [RBAC](https://learn.microsoft.com/en-us/azure/role-based-access-control/overview), where we have different app registrations for preproduction and production with are consented to access Fusion Preprod or Fusion Prod. 
