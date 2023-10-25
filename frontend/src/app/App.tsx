@@ -1,7 +1,6 @@
 import {
     useAppConfig, useCurrentUser, useFusionEnvironment,
 } from "@equinor/fusion"
-import { useAgGridStyles } from "@equinor/fusion-react-ag-grid-addons"
 import ConceptAppAuthProvider from "../auth/ConceptAppAuthProvider"
 import { buildConfig } from "../Services/config"
 import { StoreAppId, StoreAppScope } from "../Utils/common"
@@ -21,7 +20,6 @@ const setEnvironment = (): void => {
  */
 function App(): JSX.Element {
     setEnvironment()
-    useAgGridStyles()
     const user = useCurrentUser()
     const runtimeConfig = useAppConfig()
     const fusionEnvironment = useFusionEnvironment()
