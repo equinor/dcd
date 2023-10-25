@@ -10,6 +10,7 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
+import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import { isInteger } from "../../Utils/common"
@@ -205,7 +206,7 @@ function CaseTabTable({
         return columnPinned.concat([...yearDefs])
     }
 
-    const [columnDefs, setColumnDefs] = useState(generateTableYearColDefs())
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     useEffect(() => {
         setRowData(profilesToRowData())
@@ -284,7 +285,7 @@ function CaseTabTable({
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
                 }}
-                className="ag-theme-alpine"
+                className="ag-theme-alpine-fusion"
             >
                 <AgGridReact
                     ref={gridRef}

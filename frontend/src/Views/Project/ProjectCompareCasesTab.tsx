@@ -463,7 +463,7 @@ function ProjectCompareCasesTab({
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
                 }}
-                className="ag-theme-alpine"
+                className="ag-theme-alpine-fusion"
             >
                 <AgGridReact
                     ref={gridRef}

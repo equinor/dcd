@@ -5,6 +5,7 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import styled from "styled-components"
+import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
@@ -135,7 +136,7 @@ function WellListEditTechnicalInput({
         onCellValueChanged: updateWells,
     }), [])
 
-    const [columnDefs] = useState([
+    const [columnDefs] = useState<ColDef[]>([
         {
             field: "name", sort: order, width: 110,
         },
@@ -179,7 +180,7 @@ function WellListEditTechnicalInput({
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
                 }}
-                className="ag-theme-alpine"
+                className="ag-theme-alpine-fusion"
             >
                 <AgGridReact
                     ref={gridRef}

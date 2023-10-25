@@ -8,6 +8,7 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import { Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
+import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 
 const SwitchWrapper = styled.div`
@@ -165,7 +166,7 @@ function CO2ListTechnicalInput({
         onCellValueChanged: handleCellValueChange,
     }), [])
 
-    const [columnDefs] = useState([
+    const [columnDefs] = useState<ColDef[]>([
         {
             field: "profile",
             headerName: "CO2 emission",
@@ -219,7 +220,7 @@ function CO2ListTechnicalInput({
                 style={{
                     display: "flex", flexDirection: "column", width: "54rem",
                 }}
-                className="ag-theme-alpine"
+                className="ag-theme-alpine-fusion"
             >
                 <AgGridReact
                     ref={gridRef}

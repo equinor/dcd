@@ -23,6 +23,7 @@ import {
 } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
+import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { CasePath, ProductionStrategyOverviewToString } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
@@ -100,7 +101,7 @@ const CasesTable = ({ project, setProject }: Props) => {
         </span>
     )
 
-    const [columnDefs] = useState([
+    const [columnDefs] = useState<ColDef[]>([
         { field: "name", cellRenderer: nameWithReferenceCase },
         {
             field: "productionStrategyOverview",
@@ -201,7 +202,7 @@ const CasesTable = ({ project, setProject }: Props) => {
             style={{
                 display: "flex", flexDirection: "column", width: "65%",
             }}
-            className="ag-theme-alpine"
+            className="ag-theme-alpine-fusion"
         >
             <AgGridReact
                 ref={gridRef}
