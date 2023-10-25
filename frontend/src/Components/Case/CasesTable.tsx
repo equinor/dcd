@@ -15,7 +15,7 @@ import {
     useRef,
 } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
 import {
     bookmark_filled,
     bookmark_outlined,
@@ -26,7 +26,6 @@ import styled from "styled-components"
 import { Project } from "../../models/Project"
 import { CasePath, ProductionStrategyOverviewToString } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
-import "ag-grid-enterprise"
 import EditCaseModal from "./EditCaseModal"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { GetProjectService } from "../../Services/ProjectService"

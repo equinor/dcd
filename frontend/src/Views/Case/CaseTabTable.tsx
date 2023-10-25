@@ -7,8 +7,7 @@ import {
     useEffect,
 } from "react"
 
-import { AgGridReact } from "ag-grid-react"
-import "ag-grid-enterprise"
+import { AgGridReact } from "@ag-grid-community/react"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"

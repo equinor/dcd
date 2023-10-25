@@ -5,7 +5,7 @@ import {
     useCallback,
     useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
 import { Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { Project } from "../../models/Project"

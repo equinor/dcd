@@ -5,8 +5,12 @@ import {
 import {
     ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
-import { GetRowIdFunc, GetRowIdParams, RowNode } from "ag-grid-enterprise"
+import { AgGridReact } from "@ag-grid-community/react"
+import {
+    GetRowIdFunc,
+    GetRowIdParams,
+    RowNode,
+} from "@ag-grid-community/core"
 import styled from "styled-components"
 import { external_link } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"

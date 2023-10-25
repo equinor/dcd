@@ -3,11 +3,10 @@ import {
     ChangeEvent,
     Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
 import styled from "styled-components"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
-import "ag-grid-enterprise"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 
 const ButtonWrapper = styled.div`

@@ -1,4 +1,4 @@
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
 import {
     useMemo, useRef, useState,
 } from "react"

@@ -4,7 +4,7 @@ import styled from "styled-components"
 import {
     useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
 import {
     Icon,
     Tabs, Tooltip,

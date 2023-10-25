@@ -3,14 +3,12 @@ import {
     SetStateAction,
     useMemo,
     useState,
-    useRef,
     useEffect,
 } from "react"
 
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
-import "ag-grid-enterprise"
 import { IsExplorationWell, isInteger } from "../../Utils/common"
 import { DrillingSchedule } from "../../models/assets/wellproject/DrillingSchedule"
 import { WellProjectWell } from "../../models/WellProjectWell"
