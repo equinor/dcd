@@ -16,6 +16,7 @@ import {
 } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import {
     bookmark_filled,
     bookmark_outlined,
@@ -56,6 +57,7 @@ interface TableCase {
 
 const CasesTable = ({ project, setProject }: Props) => {
     const gridRef = useRef<any>(null)
+    const styles = useStyles()
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
@@ -198,90 +200,92 @@ const CasesTable = ({ project, setProject }: Props) => {
     }
 
     return (
-        <div
-            style={{
-                display: "flex", flexDirection: "column", width: "65%",
-            }}
-            className="ag-theme-alpine-fusion"
-        >
-            <AgGridReact
-                ref={gridRef}
-                rowData={rowData}
-                columnDefs={columnDefs}
-                defaultColDef={defaultColDef}
-                animateRows
-                domLayout="autoHeight"
-            />
-            <Menu
-                id="menu-complex"
-                open={isMenuOpen}
-                anchorEl={menuAnchorEl}
-                onClose={() => setIsMenuOpen(false)}
-                placement="right"
+        <div className={styles.root}>
+            <div
+                style={{
+                    display: "flex", flexDirection: "column", width: "65%",
+                }}
+                className="ag-theme-alpine-fusion"
             >
-                <Menu.Item
-                    onClick={openCase}
+                <AgGridReact
+                    ref={gridRef}
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    animateRows
+                    domLayout="autoHeight"
+                />
+                <Menu
+                    id="menu-complex"
+                    open={isMenuOpen}
+                    anchorEl={menuAnchorEl}
+                    onClose={() => setIsMenuOpen(false)}
+                    placement="right"
                 >
-                    <Icon data={folder} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Open
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={duplicateCase}
-                >
-                    <Icon data={library_add} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Duplicate
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={toggleEditCaseModal}
-                >
-                    <Icon data={edit} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Edit
-                    </Typography>
-                </Menu.Item>
-                <Menu.Item
-                    onClick={deleteCase}
-                >
-                    <Icon data={delete_to_trash} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Delete
-                    </Typography>
-                </Menu.Item>
-                {project.referenceCaseId === selectedCaseId
-                    ? (
-                        <Menu.Item
-                            onClick={setCaseAsReference}
-                        >
-                            <Icon data={bookmark_outlined} size={16} />
-                            <Typography group="navigation" variant="menu_title" as="span">
-                                Remove as reference case
-                            </Typography>
-                        </Menu.Item>
-                    )
-                    : (
-                        <Menu.Item
-                            onClick={setCaseAsReference}
-                        >
-                            <Icon data={bookmark_filled} size={16} />
-                            <Typography group="navigation" variant="menu_title" as="span">
-                                Set as reference case
-                            </Typography>
-                        </Menu.Item>
-                    )}
-            </Menu>
-            <EditCaseModal
-                setProject={setProject}
-                project={project}
-                caseId={selectedCaseId}
-                isOpen={editCaseModalIsOpen}
-                toggleModal={toggleEditCaseModal}
-                editMode
-                navigate={false}
-            />
+                    <Menu.Item
+                        onClick={openCase}
+                    >
+                        <Icon data={folder} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Open
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={duplicateCase}
+                    >
+                        <Icon data={library_add} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Duplicate
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={toggleEditCaseModal}
+                    >
+                        <Icon data={edit} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Edit
+                        </Typography>
+                    </Menu.Item>
+                    <Menu.Item
+                        onClick={deleteCase}
+                    >
+                        <Icon data={delete_to_trash} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Delete
+                        </Typography>
+                    </Menu.Item>
+                    {project.referenceCaseId === selectedCaseId
+                        ? (
+                            <Menu.Item
+                                onClick={setCaseAsReference}
+                            >
+                                <Icon data={bookmark_outlined} size={16} />
+                                <Typography group="navigation" variant="menu_title" as="span">
+                                    Remove as reference case
+                                </Typography>
+                            </Menu.Item>
+                        )
+                        : (
+                            <Menu.Item
+                                onClick={setCaseAsReference}
+                            >
+                                <Icon data={bookmark_filled} size={16} />
+                                <Typography group="navigation" variant="menu_title" as="span">
+                                    Set as reference case
+                                </Typography>
+                            </Menu.Item>
+                        )}
+                </Menu>
+                <EditCaseModal
+                    setProject={setProject}
+                    project={project}
+                    caseId={selectedCaseId}
+                    isOpen={editCaseModalIsOpen}
+                    toggleModal={toggleEditCaseModal}
+                    editMode
+                    navigate={false}
+                />
+            </div>
         </div>
     )
 }

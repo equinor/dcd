@@ -6,6 +6,7 @@ import {
     ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import {
     GetRowIdFunc,
     GetRowIdParams,
@@ -54,6 +55,7 @@ function PROSPCaseList({
     check,
 }: Props) {
     const gridRef = useRef<any>(null)
+    const styles = useStyles()
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
 
@@ -372,25 +374,27 @@ function PROSPCaseList({
 
     return (
         <>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine-fusion"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    rowSelection="multiple"
-                    isRowSelectable={rowIsChanged}
-                    suppressRowClickSelection
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                    getRowId={getRowId}
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        rowSelection="multiple"
+                        isRowSelectable={rowIsChanged}
+                        suppressRowClickSelection
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                        getRowId={getRowId}
+                    />
+                </div>
             </div>
             <ApplyButtonWrapper>
                 {!isApplying ? (

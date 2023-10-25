@@ -8,6 +8,7 @@ import {
 } from "react"
 
 import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
@@ -40,6 +41,7 @@ function CaseTabTable({
     alignedGridsRef, gridRef,
     includeFooter, totalRowName,
 }: Props) {
+    const styles = useStyles()
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
@@ -281,30 +283,32 @@ function CaseTabTable({
                 setProfile={overrideModalProfileSet}
                 profile={overrideProfile}
             />
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine-fusion"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    enableCellChangeFlash
-                    rowSelection="multiple"
-                    enableRangeSelection
-                    suppressCopySingleCellRanges
-                    suppressMovableColumns
-                    enableCharts
-                    alignedGrids={gridRefArrayToAlignedGrid()}
-                    groupIncludeTotalFooter={includeFooter}
-                    getRowStyle={getRowStyle}
-                    suppressLastEmptyLineOnPaste
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        enableCellChangeFlash
+                        rowSelection="multiple"
+                        enableRangeSelection
+                        suppressCopySingleCellRanges
+                        suppressMovableColumns
+                        enableCharts
+                        alignedGrids={gridRefArrayToAlignedGrid()}
+                        groupIncludeTotalFooter={includeFooter}
+                        getRowStyle={getRowStyle}
+                        suppressLastEmptyLineOnPaste
+                    />
+                </div>
             </div>
         </>
     )

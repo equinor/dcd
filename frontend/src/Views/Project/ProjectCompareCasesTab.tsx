@@ -9,6 +9,7 @@ import {
     Icon,
     Tabs, Tooltip,
 } from "@equinor/eds-core-react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { bookmark_filled } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
@@ -20,6 +21,11 @@ const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.5rem;
     margin-bottom: -0.2rem;
+`
+const TableContainer = styled.div`
+    flex: 1 1 auto;
+    width: 100%; 
+    height: calc(100vh - 325px);
 `
 
 interface Props {
@@ -70,6 +76,7 @@ function ProjectCompareCasesTab({
     project,
 }: Props) {
     const gridRef = useRef(null)
+    const styles = useStyles()
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -459,24 +466,26 @@ function ProjectCompareCasesTab({
                     </Panels>
                 </Tabs>
             </WrapperTabs>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine-fusion"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                    rowSelection="multiple"
-                    enableRangeSelection
-                    enableCharts
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                        rowSelection="multiple"
+                        enableRangeSelection
+                        enableCharts
+                    />
+                </div>
             </div>
         </>
     )

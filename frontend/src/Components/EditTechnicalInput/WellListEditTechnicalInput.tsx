@@ -4,6 +4,7 @@ import {
     Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
@@ -36,6 +37,7 @@ function WellListEditTechnicalInput({
     project, explorationWells, wells, setWells,
 }: Props) {
     const gridRef = useRef(null)
+    const styles = useStyles()
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -176,21 +178,23 @@ function WellListEditTechnicalInput({
 
     return (
         <>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine-fusion"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                    />
+                </div>
             </div>
             <ButtonWrapper>
                 <Button onClick={CreateWell} variant="outlined">

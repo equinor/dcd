@@ -6,6 +6,7 @@ import {
     useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
@@ -34,6 +35,7 @@ function CO2ListTechnicalInput({
     project, setProject,
 }: Props) {
     const gridRef = useRef<any>(null)
+    const styles = useStyles()
 
     const [check, setCheck] = useState(false)
 
@@ -216,25 +218,26 @@ function CO2ListTechnicalInput({
                     />
                 </SwitchWrapper>
             </ColumnWrapper>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "54rem",
-                }}
-                className="ag-theme-alpine-fusion"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                    isExternalFilterPresent={isExternalFilterPresent}
-                    doesExternalFilterPass={doesExternalFilterPass}
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "54rem",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                        isExternalFilterPresent={isExternalFilterPresent}
+                        doesExternalFilterPass={doesExternalFilterPass}
+                    />
+                </div>
             </div>
-
         </>
     )
 }

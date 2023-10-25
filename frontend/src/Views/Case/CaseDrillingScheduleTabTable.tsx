@@ -7,6 +7,7 @@ import {
 } from "react"
 
 import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -42,6 +43,7 @@ function CaseDrillingScheduleTabTable({
     assetWells, setAssetWells,
     wells, assetId, isExplorationTable,
 }: Props) {
+    const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
@@ -199,27 +201,29 @@ function CaseDrillingScheduleTabTable({
     }
 
     return (
-        <div
-            style={{
-                display: "flex", flexDirection: "column", width: "100%",
-            }}
-            className="ag-theme-alpine-fusion"
-        >
-            <AgGridReact
-                ref={gridRef}
-                rowData={rowData}
-                columnDefs={columnDefs}
-                defaultColDef={defaultColDef}
-                animateRows
-                domLayout="autoHeight"
-                enableCellChangeFlash
-                rowSelection="multiple"
-                enableRangeSelection
-                suppressCopySingleCellRanges
-                suppressMovableColumns
-                enableCharts
-                alignedGrids={gridRefArrayToAlignedGrid()}
-            />
+        <div className={styles.root}>
+            <div
+                style={{
+                    display: "flex", flexDirection: "column", width: "100%",
+                }}
+                className="ag-theme-alpine-fusion"
+            >
+                <AgGridReact
+                    ref={gridRef}
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    animateRows
+                    domLayout="autoHeight"
+                    enableCellChangeFlash
+                    rowSelection="multiple"
+                    enableRangeSelection
+                    suppressCopySingleCellRanges
+                    suppressMovableColumns
+                    enableCharts
+                    alignedGrids={gridRefArrayToAlignedGrid()}
+                />
+            </div>
         </div>
     )
 }
