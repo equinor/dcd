@@ -85,29 +85,27 @@ function CaseCO2DistributionTable({
     }), [])
 
     return (
-        <div className={styles.root}>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "50%",
-                }}
-                className="ag-theme-alpine-fusion"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    enableCellChangeFlash
-                    rowSelection="multiple"
-                    enableRangeSelection
-                    suppressCopySingleCellRanges
-                    suppressMovableColumns
-                    enableCharts
-                    onGridReady={onGridReady}
-                />
-            </div>
+        <div
+            style={{
+                display: "flex", flexDirection: "column", width: "50%",
+            }}
+            className="ag-theme-alpine-fusion"
+        >
+            <AgGridReact
+                ref={gridRef}
+                rowData={rowData}
+                columnDefs={columnDefs}
+                defaultColDef={defaultColDef}
+                animateRows
+                domLayout="autoHeight"
+                enableCellChangeFlash
+                rowSelection="multiple"
+                enableRangeSelection
+                suppressCopySingleCellRanges
+                suppressMovableColumns
+                enableCharts
+                onGridReady={onGridReady}
+            />
         </div>
     )
 }

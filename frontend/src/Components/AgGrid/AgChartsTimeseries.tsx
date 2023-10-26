@@ -66,8 +66,8 @@ export const AgChartsTimeseries = ({
             {
                 type: "column",
                 xKey: "year",
-                yKeys: barProfiles,
-                yNames: barNames,
+                yKey: barProfiles,
+                yName: barNames,
                 grouped: true,
                 highlightStyle: {
                     item: {

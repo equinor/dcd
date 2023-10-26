@@ -9,6 +9,7 @@ import { ClipboardModule } from "@ag-grid-enterprise/clipboard"
 import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
 import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { MenuModule } from "@ag-grid-enterprise/menu"
+import { GridChartsModule } from "@ag-grid-enterprise/charts"
 import { AppRouter } from "./app/AppRouter"
 import { StoreAppId, StoreAppScope } from "./Utils/common"
 import { FusionRouterBootstrap } from "./app/FusionRouterBootstrap"
@@ -26,6 +27,7 @@ ModuleRegistry.registerModules([
     MultiFilterModule,
     SetFilterModule,
     MenuModule,
+    GridChartsModule,
 ])
 
 const setEnvironment = (): void => {
