@@ -1,4 +1,5 @@
 import { AgChartsReact } from "ag-charts-react"
+import { insertIf, separateProfileObjects } from "./AgChartHelperFunctions"
 
 interface Props {
     data: any
@@ -43,14 +44,6 @@ export const AgChartsTimeseries = ({
         },
     }
 
-    function insertIf(condition: any, addAxes: boolean, ...elements: any) {
-        if (addAxes) {
-            const axesObject = { axes: axesData }
-            return condition ? axesObject : []
-        }
-        return condition ? elements : []
-    }
-
     const defaultOptions: any = {
         data,
         title: { text: chartTitle ?? "" },
@@ -63,28 +56,10 @@ export const AgChartsTimeseries = ({
         },
         theme: figmaTheme,
         series: [
-            {
-                type: "column",
-                xKey: "year",
-                yKey: barProfiles,
-                yName: barNames,
-                grouped: true,
-                highlightStyle: {
-                    item: {
-                        fill: undefined,
-                        stroke: undefined,
-                        strokeWidth: 1,
-                    },
-                    series: {
-                        enabled: true,
-                        dimOpacity: 0.2,
-                        strokeWidth: 2,
-                    },
-                },
-            },
-            ...insertIf(lineChart !== undefined, false, lineChart),
+            ...separateProfileObjects(barProfiles, barNames, "year"),
+            ...insertIf(lineChart !== undefined, false, axesData, lineChart),
         ],
-        ...insertIf(axesData !== undefined, true, axesData),
+        ...insertIf(axesData !== undefined, true, axesData, lineChart),
         legend: { position: "bottom", spacing: 40 },
     }
 

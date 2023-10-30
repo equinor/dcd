@@ -1,4 +1,5 @@
 import { AgChartsReact } from "ag-charts-react"
+import { insertIf, separateProfileObjects } from "./AgChartHelperFunctions"
 
 interface Props {
     data: any
@@ -31,10 +32,6 @@ export const AgChartsCompareCases = ({
         },
     }
 
-    function insertIf(condition: any, ...elements: any) {
-        return condition ? elements : []
-    }
-
     const defaultOptions: any = {
         data,
         title: { text: chartTitle ?? "" },
@@ -47,26 +44,8 @@ export const AgChartsCompareCases = ({
         },
         theme: figmaTheme,
         series: [
-            {
-                type: "column",
-                xKey: "cases",
-                yKeys: barProfiles,
-                yNames: barNames,
-                grouped: true,
-                highlightStyle: {
-                    item: {
-                        fill: undefined,
-                        stroke: undefined,
-                        strokeWidth: 1,
-                    },
-                    series: {
-                        enabled: true,
-                        dimOpacity: 0.2,
-                        strokeWidth: 2,
-                    },
-                },
-            },
-            ...insertIf(lineChart !== undefined, lineChart),
+            ...separateProfileObjects(barProfiles, barNames, "cases"),
+            ...insertIf(lineChart !== undefined, false, lineChart),
         ],
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
     }
