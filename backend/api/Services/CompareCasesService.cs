@@ -44,10 +44,9 @@ public class CompareCasesService : ICompareCasesService
         var caseList = new List<CompareCasesDto>();
         if (project.Cases != null)
         {
-            var caseOrderedByCreatedTime = project.Cases.OrderBy(c => c.CreateTime);
             DrainageStrategy drainageStrategy;
             Exploration exploration;
-            foreach (var caseItem in caseOrderedByCreatedTime)
+            foreach (var caseItem in project.Cases)
             {
                 drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
                 exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
@@ -66,6 +65,7 @@ public class CompareCasesService : ICompareCasesService
 
                 var compareCases = new CompareCasesDto
                 {
+                    CaseId = caseItem.Id,
                     TotalOilProduction = totalOilProduction,
                     TotalGasProduction = totalGasProduction,
                     TotalExportedVolumes = totalExportedVolumes,

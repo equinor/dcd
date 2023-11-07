@@ -1,5 +1,4 @@
 import { AgGridReact } from "@ag-grid-community/react"
-import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import {
     useMemo, useRef, useState,
 } from "react"
@@ -16,7 +15,6 @@ function CaseCO2DistributionTable({
     topside,
 }: Props) {
     const gridRef = useRef(null)
-    const styles = useStyles()
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api

@@ -174,6 +174,7 @@ declare namespace Components {
             projectCategory?: ProjectCategory /* int32 */;
         }
         export interface CompareCasesDto {
+            caseId?: string; // uuid
             totalOilProduction?: number; // double
             totalGasProduction?: number; // double
             totalExportedVolumes?: number; // double

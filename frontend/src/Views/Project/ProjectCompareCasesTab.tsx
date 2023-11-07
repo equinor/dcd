@@ -22,11 +22,6 @@ const MenuIcon = styled(Icon)`
     margin-right: 0.5rem;
     margin-bottom: -0.2rem;
 `
-const TableContainer = styled.div`
-    flex: 1 1 auto;
-    width: 100%; 
-    height: calc(100vh - 325px);
-`
 
 interface Props {
     project: Project
@@ -103,7 +98,8 @@ function ProjectCompareCasesTab({
         (async () => {
             try {
                 const compareCasesService = await (await GetCompareCasesService()).calculate(project.id)
-                setCompareCasesTotals(compareCasesService)
+                const casesOrderedByGuid = compareCasesService.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
+                setCompareCasesTotals(casesOrderedByGuid)
             } catch (error) {
                 console.error("[ProjectView] Error while generating compareCasesTotals", error)
             }

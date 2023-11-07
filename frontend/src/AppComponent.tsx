@@ -1,4 +1,4 @@
-import { useAppConfig, useCurrentUser, useFusionEnvironment } from "@equinor/fusion"
+import { useAppConfig, useFusionEnvironment } from "@equinor/fusion"
 import { FC } from "react"
 import { ModuleRegistry } from "@ag-grid-community/core"
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model"
@@ -37,7 +37,6 @@ const setEnvironment = (): void => {
 
 const AppComponent: FC = () => {
     setEnvironment()
-    const user = useCurrentUser()
     const runtimeConfig = useAppConfig()
     const fusionEnvironment = useFusionEnvironment()
 
