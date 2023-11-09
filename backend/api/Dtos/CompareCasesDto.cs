@@ -4,6 +4,7 @@ namespace api.Dtos;
 
 public class CompareCasesDto
 {
+    public Guid CaseId { get; set; }
     public double TotalOilProduction { get; set; }
     public double TotalGasProduction { get; set; }
     public double TotalExportedVolumes { get; set; }

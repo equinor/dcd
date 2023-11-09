@@ -3,11 +3,12 @@ import {
     ChangeEvent,
     Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
+import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
-import "ag-grid-enterprise"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 
 const ButtonWrapper = styled.div`
@@ -36,6 +37,7 @@ function WellListEditTechnicalInput({
     project, explorationWells, wells, setWells,
 }: Props) {
     const gridRef = useRef(null)
+    const styles = useStyles()
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -136,7 +138,7 @@ function WellListEditTechnicalInput({
         onCellValueChanged: updateWells,
     }), [])
 
-    const [columnDefs] = useState([
+    const [columnDefs] = useState<ColDef[]>([
         {
             field: "name", sort: order, width: 110,
         },
@@ -176,21 +178,23 @@ function WellListEditTechnicalInput({
 
     return (
         <>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                    />
+                </div>
             </div>
             <ButtonWrapper>
                 <Button onClick={CreateWell} variant="outlined">

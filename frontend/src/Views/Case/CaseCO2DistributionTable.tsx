@@ -1,9 +1,10 @@
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
 import {
     useMemo, useRef, useState,
 } from "react"
 import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
+import { ColDef } from "@ag-grid-community/core"
 import { Topside } from "../../models/assets/topside/Topside"
 
 interface Props {
@@ -47,7 +48,7 @@ function CaseCO2DistributionTable({
 
     const [rowData] = useState(co2Data)
 
-    const [columnDefs] = useState([
+    const [columnDefs] = useState<ColDef[]>([
         {
             field: "profile",
             headerName: "CO2 distribution",
@@ -86,7 +87,7 @@ function CaseCO2DistributionTable({
             style={{
                 display: "flex", flexDirection: "column", width: "50%",
             }}
-            className="ag-theme-alpine"
+            className="ag-theme-alpine-fusion"
         >
             <AgGridReact
                 ref={gridRef}

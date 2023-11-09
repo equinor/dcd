@@ -1,12 +1,23 @@
-import { registerApp as registerLegacy } from "@equinor/fusion"
+import { registerApp } from "@equinor/fusion"
 import { createComponent } from "@equinor/fusion-framework-react-app"
 
-import App from "./app/App"
+import AppComponent from "./AppComponent"
 import { configurator } from "./config"
 
-registerLegacy("conceptapp", {
-    render: createComponent(App, configurator),
-    AppComponent: App,
+declare let module: NodeModule
+interface NodeModule {
+  hot: any
+}
+
+export const render = createComponent(AppComponent, configurator)
+
+registerApp("conceptapp", {
+    AppComponent,
+    render,
 })
 
-if (module.hot) module.hot.accept()
+if (module.hot) {
+    module.hot.accept()
+}
+
+export default render

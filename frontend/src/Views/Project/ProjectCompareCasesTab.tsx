@@ -4,11 +4,12 @@ import styled from "styled-components"
 import {
     useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
 import {
     Icon,
     Tabs, Tooltip,
 } from "@equinor/eds-core-react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { bookmark_filled } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
@@ -70,6 +71,7 @@ function ProjectCompareCasesTab({
     project,
 }: Props) {
     const gridRef = useRef(null)
+    const styles = useStyles()
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -96,7 +98,8 @@ function ProjectCompareCasesTab({
         (async () => {
             try {
                 const compareCasesService = await (await GetCompareCasesService()).calculate(project.id)
-                setCompareCasesTotals(compareCasesService)
+                const casesOrderedByGuid = compareCasesService.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
+                setCompareCasesTotals(casesOrderedByGuid)
             } catch (error) {
                 console.error("[ProjectView] Error while generating compareCasesTotals", error)
             }
@@ -459,24 +462,26 @@ function ProjectCompareCasesTab({
                     </Panels>
                 </Tabs>
             </WrapperTabs>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                    rowSelection="multiple"
-                    enableRangeSelection
-                    enableCharts
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                        rowSelection="multiple"
+                        enableRangeSelection
+                        enableCharts
+                    />
+                </div>
             </div>
         </>
     )

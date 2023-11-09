@@ -65,6 +65,7 @@ public class CompareCasesService : ICompareCasesService
 
                 var compareCases = new CompareCasesDto
                 {
+                    CaseId = caseItem.Id,
                     TotalOilProduction = totalOilProduction,
                     TotalGasProduction = totalGasProduction,
                     TotalExportedVolumes = totalExportedVolumes,
