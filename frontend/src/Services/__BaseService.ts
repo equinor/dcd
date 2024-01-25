@@ -29,14 +29,18 @@ export class __BaseService {
             Authorization: `Bearer ${config.accessToken}`,
             ...this.config.headers,
         }
-        this.client.interceptors.response.use((response: any) => response, (error: any) => {
-            if (error.response.status === 403) {
-                window.location.href = "/apps/conceptapp/403"
+        this.client.interceptors.response.use(
+            (response: any) => response,
+            (error: any) => {
+                if (error.response.status === 403) {
+                    console.error("Error: You don't have permission to access this resource. Please contact support.")
+                } else if (error.response.status === 500) {
+                    console.error("Error: An internal server error occurred. Please try again later.")
+                }
+                return Promise.reject(error)
             }
-            if (error.response.status === 500) {
-                window.location.href = "/apps/conceptapp/500"
-            }
-        })
+        )
+    
     }
 
     private async request(path: string, options?: RequestOptions): Promise<any> {
