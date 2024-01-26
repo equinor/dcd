@@ -43,8 +43,6 @@ class __WellProjectWellService extends __BaseService {
         const res: Components.Schemas.WellProjectWellDto[] = await this.postWithParams("/multiple", { body: data }, { params: { caseId } })
         return res
     }
-
-
 }
 
 export const WellProjectWellService = new __WellProjectWellService({
