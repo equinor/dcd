@@ -10,7 +10,6 @@ import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { GetWellProjectWellService, WellProjectWellService } from "../../Services/WellProjectWellService"
 import { delete_to_trash } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { GetWellService } from "../../Services/WellService"
@@ -42,8 +41,6 @@ function WellListEditTechnicalInput({
 }: Props) {
     const gridRef = useRef(null)
     const styles = useStyles()
-    const [selectedWellId, setSelectedWellId] = useState<string | undefined | null>(null);
-
     const onGridReady = (params: any) => {
         gridRef.current = params.api
     }
