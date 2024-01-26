@@ -6,7 +6,7 @@ import { config } from "./config"
 
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { WellProjectWell } from "../models/WellProjectWell"
-
+    
 class __WellProjectWellService extends __BaseService {
     public async getWellProjectWells() {
         const wellProjectWells: Components.Schemas.WellProjectWellDto[] = await this.get<Components.Schemas.WellProjectWellDto[]>("")
@@ -34,6 +34,11 @@ class __WellProjectWellService extends __BaseService {
         return Project.fromJSON(res)
     }
 
+    public async deleteWellProjectWell(wellId: string): Promise<Project> {
+        const res: Components.Schemas.ProjectDto = await this.delete(`../wells/${wellId}`)
+        return Project.fromJSON(res)
+    }
+
     public async updateMultipleWellProjectWells(caseId: string, body: Components.Schemas.WellProjectWellDto[]): Promise<any> {
         const res: Components.Schemas.WellProjectWellDto[] = await this.putWithParams("/multiple", { body }, { params: { caseId } })
         return res
@@ -43,6 +48,8 @@ class __WellProjectWellService extends __BaseService {
         const res: Components.Schemas.WellProjectWellDto[] = await this.postWithParams("/multiple", { body: data }, { params: { caseId } })
         return res
     }
+
+
 }
 
 export const WellProjectWellService = new __WellProjectWellService({

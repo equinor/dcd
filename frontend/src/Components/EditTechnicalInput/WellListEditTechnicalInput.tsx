@@ -10,6 +10,9 @@ import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
+import { GetWellProjectWellService, WellProjectWellService } from "../../Services/WellProjectWellService"
+import { delete_to_trash } from "@equinor/eds-icons"
+import { Icon } from "@equinor/eds-core-react"
 
 const ButtonWrapper = styled.div`
     margin-top: 20px;
@@ -38,6 +41,7 @@ function WellListEditTechnicalInput({
 }: Props) {
     const gridRef = useRef(null)
     const styles = useStyles()
+    const [selectedWellId, setSelectedWellId] = useState<string | undefined | null>(null);
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -161,6 +165,22 @@ function WellListEditTechnicalInput({
                 template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`),
             },
         },
+        {
+            headerName: "DeleteRow",
+            width: 60,
+            cellRenderer: (params: any) => {
+                return (
+                    <button className="delete-button" onClick={async () => {
+                        const wellIdToDelete = params.data.id;
+                        //setSelectedWellId(params.data.id);
+                        //console.log(selectedWellId);
+                        await deleteWell(wellIdToDelete); // Call the deleteRow function
+                    }}>
+                        <Icon data={delete_to_trash} size={16} />
+                    </button>
+                );
+            },
+        },
     ])
 
     const CreateWell = async () => {
@@ -173,6 +193,17 @@ function WellListEditTechnicalInput({
             setWells(newWells)
         } else {
             setWells([newWell])
+        }
+    }
+
+    const deleteWell = async (wellIdToDelete: string) => {
+        try {
+            if (wellIdToDelete) {
+                const updatedProject = await (await GetWellProjectWellService()).deleteWellProjectWell(wellIdToDelete);
+                setWells(updatedProject.wells || []);
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
         }
     }
 
