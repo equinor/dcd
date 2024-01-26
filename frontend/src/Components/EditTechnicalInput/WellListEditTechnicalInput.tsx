@@ -13,6 +13,7 @@ import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { GetWellProjectWellService, WellProjectWellService } from "../../Services/WellProjectWellService"
 import { delete_to_trash } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
+import { GetWellService } from "../../Services/WellService"
 
 const ButtonWrapper = styled.div`
     margin-top: 20px;
@@ -199,7 +200,7 @@ function WellListEditTechnicalInput({
     const deleteWell = async (wellIdToDelete: string) => {
         try {
             if (wellIdToDelete) {
-                const updatedProject = await (await GetWellProjectWellService()).deleteWellProjectWell(wellIdToDelete);
+                const updatedProject = await (await GetWellService()).deleteWell(wellIdToDelete);
                 setWells(updatedProject.wells || []);
             }
         } catch (error) {

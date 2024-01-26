@@ -6,7 +6,7 @@ import { config } from "./config"
 
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { WellProjectWell } from "../models/WellProjectWell"
-    
+
 class __WellProjectWellService extends __BaseService {
     public async getWellProjectWells() {
         const wellProjectWells: Components.Schemas.WellProjectWellDto[] = await this.get<Components.Schemas.WellProjectWellDto[]>("")
@@ -31,11 +31,6 @@ class __WellProjectWellService extends __BaseService {
 
     public async updateWellProjectWell(body: Components.Schemas.WellProjectWellDto): Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.put("", { body })
-        return Project.fromJSON(res)
-    }
-
-    public async deleteWellProjectWell(wellId: string): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.delete(`../wells/${wellId}`)
         return Project.fromJSON(res)
     }
 

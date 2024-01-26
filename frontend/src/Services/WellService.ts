@@ -34,7 +34,7 @@ class __WellService extends __BaseService {
     }
 
     public async deleteWell(wellId: string): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.delete(`/wells/${wellId}`)
+        const res: Components.Schemas.ProjectDto = await this.delete(`${wellId}`)
         return Project.fromJSON(res)
     }
 
