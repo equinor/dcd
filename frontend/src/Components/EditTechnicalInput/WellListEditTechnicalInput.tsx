@@ -155,10 +155,10 @@ function WellListEditTechnicalInput({
         try {
             if (wellIdToDelete && wells) {
                 // Update backend to delete the well
-                await (await GetWellService()).deleteWell(wellIdToDelete);
-    
+                await (await GetWellService()).deleteWell(wellIdToDelete)
+
                 // Update local state
-                const updatedWells = wells.filter(well => (well.id !== wellIdToDelete));
+                const updatedWells = wells.filter((well) => well.id !== wellIdToDelete)
                 setWells(updatedWells)
             }
         } catch (error) {
@@ -168,8 +168,8 @@ function WellListEditTechnicalInput({
 
     const deleteCellRenderer = (params: any) => (
         <DeleteButton wellId={params.data.id} onDelete={deleteWell} />
-    );
-    
+    )
+
     const [columnDefs] = useState<ColDef[]>([
         {
             field: "name", sort: order, width: 110,
@@ -201,8 +201,6 @@ function WellListEditTechnicalInput({
         },
     ])
 
-
-
     const CreateWell = async () => {
         const newWell = new Well()
         newWell.wellCategory = !explorationWells ? 0 : 4
@@ -214,7 +212,7 @@ function WellListEditTechnicalInput({
         } else {
             setWells([newWell])
         }
-    }  
+    }
 
     return (
         <>
@@ -245,5 +243,4 @@ function WellListEditTechnicalInput({
         </>
     )
 }
-
 export default WellListEditTechnicalInput
