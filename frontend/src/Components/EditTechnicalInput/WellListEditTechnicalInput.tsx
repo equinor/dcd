@@ -43,11 +43,12 @@ interface DeleteButtonProps {
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => {
     return (
-        <button className="delete-button" onClick={() => onDelete(wellId)}>
+        <button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
             <Icon data={delete_to_trash} size={16} />
         </button>
     );
 };
+
 
 function WellListEditTechnicalInput({
     project, explorationWells, wells, setWells,
@@ -153,15 +154,9 @@ function WellListEditTechnicalInput({
         onCellValueChanged: updateWells,
     }), [])
 
-
-
-
-
-
     const deleteCellRenderer = (params: any) => {
         return <DeleteButton wellId={params.data.id} onDelete={deleteWell} />;
     };
-
 
     const [columnDefs] = useState<ColDef[]>([
         {
