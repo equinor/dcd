@@ -33,4 +33,3 @@ frontend/cypress/screenshots
 #MacOS
 .DS_Store
 
-backend/api/logs/log-20240129.txt
