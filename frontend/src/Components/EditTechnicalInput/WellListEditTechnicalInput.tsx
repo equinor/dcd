@@ -45,8 +45,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => (
     <Button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
         <Icon data={delete_to_trash} size={16} />
     </Button>
-);
-
+)
 
 function WellListEditTechnicalInput({
     project, explorationWells, wells, setWells,
@@ -152,11 +151,25 @@ function WellListEditTechnicalInput({
         onCellValueChanged: updateWells,
     }), [])
 
+    const deleteWell = async (wellIdToDelete: string) => {
+        try {
+            if (wellIdToDelete && wells) {
+                // Update backend to delete the well
+                await (await GetWellService()).deleteWell(wellIdToDelete);
+    
+                // Update local state
+                const updatedWells = wells.filter(well => (well.id !== wellIdToDelete));
+                setWells(updatedWells)
+            }
+        } catch (error) {
+            console.error("[ProjectView] error while submitting form data", error)
+        }
+    }
+
     const deleteCellRenderer = (params: any) => (
         <DeleteButton wellId={params.data.id} onDelete={deleteWell} />
     );
     
-
     const [columnDefs] = useState<ColDef[]>([
         {
             field: "name", sort: order, width: 110,
@@ -201,23 +214,7 @@ function WellListEditTechnicalInput({
         } else {
             setWells([newWell])
         }
-    }
-
-    const deleteWell = async (wellIdToDelete: string) => {
-        try {
-            if (wellIdToDelete && wells) {
-                // Update backend to delete the well
-                await (await GetWellService()).deleteWell(wellIdToDelete);
-    
-                // Update local state
-                const updatedWells = wells.filter(well => well.id !== wellIdToDelete);
-                setWells(updatedWells);
-            }
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error);
-        }
-    };
-    
+    }  
 
     return (
         <>
