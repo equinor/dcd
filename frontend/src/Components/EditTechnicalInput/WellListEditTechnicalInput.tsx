@@ -244,6 +244,4 @@ function WellListEditTechnicalInput({
     )
 }
 
-
-
 export default WellListEditTechnicalInput
