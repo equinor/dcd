@@ -36,6 +36,19 @@ interface TableWell {
     wells: Well[]
 }
 
+interface DeleteButtonProps {
+    wellId: string;
+    onDelete: (wellId: string) => void;
+}
+
+const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => {
+    return (
+        <button className="delete-button" onClick={() => onDelete(wellId)}>
+            <Icon data={delete_to_trash} size={16} />
+        </button>
+    );
+};
+
 function WellListEditTechnicalInput({
     project, explorationWells, wells, setWells,
 }: Props) {
@@ -140,18 +153,9 @@ function WellListEditTechnicalInput({
         onCellValueChanged: updateWells,
     }), [])
 
-    interface DeleteButtonProps {
-        wellId: string;
-        onDelete: (wellId: string) => void;
-    }
 
-    const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => {
-        return (
-            <button className="delete-button" onClick={() => onDelete(wellId)}>
-                <Icon data={delete_to_trash} size={16} />
-            </button>
-        );
-    };
+
+
 
 
     const deleteCellRenderer = (params: any) => {
