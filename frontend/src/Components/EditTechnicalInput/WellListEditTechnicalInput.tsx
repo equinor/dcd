@@ -43,12 +43,11 @@ interface DeleteButtonProps {
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => {
     return (
-        <button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
+        <Button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
             <Icon data={delete_to_trash} size={16} />
-        </button>
+        </Button>
     );
 };
-
 
 function WellListEditTechnicalInput({
     project, explorationWells, wells, setWells,
