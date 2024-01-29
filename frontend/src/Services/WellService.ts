@@ -33,6 +33,11 @@ class __WellService extends __BaseService {
         return Project.fromJSON(res)
     }
 
+    public async deleteWell(wellId: string): Promise<Project> {
+        const res: Components.Schemas.ProjectDto = await this.delete(`${wellId}`)
+        return Project.fromJSON(res)
+    }
+
     public async updateMultipleWells(body: Components.Schemas.WellDto[]): Promise<any> {
         const res: any = await this.put("/multiple", { body })
         return res
