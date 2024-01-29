@@ -140,6 +140,25 @@ function WellListEditTechnicalInput({
         onCellValueChanged: updateWells,
     }), [])
 
+    interface DeleteButtonProps {
+        wellId: string;
+        onDelete: (wellId: string) => void;
+    }
+
+    const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => {
+        return (
+            <button className="delete-button" onClick={() => onDelete(wellId)}>
+                <Icon data={delete_to_trash} size={16} />
+            </button>
+        );
+    };
+
+
+    const deleteCellRenderer = (params: any) => {
+        return <DeleteButton wellId={params.data.id} onDelete={deleteWell} />;
+    };
+
+
     const [columnDefs] = useState<ColDef[]>([
         {
             field: "name", sort: order, width: 110,
@@ -166,20 +185,12 @@ function WellListEditTechnicalInput({
         {
             headerName: "DeleteRow",
             width: 60,
-            cellRenderer: (params: any) => {
-                return (
-                    <button className="delete-button" onClick={async () => {
-                        const wellIdToDelete = params.data.id;
-                        //setSelectedWellId(params.data.id);
-                        //console.log(selectedWellId);
-                        await deleteWell(wellIdToDelete); // Call the deleteRow function
-                    }}>
-                        <Icon data={delete_to_trash} size={16} />
-                    </button>
-                );
-            },
+            cellRenderer: deleteCellRenderer,
+
         },
     ])
+
+
 
     const CreateWell = async () => {
         const newWell = new Well()
@@ -234,5 +245,7 @@ function WellListEditTechnicalInput({
         </>
     )
 }
+
+
 
 export default WellListEditTechnicalInput
