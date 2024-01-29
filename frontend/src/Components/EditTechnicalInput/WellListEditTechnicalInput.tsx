@@ -41,13 +41,12 @@ interface DeleteButtonProps {
     onDelete: (wellId: string) => void;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => {
-    return (
-        <Button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
-            <Icon data={delete_to_trash} size={16} />
-        </Button>
-    );
-};
+const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => (
+    <Button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
+        <Icon data={delete_to_trash} size={16} />
+    </Button>
+);
+
 
 function WellListEditTechnicalInput({
     project, explorationWells, wells, setWells,
@@ -153,9 +152,10 @@ function WellListEditTechnicalInput({
         onCellValueChanged: updateWells,
     }), [])
 
-    const deleteCellRenderer = (params: any) => {
-        return <DeleteButton wellId={params.data.id} onDelete={deleteWell} />;
-    };
+    const deleteCellRenderer = (params: any) => (
+        <DeleteButton wellId={params.data.id} onDelete={deleteWell} />
+    );
+    
 
     const [columnDefs] = useState<ColDef[]>([
         {
@@ -181,8 +181,8 @@ function WellListEditTechnicalInput({
             },
         },
         {
-            headerName: "DeleteRow",
-            width: 60,
+            headerName: "",
+            width: 90,
             cellRenderer: deleteCellRenderer,
 
         },
@@ -205,14 +205,19 @@ function WellListEditTechnicalInput({
 
     const deleteWell = async (wellIdToDelete: string) => {
         try {
-            if (wellIdToDelete) {
-                const updatedProject = await (await GetWellService()).deleteWell(wellIdToDelete);
-                setWells(updatedProject.wells || []);
+            if (wellIdToDelete && wells) {
+                // Update backend to delete the well
+                await (await GetWellService()).deleteWell(wellIdToDelete);
+    
+                // Update local state
+                const updatedWells = wells.filter(well => well.id !== wellIdToDelete);
+                setWells(updatedWells);
             }
         } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
+            console.error("[ProjectView] error while submitting form data", error);
         }
-    }
+    };
+    
 
     return (
         <>
