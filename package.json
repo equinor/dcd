@@ -12,8 +12,10 @@
     "@ag-grid-enterprise/clipboard": "^31.0.2",
     "@ag-grid-enterprise/filter-tool-panel": "^31.0.2",
     "@ag-grid-enterprise/multi-filter": "^31.0.2",
+    "@types/react-plotly.js": "^2.6.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-plotly.js": "^2.6.0",
     "react-toastify": "^10.0.4"
   }
 }
