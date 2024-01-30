@@ -17,6 +17,12 @@ import ConceptAppAuthProvider from "./auth/ConceptAppAuthProvider"
 import { APP_VERSION } from "./version"
 import { buildConfig } from "./Services/config"
 import { ResolveConfiguration } from "./Utils/config"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import React from 'react';
+
+
+
 
 ModuleRegistry.registerModules([
     ClientSideRowModelModule,
@@ -64,6 +70,7 @@ const AppComponent: FC = () => {
         <ConceptAppAuthProvider>
             <FusionRouterBootstrap>
                 <AppRouter />
+                {/* <ToastContainer position="top-right" autoClose={5000} hideProgressBar newestOnTop /> */}
             </FusionRouterBootstrap>
         </ConceptAppAuthProvider>
     )

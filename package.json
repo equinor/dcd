@@ -1,9 +1,19 @@
 {
   "lint-staged": {
-      "*.{j,t}s?(x)": "npx eslint --fix"
+    "*.{j,t}s?(x)": "npx eslint --fix"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/react": "^18.2.48",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4"
+  },
+  "dependencies": {
+    "@ag-grid-enterprise/clipboard": "^31.0.2",
+    "@ag-grid-enterprise/filter-tool-panel": "^31.0.2",
+    "@ag-grid-enterprise/multi-filter": "^31.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-toastify": "^10.0.4"
   }
 }

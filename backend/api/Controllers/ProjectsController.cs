@@ -34,7 +34,9 @@ public class ProjectsController : ControllerBase
 
     [HttpGet("{projectId}", Name = "GetProject")]
     public ProjectDto? Get(Guid projectId)
+    //public ActionResult<ProjectDto?> Get (Guid projectId) 
     {
+        //return StatusCode(500);
         try
         {
             return _projectService.GetProjectDto(projectId);
@@ -89,9 +91,10 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateProject")]
-    public ProjectDto UpdateProject([FromBody] ProjectDto projectDto)
+    public ActionResult<ProjectDto?> UpdateProject([FromBody] ProjectDto projectDto)
     {
-        return _projectService.UpdateProject(projectDto);
+        return StatusCode(500);
+        //return _projectService.UpdateProject(projectDto);
     }
 
     [HttpPut("ReferenceCase", Name = "SetReferenceCase")]

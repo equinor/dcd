@@ -1,5 +1,6 @@
-import axios, { AxiosRequestConfig, ResponseType } from "axios"
+import axios, { AxiosRequestConfig, ResponseType } from "axios";
 import { ServiceConfig } from "./config"
+import { toast } from 'react-toastify';
 
 type RequestOptions = {
     credentials?: RequestCredentials
@@ -30,13 +31,25 @@ export class __BaseService {
             ...this.config.headers,
         }
         this.client.interceptors.response.use((response: any) => response, (error: any) => {
-            if (error.response.status === 403) {
-                window.location.href = "/apps/conceptapp/403"
+            if (error.response) {
+                let message = '';
+                switch (error.response.status) {
+                    case 403:
+                        message = "You don’t have permission to access this resource...";
+                        break;
+                    case 500:
+                        message = "Oops! Something went wrong on our end...";
+                        break;
+                    // handle other status codes if needed
+                    default:
+                        message = "An unexpected error occurred...";
+                        break;
+                }
+                toast.error(message); // Use toast for displaying the error
+                return Promise.reject(error);
             }
-            if (error.response.status === 500) {
-                window.location.href = "/apps/conceptapp/500"
-            }
-        })
+        });
+        
     }
 
     private async request(path: string, options?: RequestOptions): Promise<any> {
