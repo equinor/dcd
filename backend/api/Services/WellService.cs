@@ -40,6 +40,14 @@ public class WellService : IWellService
         return _projectService.GetProjectDto(existing.ProjectId);
     }
 
+    public ProjectDto DeleteWell(Guid wellId)
+    {
+        var wellItem = GetWell(wellId);
+        _context.Wells!.Remove(wellItem);
+        _context.SaveChanges();
+        return _projectService.GetProjectDto(wellItem.ProjectId);
+    }
+
     public WellDto UpdateExistingWell(WellDto updatedWellDto)
     {
         var existing = GetWell(updatedWellDto.Id);

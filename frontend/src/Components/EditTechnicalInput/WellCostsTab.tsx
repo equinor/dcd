@@ -6,11 +6,14 @@ import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import OperationalWellCosts from "./OperationalWellCosts"
 import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
+import { Typography } from "@equinor/eds-core-react"
 
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-bottom: 12px;
+    margin-top: 12px;
 `
 
 const RowWrapper = styled.div`
@@ -52,7 +55,15 @@ const WellCostsTab = ({
     explorationWells, setExplorationWells,
 }: Props) => (
     <>
-        <TopWrapper />
+        <TopWrapper color="danger">
+            <Typography variant="h1">Well Costs</Typography>
+        </TopWrapper>
+        <TopWrapper>
+            <Typography variant="body_long">
+                This input is used to calculate each case&apos;s well costs based on their drilling schedules.
+            </Typography>
+
+        </TopWrapper>
         <RowWrapper>
             <ColumnWrapper>
                 <WellListWrapper>
