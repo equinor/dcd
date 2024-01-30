@@ -166,7 +166,7 @@ function CO2ListTechnicalInput({
         filter: true,
         resizable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenu: true
+        suppressMenu: true,
     }), [])
 
     const [columnDefs] = useState<ColDef[]>([

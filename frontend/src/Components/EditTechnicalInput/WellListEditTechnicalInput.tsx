@@ -148,7 +148,7 @@ function WellListEditTechnicalInput({
         resizable: true,
         editable: true,
         onCellValueChanged: updateWells,
-        suppressMenu: true
+        suppressMenu: true,
     }), [])
 
     const deleteWell = async (wellIdToDelete: string) => {
