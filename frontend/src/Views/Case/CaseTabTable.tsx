@@ -257,6 +257,7 @@ function CaseTabTable({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
+        suppressMenu: true
     }), [])
 
     const gridRefArrayToAlignedGrid = () => {

@@ -183,6 +183,7 @@ function CaseDrillingScheduleTabTable({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
+        suppressMenu: true
     }), [])
 
     const gridRefArrayToAlignedGrid = () => {
