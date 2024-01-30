@@ -82,6 +82,7 @@ function ProjectCompareCasesTab({
         filter: true,
         resizable: true,
         editable: false,
+        suppressMenu: true
     }), [])
 
     const [rowData, setRowData] = useState<TableCompareCase[]>()
