@@ -97,6 +97,7 @@ function PROSPCaseList({
         sortable: true,
         filter: true,
         resizable: true,
+        suppressMenu: true,
     }), [])
 
     const rowIsChanged = (p: any) => (p.data.surfStateChanged
