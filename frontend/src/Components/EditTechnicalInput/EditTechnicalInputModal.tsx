@@ -103,22 +103,6 @@ const EditTechnicalInputModal = ({
     const [originalExplorationWells, setOriginalExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
 
     const [isSaving, setIsSaving] = useState<boolean>()
-    
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                toggleEditTechnicalInputModal();
-            }
-        };
-
-        if (isOpen) {
-            window.addEventListener('keydown', handleKeyDown);
-        }
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [isOpen, toggleEditTechnicalInputModal]);
 
     useEffect(() => {
         if (project.wells) {
@@ -137,8 +121,6 @@ const EditTechnicalInputModal = ({
     if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
         return null
     }
-
-    
 
     const setExplorationWellProjectWellsFromWells = (wells: Well[]) => {
         const filteredExplorationWellsResult = wells.filter((w: Well) => IsExplorationWell(w))
