@@ -248,7 +248,7 @@ function WellListEditTechnicalInput({
                         animateRows
                         domLayout="autoHeight"
                         onGridReady={onGridReady}
-                        stopEditingWhenCellsLoseFocus={true}
+                        stopEditingWhenCellsLoseFocus
                     />
                 </div>
             </div>

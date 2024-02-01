@@ -126,12 +126,12 @@ const EditTechnicalInputModal = ({
         }
 
         if (isOpen) {
-            window.addEventListener("keydown", handleKeyDown);
+            window.addEventListener("keydown", handleKeyDown)
         }
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown)
-        };
+        }
     }, [isOpen, toggleEditTechnicalInputModal])
 
     useEffect(() => {
@@ -236,7 +236,7 @@ const EditTechnicalInputModal = ({
         }
     }
 
-    const handleCancel = () => { 
+    const handleCancel = () => {
         // Assuming `captureInitialState` function properly captures and sets original states
         setProject({ ...originalProject })
         setExplorationOperationalWellCosts({ ...originalExplorationOperationalWellCosts })
@@ -248,8 +248,6 @@ const EditTechnicalInputModal = ({
         // Close the modal
         toggleEditTechnicalInputModal()
     };
-
-
 
     return (
         <>
