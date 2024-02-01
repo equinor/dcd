@@ -247,7 +247,7 @@ const EditTechnicalInputModal = ({
 
         // Close the modal
         toggleEditTechnicalInputModal()
-    };
+    }
 
     return (
         <>
