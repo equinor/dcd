@@ -86,7 +86,7 @@ type Props = {
 const EditTechnicalInputModal = ({
     toggleEditTechnicalInputModal, isOpen, setProject, project, setWells, caseId, setExploration, setWellProject,
 }: Props) => {
-    const [justOpened, setJustOpened] = useState(true); // Add this flag
+    const [justOpened, setJustOpened] = useState(true)
 
     const [activeTab, setActiveTab] = useState<number>(0)
 
@@ -109,32 +109,30 @@ const EditTechnicalInputModal = ({
     useEffect(() => {
         if (isOpen && !justOpened) {
             // Set the original state only when the modal is opened
-            setOriginalProject({ ...project });
-            setOriginalExplorationOperationalWellCosts({ ...explorationOperationalWellCosts });
-            setOriginalDevelopmentOperationalWellCosts({ ...developmentOperationalWellCosts });
-            setOriginalWellProjectWells([...wellProjectWells]);
-            setOriginalExplorationWells([...explorationWells]);
-            setJustOpened(false);
-
+            setOriginalProject({ ...project })
+            setOriginalExplorationOperationalWellCosts({ ...explorationOperationalWellCosts })
+            setOriginalDevelopmentOperationalWellCosts({ ...developmentOperationalWellCosts })
+            setOriginalWellProjectWells([...wellProjectWells])
+            setOriginalExplorationWells([...explorationWells])
+            setJustOpened(false)
         }
-    }, [isOpen, project, explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened]);
+    }, [isOpen, project, explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                toggleEditTechnicalInputModal();
+            if (event.key === "Escape") {
+                toggleEditTechnicalInputModal()
             }
-        };
+        }
 
         if (isOpen) {
-
-            window.addEventListener('keydown', handleKeyDown);
+            window.addEventListener("keydown", handleKeyDown);
         }
 
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener("keydown", handleKeyDown)
         };
-    }, [isOpen, toggleEditTechnicalInputModal]);
+    }, [isOpen, toggleEditTechnicalInputModal])
 
     useEffect(() => {
         if (project.wells) {
@@ -153,8 +151,6 @@ const EditTechnicalInputModal = ({
     if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
         return null
     }
-
-
 
     const setExplorationWellProjectWellsFromWells = (wells: Well[]) => {
         const filteredExplorationWellsResult = wells.filter((w: Well) => IsExplorationWell(w))
@@ -240,19 +236,19 @@ const EditTechnicalInputModal = ({
         }
     }
 
-    const handleCancel = () => {
+    const handleCancel = () => { 
         // Assuming `captureInitialState` function properly captures and sets original states
-        setProject({...originalProject});
-        setExplorationOperationalWellCosts({...originalExplorationOperationalWellCosts});
-        setDevelopmentOperationalWellCosts({...originalDevelopmentOperationalWellCosts});
+        setProject({ ...originalProject })
+        setExplorationOperationalWellCosts({ ...originalExplorationOperationalWellCosts })
+        setDevelopmentOperationalWellCosts({ ...originalDevelopmentOperationalWellCosts })
         // For arrays, spread into a new array
-        setWellProjectWells([...originalWellProjectWells]);
-        setExplorationWells([...originalExplorationWells]);
-    
+        setWellProjectWells([...originalWellProjectWells])
+        setExplorationWells([...originalExplorationWells])
+
         // Close the modal
-        toggleEditTechnicalInputModal();
+        toggleEditTechnicalInputModal()
     };
-    
+
 
 
     return (
