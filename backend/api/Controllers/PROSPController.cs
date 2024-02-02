@@ -1,8 +1,7 @@
+using System.Net;
 using api.Dtos;
 using api.Services;
-
 using Api.Authorization;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
@@ -44,31 +43,66 @@ public class PROSPController : ControllerBase
     }
 
     [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
-    public List<DriveItemDto> GetSharePointFileNamesAndId([FromBody] urlDto dto)
+    public async Task<IActionResult> GetSharePointFileNamesAndId([FromBody] urlDto urlDto)
     {
-        var deltaDriveItemCollection =
-            _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(dto.url);
+        if (urlDto == null || string.IsNullOrWhiteSpace(urlDto.url))
+        {
+            return BadRequest("URL is required.");
+        }
 
-        return ProspSharepointImportService.GetExcelDriveItemsFromSite(deltaDriveItemCollection.Result);
+        try
+        {
+            var driveItems = await _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(urlDto.url);
+            return Ok(driveItems);
+        }
+        catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        {
+            _logger.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", urlDto.url);
+            return StatusCode(StatusCodes.Status403Forbidden, "Access to SharePoint resource was denied.");
+        }
+        catch (ProspSharepointImportService.AccessDeniedException ex)
+        {
+            _logger.LogError(ex, "Custom Access Denied when attempting to access SharePoint site: {Url}", urlDto.url);
+            return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while processing your request for URL: {Url}", urlDto.url);
+            return StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred.");
+        }
     }
 
     [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
     [DisableRequestSizeLimit]
-    public async Task<ProjectDto?> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
+    public async Task<IActionResult> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
         [FromBody] SharePointImportDto[] dtos)
     {
         try
         {
             var projectDto = await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
 
-            return projectDto.ProjectId == projectId
-                ? projectDto
-                : _projectService.GetProjectDto(projectId);
+            if (projectDto.ProjectId == projectId)
+            {
+                return Ok(projectDto);
+            }
+            else
+            {
+                var fallbackDto = _projectService.GetProjectDto(projectId);
+                return Ok(fallbackDto);
+            }
         }
+        catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        {
+            _logger.LogError($"Access denied when trying to import files from SharePoint for project {projectId}: {ex.Message}");
+            return StatusCode(StatusCodes.Status403Forbidden, "Access to SharePoint resource was denied.");
+        }
+        // Handle other potential ServiceException cases, if necessary
         catch (Exception e)
         {
-            _logger.LogError(e.Message);
-            return _projectService.GetProjectDto(projectId);
+            _logger.LogError($"An error occurred while importing files from SharePoint for project {projectId}: {e.Message}");
+            // Consider returning a more generic error message to avoid exposing sensitive details
+            // and ensure it's a client-friendly message
+            return StatusCode(StatusCodes.Status403Forbidden, "An error occurred while processing your request1.");
         }
     }
 
