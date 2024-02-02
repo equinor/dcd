@@ -1,12 +1,12 @@
-import { Typography } from "@material-ui/core";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import styled from "styled-components";
-import { Button, Input, Label, Progress, Switch } from "@equinor/eds-core-react";
-import { Project } from "../../models/Project";
-import { GetProspService } from "../../Services/ProspService";
-import { GetProjectService } from "../../Services/ProjectService";
-import { DriveItem } from "../../models/sharepoint/DriveItem";
-import PROSPCaseList from "./PROSPCaseList";
+import { Typography } from "@material-ui/core"
+import React, { ChangeEvent, useEffect, useState } from "react"
+import styled from "styled-components"
+import { Button, Input, Label, Progress, Switch } from "@equinor/eds-core-react"
+import { Project } from "../../models/Project"
+import { GetProspService } from "../../Services/ProspService"
+import { GetProjectService } from "../../Services/ProjectService"
+import { DriveItem } from "../../models/sharepoint/DriveItem"
+import PROSPCaseList from "./PROSPCaseList"
 
 const ProspFieldWrapper = styled.div`
     margin-bottom: 2.5rem;
@@ -48,31 +48,31 @@ function PROSPTab({
     setProject,
 }: Props) {
     const [sharepointUrl, setSharepointUrl] = useState<string>();
-    const [check, setCheck] = useState(false);
+    const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>();
-    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("");
 
     useEffect(() => {
         (async () => {
-            setSharepointUrl(project.sharepointSiteUrl ?? "");
+            setSharepointUrl(project.sharepointSiteUrl ?? "")
             if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
                 try {
                     const result = await (await GetProspService())
                         .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl });
                     setDriveItems(result);
-                    setErrorMessage(""); // Clear any existing error messages
+                    setErrorMessage("") // Clear any existing error messages
                 } catch (error) {
-                    console.error("[PROSPTab] error while fetching SharePoint files", error);
-                    setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.");
+                    console.error("[PROSPTab] error while fetching SharePoint files", error)
+                    setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
                 }
             }
-        })();
-    }, [project.sharepointSiteUrl]);
+        })()
+    }, [project.sharepointSiteUrl])
 
     const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
-        setIsRefreshing(true);
-        e.preventDefault();
+        setIsRefreshing(true)
+        e.preventDefault()
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl });
             setDriveItems(result);
@@ -81,16 +81,16 @@ function PROSPTab({
             if (sharepointUrl !== project.sharepointSiteUrl) {
                 const newProject: Project = { ...project };
                 newProject.sharepointSiteUrl = sharepointUrl;
-                const projectResult = await (await GetProjectService()).updateProject(newProject);
-                setProject(projectResult);
-                setSharepointUrl(projectResult.sharepointSiteUrl ?? "");
+                const projectResult = await (await GetProjectService()).updateProject(newProject)
+                setProject(projectResult)
+                setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
             }
         } catch (error) {
-            console.error("[PROSPTab] error while submitting SharePoint URL", error);
+            console.error("[PROSPTab] error while submitting SharePoint URL", error)
             setErrorMessage("Failed to submit SharePoint URL. Please check the URL and your permissions.");
         }
-        setIsRefreshing(false);
-    };
+        setIsRefreshing(false)
+    }
 
     const handleSharePointUrl: React.ChangeEventHandler<HTMLInputElement> = (e) => {
         setSharepointUrl(e.currentTarget.value);
@@ -120,7 +120,7 @@ function PROSPTab({
             <SwitchWrapper>
                 <Switch
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        setCheck(e.target.checked);
+                        setCheck(e.target.checked)
                     }}
                     checked={check}
                     label="Advance settings"

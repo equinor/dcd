@@ -102,7 +102,7 @@ public class PROSPController : ControllerBase
             _logger.LogError($"An error occurred while importing files from SharePoint for project {projectId}: {e.Message}");
             // Consider returning a more generic error message to avoid exposing sensitive details
             // and ensure it's a client-friendly message
-            return StatusCode(StatusCodes.Status403Forbidden, "An error occurred while processing your request1.");
+            return StatusCode(StatusCodes.Status403Forbidden, "An error occurred while processing your request.");
         }
     }
 
