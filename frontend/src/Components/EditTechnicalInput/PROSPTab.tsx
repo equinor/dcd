@@ -2,7 +2,7 @@ import { Typography } from "@material-ui/core"
 import React, { ChangeEvent, useEffect, useState } from "react"
 import styled from "styled-components"
 import {
-    Button, Input, Label, Progress, Switch
+    Button, Input, Label, Progress, Switch,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { GetProspService } from "../../Services/ProspService"
