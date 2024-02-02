@@ -1,7 +1,9 @@
 import { Typography } from "@material-ui/core"
 import React, { ChangeEvent, useEffect, useState } from "react"
 import styled from "styled-components"
-import { Button, Input, Label, Progress, Switch } from "@equinor/eds-core-react"
+import {
+    Button, Input, Label, Progress, Switch
+} from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
@@ -18,25 +20,25 @@ const ProspFieldWrapper = styled.div`
 
 const ProspURLInputField = styled(Input)`
     margin-right: 20px;
-`;
+`
 
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-`;
+`
 
 const SwitchWrapper = styled.div`
     margin-left: auto;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-`;
+`
 
 const ErrorMessage = styled.div`
     color: red;
     margin-top: 10px;
-`;
+`
 
 interface Props {
     setProject: React.Dispatch<React.SetStateAction<Project | undefined>>;
@@ -75,7 +77,7 @@ function PROSPTab({
         e.preventDefault()
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
-            setDriveItems(result);
+            setDriveItems(result)
             setErrorMessage("") // Clear any existing error messages
 
             if (sharepointUrl !== project.sharepointSiteUrl) {
