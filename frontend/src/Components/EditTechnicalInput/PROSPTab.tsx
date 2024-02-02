@@ -14,7 +14,7 @@ const ProspFieldWrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-`;
+`
 
 const ProspURLInputField = styled(Input)`
     margin-right: 20px;
@@ -47,11 +47,11 @@ function PROSPTab({
     project,
     setProject,
 }: Props) {
-    const [sharepointUrl, setSharepointUrl] = useState<string>();
+    const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
-    const [driveItems, setDriveItems] = useState<DriveItem[]>();
+    const [driveItems, setDriveItems] = useState<DriveItem[]>()
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
-    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -59,8 +59,8 @@ function PROSPTab({
             if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
                 try {
                     const result = await (await GetProspService())
-                        .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl });
-                    setDriveItems(result);
+                        .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
+                    setDriveItems(result)
                     setErrorMessage("") // Clear any existing error messages
                 } catch (error) {
                     console.error("[PROSPTab] error while fetching SharePoint files", error)
@@ -74,27 +74,27 @@ function PROSPTab({
         setIsRefreshing(true)
         e.preventDefault()
         try {
-            const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl });
+            const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
             setDriveItems(result);
-            setErrorMessage(""); // Clear any existing error messages
+            setErrorMessage("") // Clear any existing error messages
 
             if (sharepointUrl !== project.sharepointSiteUrl) {
-                const newProject: Project = { ...project };
-                newProject.sharepointSiteUrl = sharepointUrl;
+                const newProject: Project = { ...project }
+                newProject.sharepointSiteUrl = sharepointUrl
                 const projectResult = await (await GetProjectService()).updateProject(newProject)
                 setProject(projectResult)
                 setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
             }
         } catch (error) {
             console.error("[PROSPTab] error while submitting SharePoint URL", error)
-            setErrorMessage("Failed to submit SharePoint URL. Please check the URL and your permissions.");
+            setErrorMessage("Failed to submit SharePoint URL. Please check the URL and your permissions.")
         }
         setIsRefreshing(false)
     }
 
     const handleSharePointUrl: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-        setSharepointUrl(e.currentTarget.value);
-    };
+        setSharepointUrl(e.currentTarget.value)
+    }
 
     return (
         <div>
