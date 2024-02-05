@@ -1,7 +1,6 @@
 import { Button, NativeSelect } from "@equinor/eds-core-react"
 import {
-    ChangeEvent,
-    Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
+    ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -10,6 +9,9 @@ import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
+import { delete_to_trash } from "@equinor/eds-icons"
+import { Icon } from "@equinor/eds-core-react"
+import { GetWellService } from "../../Services/WellService"
 
 const ButtonWrapper = styled.div`
     margin-top: 20px;
@@ -33,12 +35,22 @@ interface TableWell {
     wells: Well[]
 }
 
+interface DeleteButtonProps {
+    wellId: string;
+    onDelete: (wellId: string) => void;
+}
+
+const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => (
+    <Button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
+        <Icon data={delete_to_trash} size={16} />
+    </Button>
+)
+
 function WellListEditTechnicalInput({
     project, explorationWells, wells, setWells,
 }: Props) {
     const gridRef = useRef(null)
     const styles = useStyles()
-
     const onGridReady = (params: any) => {
         gridRef.current = params.api
     }
@@ -136,7 +148,38 @@ function WellListEditTechnicalInput({
         resizable: true,
         editable: true,
         onCellValueChanged: updateWells,
+        suppressMenu: true,
     }), [])
+
+    const deleteWell = async (wellIdToDelete: string) => {
+        try {
+            if (wellIdToDelete && wells) {
+                // Attempt to delete the well from the backend
+                await (await GetWellService()).deleteWell(wellIdToDelete)
+
+                // If successful, update local state to remove the well
+                const updatedWells = wells.filter((well) => well.id !== wellIdToDelete)
+                setWells(updatedWells)
+            }
+        } catch (error: any) {
+            // If there's an error (e.g., well not found in the database), handle it
+            if (error.response && error.response.status === 404) {
+                // If the well is not found, remove it from the local state as well
+                if (wells) {
+                    const updatedWells = wells.filter((well) => well.id !== wellIdToDelete)
+                    setWells(updatedWells)
+                }
+                console.error(`Well with id ${wellIdToDelete} not found and removed from the local list.`)
+            } else {
+                // For other errors, log them
+                console.error("[ProjectView] error while submitting form data", error)
+            }
+        }
+    }
+
+    const deleteCellRenderer = (params: any) => (
+        <DeleteButton wellId={params.data.id} onDelete={deleteWell} />
+    )
 
     const [columnDefs] = useState<ColDef[]>([
         {
@@ -160,6 +203,12 @@ function WellListEditTechnicalInput({
             headerComponentParams: {
                 template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`),
             },
+        },
+        {
+            headerName: "",
+            width: 90,
+            cellRenderer: deleteCellRenderer,
+
         },
     ])
 
@@ -185,6 +234,12 @@ function WellListEditTechnicalInput({
                     }}
                     className="ag-theme-alpine-fusion"
                 >
+                    {/* Hardcoded title and description using Typography */}
+                    {/* <Title variant="h1">Well Costs</Title>
+                    <Description variant="body_long">
+                        This input is used to calculate each case's well costs based on their drilling schedules.
+                    </Description> */}
+
                     <AgGridReact
                         ref={gridRef}
                         rowData={rowData}
@@ -193,6 +248,7 @@ function WellListEditTechnicalInput({
                         animateRows
                         domLayout="autoHeight"
                         onGridReady={onGridReady}
+                        stopEditingWhenCellsLoseFocus
                     />
                 </div>
             </div>
@@ -205,5 +261,4 @@ function WellListEditTechnicalInput({
         </>
     )
 }
-
 export default WellListEditTechnicalInput

@@ -150,6 +150,7 @@ const CasesTable = ({ project, setProject }: Props) => {
         sortable: true,
         filter: true,
         resizable: true,
+        suppressMenu: true,
     }), [])
 
     const duplicateCase = async () => {

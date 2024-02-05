@@ -80,6 +80,7 @@ function CaseCO2DistributionTable({
         filter: true,
         resizable: true,
         editable: false,
+        suppressMenu: true,
     }), [])
 
     return (
