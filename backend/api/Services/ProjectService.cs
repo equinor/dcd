@@ -269,64 +269,64 @@ public class ProjectService : IProjectService
         throw new NotFoundInDBException("The database contains no projects");
     }
 
-        public async Task<Project> GetProjectAsync(Guid projectId)
+    public async Task<Project> GetProjectAsync(Guid projectId)
+    {
+        if (_context.Projects != null)
         {
-            if (_context.Projects != null)
+            if (projectId == Guid.Empty)
             {
-                if (projectId == Guid.Empty)
-                {
-                    throw new NotFoundInDBException($"Project {projectId} not found");
-                }
-
-                var project = await _context.Projects!
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
-                    .Include(p => p.Wells)
-                    .Include(p => p.ExplorationOperationalWellCosts)
-                    .Include(p => p.DevelopmentOperationalWellCosts)
-                    .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
-
-                if (project?.Cases?.Count > 0)
-                {
-                    project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
-                }
-
-                if (project == null)
-                {
-                    var projectByFusionId = await _context.Projects
-                        .Include(c => c.Cases)
-                        .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
-                    if (projectByFusionId == null)
-                    {
-                        throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
-                    }
-
-                    project = projectByFusionId;
-                }
-
-                Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
-                    new JsonSerializerSettings
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    }));
-                AddAssetsToProject(project);
-                _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
-                return project;
+                throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
-            _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
-            throw new NotFoundInDBException("The database contains no projects");
+            var project = await _context.Projects!
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
+                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
+                .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
+                .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
+                .Include(p => p.Wells)
+                .Include(p => p.ExplorationOperationalWellCosts)
+                .Include(p => p.DevelopmentOperationalWellCosts)
+                .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
+
+            if (project?.Cases?.Count > 0)
+            {
+                project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
+            }
+
+            if (project == null)
+            {
+                var projectByFusionId = await _context.Projects
+                    .Include(c => c.Cases)
+                    .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
+                if (projectByFusionId == null)
+                {
+                    throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+                }
+
+                project = projectByFusionId;
+            }
+
+            Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
+                new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                }));
+            AddAssetsToProject(project);
+            _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
+            return project;
         }
+
+        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+        throw new NotFoundInDBException("The database contains no projects");
+    }
 
     public ProjectDto GetProjectDto(Guid projectId)
     {
@@ -341,18 +341,18 @@ public class ProjectService : IProjectService
         return projectDto;
     }
 
-        public async Task<ProjectDto> GetProjectDtoAsync(Guid projectId)
-        {
-            var project = await GetProjectAsync(projectId);
-            var projectDto = ProjectDtoAdapter.Convert(project);
+    public async Task<ProjectDto> GetProjectDtoAsync(Guid projectId)
+    {
+        var project = await GetProjectAsync(projectId);
+        var projectDto = ProjectDtoAdapter.Convert(project);
 
-            Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
-                new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                }));
-            return projectDto;
-        }
+        Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
+            new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            }));
+        return projectDto;
+    }
 
     public void UpdateProjectFromProjectMaster()
     {
