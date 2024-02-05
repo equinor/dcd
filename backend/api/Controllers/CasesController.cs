@@ -36,9 +36,9 @@ public class CasesController : ControllerBase
     }
 
     [HttpPost("new", Name = "NewCreateCase")]
-    public ProjectDto NewCreateCase([FromBody] CaseDto caseDto)
+    public async Task<ProjectDto> NewCreateCase([FromBody] CaseDto caseDto)
     {
-        return _caseService.NewCreateCase(caseDto);
+        return await _caseService.NewCreateCase(caseDto);
     }
 
     [HttpPost("copy", Name = "Duplicate")]

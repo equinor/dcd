@@ -52,16 +52,16 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDtoAsync(project.Id);
     }
 
-    public ProjectDto NewCreateCase(CaseDto caseDto)
+    public async Task<ProjectDto> NewCreateCaseAsync(CaseDto caseDto)
     {
         var caseItem = CaseAdapter.Convert(caseDto);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = await _projectService.GetProjectAsync(caseItem.ProjectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
 
-        var createdCase = _context.Cases!.Add(caseItem);
-        _context.SaveChanges();
+        var createdCase = await _context.Cases!.AddAsync(caseItem);
+        await _context.SaveChangesAsync();
 
         var drainageStrategyDto = new DrainageStrategyDto
         {
@@ -69,7 +69,7 @@ public class CaseService : ICaseService
             Name = "Drainage strategy",
             Description = ""
         };
-        var drainageStrategy = _drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
+        var drainageStrategy = await _drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
         caseItem.DrainageStrategyLink = drainageStrategy.Id;
 
         var topsideDto = new TopsideDto
@@ -78,7 +78,7 @@ public class CaseService : ICaseService
             Name = "Topside",
             Source = Source.ConceptApp,
         };
-        var topside = _topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
+        var topside = await _topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
         caseItem.TopsideLink = topside.Id;
 
         var surfDto = new SurfDto
@@ -87,7 +87,7 @@ public class CaseService : ICaseService
             Name = "Surf",
             Source = Source.ConceptApp,
         };
-        var surf = _surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
+        var surf = await _surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
         caseItem.SurfLink = surf.Id;
 
         var substructureDto = new SubstructureDto
@@ -96,7 +96,7 @@ public class CaseService : ICaseService
             Name = "Substructure",
             Source = Source.ConceptApp,
         };
-        var substructure = _substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
+        var substructure = await _substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
         caseItem.SubstructureLink = substructure.Id;
 
         var transportDto = new TransportDto
@@ -105,7 +105,7 @@ public class CaseService : ICaseService
             Name = "Transport",
             Source = Source.ConceptApp,
         };
-        var transport = _transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
+        var transport = await _transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
         caseItem.TransportLink = transport.Id;
 
         var explorationDto = new ExplorationDto
@@ -113,7 +113,7 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Exploration",
         };
-        var exploration = _explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
+        var exploration = await _explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
         caseItem.ExplorationLink = exploration.Id;
 
         var wellProjectDto = new WellProjectDto
@@ -121,10 +121,10 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "WellProject",
         };
-        var wellProject = _wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
+        var wellProject = await _wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
         caseItem.WellProjectLink = wellProject.Id;
 
-        return _projectService.GetProjectDto(project.Id);
+        return await _projectService.GetProjectDtoAsync(project.Id);
     }
 
     public ProjectDto UpdateCase(CaseDto updatedCaseDto)

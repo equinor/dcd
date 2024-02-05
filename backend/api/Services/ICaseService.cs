@@ -9,7 +9,7 @@ namespace api.Services
         ProjectDto DeleteCase(Guid caseId);
         IEnumerable<Case> GetAll();
         Case GetCase(Guid caseId);
-        ProjectDto NewCreateCase(CaseDto caseDto);
+        Task<ProjectDto> NewCreateCaseAsync(CaseDto caseDto);
         CaseDto NewUpdateCase(CaseDto updatedCaseDto);
         ProjectDto UpdateCase(CaseDto updatedCaseDto);
     }
