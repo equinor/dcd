@@ -57,7 +57,7 @@ public class TopsideServiceShould : IDisposable
         var expectedTopside = CreateTestTopside(new Project { Id = new Guid() });
 
         // Act, assert
-        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await  topsideService.CreateTopside(TopsideDtoAdapter.Convert(expectedTopside), caseId));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await topsideService.CreateTopside(TopsideDtoAdapter.Convert(expectedTopside), caseId));
     }
 
     [Fact]
