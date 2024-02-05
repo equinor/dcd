@@ -6,11 +6,11 @@ namespace api.Services
     public interface ICaseService
     {
         Task<ProjectDto> CreateCase(CaseDto caseDto);
-        ProjectDto DeleteCase(Guid caseId);
-        IEnumerable<Case> GetAll();
-        Case GetCase(Guid caseId);
-        Task<ProjectDto> NewCreateCaseAsync(CaseDto caseDto);
-        CaseDto NewUpdateCase(CaseDto updatedCaseDto);
-        ProjectDto UpdateCase(CaseDto updatedCaseDto);
+        Task<ProjectDto> NewCreateCase(CaseDto caseDto);
+        Task<ProjectDto> UpdateCase(CaseDto updatedCaseDto);
+        Task<CaseDto> NewUpdateCase(CaseDto updatedCaseDto);
+        Task<ProjectDto> DeleteCase(Guid caseId);
+        Task<Case> GetCase(Guid caseId);
+        Task<IEnumerable<Case>> GetAll();
     }
 }

@@ -25,26 +25,26 @@ public class WellProjectWellService : IWellProjectWellService
         _logger = loggerFactory.CreateLogger<WellProjectWellService>();
     }
 
-    public ProjectDto CreateWellProjectWell(WellProjectWellDto wellProjectWellDto)
+    public async Task<ProjectDto> CreateWellProjectWell(WellProjectWellDto wellProjectWellDto)
     {
         var wellProjectWell = WellProjectWellAdapter.Convert(wellProjectWellDto);
         _context.WellProjectWell!.Add(wellProjectWell);
-        _context.SaveChanges();
-        var projectId = _context.WellProjects!.FirstOrDefault(c => c.Id == wellProjectWellDto.WellProjectId)?.ProjectId;
+        await _context.SaveChangesAsync();
+        var projectId = (await _context.WellProjects!.FirstOrDefaultAsync(c => c.Id == wellProjectWellDto.WellProjectId))?.ProjectId;
         if (projectId != null)
         {
-            return _projectService.GetProjectDto((Guid)projectId);
+            return await _projectService.GetProjectDtoAsync((Guid)projectId);
         }
         throw new NotFoundInDBException();
     }
 
-    public WellProjectWellDto[]? CreateMultipleWellProjectWells(WellProjectWellDto[] wellProjectWellDtos)
+    public async Task<WellProjectWellDto[]>? CreateMultipleWellProjectWells(WellProjectWellDto[] wellProjectWellDtos)
     {
         var wellProjectId = wellProjectWellDtos.FirstOrDefault()?.WellProjectId;
         ProjectDto? projectDto = null;
         foreach (var wellProjectWellDto in wellProjectWellDtos)
         {
-            projectDto = CreateWellProjectWell(wellProjectWellDto);
+            projectDto = await CreateWellProjectWell(wellProjectWellDto);
         }
         if (projectDto != null && wellProjectId != null)
         {
@@ -53,9 +53,9 @@ public class WellProjectWellService : IWellProjectWellService
         return null;
     }
 
-    public ProjectDto UpdateWellProjectWell(WellProjectWellDto updatedWellProjectWellDto)
+    public async Task<ProjectDto> UpdateWellProjectWell(WellProjectWellDto updatedWellProjectWellDto)
     {
-        var existing = GetWellProjectWell(updatedWellProjectWellDto.WellId, updatedWellProjectWellDto.WellProjectId);
+        var existing = await GetWellProjectWell(updatedWellProjectWellDto.WellId, updatedWellProjectWellDto.WellProjectId);
         WellProjectWellAdapter.ConvertExisting(existing, updatedWellProjectWellDto);
         if (updatedWellProjectWellDto.DrillingSchedule == null && existing.DrillingSchedule != null)
         {
@@ -63,27 +63,27 @@ public class WellProjectWellService : IWellProjectWellService
         }
 
         _context.WellProjectWell!.Update(existing);
-        _context.SaveChanges();
-        var projectId = _context.WellProjects!.FirstOrDefault(c => c.Id == updatedWellProjectWellDto.WellProjectId)?.ProjectId;
+        await _context.SaveChangesAsync();
+        var projectId = (await _context.WellProjects!.FirstOrDefaultAsync(c => c.Id == updatedWellProjectWellDto.WellProjectId))?.ProjectId;
         if (projectId != null)
         {
-            return _projectService.GetProjectDto((Guid)projectId);
+            return await _projectService.GetProjectDtoAsync((Guid)projectId);
         }
         throw new NotFoundInDBException();
     }
 
-    public WellProjectWellDto[]? UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos, Guid caseId)
+    public async Task<WellProjectWellDto[]>? UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos, Guid caseId)
     {
         var wellProjectId = updatedWellProjectWellDtos.FirstOrDefault()?.WellProjectId;
         ProjectDto? projectDto = null;
         foreach (var wellProjectWellDto in updatedWellProjectWellDtos)
         {
-            projectDto = UpdateWellProjectWell(wellProjectWellDto);
+            projectDto = await UpdateWellProjectWell(wellProjectWellDto);
         }
 
         var wellProjectDto = _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
 
-        _wellProjectService.NewUpdateWellProject(wellProjectDto);
+        await _wellProjectService.NewUpdateWellProject(wellProjectDto);
 
         if (projectDto != null && wellProjectId != null)
         {
@@ -92,11 +92,11 @@ public class WellProjectWellService : IWellProjectWellService
         return null;
     }
 
-    public WellProjectWell GetWellProjectWell(Guid wellId, Guid caseId)
+    public async Task<WellProjectWell> GetWellProjectWell(Guid wellId, Guid caseId)
     {
-        var wellProjectWell = _context.WellProjectWell!
+        var wellProjectWell = await _context.WellProjectWell!
             .Include(wpw => wpw.DrillingSchedule)
-            .FirstOrDefault(w => w.WellId == wellId && w.WellProjectId == caseId);
+            .FirstOrDefaultAsync(w => w.WellId == wellId && w.WellProjectId == caseId);
         if (wellProjectWell == null)
         {
             throw new ArgumentException(string.Format("WellProjectWell {0} not found.", wellId));
@@ -104,9 +104,9 @@ public class WellProjectWellService : IWellProjectWellService
         return wellProjectWell;
     }
 
-    public WellProjectWellDto[]? CopyWellProjectWell(Guid sourceWellProjectId, Guid targetWellProjectId)
+    public async Task<WellProjectWellDto[]?> CopyWellProjectWell(Guid sourceWellProjectId, Guid targetWellProjectId)
     {
-        var sourceWellProjectWells = GetAll().Where(wpw => wpw.WellProjectId == sourceWellProjectId).ToList();
+        var sourceWellProjectWells = (await GetAll()).Where(wpw => wpw.WellProjectId == sourceWellProjectId).ToList();
         if (sourceWellProjectWells?.Count > 0)
         {
             var newWellProjectWellDtos = new List<WellProjectWellDto>();
@@ -120,25 +120,25 @@ public class WellProjectWellService : IWellProjectWellService
                 newWellProjectWellDto.WellProjectId = targetWellProjectId;
                 newWellProjectWellDtos.Add(newWellProjectWellDto);
             }
-            var result = CreateMultipleWellProjectWells(newWellProjectWellDtos.ToArray());
+            var result = await CreateMultipleWellProjectWells(newWellProjectWellDtos.ToArray());
             return result;
         }
         return null;
     }
 
-    public WellProjectWellDto GetWellProjectWellDto(Guid wellId, Guid caseId)
+    public async Task<WellProjectWellDto> GetWellProjectWellDto(Guid wellId, Guid caseId)
     {
-        var wellProjectWell = GetWellProjectWell(wellId, caseId);
+        var wellProjectWell = await GetWellProjectWell(wellId, caseId);
         var wellProjectWellDto = WellProjectWellDtoAdapter.Convert(wellProjectWell);
 
         return wellProjectWellDto;
     }
 
-    public IEnumerable<WellProjectWell> GetAll()
+    public async Task<IEnumerable<WellProjectWell>> GetAll()
     {
         if (_context.WellProjectWell != null)
         {
-            return _context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
+            return await _context.WellProjectWell.Include(wpw => wpw.DrillingSchedule).ToListAsync();
         }
         else
         {
@@ -147,9 +147,9 @@ public class WellProjectWellService : IWellProjectWellService
         }
     }
 
-    public IEnumerable<WellProjectWellDto> GetAllDtos()
+    public async Task<IEnumerable<WellProjectWellDto>> GetAllDtos()
     {
-        var wellProjectWells = GetAll();
+        var wellProjectWells = await GetAll();
         if (wellProjectWells.Any())
         {
             var wellProjectWellDtos = new List<WellProjectWellDto>();

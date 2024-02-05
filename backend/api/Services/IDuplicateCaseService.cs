@@ -5,7 +5,7 @@ namespace api.Services
 {
     public interface IDuplicateCaseService
     {
-        ProjectDto DuplicateCase(Guid caseId);
-        Case GetCaseNoTracking(Guid caseId);
+        Task<Case> GetCaseNoTracking(Guid caseId);
+        Task<ProjectDto> DuplicateCase(Guid caseId);
     }
 }

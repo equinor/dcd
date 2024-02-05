@@ -52,7 +52,7 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDtoAsync(project.Id);
     }
 
-    public async Task<ProjectDto> NewCreateCaseAsync(CaseDto caseDto)
+    public async Task<ProjectDto> NewCreateCase(CaseDto caseDto)
     {
         var caseItem = CaseAdapter.Convert(caseDto);
         var project = await _projectService.GetProjectAsync(caseItem.ProjectId);
@@ -127,35 +127,35 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDtoAsync(project.Id);
     }
 
-    public ProjectDto UpdateCase(CaseDto updatedCaseDto)
+    public async Task<ProjectDto> UpdateCase(CaseDto updatedCaseDto)
     {
-        var caseItem = GetCase(updatedCaseDto.Id);
+        var caseItem = await GetCase(updatedCaseDto.Id);
         CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
         _context.Cases!.Update(caseItem);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(caseItem.ProjectId);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDtoAsync(caseItem.ProjectId);
     }
 
-    public CaseDto NewUpdateCase(CaseDto updatedCaseDto)
+    public async Task<CaseDto> NewUpdateCase(CaseDto updatedCaseDto)
     {
-        var caseItem = GetCase(updatedCaseDto.Id);
+        var caseItem = await GetCase(updatedCaseDto.Id);
         CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
         _context.Cases!.Update(caseItem);
-        _context.SaveChanges();
-        return CaseDtoAdapter.Convert(GetCase(caseItem.Id));
+        await _context.SaveChangesAsync();
+        return CaseDtoAdapter.Convert(await GetCase(caseItem.Id));
     }
 
-    public ProjectDto DeleteCase(Guid caseId)
+    public async Task<ProjectDto> DeleteCase(Guid caseId)
     {
-        var caseItem = GetCase(caseId);
+        var caseItem = await GetCase(caseId);
         _context.Cases!.Remove(caseItem);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(caseItem.ProjectId);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDtoAsync(caseItem.ProjectId);
     }
 
-    public Case GetCase(Guid caseId)
+    public async Task<Case> GetCase(Guid caseId)
     {
-        var caseItem = _context.Cases!
+        var caseItem = await _context.Cases!
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
@@ -168,7 +168,7 @@ public class CaseService : ICaseService
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-            .FirstOrDefault(c => c.Id == caseId);
+            .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
             throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
@@ -176,11 +176,11 @@ public class CaseService : ICaseService
         return caseItem;
     }
 
-    public IEnumerable<Case> GetAll()
+    public async Task<IEnumerable<Case>> GetAll()
     {
         if (_context.Cases != null)
         {
-            return _context.Cases
+            return await _context.Cases
                     .Include(c => c.TotalFeasibilityAndConceptStudies)
                     .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                     .Include(c => c.TotalFEEDStudies)
@@ -192,7 +192,8 @@ public class CaseService : ICaseService
                     .Include(c => c.CessationWellsCost)
                     .Include(c => c.CessationWellsCostOverride)
                     .Include(c => c.CessationOffshoreFacilitiesCost)
-                    .Include(c => c.CessationOffshoreFacilitiesCostOverride);
+                    .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+                    .ToListAsync();
         }
         else
         {
