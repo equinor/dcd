@@ -1,7 +1,5 @@
 import { Typography } from "@material-ui/core"
-import {
-    ChangeEvent, ChangeEventHandler, Dispatch, MouseEventHandler, SetStateAction, useEffect, useState,
-} from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import styled from "styled-components"
 import {
     Button, Input, Label, Progress, Switch,
@@ -37,9 +35,14 @@ const SwitchWrapper = styled.div`
     align-items: flex-end;
 `
 
+const ErrorMessage = styled.div`
+    color: red;
+    margin-top: 10px;
+`
+
 interface Props {
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project,
+    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>;
+    project: Project;
 }
 
 function PROSPTab({
@@ -49,8 +52,8 @@ function PROSPTab({
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>()
-
-    const [isRefreshing, setIsRefreshing] = useState<boolean>()
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+    const [errorMessage, setErrorMessage] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -60,18 +63,23 @@ function PROSPTab({
                     const result = await (await GetProspService())
                         .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
                     setDriveItems(result)
+                    setErrorMessage("") // Clear any existing error messages
                 } catch (error) {
-                    console.error("[PROSPTab] error while submitting form data", error)
+                    console.error("[PROSPTab] error while fetching SharePoint files", error)
+                    setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
                 }
             }
         })()
-    }, [])
+    }, [project.sharepointSiteUrl])
 
-    const saveUrl: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         setIsRefreshing(true)
         e.preventDefault()
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
+            setDriveItems(result)
+            setErrorMessage("") // Clear any existing error messages
+
             if (sharepointUrl !== project.sharepointSiteUrl) {
                 const newProject: Project = { ...project }
                 newProject.sharepointSiteUrl = sharepointUrl
@@ -79,24 +87,23 @@ function PROSPTab({
                 setProject(projectResult)
                 setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
             }
-            setDriveItems(result)
-            setIsRefreshing(false)
         } catch (error) {
-            setIsRefreshing(false)
-            console.error("[PROSPTab] error while submitting form data", error)
+            console.error("[PROSPTab] error while submitting SharePoint URL", error)
+            setErrorMessage("Failed to submit SharePoint URL. Please check the URL and your permissions.")
         }
+        setIsRefreshing(false)
     }
 
-    const handleSharePointUrl: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const handleSharePointUrl: React.ChangeEventHandler<HTMLInputElement> = (e) => {
         setSharepointUrl(e.currentTarget.value)
     }
 
     return (
-        <div color="yellow">
-            <TopWrapper color="danger">
+        <div>
+            <TopWrapper>
                 <Typography variant="h4">PROSP</Typography>
             </TopWrapper>
-            <Label htmlFor="textfield-normal" label="Sharepoint Site addresse" />
+            <Label htmlFor="textfield-normal" label="Sharepoint Site address" />
             <ProspFieldWrapper>
                 <ProspURLInputField
                     id="textfield-normal"
@@ -111,6 +118,7 @@ function PROSPTab({
                         </Button>
                     )}
             </ProspFieldWrapper>
+            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
             <SwitchWrapper>
                 <Switch
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
