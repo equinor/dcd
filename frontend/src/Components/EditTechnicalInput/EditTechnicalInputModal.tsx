@@ -227,14 +227,21 @@ const EditTechnicalInputModal = ({
             }
 
             setIsSaving(false)
-            toggleEditTechnicalInputModal()
         } catch (error) {
             console.error("Error when saving technical input: ", error)
         } finally {
             setIsSaving(false)
-            toggleEditTechnicalInputModal()
         }
     }
+
+    const handleSaveAndClose = async () => {
+        handleSave().then(() => {
+            toggleEditTechnicalInputModal(); // Close the modal only after save completes successfully
+        }).catch((error) => {
+            // Handle save error, modal stays open allowing users to try again or cancel
+            console.error("Error during save operation: ", error);
+        });
+    };
 
     const handleCancel = () => {
         // Assuming `captureInitialState` function properly captures and sets original states
@@ -311,12 +318,16 @@ const EditTechnicalInputModal = ({
                         >
                             Cancel
                         </CancelButton>
-                        {!isSaving ? <Button onClick={handleSave}>Save and close</Button>
-                            : (
-                                <Button>
-                                    <Progress.Dots />
-                                </Button>
-                            )}
+                        {!isSaving ? (
+                            <>
+                                <Button style={{ marginRight: "8px" }} onClick={handleSave}>Save</Button>
+                                <Button onClick={handleSaveAndClose}>Save and Close</Button>
+                            </>
+                        ) : (
+                            <Button>
+                                <Progress.Dots />
+                            </Button>
+                        )}
                     </ButtonsWrapper>
                 </Wrapper>
             </ModalDiv>
