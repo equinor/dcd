@@ -43,7 +43,7 @@ public class PROSPController : ControllerBase
     }
 
     [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
-    public async Task<IActionResult> GetSharePointFileNamesAndId([FromBody] urlDto urlDto)
+    public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId([FromBody] urlDto urlDto)
     {
         if (urlDto == null || string.IsNullOrWhiteSpace(urlDto.url))
         {
@@ -74,7 +74,7 @@ public class PROSPController : ControllerBase
 
     [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
     [DisableRequestSizeLimit]
-    public async Task<IActionResult> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
+    public async Task<ActionResult<ProjectDto>> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
         [FromBody] SharePointImportDto[] dtos)
     {
         try
