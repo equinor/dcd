@@ -5,7 +5,7 @@ namespace api.Services
 {
     public interface ICaseService
     {
-        ProjectDto CreateCase(CaseDto caseDto);
+        Task<ProjectDto> CreateCase(CaseDto caseDto);
         ProjectDto DeleteCase(Guid caseId);
         IEnumerable<Case> GetAll();
         Case GetCase(Guid caseId);

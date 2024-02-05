@@ -38,18 +38,18 @@ public class CaseService : ICaseService
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
-    public ProjectDto CreateCase(CaseDto caseDto)
+    public async Task<ProjectDto> CreateCase(CaseDto caseDto)
     {
         var case_ = CaseAdapter.Convert(caseDto);
         if (case_.DG4Date == DateTimeOffset.MinValue)
         {
             case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
         }
-        var project = _projectService.GetProject(case_.ProjectId);
+        var project = await _projectService.GetProjectAsync(case_.ProjectId);
         case_.Project = project;
-        _context.Cases!.Add(case_);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(project.Id);
+        await _context.Cases!.AddAsync(case_);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDtoAsync(project.Id);
     }
 
     public ProjectDto NewCreateCase(CaseDto caseDto)

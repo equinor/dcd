@@ -9,7 +9,9 @@ namespace api.Services
         IEnumerable<Project> GetAll();
         IEnumerable<ProjectDto> GetAllDtos();
         Project GetProject(Guid projectId);
+        Task<Project> GetProjectAsync(Guid projectId);
         ProjectDto GetProjectDto(Guid projectId);
+        Task<ProjectDto> GetProjectDtoAsync(Guid projectId);
         Project GetProjectWithoutAssets(Guid projectId);
         Project GetProjectWithoutAssetsNoTracking(Guid projectId);
         ProjectDto SetReferenceCase(ProjectDto projectDto);
