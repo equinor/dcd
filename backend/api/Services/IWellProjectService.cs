@@ -3,16 +3,16 @@ using api.Models;
 
 namespace api.Services
 {
-    public interface IWellProjectService
-    {
-        WellProjectDto CopyWellProject(Guid wellProjectId, Guid sourceCaseId);
-        ProjectDto CreateWellProject(WellProject wellProject, Guid sourceCaseId);
-        ProjectDto DeleteWellProject(Guid wellProjectId);
-        WellProject GetWellProject(Guid wellProjectId);
-        WellProject NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId);
-        WellProjectDto NewUpdateWellProject(WellProjectDto updatedWellProjectDto);
-        WellProjectDto[] UpdateMultiple(WellProjectDto[] updatedWellProjectDtos);
-        WellProjectDto UpdateSingleWellProject(WellProjectDto updatedWellProjectDto);
-        ProjectDto UpdateWellProject(WellProjectDto updatedWellProject);
-    }
+public interface IWellProjectService
+{
+    Task<WellProjectDto> CopyWellProject(Guid wellProjectId, Guid sourceCaseId);
+    Task<ProjectDto> CreateWellProject(WellProject wellProject, Guid sourceCaseId);
+    Task<WellProject> NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId);
+    Task<ProjectDto> DeleteWellProject(Guid wellProjectId);
+    Task<ProjectDto> UpdateWellProject(WellProjectDto updatedWellProject);
+    Task<WellProjectDto> NewUpdateWellProject(WellProjectDto updatedWellProjectDto);
+    Task<WellProjectDto[]> UpdateMultiple(WellProjectDto[] updatedWellProjectDtos);
+    Task<WellProjectDto> UpdateSingleWellProject(WellProjectDto updatedWellProjectDto);
+    Task<WellProject> GetWellProject(Guid wellProjectId);
+}
 }

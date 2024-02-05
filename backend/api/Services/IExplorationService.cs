@@ -3,16 +3,16 @@ using api.Models;
 
 namespace api.Services
 {
-    public interface IExplorationService
-    {
-        ExplorationDto CopyExploration(Guid explorationId, Guid sourceCaseId);
-        ProjectDto CreateExploration(ExplorationDto explorationDto, Guid sourceCaseId);
-        ProjectDto DeleteExploration(Guid explorationId);
-        Exploration GetExploration(Guid explorationId);
-        Exploration NewCreateExploration(ExplorationDto explorationDto, Guid sourceCaseId);
-        ExplorationDto NewUpdateExploration(ExplorationDto updatedExplorationDto);
-        ProjectDto UpdateExploration(ExplorationDto updatedExplorationDto);
-        ExplorationDto[] UpdateMultiple(ExplorationDto[] updatedExplorationDtos);
-        ExplorationDto UpdateSingleExploration(ExplorationDto updatedExplorationDto);
-    }
+public interface IExplorationService
+{
+    Task<ExplorationDto> CopyExploration(Guid explorationId, Guid sourceCaseId);
+    Task<ProjectDto> CreateExploration(ExplorationDto explorationDto, Guid sourceCaseId);
+    Task<Exploration> NewCreateExploration(ExplorationDto explorationDto, Guid sourceCaseId);
+    Task<ProjectDto> DeleteExploration(Guid explorationId);
+    Task<ProjectDto> UpdateExploration(ExplorationDto updatedExplorationDto);
+    Task<ExplorationDto> NewUpdateExploration(ExplorationDto updatedExplorationDto);
+    Task<ExplorationDto[]> UpdateMultiple(ExplorationDto[] updatedExplorationDtos);
+    Task<ExplorationDto> UpdateSingleExploration(ExplorationDto updatedExplorationDto);
+    Task<Exploration> GetExploration(Guid explorationId);
+}
 }
