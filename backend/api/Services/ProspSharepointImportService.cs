@@ -313,9 +313,4 @@ public class ProspSharepointImportService
         };
         return validMimeTypes;
     }
-
-    internal async Task GetSharePointFileNamesAndId(object url)
-    {
-        throw new NotImplementedException();
-    }
 }
