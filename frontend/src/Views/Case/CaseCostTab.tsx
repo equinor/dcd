@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
     ChangeEventHandler, Dispatch, SetStateAction, useEffect, useRef, useState,
 } from "react"
@@ -13,9 +14,6 @@ import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageS
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../models/ITimeSeries"
-import { StudyCostProfile } from "../../models/case/StudyCostProfile"
-import { OpexCostProfile } from "../../models/case/OpexCostProfile"
-import { CessationCostProfile } from "../../models/case/CessationCostProfile"
 import { SeismicAcquisitionAndProcessing } from "../../models/assets/exploration/SeismicAcquisitionAndProcessing"
 import { CountryOfficeCost } from "../../models/assets/exploration/CountryOfficeCost"
 import { GAndGAdminCost } from "../../models/assets/exploration/GAndGAdminCost"
@@ -29,7 +27,6 @@ import { TopsideCostProfile } from "../../models/assets/topside/TopsideCostProfi
 import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
 import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
 import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
-import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { GasProducerCostProfile } from "../../models/assets/wellproject/GasProducerCostProfile"
 import { OilProducerCostProfile } from "../../models/assets/wellproject/OilProducerCostProfile"
 import { GasInjectorCostProfile } from "../../models/assets/wellproject/GasInjectorCostProfile"
@@ -53,6 +50,10 @@ import { WaterInjectorCostProfileOverride } from "../../models/assets/wellprojec
 import { GasInjectorCostProfileOverride } from "../../models/assets/wellproject/GasInjectorCostProfileOverride"
 import { TotalFeasibilityAndConceptStudiesOverride } from "../../models/case/TotalFeasibilityAndConceptStudiesOverride"
 import { TotalFEEDStudiesOverride } from "../../models/case/TotalFEEDStudiesOverride"
+import { OffshoreFacilitiesOperationsCostProfileOverride } from "../../models/case/OffshoreFacilitiesOperationsCostProfileOverride"
+import { WellInterventionCostProfileOverride } from "../../models/case/WellInterventionCostProfileOverride"
+import { CessationWellsCostOverride } from "../../models/case/CessationWellsCostOverride"
+import { CessationOffshoreFacilitiesCostOverride } from "../../models/case/CessationOffshoreFacilitiesCostOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -118,6 +119,26 @@ interface Props {
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
     drainageStrategy: DrainageStrategy
     activeTab: number
+
+    totalFeasibilityAndConceptStudies: TotalFeasibilityAndConceptStudies | undefined,
+    setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<TotalFeasibilityAndConceptStudies | undefined>>,
+    totalFEEDStudies: TotalFEEDStudies | undefined,
+    setTotalFEEDStudies: Dispatch<SetStateAction<TotalFEEDStudies | undefined>>,
+
+    offshoreFacilitiesOperationsCostProfile: OffshoreFacilitiesOperationsCostProfile | undefined,
+    setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<OffshoreFacilitiesOperationsCostProfile | undefined>>,
+
+    wellInterventionCostProfile: WellInterventionCostProfile | undefined,
+    setWellInterventionCostProfile: Dispatch<SetStateAction<WellInterventionCostProfile | undefined>>,
+
+    cessationWellsCost: TotalFEEDStudies | undefined,
+    setCessationWellsCost: Dispatch<SetStateAction<CessationWellsCost | undefined>>,
+
+    cessationOffshoreFacilitiesCost: CessationOffshoreFacilitiesCost | undefined,
+    setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<CessationOffshoreFacilitiesCost | undefined>>,
+
+    gAndGAdminCost: GAndGAdminCost | undefined,
+    setGAndGAdminCost: Dispatch<SetStateAction<GAndGAdminCost | undefined>>,
 }
 
 function CaseCostTab({
@@ -131,27 +152,28 @@ function CaseCostTab({
     transport, setTransport,
     drainageStrategy,
     activeTab,
+    totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies,
+    totalFEEDStudies, setTotalFEEDStudies,
+    offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile,
+    wellInterventionCostProfile, setWellInterventionCostProfile,
+    cessationWellsCost, setCessationWellsCost,
+    cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
+    gAndGAdminCost, setGAndGAdminCost,
 }: Props) {
     // OPEX
-    const [studyCost, setStudyCost] = useState<StudyCostProfile>()
-
-    const [totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies] = useState<TotalFeasibilityAndConceptStudies>()
     const [totalFeasibilityAndConceptStudiesOverride,
         setTotalFeasibilityAndConceptStudiesOverride] = useState<TotalFeasibilityAndConceptStudiesOverride>()
 
-    const [totalFEEDStudies, setTotalFEEDStudies] = useState<TotalFEEDStudies>()
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<TotalFEEDStudiesOverride>()
 
-    const [opexCost, setOpexCost] = useState<OpexCostProfile>()
-    const [offshoreFacilitiesOperationsCostProfile,
-        setOffshoreFacilitiesOperationsCostProfile] = useState<OffshoreFacilitiesOperationsCostProfile>()
-    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<WellInterventionCostProfile>()
+    const [offshoreFacilitiesOperationsCostProfileOverride,
+        setOffshoreFacilitiesOperationsCostProfileOverride] = useState<OffshoreFacilitiesOperationsCostProfileOverride>()
 
-    const [cessationCost, setCessationCost] = useState<CessationCostProfile>()
-    const [cessationWellsCost, setCessationWellsCost] = useState<CessationWellsCost>()
-    const [cessationOffshoreFacilitiesCost,
-        setCessationOffshoreFacilitiesCost] = useState<CessationOffshoreFacilitiesCost>()
+    const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<WellInterventionCostProfileOverride>()
+
+    const [cessationWellsCostOverride, setCessationWellsCostOverride] = useState<CessationWellsCostOverride>()
+    const [cessationOffshoreFacilitiesCostOverride,
+        setCessationOffshoreFacilitiesCostOverride] = useState<CessationOffshoreFacilitiesCostOverride>()
 
     // CAPEX
     const [topsideCost, setTopsideCost] = useState<TopsideCostProfile>()
@@ -184,62 +206,51 @@ function CaseCostTab({
     const [explorationWellCost, setExplorationWellCost] = useState<ExplorationWellCostProfile>()
     const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<AppraisalWellCostProfile>()
     const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<SidetrackCostProfile>()
-    const [seismicAcqAndProcCost, setseismicAcqAndProcCost] = useState<SeismicAcquisitionAndProcessing>()
+    const [seismicAcqAndProcCost, setSeismicAcqAndProcCost] = useState<SeismicAcquisitionAndProcessing>()
     const [countryOfficeCost, setCountryOfficeCost] = useState<CountryOfficeCost>()
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const studyGridRef = useRef(null)
-    const opexGridRef = useRef(null)
-    const cessationGridRef = useRef(null)
-    const capexGridRef = useRef(null)
-    const developmentWellsGridRef = useRef(null)
-    const explorationWellsGridRef = useRef(null)
+    const studyGridRef = useRef<any>(null)
+    const opexGridRef = useRef<any>(null)
+    const cessationGridRef = useRef<any>(null)
+    const capexGridRef = useRef<any>(null)
+    const developmentWellsGridRef = useRef<any>(null)
+    const explorationWellsGridRef = useRef<any>(null)
 
     useEffect(() => {
         (async () => {
             try {
                 if (activeTab === 5) {
-                    // OPEX
-                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    const cessationWrapper = (await GetGenerateProfileService())
-                        .generateCessationCost(caseItem.id)
-
-                    const gAndGAdmin = (await GetGenerateProfileService()).generateGAndGAdminCost(caseItem.id)
-
-                    const study = StudyCostProfile.fromJSON((await studyWrapper).studyCostProfileDto)
                     const totalFeasibility = TotalFeasibilityAndConceptStudies
-                        .fromJSON((await studyWrapper).totalFeasibilityAndConceptStudiesDto)
-                    const totalFEED = TotalFEEDStudies.fromJSON((await studyWrapper).totalFEEDStudiesDto)
+                        .fromJSON(caseItem.totalFeasibilityAndConceptStudies)
+                    const totalFEED = TotalFEEDStudies.fromJSON(caseItem.totalFEEDStudies)
 
-                    setStudyCost(study)
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
                     setTotalFEEDStudies(totalFEED)
                     setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
 
-                    const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
                     const wellIntervention = WellInterventionCostProfile
-                        .fromJSON((await opexWrapper).wellInterventionCostProfileDto)
+                        .fromJSON(caseItem.wellInterventionCostProfile)
                     const offshoreFacilitiesOperations = OffshoreFacilitiesOperationsCostProfile
-                        .fromJSON((await opexWrapper).offshoreFacilitiesOperationsCostProfileDto)
+                        .fromJSON(caseItem.offshoreFacilitiesOperationsCostProfile)
 
-                    setOpexCost(opex)
                     setWellInterventionCostProfile(wellIntervention)
+                    setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
+                    setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
 
-                    const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)
-                    const cessationWells = CessationWellsCost.fromJSON((await cessationWrapper).cessationWellsCostDto)
+                    const cessationWells = CessationWellsCost.fromJSON(caseItem.cessationWellsCost)
                     const cessationOffshoreFacilities = CessationOffshoreFacilitiesCost
-                        .fromJSON((await cessationWrapper).cessationOffshoreFacilitiesCostDto)
+                        .fromJSON(caseItem.cessationOffshoreFacilitiesCost)
 
-                    setCessationCost(cessation)
                     setCessationWellsCost(cessationWells)
+                    setCessationWellsCostOverride(caseItem.cessationWellsCostOverride)
                     setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
+                    setCessationOffshoreFacilitiesCostOverride(caseItem.cessationOffshoreFacilitiesCostOverride)
 
                     // CAPEX
                     const topsideCostProfile = topside.costProfile
@@ -286,14 +297,18 @@ function CaseCostTab({
                     setExplorationWellCost(explorationWellCostProfile)
                     setExplorationAppraisalWellCost(appraisalWellCostProfile)
                     setExplorationSidetrackCost(sidetrackCostProfile)
-                    setseismicAcqAndProcCost(seismicAcquisitionAndProcessing)
+                    setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
                     const countryOffice = exploration.countryOfficeCost
                     setCountryOfficeCost(countryOffice)
 
-                    setGAndGAdminCost(await gAndGAdmin)
+                    setGAndGAdminCost(exploration.gAndGAdminCost)
 
-                    SetTableYearsFromProfiles([study, opex, cessation,
-                        totalFeasibilityAndConceptStudiesOverride, totalFEEDStudiesOverride,
+                    SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
+                        caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
+                        caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
+                        caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
+                        caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
+                        caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                         surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
                         oilProducerCostProfile, gasProducerCostProfile,
@@ -301,7 +316,7 @@ function CaseCostTab({
                         oilProducerCostProfileOverride, gasProducerCostProfileOverride,
                         waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                        seismicAcquisitionAndProcessing, countryOffice, await gAndGAdmin,
+                        seismicAcquisitionAndProcessing, countryOffice, exploration.gAndGAdminCost,
                     ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
                 }
             } catch (error) {
@@ -318,27 +333,34 @@ function CaseCostTab({
         setExplorationWellCost(explorationWellCostProfile)
         setExplorationAppraisalWellCost(appraisalWellCostProfile)
         setExplorationSidetrackCost(sidetrackCostProfile)
-        setseismicAcqAndProcCost(seismicAcquisitionAndProcessing)
+        setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
         const countryOffice = exploration.countryOfficeCost
         setCountryOfficeCost(countryOffice)
     }, [exploration])
 
     useEffect(() => {
-        const {
-            oilProducerCostProfile, gasProducerCostProfile,
-            waterInjectorCostProfile, gasInjectorCostProfile,
-            oilProducerCostProfileOverride, gasProducerCostProfileOverride,
-            waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
-        } = wellProject
-        setWellProjectOilProducerCost(oilProducerCostProfile)
-        setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
-        setWellProjectGasProducerCost(gasProducerCostProfile)
-        setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
-        setWellProjectWaterInjectorCost(waterInjectorCostProfile)
-        setWellProjectWaterInjectorCostOverride(waterInjectorCostProfileOverride)
-        setWellProjectGasInjectorCost(gasInjectorCostProfile)
-        setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
-    }, [wellProject])
+        if (studyGridRef.current && studyGridRef.current.api && studyGridRef.current.api.refreshCells) {
+            studyGridRef.current.api.refreshCells()
+        }
+    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies])
+
+    useEffect(() => {
+        if (opexGridRef.current && opexGridRef.current.api && opexGridRef.current.api.refreshCells) {
+            opexGridRef.current.api.refreshCells()
+        }
+    }, [offshoreFacilitiesOperationsCostProfile, wellInterventionCostProfile])
+
+    useEffect(() => {
+        if (cessationGridRef.current && cessationGridRef.current.api && cessationGridRef.current.api.refreshCells) {
+            cessationGridRef.current.api.refreshCells()
+        }
+    }, [cessationWellsCost, cessationOffshoreFacilitiesCost])
+
+    useEffect(() => {
+        if (explorationWellsGridRef.current && explorationWellsGridRef.current.api && explorationWellsGridRef.current.api.refreshCells) {
+            explorationWellsGridRef.current.api.refreshCells()
+        }
+    }, [gAndGAdminCost])
 
     const updatedAndSetSurf = (surfItem: Surf) => {
         const newSurf: Surf = { ...surfItem }
@@ -428,16 +450,17 @@ function CaseCostTab({
             profileName: "Well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellInterventionCostProfile,
+            overridable: true,
+            overrideProfile: wellInterventionCostProfileOverride,
+            overrideProfileSet: setWellInterventionCostProfileOverride,
         },
         {
             profileName: "Offshore facilities operations",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: offshoreFacilitiesOperationsCostProfile,
-        },
-        {
-            profileName: "OPEX cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: opexCost,
+            overridable: true,
+            overrideProfile: offshoreFacilitiesOperationsCostProfileOverride,
+            overrideProfileSet: setOffshoreFacilitiesOperationsCostProfileOverride,
         },
     ]
 
@@ -446,16 +469,17 @@ function CaseCostTab({
             profileName: "Cessation - Development wells",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationWellsCost,
+            overridable: true,
+            overrideProfile: cessationWellsCostOverride,
+            overrideProfileSet: setCessationWellsCostOverride,
         },
         {
             profileName: "Cessation - Offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationOffshoreFacilitiesCost,
-        },
-        {
-            profileName: "Cessation cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
+            overridable: true,
+            overrideProfile: cessationOffshoreFacilitiesCostOverride,
+            overrideProfileSet: setCessationOffshoreFacilitiesCostOverride,
         },
     ]
 
@@ -539,7 +563,7 @@ function CaseCostTab({
             profileName: "Seismic acquisition and processing",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: seismicAcqAndProcCost,
-            set: setseismicAcqAndProcCost,
+            set: setSeismicAcqAndProcCost,
         },
         {
             profileName: "Country office cost",
@@ -584,6 +608,34 @@ function CaseCostTab({
         newCase.totalFEEDStudiesOverride = totalFEEDStudiesOverride
         setCase(newCase)
     }, [totalFEEDStudiesOverride])
+
+    useEffect(() => {
+        const newCase: Case = Case.Copy(caseItem)
+        if (newCase.wellInterventionCostProfileOverride && !wellInterventionCostProfileOverride) { return }
+        newCase.wellInterventionCostProfileOverride = wellInterventionCostProfileOverride
+        setCase(newCase)
+    }, [wellInterventionCostProfileOverride])
+
+    useEffect(() => {
+        const newCase: Case = Case.Copy(caseItem)
+        if (newCase.offshoreFacilitiesOperationsCostProfileOverride && !offshoreFacilitiesOperationsCostProfileOverride) { return }
+        newCase.offshoreFacilitiesOperationsCostProfileOverride = offshoreFacilitiesOperationsCostProfileOverride
+        setCase(newCase)
+    }, [offshoreFacilitiesOperationsCostProfileOverride])
+
+    useEffect(() => {
+        const newCase: Case = Case.Copy(caseItem)
+        if (newCase.cessationWellsCostOverride && !cessationWellsCostOverride) { return }
+        newCase.cessationWellsCostOverride = cessationWellsCostOverride
+        setCase(newCase)
+    }, [cessationWellsCostOverride])
+
+    useEffect(() => {
+        const newCase: Case = Case.Copy(caseItem)
+        if (newCase.cessationOffshoreFacilitiesCostOverride && !cessationOffshoreFacilitiesCostOverride) { return }
+        newCase.cessationOffshoreFacilitiesCostOverride = cessationOffshoreFacilitiesCostOverride
+        setCase(newCase)
+    }, [cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
         const newSurf: Surf = { ...surf }
@@ -842,7 +894,8 @@ function CaseCostTab({
                     gridRef={opexGridRef}
                     alignedGridsRef={[studyGridRef, cessationGridRef, capexGridRef,
                         developmentWellsGridRef, explorationWellsGridRef]}
-                    includeFooter={false}
+                    includeFooter
+                    totalRowName="Total OPEX cost"
                 />
             </TableWrapper>
             <TableWrapper>
@@ -855,10 +908,11 @@ function CaseCostTab({
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
                     tableName="Cessation costs"
-                    gridRef={cessationCost}
+                    gridRef={cessationGridRef}
                     alignedGridsRef={[studyGridRef, opexGridRef, capexGridRef,
                         developmentWellsGridRef, explorationWellsGridRef]}
-                    includeFooter={false}
+                    includeFooter
+                    totalRowName="Total cessation cost"
                 />
             </TableWrapper>
             <TableWrapper>

@@ -19,39 +19,44 @@ public class Exploration
     public ICollection<ExplorationWell>? ExplorationWells { get; set; }
 }
 
-public class ExplorationWellCostProfile : TimeSeriesCost
+public class ExplorationWellCostProfile : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;
     public bool Override { get; set; }
 }
-public class AppraisalWellCostProfile : TimeSeriesCost
+public class AppraisalWellCostProfile : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;
     public bool Override { get; set; }
 }
-public class SidetrackCostProfile : TimeSeriesCost
+public class SidetrackCostProfile : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;
     public bool Override { get; set; }
 }
 
-public class GAndGAdminCost : TimeSeriesCost
+public class GAndGAdminCost : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;
 }
 
-public class SeismicAcquisitionAndProcessing : TimeSeriesCost
+public class SeismicAcquisitionAndProcessing : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;
 }
 
-public class CountryOfficeCost : TimeSeriesCost
+public class CountryOfficeCost : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;
+}
+
+public interface IExplorationTimeSeries
+{
+    Exploration Exploration { get; set; }
 }

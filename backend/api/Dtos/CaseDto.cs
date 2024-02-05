@@ -34,10 +34,20 @@ public class CaseDto
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; }
 
+    public CessationWellsCostDto? CessationWellsCost { get; set; }
+    public CessationWellsCostOverrideDto? CessationWellsCostOverride { get; set; }
+    public CessationOffshoreFacilitiesCostDto? CessationOffshoreFacilitiesCost { get; set; }
+    public CessationOffshoreFacilitiesCostOverrideDto? CessationOffshoreFacilitiesCostOverride { get; set; }
+
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
     public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
     public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+
+    public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
+    public WellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
+    public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfile { get; set; }
+    public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
 
     public Guid DrainageStrategyLink { get; set; }
     public Guid WellProjectLink { get; set; }
@@ -62,8 +72,16 @@ public class CessationCostDto : TimeSeriesCostDto
 public class CessationWellsCostDto : TimeSeriesCostDto
 {
 }
+public class CessationWellsCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
 public class CessationOffshoreFacilitiesCostDto : TimeSeriesCostDto
 {
+}
+public class CessationOffshoreFacilitiesCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class OpexCostProfileDto : TimeSeriesCostDto
@@ -74,8 +92,18 @@ public class WellInterventionCostProfileDto : TimeSeriesCostDto
 {
 }
 
+public class WellInterventionCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
+
 public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto
 {
+}
+
+public class OffshoreFacilitiesOperationsCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
 }
 
 public class StudyCostProfileDto : TimeSeriesCostDto

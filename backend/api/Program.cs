@@ -92,7 +92,12 @@ builder.Services.AddCors(options =>
                 "https://fusion.equinor.com",
                 "https://pro-s-portal-ci.azurewebsites.net",
                 "https://pro-s-portal-fqa.azurewebsites.net",
-                "https://pro-s-portal-fprd.azurewebsites.net"
+                "https://pro-s-portal-fprd.azurewebsites.net",
+                "https://fusion-s-portal-ci.azurewebsites.net",
+                "https://fusion-s-portal-fqa.azurewebsites.net",
+                "https://fusion-s-portal-fprd.azurewebsites.net",
+                "https://pr-3422.fusion-dev.net",
+                "https://pr-*.fusion-dev.net"
             ).SetIsOriginAllowedToAllowWildcardSubdomains();
         });
 });
@@ -127,8 +132,6 @@ builder.Services.AddFusionIntegration(options =>
 
     Console.WriteLine("Fusion environment: " + fusionEnvironment);
     options.UseServiceInformation("ConceptApp", fusionEnvironment);
-
-    options.AddFusionAuthorization();
 
     options.UseDefaultEndpointResolver(fusionEnvironment);
     options.UseDefaultTokenProvider(opts =>
@@ -182,9 +185,9 @@ builder.Services.AddScoped<IGenerateCo2IntensityProfile, GenerateCo2IntensityPro
 builder.Services.AddScoped<IGenerateCo2IntensityTotal, GenerateCo2IntensityTotal>();
 builder.Services.AddScoped<ICompareCasesService, CompareCasesService>();
 builder.Services.AddScoped<IGenerateCo2DrillingFlaringFuelTotals, GenerateCo2DrillingFlaringFuelTotals>();
+builder.Services.AddScoped<ISTEAService, STEAService>();
 
 builder.Services.AddHostedService<RefreshProjectService>();
-builder.Services.AddScoped<STEAService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 

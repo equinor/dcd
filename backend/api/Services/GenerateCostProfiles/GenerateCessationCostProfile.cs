@@ -1,6 +1,7 @@
 using System.Reflection.Metadata.Ecma335;
 
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Models;
 
@@ -14,10 +15,12 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
     private readonly IWellProjectService _wellProjectService;
     private readonly ISurfService _surfService;
     private readonly IProjectService _projectService;
+    private readonly DcdDbContext _context;
 
-    public GenerateCessationCostProfile(ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
+    public GenerateCessationCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
         IWellProjectService wellProjectService, ISurfService surfService, IProjectService projectService)
     {
+        _context = context;
         _logger = loggerFactory.CreateLogger<GenerateCessationCostProfile>();
         _caseService = caseService;
         _drainageStrategyService = drainageStrategyService;
@@ -26,23 +29,27 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         _projectService = projectService;
     }
 
-    public CessationCostWrapperDto Generate(Guid caseId)
+    public async Task<CessationCostWrapperDto> GenerateAsync(Guid caseId)
     {
         var result = new CessationCostWrapperDto();
         var caseItem = _caseService.GetCase(caseId);
         var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
-        var cessationWellsCost = new CessationWellsCost();
-        var cessationOffshoreFacilitiesCost = new CessationOffshoreFacilitiesCost();
+        var cessationWellsCost = caseItem.CessationWellsCost ?? new CessationWellsCost();
+        var cessationOffshoreFacilitiesCost = caseItem.CessationOffshoreFacilitiesCost ?? new CessationOffshoreFacilitiesCost();
 
         var lastYear = GetRelativeLastYearOfProduction(caseItem);
-        if (lastYear == null) { return new CessationCostWrapperDto(); }
+        if (lastYear == null)
+        {
+            var updateResult = await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
+            return new CessationCostWrapperDto();
+        }
 
         WellProject wellProject;
         try
         {
             wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-            cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear);
+            cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear, cessationWellsCost);
             var cessationWellsDto = CaseDtoAdapter.Convert<CessationWellsCostDto, CessationWellsCost>(cessationWellsCost);
             result.CessationWellsCostDto = cessationWellsDto;
         }
@@ -55,7 +62,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         try
         {
             surf = _surfService.GetSurf(caseItem.SurfLink);
-            cessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(surf, (int)lastYear);
+            cessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(surf, (int)lastYear, cessationOffshoreFacilitiesCost);
             var cessationOffshoreFacilitiesCostDto = CaseDtoAdapter.Convert<CessationOffshoreFacilitiesCostDto, CessationOffshoreFacilitiesCost>(cessationOffshoreFacilitiesCost);
             result.CessationOffshoreFacilitiesCostDto = cessationOffshoreFacilitiesCostDto;
         }
@@ -63,6 +70,8 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         {
             _logger.LogInformation("Surf {0} not found.", caseItem.SurfLink);
         }
+
+        var saveResult = await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
 
         var cessationTimeSeries = TimeSeriesCost.MergeCostProfiles(cessationWellsCost, cessationOffshoreFacilitiesCost);
         var cessation = new CessationCost
@@ -75,9 +84,15 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         return result;
     }
 
-    private static CessationWellsCost GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear)
+    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost)
     {
-        var cessationWells = new CessationWellsCost();
+        caseItem.CessationWellsCost = cessationWellsCost;
+        caseItem.CessationOffshoreFacilitiesCost = cessationOffshoreFacilitiesCost;
+        return await _context.SaveChangesAsync();
+    }
+
+    private static CessationWellsCost GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear, CessationWellsCost cessationWells)
+    {
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
         if (linkedWells != null)
         {
@@ -96,10 +111,8 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         return cessationWells;
     }
 
-    private static CessationOffshoreFacilitiesCost GenerateCessationOffshoreFacilitiesCost(Surf surf, int lastYear)
+    private static CessationOffshoreFacilitiesCost GenerateCessationOffshoreFacilitiesCost(Surf surf, int lastYear, CessationOffshoreFacilitiesCost cessationOffshoreFacilities)
     {
-        var cessationOffshoreFacilities = new CessationOffshoreFacilitiesCost();
-
         var surfCessationCost = surf.CessationCost;
 
         cessationOffshoreFacilities.StartYear = lastYear + 1;
@@ -120,7 +133,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
             return null;
         }
-        if (drainageStrategy.ProductionProfileOil == null) { return null; }
+        if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0) { return null; }
         var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length - 1;
         return lastYear;
     }

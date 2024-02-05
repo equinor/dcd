@@ -1,6 +1,7 @@
 using System.Globalization;
 
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Models;
 
@@ -15,10 +16,12 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
     private readonly ISubstructureService _substructureService;
     private readonly ISurfService _surfService;
     private readonly ITransportService _transportService;
+    private readonly DcdDbContext _context;
 
-    public GenerateStudyCostProfile(ILoggerFactory loggerFactory, ICaseService caseService, IWellProjectService wellProjectService, ITopsideService topsideService,
+    public GenerateStudyCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, ICaseService caseService, IWellProjectService wellProjectService, ITopsideService topsideService,
         ISubstructureService substructureService, ISurfService surfService, ITransportService transportService)
     {
+        _context = context;
         _logger = loggerFactory.CreateLogger<GenerateStudyCostProfile>();
         _caseService = caseService;
         _wellProjectService = wellProjectService;
@@ -28,20 +31,31 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         _transportService = transportService;
     }
 
-    public StudyCostProfileWrapperDto Generate(Guid caseId)
+    public async Task<StudyCostProfileWrapperDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
 
         var sumFacilityCost = SumAllCostFacility(caseItem);
         var sumWellCost = SumWellCost(caseItem);
 
-        var result = new StudyCostProfileWrapperDto();
-        var feasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
-        var feasibilityDto = CaseDtoAdapter.Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(feasibility);
-        result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
+        var newFeasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
+        var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
 
-        var feed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
+        var feasibility = caseItem.TotalFeasibilityAndConceptStudies ?? newFeasibility;
+        feasibility.StartYear = newFeasibility.StartYear;
+        feasibility.Values = newFeasibility.Values;
+
+        var feed = caseItem.TotalFEEDStudies ?? newFeed;
+        feed.StartYear = newFeed.StartYear;
+        feed.Values = newFeed.Values;
+
+        var saveResult = await UpdateCaseAndSaveAsync(caseItem, feasibility, feed);
+
+        var result = new StudyCostProfileWrapperDto();
+        var feasibilityDto = CaseDtoAdapter.Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(feasibility);
         var feedDto = CaseDtoAdapter.Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(feed);
+
+        result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
         result.TotalFEEDStudiesDto = feedDto;
 
         if (feasibility.Values.Length == 0 && feed.Values.Length == 0)
@@ -57,6 +71,13 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         var study = CaseDtoAdapter.Convert<StudyCostProfileDto, StudyCostProfile>(studyCost);
         result.StudyCostProfileDto = study;
         return result;
+    }
+
+    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies)
+    {
+        caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
+        caseItem.TotalFEEDStudies = totalFEEDStudies;
+        return await _context.SaveChangesAsync();
     }
 
     public TotalFeasibilityAndConceptStudies CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)

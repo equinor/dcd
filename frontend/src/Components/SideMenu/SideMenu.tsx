@@ -36,7 +36,7 @@ const Body = styled.div`
 
 const MainView = styled.div`
     width: calc(100% - 15rem);
-    overflow: scroll;
+    overflow: auto;
     overflow-x: hidden;
 `
 const SideMenuFooter = styled.div`

@@ -7,7 +7,7 @@ FROM node:lts-alpine as build
 
 WORKDIR /app
 COPY . .
-RUN npm ci
+RUN yarn install
 RUN mkdir -p node_modules/.cache && chmod -R 777 node_modules/.cache
 
 
@@ -23,4 +23,4 @@ RUN adduser -S -u 1001 -G non-root-group non-root-user
 USER 1001
 
 EXPOSE 3000
-ENTRYPOINT npm start
+ENTRYPOINT yarn run start

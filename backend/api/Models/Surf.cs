@@ -11,8 +11,6 @@ public class Surf
     public Guid ProjectId { get; set; }
     public SurfCostProfile? CostProfile { get; set; }
     public SurfCostProfileOverride? CostProfileOverride { get; set; }
-
-
     public SurfCessationCostProfile? CessationCostProfile { get; set; }
     public double CessationCost { get; set; }
     public Maturity Maturity { get; set; }

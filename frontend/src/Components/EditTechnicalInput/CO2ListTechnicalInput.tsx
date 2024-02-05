@@ -5,9 +5,11 @@ import {
     useCallback,
     useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
+import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
+import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 
 const SwitchWrapper = styled.div`
@@ -33,6 +35,7 @@ function CO2ListTechnicalInput({
     project, setProject,
 }: Props) {
     const gridRef = useRef<any>(null)
+    const styles = useStyles()
 
     const [check, setCheck] = useState(false)
 
@@ -163,9 +166,10 @@ function CO2ListTechnicalInput({
         filter: true,
         resizable: true,
         onCellValueChanged: handleCellValueChange,
+        suppressMenu: true,
     }), [])
 
-    const [columnDefs] = useState([
+    const [columnDefs] = useState<ColDef[]>([
         {
             field: "profile",
             headerName: "CO2 emission",
@@ -215,25 +219,26 @@ function CO2ListTechnicalInput({
                     />
                 </SwitchWrapper>
             </ColumnWrapper>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "54rem",
-                }}
-                className="ag-theme-alpine"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                    isExternalFilterPresent={isExternalFilterPresent}
-                    doesExternalFilterPass={doesExternalFilterPass}
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "54rem",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                        isExternalFilterPresent={isExternalFilterPresent}
+                        doesExternalFilterPass={doesExternalFilterPass}
+                    />
+                </div>
             </div>
-
         </>
     )
 }

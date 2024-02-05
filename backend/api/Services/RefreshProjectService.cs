@@ -26,12 +26,11 @@ public class RefreshProjectService : BackgroundService
 
     private Task UpdateProjects()
     {
-
         _logger.LogInformation("HostingService: Running");
         if (Showtime())
         {
             using var scope = _scopeFactory.CreateScope();
-            var projectService = scope.ServiceProvider.GetRequiredService<ProjectService>();
+            var projectService = scope.ServiceProvider.GetRequiredService<IProjectService>();
             try
             {
                 projectService.UpdateProjectFromProjectMaster();
@@ -47,12 +46,12 @@ public class RefreshProjectService : BackgroundService
     private bool Showtime()
     {
         var runtime = _configuration.GetSection("HostedService").GetValue<string>("RunTime");
-        var hour = Int32.Parse(runtime.Split(':')[0]);
-        var minute = Int32.Parse(runtime.Split(':')[1]);
-        var second = Int32.Parse(runtime.Split(':')[2]);
-        TimeSpan start = new TimeSpan(hour, minute, second);
-        TimeSpan end = new TimeSpan(hour + 1, minute, second);
-        TimeSpan now = DateTime.Now.TimeOfDay;
+        var hour = int.Parse(runtime.Split(':')[0]);
+        var minute = int.Parse(runtime.Split(':')[1]);
+        var second = int.Parse(runtime.Split(':')[2]);
+        var start = new TimeSpan(hour, minute, second);
+        var end = new TimeSpan(hour + 1, minute, second);
+        var now = DateTime.Now.TimeOfDay;
 
         if ((now > start) && (now < end))
         {

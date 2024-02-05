@@ -14,15 +14,48 @@ public static class ExplorationDtoAdapter
             Name = exploration.Name,
             RigMobDemob = exploration.RigMobDemob,
             Currency = exploration.Currency,
-            ExplorationWellCostProfile = Convert(exploration.ExplorationWellCostProfile),
-            AppraisalWellCostProfile = Convert(exploration.AppraisalWellCostProfile),
-            SidetrackCostProfile = Convert(exploration.SidetrackCostProfile),
-            GAndGAdminCost = Convert(exploration.GAndGAdminCost),
-            SeismicAcquisitionAndProcessing = Convert(exploration.SeismicAcquisitionAndProcessing),
-            CountryOfficeCost = Convert(exploration.CountryOfficeCost),
+            ExplorationWellCostProfile = Convert<ExplorationWellCostProfileDto, ExplorationWellCostProfile>(exploration.ExplorationWellCostProfile),
+            AppraisalWellCostProfile = Convert<AppraisalWellCostProfileDto, AppraisalWellCostProfile>(exploration.AppraisalWellCostProfile),
+            SidetrackCostProfile = Convert<SidetrackCostProfileDto, SidetrackCostProfile>(exploration.SidetrackCostProfile),
+            GAndGAdminCost = Convert<GAndGAdminCostDto, GAndGAdminCost>(exploration.GAndGAdminCost),
+            SeismicAcquisitionAndProcessing = Convert<SeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>(exploration.SeismicAcquisitionAndProcessing),
+            CountryOfficeCost = Convert<CountryOfficeCostDto, CountryOfficeCost>(exploration.CountryOfficeCost),
             ExplorationWells = exploration.ExplorationWells?.Select(ew => ExplorationWellDtoAdapter.Convert(ew)).ToList()
         };
         return explorationDto;
+    }
+
+    public static TDto? Convert<TDto, TModel>(TModel? model)
+    where TDto : TimeSeriesCostDto, new()
+    where TModel : TimeSeriesCost
+    {
+        if (model == null) { return null; }
+
+        return new TDto
+        {
+            Id = model.Id,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
+        };
+    }
+
+    public static TDto? ConvertOverride<TDto, TModel>(TModel? model)
+        where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto, new()
+        where TModel : TimeSeriesCost, ITimeSeriesOverride
+    {
+        if (model == null) { return null; }
+
+        return new TDto
+        {
+            Id = model.Id,
+            Override = model.Override,
+            Currency = model.Currency,
+            EPAVersion = model.EPAVersion,
+            Values = model.Values,
+            StartYear = model.StartYear,
+        };
     }
 
     private static ExplorationWellCostProfileDto Convert(ExplorationWellCostProfile? costProfile)

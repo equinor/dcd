@@ -4,6 +4,6 @@ namespace api.Services
 {
     public interface IGenerateCessationCostProfile
     {
-        CessationCostWrapperDto Generate(Guid caseId);
+        Task<CessationCostWrapperDto> GenerateAsync(Guid caseId);
     }
 }

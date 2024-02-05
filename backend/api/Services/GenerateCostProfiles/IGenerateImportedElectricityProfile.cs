@@ -4,6 +4,6 @@ namespace api.Services.GenerateCostProfiles
 {
     public interface IGenerateImportedElectricityProfile
     {
-        ImportedElectricityDto Generate(Guid caseId);
+        Task<ImportedElectricityDto> GenerateAsync(Guid caseId);
     }
 }

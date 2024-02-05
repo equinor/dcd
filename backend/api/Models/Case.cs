@@ -36,10 +36,20 @@ public class Case
     public double BreakEven { get; set; }
     public string? Host { get; set; }
 
+    public CessationWellsCost? CessationWellsCost { get; set; }
+    public CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
+    public CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; }
+    public CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
+
     public TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
     public TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public TotalFEEDStudies? TotalFEEDStudies { get; set; }
     public TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
+
+    public WellInterventionCostProfile? WellInterventionCostProfile { get; set; }
+    public WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; }
+    public OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; }
+    public OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
 
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
     public Guid WellProjectLink { get; set; } = Guid.Empty;
@@ -74,22 +84,55 @@ public enum ProductionStrategyOverview
 public class CessationCost : TimeSeriesCost
 {
 }
-public class CessationWellsCost : TimeSeriesCost
+public class CessationWellsCost : TimeSeriesCost, ICaseTimeSeries
 {
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
 }
-public class CessationOffshoreFacilitiesCost : TimeSeriesCost
+public class CessationWellsCostOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+    public bool Override { get; set; }
+}
+public class CessationOffshoreFacilitiesCost : TimeSeriesCost, ICaseTimeSeries
+{
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+}
+public class CessationOffshoreFacilitiesCostOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+    public bool Override { get; set; }
 }
 
 public class OpexCostProfile : TimeSeriesCost
 {
 }
 
-public class WellInterventionCostProfile : TimeSeriesCost
+public class WellInterventionCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
 }
-public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost
+public class WellInterventionCostProfileOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+    public bool Override { get; set; }
+}
+public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost, ICaseTimeSeries
+{
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+}
+
+public class OffshoreFacilitiesOperationsCostProfileOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
+{
+    [ForeignKey("Case.Id")]
+    public Case Case { get; set; } = null!;
+    public bool Override { get; set; }
 }
 
 public class StudyCostProfile : TimeSeriesCost

@@ -48,15 +48,6 @@ public class SurfService : ISurfService
         var existing = GetSurf(updatedSurfDto.Id);
         SurfAdapter.ConvertExisting(existing, updatedSurfDto);
 
-        if (updatedSurfDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.SurfCostProfile!.Remove(existing.CostProfile);
-        }
-
-        if (updatedSurfDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Surfs!.Update(existing);
         _context.SaveChanges();
@@ -68,15 +59,6 @@ public class SurfService : ISurfService
         var existing = GetSurf(updatedSurfDto.Id);
         SurfAdapter.ConvertExisting(existing, updatedSurfDto);
 
-        if (updatedSurfDto.CostProfile == null && existing.CostProfile != null)
-        {
-            _context.SurfCostProfile!.Remove(existing.CostProfile);
-        }
-
-        if (updatedSurfDto.CessationCostProfile == null && existing.CessationCostProfile != null)
-        {
-            _context.SurfCessationCostProfiles!.Remove(existing.CessationCostProfile);
-        }
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedSurf = _context.Surfs!.Update(existing);
         _context.SaveChanges();

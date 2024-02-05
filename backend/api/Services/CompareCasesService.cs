@@ -50,7 +50,7 @@ public class CompareCasesService : ICompareCasesService
             {
                 drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
                 exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
-                var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.Generate(caseItem.Id);
+                var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
 
                 var totalOilProduction = CalculateTotalOilProduction(caseItem, project, drainageStrategy, false);
                 var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
@@ -65,6 +65,7 @@ public class CompareCasesService : ICompareCasesService
 
                 var compareCases = new CompareCasesDto
                 {
+                    CaseId = caseItem.Id,
                     TotalOilProduction = totalOilProduction,
                     TotalGasProduction = totalGasProduction,
                     TotalExportedVolumes = totalExportedVolumes,
@@ -144,8 +145,8 @@ public class CompareCasesService : ICompareCasesService
 
     private double CalculateTotalStudyCostsPlusOpex(Case caseItem)
     {
-        var generateStudyProfile = _generateStudyCostProfile.Generate(caseItem.Id);
-        var generateOpexProfile = _generateOpexCostProfile.Generate(caseItem.Id);
+        var generateStudyProfile = _generateStudyCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        var generateOpexProfile = _generateOpexCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
         var sumStudyValues = generateStudyProfile?.StudyCostProfileDto?.Sum ?? 0;
         var sumOpexValues = generateOpexProfile?.OpexCostProfileDto?.Sum ?? 0;
 
@@ -154,7 +155,7 @@ public class CompareCasesService : ICompareCasesService
 
     private double CalculateTotalCessationCosts(Case caseItem)
     {
-        var generateCessationProfile = _generateCessationCostProfile.Generate(caseItem.Id);
+        var generateCessationProfile = _generateCessationCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
         return generateCessationProfile?.CessationCostDto?.Sum ?? 0;
     }
 
@@ -171,7 +172,7 @@ public class CompareCasesService : ICompareCasesService
     private double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
     {
         var sumExplorationWellCost = 0.0;
-        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.Generate(caseItem.Id);
+        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
         sumExplorationWellCost += generateGAndGAdminProfile.Sum;
 
         try

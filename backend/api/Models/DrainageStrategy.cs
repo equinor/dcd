@@ -19,8 +19,10 @@ public class DrainageStrategy
     public ProductionProfileGas? ProductionProfileGas { get; set; }
     public ProductionProfileWater? ProductionProfileWater { get; set; }
     public ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
+
     public FuelFlaringAndLosses? FuelFlaringAndLosses { get; set; }
     public FuelFlaringAndLossesOverride? FuelFlaringAndLossesOverride { get; set; }
+
     public NetSalesGas? NetSalesGas { get; set; }
     public NetSalesGasOverride? NetSalesGasOverride { get; set; }
 

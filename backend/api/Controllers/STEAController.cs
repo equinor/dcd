@@ -25,10 +25,10 @@ namespace api.Controllers;
     )]
 public class STEAController : ControllerBase
 {
-    private STEAService _sTEAService;
+    private readonly ISTEAService _sTEAService;
     private readonly ILogger<STEAController> _logger;
 
-    public STEAController(ILogger<STEAController> logger, STEAService sTEAService)
+    public STEAController(ILogger<STEAController> logger, ISTEAService sTEAService)
     {
         _logger = logger;
         _sTEAService = sTEAService;
@@ -43,14 +43,13 @@ public class STEAController : ControllerBase
     [HttpPost("{ProjectId}", Name = "ExcelToSTEA")]
     public FileResult ExcelToSTEA(Guid ProjectId)
     {
-
         var project = GetInputToSTEA(ProjectId);
-        List<BusinessCase> businessCases = ExportToSTEA.export(project);
+        List<BusinessCase> businessCases = ExportToSTEA.Export(project);
         string filename = project.Name + "ExportToSTEA.xlsx";
         return File(ExcelFile(businessCases, project.Name).ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);
     }
 
-    private MemoryStream ExcelFile(List<BusinessCase> businessCases, string projectName)
+    private static MemoryStream ExcelFile(List<BusinessCase> businessCases, string projectName)
     {
         var wb = new XLWorkbook();
         var ws = wb.Worksheets.Add("Input to STEA");
@@ -77,7 +76,15 @@ public class STEAController : ControllerBase
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
-            foreach (ExcelTableCell etc in businessCase.CessationOffshoreFacilites)
+            foreach (ExcelTableCell etc in businessCase.StudyCost)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (ExcelTableCell etc in businessCase.Opex)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (ExcelTableCell etc in businessCase.Cessation)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
@@ -94,11 +101,13 @@ public class STEAController : ControllerBase
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+            foreach (ExcelTableCell etc in businessCase.ImportedElectricity)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
         }
-        using (MemoryStream stream = new MemoryStream())
-        {
-            wb.SaveAs(stream);
-            return stream;
-        }
+        using var stream = new MemoryStream();
+        wb.SaveAs(stream);
+        return stream;
     }
 }

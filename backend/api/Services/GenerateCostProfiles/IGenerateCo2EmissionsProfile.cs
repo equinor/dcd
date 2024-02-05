@@ -4,6 +4,6 @@ namespace api.Services.GenerateCostProfiles
 {
     public interface IGenerateCo2EmissionsProfile
     {
-        Co2EmissionsDto Generate(Guid caseId);
+        Task<Co2EmissionsDto> GenerateAsync(Guid caseId);
     }
 }

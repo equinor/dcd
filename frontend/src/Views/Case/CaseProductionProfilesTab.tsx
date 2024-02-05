@@ -4,6 +4,7 @@ import {
     ChangeEventHandler,
     useState,
     useEffect,
+    useRef,
 } from "react"
 import styled from "styled-components"
 
@@ -24,11 +25,9 @@ import { ProductionProfileNGL } from "../../models/assets/drainagestrategy/Produ
 import { ProductionProfileWaterInjection } from "../../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
 import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 import { ImportedElectricityOverride } from "../../models/assets/drainagestrategy/ImportedElectricityOverride"
-import { Co2EmissionsOverride } from "../../models/assets/drainagestrategy/Co2EmissionsOverride"
 import { NetSalesGasOverride } from "../../models/assets/drainagestrategy/NetSalesGasOverride"
 import { FuelFlaringAndLossesOverride } from "../../models/assets/drainagestrategy/FuelFlaringAndLossesOverride"
 
@@ -85,6 +84,15 @@ interface Props {
     drainageStrategy: DrainageStrategy,
     setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
     activeTab: number
+
+    netSalesGas: NetSalesGas | undefined,
+    setNetSalesGas: Dispatch<SetStateAction<NetSalesGas | undefined>>,
+
+    fuelFlaringAndLosses: FuelFlaringAndLosses | undefined,
+    setFuelFlaringAndLosses: Dispatch<SetStateAction<FuelFlaringAndLosses | undefined>>,
+
+    importedElectricity: ImportedElectricity | undefined,
+    setImportedElectricity: Dispatch<SetStateAction<ImportedElectricity | undefined>>,
 }
 
 function CaseProductionProfilesTab({
@@ -92,6 +100,9 @@ function CaseProductionProfilesTab({
     caseItem, setCase,
     drainageStrategy, setDrainageStrategy,
     activeTab,
+    netSalesGas, setNetSalesGas,
+    fuelFlaringAndLosses, setFuelFlaringAndLosses,
+    importedElectricity, setImportedElectricity,
 }: Props) {
     const [gas, setGas] = useState<ProductionProfileGas>()
     const [oil, setOil] = useState<ProductionProfileOil>()
@@ -99,18 +110,15 @@ function CaseProductionProfilesTab({
     const [nGL, setNGL] = useState<ProductionProfileNGL>()
     const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
 
-    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
     const [netSalesGasOverride, setNetSalesGasOverride] = useState<NetSalesGasOverride>()
-
-    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
     const [fuelFlaringAndLossesOverride, setFuelFlaringAndLossesOverride] = useState<FuelFlaringAndLossesOverride>()
-
     const [importedElectricityOverride, setImportedElectricityOverride] = useState<ImportedElectricityOverride>()
-    const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const gridRef = useRef<any>(null)
 
     const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
         const newDrainageStrategy: DrainageStrategy = { ...drainage }
@@ -260,14 +268,9 @@ function CaseProductionProfilesTab({
         (async () => {
             try {
                 if (activeTab === 1) {
-                    const fuelFlaringProfile = (await GetGenerateProfileService())
-                        .generateFuelFlaringLossesProfile(caseItem.id)
-                    const netSaleProfile = (await GetGenerateProfileService()).generateNetSaleProfile(caseItem.id)
-                    const importedElectricityProfile = (await GetGenerateProfileService())
-                        .generateImportedElectricityProfile(caseItem.id)
-                    setFuelFlaringAndLosses(await fuelFlaringProfile)
-                    setNetSalesGas(await netSaleProfile)
-                    setImportedElectricity(await importedElectricityProfile)
+                    setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
+                    setNetSalesGas(drainageStrategy.netSalesGas)
+                    setImportedElectricity(drainageStrategy.importedElectricity)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
                     drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
@@ -340,6 +343,12 @@ function CaseProductionProfilesTab({
         newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [netSalesGasOverride])
+
+    useEffect(() => {
+        if (gridRef.current && gridRef.current.api && gridRef.current.api.refreshCells) {
+            gridRef.current.api.refreshCells()
+        }
+    }, [fuelFlaringAndLosses, netSalesGas, importedElectricity])
 
     if (activeTab !== 1) { return null }
 
@@ -476,7 +485,7 @@ function CaseProductionProfilesTab({
                     "Water production (MSm3)",
                 ]}
             />
-            {waterInjection !== undefined
+            {(waterInjection !== undefined && waterInjection!.values!.length > 0)
                 && (
                     <AgChartsTimeseries
                         data={injectionProfilesChartData()}
@@ -497,6 +506,7 @@ function CaseProductionProfilesTab({
                 tableYears={tableYears}
                 tableName="Production profiles"
                 includeFooter={false}
+                gridRef={gridRef}
             />
         </>
     )

@@ -58,7 +58,7 @@ public static class SubstructureAdapter
         where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
         where TModel : TimeSeriesCost, ITimeSeriesOverride, ISubstructureTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {
@@ -76,7 +76,7 @@ public static class SubstructureAdapter
         where TDto : TimeSeriesCostDto
         where TModel : TimeSeriesCost, ISubstructureTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {

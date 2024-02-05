@@ -26,7 +26,7 @@ public class ProspSharepointImportService
     public async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string? url)
     {
         var driveItems = new List<DriveItem>();
-        var siteIdAndParentRef = GetSiteIdAndParentReferencePath(url).Result;
+        var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(url);
         var siteId = siteIdAndParentRef[0];
         var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
 
@@ -119,48 +119,70 @@ public class ProspSharepointImportService
 
         return dto;
     }
+    public class AccessDeniedException : Exception
+    {
+        public AccessDeniedException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+    }
 
     private async Task<List<string>> GetSiteIdAndParentReferencePath(string? url)
     {
         var siteData = new List<string>();
         try
         {
-            if (url != null)
+            if (string.IsNullOrEmpty(url))
             {
-                var siteUrl = new Uri(url);
-                var hostName = siteUrl.Host;
-                var pathFromIdParameter = HttpUtility.ParseQueryString(siteUrl.Query).Get("id");
-                var siteNameFromUrl = siteUrl.AbsolutePath.Split('/')[2];
-
-                // Example of valid relativepath: /sites/{your site name} such as /sites/ConceptApp-Test
-                var relativePath = $@"/sites/{siteNameFromUrl}";
-
-
-                var site = await _graphServiceClient.Sites.GetByPath(relativePath, hostName)
-                    .Request()
-                    .GetAsync();
-
-                siteData.Add(site.Id);
-
-                var documentLibraryNameFromUrl = siteUrl.AbsolutePath.Split('/')[3];
-                // DriveItem path to get content from subfolder, if no subfolder given then set folder from absolute path
-                var parentReferencePath = pathFromIdParameter != null
-                    ? $@"/drive/root:/{GetDriveItemPathFromUrl(pathFromIdParameter)}"
-                    : $@"/drive/root:/{documentLibraryNameFromUrl}";
-
-                siteData.Add(parentReferencePath);
-
-
-                return siteData;
+                throw new ArgumentException("URL cannot be null or empty.", nameof(url));
             }
+            // Basic validation of URL format
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? validatedUri))
+            {
+                throw new UriFormatException($"Invalid URL format: {url}");
+            }
+
+            var hostName = validatedUri.Host;
+            var pathFromIdParameter = HttpUtility.ParseQueryString(validatedUri.Query).Get("id");
+            var siteNameFromUrl = validatedUri.AbsolutePath.Split('/')[2];
+
+            // Example of valid relativepath: /sites/{your site name} such as /sites/ConceptApp-Test
+            var relativePath = $@"/sites/{siteNameFromUrl}";
+
+            var site = await _graphServiceClient.Sites.GetByPath(relativePath, hostName)
+                .Request()
+                .GetAsync();
+
+            siteData.Add(site.Id);
+
+            var documentLibraryNameFromUrl = validatedUri.AbsolutePath.Split('/')[3];
+            // DriveItem path to get content from subfolder, if no subfolder given then set folder from absolute path
+            var parentReferencePath = pathFromIdParameter != null
+                ? $@"/drive/root:/{GetDriveItemPathFromUrl(pathFromIdParameter)}"
+                : $@"/drive/root:/{documentLibraryNameFromUrl}";
+
+            siteData.Add(parentReferencePath);
         }
-        catch (Exception e)
+        catch (UriFormatException ex)
         {
-            _logger?.LogError(e, $"Invalid url: {e.Message}");
+            _logger?.LogError(ex, "Invalid URI format: {Url}", url);
+            throw; // Consider how to handle this error. Maybe wrap it in a custom exception for higher-level handling.
+        }
+        catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        {
+            _logger?.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", url);
+            throw new AccessDeniedException("Access to SharePoint resource was denied.", ex);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "An error occurred while attempting to access SharePoint site: {Url}", url);
+            throw; // Re-throw the exception to be handled upstream.
         }
 
         return siteData;
     }
+
+
 
     private static string? GetDriveItemPathFromUrl(string? pathFromIdParameter)
     {
@@ -290,5 +312,10 @@ public class ProspSharepointImportService
             ExcelMimeTypes.Xlsx,
         };
         return validMimeTypes;
+    }
+
+    internal async Task GetSharePointFileNamesAndId(object url)
+    {
+        throw new NotImplementedException();
     }
 }

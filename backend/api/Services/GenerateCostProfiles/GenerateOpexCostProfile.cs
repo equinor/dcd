@@ -1,4 +1,5 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Models;
 
@@ -12,10 +13,12 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IWellProjectService _wellProjectService;
     private readonly ITopsideService _topsideService;
+    private readonly DcdDbContext _context;
 
-    public GenerateOpexCostProfile(ILoggerFactory loggerFactory, ICaseService caseService, IProjectService projectService, IDrainageStrategyService drainageStrategyService,
+    public GenerateOpexCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, ICaseService caseService, IProjectService projectService, IDrainageStrategyService drainageStrategyService,
         IWellProjectService wellProjectService, ITopsideService topsideService)
     {
+        _context = context;
         _logger = loggerFactory.CreateLogger<GenerateOpexCostProfile>();
         _projectService = projectService;
         _drainageStrategyService = drainageStrategyService;
@@ -24,33 +27,37 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         _topsideService = topsideService;
     }
 
-    public OpexCostProfileWrapperDto Generate(Guid caseId)
+    public async Task<OpexCostProfileWrapperDto> GenerateAsync(Guid caseId)
     {
         var caseItem = _caseService.GetCase(caseId);
         var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-
         var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var result = new OpexCostProfileWrapperDto();
-        var wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
-        var wellInterventionCostDto = CaseDtoAdapter.Convert<WellInterventionCostProfileDto, WellInterventionCostProfile>(wellInterventionCost);
 
-        var offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
+        if (drainageStrategy == null)
+        {
+            throw new NotFoundInDBException(string.Format("DrainageStrategy {0} not found in database.", caseItem.DrainageStrategyLink));
+        }
+
+        var newWellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
+        var newOffshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
+
+        var wellInterventionCost = caseItem.WellInterventionCostProfile ?? new WellInterventionCostProfile();
+        wellInterventionCost.StartYear = newWellInterventionCost.StartYear;
+        wellInterventionCost.Values = newWellInterventionCost.Values;
+
+        var offshoreFacilitiesOperationsCost = caseItem.OffshoreFacilitiesOperationsCostProfile ?? new OffshoreFacilitiesOperationsCostProfile();
+        offshoreFacilitiesOperationsCost.StartYear = newOffshoreFacilitiesOperationsCost.StartYear;
+        offshoreFacilitiesOperationsCost.Values = newOffshoreFacilitiesOperationsCost.Values;
+
+        var saveResult = await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost);
+
+        var wellInterventionCostDto = CaseDtoAdapter.Convert<WellInterventionCostProfileDto, WellInterventionCostProfile>(wellInterventionCost);
         var offshoreFacilitiesOperationsCostDto = CaseDtoAdapter.Convert<OffshoreFacilitiesOperationsCostProfileDto, OffshoreFacilitiesOperationsCostProfile>(offshoreFacilitiesOperationsCost);
 
         result.WellInterventionCostProfileDto = wellInterventionCostDto;
         result.OffshoreFacilitiesOperationsCostProfileDto = offshoreFacilitiesOperationsCostDto;
-
-        if (drainageStrategy != null)
-        {
-            wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
-            offshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
-        }
-        else
-        {
-            wellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, new DrainageStrategy());
-            offshoreFacilitiesOperationsCost = new OffshoreFacilitiesOperationsCostProfile();
-        }
 
         var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
         var opexCostProfile = new OpexCostProfile
@@ -61,6 +68,13 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         var opexDto = CaseDtoAdapter.Convert<OpexCostProfileDto, OpexCostProfile>(opexCostProfile);
         result.OpexCostProfileDto = opexDto;
         return result;
+    }
+
+    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, WellInterventionCostProfile wellInterventionCostProfile, OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCostProfile)
+    {
+        caseItem.WellInterventionCostProfile = wellInterventionCostProfile;
+        caseItem.OffshoreFacilitiesOperationsCostProfile = offshoreFacilitiesOperationsCostProfile;
+        return await _context.SaveChangesAsync();
     }
 
     public WellInterventionCostProfile CalculateWellInterventionCostProfile(Case caseItem, Project project, DrainageStrategy drainageStrategy)
@@ -136,7 +150,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
     public OffshoreFacilitiesOperationsCostProfile CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, DrainageStrategy drainageStrategy)
     {
-        if (drainageStrategy.ProductionProfileOil == null) { return new OffshoreFacilitiesOperationsCostProfile(); }
+        if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0) { return new OffshoreFacilitiesOperationsCostProfile() { Values = Array.Empty<double>() }; }
         var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
         var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
 
@@ -148,7 +162,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         catch (ArgumentException)
         {
             _logger.LogInformation("Topside {0} not found.", caseItem.TopsideLink);
-            return new OffshoreFacilitiesOperationsCostProfile();
+            return new OffshoreFacilitiesOperationsCostProfile() { Values = Array.Empty<double>() };
         }
         var facilityOpex = topside.FacilityOpex;
         var values = new List<double>

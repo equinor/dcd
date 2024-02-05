@@ -86,6 +86,8 @@ type Props = {
 const EditTechnicalInputModal = ({
     toggleEditTechnicalInputModal, isOpen, setProject, project, setWells, caseId, setExploration, setWellProject,
 }: Props) => {
+    const [justOpened, setJustOpened] = useState(true)
+
     const [activeTab, setActiveTab] = useState<number>(0)
 
     const [originalProject, setOriginalProject] = useState<Project>(project)
@@ -103,6 +105,34 @@ const EditTechnicalInputModal = ({
     const [originalExplorationWells, setOriginalExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
 
     const [isSaving, setIsSaving] = useState<boolean>()
+
+    useEffect(() => {
+        if (isOpen && !justOpened) {
+            // Set the original state only when the modal is opened
+            setOriginalProject({ ...project })
+            setOriginalExplorationOperationalWellCosts({ ...explorationOperationalWellCosts })
+            setOriginalDevelopmentOperationalWellCosts({ ...developmentOperationalWellCosts })
+            setOriginalWellProjectWells([...wellProjectWells])
+            setOriginalExplorationWells([...explorationWells])
+            setJustOpened(false)
+        }
+    }, [isOpen, project, explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened])
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                toggleEditTechnicalInputModal()
+            }
+        }
+
+        if (isOpen) {
+            window.addEventListener("keydown", handleKeyDown)
+        }
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [isOpen, toggleEditTechnicalInputModal])
 
     useEffect(() => {
         if (project.wells) {
@@ -206,6 +236,19 @@ const EditTechnicalInputModal = ({
         }
     }
 
+    const handleCancel = () => {
+        // Assuming `captureInitialState` function properly captures and sets original states
+        setProject({ ...originalProject })
+        setExplorationOperationalWellCosts({ ...originalExplorationOperationalWellCosts })
+        setDevelopmentOperationalWellCosts({ ...originalDevelopmentOperationalWellCosts })
+        // For arrays, spread into a new array
+        setWellProjectWells([...originalWellProjectWells])
+        setExplorationWells([...originalExplorationWells])
+
+        // Close the modal
+        toggleEditTechnicalInputModal()
+    }
+
     return (
         <>
             <div style={{
@@ -264,7 +307,7 @@ const EditTechnicalInputModal = ({
                         <CancelButton
                             type="button"
                             variant="outlined"
-                            onClick={toggleEditTechnicalInputModal}
+                            onClick={handleCancel}
                         >
                             Cancel
                         </CancelButton>

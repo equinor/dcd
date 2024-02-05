@@ -209,7 +209,7 @@ public static class DrainageStrategyAdapter
         }
 
         var convertedTimeSeries = dto == null || drainageStrategy == null
-            ? null
+            ? new TModel()
             : new TModel
             {
                 Id = dto.Id,
@@ -240,7 +240,7 @@ public static class DrainageStrategyAdapter
         }
 
         var convertedTimeSeries = dto == null || drainageStrategy == null
-            ? null
+            ? new TModel()
             : new TModel
             {
                 Id = dto.Id,

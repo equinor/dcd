@@ -69,4 +69,10 @@ public class WellsController : ControllerBase
     {
         return _wellService.CreateMultipleWells(wellDtos);
     }
+
+    [HttpDelete("{wellId}", Name = "DeleteWell")]
+    public ProjectDto DeleteWell(Guid wellId)
+    {
+        return _wellService.DeleteWell(wellId);
+    }
 }

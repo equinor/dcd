@@ -5,8 +5,13 @@ import {
 import {
     ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
-import { GetRowIdFunc, GetRowIdParams, RowNode } from "ag-grid-enterprise"
+import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import {
+    GetRowIdFunc,
+    GetRowIdParams,
+    RowNode,
+} from "@ag-grid-community/core"
 import styled from "styled-components"
 import { external_link } from "@equinor/eds-icons"
 import { Project } from "../../models/Project"
@@ -25,7 +30,6 @@ interface Props {
     driveItems: DriveItem[] | undefined
     check: boolean
 }
-
 interface RowData {
     id: string,
     name: string,
@@ -38,9 +42,12 @@ interface RowData {
     sharepointFileUrl?: string | null
     driveItem: [DriveItem[] | undefined, string | undefined | null]
     fileLink?: string | null
-    caseSelected: boolean,
+    surfStateChanged: boolean,
+    substructureStateChanged: boolean,
+    topsideStateChanged: boolean,
+    transportStateChanged: boolean
+    sharePointFileChanged: boolean,
 }
-
 function PROSPCaseList({
     setProject,
     project,
@@ -48,8 +55,8 @@ function PROSPCaseList({
     check,
 }: Props) {
     const gridRef = useRef<any>(null)
+    const styles = useStyles()
     const [rowData, setRowData] = useState<RowData[]>()
-
     const [isApplying, setIsApplying] = useState<boolean>()
 
     const casesToRowData = () => {
@@ -68,62 +75,106 @@ function PROSPCaseList({
                     sharepointFileUrl: c.sharepointFileUrl,
                     fileLink: c.sharepointFileUrl,
                     driveItem: [driveItems, c.sharepointFileId],
-                    caseSelected: false,
+                    surfStateChanged: false,
+                    substructureStateChanged: false,
+                    topsideStateChanged: false,
+                    transportStateChanged: false,
+                    sharePointFileChanged: false,
                 }
                 tableCases.push(tableCase)
             })
             setRowData(tableCases)
         }
     }
-
     useEffect(() => {
         casesToRowData()
+        if (gridRef.current.redrawRows) {
+            gridRef.current.redrawRows()
+        }
     }, [project, driveItems])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
         filter: true,
         resizable: true,
+        suppressMenu: true,
     }), [])
+
+    const rowIsChanged = (p: any) => (p.data.surfStateChanged
+        || p.data.substructureStateChanged
+        || p.data.topsideStateChanged
+        || p.data.transportStateChanged
+        || p.data.sharePointFileChanged)
 
     const caseAutoSelect = (nodeId: string) => {
         const rowNode = gridRef.current?.getRowNode(nodeId)
-        rowNode.setDataValue("caseSelected", true)
-    }
 
-    const changeStatus = (p: any, value: ImportStatusEnum) => {
-        caseAutoSelect(p.node?.data.id)
-        p.setValue(value)
-    }
-
-    const handleCheckboxChange = (p: any, value: boolean) => {
-        p.setValue(value)
-    }
-
-    const caseSelectedRenderer = (p: any) => {
-        if (p.value) {
-            return <Checkbox checked onChange={() => handleCheckboxChange(p, false)} />
+        if (rowIsChanged(rowNode)) {
+            rowNode.selected = true
+            rowNode.setSelected(true)
+            rowNode.selectable = true
+        } else {
+            rowNode.selected = false
+            rowNode.setSelected(false)
+            rowNode.selectable = false
         }
-        return <Checkbox onChange={() => handleCheckboxChange(p, true)} />
+
+        gridRef.current.redrawRows()
     }
 
-    const checkBoxStatus = (
+    const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
+        if (project.cases && project.cases !== null && project.cases !== undefined) {
+            const caseItem = project.cases.find((el: any) => p.data.id && p.data.id === el.id)
+            const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
+            if (caseItem) {
+                switch (p.column.colId) {
+                case "surfState":
+                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(caseItem, project) !== value)
+                    break
+                case "substructureState":
+                    rowNode.data.substructureStateChanged = (
+                        SharePointImport.substructureStatus(caseItem, project) !== value)
+                    break
+                case "topsideState":
+                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(caseItem, project) !== value)
+                    break
+                case "transportState":
+                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(caseItem, project) !== value)
+                    break
+                default:
+                    break
+                }
+            }
+        }
+        p.setValue(value)
+        caseAutoSelect(p.node?.data.id)
+    }
+
+    const advancedSettingsRenderer = (
         p: any,
     ) => {
-        if (p.value === ImportStatusEnum.PROSP) {
-            // Imported assets should have checked checkboxes and remaining assets should remain unchecked.
-            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
-        }
-        if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName !== "") {
-            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
-        }
-        if (p.value === ImportStatusEnum.Selected && p.node.data.sharePointFileName === "") {
-            return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.NotSelected)} />
+        if (p.value === ImportStatusEnum.Selected) {
+            return (
+                <Checkbox
+                    checked
+                    onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.NotSelected)}
+                />
+            )
         }
         if (p.value === ImportStatusEnum.NotSelected) {
-            return <Checkbox checked={false} onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
+            return (
+                <Checkbox
+                    checked={false}
+                    onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.Selected)}
+                />
+            )
         }
-        return <Checkbox checked onChange={() => changeStatus(p, ImportStatusEnum.Selected)} />
+        return (
+            <Checkbox
+                checked
+                onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.Selected)}
+            />
+        )
     }
 
     const sharePointFileDropdownOptions = (items: DriveItem[]) => {
@@ -137,10 +188,10 @@ function PROSPCaseList({
     const getRowId = useMemo<GetRowIdFunc>(() => (params: GetRowIdParams) => params.data.id, [])
 
     const getFileLink = (p: any, selectedFileId: any) => {
-        const driveItemsList = p.data.driveItem[0]
+        const driveItemChosen = p.data?.driveItem[0]
         let link = null
-        if (selectedFileId && Array.isArray(driveItemsList)) {
-            const item = driveItemsList.find((el: any) => selectedFileId && selectedFileId === el.id)
+        if (selectedFileId && driveItemChosen !== null && driveItemChosen !== undefined) {
+            const item = driveItemChosen.find((el: any) => selectedFileId && selectedFileId === el.id)
             if (item) {
                 link = item.sharepointFileUrl
             }
@@ -171,11 +222,18 @@ function PROSPCaseList({
     const handleFileChange = (event: ChangeEvent<HTMLSelectElement>, p: any) => {
         const value = { ...p.value }
         value[1] = event.currentTarget.selectedOptions[0].value
-        caseAutoSelect(p.node?.data.id)
         updateFileLink(p.node?.data.id, value[1])
+        const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
+        if (value[1] === rowNode.data.sharePointFileId) {
+            rowNode.data.sharePointFileChanged = false
+        } else {
+            rowNode.data.sharePointFileChanged = true
+        }
         p.setValue(value)
+        caseAutoSelect(p.node?.data.id)
     }
-    const fileIdDropDown = (p: any) => {
+
+    const fileSelectorRenderer = (p: any) => {
         const fileId = p.value[1]
         const items: DriveItem[] = p.value[0]
         return (
@@ -208,20 +266,18 @@ function PROSPCaseList({
         return null
     }
 
-    type SortOrder = "desc" | "asc" | null
-    const order: SortOrder = "asc"
-
     const [columnDefs, setColumnDefs] = useState([
         {
-            field: "caseSelected", headerName: "", cellRenderer: caseSelectedRenderer, flex: 1,
-        },
-        {
-            field: "name", flex: 3,
+            field: "name",
+            flex: 3,
+            headerCheckboxSelection: true,
+            checkboxSelection: true,
+            showDisabledCheckboxes: true,
         },
         {
             field: "driveItem",
             headerName: "SharePoint file",
-            cellRenderer: fileIdDropDown,
+            cellRenderer: fileSelectorRenderer,
             sortable: false,
             flex: 5,
         },
@@ -232,16 +288,32 @@ function PROSPCaseList({
             width: 60,
         },
         {
-            field: "surfState", headerName: "Surf", flex: 1, cellRenderer: checkBoxStatus, hide: check,
+            field: "surfState",
+            headerName: "Surf",
+            flex: 1,
+            cellRenderer: advancedSettingsRenderer,
+            hide: check,
         },
         {
-            field: "substructureState", headerName: "Substructure", flex: 1, cellRenderer: checkBoxStatus, hide: check,
+            field: "substructureState",
+            headerName: "Substructure",
+            flex: 1,
+            cellRenderer: advancedSettingsRenderer,
+            hide: check,
         },
         {
-            field: "topsideState", headerName: "Topside", flex: 1, cellRenderer: checkBoxStatus, hide: check,
+            field: "topsideState",
+            headerName: "Topside",
+            flex: 1,
+            cellRenderer: advancedSettingsRenderer,
+            hide: check,
         },
         {
-            field: "transportState", headerName: "Transport", flex: 1, cellRenderer: checkBoxStatus, hide: check,
+            field: "transportState",
+            headerName: "Transport",
+            flex: 1,
+            cellRenderer: advancedSettingsRenderer,
+            hide: check,
         },
     ])
 
@@ -272,22 +344,19 @@ function PROSPCaseList({
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
             const dto: any = {}
             dto.sharePointFileId = node.data?.driveItem[1]
-
             dto.sharePointFileName = node.data?.driveItem[0]?.find(
                 (di) => di.id === dto.sharePointFileId,
             )?.name
-
             dto.sharepointFileUrl = node.data?.driveItem[0]?.find(
                 (di) => di.id === dto.sharePointFileId,
             )?.sharepointFileUrl
-
             dto.sharePointSiteUrl = p.sharepointSiteUrl
             dto.id = node.data?.id
             dto.surf = node.data?.surfState === ImportStatusEnum.Selected
             dto.substructure = node.data?.substructureState === ImportStatusEnum.Selected
             dto.topside = node.data?.topsideState === ImportStatusEnum.Selected
             dto.transport = node.data?.transportState === ImportStatusEnum.Selected
-            if (node.data?.caseSelected) {
+            if (node.isSelected()) {
                 dtos.push(dto)
             }
         })
@@ -306,22 +375,27 @@ function PROSPCaseList({
 
     return (
         <>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                    getRowId={getRowId}
-                />
+            <div className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                    className="ag-theme-alpine-fusion"
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        rowSelection="multiple"
+                        isRowSelectable={rowIsChanged}
+                        suppressRowClickSelection
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                        getRowId={getRowId}
+                    />
+                </div>
             </div>
             <ApplyButtonWrapper>
                 {!isApplying ? (
@@ -337,7 +411,6 @@ function PROSPCaseList({
                     </Button>
                 )}
             </ApplyButtonWrapper>
-
         </>
     )
 }

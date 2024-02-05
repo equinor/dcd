@@ -74,7 +74,7 @@ public static class SurfAdapter
         where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
         where TModel : TimeSeriesCost, ITimeSeriesOverride, ISurfTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {
@@ -92,7 +92,7 @@ public static class SurfAdapter
         where TDto : TimeSeriesCostDto
         where TModel : TimeSeriesCost, ISurfTimeSeries, new()
     {
-        if (dto == null) { return null; }
+        if (dto == null) { return new TModel(); }
 
         return new TModel
         {

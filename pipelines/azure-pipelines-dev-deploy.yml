@@ -28,7 +28,7 @@ stages:
         appName: Deploy_CI
         envshortname: ci
         envfullname: CI
-        portalUrl: "https://pro-s-portal-ci.azurewebsites.net/"
+        portalUrl: $(FusionCIPortalUrl)
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
         branch: main
@@ -38,3 +38,6 @@ stages:
         ContainerTag: "release"
         DynatraceToken: $(dynatracePreProdToken)
         DynatraceTenantId: $(dynatracePreProdTenantId)
+        SpAzureClientId: $(SpPreProdAzureClientId)
+        SpAzureClientSecret: $(SpPreProdAzureClientSecret)
+        AzureTenantId: $(SpAzureTenantId)
