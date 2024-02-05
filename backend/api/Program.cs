@@ -104,7 +104,7 @@ builder.Services.AddCors(options =>
 
 var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 {
-    InstrumentationKey = config["ApplicationInsightInstrumentationKey"],
+    ConnectionString = config["ApplicationInsightInstrumentationConnectionString"],
 };
 
 if (environment == "localdev")

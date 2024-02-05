@@ -13,7 +13,6 @@ namespace api.Services
         IEnumerable<WellDto> GetAllDtos();
         IEnumerable<WellDto> GetDtosForProject(Guid projectId);
         Well GetWell(Guid wellId);
-
         WellDto GetWellDto(Guid wellId);
         WellDto UpdateExistingWell(WellDto updatedWellDto);
         WellDto[] UpdateMultipleWells(WellDto[] updatedWellDtos);

@@ -76,9 +76,11 @@ public class ProjectService : IProjectService
 
         if (_context.Projects == null)
         {
-            _logger.LogInformation("Empty projects: ", nameof(project));
-            var projects = new List<Project>();
-            projects.Add(project);
+            _logger.LogInformation($"Empty projects: {nameof(project)}");
+            var projects = new List<Project>
+            {
+                project
+            };
             _context.AddRange(projects);
         }
         else
