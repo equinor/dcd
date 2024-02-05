@@ -19,7 +19,7 @@ public class TransportServiceShould
     }
 
     [Fact]
-    public void CreateNewTransport()
+    public async Task CreateNewTransport()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -30,7 +30,7 @@ public class TransportServiceShould
         var expectedTransport = CreateTestTransport(project);
 
         // Act
-        var projectResult = transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), caseId);
+        var projectResult = await transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), caseId);
 
         // Assert
         var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == expectedTransport.Name);
@@ -41,7 +41,7 @@ public class TransportServiceShould
     }
 
     [Fact]
-    public void ThrowNotInDatabaseExceptionWhenCreatingTransportWithBadProjectId()
+    public async Task ThrowNotInDatabaseExceptionWhenCreatingTransportWithBadProjectId()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -52,11 +52,11 @@ public class TransportServiceShould
         var expectedTransport = CreateTestTransport(new Project { Id = new Guid() });
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), caseId));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), caseId));
     }
 
     [Fact]
-    public void ThrowNotFoundInDatabaseExceptionWhenCreatingTransportWithBadCaseId()
+    public async Task ThrowNotFoundInDatabaseExceptionWhenCreatingTransportWithBadCaseId()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -66,11 +66,11 @@ public class TransportServiceShould
         var expectedTransport = CreateTestTransport(project);
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), new Guid()));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await transportService.CreateTransport(TransportDtoAdapter.Convert(expectedTransport), new Guid()));
     }
 
     [Fact]
-    public void DeleteTransport()
+    public async Task DeleteTransport()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -87,7 +87,7 @@ public class TransportServiceShould
         fixture.context.SaveChanges();
 
         // Act
-        var projectResult = transportService.DeleteTransport(transportToDelete.Id);
+        var projectResult = await transportService.DeleteTransport(transportToDelete.Id);
 
         // Assert
         var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == transportToDelete.Name);
@@ -97,7 +97,7 @@ public class TransportServiceShould
     }
 
     [Fact]
-    public void ThrowArgumentExceptionIfTryingToDeleteNonExistentTransport()
+    public async Task ThrowArgumentExceptionIfTryingToDeleteNonExistentTransport()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -109,14 +109,14 @@ public class TransportServiceShould
         fixture.context.SaveChanges();
 
         // Act
-        transportService.DeleteTransport(transportToDelete.Id);
+        await transportService.DeleteTransport(transportToDelete.Id);
 
         // Assert
-        Assert.Throws<ArgumentException>(() => transportService.DeleteTransport(transportToDelete.Id));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await transportService.DeleteTransport(transportToDelete.Id));
     }
 
     [Fact]
-    public void UpdateTransport()
+    public async Task UpdateTransport()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -130,7 +130,7 @@ public class TransportServiceShould
         updatedTransport.Id = oldTransport.Id;
 
         // Act
-        var projectResult = transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport));
+        var projectResult = await transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport));
 
         // Assert
         var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == updatedTransport.Name);
@@ -163,7 +163,7 @@ public class TransportServiceShould
     }
 
     [Fact]
-    public void ThrowArgumentExceptionIfTryingToUpdateNonExistentTransport()
+    public async Task ThrowArgumentExceptionIfTryingToUpdateNonExistentTransport()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -177,7 +177,7 @@ public class TransportServiceShould
         updatedTransport.Id = new Guid();
 
         // Act, assert
-        Assert.Throws<ArgumentException>(() => transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport)));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await transportService.UpdateTransport(TransportDtoAdapter.Convert(updatedTransport)));
     }
 
     private static Transport CreateTestTransport(Project project)

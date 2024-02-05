@@ -24,7 +24,7 @@ public class WellProjectServiceShould : IDisposable
     }
 
     [Fact]
-    public void CreateNewWellProject()
+    public async Task CreateNewWellProject()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -35,7 +35,7 @@ public class WellProjectServiceShould : IDisposable
         var expectedWellProject = CreateTestWellProject(project);
 
         // Act
-        var projectResult = wellProjectService.CreateWellProject(expectedWellProject, caseId);
+        var projectResult = await wellProjectService.CreateWellProject(expectedWellProject, caseId);
 
         // Assert
         var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == expectedWellProject.Name);
@@ -46,7 +46,7 @@ public class WellProjectServiceShould : IDisposable
     }
 
     [Fact]
-    public void ThrowNotInDatabaseExceptionWhenCreatingWellProjectWithBadProjectId()
+    public async Task ThrowNotInDatabaseExceptionWhenCreatingWellProjectWithBadProjectId()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -57,11 +57,11 @@ public class WellProjectServiceShould : IDisposable
         var expectedWellProject = CreateTestWellProject(new Project { Id = new Guid() });
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => wellProjectService.CreateWellProject(expectedWellProject, caseId));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await wellProjectService.CreateWellProject(expectedWellProject, caseId));
     }
 
     [Fact]
-    public void ThrowNotFoundInDatabaseExceptionWhenCreatingWellProjectWithBadCaseId()
+    public async Task ThrowNotFoundInDatabaseExceptionWhenCreatingWellProjectWithBadCaseId()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -71,11 +71,11 @@ public class WellProjectServiceShould : IDisposable
         var expectedWellProject = CreateTestWellProject(project);
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => wellProjectService.CreateWellProject(expectedWellProject, new Guid()));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await wellProjectService.CreateWellProject(expectedWellProject, new Guid()));
     }
 
     [Fact]
-    public void DeleteWellProject()
+    public async Task DeleteWellProject()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -92,7 +92,7 @@ public class WellProjectServiceShould : IDisposable
         fixture.context.SaveChanges();
 
         // Act
-        var projectResult = wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
+        var projectResult = await wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
 
         // Assert
         var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == wellProjectToDelete.Name);
@@ -102,7 +102,7 @@ public class WellProjectServiceShould : IDisposable
     }
 
     [Fact]
-    public void ThrowArgumentExceptionIfTryingToDeleteNonExistentWellProject()
+    public async Task ThrowArgumentExceptionIfTryingToDeleteNonExistentWellProject()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -114,14 +114,14 @@ public class WellProjectServiceShould : IDisposable
         fixture.context.SaveChanges();
 
         // Act
-        wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
+        await wellProjectService.DeleteWellProject(wellProjectToDelete.Id);
 
         // Act, assert
-        Assert.Throws<ArgumentException>(() => wellProjectService.DeleteWellProject(wellProjectToDelete.Id));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await wellProjectService.DeleteWellProject(wellProjectToDelete.Id));
     }
 
     [Fact]
-    public void UpdateWellProject()
+    public async Task UpdateWellProject()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -135,7 +135,7 @@ public class WellProjectServiceShould : IDisposable
         updatedWellProject.Id = oldWellProject.Id;
 
         // Act
-        var projectResult = wellProjectService.UpdateWellProject(updatedWellProject);
+        var projectResult = await wellProjectService.UpdateWellProject(updatedWellProject);
 
         // Assert
         var actualWellProject = projectResult.WellProjects.FirstOrDefault(o => o.Name == updatedWellProject.Name);
@@ -144,7 +144,7 @@ public class WellProjectServiceShould : IDisposable
     }
 
     [Fact]
-    public void ThrowArgumentExceptionIfTryingToUpdateNonExistentWellProject()
+    public async Task ThrowArgumentExceptionIfTryingToUpdateNonExistentWellProject()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -157,7 +157,7 @@ public class WellProjectServiceShould : IDisposable
         var updatedWellProject = CreateUpdatedWellProject(project);
 
         // Act, assert
-        Assert.Throws<ArgumentException>(() => wellProjectService.UpdateWellProject(updatedWellProject));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await wellProjectService.UpdateWellProject(updatedWellProject));
     }
 
     private static WellProject CreateTestWellProject(Project project)

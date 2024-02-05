@@ -22,7 +22,7 @@ public class SubstructureServiceShould : IDisposable
     }
 
     [Fact]
-    public void CreateNewSubstructure()
+    public async Task CreateNewSubstructure()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -33,7 +33,7 @@ public class SubstructureServiceShould : IDisposable
         var expectedSubstructure = CreateTestSubstructure(project);
 
         // Act
-        var projectResult = substructureService.CreateSubstructure(expectedSubstructure, caseId);
+        var projectResult = await substructureService.CreateSubstructure(expectedSubstructure, caseId);
 
         // Assert
         var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == expectedSubstructure.Name);
@@ -44,7 +44,7 @@ public class SubstructureServiceShould : IDisposable
     }
 
     [Fact]
-    public void ThrowNotInDatabaseExceptionWhenCreatingSubstructureWithBadProjectId()
+    public async Task ThrowNotInDatabaseExceptionWhenCreatingSubstructureWithBadProjectId()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -55,11 +55,11 @@ public class SubstructureServiceShould : IDisposable
         var expectedSubstructure = CreateTestSubstructure(new Project { Id = new Guid() });
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => substructureService.CreateSubstructure(expectedSubstructure, caseId));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await substructureService.CreateSubstructure(expectedSubstructure, caseId));
     }
 
     [Fact]
-    public void ThrowNotFoundInDatabaseExceptionWhenCreatingSubstructureWithBadCaseId()
+    public async Task ThrowNotFoundInDatabaseExceptionWhenCreatingSubstructureWithBadCaseId()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -69,11 +69,11 @@ public class SubstructureServiceShould : IDisposable
         var expectedSubstructure = CreateTestSubstructure(project);
 
         // Act, assert
-        Assert.Throws<NotFoundInDBException>(() => substructureService.CreateSubstructure(expectedSubstructure, new Guid()));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await substructureService.CreateSubstructure(expectedSubstructure, new Guid()));
     }
 
     [Fact]
-    public void DeleteSubstructure()
+    public async Task DeleteSubstructure()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -82,10 +82,10 @@ public class SubstructureServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault();
         var substructureToDelete = CreateTestSubstructure(project);
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
-        substructureService.CreateSubstructure(substructureToDelete, sourceCaseId);
+        await substructureService.CreateSubstructure(substructureToDelete, sourceCaseId);
 
         // Act
-        var projectResult = substructureService.DeleteSubstructure(substructureToDelete.Id);
+        var projectResult = await substructureService.DeleteSubstructure(substructureToDelete.Id);
 
         // Assert
         var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == substructureToDelete.Name);
@@ -95,7 +95,7 @@ public class SubstructureServiceShould : IDisposable
     }
 
     [Fact]
-    public void ThrowArgumentExceptionIfTryingToDeleteNonExistentSubstructure()
+    public async Task ThrowArgumentExceptionIfTryingToDeleteNonExistentSubstructure()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -103,11 +103,11 @@ public class SubstructureServiceShould : IDisposable
         var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
 
         // Act, assert
-        Assert.Throws<ArgumentException>(() => substructureService.DeleteSubstructure(new Guid()));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await substructureService.DeleteSubstructure(new Guid()));
     }
 
     [Fact]
-    public void UpdateSubstructure()
+    public async Task UpdateSubstructure()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -121,7 +121,7 @@ public class SubstructureServiceShould : IDisposable
         var updatedSubstructure = CreateUpdatedSubstructure(project, oldSubstructure);
 
         // Act
-        var projectResult = substructureService.UpdateSubstructure(SubstructureDtoAdapter.Convert(updatedSubstructure));
+        var projectResult = await substructureService.UpdateSubstructure(SubstructureDtoAdapter.Convert(updatedSubstructure));
 
         // Assert
         var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Id == oldSubstructure.Id);
@@ -130,7 +130,7 @@ public class SubstructureServiceShould : IDisposable
     }
 
     [Fact]
-    public void ThrowArgumentExceptionIfTryingToUpdateNonExistentSubstructure()
+    public async Task ThrowArgumentExceptionIfTryingToUpdateNonExistentSubstructure()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -144,7 +144,7 @@ public class SubstructureServiceShould : IDisposable
         updatedSubstructure.Id = new Guid();
 
         // Act, assert
-        Assert.Throws<ArgumentException>(() => substructureService.UpdateSubstructure(SubstructureDtoAdapter.Convert(updatedSubstructure)));
+        await Assert.ThrowsAsync<ArgumentException>(async () => await substructureService.UpdateSubstructure(SubstructureDtoAdapter.Convert(updatedSubstructure)));
     }
 
     private static Substructure CreateTestSubstructure(Project project)
