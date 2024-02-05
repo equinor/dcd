@@ -27,12 +27,12 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
 
     public async Task<GAndGAdminCostDto> GenerateAsync(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
         Exploration exploration;
         try
         {
-            exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
+            exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
         }
         catch (ArgumentException)
         {

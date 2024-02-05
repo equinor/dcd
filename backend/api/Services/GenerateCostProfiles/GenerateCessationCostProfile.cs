@@ -32,13 +32,13 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
     public async Task<CessationCostWrapperDto> GenerateAsync(Guid caseId)
     {
         var result = new CessationCostWrapperDto();
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
         var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         var cessationWellsCost = caseItem.CessationWellsCost ?? new CessationWellsCost();
         var cessationOffshoreFacilitiesCost = caseItem.CessationOffshoreFacilitiesCost ?? new CessationOffshoreFacilitiesCost();
 
-        var lastYear = GetRelativeLastYearOfProduction(caseItem);
+        var lastYear = await GetRelativeLastYearOfProduction(caseItem);
         if (lastYear == null)
         {
             var updateResult = await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
@@ -48,7 +48,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         WellProject wellProject;
         try
         {
-            wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+            wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
             cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear, cessationWellsCost);
             var cessationWellsDto = CaseDtoAdapter.Convert<CessationWellsCostDto, CessationWellsCost>(cessationWellsCost);
             result.CessationWellsCostDto = cessationWellsDto;
@@ -61,7 +61,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         Surf surf;
         try
         {
-            surf = _surfService.GetSurf(caseItem.SurfLink);
+            surf = await _surfService.GetSurf(caseItem.SurfLink);
             cessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(surf, (int)lastYear, cessationOffshoreFacilitiesCost);
             var cessationOffshoreFacilitiesCostDto = CaseDtoAdapter.Convert<CessationOffshoreFacilitiesCostDto, CessationOffshoreFacilitiesCost>(cessationOffshoreFacilitiesCost);
             result.CessationOffshoreFacilitiesCostDto = cessationOffshoreFacilitiesCostDto;
@@ -121,12 +121,12 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         return cessationOffshoreFacilities;
     }
 
-    private int? GetRelativeLastYearOfProduction(Case caseItem)
+    private async Task<int?> GetRelativeLastYearOfProduction(Case caseItem)
     {
         var drainageStrategy = new DrainageStrategy();
         try
         {
-            drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+            drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         }
         catch (ArgumentException)
         {

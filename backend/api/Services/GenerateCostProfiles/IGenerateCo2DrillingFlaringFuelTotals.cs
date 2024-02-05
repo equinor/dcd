@@ -4,6 +4,6 @@ namespace api.Services.GenerateCostProfiles
 {
     public interface IGenerateCo2DrillingFlaringFuelTotals
     {
-        Co2DrillingFlaringFuelTotalsDto Generate(Guid caseId);
+        Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId);
     }
 }

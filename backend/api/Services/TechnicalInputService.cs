@@ -45,30 +45,30 @@ public class TechnicalInputService : ITechnicalInputService
         _logger = loggerFactory.CreateLogger<TechnicalInputService>();
     }
 
-    public TechnicalInputDto UpdateTehnicalInput(TechnicalInputDto technicalInputDto)
+    public async Task<TechnicalInputDto> UpdateTehnicalInput(TechnicalInputDto technicalInputDto)
     {
-        UpdateProject(technicalInputDto.ProjectDto);
+        await UpdateProject(technicalInputDto.ProjectDto);
 
-        UpdateExplorationOperationalWellCosts(technicalInputDto.ExplorationOperationalWellCostsDto);
-        UpdateDevelopmentOperationalWellCosts(technicalInputDto.DevelopmentOperationalWellCostsDto);
+        await UpdateExplorationOperationalWellCosts(technicalInputDto.ExplorationOperationalWellCostsDto);
+        await UpdateDevelopmentOperationalWellCosts(technicalInputDto.DevelopmentOperationalWellCostsDto);
 
         if (technicalInputDto.WellDtos?.Length > 0)
         {
-            var wellResult = CreateAndUpdateWells(technicalInputDto.WellDtos, technicalInputDto.CaseId);
+            var wellResult = await CreateAndUpdateWells(technicalInputDto.WellDtos, technicalInputDto.CaseId);
             if (wellResult != null)
             {
                 technicalInputDto.ExplorationDto = wellResult.Value.explorationDto;
                 technicalInputDto.WellProjectDto = wellResult.Value.wellProjectDto;
             }
-            var project = _projectService.GetProject(technicalInputDto.ProjectDto.ProjectId);
+            var project = await _projectService.GetProjectAsync(technicalInputDto.ProjectDto.ProjectId);
             technicalInputDto.ProjectDto = ProjectDtoAdapter.Convert(project);
         }
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return technicalInputDto;
     }
 
-    public (ExplorationDto explorationDto, WellProjectDto wellProjectDto)? CreateAndUpdateWells(
+    public async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
         WellDto[] wellDtos, Guid? caseId)
     {
         var runCostProfileCalculation = false;
@@ -79,7 +79,7 @@ public class TechnicalInputService : ITechnicalInputService
             if (wellDto.Id == Guid.Empty)
             {
                 var well = WellAdapter.Convert(wellDto);
-                var updatedWell = _context.Wells!.Add(well);
+                var updatedWell = await _context.Wells!.AddAsync(well);
                 wellDto.Id = updatedWell.Entity.Id;
 
                 runSaveChanges = true;
@@ -88,7 +88,7 @@ public class TechnicalInputService : ITechnicalInputService
             {
                 if (wellDto.HasChanges)
                 {
-                    var existing = _wellService.GetWell(wellDto.Id);
+                    var existing = await _wellService.GetWell(wellDto.Id);
                     if (wellDto.WellCost != existing.WellCost || wellDto.WellCategory != existing.WellCategory)
                     {
                         runCostProfileCalculation = true;
@@ -103,56 +103,58 @@ public class TechnicalInputService : ITechnicalInputService
 
         if (runSaveChanges)
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         if (runCostProfileCalculation)
         {
-            _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
+            await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
             if (caseId != null)
             {
-                var caseItem = _caseService.GetCase((Guid)caseId);
-                var exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
-                var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+                var caseItem = await _caseService.GetCase((Guid)caseId);
+                var exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
+                var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
                 return (ExplorationDtoAdapter.Convert(exploration), WellProjectDtoAdapter.Convert(wellProject));
             }
         }
         return null;
     }
-
-    public ProjectDto UpdateProject(ProjectDto updatedDto)
+    public async Task<ProjectDto> UpdateProject(ProjectDto updatedDto)
     {
         if (!updatedDto.HasChanges)
         {
             return updatedDto;
         }
-        var item = _projectService.GetProject(updatedDto.ProjectId);
+        var item = await _projectService.GetProjectAsync(updatedDto.ProjectId);
         ProjectAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Projects!.Update(item);
+        await _context.SaveChangesAsync();
         return ProjectDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public ExplorationOperationalWellCostsDto UpdateExplorationOperationalWellCosts(ExplorationOperationalWellCostsDto updatedDto)
+    public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(ExplorationOperationalWellCostsDto updatedDto)
     {
         if (!updatedDto.HasChanges)
         {
             return updatedDto;
         }
-        var item = _explorationOperationalWellCostsService.GetOperationalWellCosts(updatedDto.Id) ?? new ExplorationOperationalWellCosts();
+        var item = await _explorationOperationalWellCostsService.GetOperationalWellCostsAsync(updatedDto.Id) ?? new ExplorationOperationalWellCosts();
         ExplorationOperationalWellCostsAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.ExplorationOperationalWellCosts!.Update(item);
+        await _context.SaveChangesAsync();
         return ExplorationOperationalWellCostsDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public DevelopmentOperationalWellCostsDto UpdateDevelopmentOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedDto)
+    public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedDto)
     {
         if (!updatedDto.HasChanges)
         {
             return updatedDto;
         }
-        var item = _developmentOperationalWellCostsService.GetOperationalWellCosts(updatedDto.Id) ?? new DevelopmentOperationalWellCosts();
+        var item = await _developmentOperationalWellCostsService.GetOperationalWellCostsAsync(updatedDto.Id) ?? new DevelopmentOperationalWellCosts();
         DevelopmentOperationalWellCostsAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.DevelopmentOperationalWellCosts!.Update(item);
+        await _context.SaveChangesAsync();
         return DevelopmentOperationalWellCostsDtoAdapter.Convert(updatedItem.Entity);
     }
 }

@@ -31,32 +31,32 @@ public class ExplorationWellsController : ControllerBase
     }
 
     [HttpGet(Name = "GetExplorationWells")]
-    public IEnumerable<ExplorationWellDto> GetExplorationWells([FromQuery] Guid projectId)
+    public async Task<IEnumerable<ExplorationWellDto>> GetExplorationWells([FromQuery] Guid projectId)
     {
-        return _explorationWellService.GetAllDtos();
+        return await _explorationWellService.GetAllDtos();
     }
 
     [HttpPost(Name = "CreateExplorationWell")]
-    public ProjectDto CreateExplorationWell([FromBody] ExplorationWellDto wellDto)
+    public async Task<ProjectDto> CreateExplorationWell([FromBody] ExplorationWellDto wellDto)
     {
-        return _explorationWellService.CreateExplorationWell(wellDto);
+        return await _explorationWellService.CreateExplorationWell(wellDto);
     }
 
     [HttpPut(Name = "UpdateExplorationWell")]
-    public ProjectDto UpdateExplorationWell([FromBody] ExplorationWellDto wellDto)
+    public async Task<ProjectDto> UpdateExplorationWell([FromBody] ExplorationWellDto wellDto)
     {
-        return _explorationWellService.UpdateExplorationWell(wellDto);
+        return await _explorationWellService.UpdateExplorationWell(wellDto);
     }
 
     [HttpPost("multiple", Name = "CreateMultipleExplorationWells")]
-    public ExplorationWellDto[]? CreateMultipleExplorationWell([FromBody] ExplorationWellDto[] wellDtos)
+    public async Task<ExplorationWellDto[]> CreateMultipleExplorationWell([FromBody] ExplorationWellDto[] wellDtos)
     {
-        return _explorationWellService.CreateMultipleExplorationWells(wellDtos);
+        return await _explorationWellService.CreateMultipleExplorationWells(wellDtos);
     }
 
     [HttpPut("multiple", Name = "UpdateMultipleExplorationWells")]
-    public ExplorationWellDto[]? UpdateMultipleExplorationWell([FromQuery] Guid caseId, [FromBody] ExplorationWellDto[] wellDtos)
+    public async Task<ExplorationWellDto[]> UpdateMultipleExplorationWell([FromQuery] Guid caseId, [FromBody] ExplorationWellDto[] wellDtos)
     {
-        return _explorationWellService.UpdateMultpleExplorationWells(wellDtos, caseId);
+        return await _explorationWellService.UpdateMultpleExplorationWells(wellDtos, caseId);
     }
 }

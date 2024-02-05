@@ -33,11 +33,11 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpGet("{projectId}", Name = "GetProject")]
-    public ProjectDto? Get(Guid projectId)
+    public async Task<ProjectDto?> Get(Guid projectId)
     {
         try
         {
-            return _projectService.GetProjectDto(projectId);
+            return await _projectService.GetProjectDtoAsync(projectId);
         }
         catch (NotFoundInDBException)
         {

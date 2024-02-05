@@ -5,10 +5,13 @@ namespace api.Services
 {
     public interface ICostProfileFromDrillingScheduleHelper
     {
-        void UpdateCostProfilesForWells(List<Guid> wellIds);
+        Task UpdateCostProfilesForWells(List<Guid> wellIds);
+        Task<ExplorationDto> UpdateExplorationCostProfilesForCase(Guid caseId);
         ExplorationDto UpdateExplorationCostProfilesForCase(Exploration exploration, IEnumerable<ExplorationWell> explorationWells);
-        ExplorationDto UpdateExplorationCostProfilesForCase(Guid caseId);
-        WellProjectDto UpdateWellProjectCostProfilesForCase(Guid caseId);
+        Task<WellProjectDto> UpdateWellProjectCostProfilesForCase(Guid caseId);
         WellProjectDto UpdateWellProjectCostProfilesForCase(WellProject wellProject, IEnumerable<WellProjectWell> wellProjectWells);
+        IEnumerable<Well> GetAllWells();
+        IEnumerable<ExplorationWell> GetAllExplorationWells();
+        IEnumerable<WellProjectWell> GetAllWellProjectWells();
     }
 }

@@ -28,8 +28,8 @@ public class TechnicalInputController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateTechnicalInput")]
-    public TechnicalInputDto UpdateTechnicalInput([FromBody] TechnicalInputDto dto)
+    public async Task<TechnicalInputDto> UpdateTechnicalInput([FromBody] TechnicalInputDto dto)
     {
-        return _technicalInputService.UpdateTehnicalInput(dto);
+        return await _technicalInputService.UpdateTehnicalInput(dto);
     }
 }

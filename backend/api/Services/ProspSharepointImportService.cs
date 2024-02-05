@@ -251,7 +251,7 @@ public class ProspSharepointImportService
                 var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
                     iteminfo.Transport);
 
-                projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                projectDto = await _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,
                     iteminfo.SharePointFileId,

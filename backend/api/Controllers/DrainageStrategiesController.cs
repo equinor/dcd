@@ -30,32 +30,32 @@ public class DrainageStrategiesController : ControllerBase
     }
 
     [HttpPost(Name = "CreateDrainageStrategy")]
-    public ProjectDto CreateDrainageStrategy([FromQuery] Guid sourceCaseId, [FromBody] DrainageStrategyDto drainageStrategyDto)
+    public async Task<ProjectDto> CreateDrainageStrategy([FromQuery] Guid sourceCaseId, [FromBody] DrainageStrategyDto drainageStrategyDto)
     {
-        return _drainageStrategyService.CreateDrainageStrategy(drainageStrategyDto, sourceCaseId);
+        return await _drainageStrategyService.CreateDrainageStrategy(drainageStrategyDto, sourceCaseId);
     }
 
     [HttpDelete("{drainageStrategyId}", Name = "DeleteDrainageStrategy")]
-    public ProjectDto DeleteDrainageStrategy(Guid drainageStrategyId)
+    public async Task<ProjectDto> DeleteDrainageStrategy(Guid drainageStrategyId)
     {
-        return _drainageStrategyService.DeleteDrainageStrategy(drainageStrategyId);
+        return await _drainageStrategyService.DeleteDrainageStrategy(drainageStrategyId);
     }
 
     [HttpPut(Name = "UpdateDrainageStrategy")]
-    public ProjectDto UpdateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
+    public async Task<ProjectDto> UpdateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
     {
-        return _drainageStrategyService.UpdateDrainageStrategy(drainageStrategyDto);
+        return await _drainageStrategyService.UpdateDrainageStrategy(drainageStrategyDto);
     }
 
     [HttpPost("{drainageStrategyId}/copy", Name = "CopyDrainageStrategy")]
-    public DrainageStrategyDto CopyDrainageStrategy([FromQuery] Guid caseId, Guid drainageStrategyId)
+    public async Task<DrainageStrategyDto> CopyDrainageStrategy([FromQuery] Guid caseId, Guid drainageStrategyId)
     {
-        return _drainageStrategyService.CopyDrainageStrategy(drainageStrategyId, caseId);
+        return await _drainageStrategyService.CopyDrainageStrategy(drainageStrategyId, caseId);
     }
 
     [HttpPut("new", Name = "NewUpdateDrainageStrategy")]
-    public DrainageStrategyDto NewUpdateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
+    public async Task<DrainageStrategyDto> NewUpdateDrainageStrategy([FromBody] DrainageStrategyDto drainageStrategyDto)
     {
-        return _drainageStrategyService.NewUpdateDrainageStrategy(drainageStrategyDto);
+        return await _drainageStrategyService.NewUpdateDrainageStrategy(drainageStrategyDto);
     }
 }

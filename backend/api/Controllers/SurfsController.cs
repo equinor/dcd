@@ -32,32 +32,32 @@ public class SurfsController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateSurf")]
-    public ProjectDto UpdateSurf([FromBody] SurfDto surfDto)
+    public async Task<ProjectDto> UpdateSurf([FromBody] SurfDto surfDto)
     {
-        return _surfService.UpdateSurf(surfDto);
+        return await _surfService.UpdateSurf(surfDto);
     }
 
     [HttpPut("new", Name = "NewUpdateSurf")]
-    public SurfDto NewUpdateSurf([FromBody] SurfDto surfDto)
+    public async Task<SurfDto> NewUpdateSurf([FromBody] SurfDto surfDto)
     {
-        return _surfService.NewUpdateSurf(surfDto);
+        return await _surfService.NewUpdateSurf(surfDto);
     }
 
     [HttpPost(Name = "CreateSurf")]
-    public ProjectDto CreateSurf([FromQuery] Guid sourceCaseId, [FromBody] SurfDto surfDto)
+    public async Task<ProjectDto> CreateSurf([FromQuery] Guid sourceCaseId, [FromBody] SurfDto surfDto)
     {
-        return _surfService.CreateSurf(surfDto, sourceCaseId);
+        return await _surfService.CreateSurf(surfDto, sourceCaseId);
     }
 
     [HttpPost("{surfId}/copy", Name = "CopySurf")]
-    public SurfDto CopySurf([FromQuery] Guid caseId, Guid surfId)
+    public async Task<SurfDto> CopySurf([FromQuery] Guid caseId, Guid surfId)
     {
-        return _surfService.CopySurf(surfId, caseId);
+        return await _surfService.CopySurf(surfId, caseId);
     }
 
     [HttpDelete("{surfId}", Name = "DeleteSurf")]
-    public ProjectDto DeleteSurf(Guid surfId)
+    public async Task<ProjectDto> DeleteSurf(Guid surfId)
     {
-        return _surfService.DeleteSurf(surfId);
+        return await _surfService.DeleteSurf(surfId);
     }
 }

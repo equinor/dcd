@@ -31,32 +31,32 @@ public class ExplorationsController : ControllerBase
     }
 
     [HttpPost(Name = "CreateExploration")]
-    public ProjectDto CreateExploration([FromQuery] Guid sourceCaseId, [FromBody] ExplorationDto explorationDto)
+    public async Task<ProjectDto> CreateExploration([FromQuery] Guid sourceCaseId, [FromBody] ExplorationDto explorationDto)
     {
-        return _explorationService.CreateExploration(explorationDto, sourceCaseId);
+        return await _explorationService.CreateExploration(explorationDto, sourceCaseId);
     }
 
     [HttpDelete("{explorationId}", Name = "DeleteExploration")]
-    public ProjectDto DeleteExploration(Guid explorationId)
+    public async Task<ProjectDto> DeleteExploration(Guid explorationId)
     {
-        return _explorationService.DeleteExploration(explorationId);
+        return await _explorationService.DeleteExploration(explorationId);
     }
 
     [HttpPut(Name = "UpdateExploration")]
-    public ProjectDto UpdateExploration([FromBody] ExplorationDto eplorationDto)
+    public async Task<ProjectDto> UpdateExploration([FromBody] ExplorationDto eplorationDto)
     {
-        return _explorationService.UpdateExploration(eplorationDto);
+        return await _explorationService.UpdateExploration(eplorationDto);
     }
 
     [HttpPut("new", Name = "NewUpdateExploration")]
-    public ExplorationDto NewUpdateExploration([FromBody] ExplorationDto eplorationDto)
+    public async Task<ExplorationDto> NewUpdateExploration([FromBody] ExplorationDto eplorationDto)
     {
-        return _explorationService.NewUpdateExploration(eplorationDto);
+        return await _explorationService.NewUpdateExploration(eplorationDto);
     }
 
     [HttpPost("{explorationId}/copy", Name = "CopyExploration")]
-    public ExplorationDto CopyExploration([FromQuery] Guid caseId, Guid explorationId)
+    public async Task<ExplorationDto> CopyExploration([FromQuery] Guid caseId, Guid explorationId)
     {
-        return _explorationService.CopyExploration(explorationId, caseId);
+        return await _explorationService.CopyExploration(explorationId, caseId);
     }
 }

@@ -19,9 +19,9 @@ namespace api.Services
             _logger = loggerFactory.CreateLogger<SurfService>();
         }
 
-        public DevelopmentOperationalWellCostsDto? UpdateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto)
+        public async Task<DevelopmentOperationalWellCostsDto?> UpdateOperationalWellCostsAsync(DevelopmentOperationalWellCostsDto dto)
         {
-            var existing = GetOperationalWellCostsByProjectId(dto.ProjectId);
+            var existing = await GetOperationalWellCostsByProjectIdAsync(dto.ProjectId);
             if (existing == null)
             {
                 return null;
@@ -29,31 +29,33 @@ namespace api.Services
             DevelopmentOperationalWellCostsAdapter.ConvertExisting(existing, dto);
 
             _context.DevelopmentOperationalWellCosts!.Update(existing);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             var updatedDto = DevelopmentOperationalWellCostsDtoAdapter.Convert(existing);
             return updatedDto;
         }
-        public DevelopmentOperationalWellCostsDto CreateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto)
+
+        public async Task<DevelopmentOperationalWellCostsDto> CreateOperationalWellCostsAsync(DevelopmentOperationalWellCostsDto dto)
         {
-            var explorationOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(dto);
-            var project = _projectService.GetProject(dto.ProjectId);
-            explorationOperationalWellCosts.Project = project;
-            _context.DevelopmentOperationalWellCosts!.Add(explorationOperationalWellCosts);
-            _context.SaveChanges();
-            return DevelopmentOperationalWellCostsDtoAdapter.Convert(explorationOperationalWellCosts);
+            var developmentOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(dto);
+            var project = await _projectService.GetProjectAsync(dto.ProjectId);
+            developmentOperationalWellCosts.Project = project;
+            _context.DevelopmentOperationalWellCosts!.Add(developmentOperationalWellCosts);
+            await _context.SaveChangesAsync();
+            return DevelopmentOperationalWellCostsDtoAdapter.Convert(developmentOperationalWellCosts);
         }
-        public DevelopmentOperationalWellCosts? GetOperationalWellCostsByProjectId(Guid id)
+
+        public async Task<DevelopmentOperationalWellCosts?> GetOperationalWellCostsByProjectIdAsync(Guid id)
         {
-            var operationalWellCosts = _context.DevelopmentOperationalWellCosts!
-                .FirstOrDefault(o => o.ProjectId == id);
+            var operationalWellCosts = await _context.DevelopmentOperationalWellCosts!
+                .FirstOrDefaultAsync(o => o.ProjectId == id);
             return operationalWellCosts;
         }
 
-        public DevelopmentOperationalWellCosts? GetOperationalWellCosts(Guid id)
+        public async Task<DevelopmentOperationalWellCosts?> GetOperationalWellCostsAsync(Guid id)
         {
-            var operationalWellCosts = _context.DevelopmentOperationalWellCosts!
+            var operationalWellCosts = await _context.DevelopmentOperationalWellCosts!
                 .Include(dowc => dowc.Project)
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id);
             return operationalWellCosts;
         }
     }

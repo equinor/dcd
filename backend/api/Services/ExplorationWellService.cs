@@ -66,7 +66,7 @@ public class ExplorationWellService : IExplorationWellService
             projectDto = await UpdateExplorationWell(explorationWellDto);
         }
 
-        var explorationDto = _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
+        var explorationDto = await _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
 
         await _explorationService.NewUpdateExploration(explorationDto);
 

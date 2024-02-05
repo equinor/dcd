@@ -31,33 +31,33 @@ public class SubstructuresController : ControllerBase
     }
 
     [HttpPost(Name = "CreateSubstructure")]
-    public ProjectDto CreateSubstructure([FromQuery] Guid sourceCaseId, [FromBody] SubstructureDto substructureDto)
+    public async Task<ProjectDto> CreateSubstructure([FromQuery] Guid sourceCaseId, [FromBody] SubstructureDto substructureDto)
     {
         var substructure = SubstructureAdapter.Convert(substructureDto);
-        return _substructureService.CreateSubstructure(substructure, sourceCaseId);
+        return await _substructureService.CreateSubstructure(substructure, sourceCaseId);
     }
 
     [HttpDelete("{substructureId}", Name = "DeleteSubstructure")]
-    public ProjectDto DeleteSubstructure(Guid substructureId)
+    public async Task<ProjectDto> DeleteSubstructure(Guid substructureId)
     {
-        return _substructureService.DeleteSubstructure(substructureId);
+        return await _substructureService.DeleteSubstructure(substructureId);
     }
 
     [HttpPut(Name = "UpdateSubstructure")]
-    public ProjectDto UpdateSubstructure([FromBody] SubstructureDto substructureDto)
+    public async Task<ProjectDto> UpdateSubstructure([FromBody] SubstructureDto substructureDto)
     {
-        return _substructureService.UpdateSubstructure(substructureDto);
+        return await _substructureService.UpdateSubstructure(substructureDto);
     }
 
     [HttpPost("{substructureId}/copy", Name = "CopySubstructure")]
-    public SubstructureDto CopySubstructure([FromQuery] Guid caseId, Guid substructureId)
+    public async Task<SubstructureDto> CopySubstructure([FromQuery] Guid caseId, Guid substructureId)
     {
-        return _substructureService.CopySubstructure(substructureId, caseId);
+        return await _substructureService.CopySubstructure(substructureId, caseId);
     }
 
     [HttpPut("new", Name = "NewUpdateSubstructure")]
-    public SubstructureDto NewUpdateSubstructure([FromBody] SubstructureDto substructureDto)
+    public async Task<SubstructureDto> NewUpdateSubstructure([FromBody] SubstructureDto substructureDto)
     {
-        return _substructureService.NewUpdateSubstructure(substructureDto);
+        return await _substructureService.NewUpdateSubstructure(substructureDto);
     }
 }

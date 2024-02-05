@@ -27,15 +27,15 @@ namespace api.Controllers
         }
 
         [HttpPut(Name = "UpdateDevelopmentOperationalWellCosts")]
-        public DevelopmentOperationalWellCostsDto? UpdateDevelopmentOperationalWellCosts([FromBody] DevelopmentOperationalWellCostsDto dto)
+        public async Task<DevelopmentOperationalWellCostsDto?> UpdateDevelopmentOperationalWellCosts([FromBody] DevelopmentOperationalWellCostsDto dto)
         {
-            return _operationalWellCostsService.UpdateOperationalWellCosts(dto);
+            return await _operationalWellCostsService.UpdateOperationalWellCostsAsync(dto);
         }
 
         [HttpPost(Name = "CreateDevelopmentOperationalWellCosts")]
-        public DevelopmentOperationalWellCostsDto CreateDevelopmentOperationalWellCosts([FromBody] DevelopmentOperationalWellCostsDto dto)
+        public async Task<DevelopmentOperationalWellCostsDto> CreateDevelopmentOperationalWellCosts([FromBody] DevelopmentOperationalWellCostsDto dto)
         {
-            return _operationalWellCostsService.CreateOperationalWellCosts(dto);
+            return await _operationalWellCostsService.CreateOperationalWellCostsAsync(dto);
         }
     }
 }

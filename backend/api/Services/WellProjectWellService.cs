@@ -81,7 +81,7 @@ public class WellProjectWellService : IWellProjectWellService
             projectDto = await UpdateWellProjectWell(wellProjectWellDto);
         }
 
-        var wellProjectDto = _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
+        var wellProjectDto = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
 
         await _wellProjectService.NewUpdateWellProject(wellProjectDto);
 

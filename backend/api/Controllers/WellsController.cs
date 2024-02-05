@@ -31,48 +31,48 @@ public class WellsController : ControllerBase
     }
 
     [HttpGet("{wellId}", Name = "GetWell")]
-    public WellDto GetWell(Guid wellId)
+    public async Task<WellDto> GetWell(Guid wellId)
     {
-        return _wellService.GetWellDto(wellId);
+        return await _wellService.GetWellDto(wellId);
     }
 
     [HttpGet(Name = "GetWells")]
-    public IEnumerable<WellDto> GetWells([FromQuery] Guid projectId)
+    public async Task<IEnumerable<WellDto>> GetWells([FromQuery] Guid projectId)
     {
         if (projectId != Guid.Empty)
         {
-            return _wellService.GetDtosForProject(projectId);
+            return await _wellService.GetDtosForProject(projectId);
         }
-        return _wellService.GetAllDtos();
+        return await _wellService.GetAllDtos();
     }
 
     [HttpPost(Name = "CreateWell")]
-    public ProjectDto CreateWell([FromBody] WellDto wellDto)
+    public async Task<ProjectDto> CreateWell([FromBody] WellDto wellDto)
     {
-        return _wellService.CreateWell(wellDto);
+        return await _wellService.CreateWell(wellDto);
     }
 
     [HttpPut(Name = "UpdateWell")]
-    public ProjectDto UpdateWell([FromBody] WellDto wellDto)
+    public async Task<ProjectDto> UpdateWell([FromBody] WellDto wellDto)
     {
-        return _wellService.UpdateWell(wellDto);
+        return await _wellService.UpdateWell(wellDto);
     }
 
     [HttpPut("multiple", Name = "UpdateMultipleWells")]
-    public WellDto[]? UpdateMultipleWells([FromBody] WellDto[] wellDtos)
+    public async Task<WellDto[]>? UpdateMultipleWells([FromBody] WellDto[] wellDtos)
     {
-        return _wellService.UpdateMultipleWells(wellDtos);
+        return await _wellService.UpdateMultiple(wellDtos);
     }
 
-    [HttpPost("multiple", Name = "UpdateMultipleWells")]
-    public WellDto[]? CreateMultipleWells([FromBody] WellDto[] wellDtos)
+    [HttpPost("multiple", Name = "CreateMultipleWells")]
+    public async Task<WellDto[]>? CreateMultipleWells([FromBody] WellDto[] wellDtos)
     {
-        return _wellService.CreateMultipleWells(wellDtos);
+        return await _wellService.CreateMultipleWells(wellDtos);
     }
 
     [HttpDelete("{wellId}", Name = "DeleteWell")]
-    public ProjectDto DeleteWell(Guid wellId)
+    public async Task<ProjectDto> DeleteWell(Guid wellId)
     {
-        return _wellService.DeleteWell(wellId);
+        return await _wellService.DeleteWell(wellId);
     }
 }
