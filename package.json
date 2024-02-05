@@ -1,6 +1,6 @@
 {
   "lint-staged": {
-    "*.{j,t}s?(x)": "npx eslint --fix"
+      "*.{j,t}s?(x)": "npx eslint --fix"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
