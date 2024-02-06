@@ -8,11 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class DrainageStrategyService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory) : IDrainageStrategyService
+public class DrainageStrategyService : IDrainageStrategyService
 {
-    private readonly DcdDbContext _context = context;
-    private readonly IProjectService _projectService = projectService;
-    private readonly ILogger<DrainageStrategyService> _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
+    private readonly DcdDbContext _context;
+    private readonly IProjectService _projectService;
+    private readonly ILogger<DrainageStrategyService> _logger;
+
+    public DrainageStrategyService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    {
+        _context = context;
+        _projectService = projectService;
+        _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
+    }
 
     public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
