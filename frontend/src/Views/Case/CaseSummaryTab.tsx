@@ -19,7 +19,7 @@ import { TopsideCostProfile } from "../../models/assets/topside/TopsideCostProfi
 import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
 import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
 import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
-import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
+import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import { MergeTimeseries } from "../../Utils/common"
 import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
 import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasibilityAndConceptStudies"
@@ -113,10 +113,9 @@ function CaseSummaryTab({
         (async () => {
             try {
                 if (activeTab === 7) {
-                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    const cessationWrapper = (await GetGenerateProfileService())
-                        .generateCessationCost(caseItem.id)
+                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
+                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
+                    const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
 
                     const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
                     const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)

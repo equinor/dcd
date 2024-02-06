@@ -19,7 +19,7 @@ import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { Co2Emissions } from "../../models/assets/drainagestrategy/Co2Emissions"
-import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
+import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import { Topside } from "../../models/assets/topside/Topside"
 import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
@@ -115,9 +115,9 @@ function CaseCO2Tab({
         (async () => {
             try {
                 if (activeTab === 6) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(caseItem.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(caseItem.id)
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, caseItem.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, caseItem.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, caseItem.id)
 
                     setCo2Emissions(drainageStrategy.co2Emissions)
                     setCo2Intensity(await co2I)
