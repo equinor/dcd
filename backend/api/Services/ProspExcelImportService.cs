@@ -41,10 +41,14 @@ public class ProspExcelImportService
     private Prosp CreateConfig(IConfiguration config)
     {
         var prospImportConfig = config.GetSection("FileImportSettings:Prosp").Get<Prosp>();
-        prospImportConfig.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<Surf>();
-        prospImportConfig.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructure>();
-        prospImportConfig.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSide>();
-        prospImportConfig.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<Transport>();
+        if (prospImportConfig == null)
+        {
+            throw new Exception("Prosp import settings not found in appsettings.json");
+        }
+        prospImportConfig.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<Surf>() ?? new Surf();
+        prospImportConfig.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructure>() ?? new SubStructure();
+        prospImportConfig.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSide>() ?? new TopSide();
+        prospImportConfig.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<Transport>() ?? new Transport();
         return prospImportConfig;
     }
 
@@ -73,7 +77,7 @@ public class ProspExcelImportService
     private static double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
     {
         var values = new List<double>();
-        foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
+        foreach (var cell in cellData.Where(c => c?.CellReference != null && coordinates.Contains(c.CellReference!)))
             if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
             {
                 values.Add(value);

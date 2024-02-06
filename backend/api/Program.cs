@@ -147,7 +147,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .ReadFrom.Configuration(config)
     .Enrich.WithMachineName()
-    .Enrich.WithProperty("Environment", environment)
+    .Enrich.WithProperty("Environment", environment ?? "localdev")
     .Enrich.FromLogContext()
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);

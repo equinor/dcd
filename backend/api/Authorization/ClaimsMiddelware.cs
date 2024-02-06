@@ -57,7 +57,13 @@ public class ClaimsMiddelware
         var rolesAsString = string.Join(",", applicationRoleClaims.Select(x => x.Value.ToString()));
 
         _logger.LogInformation("Application Roles for User {UserName}: {roles}", httpContext.User?.Identity?.Name, rolesAsString);
-        var claimsIdentity = httpContext.User.Identity as ClaimsIdentity;
+
+        var claimsIdentity = httpContext.User?.Identity as ClaimsIdentity;
+        if (claimsIdentity == null)
+        {
+            _logger.LogError("ClaimsIdentity null");
+            return;
+        }
         claimsIdentity.AddClaims(applicationRoleClaims);
     }
 

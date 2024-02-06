@@ -207,7 +207,7 @@ public class ProspSharepointImportService
             }
 
             var caseId = new Guid(importDto.Id);
-            _service.ClearImportedProspData(caseId, projectId);
+            await _service.ClearImportedProspData(caseId, projectId);
         }
 
         var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];

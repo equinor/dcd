@@ -65,7 +65,7 @@ public class WellsController : ControllerBase
     }
 
     [HttpPost("multiple", Name = "CreateMultipleWells")]
-    public async Task<WellDto[]>? CreateMultipleWells([FromBody] WellDto[] wellDtos)
+    public async Task<WellDto[]?> CreateMultipleWells([FromBody] WellDto[] wellDtos)
     {
         return await _wellService.CreateMultipleWells(wellDtos);
     }

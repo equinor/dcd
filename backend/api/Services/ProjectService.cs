@@ -261,7 +261,7 @@ public class ProjectService : IProjectService
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 }));
-            AddAssetsToProject(project);
+            await AddAssetsToProject(project);
             _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
             return project;
         }

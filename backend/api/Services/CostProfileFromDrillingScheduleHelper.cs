@@ -54,9 +54,9 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
             updatedWellProjectDtoList.Add(wellProjectDto);
         }
 
-        _explorationService.UpdateMultiple(updatedExplorationDtoList.ToArray());
+        await _explorationService.UpdateMultiple(updatedExplorationDtoList.ToArray());
 
-        _wellProjectService.UpdateMultiple(updatedWellProjectDtoList.ToArray());
+        await _wellProjectService.UpdateMultiple(updatedWellProjectDtoList.ToArray());
     }
 
     public async Task<ExplorationDto> UpdateExplorationCostProfilesForCase(Guid caseId)
