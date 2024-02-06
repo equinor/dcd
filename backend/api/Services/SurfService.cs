@@ -54,17 +54,6 @@ public class SurfService : ISurfService
         return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
-    public async Task<SurfDto> NewUpdateSurf(SurfDto updatedSurfDto)
-    {
-        var existing = await GetSurf(updatedSurfDto.Id);
-        SurfAdapter.ConvertExisting(existing, updatedSurfDto);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        var updatedSurf = _context.Surfs!.Update(existing);
-        await _context.SaveChangesAsync();
-        return SurfDtoAdapter.Convert(updatedSurf.Entity);
-    }
-
     public async Task<Surf> GetSurf(Guid surfId)
     {
         var surf = await _context.Surfs!

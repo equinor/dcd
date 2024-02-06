@@ -112,17 +112,6 @@ public class TopsideService : ITopsideService
         return await _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
     }
 
-    public async Task<TopsideDto> NewUpdateTopside(TopsideDto updatedTopsideDto)
-    {
-        var existing = await GetTopside(updatedTopsideDto.Id);
-        TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        var updatedTopside = _context.Topsides!.Update(existing);
-        await _context.SaveChangesAsync();
-        return TopsideDtoAdapter.Convert(updatedTopside.Entity);
-    }
-
     public async Task<Topside> GetTopside(Guid topsideId)
     {
         var topside = await _context.Topsides!

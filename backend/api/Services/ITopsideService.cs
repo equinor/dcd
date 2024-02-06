@@ -10,7 +10,6 @@ namespace api.Services
         Task<Topside> NewCreateTopside(TopsideDto topsideDto, Guid sourceCaseId);
         Task<ProjectDto> DeleteTopside(Guid topsideId);
         Task<ProjectDto> UpdateTopside(TopsideDto updatedTopsideDto);
-        Task<TopsideDto> NewUpdateTopside(TopsideDto updatedTopsideDto);
         Task<Topside> GetTopside(Guid topsideId);
     }
 }

@@ -8,7 +8,6 @@ namespace api.Services
         Task<ProjectDto> CreateCase(CaseDto caseDto);
         Task<ProjectDto> NewCreateCase(CaseDto caseDto);
         Task<ProjectDto> UpdateCase(CaseDto updatedCaseDto);
-        Task<CaseDto> NewUpdateCase(CaseDto updatedCaseDto);
         Task<ProjectDto> DeleteCase(Guid caseId);
         Task<Case> GetCase(Guid caseId);
         Task<IEnumerable<Case>> GetAll();

@@ -126,14 +126,6 @@ public class ExplorationWellService : IExplorationWellService
         return null;
     }
 
-    public async Task<ExplorationWellDto> GetExplorationWellDto(Guid wellId, Guid caseId)
-    {
-        var explorationWell = await GetExplorationWell(wellId, caseId);
-        var explorationWellDto = ExplorationWellDtoAdapter.Convert(explorationWell);
-
-        return explorationWellDto;
-    }
-
     public async Task<IEnumerable<ExplorationWell>> GetAll()
     {
         if (_context.ExplorationWell != null)

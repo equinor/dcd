@@ -126,16 +126,4 @@ public class TransportService : ITransportService
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(updatedTransportDto.ProjectId);
     }
-
-    public async Task<TransportDto> NewUpdateTransport(TransportDto updatedTransportDto)
-    {
-        var existing = await GetTransport(updatedTransportDto.Id);
-
-        TransportAdapter.ConvertExisting(existing, updatedTransportDto);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        var updatedTransport = _context.Transports!.Update(existing);
-        await _context.SaveChangesAsync();
-        return TransportDtoAdapter.Convert(updatedTransport.Entity);
-    }
 }

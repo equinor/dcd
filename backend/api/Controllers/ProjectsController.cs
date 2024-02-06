@@ -74,12 +74,6 @@ public class ProjectsController : ControllerBase
         return new ProjectDto();
     }
 
-    [HttpGet(Name = "GetProjects")]
-    public async Task<IEnumerable<ProjectDto>?> GetProjects()
-    {
-        return await _projectService.GetAllDtos();
-    }
-
     [HttpPost(Name = "CreateProject")]
     public async Task<ProjectDto> CreateProject([FromBody] ProjectDto projectDto)
     {

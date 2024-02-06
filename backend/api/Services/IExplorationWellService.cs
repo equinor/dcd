@@ -11,7 +11,6 @@ namespace api.Services
         Task<ExplorationWellDto[]?> CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos);
         Task<ExplorationWell> GetExplorationWell(Guid wellId, Guid caseId);
         Task<ExplorationWellDto[]?> CopyExplorationWell(Guid sourceExplorationId, Guid targetExplorationId);
-        Task<ExplorationWellDto> GetExplorationWellDto(Guid wellId, Guid caseId);
         Task<IEnumerable<ExplorationWell>> GetAll();
         Task<IEnumerable<ExplorationWellDto>> GetAllDtos();
     }

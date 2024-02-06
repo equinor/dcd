@@ -10,7 +10,6 @@ namespace api.Services
         Task<SubstructureDto> CopySubstructure(Guid substructureId, Guid sourceCaseId);
         Task<ProjectDto> DeleteSubstructure(Guid substructureId);
         Task<ProjectDto> UpdateSubstructure(SubstructureDto updatedSubstructureDto);
-        Task<SubstructureDto> NewUpdateSubstructure(SubstructureDto updatedSubstructureDto);
         Task<Substructure> GetSubstructure(Guid substructureId);
     }
 }

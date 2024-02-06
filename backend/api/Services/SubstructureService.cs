@@ -111,18 +111,6 @@ public class SubstructureService : ISubstructureService
         return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
-    public async Task<SubstructureDto> NewUpdateSubstructure(SubstructureDto updatedSubstructureDto)
-    {
-        var existing = await GetSubstructure(updatedSubstructureDto.Id);
-
-        SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        var updatedSubstructure = _context.Substructures!.Update(existing);
-        await _context.SaveChangesAsync();
-        return SubstructureDtoAdapter.Convert(updatedSubstructure.Entity);
-    }
-
     public async Task<Substructure> GetSubstructure(Guid substructureId)
     {
         var substructure = await _context.Substructures!

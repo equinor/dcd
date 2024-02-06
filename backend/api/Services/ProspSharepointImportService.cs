@@ -94,31 +94,6 @@ public class ProspSharepointImportService
         return driveId;
     }
 
-
-    public static List<DriveItemDto> GetExcelDriveItemsFromSite(
-        List<DriveItem>? driveItemDeltaCollectionPage)
-    {
-        var dto = new List<DriveItemDto>();
-        try
-        {
-            if (driveItemDeltaCollectionPage != null)
-            {
-                foreach (var driveItem in driveItemDeltaCollectionPage.Where(item =>
-                             item.File != null && ValidMimeTypes().Contains(item.File.MimeType)))
-                {
-                    ConvertToDto(driveItem, dto);
-                }
-            }
-
-            return dto;
-        }
-        catch (Exception? e)
-        {
-            _logger?.LogError(e, $"failed converting filtered driveItem list to driveItemDto in Site: {e.Message}");
-        }
-
-        return dto;
-    }
     public class AccessDeniedException : Exception
     {
         public AccessDeniedException(string message, Exception innerException)
@@ -181,8 +156,6 @@ public class ProspSharepointImportService
 
         return siteData;
     }
-
-
 
     private static string? GetDriveItemPathFromUrl(string? pathFromIdParameter)
     {
@@ -282,35 +255,5 @@ public class ProspSharepointImportService
             { nameof(Substructure), substructure },
             { nameof(Transport), transport },
         };
-    }
-
-    private static void ConvertToDto(DriveItem driveItem, List<DriveItemDto> dto)
-    {
-        var item = new DriveItemDto
-        {
-            Name = driveItem.Name,
-            Id = driveItem.Id,
-            CreatedBy = driveItem.CreatedBy,
-            Content = driveItem.Content,
-            CreatedDateTime = driveItem.CreatedDateTime,
-            Size = driveItem.Size,
-            SharepointIds = driveItem.SharepointIds,
-            LastModifiedBy = driveItem.LastModifiedBy,
-            LastModifiedDateTime = driveItem.LastModifiedDateTime,
-            SharepointFileUrl = driveItem.WebUrl,
-        };
-        dto.Add(item);
-    }
-
-    private static List<string> ValidMimeTypes()
-    {
-        var validMimeTypes = new List<string>
-        {
-            ExcelMimeTypes.Xls,
-            ExcelMimeTypes.Xlsb,
-            ExcelMimeTypes.Xlsm,
-            ExcelMimeTypes.Xlsx,
-        };
-        return validMimeTypes;
     }
 }

@@ -10,7 +10,6 @@ namespace api.Services
         Task<DrainageStrategyDto> CopyDrainageStrategy(Guid drainageStrategyId, Guid sourceCaseId);
         Task<ProjectDto> DeleteDrainageStrategy(Guid drainageStrategyId);
         Task<ProjectDto> UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto);
-        Task<DrainageStrategyDto> NewUpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto);
         Task<DrainageStrategy> GetDrainageStrategy(Guid drainageStrategyId);
     }
 }

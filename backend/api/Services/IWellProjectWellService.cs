@@ -11,7 +11,6 @@ namespace api.Services
         Task<WellProjectWellDto[]?> UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos, Guid caseId);
         Task<WellProjectWell> GetWellProjectWell(Guid wellId, Guid caseId);
         Task<WellProjectWellDto[]?> CopyWellProjectWell(Guid sourceWellProjectId, Guid targetWellProjectId);
-        Task<WellProjectWellDto> GetWellProjectWellDto(Guid wellId, Guid caseId);
         Task<IEnumerable<WellProjectWell>> GetAll();
         Task<IEnumerable<WellProjectWellDto>> GetAllDtos();
     }

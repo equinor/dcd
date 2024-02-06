@@ -136,15 +136,6 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public async Task<CaseDto> NewUpdateCase(CaseDto updatedCaseDto)
-    {
-        var caseItem = await GetCase(updatedCaseDto.Id);
-        CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
-        _context.Cases!.Update(caseItem);
-        await _context.SaveChangesAsync();
-        return CaseDtoAdapter.Convert(await GetCase(caseItem.Id));
-    }
-
     public async Task<ProjectDto> DeleteCase(Guid caseId)
     {
         var caseItem = await GetCase(caseId);

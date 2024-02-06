@@ -136,21 +136,4 @@ public static class CaseAdapter
             Case = caseItem,
         };
     }
-
-    private static TModel? Convert<TDto, TModel>(TDto? dto, Case caseItem)
-        where TDto : TimeSeriesCostDto
-        where TModel : TimeSeriesCost, ICaseTimeSeries, new()
-    {
-        if (dto == null) { return new TModel(); }
-
-        return new TModel
-        {
-            Id = dto.Id,
-            StartYear = dto.StartYear,
-            Currency = dto.Currency,
-            EPAVersion = dto.EPAVersion,
-            Values = dto.Values,
-            Case = caseItem,
-        };
-    }
 }

@@ -11,6 +11,5 @@ namespace api.Services
         Task<ProjectDto> DeleteTransport(Guid transportId);
         Task<Transport> GetTransport(Guid transportId);
         Task<ProjectDto> UpdateTransport(TransportDto updatedTransportDto);
-        Task<TransportDto> NewUpdateTransport(TransportDto updatedTransportDto);
     }
 }
