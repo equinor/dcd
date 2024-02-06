@@ -47,7 +47,7 @@ public class CaseService : ICaseService
         }
         var project = await _projectService.GetProject(case_.ProjectId);
         case_.Project = project;
-        await _context.Cases!.AddAsync(case_);
+        _context.Cases!.Add(case_);
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(project.Id);
     }
@@ -60,7 +60,7 @@ public class CaseService : ICaseService
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
 
-        var createdCase = await _context.Cases!.AddAsync(caseItem);
+        var createdCase = _context.Cases!.Add(caseItem);
         await _context.SaveChangesAsync();
 
         var drainageStrategyDto = new DrainageStrategyDto

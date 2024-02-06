@@ -25,7 +25,7 @@ public class WellService : IWellService
     public async Task<ProjectDto> CreateWell(WellDto wellDto)
     {
         var _well = WellAdapter.Convert(wellDto);
-        await _context.Wells!.AddAsync(_well);
+        _context.Wells!.Add(_well);
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(wellDto.ProjectId);
     }

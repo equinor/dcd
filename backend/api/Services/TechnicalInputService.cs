@@ -79,7 +79,7 @@ public class TechnicalInputService : ITechnicalInputService
             if (wellDto.Id == Guid.Empty)
             {
                 var well = WellAdapter.Convert(wellDto);
-                var updatedWell = await _context.Wells!.AddAsync(well);
+                var updatedWell = _context.Wells!.Add(well);
                 wellDto.Id = updatedWell.Entity.Id;
 
                 runSaveChanges = true;

@@ -86,7 +86,7 @@ public class ProjectService : IProjectService
         }
         else
         {
-            await _context.Projects.AddAsync(project);
+            _context.Projects.Add(project);
         }
 
         await _context.SaveChangesAsync();

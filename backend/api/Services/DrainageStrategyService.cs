@@ -20,7 +20,7 @@ public class DrainageStrategyService(DcdDbContext context, IProjectService proje
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
         var project = await _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
-        await _context.DrainageStrategies!.AddAsync(drainageStrategy);
+        _context.DrainageStrategies!.Add(drainageStrategy);
         await _context.SaveChangesAsync();
         await SetCaseLink(drainageStrategy, sourceCaseId, project);
         return await _projectService.GetProjectDto(drainageStrategy.ProjectId);
@@ -32,7 +32,7 @@ public class DrainageStrategyService(DcdDbContext context, IProjectService proje
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
         var project = await _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
-        var createdDrainageStrategy = await _context.DrainageStrategies!.AddAsync(drainageStrategy);
+        var createdDrainageStrategy = _context.DrainageStrategies!.Add(drainageStrategy);
         await _context.SaveChangesAsync();
         await SetCaseLink(drainageStrategy, sourceCaseId, project);
         return createdDrainageStrategy.Entity;
