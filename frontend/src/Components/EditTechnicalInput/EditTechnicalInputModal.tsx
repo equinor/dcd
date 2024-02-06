@@ -225,7 +225,6 @@ const EditTechnicalInputModal = ({
             if (result.wellDtos) {
                 setExplorationWellProjectWellsFromWells(result.wellDtos)
             }
-
             setIsSaving(false)
         } catch (error) {
             console.error("Error when saving technical input: ", error)
@@ -241,7 +240,6 @@ const EditTechnicalInputModal = ({
         }
         catch (e) {
             console.error("Error during save operation: ", e)
-        
         }
     }
 
