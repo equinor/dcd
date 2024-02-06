@@ -10,6 +10,5 @@ namespace api.Services
         Task<Surf> GetSurf(Guid surfId);
         Task<ProjectDto> CreateSurf(SurfDto surfDto, Guid sourceCaseId);
         Task<Surf> NewCreateSurf(SurfDto surfDto, Guid sourceCaseId);
-        Task<ProjectDto> DeleteSurf(Guid surfId);
     }
 }

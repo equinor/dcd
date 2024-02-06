@@ -174,7 +174,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
         var updatedCase = CreateUpdatedCase(project, oldCase);
 
         // Act
-        var projectResult = await caseService.UpdateCase(project.Id, CaseDtoAdapter.Convert(updatedCase));
+        var projectResult = await caseService.UpdateCase(oldCase.Id, CaseDtoAdapter.Convert(updatedCase));
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);

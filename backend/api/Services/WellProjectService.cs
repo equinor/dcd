@@ -67,16 +67,6 @@ public class WellProjectService : IWellProjectService
         return dto;
     }
 
-    public async Task<ProjectDto> CreateWellProject(WellProject wellProject, Guid sourceCaseId)
-    {
-        var project = await _projectService.GetProject(wellProject.ProjectId);
-        wellProject.Project = project;
-        _context.WellProjects!.Add(wellProject);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(wellProject, sourceCaseId, project);
-        return await _projectService.GetProjectDto(project.Id);
-    }
-
     public async Task<WellProject> NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId)
     {
         var wellProject = WellProjectAdapter.Convert(wellProjectDto);
@@ -97,36 +87,6 @@ public class WellProjectService : IWellProjectService
         }
         case_.WellProjectLink = wellProject.Id;
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<ProjectDto> DeleteWellProject(Guid wellProjectId)
-    {
-        var wellProject = await GetWellProject(wellProjectId);
-        _context.WellProjects!.Remove(wellProject);
-        DeleteCaseLinks(wellProjectId);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(wellProject.ProjectId);
-    }
-
-    private void DeleteCaseLinks(Guid wellProjectId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.WellProjectLink == wellProjectId)
-            {
-                c.WellProjectLink = Guid.Empty;
-            }
-        }
-    }
-
-    public async Task<ProjectDto> UpdateWellProject(WellProjectDto updatedWellProject)
-    {
-        var existing = await GetWellProject(updatedWellProject.Id);
-        WellProjectAdapter.ConvertExisting(existing, updatedWellProject);
-
-        _context.WellProjects!.Update(existing);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(updatedWellProject.ProjectId);
     }
 
     public async Task<WellProjectDto> NewUpdateWellProject(WellProjectDto updatedWellProjectDto)

@@ -68,7 +68,7 @@ public class ProjectsController : ControllerBase
             };
             var project = ProjectAdapter.Convert(projectDto);
             project.CreateDate = DateTimeOffset.UtcNow;
-            
+
             return await _projectService.CreateProject(project);
         }
 

@@ -73,40 +73,6 @@ public class SubstructureServiceShould : IDisposable
     }
 
     [Fact]
-    public async Task DeleteSubstructure()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var substructureToDelete = CreateTestSubstructure(project);
-        var sourceCaseId = project.Cases.FirstOrDefault().Id;
-        await substructureService.CreateSubstructure(substructureToDelete, sourceCaseId);
-
-        // Act
-        var projectResult = await substructureService.DeleteSubstructure(substructureToDelete.Id);
-
-        // Assert
-        var actualSubstructure = projectResult.Substructures.FirstOrDefault(o => o.Name == substructureToDelete.Name);
-        Assert.Null(actualSubstructure);
-        var casesWithSubstructureLink = projectResult.Cases.Where(o => o.SubstructureLink == substructureToDelete.Id);
-        Assert.Empty(casesWithSubstructureLink);
-    }
-
-    [Fact]
-    public async Task ThrowArgumentExceptionIfTryingToDeleteNonExistentSubstructure()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var substructureService = new SubstructureService(fixture.context, projectService, loggerFactory);
-
-        // Act, assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await substructureService.DeleteSubstructure(new Guid()));
-    }
-
-    [Fact]
     public async Task UpdateSubstructure()
     {
         // Arrange
@@ -161,7 +127,7 @@ public class SubstructureServiceShould : IDisposable
             {
                 Currency = Currency.USD,
                 StartYear = 1030,
-                Values = new double[] { 23.4, 238.9, 32.3 }
+                Values = [23.4, 238.9, 32.3]
             }
             );
     }
@@ -181,7 +147,7 @@ public class SubstructureServiceShould : IDisposable
             {
                 Currency = Currency.USD,
                 StartYear = 2030,
-                Values = new double[] { 23.4, 28.9, 32.3 }
+                Values = [23.4, 28.9, 32.3]
             }
             );
     }

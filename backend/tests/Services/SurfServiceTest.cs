@@ -58,29 +58,6 @@ public class SurfServiceTest
     }
 
     [Fact]
-    public async Task DeleteSurf()
-    {
-        var surfService = GetSurfService();
-        var project = fixture.context.Projects.FirstOrDefault();
-        var testSurf = InitializeTestSurf();
-        fixture.context.Cases.Add(new Case
-        {
-            Project = project,
-            SurfLink = testSurf.Id
-        });
-        fixture.context.SaveChanges();
-
-        // Act
-        var projectResult = await surfService.DeleteSurf(testSurf.Id);
-
-        // Assert
-        var actualSurf = projectResult.Surfs.FirstOrDefault(s => s.Name == testSurf.Name);
-        Assert.Null(actualSurf);
-        var casesWithSurfLink = projectResult.Cases.Where(c => c.SurfLink == testSurf.Id);
-        Assert.Empty(casesWithSurfLink);
-    }
-
-    [Fact]
     public async Task UpdateSurf()
     {
         // Arrange
@@ -126,35 +103,6 @@ public class SurfServiceTest
 
         // Act, assert
         await Assert.ThrowsAsync<NotFoundInDBException>(async () => await surfService.CreateSurf(SurfDtoAdapter.Convert(testSurf), Guid.NewGuid()));
-    }
-
-    [Fact]
-    public async Task ThrowArgumentExceptionIfTryingToUpdateNonExistentSurf()
-    {
-        var surfService = GetSurfService();
-        var project = fixture.context.Projects.FirstOrDefault();
-        var testSurf = InitializeTestSurf();
-
-        var updatedSurf = SurfDtoAdapter.Convert(CreateUpdatedSurf(project, testSurf));
-
-        // Act
-        await surfService.DeleteSurf(updatedSurf.Id);
-
-        // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await surfService.UpdateSurf(updatedSurf));
-    }
-
-    [Fact]
-    public async Task ThrowArgumentExceptionWhenTryingToDeleteNonExistentSurf()
-    {
-        var surfService = GetSurfService();
-        var testSurf = InitializeTestSurf();
-
-        // Act
-        await surfService.DeleteSurf(testSurf.Id);
-
-        // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await surfService.DeleteSurf(testSurf.Id));
     }
 
     private static Surf CreateTestSurf(Project project)

@@ -58,17 +58,6 @@ public class ExplorationService : IExplorationService
         return dto;
     }
 
-    public async Task<ProjectDto> CreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
-    {
-        var exploration = ExplorationAdapter.Convert(explorationDto);
-        var project = await _projectService.GetProject(exploration.ProjectId);
-        exploration.Project = project;
-        _context.Explorations!.Add(exploration);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(exploration, sourceCaseId, project);
-        return await _projectService.GetProjectDto(exploration.ProjectId);
-    }
-
     public async Task<Exploration> NewCreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
     {
         var exploration = ExplorationAdapter.Convert(explorationDto);
@@ -89,36 +78,6 @@ public class ExplorationService : IExplorationService
         }
         case_.ExplorationLink = exploration.Id;
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<ProjectDto> DeleteExploration(Guid explorationId)
-    {
-        var exploration = await GetExploration(explorationId);
-        _context.Explorations!.Remove(exploration);
-        DeleteCaseLinks(explorationId);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(exploration.ProjectId);
-    }
-
-    private void DeleteCaseLinks(Guid explorationId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.ExplorationLink == explorationId)
-            {
-                c.ExplorationLink = Guid.Empty;
-            }
-        }
-    }
-
-    public async Task<ProjectDto> UpdateExploration(ExplorationDto updatedExplorationDto)
-    {
-        var existing = await GetExploration(updatedExplorationDto.Id);
-        ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
-
-        _context.Explorations!.Update(existing);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
     public async Task<ExplorationDto> NewUpdateExploration(ExplorationDto updatedExplorationDto)

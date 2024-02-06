@@ -79,26 +79,6 @@ public class SubstructureService : ISubstructureService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ProjectDto> DeleteSubstructure(Guid substructureId)
-    {
-        var substructure = await GetSubstructure(substructureId);
-        _context.Substructures!.Remove(substructure);
-        DeleteCaseLinks(substructureId);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(substructure.ProjectId);
-    }
-
-    private void DeleteCaseLinks(Guid substructureId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.SubstructureLink == substructureId)
-            {
-                c.SubstructureLink = Guid.Empty;
-            }
-        }
-    }
-
     public async Task<ProjectDto> UpdateSubstructure(SubstructureDto updatedSubstructureDto)
     {
         var existing = await GetSubstructure(updatedSubstructureDto.Id);
