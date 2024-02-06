@@ -14,7 +14,7 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
@@ -25,11 +25,18 @@ public class ProjectsController : ControllerBase
 {
     private readonly IFusionService _fusionService;
     private readonly IProjectService _projectService;
+    private readonly ICompareCasesService _compareCasesService;
 
-    public ProjectsController(IProjectService projectService, IFusionService fusionService)
+
+    public ProjectsController(
+        IProjectService projectService,
+        IFusionService fusionService,
+        ICompareCasesService compareCasesService
+    )
     {
         _projectService = projectService;
         _fusionService = fusionService;
+        _compareCasesService = compareCasesService;
     }
 
     [HttpGet("{projectId}", Name = "GetProject")]
@@ -93,5 +100,11 @@ public class ProjectsController : ControllerBase
     public async Task<ProjectDto> SetReferenceCase([FromBody] ProjectDto projectDto)
     {
         return await _projectService.SetReferenceCase(projectDto);
+    }
+
+    [HttpGet("{projectId}/case-comparison")]
+    public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
+    {
+        return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
     }
 }

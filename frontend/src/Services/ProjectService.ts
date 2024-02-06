@@ -35,6 +35,11 @@ export class __ProjectService extends __BaseService {
         )
         return Project.fromJSON(res)
     }
+
+    public async compareCases(projectId: string) {
+        const res: Components.Schemas.CompareCasesDto[] = await this.get<Components.Schemas.CompareCasesDto[]>(`/${projectId}/case-comparison`)
+        return res
+    }
 }
 
 export async function GetProjectService() {
