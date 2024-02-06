@@ -105,18 +105,18 @@ const EditTechnicalInputModal = ({
     const [originalExplorationWells, setOriginalExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
 
     const [isSaving, setIsSaving] = useState<boolean>()
-
+    
     useEffect(() => {
         if (isOpen && !justOpened) {
             // Set the original state only when the modal is opened
             setOriginalProject({ ...project })
-            setOriginalExplorationOperationalWellCosts({ ...explorationOperationalWellCosts })
-            setOriginalDevelopmentOperationalWellCosts({ ...developmentOperationalWellCosts })
-            setOriginalWellProjectWells([...wellProjectWells])
-            setOriginalExplorationWells([...explorationWells])
+            setOriginalExplorationOperationalWellCosts({ ...project.explorationWellCosts })
+            setOriginalDevelopmentOperationalWellCosts({ ...project.developmentWellCosts })
+            setOriginalWellProjectWells([...project?.wells?.filter((w) => !IsExplorationWell(w)) ?? []]);
+            setOriginalExplorationWells([...project?.wells?.filter((w) => IsExplorationWell(w)) ?? []]);
             setJustOpened(false)
         }
-    }, [isOpen, project, explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened])
+    }, [isOpen, project])//, explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {

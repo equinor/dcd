@@ -93,8 +93,8 @@ public class ProjectsController : ControllerBase
     [HttpPut(Name = "UpdateProject")]
     public ActionResult<ProjectDto?> UpdateProject([FromBody] ProjectDto projectDto)
     {
-        return StatusCode(500);
-        //return _projectService.UpdateProject(projectDto);
+        //return StatusCode(500);
+        return _projectService.UpdateProject(projectDto);
     }
 
     [HttpPut("ReferenceCase", Name = "SetReferenceCase")]
