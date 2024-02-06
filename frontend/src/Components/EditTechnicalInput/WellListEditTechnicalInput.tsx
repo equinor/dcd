@@ -154,7 +154,7 @@ function WellListEditTechnicalInput({
         try {
             if (wellIdToDelete && wells) {
                 // Attempt to delete the well from the backend
-                await (await GetWellService()).deleteWell(wellIdToDelete)
+                await (await GetWellService()).deleteWell(project.id, wellIdToDelete)
 
                 // If successful, update local state to remove the well
                 const updatedWells = wells.filter((well) => well.id !== wellIdToDelete)

@@ -12,7 +12,7 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects/{projectId}/wells")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
         ApplicationRole.Admin,

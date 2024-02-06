@@ -26,17 +26,19 @@ public class ProjectsController : ControllerBase
     private readonly IFusionService _fusionService;
     private readonly IProjectService _projectService;
     private readonly ICompareCasesService _compareCasesService;
-
+    private readonly ITechnicalInputService _technicalInputService;
 
     public ProjectsController(
         IProjectService projectService,
         IFusionService fusionService,
-        ICompareCasesService compareCasesService
+        ICompareCasesService compareCasesService,
+        ITechnicalInputService technicalInputService
     )
     {
         _projectService = projectService;
         _fusionService = fusionService;
         _compareCasesService = compareCasesService;
+        _technicalInputService = technicalInputService;
     }
 
     [HttpGet("{projectId}", Name = "GetProject")]
@@ -106,5 +108,11 @@ public class ProjectsController : ControllerBase
     public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
     {
         return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
+    }
+
+    [HttpPut("{projectId}/technical-input")]
+    public async Task<TechnicalInputDto> UpdateTechnicalInput([FromRoute] Guid projectId, [FromBody] TechnicalInputDto dto)
+    {
+        return await _technicalInputService.UpdateTehnicalInput(dto);
     }
 }

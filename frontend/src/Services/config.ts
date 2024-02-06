@@ -37,11 +37,11 @@ const configuration = {
 export const buildConfig = (baseUrl: string) => {
     configuration.CaseService.BASE_URL = `${baseUrl}/`
     configuration.CaseWithAssetsService.BASE_URL = `${baseUrl}/case-with-assets`
-    configuration.TechnicalInputService.BASE_URL = `${baseUrl}/technical-input`
+    configuration.TechnicalInputService.BASE_URL = `${baseUrl}/`
     configuration.ProjectService.BASE_URL = `${baseUrl}/projects`
     configuration.STEAService.BASE_URL = `${baseUrl}/stea`
     configuration.UploadService.BASE_URL = `${baseUrl}/prosp`
-    configuration.WellService.BASE_URL = `${baseUrl}/wells`
+    configuration.WellService.BASE_URL = `${baseUrl}/`
     configuration.GenerateProfileService.BASE_URL = `${baseUrl}/`
     configuration.CompareCasesService.BASE_URL = `${baseUrl}/compare-cases`
 }
