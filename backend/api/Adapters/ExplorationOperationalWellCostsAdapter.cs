@@ -1,36 +1,35 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Adapters
+namespace api.Adapters;
+
+public static class ExplorationOperationalWellCostsAdapter
 {
-    public static class ExplorationOperationalWellCostsAdapter
+    public static ExplorationOperationalWellCosts Convert(ExplorationOperationalWellCostsDto? explorationOperationalWellCostsDto)
     {
-        public static ExplorationOperationalWellCosts Convert(ExplorationOperationalWellCostsDto? explorationOperationalWellCostsDto)
+        if (explorationOperationalWellCostsDto == null)
         {
-            if (explorationOperationalWellCostsDto == null)
-            {
-                return null!;
-            }
-            return new ExplorationOperationalWellCosts
-            {
-                Id = explorationOperationalWellCostsDto.Id,
-                ProjectId = explorationOperationalWellCostsDto.ProjectId,
-                ExplorationRigUpgrading = explorationOperationalWellCostsDto.RigUpgrading,
-                ExplorationRigMobDemob = explorationOperationalWellCostsDto.ExplorationRigMobDemob,
-                ExplorationProjectDrillingCosts = explorationOperationalWellCostsDto.ExplorationProjectDrillingCosts,
-                AppraisalRigMobDemob = explorationOperationalWellCostsDto.AppraisalRigMobDemob,
-                AppraisalProjectDrillingCosts = explorationOperationalWellCostsDto.AppraisalProjectDrillingCosts,
-            };
+            return null!;
         }
-
-        public static void ConvertExisting(ExplorationOperationalWellCosts existing, ExplorationOperationalWellCostsDto explorationOperationalWellCostsDto)
+        return new ExplorationOperationalWellCosts
         {
-            existing.ExplorationRigUpgrading = explorationOperationalWellCostsDto.RigUpgrading;
-            existing.ExplorationRigMobDemob = explorationOperationalWellCostsDto.ExplorationRigMobDemob;
-            existing.ExplorationProjectDrillingCosts = explorationOperationalWellCostsDto.ExplorationProjectDrillingCosts;
-            existing.AppraisalRigMobDemob = explorationOperationalWellCostsDto.AppraisalRigMobDemob;
-            existing.AppraisalProjectDrillingCosts = explorationOperationalWellCostsDto.AppraisalProjectDrillingCosts;
+            Id = explorationOperationalWellCostsDto.Id,
+            ProjectId = explorationOperationalWellCostsDto.ProjectId,
+            ExplorationRigUpgrading = explorationOperationalWellCostsDto.RigUpgrading,
+            ExplorationRigMobDemob = explorationOperationalWellCostsDto.ExplorationRigMobDemob,
+            ExplorationProjectDrillingCosts = explorationOperationalWellCostsDto.ExplorationProjectDrillingCosts,
+            AppraisalRigMobDemob = explorationOperationalWellCostsDto.AppraisalRigMobDemob,
+            AppraisalProjectDrillingCosts = explorationOperationalWellCostsDto.AppraisalProjectDrillingCosts,
+        };
+    }
 
-        }
+    public static void ConvertExisting(ExplorationOperationalWellCosts existing, ExplorationOperationalWellCostsDto explorationOperationalWellCostsDto)
+    {
+        existing.ExplorationRigUpgrading = explorationOperationalWellCostsDto.RigUpgrading;
+        existing.ExplorationRigMobDemob = explorationOperationalWellCostsDto.ExplorationRigMobDemob;
+        existing.ExplorationProjectDrillingCosts = explorationOperationalWellCostsDto.ExplorationProjectDrillingCosts;
+        existing.AppraisalRigMobDemob = explorationOperationalWellCostsDto.AppraisalRigMobDemob;
+        existing.AppraisalProjectDrillingCosts = explorationOperationalWellCostsDto.AppraisalProjectDrillingCosts;
+
     }
 }
