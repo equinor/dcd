@@ -1,17 +1,13 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Services
+namespace api.Services;
+
+public interface IExplorationWellService
 {
-    public interface IExplorationWellService
-    {
-        Task<ProjectDto> CreateExplorationWell(ExplorationWellDto explorationWellDto);
-        Task<ProjectDto> UpdateExplorationWell(ExplorationWellDto updatedExplorationWellDto);
-        Task<ExplorationWellDto[]?> UpdateMultpleExplorationWells(ExplorationWellDto[] updatedExplorationWellDtos, Guid caseId);
-        Task<ExplorationWellDto[]?> CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos);
-        Task<ExplorationWell> GetExplorationWell(Guid wellId, Guid caseId);
-        Task<ExplorationWellDto[]?> CopyExplorationWell(Guid sourceExplorationId, Guid targetExplorationId);
-        Task<IEnumerable<ExplorationWell>> GetAll();
-        Task<IEnumerable<ExplorationWellDto>> GetAllDtos();
-    }
+    Task<ProjectDto> CreateExplorationWell(ExplorationWellDto explorationWellDto);
+    Task<ExplorationWellDto[]?> CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos);
+    Task<ExplorationWell> GetExplorationWell(Guid wellId, Guid caseId);
+    Task<ExplorationWellDto[]?> CopyExplorationWell(Guid sourceExplorationId, Guid targetExplorationId);
+    Task<IEnumerable<ExplorationWell>> GetAll();
 }

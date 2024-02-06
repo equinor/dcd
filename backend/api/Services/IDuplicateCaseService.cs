@@ -1,11 +1,10 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Services
+namespace api.Services;
+
+public interface IDuplicateCaseService
 {
-    public interface IDuplicateCaseService
-    {
-        Task<Case> GetCaseNoTracking(Guid caseId);
-        Task<ProjectDto> DuplicateCase(Guid caseId);
-    }
+    Task<Case> GetCaseNoTracking(Guid caseId);
+    Task<ProjectDto> DuplicateCase(Guid caseId);
 }

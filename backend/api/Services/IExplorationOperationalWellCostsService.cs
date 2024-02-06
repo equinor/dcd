@@ -1,10 +1,9 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Services
+namespace api.Services;
+
+public interface IExplorationOperationalWellCostsService
 {
-    public interface IExplorationOperationalWellCostsService
-    {
-        Task<ExplorationOperationalWellCosts?> GetOperationalWellCosts(Guid id);
-    }
+    Task<ExplorationOperationalWellCosts?> GetOperationalWellCosts(Guid id);
 }
