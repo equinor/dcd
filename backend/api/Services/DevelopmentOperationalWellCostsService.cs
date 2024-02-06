@@ -19,9 +19,9 @@ namespace api.Services
             _logger = loggerFactory.CreateLogger<SurfService>();
         }
 
-        public async Task<DevelopmentOperationalWellCostsDto?> UpdateOperationalWellCostsAsync(DevelopmentOperationalWellCostsDto dto)
+        public async Task<DevelopmentOperationalWellCostsDto?> UpdateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto)
         {
-            var existing = await GetOperationalWellCostsByProjectIdAsync(dto.ProjectId);
+            var existing = await GetOperationalWellCostsByProjectId(dto.ProjectId);
             if (existing == null)
             {
                 return null;
@@ -34,7 +34,7 @@ namespace api.Services
             return updatedDto;
         }
 
-        public async Task<DevelopmentOperationalWellCostsDto> CreateOperationalWellCostsAsync(DevelopmentOperationalWellCostsDto dto)
+        public async Task<DevelopmentOperationalWellCostsDto> CreateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto)
         {
             var developmentOperationalWellCosts = DevelopmentOperationalWellCostsAdapter.Convert(dto);
             var project = await _projectService.GetProject(dto.ProjectId);
@@ -44,14 +44,14 @@ namespace api.Services
             return DevelopmentOperationalWellCostsDtoAdapter.Convert(developmentOperationalWellCosts);
         }
 
-        public async Task<DevelopmentOperationalWellCosts?> GetOperationalWellCostsByProjectIdAsync(Guid id)
+        public async Task<DevelopmentOperationalWellCosts?> GetOperationalWellCostsByProjectId(Guid id)
         {
             var operationalWellCosts = await _context.DevelopmentOperationalWellCosts!
                 .FirstOrDefaultAsync(o => o.ProjectId == id);
             return operationalWellCosts;
         }
 
-        public async Task<DevelopmentOperationalWellCosts?> GetOperationalWellCostsAsync(Guid id)
+        public async Task<DevelopmentOperationalWellCosts?> GetOperationalWellCosts(Guid id)
         {
             var operationalWellCosts = await _context.DevelopmentOperationalWellCosts!
                 .Include(dowc => dowc.Project)
