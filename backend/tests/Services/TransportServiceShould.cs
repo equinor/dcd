@@ -148,17 +148,17 @@ public class TransportServiceShould
             ProjectId = project.Id,
             GasExportPipelineLength = 100,
             OilExportPipelineLength = 100,
-        }.WithCostProfile(new TransportCostProfile()
+        }.WithCostProfile(new TransportCostProfile
         {
             Currency = Currency.USD,
             StartYear = 2030,
-            Values = new double[] { 23.4, 28.9, 24.3 }
+            Values = [23.4, 28.9, 24.3]
         })
-            .WithTransportCessationCostProfile(new TransportCessationCostProfile()
+            .WithTransportCessationCostProfile(new TransportCessationCostProfile
             {
                 Currency = Currency.USD,
                 StartYear = 2030,
-                Values = new double[] { 17.4, 17.9, 37.3 }
+                Values = [17.4, 17.9, 37.3]
             });
     }
 
@@ -189,17 +189,17 @@ public class TransportServiceShould
             ProjectId = project.Id,
             GasExportPipelineLength = 999,
             OilExportPipelineLength = 999,
-        }.WithCostProfile(new TransportCostProfile()
+        }.WithCostProfile(new TransportCostProfile
         {
             Currency = Currency.USD,
             StartYear = 2030,
-            Values = new double[] { 13.4, 18.9, 34.3 }
+            Values = [13.4, 18.9, 34.3]
         })
-            .WithTransportCessationCostProfile(new TransportCessationCostProfile()
+            .WithTransportCessationCostProfile(new TransportCessationCostProfile
             {
                 Currency = Currency.USD,
                 StartYear = 2030,
-                Values = new double[] { 13.4, 18.9, 34.3 }
+                Values = [13.4, 18.9, 34.3]
             });
     }
 }

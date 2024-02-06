@@ -60,7 +60,7 @@ public class CompareCasesService : ICompareCasesService
                 var offshorePlusOnshoreFacilityCosts = await CalculateOffshorePlusOnshoreFacilityCosts(caseItem);
                 var developmentCosts = await CalculateDevelopmentWellCosts(caseItem);
                 var explorationCosts = CalculateExplorationWellCosts(caseItem, exploration);
-                var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
+                var totalCo2Emissions = CalculateTotalCO2Emissions(generateCo2EmissionsProfile);
                 var co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
 
                 var compareCases = new CompareCasesDto
@@ -206,7 +206,7 @@ public class CompareCasesService : ICompareCasesService
         return sumExplorationWellCost;
     }
 
-    private double CalculateTotalCO2Emissions(Case caseItem, Co2EmissionsDto generateCo2EmissionsProfile)
+    private static double CalculateTotalCO2Emissions(Co2EmissionsDto generateCo2EmissionsProfile)
     {
         return generateCo2EmissionsProfile.Sum;
     }
@@ -216,10 +216,10 @@ public class CompareCasesService : ICompareCasesService
         var tonnesToKgFactor = 1000;
         var boeConversionFactor = 6.29;
         var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, true);
-        var totalCo2Emissions = CalculateTotalCO2Emissions(caseItem, generateCo2EmissionsProfile);
+        var totalCo2Emissions = CalculateTotalCO2Emissions(generateCo2EmissionsProfile);
         if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
         {
-            return (totalCo2Emissions / totalExportedVolumes) / boeConversionFactor * tonnesToKgFactor;
+            return totalCo2Emissions / totalExportedVolumes / boeConversionFactor * tonnesToKgFactor;
         }
         return 0;
     }

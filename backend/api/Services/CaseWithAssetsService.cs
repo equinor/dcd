@@ -113,7 +113,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             await CreateAndUpdateWellProjectWellsAsync(wrapper.WellProjectWellDtos, updatedCaseDto.Id, profilesToGenerate);
         }
 
-        var saveResult = await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         var generatedProfiles = await GenerateProfilesAsync(profilesToGenerate, wrapper.CaseDto.Id);
 
