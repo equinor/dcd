@@ -28,7 +28,7 @@ public class DrainageStrategyService(DcdDbContext context, IProjectService proje
 
     public async Task<DrainageStrategy> NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
-        var unit =  (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
+        var unit = (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
         var project = await _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
