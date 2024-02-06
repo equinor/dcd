@@ -19,7 +19,7 @@ import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { Co2Emissions } from "../../models/assets/drainagestrategy/Co2Emissions"
-import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
+import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import { Topside } from "../../models/assets/topside/Topside"
 import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
@@ -81,9 +81,7 @@ const NumberInputField = styled.div`
 
 interface Props {
     project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
     topside: Topside,
     setTopside: Dispatch<SetStateAction<Topside | undefined>>,
     drainageStrategy: DrainageStrategy,
@@ -95,8 +93,8 @@ interface Props {
 }
 
 function CaseCO2Tab({
-    project, setProject,
-    caseItem, setCase,
+    project,
+    caseItem,
     topside, setTopside,
     activeTab, drainageStrategy, setDrainageStrategy,
     co2Emissions, setCo2Emissions,
@@ -117,9 +115,9 @@ function CaseCO2Tab({
         (async () => {
             try {
                 if (activeTab === 6) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(caseItem.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(caseItem.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(caseItem.id)
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, caseItem.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, caseItem.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, caseItem.id)
 
                     setCo2Emissions(drainageStrategy.co2Emissions)
                     setCo2Intensity(await co2I)
@@ -168,13 +166,6 @@ function CaseCO2Tab({
     const handleTopsideFuelConsumptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
         newTopside.fuelConsumption = e.currentTarget.value.length > 0
-            ? Number(e.currentTarget.value) : undefined
-        setTopside(newTopside)
-    }
-
-    const handleTopsideFlaredGasChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside: Topside = { ...topside }
-        newTopside.flaredGas = e.currentTarget.value.length > 0
             ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
@@ -393,10 +384,6 @@ function CaseCO2Tab({
                 </TableYearWrapper>
             </ColumnWrapper>
             <CaseTabTable
-                caseItem={caseItem}
-                project={project}
-                setCase={setCase}
-                setProject={setProject}
                 timeSeriesData={timeSeriesData}
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}

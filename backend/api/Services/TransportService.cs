@@ -81,15 +81,6 @@ public class TransportService : ITransportService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ProjectDto> DeleteTransport(Guid transportId)
-    {
-        var transport = await GetTransport(transportId);
-        _context.Transports!.Remove(transport);
-        DeleteCaseLinks(transportId);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(transport.ProjectId);
-    }
-
     public async Task<Transport> GetTransport(Guid transportId)
     {
         var transport = await _context.Transports!
@@ -102,17 +93,6 @@ public class TransportService : ITransportService
             throw new ArgumentException(string.Format("Transport {0} not found.", transportId));
         }
         return transport;
-    }
-
-    private void DeleteCaseLinks(Guid transportId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.TransportLink == transportId)
-            {
-                c.TransportLink = Guid.Empty;
-            }
-        }
     }
 
     public async Task<ProjectDto> UpdateTransport(TransportDto updatedTransportDto)

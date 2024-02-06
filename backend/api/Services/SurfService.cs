@@ -103,24 +103,4 @@ public class SurfService : ISurfService
         case_.SurfLink = surf.Id;
         await _context.SaveChangesAsync();
     }
-
-    public async Task<ProjectDto> DeleteSurf(Guid surfId)
-    {
-        var surf = await GetSurf(surfId);
-        _context.Surfs!.Remove(surf);
-        await DeleteCaseLinks(surfId);
-        return await _projectService.GetProjectDto(surf.ProjectId);
-    }
-
-    private async Task DeleteCaseLinks(Guid surfId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.SurfLink == surfId)
-            {
-                c.SurfLink = Guid.Empty;
-            }
-        }
-        await _context.SaveChangesAsync();
-    }
 }

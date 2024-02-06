@@ -14,48 +14,36 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("/projects/{projectId}/cases/{caseId}")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
     ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
-public class GenerateProfileController : ControllerBase
+public class CaseGeneratedProfileController : ControllerBase
 {
     private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
-    private readonly IGenerateFuelFlaringLossesProfile _generateFuelFlaringLossessProfile;
-    private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly IGenerateImportedElectricityProfile _generateImportedElectricityProfile;
-    private readonly IGenerateNetSaleGasProfile _generateNetSaleGasProfile;
     private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
     private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
     private readonly IGenerateCo2IntensityProfile _generateCo2IntensityProfile;
     private readonly IGenerateCo2IntensityTotal _generateCo2IntensityTotal;
     private readonly IGenerateCo2DrillingFlaringFuelTotals _generateCo2DrillingFlaringFuelTotals;
 
-    public GenerateProfileController(IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile, IGenerateStudyCostProfile generateStudyCostProfile,
+    public CaseGeneratedProfileController(IGenerateStudyCostProfile generateStudyCostProfile,
         IGenerateOpexCostProfile generateOpexCostProfile, IGenerateCessationCostProfile generateCessationCostProfile,
-        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile, IGenerateNetSaleGasProfile generateNetSaleGasProfile,
-        IGenerateFuelFlaringLossesProfile generateFuelFlaringLossesProfile, IGenerateImportedElectricityProfile generateImportedElectricityProfile,
         IGenerateCo2IntensityProfile generateCo2IntensityProfile, IGenerateCo2IntensityTotal generateCo2IntensityTotal,
         IGenerateCo2DrillingFlaringFuelTotals generateCo2DrillingFlaringFuelTotals)
     {
-        _generateGAndGAdminCostProfile = generateGAndGAdminCostProfile;
         _generateStudyCostProfile = generateStudyCostProfile;
         _generateOpexCostProfile = generateOpexCostProfile;
         _generateCessationCostProfile = generateCessationCostProfile;
-        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
-        _generateNetSaleGasProfile = generateNetSaleGasProfile;
-        _generateFuelFlaringLossessProfile = generateFuelFlaringLossesProfile;
-        _generateImportedElectricityProfile = generateImportedElectricityProfile;
         _generateCo2IntensityProfile = generateCo2IntensityProfile;
         _generateCo2IntensityTotal = generateCo2IntensityTotal;
         _generateCo2DrillingFlaringFuelTotals = generateCo2DrillingFlaringFuelTotals;
     }
 
-    [HttpPost("{caseId}/generateOpex", Name = "GenerateOpex")]
+    [HttpGet("opex")]
     [ProducesResponseType(typeof(OpexCostProfileWrapperDto), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<OpexCostProfileWrapperDto>> GenerateOPEXAsync(Guid caseId)
     {
@@ -70,7 +58,7 @@ public class GenerateProfileController : ControllerBase
         }
     }
 
-    [HttpPost("{caseId}/generateStudy", Name = "GenerateStudy")]
+    [HttpGet("study")]
     [ProducesResponseType(typeof(StudyCostProfileWrapperDto), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<StudyCostProfileWrapperDto>> GenerateStudyAsync(Guid caseId)
     {
@@ -85,7 +73,7 @@ public class GenerateProfileController : ControllerBase
         }
     }
 
-    [HttpPost("{caseId}/generateCessation", Name = "GenerateCessation")]
+    [HttpGet("cessation")]
     [ProducesResponseType(typeof(CessationCostWrapperDto), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<CessationCostWrapperDto>> GenerateCessationAsync(Guid caseId)
     {
@@ -100,19 +88,19 @@ public class GenerateProfileController : ControllerBase
         }
     }
 
-    [HttpPost("{caseId}/generateCo2Intensity", Name = "GenerateCo2Intensity")]
+    [HttpGet("co2Intensity")]
     public async Task<Co2IntensityDto> GenerateCo2Intensity(Guid caseId)
     {
         return await _generateCo2IntensityProfile.Generate(caseId);
     }
 
-    [HttpPost("{caseId}/generateCo2IntensityTotal", Name = "GenerateCo2IntensityTotal")]
+    [HttpGet("co2IntensityTotal")]
     public async Task<double> GenerateCo2IntensityTotal(Guid caseId)
     {
         return await _generateCo2IntensityTotal.Calculate(caseId);
     }
 
-    [HttpPost("{caseId}/generateCo2DrillingFlaringFuelTotals", Name = "GenerateCo2DrillingFlaringFuelTotals")]
+    [HttpGet("co2DrillingFlaringFuelTotals")]
     public async Task<Co2DrillingFlaringFuelTotalsDto> GenerateCo2DrillingFlaringFuelTotals(Guid caseId)
     {
         return await _generateCo2DrillingFlaringFuelTotals.Generate(caseId);

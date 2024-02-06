@@ -4,7 +4,7 @@ namespace api.Dtos;
 
 public class ProjectDto
 {
-    public Guid ProjectId { get; set; }
+    public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public Guid CommonLibraryId { get; set; }
     public Guid FusionProjectId { get; set; }
@@ -42,7 +42,7 @@ public class ProjectDto
     {
         return Name == projectDto.Name &&
                CommonLibraryName == projectDto.CommonLibraryName && FusionProjectId == projectDto.FusionProjectId &&
-               Country == projectDto.Country && ProjectId == projectDto.ProjectId &&
+               Country == projectDto.Country && Id == projectDto.Id &&
                ProjectCategory == projectDto.ProjectCategory && ProjectPhase == projectDto.ProjectPhase;
     }
 }

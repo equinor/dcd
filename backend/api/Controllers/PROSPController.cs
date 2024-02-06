@@ -84,7 +84,7 @@ public class PROSPController : ControllerBase
         {
             var projectDto = await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
 
-            if (projectDto.ProjectId == projectId)
+            if (projectDto.Id == projectId)
             {
                 return Ok(projectDto);
             }

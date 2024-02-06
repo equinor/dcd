@@ -96,7 +96,7 @@ public static class ProjectDtoAdapter
     {
         return new ProjectDto
         {
-            ProjectId = project.Id,
+            Id = project.Id,
             Name = project.Name,
             CommonLibraryId = project.CommonLibraryId,
             CommonLibraryName = project.CommonLibraryName,

@@ -15,9 +15,7 @@ import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperati
 import { EMPTY_GUID } from "../../Utils/constants"
 import { Well } from "../../models/Well"
 import { IsExplorationWell } from "../../Utils/common"
-import { GetWellService } from "../../Services/WellService"
 import CO2Tab from "./CO2Tab"
-import { GetProjectService } from "../../Services/ProjectService"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
 import { Exploration } from "../../models/assets/exploration/Exploration"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
@@ -34,11 +32,6 @@ const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-`
-
-const InvisibleButton = styled(Button)`
-    border: 1px solid ;
-    background-color: transparent;
 `
 
 const ModalDiv = styled.div`
@@ -199,7 +192,7 @@ const EditTechnicalInputModal = ({
                 dto.caseId = caseId
             }
 
-            const result = await (await GetTechnicalInputService()).update(dto)
+            const result = await (await GetTechnicalInputService()).update(project.id, dto)
 
             if (result.projectDto) {
                 setProject(Project.fromJSON(result.projectDto))
@@ -212,11 +205,9 @@ const EditTechnicalInputModal = ({
                 setWellProject(WellProject.fromJSON(result.wellProjectDto))
             }
 
-            const explorationOperationalWellCostsResult = result.explorationOperationalWellCostsDto
             setExplorationOperationalWellCosts(explorationOperationalWellCosts)
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
 
-            const developmentOperationalWellCostsResult = result.developmentOperationalWellCostsDto
             setDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
             setOriginalDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
 

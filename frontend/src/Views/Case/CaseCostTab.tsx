@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
     ChangeEventHandler, Dispatch, SetStateAction, useEffect, useRef, useState,
 } from "react"
@@ -10,7 +9,6 @@ import {
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
-import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../models/ITimeSeries"
@@ -102,7 +100,6 @@ const TableWrapper = styled.div`
 
 interface Props {
     project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     topside: Topside,
@@ -117,7 +114,6 @@ interface Props {
     setExploration: Dispatch<SetStateAction<Exploration | undefined>>,
     wellProject: WellProject,
     setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
-    drainageStrategy: DrainageStrategy
     activeTab: number
 
     totalFeasibilityAndConceptStudies: TotalFeasibilityAndConceptStudies | undefined,
@@ -142,7 +138,7 @@ interface Props {
 }
 
 function CaseCostTab({
-    project, setProject,
+    project,
     caseItem, setCase,
     exploration, setExploration,
     wellProject, setWellProject,
@@ -150,7 +146,6 @@ function CaseCostTab({
     surf, setSurf,
     substructure, setSubstructure,
     transport, setTransport,
-    drainageStrategy,
     activeTab,
     totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies,
     totalFEEDStudies, setTotalFEEDStudies,
@@ -304,11 +299,11 @@ function CaseCostTab({
                     setGAndGAdminCost(exploration.gAndGAdminCost)
 
                     SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
-                        caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
-                        caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
-                        caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
-                        caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
-                        caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
+                    caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
+                    caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
+                    caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
+                    caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
+                    caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                         surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
                         oilProducerCostProfile, gasProducerCostProfile,
@@ -866,10 +861,6 @@ function CaseCostTab({
             </ColumnWrapper>
             <TableWrapper>
                 <CaseTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
                     timeSeriesData={studyTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
@@ -883,10 +874,6 @@ function CaseCostTab({
             </TableWrapper>
             <TableWrapper>
                 <CaseTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
                     timeSeriesData={opexTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
@@ -900,10 +887,6 @@ function CaseCostTab({
             </TableWrapper>
             <TableWrapper>
                 <CaseTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
                     timeSeriesData={cessationTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
@@ -917,10 +900,6 @@ function CaseCostTab({
             </TableWrapper>
             <TableWrapper>
                 <CaseTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
                     timeSeriesData={capexTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
@@ -934,10 +913,6 @@ function CaseCostTab({
             </TableWrapper>
             <TableWrapper>
                 <CaseTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
                     timeSeriesData={developmentTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
@@ -950,10 +925,6 @@ function CaseCostTab({
                 />
             </TableWrapper>
             <CaseTabTable
-                caseItem={caseItem}
-                project={project}
-                setCase={setCase}
-                setProject={setProject}
                 timeSeriesData={explorationTimeSeriesData}
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}

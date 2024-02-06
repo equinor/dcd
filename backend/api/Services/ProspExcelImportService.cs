@@ -440,7 +440,7 @@ public class ProspExcelImportService
             }
 
             var caseDto = CaseDtoAdapter.Convert(caseItem);
-            return await _caseService.UpdateCase(caseDto);
+            return await _caseService.UpdateCase(sourceCaseId, caseDto);
         }
 
         return await _projectService.GetProjectDto(projectId);
@@ -459,7 +459,7 @@ public class ProspExcelImportService
         ClearImportedTransport(caseItem);
 
         var caseDto = CaseDtoAdapter.Convert(caseItem);
-        await _caseService.UpdateCase(caseDto);
+        await _caseService.UpdateCase(sourceCaseId, caseDto);
     }
 
     private void ClearImportedSurf(Case caseItem)

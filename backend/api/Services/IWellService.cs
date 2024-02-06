@@ -1,11 +1,10 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Services
+namespace api.Services;
+
+public interface IWellService
 {
-    public interface IWellService
-    {
-        Task<ProjectDto> DeleteWell(Guid wellId);
-        Task<Well> GetWell(Guid wellId);
-    }
+    Task<ProjectDto> DeleteWell(Guid wellId);
+    Task<Well> GetWell(Guid wellId);
 }

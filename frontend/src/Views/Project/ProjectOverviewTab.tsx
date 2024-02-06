@@ -1,9 +1,7 @@
-/* eslint-disable camelcase */
 import {
     MouseEventHandler, useState,
     Dispatch,
     SetStateAction,
-    ChangeEventHandler,
     FormEventHandler,
 } from "react"
 import styled from "styled-components"
@@ -84,9 +82,9 @@ function ProjectOverviewTab({
         e.preventDefault()
 
         try {
-            const projectId: string = unwrapProjectId(project.projectId)
+            const projectId: string = unwrapProjectId(project.id)
             const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
-            const result = (await GetSTEAService()).excelToSTEA(projectResult)
+            const _ = (await GetSTEAService()).excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }

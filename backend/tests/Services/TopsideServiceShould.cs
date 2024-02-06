@@ -75,52 +75,6 @@ public class TopsideServiceShould : IDisposable
     }
 
     [Fact]
-    public async Task DeleteTopside()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var topsideToDelete = CreateTestTopside(project);
-        fixture.context.Topsides.Add(topsideToDelete);
-        fixture.context.Cases.Add(new Case
-        {
-            Project = project,
-            TopsideLink = topsideToDelete.Id
-        });
-        fixture.context.SaveChanges();
-
-        // Act
-        var projectResult = await topsideService.DeleteTopside(topsideToDelete.Id);
-
-        // Assert
-        var actualTopside = projectResult.Topsides.FirstOrDefault(o => o.Name == topsideToDelete.Name);
-        Assert.Null(actualTopside);
-        var casesWithTopsideLink = projectResult.Cases.Where(o => o.TopsideLink == topsideToDelete.Id);
-        Assert.Empty(casesWithTopsideLink);
-    }
-
-    [Fact]
-    public async Task ThrowArgumentExceptionIfTryingToDeleteNonExistentTopside()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var topsideService = new TopsideService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var topsideToDelete = CreateTestTopside(project);
-        fixture.context.Topsides.Add(topsideToDelete);
-        fixture.context.SaveChanges();
-
-        // Act
-        await topsideService.DeleteTopside(topsideToDelete.Id);
-
-        // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await topsideService.DeleteTopside(topsideToDelete.Id));
-    }
-
-    [Fact]
     public async Task UpdateTopside()
     {
         // Arrange

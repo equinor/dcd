@@ -70,52 +70,6 @@ public class TransportServiceShould
     }
 
     [Fact]
-    public async Task DeleteTransport()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var transportService = new TransportService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var transportToDelete = CreateTestTransport(project);
-        fixture.context.Transports.Add(transportToDelete);
-        fixture.context.Cases.Add(new Case
-        {
-            Project = project,
-            TransportLink = transportToDelete.Id
-        });
-        fixture.context.SaveChanges();
-
-        // Act
-        var projectResult = await transportService.DeleteTransport(transportToDelete.Id);
-
-        // Assert
-        var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == transportToDelete.Name);
-        Assert.Null(actualTransport);
-        var casesWithTransportLink = projectResult.Cases.Where(o => o.TransportLink == transportToDelete.Id);
-        Assert.Empty(casesWithTransportLink);
-    }
-
-    [Fact]
-    public async Task ThrowArgumentExceptionIfTryingToDeleteNonExistentTransport()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var transportService = new TransportService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var transportToDelete = CreateTestTransport(project);
-        fixture.context.Transports.Add(transportToDelete);
-        fixture.context.SaveChanges();
-
-        // Act
-        await transportService.DeleteTransport(transportToDelete.Id);
-
-        // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await transportService.DeleteTransport(transportToDelete.Id));
-    }
-
-    [Fact]
     public async Task UpdateTransport()
     {
         // Arrange

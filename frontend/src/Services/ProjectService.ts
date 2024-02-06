@@ -28,12 +28,9 @@ export class __ProjectService extends __BaseService {
         return Project.fromJSON(res)
     }
 
-    public async setReferenceCase(body:Components.Schemas.ProjectDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.put(
-            "/ReferenceCase",
-            { body },
-        )
-        return Project.fromJSON(res)
+    public async compareCases(projectId: string) {
+        const res: Components.Schemas.CompareCasesDto[] = await this.get<Components.Schemas.CompareCasesDto[]>(`/${projectId}/case-comparison`)
+        return res
     }
 }
 

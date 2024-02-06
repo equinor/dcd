@@ -1,13 +1,9 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Services
+namespace api.Services;
+
+public interface IDevelopmentOperationalWellCostsService
 {
-    public interface IDevelopmentOperationalWellCostsService
-    {
-        Task<DevelopmentOperationalWellCostsDto?> UpdateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto);
-        Task<DevelopmentOperationalWellCostsDto> CreateOperationalWellCosts(DevelopmentOperationalWellCostsDto dto);
-        Task<DevelopmentOperationalWellCosts?> GetOperationalWellCostsByProjectId(Guid id);
-        Task<DevelopmentOperationalWellCosts?> GetOperationalWellCosts(Guid id);
-    }
+    Task<DevelopmentOperationalWellCosts?> GetOperationalWellCosts(Guid id);
 }
