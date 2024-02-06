@@ -275,6 +275,8 @@ public class ProjectService : IProjectService
         var project = await GetProject(projectId);
         var projectDto = ProjectDtoAdapter.Convert(project);
 
+        _logger.LogInformation("GetProjectDto projectDto.WellProjects: {count}", projectDto.WellProjects?.Count ?? 0);
+
         Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
             new JsonSerializerSettings
             {
@@ -360,6 +362,11 @@ public class ProjectService : IProjectService
         project.Transports = (await GetTransports(project.Id)).ToList();
         project.Explorations = (await GetExplorations(project.Id)).ToList();
         project.Wells = (await GetWells(project.Id)).ToList();
+
+
+        _logger.LogInformation("Add assets to project: {projectId}", project.Id.ToString());
+        _logger.LogInformation("WellProjects: {count}", project.WellProjects.Count);
+
         return project;
     }
 
