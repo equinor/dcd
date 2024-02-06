@@ -69,7 +69,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
                 values.Add(countryCost * percentageOfLastYear);
                 gAndGAdminCost.Values = values.ToArray();
 
-                var saveResult = await UpdateExplorationAndSaveAsync(exploration, gAndGAdminCost);
+                await UpdateExplorationAndSaveAsync(exploration, gAndGAdminCost);
 
                 return ExplorationDtoAdapter.Convert(gAndGAdminCost);
             }

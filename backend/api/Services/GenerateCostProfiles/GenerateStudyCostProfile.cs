@@ -49,7 +49,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         feed.StartYear = newFeed.StartYear;
         feed.Values = newFeed.Values;
 
-        var saveResult = await UpdateCaseAndSaveAsync(caseItem, feasibility, feed);
+        await UpdateCaseAndSaveAsync(caseItem, feasibility, feed);
 
         var result = new StudyCostProfileWrapperDto();
         var feasibilityDto = CaseDtoAdapter.Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(feasibility);

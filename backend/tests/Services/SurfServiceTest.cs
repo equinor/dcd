@@ -148,7 +148,6 @@ public class SurfServiceTest
     public async Task ThrowArgumentExceptionWhenTryingToDeleteNonExistentSurf()
     {
         var surfService = GetSurfService();
-        var project = fixture.context.Projects.FirstOrDefault();
         var testSurf = InitializeTestSurf();
 
         // Act
@@ -205,13 +204,13 @@ public class SurfServiceTest
             Maturity = Maturity.B,
             ProductionFlowline = ProductionFlowline.SSClad_Insulation,
         }
-            .WithCostProfile(new SurfCostProfile()
+            .WithCostProfile(new SurfCostProfile
             {
                 StartYear = 2031,
                 Values = [5.5, 6.6, 7.7]
             }
             )
-            .WithSurfCessationCostProfile(new SurfCessationCostProfile()
+            .WithSurfCessationCostProfile(new SurfCessationCostProfile
             {
                 StartYear = 2032,
                 Values = [7.7, 8.8, 9.9]

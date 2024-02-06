@@ -6,8 +6,10 @@ public static class STEACaseDtoBuilder
 {
     public static STEACaseDto Build(CaseDto caseDto, ProjectDto projectDto)
     {
-        var sTEACaseDto = new STEACaseDto();
-        sTEACaseDto.Name = caseDto.Name;
+        var sTEACaseDto = new STEACaseDto
+        {
+            Name = caseDto.Name
+        };
         AddStudyCost(sTEACaseDto, caseDto);
         AddOpexCost(sTEACaseDto, caseDto);
         AddCapex(projectDto, sTEACaseDto, caseDto);
@@ -44,7 +46,7 @@ public static class STEACaseDtoBuilder
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
-        var opexCost = new OpexCostProfileDto()
+        var opexCost = new OpexCostProfileDto
         {
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
@@ -75,7 +77,7 @@ public static class STEACaseDtoBuilder
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
-        var studyCost = new StudyCostProfileDto()
+        var studyCost = new StudyCostProfileDto
         {
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
@@ -106,7 +108,7 @@ public static class STEACaseDtoBuilder
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
-        var cessationCost = new CessationCostDto()
+        var cessationCost = new CessationCostDto
         {
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
@@ -268,7 +270,7 @@ public static class STEACaseDtoBuilder
 
             if (drainageStrategyDto.NetSalesGasOverride?.Override == true)
             {
-                var productionProfile = new NetSalesGasDto()
+                var productionProfile = new NetSalesGasDto
                 {
                     StartYear = drainageStrategyDto.NetSalesGasOverride.StartYear,
                     Values = drainageStrategyDto.NetSalesGasOverride.Values,
@@ -284,7 +286,7 @@ public static class STEACaseDtoBuilder
 
             if (drainageStrategyDto.ImportedElectricityOverride?.Override == true)
             {
-                var productionProfile = new ImportedElectricityDto()
+                var productionProfile = new ImportedElectricityDto
                 {
                     StartYear = drainageStrategyDto.ImportedElectricityOverride.StartYear,
                     Values = drainageStrategyDto.ImportedElectricityOverride.Values,
@@ -300,7 +302,7 @@ public static class STEACaseDtoBuilder
 
             if (drainageStrategyDto.Co2EmissionsOverride?.Override == true)
             {
-                var profile = new Co2EmissionsDto()
+                var profile = new Co2EmissionsDto
                 {
                     StartYear = drainageStrategyDto.Co2EmissionsOverride.StartYear,
                     Values = drainageStrategyDto.Co2EmissionsOverride.Values,

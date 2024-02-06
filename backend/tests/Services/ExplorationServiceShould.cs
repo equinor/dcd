@@ -101,11 +101,11 @@ public class ExplorationServiceShould : IDisposable
             ProjectId = project.Id,
             RigMobDemob = 32.7
         }
-                .WithGAndGAdminCost(new GAndGAdminCost()
+                .WithGAndGAdminCost(new GAndGAdminCost
                 {
                     Currency = Currency.NOK,
                     StartYear = 2010,
-                    Values = new double[] { 314.4, 281.2, 34.3 }
+                    Values = [314.4, 281.2, 34.3]
                 }
 
                 );
@@ -121,11 +121,11 @@ public class ExplorationServiceShould : IDisposable
             ProjectId = project.Id,
             RigMobDemob = 32.7
         }
-                .WithGAndGAdminCost(new GAndGAdminCost()
+                .WithGAndGAdminCost(new GAndGAdminCost
                 {
                     Currency = Currency.USD,
                     StartYear = 2030,
-                    Values = new double[] { 31.4, 282.2, 34.3 }
+                    Values = [31.4, 282.2, 34.3]
                 }
 
                 );

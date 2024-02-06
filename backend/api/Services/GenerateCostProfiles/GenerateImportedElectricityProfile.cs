@@ -43,7 +43,7 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
         importedElectricity.StartYear = calculateImportedElectricity.StartYear;
         importedElectricity.Values = calculateImportedElectricity.Values;
 
-        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, importedElectricity);
+        await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, importedElectricity);
 
         var dto = DrainageStrategyDtoAdapter.Convert<ImportedElectricityDto, ImportedElectricity>(importedElectricity, project.PhysicalUnit);
         return dto ?? new ImportedElectricityDto();

@@ -25,7 +25,6 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     {
         var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        var projectService = _caseServiceFixture.ProjectService;
         var caseService = _caseServiceFixture.CaseService;
 
         caseService.CreateCase(CaseDtoAdapter.Convert(actual));
