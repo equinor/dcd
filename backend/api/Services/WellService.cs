@@ -69,7 +69,7 @@ public class WellService : IWellService
 
         await _context.SaveChangesAsync();
 
-        _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWellDtos.Select(w => w.Id).ToList());
+        await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWellDtos.Select(w => w.Id).ToList());
 
         return updatedWellDtoList.ToArray();
     }

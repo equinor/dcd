@@ -261,8 +261,7 @@ public class ProjectService : IProjectService
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 }));
-            AddAssetsToProject(project);
-            _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
+            await AddAssetsToProject(project);
             return project;
         }
 
@@ -360,6 +359,7 @@ public class ProjectService : IProjectService
         project.Transports = (await GetTransports(project.Id)).ToList();
         project.Explorations = (await GetExplorations(project.Id)).ToList();
         project.Wells = (await GetWells(project.Id)).ToList();
+
         return project;
     }
 

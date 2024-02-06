@@ -49,13 +49,13 @@ public class WellProjectWellsController : ControllerBase
     }
 
     [HttpPost("multiple", Name = "CreateMultipleWellProjectWells")]
-    public async Task<WellProjectWellDto[]> CreateMultipleWellProjectWells([FromBody] WellProjectWellDto[] wellDto)
+    public async Task<WellProjectWellDto[]?> CreateMultipleWellProjectWells([FromBody] WellProjectWellDto[] wellDto)
     {
         return await _wellProjectWellService.CreateMultipleWellProjectWells(wellDto);
     }
 
     [HttpPut("multiple", Name = "UpdateMultipleWellProjectWells")]
-    public async Task<WellProjectWellDto[]> UpdateMultipleWellProjectWells([FromQuery] Guid caseId, [FromBody] WellProjectWellDto[] wellDto)
+    public async Task<WellProjectWellDto[]?> UpdateMultipleWellProjectWells([FromQuery] Guid caseId, [FromBody] WellProjectWellDto[] wellDto)
     {
         return await _wellProjectWellService.UpdateMultipleWellProjectWells(wellDto, caseId);
     }

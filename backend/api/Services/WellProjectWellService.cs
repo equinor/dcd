@@ -38,7 +38,7 @@ public class WellProjectWellService : IWellProjectWellService
         throw new NotFoundInDBException();
     }
 
-    public async Task<WellProjectWellDto[]>? CreateMultipleWellProjectWells(WellProjectWellDto[] wellProjectWellDtos)
+    public async Task<WellProjectWellDto[]?> CreateMultipleWellProjectWells(WellProjectWellDto[] wellProjectWellDtos)
     {
         var wellProjectId = wellProjectWellDtos.FirstOrDefault()?.WellProjectId;
         ProjectDto? projectDto = null;
@@ -72,7 +72,7 @@ public class WellProjectWellService : IWellProjectWellService
         throw new NotFoundInDBException();
     }
 
-    public async Task<WellProjectWellDto[]>? UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos, Guid caseId)
+    public async Task<WellProjectWellDto[]?> UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos, Guid caseId)
     {
         var wellProjectId = updatedWellProjectWellDtos.FirstOrDefault()?.WellProjectId;
         ProjectDto? projectDto = null;
