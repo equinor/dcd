@@ -19,9 +19,9 @@ namespace api.Services
             _logger = loggerFactory.CreateLogger<SurfService>();
         }
 
-        public async Task<ExplorationOperationalWellCostsDto?> UpdateOperationalWellCostsAsync(ExplorationOperationalWellCostsDto dto)
+        public async Task<ExplorationOperationalWellCostsDto?> UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
         {
-            var existing = await GetOperationalWellCostsByProjectIdAsync(dto.ProjectId);
+            var existing = await GetOperationalWellCostsByProjectId(dto.ProjectId);
             if (existing == null)
             {
                 return null;
@@ -34,7 +34,7 @@ namespace api.Services
             return updatedDto;
         }
 
-        public async Task<ExplorationOperationalWellCostsDto> CreateOperationalWellCostsAsync(ExplorationOperationalWellCostsDto dto)
+        public async Task<ExplorationOperationalWellCostsDto> CreateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
         {
             var explorationOperationalWellCosts = ExplorationOperationalWellCostsAdapter.Convert(dto);
             var project = await _projectService.GetProject(dto.ProjectId);
@@ -44,14 +44,14 @@ namespace api.Services
             return ExplorationOperationalWellCostsDtoAdapter.Convert(explorationOperationalWellCosts);
         }
 
-        public async Task<ExplorationOperationalWellCosts?> GetOperationalWellCostsByProjectIdAsync(Guid id)
+        public async Task<ExplorationOperationalWellCosts?> GetOperationalWellCostsByProjectId(Guid id)
         {
             var operationalWellCosts = await _context.ExplorationOperationalWellCosts!
                 .FirstOrDefaultAsync(o => o.ProjectId == id);
             return operationalWellCosts;
         }
 
-        public async Task<ExplorationOperationalWellCosts?> GetOperationalWellCostsAsync(Guid id)
+        public async Task<ExplorationOperationalWellCosts?> GetOperationalWellCosts(Guid id)
         {
             var operationalWellCosts = await _context.ExplorationOperationalWellCosts!
                 .Include(eowc => eowc.Project)

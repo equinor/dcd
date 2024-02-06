@@ -28,13 +28,13 @@ namespace api.Controllers
         [HttpPut(Name = "UpdateExplorationOperationalWellCosts")]
         public async Task<ExplorationOperationalWellCostsDto?> UpdateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
         {
-            return await _operationalWellCostsService.UpdateOperationalWellCostsAsync(dto);
+            return await _operationalWellCostsService.UpdateOperationalWellCosts(dto);
         }
 
         [HttpPost(Name = "CreateExplorationOperationalWellCosts")]
         public async Task<ExplorationOperationalWellCostsDto> CreateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
         {
-            return await _operationalWellCostsService.CreateOperationalWellCostsAsync(dto);
+            return await _operationalWellCostsService.CreateOperationalWellCosts(dto);
         }
     }
 }

@@ -138,7 +138,7 @@ public class TechnicalInputService : ITechnicalInputService
         {
             return updatedDto;
         }
-        var item = await _explorationOperationalWellCostsService.GetOperationalWellCostsAsync(updatedDto.Id) ?? new ExplorationOperationalWellCosts();
+        var item = await _explorationOperationalWellCostsService.GetOperationalWellCosts(updatedDto.Id) ?? new ExplorationOperationalWellCosts();
         ExplorationOperationalWellCostsAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.ExplorationOperationalWellCosts!.Update(item);
         await _context.SaveChangesAsync();
