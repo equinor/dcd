@@ -105,10 +105,12 @@ const EditTechnicalInputModal = ({
     const [originalExplorationWells, setOriginalExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
 
     const [isSaving, setIsSaving] = useState<boolean>()
+    const [changesMade, setChangesMade] = useState<boolean>(false);
 
     useEffect(() => {
         if (isOpen && !justOpened) {
             // Set the original state only when the modal is opened
+            setChangesMade(false)
             setOriginalProject({ ...project })
             setOriginalExplorationOperationalWellCosts({ ...explorationOperationalWellCosts })
             setOriginalDevelopmentOperationalWellCosts({ ...developmentOperationalWellCosts })
@@ -116,7 +118,7 @@ const EditTechnicalInputModal = ({
             setOriginalExplorationWells([...explorationWells])
             setJustOpened(false)
         }
-    }, [isOpen, project, explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened])
+    }, [isOpen, project, justOpened])//explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -226,6 +228,8 @@ const EditTechnicalInputModal = ({
                 setExplorationWellProjectWellsFromWells(result.wellDtos)
             }
             setIsSaving(false)
+            toggleEditTechnicalInputModal()
+            setChangesMade(false)
         } catch (error) {
             console.error("Error when saving technical input: ", error)
         } finally {
