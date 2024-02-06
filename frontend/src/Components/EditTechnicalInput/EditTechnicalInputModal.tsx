@@ -225,7 +225,6 @@ const EditTechnicalInputModal = ({
             if (result.wellDtos) {
                 setExplorationWellProjectWellsFromWells(result.wellDtos)
             }
-
             setIsSaving(false)
             toggleEditTechnicalInputModal()
         } catch (error) {
@@ -241,10 +240,8 @@ const EditTechnicalInputModal = ({
         setProject({ ...originalProject })
         setExplorationOperationalWellCosts({ ...originalExplorationOperationalWellCosts })
         setDevelopmentOperationalWellCosts({ ...originalDevelopmentOperationalWellCosts })
-        // For arrays, spread into a new array
         setWellProjectWells([...originalWellProjectWells])
         setExplorationWells([...originalExplorationWells])
-
         // Close the modal
         toggleEditTechnicalInputModal()
     }
