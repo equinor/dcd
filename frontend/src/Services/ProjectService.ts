@@ -10,7 +10,7 @@ export class __ProjectService extends __BaseService {
         return Project.fromJSON(project)
     }
 
-    createProject(project: Components.Schemas.ProjectDto) {
+    public async createProject(project: Components.Schemas.ProjectDto) {
         return this.post("", { body: project })
     }
 

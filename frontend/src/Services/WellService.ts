@@ -7,45 +7,9 @@ import { LoginAccessTokenKey, GetToken } from "../Utils/common"
 import { Well } from "../models/Well"
 
 class __WellService extends __BaseService {
-    public async getWells() {
-        const wells: Components.Schemas.WellDto[] = await this.get<Components.Schemas.WellDto[]>("")
-        return wells.map(Well.fromJSON)
-    }
-
-    public async getWellsByProjectId(projectId: string) {
-        // eslint-disable-next-line max-len
-        const wells: Components.Schemas.WellDto[] = await this.getWithParams("", { params: { projectId } })
-        return wells.map(Well.fromJSON)
-    }
-
-    async getWellById(id: string) {
-        const well: Components.Schemas.WellDto = await this.get<Components.Schemas.WellDto>(`/${id}`)
-        return Well.fromJSON(well)
-    }
-
-    public async createWell(data: Components.Schemas.WellDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.post("", { body: data })
-        return Project.fromJSON(res)
-    }
-
-    public async updateWell(body: Components.Schemas.WellDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.put("", { body })
-        return Project.fromJSON(res)
-    }
-
     public async deleteWell(wellId: string): Promise<Project> {
         const res: Components.Schemas.ProjectDto = await this.delete(`${wellId}`)
         return Project.fromJSON(res)
-    }
-
-    public async updateMultipleWells(body: Components.Schemas.WellDto[]): Promise<any> {
-        const res: any = await this.put("/multiple", { body })
-        return res
-    }
-
-    public async createMultipleWells(body: Components.Schemas.WellDto[]): Promise<any> {
-        const res: any = await this.post("/multiple", { body })
-        return res
     }
 }
 
