@@ -28,11 +28,6 @@ public class CommonLibraryService
         _logger.LogInformation("Successfully created a Commmon Library client.");
     }
 
-    public static string BuildTokenConnectionString(string clientId, string tenantId, string clientSecret)
-    {
-        return $"RunAs=App;AppId={clientId};TenantId={tenantId};AppKey={clientSecret}";
-    }
-
     public async Task<List<CommonLibraryProjectDto>> GetProjectsFromCommonLibrary()
     {
         _logger.LogInformation("Attempting to retrieve project list from Common Library.");

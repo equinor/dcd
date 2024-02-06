@@ -381,48 +381,6 @@ public class ProspExcelImportService
         }
     }
 
-    public async Task<ProjectDto> ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
-    {
-        using var ms = new MemoryStream();
-        file.CopyTo(ms);
-        using var document = SpreadsheetDocument.Open(ms, false);
-        var workbookPart = document.WorkbookPart;
-        var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
-            .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
-
-        if (mainSheet?.Id != null && workbookPart != null)
-        {
-            var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
-            var cellData = wsPart?.Worksheet.Descendants<Cell>();
-
-            if (cellData != null)
-            {
-                var parsedData = cellData.ToList();
-                if (assets["Surf"])
-                {
-                    await ImportSurf(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Topside"])
-                {
-                    await ImportTopside(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Substructure"])
-                {
-                    await ImportSubstructure(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Transport"])
-                {
-                    await ImportTransport(parsedData, sourceCaseId, projectId);
-                }
-            }
-        }
-
-        return await _projectService.GetProjectDto(projectId);
-    }
-
     public async Task<ProjectDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
         string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
     {
