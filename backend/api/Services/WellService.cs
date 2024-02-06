@@ -22,14 +22,6 @@ public class WellService : IWellService
         _logger = loggerFactory.CreateLogger<WellService>();
     }
 
-    public async Task<ProjectDto> CreateWell(WellDto wellDto)
-    {
-        var _well = WellAdapter.Convert(wellDto);
-        _context.Wells!.Add(_well);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(wellDto.ProjectId);
-    }
-
     public async Task<ProjectDto> DeleteWell(Guid wellId)
     {
         var wellItem = await GetWell(wellId);
@@ -37,17 +29,6 @@ public class WellService : IWellService
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(wellItem.ProjectId);
     }
-
-    public async Task<WellDto> UpdateExistingWell(WellDto updatedWellDto)
-    {
-        var existing = await GetWell(updatedWellDto.Id);
-        WellAdapter.ConvertExisting(existing, updatedWellDto);
-
-        var well = _context.Wells!.Update(existing);
-        await _context.SaveChangesAsync();
-        return WellDtoAdapter.Convert(well.Entity);
-    }
-
     public async Task<Well> GetWell(Guid wellId)
     {
         var well = await _context.Wells!
@@ -59,32 +40,5 @@ public class WellService : IWellService
             throw new ArgumentException(string.Format("Well {0} not found.", wellId));
         }
         return well;
-    }
-
-    public async Task<IEnumerable<Well>> GetAll()
-    {
-        if (_context.Wells != null)
-        {
-            return await _context.Wells.ToListAsync();
-        }
-        else
-        {
-            _logger.LogInformation("No Wells existing");
-            return new List<Well>();
-        }
-    }
-
-    public async Task<IEnumerable<Well>> GetWells(Guid projectId)
-    {
-        if (_context.Wells != null)
-        {
-            return await _context.Wells
-                .Where(d => d.ProjectId.Equals(projectId))
-                .ToListAsync();
-        }
-        else
-        {
-            return new List<Well>();
-        }
     }
 }
