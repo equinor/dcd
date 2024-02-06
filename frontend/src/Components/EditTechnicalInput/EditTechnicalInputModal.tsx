@@ -236,12 +236,12 @@ const EditTechnicalInputModal = ({
 
     const handleSaveAndClose = async () => {
         handleSave().then(() => {
-            toggleEditTechnicalInputModal(); // Close the modal only after save completes successfully
+            toggleEditTechnicalInputModal() // Close the modal only after save completes successfully
         }).catch((error) => {
             // Handle save error, modal stays open allowing users to try again or cancel
-            console.error("Error during save operation: ", error);
-        });
-    };
+            console.error("Error during save operation: ", error)
+        })
+    }
 
     const handleCancel = () => {
         // Assuming `captureInitialState` function properly captures and sets original states
