@@ -4,7 +4,6 @@ import { GetToken, LoginAccessTokenKey } from "../Utils/common"
 
 export class __CompareCasesService extends __BaseService {
     async calculate(projectId: string) {
-        // eslint-disable-next-line max-len
         const res: Components.Schemas.CompareCasesDto[] = await this.post<Components.Schemas.CompareCasesDto[]>(`/${projectId}/calculateCompareCasesTotals`)
         return res
     }
