@@ -1,12 +1,5 @@
 import { Case } from "./case/Case"
-import { DrainageStrategy } from "./assets/drainagestrategy/DrainageStrategy"
-import { Exploration } from "./assets/exploration/Exploration"
 import { ProjectPhase } from "./ProjectPhase"
-import { Substructure } from "./assets/substructure/Substructure"
-import { Surf } from "./assets/surf/Surf"
-import { Topside } from "./assets/topside/Topside"
-import { Transport } from "./assets/transport/Transport"
-import { WellProject } from "./assets/wellproject/WellProject"
 import { Well } from "./Well"
 import { ExplorationOperationalWellCosts } from "./ExplorationOperationalWellCosts"
 import { DevelopmentOperationalWellCosts } from "./DevelopmentOperationalWellCosts"
@@ -50,24 +43,24 @@ export class Project implements Components.Schemas.ProjectDto {
         this.country = data.country ?? null
         this.createdAt = data.createDate ? new Date(data.createDate) : null
         this.description = data.description ?? null
-        this.drainageStrategies = data.drainageStrategies?.map(DrainageStrategy.fromJSON) ?? []
-        this.explorations = data.explorations?.map(Exploration.fromJSON) ?? []
+        this.drainageStrategies = data.drainageStrategies ?? []
+        this.explorations = data.explorations ?? []
         this.id = data.id ?? ""
         this.commonLibraryId = data.commonLibraryId ?? ""
         this.commonLibraryName = data.commonLibraryName ?? ""
         this.referenceCaseId = data.referenceCaseId ?? ""
         this.name = data.name ?? ""
         this.phase = data.projectPhase
-        this.substructures = data.substructures?.map(Substructure.fromJSON) ?? []
-        this.surfs = data.surfs?.map(Surf.fromJSON) ?? []
-        this.topsides = data.topsides?.map(Topside.fromJSON) ?? []
-        this.transports = data.transports?.map(Transport.fromJSON) ?? []
-        this.wellProjects = data.wellProjects?.map(WellProject.fromJSON) ?? []
+        this.substructures = data.substructures ?? []
+        this.surfs = data.surfs ?? []
+        this.topsides = data.topsides ?? []
+        this.transports = data.transports ?? []
+        this.wellProjects = data.wellProjects ?? []
         this.currency = data.currency ?? 1
         this.physUnit = data.physUnit ?? 0
         this.wells = data.wells?.map(Well.fromJSON) ?? []
-        this.explorationWellCosts = ExplorationOperationalWellCosts.fromJSON(data.explorationOperationalWellCosts)
-        this.developmentWellCosts = DevelopmentOperationalWellCosts.fromJSON(data.developmentOperationalWellCosts)
+        this.explorationWellCosts = data.explorationOperationalWellCosts
+        this.developmentWellCosts = data.developmentOperationalWellCosts
         this.sharepointSiteUrl = data.sharepointSiteUrl
         this.cO2RemovedFromGas = data.cO2RemovedFromGas ?? 0
         this.cO2EmissionFromFuelGas = data.cO2EmissionFromFuelGas ?? 0

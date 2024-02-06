@@ -15,8 +15,6 @@ import { Well } from "../../models/Well"
 import { IsExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
-import { Exploration } from "../../models/assets/exploration/Exploration"
-import { WellProject } from "../../models/assets/wellproject/WellProject"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -204,10 +202,10 @@ const EditTechnicalInputModal = ({
             }
 
             if (result.explorationDto && setExploration) {
-                setExploration(Exploration.fromJSON(result.explorationDto))
+                setExploration(result.explorationDto)
             }
             if (result.wellProjectDto && setWellProject) {
-                setWellProject(WellProject.fromJSON(result.wellProjectDto))
+                setWellProject(result.wellProjectDto)
             }
 
             setExplorationOperationalWellCosts(explorationOperationalWellCosts)

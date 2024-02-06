@@ -10,7 +10,6 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { IsExplorationWell, isInteger } from "../../Utils/common"
-import { DrillingSchedule } from "../../models/assets/wellproject/DrillingSchedule"
 import { WellProjectWell } from "../../models/WellProjectWell"
 import { ExplorationWell } from "../../models/ExplorationWell"
 import { Well } from "../../models/Well"
@@ -76,7 +75,7 @@ function CaseDrillingScheduleTabTable({
                     total: 0,
                     assetWell: w,
                     assetWells: existingAndNewAssetWells,
-                    drillingSchedule: w.drillingSchedule ?? new DrillingSchedule(),
+                    drillingSchedule: w.drillingSchedule,
                 }
                 if (tableWell.drillingSchedule.values && tableWell.drillingSchedule.values.length > 0
                     && tableWell.drillingSchedule.startYear !== undefined) {
