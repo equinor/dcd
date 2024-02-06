@@ -22,7 +22,7 @@ public class TransportService : ITransportService
     public async Task<ProjectDto> CreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
         var transport = TransportAdapter.Convert(transportDto);
-        var project = await _projectService.GetProjectAsync(transport.ProjectId);
+        var project = await _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.ProspVersion = transportDto.ProspVersion;
         transport.LastChangedDate = DateTimeOffset.UtcNow;
@@ -31,13 +31,13 @@ public class TransportService : ITransportService
         _context.Transports!.Add(transport);
         await _context.SaveChangesAsync();
         await SetCaseLink(transport, sourceCaseId, project);
-        return await _projectService.GetProjectDtoAsync(transport.ProjectId);
+        return await _projectService.GetProjectDto(transport.ProjectId);
     }
 
     public async Task<Transport> NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
         var transport = TransportAdapter.Convert(transportDto);
-        var project = await _projectService.GetProjectAsync(transport.ProjectId);
+        var project = await _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.LastChangedDate = DateTimeOffset.UtcNow;
         var createdTransport = _context.Transports!.Add(transport);
@@ -87,7 +87,7 @@ public class TransportService : ITransportService
         _context.Transports!.Remove(transport);
         DeleteCaseLinks(transportId);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(transport.ProjectId);
+        return await _projectService.GetProjectDto(transport.ProjectId);
     }
 
     public async Task<Transport> GetTransport(Guid transportId)
@@ -124,7 +124,7 @@ public class TransportService : ITransportService
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Transports!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(updatedTransportDto.ProjectId);
+        return await _projectService.GetProjectDto(updatedTransportDto.ProjectId);
     }
 
     public async Task<TransportDto> NewUpdateTransport(TransportDto updatedTransportDto)

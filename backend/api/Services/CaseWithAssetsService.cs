@@ -89,7 +89,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
     public async Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssetsAsync(CaseWithAssetsWrapperDto wrapper)
     {
-        var project = _projectService.GetProjectWithoutAssets(wrapper.CaseDto.ProjectId);
+        var project = await _projectService.GetProjectWithoutAssets(wrapper.CaseDto.ProjectId);
 
         var profilesToGenerate = new ProfilesToGenerate();
 
@@ -117,7 +117,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         var generatedProfiles = await GenerateProfilesAsync(profilesToGenerate, wrapper.CaseDto.Id);
 
-        var projectDto = _projectService.GetProjectDto(updatedCaseDto.ProjectId);
+        var projectDto = await _projectService.GetProjectDto(updatedCaseDto.ProjectId);
 
         var result = new ProjectWithGeneratedProfilesDto
         {

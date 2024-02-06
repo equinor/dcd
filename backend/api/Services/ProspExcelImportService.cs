@@ -416,7 +416,7 @@ public class ProspExcelImportService
             }
         }
 
-        return _projectService.GetProjectDto(projectId);
+        return await _projectService.GetProjectDto(projectId);
     }
 
     public async Task<ProjectDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
@@ -481,7 +481,7 @@ public class ProspExcelImportService
             return await _caseService.UpdateCase(caseDto);
         }
 
-        return _projectService.GetProjectDto(projectId);
+        return await _projectService.GetProjectDto(projectId);
     }
 
     public async Task ClearImportedProspData(Guid sourceCaseId, Guid projectId)

@@ -30,7 +30,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
     public async Task<OpexCostProfileWrapperDto> GenerateAsync(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var result = new OpexCostProfileWrapperDto();

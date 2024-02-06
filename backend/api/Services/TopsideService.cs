@@ -47,20 +47,20 @@ public class TopsideService : ITopsideService
     public async Task<ProjectDto> CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
     {
         var topside = TopsideAdapter.Convert(topsideDto);
-        var project = await _projectService.GetProjectAsync(topsideDto.ProjectId);
+        var project = await _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.UtcNow;
         topside.ProspVersion = topsideDto.ProspVersion;
         _context.Topsides!.Add(topside);
         await _context.SaveChangesAsync();
         await SetCaseLink(topside, sourceCaseId, project);
-        return await _projectService.GetProjectDtoAsync(project.Id);
+        return await _projectService.GetProjectDto(project.Id);
     }
 
     public async Task<Topside> NewCreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
     {
         var topside = TopsideAdapter.Convert(topsideDto);
-        var project = await _projectService.GetProjectAsync(topsideDto.ProjectId);
+        var project = await _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.UtcNow;
         topside.ProspVersion = topsideDto.ProspVersion;
@@ -87,7 +87,7 @@ public class TopsideService : ITopsideService
         _context.Topsides!.Remove(topside);
         DeleteCaseLinks(topsideId);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(topside.ProjectId);
+        return await _projectService.GetProjectDto(topside.ProjectId);
     }
 
     private void DeleteCaseLinks(Guid topsideId)
@@ -109,7 +109,7 @@ public class TopsideService : ITopsideService
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Topsides!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(updatedTopsideDto.ProjectId);
+        return await _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
     }
 
     public async Task<TopsideDto> NewUpdateTopside(TopsideDto updatedTopsideDto)

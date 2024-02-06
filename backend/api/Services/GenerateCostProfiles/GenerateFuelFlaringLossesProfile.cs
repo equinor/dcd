@@ -28,7 +28,7 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
     {
         var caseItem = await _caseService.GetCase(caseId);
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var fuelConsumptions =

@@ -69,18 +69,18 @@ public class WellProjectService : IWellProjectService
 
     public async Task<ProjectDto> CreateWellProject(WellProject wellProject, Guid sourceCaseId)
     {
-        var project = await _projectService.GetProjectAsync(wellProject.ProjectId);
+        var project = await _projectService.GetProject(wellProject.ProjectId);
         wellProject.Project = project;
         _context.WellProjects!.Add(wellProject);
         await _context.SaveChangesAsync();
         await SetCaseLink(wellProject, sourceCaseId, project);
-        return await _projectService.GetProjectDtoAsync(project.Id);
+        return await _projectService.GetProjectDto(project.Id);
     }
 
     public async Task<WellProject> NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId)
     {
         var wellProject = WellProjectAdapter.Convert(wellProjectDto);
-        var project = await _projectService.GetProjectAsync(wellProject.ProjectId);
+        var project = await _projectService.GetProject(wellProject.ProjectId);
         wellProject.Project = project;
         var createdWellProject = _context.WellProjects!.Add(wellProject);
         await _context.SaveChangesAsync();
@@ -105,7 +105,7 @@ public class WellProjectService : IWellProjectService
         _context.WellProjects!.Remove(wellProject);
         DeleteCaseLinks(wellProjectId);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(wellProject.ProjectId);
+        return await _projectService.GetProjectDto(wellProject.ProjectId);
     }
 
     private void DeleteCaseLinks(Guid wellProjectId)
@@ -126,7 +126,7 @@ public class WellProjectService : IWellProjectService
 
         _context.WellProjects!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(updatedWellProject.ProjectId);
+        return await _projectService.GetProjectDto(updatedWellProject.ProjectId);
     }
 
     public async Task<WellProjectDto> NewUpdateWellProject(WellProjectDto updatedWellProjectDto)

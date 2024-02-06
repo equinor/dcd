@@ -35,15 +35,15 @@ public class STEAController : ControllerBase
     }
 
     [HttpGet("{ProjectId}", Name = "GetInputToSTEA")]
-    public STEAProjectDto GetInputToSTEA(Guid ProjectId)
+    public async Task<STEAProjectDto> GetInputToSTEA(Guid ProjectId)
     {
-        return _sTEAService.GetInputToSTEA(ProjectId);
+        return await _sTEAService.GetInputToSTEA(ProjectId);
     }
 
     [HttpPost("{ProjectId}", Name = "ExcelToSTEA")]
-    public FileResult ExcelToSTEA(Guid ProjectId)
+    public async Task<FileResult> ExcelToSTEA(Guid ProjectId)
     {
-        var project = GetInputToSTEA(ProjectId);
+        var project = await GetInputToSTEA(ProjectId);
         List<BusinessCase> businessCases = ExportToSTEA.Export(project);
         string filename = project.Name + "ExportToSTEA.xlsx";
         return File(ExcelFile(businessCases, project.Name).ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);

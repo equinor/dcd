@@ -16,21 +16,21 @@ public class DrainageStrategyService(DcdDbContext context, IProjectService proje
 
     public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
-        var unit = _projectService.GetProject(drainageStrategyDto.ProjectId).PhysicalUnit;
+        var unit = (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
-        var project = _projectService.GetProject(drainageStrategy.ProjectId);
+        var project = await _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
         await _context.DrainageStrategies!.AddAsync(drainageStrategy);
         await _context.SaveChangesAsync();
         await SetCaseLink(drainageStrategy, sourceCaseId, project);
-        return _projectService.GetProjectDto(drainageStrategy.ProjectId);
+        return await _projectService.GetProjectDto(drainageStrategy.ProjectId);
     }
 
     public async Task<DrainageStrategy> NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
-        var unit = _projectService.GetProject(drainageStrategyDto.ProjectId).PhysicalUnit;
+        var unit =  (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
         var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
-        var project = _projectService.GetProject(drainageStrategy.ProjectId);
+        var project = await _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
         var createdDrainageStrategy = await _context.DrainageStrategies!.AddAsync(drainageStrategy);
         await _context.SaveChangesAsync();
@@ -41,7 +41,7 @@ public class DrainageStrategyService(DcdDbContext context, IProjectService proje
     public async Task<DrainageStrategyDto> CopyDrainageStrategy(Guid drainageStrategyId, Guid sourceCaseId)
     {
         var source = await GetDrainageStrategy(drainageStrategyId);
-        var unit = (await _projectService.GetProjectAsync(source.ProjectId)).PhysicalUnit;
+        var unit = (await _projectService.GetProject(source.ProjectId)).PhysicalUnit;
 
         var newDrainageStrategyDto = DrainageStrategyDtoAdapter.Convert(source, unit);
         newDrainageStrategyDto.Id = Guid.Empty;
@@ -121,7 +121,7 @@ public class DrainageStrategyService(DcdDbContext context, IProjectService proje
         _context.DrainageStrategies!.Remove(drainageStrategy);
         DeleteCaseLinks(drainageStrategyId);
         await _context.SaveChangesAsync();
-        return _projectService.GetProjectDto(drainageStrategy.ProjectId);
+        return await _projectService.GetProjectDto(drainageStrategy.ProjectId);
     }
 
     private void DeleteCaseLinks(Guid drainageStrategyId)
@@ -138,19 +138,19 @@ public class DrainageStrategyService(DcdDbContext context, IProjectService proje
     public async Task<ProjectDto> UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
     {
         var existing = await GetDrainageStrategy(updatedDrainageStrategyDto.Id);
-        var unit = _projectService.GetProject(existing.ProjectId).PhysicalUnit;
+        var unit = (await _projectService.GetProject(existing.ProjectId)).PhysicalUnit;
 
         DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
 
         _context.DrainageStrategies!.Update(existing);
         await _context.SaveChangesAsync();
-        return _projectService.GetProjectDto(existing.ProjectId);
+        return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
     public async Task<DrainageStrategyDto> NewUpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
     {
         var existing = await GetDrainageStrategy(updatedDrainageStrategyDto.Id);
-        var unit = _projectService.GetProject(existing.ProjectId).PhysicalUnit;
+        var unit = (await _projectService.GetProject(existing.ProjectId)).PhysicalUnit;
 
         DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
 

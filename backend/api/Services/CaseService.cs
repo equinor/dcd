@@ -45,17 +45,17 @@ public class CaseService : ICaseService
         {
             case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
         }
-        var project = await _projectService.GetProjectAsync(case_.ProjectId);
+        var project = await _projectService.GetProject(case_.ProjectId);
         case_.Project = project;
         await _context.Cases!.AddAsync(case_);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(project.Id);
+        return await _projectService.GetProjectDto(project.Id);
     }
 
     public async Task<ProjectDto> NewCreateCase(CaseDto caseDto)
     {
         var caseItem = CaseAdapter.Convert(caseDto);
-        var project = await _projectService.GetProjectAsync(caseItem.ProjectId);
+        var project = await _projectService.GetProject(caseItem.ProjectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
@@ -124,7 +124,7 @@ public class CaseService : ICaseService
         var wellProject = await _wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
         caseItem.WellProjectLink = wellProject.Id;
 
-        return await _projectService.GetProjectDtoAsync(project.Id);
+        return await _projectService.GetProjectDto(project.Id);
     }
 
     public async Task<ProjectDto> UpdateCase(CaseDto updatedCaseDto)
@@ -133,7 +133,7 @@ public class CaseService : ICaseService
         CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
         _context.Cases!.Update(caseItem);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(caseItem.ProjectId);
+        return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
     public async Task<CaseDto> NewUpdateCase(CaseDto updatedCaseDto)
@@ -150,7 +150,7 @@ public class CaseService : ICaseService
         var caseItem = await GetCase(caseId);
         _context.Cases!.Remove(caseItem);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(caseItem.ProjectId);
+        return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
     public async Task<Case> GetCase(Guid caseId)

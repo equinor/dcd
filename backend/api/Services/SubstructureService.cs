@@ -23,19 +23,19 @@ public class SubstructureService : ISubstructureService
 
     public async Task<ProjectDto> CreateSubstructure(Substructure substructure, Guid sourceCaseId)
     {
-        var project = await _projectService.GetProjectAsync(substructure.ProjectId);
+        var project = await _projectService.GetProject(substructure.ProjectId);
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Add(substructure);
         await _context.SaveChangesAsync();
         await SetCaseLink(substructure, sourceCaseId, project);
-        return await _projectService.GetProjectDtoAsync(project.Id);
+        return await _projectService.GetProjectDto(project.Id);
     }
 
     public async Task<Substructure> NewCreateSubstructure(SubstructureDto substructureDto, Guid sourceCaseId)
     {
         var substructure = SubstructureAdapter.Convert(substructureDto);
-        var project = await _projectService.GetProjectAsync(substructure.ProjectId);
+        var project = await _projectService.GetProject(substructure.ProjectId);
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSubstructure = _context.Substructures!.Add(substructure);
@@ -85,7 +85,7 @@ public class SubstructureService : ISubstructureService
         _context.Substructures!.Remove(substructure);
         DeleteCaseLinks(substructureId);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(substructure.ProjectId);
+        return await _projectService.GetProjectDto(substructure.ProjectId);
     }
 
     private void DeleteCaseLinks(Guid substructureId)
@@ -108,7 +108,7 @@ public class SubstructureService : ISubstructureService
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(existing.ProjectId);
+        return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
     public async Task<SubstructureDto> NewUpdateSubstructure(SubstructureDto updatedSubstructureDto)

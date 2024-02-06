@@ -122,7 +122,7 @@ namespace api.Services
                 caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Id = Guid.Empty;
             }
 
-            var project = await _projectService.GetProjectAsync(caseItem.ProjectId);
+            var project = await _projectService.GetProject(caseItem.ProjectId);
             caseItem.Project = project;
 
             caseItem.Name += " - copy";
@@ -141,7 +141,7 @@ namespace api.Services
             await _explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
 
             await _context.SaveChangesAsync();
-            return await _projectService.GetProjectDtoAsync(project.Id);
+            return await _projectService.GetProjectDto(project.Id);
         }
     }
 }

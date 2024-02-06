@@ -27,7 +27,7 @@ public class WellService : IWellService
         var _well = WellAdapter.Convert(wellDto);
         await _context.Wells!.AddAsync(_well);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(wellDto.ProjectId);
+        return await _projectService.GetProjectDto(wellDto.ProjectId);
     }
 
     public async Task<ProjectDto> UpdateWell(WellDto updatedWellDto)
@@ -37,7 +37,7 @@ public class WellService : IWellService
 
         _context.Wells!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(existing.ProjectId);
+        return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
     public async Task<ProjectDto> DeleteWell(Guid wellId)
@@ -45,7 +45,7 @@ public class WellService : IWellService
         var wellItem = await GetWell(wellId);
         _context.Wells!.Remove(wellItem);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(wellItem.ProjectId);
+        return await _projectService.GetProjectDto(wellItem.ProjectId);
     }
 
     public async Task<WellDto> UpdateExistingWell(WellDto updatedWellDto)

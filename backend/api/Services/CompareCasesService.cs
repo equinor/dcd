@@ -40,7 +40,7 @@ public class CompareCasesService : ICompareCasesService
 
     public async Task<IEnumerable<CompareCasesDto>> Calculate(Guid projectId)
     {
-        var project = _projectService.GetProjectWithoutAssetsNoTracking(projectId);
+        var project = await _projectService.GetProjectWithoutAssetsNoTracking(projectId);
         var caseList = new List<CompareCasesDto>();
         if (project.Cases != null)
         {

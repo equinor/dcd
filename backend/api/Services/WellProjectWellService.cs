@@ -33,7 +33,7 @@ public class WellProjectWellService : IWellProjectWellService
         var projectId = (await _context.WellProjects!.FirstOrDefaultAsync(c => c.Id == wellProjectWellDto.WellProjectId))?.ProjectId;
         if (projectId != null)
         {
-            return await _projectService.GetProjectDtoAsync((Guid)projectId);
+            return await _projectService.GetProjectDto((Guid)projectId);
         }
         throw new NotFoundInDBException();
     }
@@ -67,7 +67,7 @@ public class WellProjectWellService : IWellProjectWellService
         var projectId = (await _context.WellProjects!.FirstOrDefaultAsync(c => c.Id == updatedWellProjectWellDto.WellProjectId))?.ProjectId;
         if (projectId != null)
         {
-            return await _projectService.GetProjectDtoAsync((Guid)projectId);
+            return await _projectService.GetProjectDto((Guid)projectId);
         }
         throw new NotFoundInDBException();
     }

@@ -37,7 +37,7 @@ namespace api.Services
         public async Task<ExplorationOperationalWellCostsDto> CreateOperationalWellCostsAsync(ExplorationOperationalWellCostsDto dto)
         {
             var explorationOperationalWellCosts = ExplorationOperationalWellCostsAdapter.Convert(dto);
-            var project = await _projectService.GetProjectAsync(dto.ProjectId);
+            var project = await _projectService.GetProject(dto.ProjectId);
             explorationOperationalWellCosts.Project = project;
             _context.ExplorationOperationalWellCosts!.Add(explorationOperationalWellCosts);
             await _context.SaveChangesAsync();

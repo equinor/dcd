@@ -4,6 +4,6 @@ namespace api.Services
 {
     public interface ISTEAService
     {
-        STEAProjectDto GetInputToSTEA(Guid ProjectId);
+        Task<STEAProjectDto> GetInputToSTEA(Guid ProjectId);
     }
 }

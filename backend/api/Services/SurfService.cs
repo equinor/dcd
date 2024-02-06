@@ -51,7 +51,7 @@ public class SurfService : ISurfService
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Surfs!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDtoAsync(existing.ProjectId);
+        return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
     public async Task<SurfDto> NewUpdateSurf(SurfDto updatedSurfDto)
@@ -82,20 +82,20 @@ public class SurfService : ISurfService
     public async Task<ProjectDto> CreateSurf(SurfDto surfDto, Guid sourceCaseId)
     {
         var surf = SurfAdapter.Convert(surfDto);
-        var project = await _projectService.GetProjectAsync(surf.ProjectId);
+        var project = await _projectService.GetProject(surf.ProjectId);
         surf.Project = project;
         surf.ProspVersion = surfDto.ProspVersion;
         surf.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Surfs!.Add(surf);
         await _context.SaveChangesAsync();
         await SetCaseLink(surf, sourceCaseId, project);
-        return await _projectService.GetProjectDtoAsync(surf.ProjectId);
+        return await _projectService.GetProjectDto(surf.ProjectId);
     }
 
     public async Task<Surf> NewCreateSurf(SurfDto surfDto, Guid sourceCaseId)
     {
         var surf = SurfAdapter.Convert(surfDto);
-        var project = await _projectService.GetProjectAsync(surf.ProjectId);
+        var project = await _projectService.GetProject(surf.ProjectId);
         surf.Project = project;
         surf.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSurf = _context.Surfs!.Add(surf);
@@ -120,7 +120,7 @@ public class SurfService : ISurfService
         var surf = await GetSurf(surfId);
         _context.Surfs!.Remove(surf);
         await DeleteCaseLinks(surfId);
-        return await _projectService.GetProjectDtoAsync(surf.ProjectId);
+        return await _projectService.GetProjectDto(surf.ProjectId);
     }
 
     private async Task DeleteCaseLinks(Guid surfId)

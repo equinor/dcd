@@ -33,7 +33,7 @@ public class ExplorationWellService : IExplorationWellService
         var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == explorationWellDto.ExplorationId)?.ProjectId;
         if (projectId != null)
         {
-            return await _projectService.GetProjectDtoAsync((Guid)projectId);
+            return await _projectService.GetProjectDto((Guid)projectId);
         }
         throw new NotFoundInDBException();
     }
@@ -52,7 +52,7 @@ public class ExplorationWellService : IExplorationWellService
         var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == updatedExplorationWellDto.ExplorationId)?.ProjectId;
         if (projectId != null)
         {
-            return await _projectService.GetProjectDtoAsync((Guid)projectId);
+            return await _projectService.GetProjectDto((Guid)projectId);
         }
         throw new NotFoundInDBException();
     }

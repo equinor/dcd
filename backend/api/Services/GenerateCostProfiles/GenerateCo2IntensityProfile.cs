@@ -24,7 +24,7 @@ public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
     public async Task<Co2IntensityDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
