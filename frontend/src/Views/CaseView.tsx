@@ -337,7 +337,7 @@ const CaseView = () => {
             } else {
                 projectDto.referenceCaseId = caseItem.id
             }
-            const newProject = await (await GetProjectService()).setReferenceCase(projectDto)
+            const newProject = await (await GetProjectService()).updateProject(projectDto)
             setProject(newProject)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)

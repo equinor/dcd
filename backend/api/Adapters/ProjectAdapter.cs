@@ -53,6 +53,7 @@ public static class ProjectAdapter
         existing.CO2Vented = projectDto.CO2Vented;
         existing.DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig;
         existing.AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays;
+        existing.ReferenceCaseId = projectDto.ReferenceCaseId;
     }
 
     public static void ConvertExistingFromProjectMaster(Project existing, ProjectDto projectDto)

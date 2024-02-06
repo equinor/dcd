@@ -98,12 +98,6 @@ public class ProjectsController : ControllerBase
         return await _projectService.UpdateProject(projectDto);
     }
 
-    [HttpPut("ReferenceCase", Name = "SetReferenceCase")]
-    public async Task<ProjectDto> SetReferenceCase([FromBody] ProjectDto projectDto)
-    {
-        return await _projectService.SetReferenceCase(projectDto);
-    }
-
     [HttpGet("{projectId}/case-comparison")]
     public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
     {

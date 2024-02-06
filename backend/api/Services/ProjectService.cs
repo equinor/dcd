@@ -349,21 +349,6 @@ public class ProjectService : IProjectService
         throw new NullReferenceException();
     }
 
-    public async Task<ProjectDto> SetReferenceCase(ProjectDto projectDto)
-    {
-        if (projectDto.Id == Guid.Empty)
-        {
-            throw new NotFoundInDBException($"Project {projectDto.Id} not found");
-        }
-
-        var project = await GetProject(projectDto.Id);
-        project.ReferenceCaseId = projectDto.ReferenceCaseId;
-
-        _context.Projects?.Update(project);
-        await _context.SaveChangesAsync();
-        return ProjectDtoAdapter.Convert(project);
-    }
-
     private async Task<Project> AddAssetsToProject(Project project)
     {
         project.WellProjects = (await GetWellProjects(project.Id)).ToList();

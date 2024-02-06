@@ -15,7 +15,6 @@ public interface IProjectService
     Task<Project> GetProject(Guid projectId);
     Task<ProjectDto> GetProjectDto(Guid projectId);
     Task UpdateProjectFromProjectMaster();
-    Task<ProjectDto> SetReferenceCase(ProjectDto projectDto);
     Task<IEnumerable<Well>> GetWells(Guid projectId);
     Task<IEnumerable<Exploration>> GetExplorations(Guid projectId);
     Task<IEnumerable<Transport>> GetTransports(Guid projectId);

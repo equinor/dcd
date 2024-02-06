@@ -9,7 +9,6 @@ public static class CaseAdapter
     {
         var caseItem = new Case
         {
-            Id = caseDto.Id,
             ProjectId = caseDto.ProjectId,
             Name = caseDto.Name,
             Description = caseDto.Description,
