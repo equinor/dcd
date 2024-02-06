@@ -25,7 +25,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         _context = context;
     }
 
-    public void UpdateCostProfilesForWells(List<Guid> wellIds)
+    public async Task UpdateCostProfilesForWells(List<Guid> wellIds)
     {
         var explorationWells = GetAllExplorationWells().Where(ew => wellIds.Contains(ew.WellId));
 
@@ -34,8 +34,8 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         var uniqueExplorationIds = explorationWells.Select(ew => ew.ExplorationId).Distinct();
         var uniqueWellProjectIds = wellProjectWells.Select(wpw => wpw.WellProjectId).Distinct();
 
-        var explorationCases = _caseService.GetAll().Where(c => uniqueExplorationIds.Contains(c.ExplorationLink));
-        var wellProjectCases = _caseService.GetAll().Where(c => uniqueWellProjectIds.Contains(c.WellProjectLink));
+        var explorationCases = (await _caseService.GetAll()).Where(c => uniqueExplorationIds.Contains(c.ExplorationLink));
+        var wellProjectCases = (await _caseService.GetAll()).Where(c => uniqueWellProjectIds.Contains(c.WellProjectLink));
 
         var explorationCaseIds = explorationCases.Select(c => c.Id).Distinct();
         var wellProjectCaseIds = wellProjectCases.Select(c => c.Id).Distinct();
@@ -43,14 +43,14 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         var updatedExplorationDtoList = new List<ExplorationDto>();
         foreach (var caseId in explorationCaseIds)
         {
-            var explorationDto = UpdateExplorationCostProfilesForCase(caseId);
+            var explorationDto = await UpdateExplorationCostProfilesForCase(caseId);
             updatedExplorationDtoList.Add(explorationDto);
         }
 
         var updatedWellProjectDtoList = new List<WellProjectDto>();
         foreach (var caseId in wellProjectCaseIds)
         {
-            var wellProjectDto = UpdateWellProjectCostProfilesForCase(caseId);
+            var wellProjectDto = await UpdateWellProjectCostProfilesForCase(caseId);
             updatedWellProjectDtoList.Add(wellProjectDto);
         }
 
@@ -59,11 +59,11 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         _wellProjectService.UpdateMultiple(updatedWellProjectDtoList.ToArray());
     }
 
-    public ExplorationDto UpdateExplorationCostProfilesForCase(Guid caseId)
+    public async Task<ExplorationDto> UpdateExplorationCostProfilesForCase(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
-        var exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
+        var exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
 
         var explorationWells = GetAllExplorationWells().Where(ew => ew.ExplorationId == exploration.Id);
 
@@ -135,11 +135,11 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return mergedCostProfile;
     }
 
-    public WellProjectDto UpdateWellProjectCostProfilesForCase(Guid caseId)
+    public async Task<WellProjectDto> UpdateWellProjectCostProfilesForCase(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
-        var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+        var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
         var wellProjectWells = GetAllWellProjectWells().Where(ew => ew.WellProjectId == wellProject.Id);
 
         return UpdateWellProjectCostProfilesForCase(wellProject, wellProjectWells);

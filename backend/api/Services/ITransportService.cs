@@ -5,12 +5,12 @@ namespace api.Services
 {
     public interface ITransportService
     {
-        TransportDto CopyTransport(Guid transportId, Guid sourceCaseId);
-        ProjectDto CreateTransport(TransportDto transportDto, Guid sourceCaseId);
-        ProjectDto DeleteTransport(Guid transportId);
-        Transport GetTransport(Guid transportId);
-        Transport NewCreateTransport(TransportDto transportDto, Guid sourceCaseId);
-        TransportDto NewUpdateTransport(TransportDto updatedTransportDto);
-        ProjectDto UpdateTransport(TransportDto updatedTransportDto);
+        Task<ProjectDto> CreateTransport(TransportDto transportDto, Guid sourceCaseId);
+        Task<Transport> NewCreateTransport(TransportDto transportDto, Guid sourceCaseId);
+        Task<TransportDto> CopyTransport(Guid transportId, Guid sourceCaseId);
+        Task<ProjectDto> DeleteTransport(Guid transportId);
+        Task<Transport> GetTransport(Guid transportId);
+        Task<ProjectDto> UpdateTransport(TransportDto updatedTransportDto);
+        Task<TransportDto> NewUpdateTransport(TransportDto updatedTransportDto);
     }
 }

@@ -16,9 +16,9 @@ public class STEAService : ISTEAService
         _logger = loggerFactory.CreateLogger<STEAService>();
     }
 
-    public STEAProjectDto GetInputToSTEA(Guid ProjectId)
+    public async Task<STEAProjectDto> GetInputToSTEA(Guid ProjectId)
     {
-        var project = _projectService.GetProject(ProjectId);
+        var project = await _projectService.GetProject(ProjectId);
         var sTEACaseDtos = new List<STEACaseDto>();
         foreach (Case c in project.Cases!)
         {

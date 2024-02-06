@@ -33,10 +33,10 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 
     public async Task<StudyCostProfileWrapperDto> GenerateAsync(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
-        var sumFacilityCost = SumAllCostFacility(caseItem);
-        var sumWellCost = SumWellCost(caseItem);
+        var sumFacilityCost = await SumAllCostFacility(caseItem);
+        var sumWellCost = await SumWellCost(caseItem);
 
         var newFeasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
         var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
@@ -160,14 +160,14 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         return feasibilityAndConceptStudiesCost;
     }
 
-    public double SumAllCostFacility(Case caseItem)
+    public async Task<double> SumAllCostFacility(Case caseItem)
     {
         var sumFacilityCost = 0.0;
 
         Substructure substructure;
         try
         {
-            substructure = _substructureService.GetSubstructure(caseItem.SubstructureLink);
+            substructure = await _substructureService.GetSubstructure(caseItem.SubstructureLink);
             if (substructure.CostProfileOverride?.Override == true)
             {
                 sumFacilityCost += substructure.CostProfileOverride.Values.Sum();
@@ -185,7 +185,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         Surf surf;
         try
         {
-            surf = _surfService.GetSurf(caseItem.SurfLink);
+            surf = await _surfService.GetSurf(caseItem.SurfLink);
             if (surf.CostProfileOverride?.Override == true)
             {
                 sumFacilityCost += surf.CostProfileOverride.Values.Sum();
@@ -203,7 +203,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         Topside topside;
         try
         {
-            topside = _topsideService.GetTopside(caseItem.TopsideLink);
+            topside = await _topsideService.GetTopside(caseItem.TopsideLink);
             if (topside.CostProfileOverride?.Override == true)
             {
                 sumFacilityCost += topside.CostProfileOverride.Values.Sum();
@@ -221,7 +221,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         Transport transport;
         try
         {
-            transport = _transportService.GetTransport(caseItem.TransportLink);
+            transport = await _transportService.GetTransport(caseItem.TransportLink);
             if (transport.CostProfileOverride?.Override == true)
             {
                 sumFacilityCost += transport.CostProfileOverride.Values.Sum();
@@ -239,14 +239,14 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         return sumFacilityCost;
     }
 
-    public double SumWellCost(Case caseItem)
+    public async Task<double> SumWellCost(Case caseItem)
     {
         var sumWellCost = 0.0;
 
         WellProject wellProject;
         try
         {
-            wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+            wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
             if (wellProject.OilProducerCostProfileOverride?.Override == true)
             {

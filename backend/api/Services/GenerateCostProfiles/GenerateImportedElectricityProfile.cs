@@ -26,10 +26,10 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
 
     public async Task<ImportedElectricityDto> GenerateAsync(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var facilitiesAvailability = caseItem.FacilitiesAvailability;
 

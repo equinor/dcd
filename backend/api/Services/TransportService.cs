@@ -19,36 +19,36 @@ public class TransportService : ITransportService
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TransportService>();
     }
-    public ProjectDto CreateTransport(TransportDto transportDto, Guid sourceCaseId)
+    public async Task<ProjectDto> CreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
         var transport = TransportAdapter.Convert(transportDto);
-        var project = _projectService.GetProject(transport.ProjectId);
+        var project = await _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.ProspVersion = transportDto.ProspVersion;
         transport.LastChangedDate = DateTimeOffset.UtcNow;
         transport.GasExportPipelineLength = transportDto.GasExportPipelineLength;
         transport.OilExportPipelineLength = transportDto.OilExportPipelineLength;
         _context.Transports!.Add(transport);
-        _context.SaveChanges();
-        SetCaseLink(transport, sourceCaseId, project);
-        return _projectService.GetProjectDto(transport.ProjectId);
+        await _context.SaveChangesAsync();
+        await SetCaseLink(transport, sourceCaseId, project);
+        return await _projectService.GetProjectDto(transport.ProjectId);
     }
 
-    public Transport NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
+    public async Task<Transport> NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
         var transport = TransportAdapter.Convert(transportDto);
-        var project = _projectService.GetProject(transport.ProjectId);
+        var project = await _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.LastChangedDate = DateTimeOffset.UtcNow;
         var createdTransport = _context.Transports!.Add(transport);
-        _context.SaveChanges();
-        SetCaseLink(transport, sourceCaseId, project);
+        await _context.SaveChangesAsync();
+        await SetCaseLink(transport, sourceCaseId, project);
         return createdTransport.Entity;
     }
 
-    public TransportDto CopyTransport(Guid transportId, Guid sourceCaseId)
+    public async Task<TransportDto> CopyTransport(Guid transportId, Guid sourceCaseId)
     {
-        var source = GetTransport(transportId);
+        var source = await GetTransport(transportId);
         var newTransportDto = TransportDtoAdapter.Convert(source);
         newTransportDto.Id = Guid.Empty;
         if (newTransportDto.CostProfile != null)
@@ -64,39 +64,39 @@ public class TransportService : ITransportService
             newTransportDto.CessationCostProfile.Id = Guid.Empty;
         }
 
-        var topside = NewCreateTransport(newTransportDto, sourceCaseId);
+        var topside = await NewCreateTransport(newTransportDto, sourceCaseId);
         var dto = TransportDtoAdapter.Convert(topside);
 
         return dto;
     }
 
-    private void SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
+    private async Task SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
     {
-        var case_ = project.Cases?.FirstOrDefault(o => o.Id == sourceCaseId);
+        var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
         if (case_ == null)
         {
             throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
         }
         case_.TransportLink = transport.Id;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public ProjectDto DeleteTransport(Guid transportId)
+    public async Task<ProjectDto> DeleteTransport(Guid transportId)
     {
-        var transport = GetTransport(transportId);
+        var transport = await GetTransport(transportId);
         _context.Transports!.Remove(transport);
         DeleteCaseLinks(transportId);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(transport.ProjectId);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDto(transport.ProjectId);
     }
 
-    public Transport GetTransport(Guid transportId)
+    public async Task<Transport> GetTransport(Guid transportId)
     {
-        var transport = _context.Transports!
+        var transport = await _context.Transports!
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
-            .FirstOrDefault(c => c.Id == transportId);
+            .FirstOrDefaultAsync(c => c.Id == transportId);
         if (transport == null)
         {
             throw new ArgumentException(string.Format("Transport {0} not found.", transportId));
@@ -115,25 +115,27 @@ public class TransportService : ITransportService
         }
     }
 
-    public ProjectDto UpdateTransport(TransportDto updatedTransportDto)
+    public async Task<ProjectDto> UpdateTransport(TransportDto updatedTransportDto)
     {
-        var existing = GetTransport(updatedTransportDto.Id);
+        var existing = await GetTransport(updatedTransportDto.Id);
+
         TransportAdapter.ConvertExisting(existing, updatedTransportDto);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Transports!.Update(existing);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(updatedTransportDto.ProjectId);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDto(updatedTransportDto.ProjectId);
     }
 
-    public TransportDto NewUpdateTransport(TransportDto updatedTransportDto)
+    public async Task<TransportDto> NewUpdateTransport(TransportDto updatedTransportDto)
     {
-        var existing = GetTransport(updatedTransportDto.Id);
+        var existing = await GetTransport(updatedTransportDto.Id);
+
         TransportAdapter.ConvertExisting(existing, updatedTransportDto);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedTransport = _context.Transports!.Update(existing);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return TransportDtoAdapter.Convert(updatedTransport.Entity);
     }
 }

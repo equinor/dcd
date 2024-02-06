@@ -29,9 +29,9 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
     public async Task<OpexCostProfileWrapperDto> GenerateAsync(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var result = new OpexCostProfileWrapperDto();
 
@@ -40,8 +40,8 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
             throw new NotFoundInDBException(string.Format("DrainageStrategy {0} not found in database.", caseItem.DrainageStrategyLink));
         }
 
-        var newWellInterventionCost = CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
-        var newOffshoreFacilitiesOperationsCost = CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
+        var newWellInterventionCost = await CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
+        var newOffshoreFacilitiesOperationsCost = await CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
 
         var wellInterventionCost = caseItem.WellInterventionCostProfile ?? new WellInterventionCostProfile();
         wellInterventionCost.StartYear = newWellInterventionCost.StartYear;
@@ -77,14 +77,14 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         return await _context.SaveChangesAsync();
     }
 
-    public WellInterventionCostProfile CalculateWellInterventionCostProfile(Case caseItem, Project project, DrainageStrategy drainageStrategy)
+    public async Task<WellInterventionCostProfile> CalculateWellInterventionCostProfile(Case caseItem, Project project, DrainageStrategy drainageStrategy)
     {
         var lastYear = drainageStrategy?.ProductionProfileOil == null ? 0 : drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
 
         WellProject wellProject;
         try
         {
-            wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+            wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
         }
         catch (ArgumentException)
         {
@@ -148,7 +148,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         return result;
     }
 
-    public OffshoreFacilitiesOperationsCostProfile CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, DrainageStrategy drainageStrategy)
+    public async Task<OffshoreFacilitiesOperationsCostProfile> CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, DrainageStrategy drainageStrategy)
     {
         if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0) { return new OffshoreFacilitiesOperationsCostProfile() { Values = Array.Empty<double>() }; }
         var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
@@ -157,7 +157,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         Topside topside;
         try
         {
-            topside = _topsideService.GetTopside(caseItem.TopsideLink);
+            topside = await _topsideService.GetTopside(caseItem.TopsideLink);
         }
         catch (ArgumentException)
         {

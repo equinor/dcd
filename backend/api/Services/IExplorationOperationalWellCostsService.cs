@@ -5,9 +5,9 @@ namespace api.Services
 {
     public interface IExplorationOperationalWellCostsService
     {
-        ExplorationOperationalWellCostsDto CreateOperationalWellCosts(ExplorationOperationalWellCostsDto dto);
-        ExplorationOperationalWellCosts? GetOperationalWellCosts(Guid id);
-        ExplorationOperationalWellCosts? GetOperationalWellCostsByProjectId(Guid id);
-        ExplorationOperationalWellCostsDto? UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto dto);
+        Task<ExplorationOperationalWellCostsDto?> UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto dto);
+        Task<ExplorationOperationalWellCostsDto> CreateOperationalWellCosts(ExplorationOperationalWellCostsDto dto);
+        Task<ExplorationOperationalWellCosts?> GetOperationalWellCostsByProjectId(Guid id);
+        Task<ExplorationOperationalWellCosts?> GetOperationalWellCosts(Guid id);
     }
 }

@@ -4,10 +4,10 @@ namespace api.Services
 {
     public interface ITechnicalInputService
     {
-        (ExplorationDto explorationDto, WellProjectDto wellProjectDto)? CreateAndUpdateWells(WellDto[] wellDtos, Guid? caseId);
-        DevelopmentOperationalWellCostsDto UpdateDevelopmentOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedDto);
-        ExplorationOperationalWellCostsDto UpdateExplorationOperationalWellCosts(ExplorationOperationalWellCostsDto updatedDto);
-        ProjectDto UpdateProject(ProjectDto updatedDto);
-        TechnicalInputDto UpdateTehnicalInput(TechnicalInputDto technicalInputDto);
+        Task<TechnicalInputDto> UpdateTehnicalInput(TechnicalInputDto technicalInputDto);
+        Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(WellDto[] wellDtos, Guid? caseId);
+        Task<ProjectDto> UpdateProject(ProjectDto updatedDto);
+        Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(ExplorationOperationalWellCostsDto updatedDto);
+        Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedDto);
     }
 }

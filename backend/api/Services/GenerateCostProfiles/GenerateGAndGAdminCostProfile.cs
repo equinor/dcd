@@ -27,12 +27,12 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
 
     public async Task<GAndGAdminCostDto> GenerateAsync(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
         Exploration exploration;
         try
         {
-            exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
+            exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
         }
         catch (ArgumentException)
         {
@@ -47,7 +47,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
             var dG1Date = caseItem.DG1Date;
             if (earliestYear != null && dG1Date.Year >= earliestYear)
             {
-                var project = _projectService.GetProject(caseItem.ProjectId);
+                var project = await _projectService.GetProject(caseItem.ProjectId);
                 var country = project.Country;
                 var countryCost = MapCountry(country);
                 var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);

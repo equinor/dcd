@@ -23,7 +23,7 @@ public class ExplorationServiceShould : IDisposable
     }
 
     [Fact]
-    public void CreateNewExploration()
+    public async Task CreateNewExploration()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -32,7 +32,7 @@ public class ExplorationServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
         var caseId = project.Cases.FirstOrDefault().Id;
         var testExploration = CreateTestExploration(project);
-        explorationService.CreateExploration(ExplorationDtoAdapter.Convert(testExploration), caseId);
+        await explorationService.CreateExploration(ExplorationDtoAdapter.Convert(testExploration), caseId);
 
         var explorations = fixture.context.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Explorations;
@@ -43,7 +43,7 @@ public class ExplorationServiceShould : IDisposable
     }
 
     [Fact]
-    public void DeleteExploration()
+    public async Task DeleteExploration()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -52,11 +52,11 @@ public class ExplorationServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var ExplorationToDelete = CreateTestExploration(project);
-        explorationService.CreateExploration(ExplorationDtoAdapter.Convert(ExplorationToDelete), sourceCaseId);
+        await explorationService.CreateExploration(ExplorationDtoAdapter.Convert(ExplorationToDelete), sourceCaseId);
 
         var deletedExplorationId = project.Explorations.First().Id;
         // Act
-        var projectResult = explorationService.DeleteExploration(deletedExplorationId);
+        var projectResult = await explorationService.DeleteExploration(deletedExplorationId);
 
         // Assert
         var actualExploration = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == ExplorationToDelete.Name);
@@ -69,7 +69,7 @@ public class ExplorationServiceShould : IDisposable
     }
 
     [Fact]
-    public void UpdateExploration()
+    public async Task UpdateExploration()
     {
         // Arrange
         var loggerFactory = new LoggerFactory();
@@ -78,12 +78,12 @@ public class ExplorationServiceShould : IDisposable
         var project = fixture.context.Projects.FirstOrDefault();
         var sourceCaseId = project.Cases.FirstOrDefault().Id;
         var oldExploration = CreateTestExploration(project);
-        var oldId = explorationService.CreateExploration(ExplorationDtoAdapter.Convert(oldExploration), sourceCaseId).Explorations.Last().Id;
+        var oldId = (await explorationService.CreateExploration(ExplorationDtoAdapter.Convert(oldExploration), sourceCaseId)).Explorations.Last().Id;
 
         var updatedExploration = CreateUpdatedTestExploration(project, oldId);
 
         // Act
-        var projectResult = explorationService.UpdateExploration(ExplorationDtoAdapter.Convert(updatedExploration));
+        var projectResult = await explorationService.UpdateExploration(ExplorationDtoAdapter.Convert(updatedExploration));
 
 
         // Assert

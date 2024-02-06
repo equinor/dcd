@@ -171,20 +171,20 @@ public class GenerateProfileController : ControllerBase
     }
 
     [HttpPost("{caseId}/generateCo2Intensity", Name = "GenerateCo2Intensity")]
-    public Co2IntensityDto GenerateCo2Intensity(Guid caseId)
+    public async Task<Co2IntensityDto> GenerateCo2Intensity(Guid caseId)
     {
-        return _generateCo2IntensityProfile.Generate(caseId);
+        return await _generateCo2IntensityProfile.Generate(caseId);
     }
 
     [HttpPost("{caseId}/generateCo2IntensityTotal", Name = "GenerateCo2IntensityTotal")]
-    public double GenerateCo2IntensityTotal(Guid caseId)
+    public async Task<double> GenerateCo2IntensityTotal(Guid caseId)
     {
-        return _generateCo2IntensityTotal.Calculate(caseId);
+        return await _generateCo2IntensityTotal.Calculate(caseId);
     }
 
     [HttpPost("{caseId}/generateCo2DrillingFlaringFuelTotals", Name = "GenerateCo2DrillingFlaringFuelTotals")]
-    public Co2DrillingFlaringFuelTotalsDto GenerateCo2DrillingFlaringFuelTotals(Guid caseId)
+    public async Task<Co2DrillingFlaringFuelTotalsDto> GenerateCo2DrillingFlaringFuelTotals(Guid caseId)
     {
-        return _generateCo2DrillingFlaringFuelTotals.Generate(caseId);
+        return await _generateCo2DrillingFlaringFuelTotals.Generate(caseId);
     }
 }

@@ -164,7 +164,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     }
 
     [Fact]
-    public void UpdateCase()
+    public async Task UpdateCase()
     {
         var projectService = _caseServiceFixture.ProjectService;
         var caseService = _caseServiceFixture.CaseService;
@@ -175,7 +175,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
         var updatedCase = CreateUpdatedCase(project, oldCase);
 
         // Act
-        var projectResult = caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase));
+        var projectResult = await caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase));
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
@@ -206,12 +206,12 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     }
 
     [Fact]
-    public void DeleteNonExistentCase()
+    public async Task DeleteNonExistentCase()
     {
         var projectService = _caseServiceFixture.ProjectService;
         var caseService = _caseServiceFixture.CaseService;
 
-        Assert.Throws<NotFoundInDBException>(() => caseService.DeleteCase(new Guid()));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await caseService.DeleteCase(new Guid()));
     }
 
     private static Case CreateUpdatedCase(Project project, Case oldCase)

@@ -25,17 +25,16 @@ namespace api.Controllers
         {
             _operationalWellCostsService = operationalWellCostsService;
         }
-
         [HttpPut(Name = "UpdateExplorationOperationalWellCosts")]
-        public ExplorationOperationalWellCostsDto? UpdateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
+        public async Task<ExplorationOperationalWellCostsDto?> UpdateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
         {
-            return _operationalWellCostsService.UpdateOperationalWellCosts(dto);
+            return await _operationalWellCostsService.UpdateOperationalWellCosts(dto);
         }
 
         [HttpPost(Name = "CreateExplorationOperationalWellCosts")]
-        public ExplorationOperationalWellCostsDto CreateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
+        public async Task<ExplorationOperationalWellCostsDto> CreateExplorationOperationalWellCosts([FromBody] ExplorationOperationalWellCostsDto dto)
         {
-            return _operationalWellCostsService.CreateOperationalWellCosts(dto);
+            return await _operationalWellCostsService.CreateOperationalWellCosts(dto);
         }
     }
 }

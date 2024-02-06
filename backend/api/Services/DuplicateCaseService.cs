@@ -39,9 +39,9 @@ namespace api.Services
             _logger = loggerFactory.CreateLogger<DuplicateCaseService>();
         }
 
-        public Case GetCaseNoTracking(Guid caseId)
+        public async Task<Case> GetCaseNoTracking(Guid caseId)
         {
-            var caseItem = _context.Cases!.AsNoTracking()
+            var caseItem = await _context.Cases!.AsNoTracking()
                 .Include(c => c.TotalFeasibilityAndConceptStudies)
                 .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                 .Include(c => c.TotalFEEDStudies)
@@ -54,7 +54,7 @@ namespace api.Services
                 .Include(c => c.CessationWellsCostOverride)
                 .Include(c => c.CessationOffshoreFacilitiesCost)
                 .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-                .FirstOrDefault(c => c.Id == caseId);
+                .FirstOrDefaultAsync(c => c.Id == caseId);
             if (caseItem == null)
             {
                 throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
@@ -62,9 +62,9 @@ namespace api.Services
             return caseItem;
         }
 
-        public ProjectDto DuplicateCase(Guid caseId)
+        public async Task<ProjectDto> DuplicateCase(Guid caseId)
         {
-            var caseItem = GetCaseNoTracking(caseId);
+            var caseItem = await GetCaseNoTracking(caseId);
 
             var sourceWellProjectId = caseItem.WellProjectLink;
             var sourceExplorationId = caseItem.ExplorationLink;
@@ -122,26 +122,26 @@ namespace api.Services
                 caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Id = Guid.Empty;
             }
 
-            var project = _projectService.GetProject(caseItem.ProjectId);
+            var project = await _projectService.GetProject(caseItem.ProjectId);
             caseItem.Project = project;
 
             caseItem.Name += " - copy";
             _context.Cases!.Add(caseItem);
 
-            _drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
-            _topsideService.CopyTopside(caseItem.TopsideLink, caseItem.Id);
-            _surfService.CopySurf(caseItem.SurfLink, caseItem.Id);
-            _substructureService.CopySubstructure(caseItem.SubstructureLink, caseItem.Id);
-            _transportService.CopyTransport(caseItem.TransportLink, caseItem.Id);
+            await _drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
+            await _topsideService.CopyTopside(caseItem.TopsideLink, caseItem.Id);
+            await _surfService.CopySurf(caseItem.SurfLink, caseItem.Id);
+            await _substructureService.CopySubstructure(caseItem.SubstructureLink, caseItem.Id);
+            await _transportService.CopyTransport(caseItem.TransportLink, caseItem.Id);
 
-            var newWellProject = _wellProjectService.CopyWellProject(caseItem.WellProjectLink, caseItem.Id);
-            var newExploration = _explorationService.CopyExploration(caseItem.ExplorationLink, caseItem.Id);
+            var newWellProject = await _wellProjectService.CopyWellProject(caseItem.WellProjectLink, caseItem.Id);
+            var newExploration = await _explorationService.CopyExploration(caseItem.ExplorationLink, caseItem.Id);
 
-            _wellProjectWellService.CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
-            _explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
+            await _wellProjectWellService.CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
+            await _explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
 
-            _context.SaveChanges();
-            return _projectService.GetProjectDto(project.Id);
+            await _context.SaveChangesAsync();
+            return await _projectService.GetProjectDto(project.Id);
         }
     }
 }
