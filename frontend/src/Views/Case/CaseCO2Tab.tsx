@@ -81,9 +81,7 @@ const NumberInputField = styled.div`
 
 interface Props {
     project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
     topside: Topside,
     setTopside: Dispatch<SetStateAction<Topside | undefined>>,
     drainageStrategy: DrainageStrategy,
@@ -95,8 +93,8 @@ interface Props {
 }
 
 function CaseCO2Tab({
-    project, setProject,
-    caseItem, setCase,
+    project,
+    caseItem,
     topside, setTopside,
     activeTab, drainageStrategy, setDrainageStrategy,
     co2Emissions, setCo2Emissions,
@@ -168,13 +166,6 @@ function CaseCO2Tab({
     const handleTopsideFuelConsumptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside: Topside = { ...topside }
         newTopside.fuelConsumption = e.currentTarget.value.length > 0
-            ? Number(e.currentTarget.value) : undefined
-        setTopside(newTopside)
-    }
-
-    const handleTopsideFlaredGasChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside: Topside = { ...topside }
-        newTopside.flaredGas = e.currentTarget.value.length > 0
             ? Number(e.currentTarget.value) : undefined
         setTopside(newTopside)
     }
@@ -393,10 +384,6 @@ function CaseCO2Tab({
                 </TableYearWrapper>
             </ColumnWrapper>
             <CaseTabTable
-                caseItem={caseItem}
-                project={project}
-                setCase={setCase}
-                setProject={setProject}
                 timeSeriesData={timeSeriesData}
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}

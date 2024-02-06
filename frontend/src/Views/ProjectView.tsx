@@ -55,12 +55,8 @@ const ProjectView = () => {
 
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [project, setProject] = useState<Project>()
-    const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
-
-    const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
-    const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
-    const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
+    const [, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
+    const [, setCurrency] = useState<Components.Schemas.Currency>(1)
 
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
 
@@ -87,7 +83,6 @@ const ProjectView = () => {
                     setIsLoading(false)
                 }
             } catch (error) {
-                // eslint-disable-next-line max-len
                 console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentProject?.externalId}`, error)
             }
         })()

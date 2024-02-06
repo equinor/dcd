@@ -60,7 +60,7 @@ public class TechnicalInputService : ITechnicalInputService
                 technicalInputDto.ExplorationDto = wellResult.Value.explorationDto;
                 technicalInputDto.WellProjectDto = wellResult.Value.wellProjectDto;
             }
-            var project = await _projectService.GetProject(technicalInputDto.ProjectDto.ProjectId);
+            var project = await _projectService.GetProject(technicalInputDto.ProjectDto.Id);
             technicalInputDto.ProjectDto = ProjectDtoAdapter.Convert(project);
         }
 
@@ -125,7 +125,7 @@ public class TechnicalInputService : ITechnicalInputService
         {
             return updatedDto;
         }
-        var item = await _projectService.GetProject(updatedDto.ProjectId);
+        var item = await _projectService.GetProject(updatedDto.Id);
         ProjectAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Projects!.Update(item);
         await _context.SaveChangesAsync();

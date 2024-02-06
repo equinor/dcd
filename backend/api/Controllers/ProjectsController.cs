@@ -62,12 +62,13 @@ public class ProjectsController : ControllerBase
                 Country = projectMaster.Country ?? "",
                 Currency = Currency.NOK,
                 PhysUnit = PhysUnit.SI,
-                ProjectId = projectMaster.Identity,
+                Id = projectMaster.Identity,
                 ProjectCategory = category,
                 ProjectPhase = phase,
             };
             var project = ProjectAdapter.Convert(projectDto);
             project.CreateDate = DateTimeOffset.UtcNow;
+            
             return await _projectService.CreateProject(project);
         }
 

@@ -88,9 +88,6 @@ const CasesTable = ({ project, setProject }: Props) => {
         </Button>
     )
 
-    type SortOrder = "desc" | "asc" | null
-    const order: SortOrder = "asc"
-
     const nameWithReferenceCase = (p: any) => (
         <span>
             {p.node.data.referenceCaseId === p.node.data.id
@@ -156,7 +153,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     const duplicateCase = async () => {
         try {
             if (selectedCaseId) {
-                const newProject = await (await GetCaseService()).duplicateCase(selectedCaseId, {})
+                const newProject = await (await GetCaseService()).duplicateCase(project.id, selectedCaseId, {})
                 setProject(newProject)
             }
         } catch (error) {
@@ -167,7 +164,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     const deleteCase = async () => {
         try {
             if (selectedCaseId) {
-                const newProject = await (await GetCaseService()).deleteCase(selectedCaseId)
+                const newProject = await (await GetCaseService()).deleteCase(project.id, selectedCaseId)
                 setProject(newProject)
             }
         } catch (error) {

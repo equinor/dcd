@@ -1,7 +1,8 @@
-import { Button, NativeSelect } from "@equinor/eds-core-react"
+import { Button, NativeSelect, Icon } from "@equinor/eds-core-react"
 import {
     ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
+import { delete_to_trash } from "@equinor/eds-icons"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
@@ -9,8 +10,6 @@ import { ColDef } from "@ag-grid-community/core"
 import { Project } from "../../models/Project"
 import { Well } from "../../models/Well"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { delete_to_trash } from "@equinor/eds-icons"
-import { Icon } from "@equinor/eds-core-react"
 import { GetWellService } from "../../Services/WellService"
 
 const ButtonWrapper = styled.div`
@@ -216,7 +215,7 @@ function WellListEditTechnicalInput({
         const newWell = new Well()
         newWell.wellCategory = !explorationWells ? 0 : 4
         newWell.name = "New well"
-        newWell.projectId = project.projectId
+        newWell.projectId = project.id
         if (wells) {
             const newWells = [...wells, newWell]
             setWells(newWells)
