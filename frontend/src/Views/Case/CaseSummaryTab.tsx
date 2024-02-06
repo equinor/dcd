@@ -11,18 +11,8 @@ import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { OpexCostProfile } from "../../models/case/OpexCostProfile"
 import { CessationCostProfile } from "../../models/case/CessationCostProfile"
-import { Surf } from "../../models/assets/surf/Surf"
-import { Substructure } from "../../models/assets/substructure/Substructure"
-import { Topside } from "../../models/assets/topside/Topside"
-import { Transport } from "../../models/assets/transport/Transport"
-import { TopsideCostProfile } from "../../models/assets/topside/TopsideCostProfile"
-import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
-import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
-import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import { MergeTimeseries } from "../../Utils/common"
-import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
-import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasibilityAndConceptStudies"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -51,12 +41,12 @@ const TableWrapper = styled.div`
 
 interface Props {
     project: Project,
-    caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
-    topside: Topside,
-    surf: Surf,
-    substructure: Substructure,
-    transport: Transport,
+    caseItem: Components.Schemas.CaseDto,
+    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
+    topside: Components.Schemas.TopsideDto,
+    surf: Components.Schemas.SurfDto,
+    substructure: Components.Schemas.SubstructureDto,
+    transport: Components.Schemas.TransportDto,
     activeTab: number
 }
 
@@ -71,14 +61,14 @@ function CaseSummaryTab({
 }: Props) {
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
-    const [opexCost, setOpexCost] = useState<OpexCostProfile>()
-    const [cessationCost, setCessationCost] = useState<CessationCostProfile>()
+    const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
+    const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     // CAPEX
-    const [topsideCost, setTopsideCost] = useState<TopsideCostProfile>()
-    const [surfCost, setSurfCost] = useState<SurfCostProfile>()
-    const [substructureCost, setSubstructureCost] = useState<SubstructureCostProfile>()
-    const [transportCost, setTransportCost] = useState<TransportCostProfile>()
+    const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto>()
+    const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto>()
+    const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto>()
+    const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto>()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
@@ -102,17 +92,17 @@ function CaseSummaryTab({
                 lastYear = profileLastYear
             }
         })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER) {
-            setStartYear(firstYear + caseItem.DG4Date.getFullYear())
-            setEndYear(lastYear + caseItem.DG4Date.getFullYear())
-            setTableYears([firstYear + caseItem.DG4Date.getFullYear(), lastYear + caseItem.DG4Date.getFullYear()])
+        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
+            setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
+            setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
+            setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
         }
     }
 
     useEffect(() => {
         (async () => {
             try {
-                if (activeTab === 7) {
+                if (activeTab === 7 && caseItem.id) {
                     const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
                     const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
                     const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
@@ -120,9 +110,9 @@ function CaseSummaryTab({
                     const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
                     const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)
 
-                    let feasibility = TotalFeasibilityAndConceptStudies
-                        .fromJSON((await studyWrapper).totalFeasibilityAndConceptStudiesDto)
-                    let feed = TotalFEEDStudies.fromJSON((await studyWrapper).totalFEEDStudiesDto)
+                    let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
+                    let feed = (await studyWrapper).totalFEEDStudiesDto
+
                     if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                         feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
                     }
@@ -165,14 +155,14 @@ function CaseSummaryTab({
     }, [activeTab])
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = Case.Copy(caseItem)
+        const newCase = Case.fromJSON(caseItem)
         newCase.npv = e.currentTarget.value.length > 0
             ? Number(e.currentTarget.value) : undefined
         setCase(newCase)
     }
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = Case.Copy(caseItem)
+        const newCase = Case.fromJSON(caseItem)
         newCase.breakEven = e.currentTarget.value.length > 0
             ? Math.max(Number(e.currentTarget.value), 0) : undefined
         setCase(newCase)
@@ -261,7 +251,7 @@ function CaseSummaryTab({
             <TableWrapper>
                 <CaseTabTable
                     timeSeriesData={opexTimeSeriesData}
-                    dg4Year={caseItem.DG4Date.getFullYear()}
+                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="OPEX"
                     includeFooter={false}
@@ -270,7 +260,7 @@ function CaseSummaryTab({
             <TableWrapper>
                 <CaseTabTable
                     timeSeriesData={capexTimeSeriesData}
-                    dg4Year={caseItem.DG4Date.getFullYear()}
+                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="CAPEX"
                     includeFooter

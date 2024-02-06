@@ -12,21 +12,21 @@ import { ExplorationOperationalWellCosts } from "./ExplorationOperationalWellCos
 import { DevelopmentOperationalWellCosts } from "./DevelopmentOperationalWellCosts"
 
 export class Project implements Components.Schemas.ProjectDto {
-    cases: Case[]
+    cases: Components.Schemas.CaseDto[]
     category?: Components.Schemas.ProjectCategory
     country: string | null
     createdAt: Date | null
     description: string | null
-    drainageStrategies: DrainageStrategy[]
-    explorations: Exploration[]
+    drainageStrategies: Components.Schemas.DrainageStrategyDto[]
+    explorations: Components.Schemas.ExplorationDto[]
     id: string
     name: string
     phase?: Components.Schemas.ProjectPhase
-    substructures: Substructure[]
-    surfs: Surf[]
-    topsides: Topside[]
-    transports: Transport[]
-    wellProjects: WellProject[]
+    substructures: Components.Schemas.SubstructureDto[]
+    surfs: Components.Schemas.SurfDto[]
+    topsides: Components.Schemas.TopsideDto[]
+    transports: Components.Schemas.TransportDto[]
+    wellProjects: Components.Schemas.WellProjectDto[]
     commonLibraryId: string
     commonLibraryName: string
     referenceCaseId?: string

@@ -2,16 +2,13 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
-    useState,
 } from "react"
 import styled from "styled-components"
 
 import {
-    Button, Progress, Typography,
+    Typography,
 } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
-import { GetCaseService } from "../../Services/CaseService"
 import CaseDateField from "../../Components/Case/CaseDateField"
 import { DefaultDate, IsDefaultDate, ToMonthDate } from "../../Utils/common"
 
@@ -35,16 +32,12 @@ const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
 interface Props {
-    project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
+    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     activeTab: number
 }
 
 function CaseScheduleTab({
-    project,
-    setProject,
     caseItem,
     setCase,
     activeTab,

@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import {
     Button, Checkbox, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"

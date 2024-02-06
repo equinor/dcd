@@ -10,8 +10,6 @@ import { clear } from "@equinor/eds-icons"
 import WellCostsTab from "./WellCostsTab"
 import { Project } from "../../models/Project"
 import PROSPTab from "./PROSPTab"
-import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
-import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { Well } from "../../models/Well"
 import { IsExplorationWell } from "../../Utils/common"
@@ -70,12 +68,19 @@ type Props = {
     project: Project,
     setWells?: Dispatch<SetStateAction<Well[] | undefined>>
     caseId?: string
-    setExploration?: Dispatch<SetStateAction<Exploration | undefined>>
-    setWellProject?: Dispatch<SetStateAction<WellProject | undefined>>
+    setExploration?: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>
+    setWellProject?: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>
 }
 
 const EditTechnicalInputModal = ({
-    toggleEditTechnicalInputModal, isOpen, setProject, project, setWells, caseId, setExploration, setWellProject,
+    toggleEditTechnicalInputModal,
+    isOpen,
+    setProject,
+    project,
+    setWells,
+    caseId,
+    setExploration,
+    setWellProject,
 }: Props) => {
     const [justOpened, setJustOpened] = useState(true)
 
@@ -83,11 +88,11 @@ const EditTechnicalInputModal = ({
 
     const [originalProject, setOriginalProject] = useState<Project>(project)
 
-    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
-    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts | undefined>(project.developmentWellCosts)
+    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project.explorationWellCosts)
+    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project.developmentWellCosts)
 
-    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<ExplorationOperationalWellCosts | undefined>(project.explorationWellCosts)
-    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<DevelopmentOperationalWellCosts | undefined>(project.developmentWellCosts)
+    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project.explorationWellCosts)
+    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project.developmentWellCosts)
 
     const [wellProjectWells, setWellProjectWells] = useState<Well[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
     const [explorationWells, setExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])

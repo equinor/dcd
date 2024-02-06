@@ -9,8 +9,6 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
 import { IsExplorationWell, isInteger } from "../../Utils/common"
 import { DrillingSchedule } from "../../models/assets/wellproject/DrillingSchedule"
 import { WellProjectWell } from "../../models/WellProjectWell"
@@ -18,25 +16,19 @@ import { ExplorationWell } from "../../models/ExplorationWell"
 import { Well } from "../../models/Well"
 
 interface Props {
-    project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
-    caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
     dg4Year: number
     tableYears: [number, number]
     tableName: string
     alignedGridsRef?: any[]
     gridRef?: any
-    assetWells: ExplorationWell[] | WellProjectWell[]
-    setAssetWells: Dispatch<SetStateAction<ExplorationWell[] | WellProjectWell[] | undefined>>
+    assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[]
+    setAssetWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[] | undefined>>
     wells: Well[] | undefined
     assetId: string
     isExplorationTable: boolean
 }
 
 function CaseDrillingScheduleTabTable({
-    project, setProject,
-    caseItem, setCase,
     dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
@@ -47,7 +39,7 @@ function CaseDrillingScheduleTabTable({
     const [rowData, setRowData] = useState<any[]>([])
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
-        const newAssetWells: ExplorationWell[] | WellProjectWell[] = [...assetWells]
+        const newAssetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[] = [...assetWells]
         if (isExplorationTable) {
             wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
                 const explorationWell = assetWell.find((ew) => ew.wellId === w.id)
@@ -163,7 +155,6 @@ function CaseDrillingScheduleTabTable({
             newProfile.values = values
             const rowWells: ExplorationWell[] | WellProjectWell[] = p.data.assetWells
             if (rowWells) {
-                const { field } = p.colDef
                 const index = rowWells.findIndex((w) => w === p.data.assetWell)
                 if (index > -1) {
                     const well = rowWells[index]
