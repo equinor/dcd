@@ -126,14 +126,6 @@ public class WellProjectWellService : IWellProjectWellService
         return null;
     }
 
-    public async Task<WellProjectWellDto> GetWellProjectWellDto(Guid wellId, Guid caseId)
-    {
-        var wellProjectWell = await GetWellProjectWell(wellId, caseId);
-        var wellProjectWellDto = WellProjectWellDtoAdapter.Convert(wellProjectWell);
-
-        return wellProjectWellDto;
-    }
-
     public async Task<IEnumerable<WellProjectWell>> GetAll()
     {
         if (_context.WellProjectWell != null)

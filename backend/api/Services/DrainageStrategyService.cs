@@ -154,18 +154,6 @@ public class DrainageStrategyService : IDrainageStrategyService
         return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
-    public async Task<DrainageStrategyDto> NewUpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto)
-    {
-        var existing = await GetDrainageStrategy(updatedDrainageStrategyDto.Id);
-        var unit = (await _projectService.GetProject(existing.ProjectId)).PhysicalUnit;
-
-        DrainageStrategyAdapter.ConvertExisting(existing, updatedDrainageStrategyDto, unit, false);
-
-        var updatedDrainageStrategy = _context.DrainageStrategies!.Update(existing);
-        await _context.SaveChangesAsync();
-        return DrainageStrategyDtoAdapter.Convert(updatedDrainageStrategy.Entity, unit);
-    }
-
     public async Task<DrainageStrategy> GetDrainageStrategy(Guid drainageStrategyId)
     {
         var drainageStrategy = await _context.DrainageStrategies!

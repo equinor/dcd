@@ -157,8 +157,6 @@ public class ProspSharepointImportService
         return siteData;
     }
 
-
-
     private static string? GetDriveItemPathFromUrl(string? pathFromIdParameter)
     {
         return pathFromIdParameter != null
