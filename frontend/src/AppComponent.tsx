@@ -46,6 +46,21 @@ const AppComponent: FC = () => {
     const runtimeConfig = useAppConfig()
     const fusionEnvironment = useFusionEnvironment()
 
+    const suppressConsoleError = (shouldBeHidden: ((message: string) => boolean)[]) => {
+        const err = console.error
+        console.error = (message?: any, ...optionalParams: any[]) => {
+            if (typeof message === "string" && shouldBeHidden.some((func) => func(message))) {
+                return
+            }
+            err(message, ...optionalParams)
+        }
+    }
+
+    suppressConsoleError([
+        (m) => m.startsWith("Warning: Invalid aria prop"),
+        (m) => m.startsWith("*"),
+    ])
+
     const config = ResolveConfiguration(fusionEnvironment.env)
 
     if (runtimeConfig.value !== undefined && runtimeConfig.value !== null) {

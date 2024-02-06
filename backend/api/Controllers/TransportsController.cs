@@ -31,32 +31,32 @@ public class TransportsController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateTransport")]
-    public ProjectDto UpdateTransport([FromBody] TransportDto transportDto)
+    public async Task<ProjectDto> UpdateTransport([FromBody] TransportDto transportDto)
     {
-        return _transportService.UpdateTransport(transportDto);
+        return await _transportService.UpdateTransport(transportDto);
     }
 
     [HttpPut("new", Name = "NewUpdateTransport")]
-    public TransportDto NewUpdateTransport([FromBody] TransportDto transportDto)
+    public async Task<TransportDto> NewUpdateTransport([FromBody] TransportDto transportDto)
     {
-        return _transportService.NewUpdateTransport(transportDto);
+        return await _transportService.NewUpdateTransport(transportDto);
     }
 
     [HttpPost(Name = "CreateTransport")]
-    public ProjectDto CreateTransport([FromQuery] Guid sourceCaseId, [FromBody] TransportDto transportDto)
+    public async Task<ProjectDto> CreateTransport([FromQuery] Guid sourceCaseId, [FromBody] TransportDto transportDto)
     {
-        return _transportService.CreateTransport(transportDto, sourceCaseId);
+        return await _transportService.CreateTransport(transportDto, sourceCaseId);
     }
 
     [HttpDelete("{transportId}", Name = "DeleteTransport")]
-    public ProjectDto DeleteTransport(Guid transportId)
+    public async Task<ProjectDto> DeleteTransport(Guid transportId)
     {
-        return _transportService.DeleteTransport(transportId);
+        return await _transportService.DeleteTransport(transportId);
     }
 
     [HttpPost("{transportId}/copy", Name = "CopyTransport")]
-    public TransportDto CopyTransport([FromQuery] Guid caseId, Guid transportId)
+    public async Task<TransportDto> CopyTransport([FromQuery] Guid caseId, Guid transportId)
     {
-        return _transportService.CopyTransport(transportId, caseId);
+        return await _transportService.CopyTransport(transportId, caseId);
     }
 }

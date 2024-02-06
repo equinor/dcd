@@ -38,30 +38,30 @@ public class CaseService : ICaseService
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
-    public ProjectDto CreateCase(CaseDto caseDto)
+    public async Task<ProjectDto> CreateCase(CaseDto caseDto)
     {
         var case_ = CaseAdapter.Convert(caseDto);
         if (case_.DG4Date == DateTimeOffset.MinValue)
         {
             case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
         }
-        var project = _projectService.GetProject(case_.ProjectId);
+        var project = await _projectService.GetProject(case_.ProjectId);
         case_.Project = project;
         _context.Cases!.Add(case_);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(project.Id);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDto(project.Id);
     }
 
-    public ProjectDto NewCreateCase(CaseDto caseDto)
+    public async Task<ProjectDto> NewCreateCase(CaseDto caseDto)
     {
         var caseItem = CaseAdapter.Convert(caseDto);
-        var project = _projectService.GetProject(caseItem.ProjectId);
+        var project = await _projectService.GetProject(caseItem.ProjectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
 
         var createdCase = _context.Cases!.Add(caseItem);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         var drainageStrategyDto = new DrainageStrategyDto
         {
@@ -69,7 +69,7 @@ public class CaseService : ICaseService
             Name = "Drainage strategy",
             Description = ""
         };
-        var drainageStrategy = _drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
+        var drainageStrategy = await _drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
         caseItem.DrainageStrategyLink = drainageStrategy.Id;
 
         var topsideDto = new TopsideDto
@@ -78,7 +78,7 @@ public class CaseService : ICaseService
             Name = "Topside",
             Source = Source.ConceptApp,
         };
-        var topside = _topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
+        var topside = await _topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
         caseItem.TopsideLink = topside.Id;
 
         var surfDto = new SurfDto
@@ -87,7 +87,7 @@ public class CaseService : ICaseService
             Name = "Surf",
             Source = Source.ConceptApp,
         };
-        var surf = _surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
+        var surf = await _surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
         caseItem.SurfLink = surf.Id;
 
         var substructureDto = new SubstructureDto
@@ -96,7 +96,7 @@ public class CaseService : ICaseService
             Name = "Substructure",
             Source = Source.ConceptApp,
         };
-        var substructure = _substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
+        var substructure = await _substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
         caseItem.SubstructureLink = substructure.Id;
 
         var transportDto = new TransportDto
@@ -105,7 +105,7 @@ public class CaseService : ICaseService
             Name = "Transport",
             Source = Source.ConceptApp,
         };
-        var transport = _transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
+        var transport = await _transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
         caseItem.TransportLink = transport.Id;
 
         var explorationDto = new ExplorationDto
@@ -113,7 +113,7 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "Exploration",
         };
-        var exploration = _explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
+        var exploration = await _explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
         caseItem.ExplorationLink = exploration.Id;
 
         var wellProjectDto = new WellProjectDto
@@ -121,41 +121,41 @@ public class CaseService : ICaseService
             ProjectId = createdCase.Entity.ProjectId,
             Name = "WellProject",
         };
-        var wellProject = _wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
+        var wellProject = await _wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
         caseItem.WellProjectLink = wellProject.Id;
 
-        return _projectService.GetProjectDto(project.Id);
+        return await _projectService.GetProjectDto(project.Id);
     }
 
-    public ProjectDto UpdateCase(CaseDto updatedCaseDto)
+    public async Task<ProjectDto> UpdateCase(CaseDto updatedCaseDto)
     {
-        var caseItem = GetCase(updatedCaseDto.Id);
+        var caseItem = await GetCase(updatedCaseDto.Id);
         CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
         _context.Cases!.Update(caseItem);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(caseItem.ProjectId);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public CaseDto NewUpdateCase(CaseDto updatedCaseDto)
+    public async Task<CaseDto> NewUpdateCase(CaseDto updatedCaseDto)
     {
-        var caseItem = GetCase(updatedCaseDto.Id);
+        var caseItem = await GetCase(updatedCaseDto.Id);
         CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
         _context.Cases!.Update(caseItem);
-        _context.SaveChanges();
-        return CaseDtoAdapter.Convert(GetCase(caseItem.Id));
+        await _context.SaveChangesAsync();
+        return CaseDtoAdapter.Convert(await GetCase(caseItem.Id));
     }
 
-    public ProjectDto DeleteCase(Guid caseId)
+    public async Task<ProjectDto> DeleteCase(Guid caseId)
     {
-        var caseItem = GetCase(caseId);
+        var caseItem = await GetCase(caseId);
         _context.Cases!.Remove(caseItem);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(caseItem.ProjectId);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public Case GetCase(Guid caseId)
+    public async Task<Case> GetCase(Guid caseId)
     {
-        var caseItem = _context.Cases!
+        var caseItem = await _context.Cases!
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
@@ -168,7 +168,7 @@ public class CaseService : ICaseService
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-            .FirstOrDefault(c => c.Id == caseId);
+            .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
             throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
@@ -176,11 +176,11 @@ public class CaseService : ICaseService
         return caseItem;
     }
 
-    public IEnumerable<Case> GetAll()
+    public async Task<IEnumerable<Case>> GetAll()
     {
         if (_context.Cases != null)
         {
-            return _context.Cases
+            return await _context.Cases
                     .Include(c => c.TotalFeasibilityAndConceptStudies)
                     .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                     .Include(c => c.TotalFEEDStudies)
@@ -192,7 +192,8 @@ public class CaseService : ICaseService
                     .Include(c => c.CessationWellsCost)
                     .Include(c => c.CessationWellsCostOverride)
                     .Include(c => c.CessationOffshoreFacilitiesCost)
-                    .Include(c => c.CessationOffshoreFacilitiesCostOverride);
+                    .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+                    .ToListAsync();
         }
         else
         {

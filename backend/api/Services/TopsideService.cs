@@ -20,9 +20,9 @@ public class TopsideService : ITopsideService
         _logger = loggerFactory.CreateLogger<TopsideService>();
     }
 
-    public TopsideDto CopyTopside(Guid topsideId, Guid sourceCaseId)
+    public async Task<TopsideDto> CopyTopside(Guid topsideId, Guid sourceCaseId)
     {
-        var source = GetTopside(topsideId);
+        var source = await GetTopside(topsideId);
         var newTopsideDto = TopsideDtoAdapter.Convert(source);
         newTopsideDto.Id = Guid.Empty;
         if (newTopsideDto.CostProfile != null)
@@ -38,39 +38,39 @@ public class TopsideService : ITopsideService
             newTopsideDto.CessationCostProfile.Id = Guid.Empty;
         }
 
-        var topside = NewCreateTopside(newTopsideDto, sourceCaseId);
+        var topside = await NewCreateTopside(newTopsideDto, sourceCaseId);
         var dto = TopsideDtoAdapter.Convert(topside);
 
         return dto;
     }
 
-    public ProjectDto CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
+    public async Task<ProjectDto> CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
     {
         var topside = TopsideAdapter.Convert(topsideDto);
-        var project = _projectService.GetProject(topsideDto.ProjectId);
+        var project = await _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.UtcNow;
         topside.ProspVersion = topsideDto.ProspVersion;
         _context.Topsides!.Add(topside);
-        _context.SaveChanges();
-        SetCaseLink(topside, sourceCaseId, project);
-        return _projectService.GetProjectDto(project.Id);
+        await _context.SaveChangesAsync();
+        await SetCaseLink(topside, sourceCaseId, project);
+        return await _projectService.GetProjectDto(project.Id);
     }
 
-    public Topside NewCreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
+    public async Task<Topside> NewCreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
     {
         var topside = TopsideAdapter.Convert(topsideDto);
-        var project = _projectService.GetProject(topsideDto.ProjectId);
+        var project = await _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.UtcNow;
         topside.ProspVersion = topsideDto.ProspVersion;
         var createdTopside = _context.Topsides!.Add(topside);
-        _context.SaveChanges();
-        SetCaseLink(topside, sourceCaseId, project);
+        await _context.SaveChangesAsync();
+        await SetCaseLink(topside, sourceCaseId, project);
         return createdTopside.Entity;
     }
 
-    private void SetCaseLink(Topside topside, Guid sourceCaseId, Project project)
+    private async Task SetCaseLink(Topside topside, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
         if (case_ == null)
@@ -78,16 +78,16 @@ public class TopsideService : ITopsideService
             throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
         }
         case_.TopsideLink = topside.Id;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public ProjectDto DeleteTopside(Guid topsideId)
+    public async Task<ProjectDto> DeleteTopside(Guid topsideId)
     {
-        var topside = GetTopside(topsideId);
+        var topside = await GetTopside(topsideId);
         _context.Topsides!.Remove(topside);
         DeleteCaseLinks(topsideId);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(topside.ProjectId);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDto(topside.ProjectId);
     }
 
     private void DeleteCaseLinks(Guid topsideId)
@@ -101,36 +101,36 @@ public class TopsideService : ITopsideService
         }
     }
 
-    public ProjectDto UpdateTopside(TopsideDto updatedTopsideDto)
+    public async Task<ProjectDto> UpdateTopside(TopsideDto updatedTopsideDto)
     {
-        var existing = GetTopside(updatedTopsideDto.Id);
+        var existing = await GetTopside(updatedTopsideDto.Id);
         TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Topsides!.Update(existing);
-        _context.SaveChanges();
-        return _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
     }
 
-    public TopsideDto NewUpdateTopside(TopsideDto updatedTopsideDto)
+    public async Task<TopsideDto> NewUpdateTopside(TopsideDto updatedTopsideDto)
     {
-        var existing = GetTopside(updatedTopsideDto.Id);
+        var existing = await GetTopside(updatedTopsideDto.Id);
         TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         var updatedTopside = _context.Topsides!.Update(existing);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return TopsideDtoAdapter.Convert(updatedTopside.Entity);
     }
 
-    public Topside GetTopside(Guid topsideId)
+    public async Task<Topside> GetTopside(Guid topsideId)
     {
-        var topside = _context.Topsides!
+        var topside = await _context.Topsides!
             .Include(c => c.Project)
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
-            .FirstOrDefault(o => o.Id == topsideId);
+            .FirstOrDefaultAsync(o => o.Id == topsideId);
         if (topside == null)
         {
             throw new ArgumentException(string.Format("Topside {0} not found.", topsideId));

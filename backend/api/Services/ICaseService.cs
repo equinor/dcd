@@ -5,12 +5,12 @@ namespace api.Services
 {
     public interface ICaseService
     {
-        ProjectDto CreateCase(CaseDto caseDto);
-        ProjectDto DeleteCase(Guid caseId);
-        IEnumerable<Case> GetAll();
-        Case GetCase(Guid caseId);
-        ProjectDto NewCreateCase(CaseDto caseDto);
-        CaseDto NewUpdateCase(CaseDto updatedCaseDto);
-        ProjectDto UpdateCase(CaseDto updatedCaseDto);
+        Task<ProjectDto> CreateCase(CaseDto caseDto);
+        Task<ProjectDto> NewCreateCase(CaseDto caseDto);
+        Task<ProjectDto> UpdateCase(CaseDto updatedCaseDto);
+        Task<CaseDto> NewUpdateCase(CaseDto updatedCaseDto);
+        Task<ProjectDto> DeleteCase(Guid caseId);
+        Task<Case> GetCase(Guid caseId);
+        Task<IEnumerable<Case>> GetAll();
     }
 }

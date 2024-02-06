@@ -33,13 +33,12 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpGet("{projectId}", Name = "GetProject")]
-    public ProjectDto? Get(Guid projectId)
-    //public ActionResult<ProjectDto?> Get (Guid projectId) 
+    public async Task<ProjectDto?> Get(Guid projectId)
     {
         //return StatusCode(500);
         try
         {
-            return _projectService.GetProjectDto(projectId);
+            return await _projectService.GetProjectDto(projectId);
         }
         catch (NotFoundInDBException)
         {
@@ -48,7 +47,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost("createFromFusion", Name = "CreateProjectFromContextId")]
-    public async Task<ProjectDto> CreateProjectFromContextIdAsync([FromQuery] Guid contextId)
+    public async Task<ProjectDto> CreateProjectFromContextId([FromQuery] Guid contextId)
     {
         var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
         if (projectMaster != null)
@@ -70,36 +69,35 @@ public class ProjectsController : ControllerBase
             };
             var project = ProjectAdapter.Convert(projectDto);
             project.CreateDate = DateTimeOffset.UtcNow;
-            return _projectService.CreateProject(project);
+            return await _projectService.CreateProject(project);
         }
 
         return new ProjectDto();
     }
 
     [HttpGet(Name = "GetProjects")]
-    public IEnumerable<ProjectDto>? GetProjects()
+    public async Task<IEnumerable<ProjectDto>?> GetProjects()
     {
-        return _projectService.GetAllDtos();
+        return await _projectService.GetAllDtos();
     }
 
     [HttpPost(Name = "CreateProject")]
-    public ProjectDto CreateProject([FromBody] ProjectDto projectDto)
+    public async Task<ProjectDto> CreateProject([FromBody] ProjectDto projectDto)
     {
         var project = ProjectAdapter.Convert(projectDto);
         project.CreateDate = DateTimeOffset.UtcNow;
-        return _projectService.CreateProject(project);
+        return await _projectService.CreateProject(project);
     }
 
     [HttpPut(Name = "UpdateProject")]
-    public ActionResult<ProjectDto?> UpdateProject([FromBody] ProjectDto projectDto)
+    public async Task<ProjectDto> UpdateProject([FromBody] ProjectDto projectDto)
     {
-        //return StatusCode(500);
-        return _projectService.UpdateProject(projectDto);
+        return await _projectService.UpdateProject(projectDto);
     }
 
     [HttpPut("ReferenceCase", Name = "SetReferenceCase")]
-    public ProjectDto SetReferenceCase([FromBody] ProjectDto projectDto)
+    public async Task<ProjectDto> SetReferenceCase([FromBody] ProjectDto projectDto)
     {
-        return _projectService.SetReferenceCase(projectDto);
+        return await _projectService.SetReferenceCase(projectDto);
     }
 }

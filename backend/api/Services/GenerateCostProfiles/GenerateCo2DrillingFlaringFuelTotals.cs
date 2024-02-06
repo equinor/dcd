@@ -23,13 +23,13 @@ public class GenerateCo2DrillingFlaringFuelTotals : IGenerateCo2DrillingFlaringF
         _wellProjectService = wellProjectService;
     }
 
-    public Co2DrillingFlaringFuelTotalsDto Generate(Guid caseId)
+    public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-        var wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside, drainageStrategy);
         var flaringsTotal = GetFlaringsProfileTotal(project, drainageStrategy);

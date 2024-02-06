@@ -31,32 +31,32 @@ public class TopsidesController : ControllerBase
     }
 
     [HttpPost(Name = "CreateTopside")]
-    public ProjectDto CreateTopside([FromQuery] Guid sourceCaseId, [FromBody] TopsideDto topsideDto)
+    public async Task<ProjectDto> CreateTopside([FromQuery] Guid sourceCaseId, [FromBody] TopsideDto topsideDto)
     {
-        return _topsideService.CreateTopside(topsideDto, sourceCaseId);
+        return await _topsideService.CreateTopside(topsideDto, sourceCaseId);
     }
 
     [HttpDelete("{topsideId}", Name = "DeleteTopside")]
-    public ProjectDto DeleteTopside(Guid topsideId)
+    public async Task<ProjectDto> DeleteTopside(Guid topsideId)
     {
-        return _topsideService.DeleteTopside(topsideId);
+        return await _topsideService.DeleteTopside(topsideId);
     }
 
     [HttpPut(Name = "UpdateTopside")]
-    public ProjectDto UpdateTopside([FromBody] TopsideDto topsideDto)
+    public async Task<ProjectDto> UpdateTopside([FromBody] TopsideDto topsideDto)
     {
-        return _topsideService.UpdateTopside(topsideDto);
+        return await _topsideService.UpdateTopside(topsideDto);
     }
 
     [HttpPost("{topsideId}/copy", Name = "CopyTopside")]
-    public TopsideDto CopyTopside([FromQuery] Guid caseId, Guid topsideId)
+    public async Task<TopsideDto> CopyTopside([FromQuery] Guid caseId, Guid topsideId)
     {
-        return _topsideService.CopyTopside(topsideId, caseId);
+        return await _topsideService.CopyTopside(topsideId, caseId);
     }
 
     [HttpPut("new", Name = "NewUpdateTopside")]
-    public TopsideDto NewUpdateTopside([FromBody] TopsideDto topsideDto)
+    public async Task<TopsideDto> NewUpdateTopside([FromBody] TopsideDto topsideDto)
     {
-        return _topsideService.NewUpdateTopside(topsideDto);
+        return await _topsideService.NewUpdateTopside(topsideDto);
     }
 }

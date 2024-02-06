@@ -21,11 +21,11 @@ public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
         _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }
 
-    public Co2IntensityDto Generate(Guid caseId)
+    public async Task<Co2IntensityDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
 

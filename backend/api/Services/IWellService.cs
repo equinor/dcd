@@ -5,18 +5,17 @@ namespace api.Services
 {
     public interface IWellService
     {
-        WellDto[]? CreateMultipleWells(WellDto[] wellDtos);
-        ProjectDto CreateWell(WellDto wellDto);
-        ProjectDto DeleteWell(Guid wellId);
-
-        IEnumerable<Well> GetAll();
-        IEnumerable<WellDto> GetAllDtos();
-        IEnumerable<WellDto> GetDtosForProject(Guid projectId);
-        Well GetWell(Guid wellId);
-
-        WellDto GetWellDto(Guid wellId);
-        WellDto UpdateExistingWell(WellDto updatedWellDto);
-        WellDto[] UpdateMultipleWells(WellDto[] updatedWellDtos);
-        ProjectDto UpdateWell(WellDto updatedWellDto);
+        Task<ProjectDto> CreateWell(WellDto wellDto);
+        Task<ProjectDto> UpdateWell(WellDto updatedWellDto);
+        Task<ProjectDto> DeleteWell(Guid wellId);
+        Task<WellDto> UpdateExistingWell(WellDto updatedWellDto);
+        Task<WellDto[]> UpdateMultiple(WellDto[] updatedWellDtos);
+        Task<WellDto[]?> CreateMultipleWells(WellDto[] wellDtos);
+        Task<Well> GetWell(Guid wellId);
+        Task<WellDto> GetWellDto(Guid wellId);
+        Task<IEnumerable<Well>> GetAll();
+        Task<IEnumerable<WellDto>> GetDtosForProject(Guid projectId);
+        Task<IEnumerable<Well>> GetWells(Guid projectId);
+        Task<IEnumerable<WellDto>> GetAllDtos();
     }
 }

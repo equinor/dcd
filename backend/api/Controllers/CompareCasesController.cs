@@ -27,8 +27,8 @@ public class CompareCasesController : ControllerBase
     }
 
     [HttpPost("{projectId}/calculateCompareCasesTotals", Name = "CalculateCompareCasesTotals")]
-    public List<CompareCasesDto> CalculateCompareCasesTotals(Guid projectId)
+    public async Task<List<CompareCasesDto>> CalculateCompareCasesTotals(Guid projectId)
     {
-        return new List<CompareCasesDto>(_compareCasesService.Calculate(projectId));
+        return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
     }
 }

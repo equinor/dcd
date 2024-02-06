@@ -19,9 +19,9 @@ namespace api.Services
             _logger = loggerFactory.CreateLogger<SurfService>();
         }
 
-        public ExplorationOperationalWellCostsDto? UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
+        public async Task<ExplorationOperationalWellCostsDto?> UpdateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
         {
-            var existing = GetOperationalWellCostsByProjectId(dto.ProjectId);
+            var existing = await GetOperationalWellCostsByProjectId(dto.ProjectId);
             if (existing == null)
             {
                 return null;
@@ -29,32 +29,33 @@ namespace api.Services
             ExplorationOperationalWellCostsAdapter.ConvertExisting(existing, dto);
 
             _context.ExplorationOperationalWellCosts!.Update(existing);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             var updatedDto = ExplorationOperationalWellCostsDtoAdapter.Convert(existing);
             return updatedDto;
         }
 
-        public ExplorationOperationalWellCostsDto CreateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
+        public async Task<ExplorationOperationalWellCostsDto> CreateOperationalWellCosts(ExplorationOperationalWellCostsDto dto)
         {
             var explorationOperationalWellCosts = ExplorationOperationalWellCostsAdapter.Convert(dto);
-            var project = _projectService.GetProject(dto.ProjectId);
+            var project = await _projectService.GetProject(dto.ProjectId);
             explorationOperationalWellCosts.Project = project;
             _context.ExplorationOperationalWellCosts!.Add(explorationOperationalWellCosts);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return ExplorationOperationalWellCostsDtoAdapter.Convert(explorationOperationalWellCosts);
         }
-        public ExplorationOperationalWellCosts? GetOperationalWellCostsByProjectId(Guid id)
+
+        public async Task<ExplorationOperationalWellCosts?> GetOperationalWellCostsByProjectId(Guid id)
         {
-            var operationalWellCosts = _context.ExplorationOperationalWellCosts!
-                .FirstOrDefault(o => o.ProjectId == id);
+            var operationalWellCosts = await _context.ExplorationOperationalWellCosts!
+                .FirstOrDefaultAsync(o => o.ProjectId == id);
             return operationalWellCosts;
         }
 
-        public ExplorationOperationalWellCosts? GetOperationalWellCosts(Guid id)
+        public async Task<ExplorationOperationalWellCosts?> GetOperationalWellCosts(Guid id)
         {
-            var operationalWellCosts = _context.ExplorationOperationalWellCosts!
+            var operationalWellCosts = await _context.ExplorationOperationalWellCosts!
                 .Include(eowc => eowc.Project)
-                .FirstOrDefault(o => o.Id == id);
+                .FirstOrDefaultAsync(o => o.Id == id);
             return operationalWellCosts;
         }
     }

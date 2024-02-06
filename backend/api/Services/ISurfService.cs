@@ -5,12 +5,12 @@ namespace api.Services
 {
     public interface ISurfService
     {
-        SurfDto CopySurf(Guid surfId, Guid sourceCaseId);
-        ProjectDto CreateSurf(SurfDto surfDto, Guid sourceCaseId);
-        ProjectDto DeleteSurf(Guid surfId);
-        Surf GetSurf(Guid surfId);
-        Surf NewCreateSurf(SurfDto surfDto, Guid sourceCaseId);
-        SurfDto NewUpdateSurf(SurfDto updatedSurfDto);
-        ProjectDto UpdateSurf(SurfDto updatedSurfDto);
+        Task<SurfDto> CopySurf(Guid surfId, Guid sourceCaseId);
+        Task<ProjectDto> UpdateSurf(SurfDto updatedSurfDto);
+        Task<SurfDto> NewUpdateSurf(SurfDto updatedSurfDto);
+        Task<Surf> GetSurf(Guid surfId);
+        Task<ProjectDto> CreateSurf(SurfDto surfDto, Guid sourceCaseId);
+        Task<Surf> NewCreateSurf(SurfDto surfDto, Guid sourceCaseId);
+        Task<ProjectDto> DeleteSurf(Guid surfId);
     }
 }

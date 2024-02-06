@@ -93,7 +93,7 @@ public class ProspExcelImportService
         return new DateTime(1900, 1, 1);
     }
 
-    private void ImportSurf(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportSurf(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
         List<string> costProfileCoords = new()
         {
@@ -132,7 +132,7 @@ public class ProspExcelImportService
         var importedCurrency = ReadIntValue(cellData, _prospConfig.Surf.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var surfLink = _caseService.GetCase(sourceCaseId).SurfLink;
+        var surfLink = (await _caseService.GetCase(sourceCaseId)).SurfLink;
         var newSurf = new Models.Surf
         {
             Id = surfLink,
@@ -162,15 +162,15 @@ public class ProspExcelImportService
 
         if (surfLink != Guid.Empty)
         {
-            _surfService.UpdateSurf(dto);
+            await _surfService.UpdateSurf(dto);
         }
         else
         {
-            _surfService.CreateSurf(dto, sourceCaseId);
+            await _surfService.CreateSurf(dto, sourceCaseId);
         }
     }
 
-    private void ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
         List<string> costProfileCoords = new()
         {
@@ -217,7 +217,7 @@ public class ProspExcelImportService
         var importedCurrency = ReadIntValue(cellData, _prospConfig.TopSide.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var topsideLink = _caseService.GetCase(sourceCaseId).TopsideLink;
+        var topsideLink = (await _caseService.GetCase(sourceCaseId)).TopsideLink;
         var newTopside = new Topside
         {
             Id = topsideLink,
@@ -253,15 +253,15 @@ public class ProspExcelImportService
         var dto = TopsideDtoAdapter.Convert(newTopside);
         if (topsideLink != Guid.Empty)
         {
-            _topsideService.UpdateTopside(dto);
+            await _topsideService.UpdateTopside(dto);
         }
         else
         {
-            _topsideService.CreateTopside(dto, sourceCaseId);
+            await _topsideService.CreateTopside(dto, sourceCaseId);
         }
     }
 
-    private void ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
         List<string> costProfileCoords = new()
         {
@@ -291,7 +291,7 @@ public class ProspExcelImportService
         var importedCurrency = ReadIntValue(cellData, _prospConfig.SubStructure.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var substructureLink = _caseService.GetCase(sourceCaseId).SubstructureLink;
+        var substructureLink = (await _caseService.GetCase(sourceCaseId)).SubstructureLink;
         var newSubstructure = new Substructure
         {
             Id = substructureLink,
@@ -312,15 +312,15 @@ public class ProspExcelImportService
         if (substructureLink != Guid.Empty)
         {
             var dto = SubstructureDtoAdapter.Convert(newSubstructure);
-            _substructureService.UpdateSubstructure(dto);
+            await _substructureService.UpdateSubstructure(dto);
         }
         else
         {
-            _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
+            await _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
         }
     }
 
-    private void ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
         List<string> costProfileCoords = new()
         {
@@ -349,7 +349,7 @@ public class ProspExcelImportService
         var gasExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.gasExportPipelineLength);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var transportLink = _caseService.GetCase(sourceCaseId).TransportLink;
+        var transportLink = (await _caseService.GetCase(sourceCaseId)).TransportLink;
         var newTransport = new Models.Transport
         {
             Id = transportLink,
@@ -369,15 +369,15 @@ public class ProspExcelImportService
         var dto = TransportDtoAdapter.Convert(newTransport);
         if (transportLink != Guid.Empty)
         {
-            _transportService.UpdateTransport(dto);
+            await _transportService.UpdateTransport(dto);
         }
         else
         {
-            _transportService.CreateTransport(dto, sourceCaseId);
+            await _transportService.CreateTransport(dto, sourceCaseId);
         }
     }
 
-    public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
+    public async Task<ProjectDto> ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
     {
         using var ms = new MemoryStream();
         file.CopyTo(ms);
@@ -396,30 +396,30 @@ public class ProspExcelImportService
                 var parsedData = cellData.ToList();
                 if (assets["Surf"])
                 {
-                    ImportSurf(parsedData, sourceCaseId, projectId);
+                    await ImportSurf(parsedData, sourceCaseId, projectId);
                 }
 
                 if (assets["Topside"])
                 {
-                    ImportTopside(parsedData, sourceCaseId, projectId);
+                    await ImportTopside(parsedData, sourceCaseId, projectId);
                 }
 
                 if (assets["Substructure"])
                 {
-                    ImportSubstructure(parsedData, sourceCaseId, projectId);
+                    await ImportSubstructure(parsedData, sourceCaseId, projectId);
                 }
 
                 if (assets["Transport"])
                 {
-                    ImportTransport(parsedData, sourceCaseId, projectId);
+                    await ImportTransport(parsedData, sourceCaseId, projectId);
                 }
             }
         }
 
-        return _projectService.GetProjectDto(projectId);
+        return await _projectService.GetProjectDto(projectId);
     }
 
-    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
+    public async Task<ProjectDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
         string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
@@ -427,7 +427,7 @@ public class ProspExcelImportService
         var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
             .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
-        var caseItem = _caseService.GetCase(sourceCaseId);
+        var caseItem = await _caseService.GetCase(sourceCaseId);
         caseItem.SharepointFileId = sharepointFileId;
         caseItem.SharepointFileName = sharepointFileName;
         caseItem.SharepointFileUrl = sharepointFileUrl;
@@ -442,7 +442,7 @@ public class ProspExcelImportService
                 var parsedData = cellData.ToList();
                 if (assets["Surf"])
                 {
-                    ImportSurf(parsedData, sourceCaseId, projectId);
+                    await ImportSurf(parsedData, sourceCaseId, projectId);
                 }
                 else
                 {
@@ -451,7 +451,7 @@ public class ProspExcelImportService
 
                 if (assets["Topside"])
                 {
-                    ImportTopside(parsedData, sourceCaseId, projectId);
+                    await ImportTopside(parsedData, sourceCaseId, projectId);
                 }
                 else
                 {
@@ -460,7 +460,7 @@ public class ProspExcelImportService
 
                 if (assets["Substructure"])
                 {
-                    ImportSubstructure(parsedData, sourceCaseId, projectId);
+                    await ImportSubstructure(parsedData, sourceCaseId, projectId);
                 }
                 else
                 {
@@ -469,7 +469,7 @@ public class ProspExcelImportService
 
                 if (assets["Transport"])
                 {
-                    ImportTransport(parsedData, sourceCaseId, projectId);
+                    await ImportTransport(parsedData, sourceCaseId, projectId);
                 }
                 else
                 {
@@ -478,15 +478,15 @@ public class ProspExcelImportService
             }
 
             var caseDto = CaseDtoAdapter.Convert(caseItem);
-            return _caseService.UpdateCase(caseDto);
+            return await _caseService.UpdateCase(caseDto);
         }
 
-        return _projectService.GetProjectDto(projectId);
+        return await _projectService.GetProjectDto(projectId);
     }
 
-    public void ClearImportedProspData(Guid sourceCaseId, Guid projectId)
+    public async Task ClearImportedProspData(Guid sourceCaseId, Guid projectId)
     {
-        var caseItem = _caseService.GetCase(sourceCaseId);
+        var caseItem = await _caseService.GetCase(sourceCaseId);
         caseItem.SharepointFileId = null;
         caseItem.SharepointFileName = null;
         caseItem.SharepointFileUrl = null;
@@ -497,7 +497,7 @@ public class ProspExcelImportService
         ClearImportedTransport(caseItem);
 
         var caseDto = CaseDtoAdapter.Convert(caseItem);
-        _caseService.UpdateCase(caseDto);
+        await _caseService.UpdateCase(caseDto);
     }
 
     private void ClearImportedSurf(Case caseItem)

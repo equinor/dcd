@@ -31,36 +31,32 @@ public class WellProjectWellsController : ControllerBase
     }
 
     [HttpGet(Name = "GetWellProjectWells")]
-    public IEnumerable<WellProjectWellDto> GetWellProjectWells([FromQuery] Guid projectId)
+    public async Task<IEnumerable<WellProjectWellDto>> GetWellProjectWells([FromQuery] Guid projectId)
     {
-        if (projectId != Guid.Empty)
-        {
-            // return _wellProjectWellService.GetDtosForProject(projectId);
-        }
-        return _wellProjectWellService.GetAllDtos();
+        return await _wellProjectWellService.GetAllDtos();
     }
 
     [HttpPost(Name = "CreateWellProjectWell")]
-    public ProjectDto CreateWellProjectWell([FromBody] WellProjectWellDto wellDto)
+    public async Task<ProjectDto> CreateWellProjectWell([FromBody] WellProjectWellDto wellDto)
     {
-        return _wellProjectWellService.CreateWellProjectWell(wellDto);
+        return await _wellProjectWellService.CreateWellProjectWell(wellDto);
     }
 
     [HttpPut(Name = "UpdateWellProjectWell")]
-    public ProjectDto UpdateWellProjectWell([FromBody] WellProjectWellDto wellDto)
+    public async Task<ProjectDto> UpdateWellProjectWell([FromBody] WellProjectWellDto wellDto)
     {
-        return _wellProjectWellService.UpdateWellProjectWell(wellDto);
+        return await _wellProjectWellService.UpdateWellProjectWell(wellDto);
     }
 
     [HttpPost("multiple", Name = "CreateMultipleWellProjectWells")]
-    public WellProjectWellDto[]? CreateMultipleWellProjectWells([FromBody] WellProjectWellDto[] wellDto)
+    public async Task<WellProjectWellDto[]> CreateMultipleWellProjectWells([FromBody] WellProjectWellDto[] wellDto)
     {
-        return _wellProjectWellService.CreateMultipleWellProjectWells(wellDto);
+        return await _wellProjectWellService.CreateMultipleWellProjectWells(wellDto);
     }
 
     [HttpPut("multiple", Name = "UpdateMultipleWellProjectWells")]
-    public WellProjectWellDto[]? UpdateMultipleWellProjectWells([FromQuery] Guid caseId, [FromBody] WellProjectWellDto[] wellDto)
+    public async Task<WellProjectWellDto[]> UpdateMultipleWellProjectWells([FromQuery] Guid caseId, [FromBody] WellProjectWellDto[] wellDto)
     {
-        return _wellProjectWellService.UpdateMultipleWellProjectWells(wellDto, caseId);
+        return await _wellProjectWellService.UpdateMultipleWellProjectWells(wellDto, caseId);
     }
 }

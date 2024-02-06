@@ -27,25 +27,25 @@ public class ProjectService : IProjectService
         _fusionService = fusionService;
     }
 
-    public ProjectDto UpdateProject(ProjectDto projectDto)
+    public async Task<ProjectDto> UpdateProject(ProjectDto projectDto)
     {
-        var existingProject = GetProject(projectDto.ProjectId);
+        var existingProject = await GetProject(projectDto.ProjectId);
         ProjectAdapter.ConvertExisting(existingProject, projectDto);
         _context.Projects!.Update(existingProject);
-        _context.SaveChanges();
-        return GetProjectDto(existingProject.Id);
+        await _context.SaveChangesAsync();
+        return await GetProjectDto(existingProject.Id);
     }
 
-    public ProjectDto UpdateProjectFromProjectMaster(ProjectDto projectDto)
+    public async Task<ProjectDto> UpdateProjectFromProjectMaster(ProjectDto projectDto)
     {
-        var existingProject = GetProject(projectDto.ProjectId);
+        var existingProject = await GetProject(projectDto.ProjectId);
         ProjectAdapter.ConvertExistingFromProjectMaster(existingProject, projectDto);
         _context.Projects!.Update(existingProject);
-        _context.SaveChanges();
-        return GetProjectDto(existingProject.Id);
+        await _context.SaveChangesAsync();
+        return await GetProjectDto(existingProject.Id);
     }
 
-    public ProjectDto CreateProject(Project project)
+    public async Task<ProjectDto> CreateProject(Project project)
     {
         project.CreateDate = DateTimeOffset.UtcNow;
         project.Cases = new List<Case>();
@@ -74,23 +74,26 @@ public class ProjectService : IProjectService
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }));
 
+
         if (_context.Projects == null)
         {
-            _logger.LogInformation("Empty projects: ", nameof(project));
-            var projects = new List<Project>();
-            projects.Add(project);
-            _context.AddRange(projects);
+            _logger.LogInformation($"Empty projects: {nameof(project)}");
+            var projects = new List<Project>
+            {
+                project
+            };
+            await _context.AddRangeAsync(projects);
         }
         else
         {
             _context.Projects.Add(project);
         }
 
-        _context.SaveChanges();
-        return GetProjectDto(project.Id);
+        await _context.SaveChangesAsync();
+        return await GetProjectDto(project.Id);
     }
 
-    public IEnumerable<Project> GetAll()
+    public async Task<IEnumerable<Project>> GetAll()
     {
         Activity.Current?.AddBaggage(nameof(_context.Projects), JsonConvert.SerializeObject(_context.Projects,
             Formatting.None,
@@ -105,7 +108,7 @@ public class ProjectService : IProjectService
 
             foreach (var project in projects)
             {
-                AddAssetsToProject(project);
+                await AddAssetsToProject(project);
             }
 
             return projects;
@@ -114,11 +117,11 @@ public class ProjectService : IProjectService
         return new List<Project>();
     }
 
-    public IEnumerable<ProjectDto> GetAllDtos()
+    public async Task<IEnumerable<ProjectDto>> GetAllDtos()
     {
-        if (GetAll() != null)
+        var projects = await GetAll();
+        if (projects != null)
         {
-            var projects = GetAll();
             var projectDtos = new List<ProjectDto>();
             foreach (var project in projects)
             {
@@ -138,7 +141,7 @@ public class ProjectService : IProjectService
         return new List<ProjectDto>();
     }
 
-    public Project GetProjectWithoutAssets(Guid projectId)
+    public async Task<Project> GetProjectWithoutAssets(Guid projectId)
     {
         if (_context.Projects != null)
         {
@@ -147,21 +150,21 @@ public class ProjectService : IProjectService
                 throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
-            var project = _context.Projects!
+            var project = await _context.Projects!
                 .Include(p => p.Cases)
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefault(p => p.Id.Equals(projectId));
+                .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
 
             if (project == null)
             {
-                var projectByFusionId = _context.Projects
+                var projectByFusionId = await _context.Projects
                     .Include(p => p.Cases)
                     .Include(p => p.Wells)
                     .Include(p => p.ExplorationOperationalWellCosts)
                     .Include(p => p.DevelopmentOperationalWellCosts)
-                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                    .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
                 project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
@@ -172,7 +175,7 @@ public class ProjectService : IProjectService
         throw new NotFoundInDBException("The database contains no projects");
     }
 
-    public Project GetProjectWithoutAssetsNoTracking(Guid projectId)
+    public async Task<Project> GetProjectWithoutAssetsNoTracking(Guid projectId)
     {
         if (_context.Projects != null)
         {
@@ -181,23 +184,23 @@ public class ProjectService : IProjectService
                 throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
-            var project = _context.Projects
+            var project = await _context.Projects
                 .AsNoTracking()
                 .Include(p => p.Cases)
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefault(p => p.Id.Equals(projectId));
+                .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
 
             if (project == null)
             {
-                var projectByFusionId = _context.Projects
+                var projectByFusionId = await _context.Projects
                     .AsNoTracking()
                     .Include(p => p.Cases)
                     .Include(p => p.Wells)
                     .Include(p => p.ExplorationOperationalWellCosts)
                     .Include(p => p.DevelopmentOperationalWellCosts)
-                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                    .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
                 project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
@@ -208,7 +211,7 @@ public class ProjectService : IProjectService
         throw new NotFoundInDBException("The database contains no projects");
     }
 
-    public Project GetProject(Guid projectId)
+    public async Task<Project> GetProject(Guid projectId)
     {
         if (_context.Projects != null)
         {
@@ -217,7 +220,7 @@ public class ProjectService : IProjectService
                 throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
-            var project = _context.Projects!
+            var project = await _context.Projects!
                 .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
                 .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
                 .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
@@ -233,7 +236,7 @@ public class ProjectService : IProjectService
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefault(p => p.Id.Equals(projectId));
+                .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
 
             if (project?.Cases?.Count > 0)
             {
@@ -242,9 +245,9 @@ public class ProjectService : IProjectService
 
             if (project == null)
             {
-                var projectByFusionId = _context.Projects
+                var projectByFusionId = await _context.Projects
                     .Include(c => c.Cases)
-                    .FirstOrDefault(p => p.FusionProjectId.Equals(projectId));
+                    .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
                 if (projectByFusionId == null)
                 {
                     throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
@@ -267,9 +270,9 @@ public class ProjectService : IProjectService
         throw new NotFoundInDBException("The database contains no projects");
     }
 
-    public ProjectDto GetProjectDto(Guid projectId)
+    public async Task<ProjectDto> GetProjectDto(Guid projectId)
     {
-        var project = GetProject(projectId);
+        var project = await GetProject(projectId);
         var projectDto = ProjectDtoAdapter.Convert(project);
 
         Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
@@ -280,20 +283,20 @@ public class ProjectService : IProjectService
         return projectDto;
     }
 
-    public void UpdateProjectFromProjectMaster()
+    public async Task UpdateProjectFromProjectMaster()
     {
-        var projectDtos = GetAllDtos();
+        var projectDtos = await GetAllDtos();
         var numberOfDeviations = 0;
         var totalNumberOfProjects = projectDtos.Count();
         foreach (var project in projectDtos)
         {
-            var projectMaster = GetProjectDtoFromProjectMaster(project.ProjectId);
+            var projectMaster = await GetProjectDtoFromProjectMaster(project.ProjectId);
             if (!project.Equals(projectMaster))
             {
                 _logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name,
                     project.ProjectId);
                 numberOfDeviations++;
-                UpdateProjectFromProjectMaster(projectMaster);
+                await UpdateProjectFromProjectMaster(projectMaster);
             }
             else
             {
@@ -306,11 +309,11 @@ public class ProjectService : IProjectService
             numberOfDeviations, totalNumberOfProjects);
     }
 
-    private ProjectDto GetProjectDtoFromProjectMaster(Guid projectGuid)
+    private async Task<ProjectDto> GetProjectDtoFromProjectMaster(Guid projectGuid)
     {
         if (_fusionService != null)
         {
-            var projectMaster = _fusionService.ProjectMasterAsync(projectGuid).GetAwaiter().GetResult();
+            var projectMaster = await _fusionService.ProjectMasterAsync(projectGuid);
             var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
             var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
             ProjectDto projectDto = new()
@@ -332,40 +335,40 @@ public class ProjectService : IProjectService
         throw new NullReferenceException();
     }
 
-    public ProjectDto SetReferenceCase(ProjectDto projectDto)
+    public async Task<ProjectDto> SetReferenceCase(ProjectDto projectDto)
     {
         if (projectDto.ProjectId == Guid.Empty)
         {
             throw new NotFoundInDBException($"Project {projectDto.ProjectId} not found");
         }
 
-        var project = GetProject(projectDto.ProjectId);
+        var project = await GetProject(projectDto.ProjectId);
         project.ReferenceCaseId = projectDto.ReferenceCaseId;
 
         _context.Projects?.Update(project);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return ProjectDtoAdapter.Convert(project);
     }
 
-    private Project AddAssetsToProject(Project project)
+    private async Task<Project> AddAssetsToProject(Project project)
     {
-        project.WellProjects = GetWellProjects(project.Id).ToList();
-        project.DrainageStrategies = GetDrainageStrategies(project.Id).ToList();
-        project.Surfs = GetSurfs(project.Id).ToList();
-        project.Substructures = GetSubstructures(project.Id).ToList();
-        project.Topsides = GetTopsides(project.Id).ToList();
-        project.Transports = GetTransports(project.Id).ToList();
-        project.Explorations = GetExplorations(project.Id).ToList();
-        project.Wells = GetWells(project.Id).ToList();
+        project.WellProjects = (await GetWellProjects(project.Id)).ToList();
+        project.DrainageStrategies = (await GetDrainageStrategies(project.Id)).ToList();
+        project.Surfs = (await GetSurfs(project.Id)).ToList();
+        project.Substructures = (await GetSubstructures(project.Id)).ToList();
+        project.Topsides = (await GetTopsides(project.Id)).ToList();
+        project.Transports = (await GetTransports(project.Id)).ToList();
+        project.Explorations = (await GetExplorations(project.Id)).ToList();
+        project.Wells = (await GetWells(project.Id)).ToList();
         return project;
     }
 
-    public IEnumerable<Well> GetWells(Guid projectId)
+    public async Task<IEnumerable<Well>> GetWells(Guid projectId)
     {
         if (_context.Wells != null)
         {
-            return _context.Wells
-                .Where(d => d.ProjectId.Equals(projectId));
+            return await _context.Wells
+                .Where(d => d.ProjectId.Equals(projectId)).ToListAsync();
         }
         else
         {
@@ -373,11 +376,11 @@ public class ProjectService : IProjectService
         }
     }
 
-    public IEnumerable<Exploration> GetExplorations(Guid projectId)
+    public async Task<IEnumerable<Exploration>> GetExplorations(Guid projectId)
     {
         if (_context.Explorations != null)
         {
-            return _context.Explorations
+            return await _context.Explorations
                 .Include(c => c.ExplorationWellCostProfile)
                 .Include(c => c.AppraisalWellCostProfile)
                 .Include(c => c.SidetrackCostProfile)
@@ -385,22 +388,23 @@ public class ProjectService : IProjectService
                 .Include(c => c.SeismicAcquisitionAndProcessing)
                 .Include(c => c.CountryOfficeCost)
                 .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
-                .Where(d => d.Project.Id.Equals(projectId));
+                .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
         }
         else
         {
             return new List<Exploration>();
         }
     }
-    public IEnumerable<Transport> GetTransports(Guid projectId)
+
+    public async Task<IEnumerable<Transport>> GetTransports(Guid projectId)
     {
         if (_context.Transports != null)
         {
-            return _context.Transports
+            return await _context.Transports
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
+                .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
         }
         else
         {
@@ -408,15 +412,15 @@ public class ProjectService : IProjectService
         }
     }
 
-    public IEnumerable<Topside> GetTopsides(Guid projectId)
+    public async Task<IEnumerable<Topside>> GetTopsides(Guid projectId)
     {
         if (_context.Topsides != null)
         {
-            return _context.Topsides
+            return await _context.Topsides
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
+                .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
         }
         else
         {
@@ -424,15 +428,15 @@ public class ProjectService : IProjectService
         }
     }
 
-    public IEnumerable<Surf> GetSurfs(Guid projectId)
+    public async Task<IEnumerable<Surf>> GetSurfs(Guid projectId)
     {
         if (_context.Surfs != null)
         {
-            return _context.Surfs
+            return await _context.Surfs
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
+                .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
         }
         else
         {
@@ -440,11 +444,11 @@ public class ProjectService : IProjectService
         }
     }
 
-    public IEnumerable<DrainageStrategy> GetDrainageStrategies(Guid projectId)
+    public async Task<IEnumerable<DrainageStrategy>> GetDrainageStrategies(Guid projectId)
     {
         if (_context.DrainageStrategies != null)
         {
-            return _context.DrainageStrategies
+            return await _context.DrainageStrategies
                 .Include(c => c.ProductionProfileOil)
                 .Include(c => c.ProductionProfileGas)
                 .Include(c => c.ProductionProfileWater)
@@ -458,7 +462,7 @@ public class ProjectService : IProjectService
                 .Include(c => c.ProductionProfileNGL)
                 .Include(c => c.ImportedElectricity)
                 .Include(c => c.ImportedElectricityOverride)
-                .Where(d => d.Project.Id.Equals(projectId));
+                .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
         }
         else
         {
@@ -466,11 +470,11 @@ public class ProjectService : IProjectService
         }
     }
 
-    public IEnumerable<WellProject> GetWellProjects(Guid projectId)
+    public async Task<IEnumerable<WellProject>> GetWellProjects(Guid projectId)
     {
         if (_context.WellProjects != null)
         {
-            return _context.WellProjects
+            return await _context.WellProjects
                 .Include(c => c.OilProducerCostProfile)
                 .Include(c => c.OilProducerCostProfileOverride)
                 .Include(c => c.GasProducerCostProfile)
@@ -480,7 +484,7 @@ public class ProjectService : IProjectService
                 .Include(c => c.GasInjectorCostProfile)
                 .Include(c => c.GasInjectorCostProfileOverride)
                 .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
-                .Where(d => d.Project.Id.Equals(projectId));
+                .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
         }
         else
         {
@@ -488,15 +492,15 @@ public class ProjectService : IProjectService
         }
     }
 
-    public IEnumerable<Substructure> GetSubstructures(Guid projectId)
+    public async Task<IEnumerable<Substructure>> GetSubstructures(Guid projectId)
     {
         if (_context.Substructures != null)
         {
-            return _context.Substructures
+            return await _context.Substructures
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId));
+                .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
         }
         else
         {

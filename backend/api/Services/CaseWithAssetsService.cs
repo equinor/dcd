@@ -89,19 +89,19 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
     public async Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssetsAsync(CaseWithAssetsWrapperDto wrapper)
     {
-        var project = _projectService.GetProjectWithoutAssets(wrapper.CaseDto.ProjectId);
+        var project = await _projectService.GetProjectWithoutAssets(wrapper.CaseDto.ProjectId);
 
         var profilesToGenerate = new ProfilesToGenerate();
 
-        var updatedCaseDto = UpdateCase(wrapper.CaseDto, profilesToGenerate);
+        var updatedCaseDto = await UpdateCase(wrapper.CaseDto, profilesToGenerate);
 
-        UpdateDrainageStrategy(wrapper.DrainageStrategyDto, project.PhysicalUnit, profilesToGenerate);
-        UpdateWellProject(wrapper.WellProjectDto, profilesToGenerate);
-        UpdateExploration(wrapper.ExplorationDto, profilesToGenerate);
-        UpdateSurf(wrapper.SurfDto, profilesToGenerate);
-        UpdateSubstructure(wrapper.SubstructureDto, profilesToGenerate);
-        UpdateTransport(wrapper.TransportDto, profilesToGenerate);
-        UpdateTopside(wrapper.TopsideDto, profilesToGenerate);
+        await UpdateDrainageStrategy(wrapper.DrainageStrategyDto, project.PhysicalUnit, profilesToGenerate);
+        await UpdateWellProject(wrapper.WellProjectDto, profilesToGenerate);
+        await UpdateExploration(wrapper.ExplorationDto, profilesToGenerate);
+        await UpdateSurf(wrapper.SurfDto, profilesToGenerate);
+        await UpdateSubstructure(wrapper.SubstructureDto, profilesToGenerate);
+        await UpdateTransport(wrapper.TransportDto, profilesToGenerate);
+        await UpdateTopside(wrapper.TopsideDto, profilesToGenerate);
 
         if (wrapper.ExplorationWellDto?.Length > 0)
         {
@@ -117,7 +117,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         var generatedProfiles = await GenerateProfilesAsync(profilesToGenerate, wrapper.CaseDto.Id);
 
-        var projectDto = _projectService.GetProjectDto(updatedCaseDto.ProjectId);
+        var projectDto = await _projectService.GetProjectDto(updatedCaseDto.ProjectId);
 
         var result = new ProjectWithGeneratedProfilesDto
         {
@@ -248,7 +248,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
                 {
                     if (explorationWellDto.HasChanges)
                     {
-                        var existingExplorationWell = _explorationWellService.GetExplorationWell(explorationWellDto.WellId, explorationWellDto.ExplorationId);
+                        var existingExplorationWell = await _explorationWellService.GetExplorationWell(explorationWellDto.WellId, explorationWellDto.ExplorationId);
                         ExplorationWellAdapter.ConvertExisting(existingExplorationWell, explorationWellDto);
                         if (explorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
                         {
@@ -268,7 +268,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             {
                 await _context.SaveChangesAsync();
             }
-            var explorationDto = _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
+            var explorationDto = await _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
             explorationDto.HasChanges = true;
             UpdateExploration(explorationDto, profilesToGenerate);
         }
@@ -293,7 +293,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
                 {
                     if (wellProjectWellDto.HasChanges)
                     {
-                        var existingWellProjectWell = _wellProjectWellService.GetWellProjectWell(wellProjectWellDto.WellId, wellProjectWellDto.WellProjectId);
+                        var existingWellProjectWell = await _wellProjectWellService.GetWellProjectWell(wellProjectWellDto.WellId, wellProjectWellDto.WellProjectId);
                         WellProjectWellAdapter.ConvertExisting(existingWellProjectWell, wellProjectWellDto);
                         if (wellProjectWellDto.DrillingSchedule == null && existingWellProjectWell.DrillingSchedule != null)
                         {
@@ -313,13 +313,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             {
                 await _context.SaveChangesAsync();
             }
-            var wellProjectDto = _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
+            var wellProjectDto = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
             wellProjectDto.HasChanges = true;
             UpdateWellProject(wellProjectDto, profilesToGenerate);
         }
     }
 
-    public CaseDto UpdateCase(CaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<CaseDto> UpdateCase(CaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         if (!updatedDto.HasChanges)
         {
@@ -332,13 +332,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         profilesToGenerate.FuelFlaringAndLosses = true;
         profilesToGenerate.ImportedElectricity = true;
 
-        var item = _caseService.GetCase(updatedDto.Id);
+        var item = await _caseService.GetCase(updatedDto.Id);
         CaseAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Cases!.Update(item);
         return CaseDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public DrainageStrategyDto UpdateDrainageStrategy(DrainageStrategyDto updatedDto, PhysUnit unit, ProfilesToGenerate profilesToGenerate)
+    public async Task<DrainageStrategyDto> UpdateDrainageStrategy(DrainageStrategyDto updatedDto, PhysUnit unit, ProfilesToGenerate profilesToGenerate)
     {
         if (!updatedDto.HasChanges)
         {
@@ -351,13 +351,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         profilesToGenerate.FuelFlaringAndLosses = true;
         profilesToGenerate.ImportedElectricity = true;
 
-        var item = _drainageStrategyService.GetDrainageStrategy(updatedDto.Id);
+        var item = await _drainageStrategyService.GetDrainageStrategy(updatedDto.Id);
         DrainageStrategyAdapter.ConvertExisting(item, updatedDto, unit, false);
         var updatedItem = _context.DrainageStrategies!.Update(item);
         return DrainageStrategyDtoAdapter.Convert(updatedItem.Entity, unit);
     }
 
-    public WellProjectDto UpdateWellProject(WellProjectDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<WellProjectDto> UpdateWellProject(WellProjectDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         if (!updatedDto.HasChanges)
         {
@@ -366,13 +366,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         profilesToGenerate.StudyCost = true;
 
-        var item = _wellProjectService.GetWellProject(updatedDto.Id);
+        var item = await _wellProjectService.GetWellProject(updatedDto.Id);
         WellProjectAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.WellProjects!.Update(item);
         return WellProjectDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public ExplorationDto UpdateExploration(ExplorationDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<ExplorationDto> UpdateExploration(ExplorationDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         if (!updatedDto.HasChanges)
         {
@@ -381,13 +381,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         profilesToGenerate.GAndGAdminCost = true;
 
-        var item = _explorationService.GetExploration(updatedDto.Id);
+        var item = await _explorationService.GetExploration(updatedDto.Id);
         ExplorationAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Explorations!.Update(item);
         return ExplorationDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public SurfDto UpdateSurf(SurfDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SurfDto> UpdateSurf(SurfDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         if (!updatedDto.HasChanges)
         {
@@ -397,13 +397,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.CessationCost = true;
 
-        var item = _surfService.GetSurf(updatedDto.Id);
+        var item = await _surfService.GetSurf(updatedDto.Id);
         SurfAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Surfs!.Update(item);
         return SurfDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public SubstructureDto UpdateSubstructure(SubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SubstructureDto> UpdateSubstructure(SubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         if (!updatedDto.HasChanges)
         {
@@ -412,13 +412,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         profilesToGenerate.StudyCost = true;
 
-        var item = _substructureService.GetSubstructure(updatedDto.Id);
+        var item = await _substructureService.GetSubstructure(updatedDto.Id);
         SubstructureAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Substructures!.Update(item);
         return SubstructureDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public TransportDto UpdateTransport(TransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TransportDto> UpdateTransport(TransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         if (!updatedDto.HasChanges)
         {
@@ -427,12 +427,12 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         profilesToGenerate.StudyCost = true;
 
-        var item = _transportService.GetTransport(updatedDto.Id);
+        var item = await _transportService.GetTransport(updatedDto.Id);
         TransportAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Transports!.Update(item);
         return TransportDtoAdapter.Convert(updatedItem.Entity);
     }
-    public TopsideDto UpdateTopside(TopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TopsideDto> UpdateTopside(TopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         if (!updatedDto.HasChanges)
         {
@@ -445,7 +445,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         profilesToGenerate.FuelFlaringAndLosses = true;
         profilesToGenerate.ImportedElectricity = true;
 
-        var item = _topsideService.GetTopside(updatedDto.Id);
+        var item = await _topsideService.GetTopside(updatedDto.Id);
         TopsideAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Topsides!.Update(item);
         return TopsideDtoAdapter.Convert(updatedItem.Entity);

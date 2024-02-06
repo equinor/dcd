@@ -251,7 +251,7 @@ public class ProspSharepointImportService
                 var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
                     iteminfo.Transport);
 
-                projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                projectDto = await _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,
                     iteminfo.SharePointFileId,
@@ -312,10 +312,5 @@ public class ProspSharepointImportService
             ExcelMimeTypes.Xlsx,
         };
         return validMimeTypes;
-    }
-
-    internal async Task GetSharePointFileNamesAndId(object url)
-    {
-        throw new NotImplementedException();
     }
 }
