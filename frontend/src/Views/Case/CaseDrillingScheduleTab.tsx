@@ -11,9 +11,7 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
-import { Well } from "../../models/Well"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 
@@ -62,7 +60,7 @@ const InputWrapper = styled.div`
 `
 
 interface Props {
-    project: Project,
+    project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
     exploration: Components.Schemas.ExplorationDto,
     wellProject: Components.Schemas.WellProjectDto,
@@ -70,7 +68,7 @@ interface Props {
     setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>,
     wellProjectWells: Components.Schemas.WellProjectWellDto[],
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
-    wells: Well[] | undefined
+    wells: Components.Schemas.WellDto[] | undefined
     activeTab: number
 }
 

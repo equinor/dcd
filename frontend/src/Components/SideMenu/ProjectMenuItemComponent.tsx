@@ -7,7 +7,6 @@ import { useCurrentContext } from "@equinor/fusion"
 import { ProjectMenuItemType } from "./ProjectMenu"
 import MenuItem from "./MenuItem"
 import { CasePath } from "../../Utils/common"
-import { Project } from "../../models/Project"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -41,7 +40,7 @@ export type ProjectMenuItem = {
 }
 
 interface Props {
-    project: Project
+    project: Components.Schemas.ProjectDto
     item: ProjectMenuItem
     projectId: string
     subItems?: Components.Schemas.CaseDto[]
@@ -50,12 +49,10 @@ interface Props {
 function ProjectMenuItemComponent({
     item, projectId, subItems, project,
 }: Props) {
-    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
+    const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
-    // eslint-disable-next-line max-len
-    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && caseId === undefined)
-        || (item.name === ProjectMenuItemType.CASES && caseId !== undefined)
+    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && caseId === undefined) || (item.name === ProjectMenuItemType.CASES && caseId !== undefined)
     const isSelected = currentProject?.externalId === projectId && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 

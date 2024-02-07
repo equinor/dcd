@@ -18,7 +18,6 @@ import {
 import { useHistory, useParams } from "react-router-dom"
 import styled from "styled-components"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
-import { Project } from "../../models/Project"
 import { ModalNoFocus } from "../ModalNoFocus"
 import {
     DefaultDate, IsDefaultDate, ProjectPath, ToMonthDate,
@@ -74,8 +73,8 @@ const ButtonsWrapper = styled.div`
 `
 
 interface Props {
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
+    project: Components.Schemas.ProjectDto
     caseId?: string,
     isOpen: boolean
     toggleModal: () => void
@@ -93,13 +92,13 @@ const EditCaseModal = ({
     navigate,
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const [caseName, setCaseName] = useState<string | undefined>()
+    const [caseName, setCaseName] = useState<string>("")
     const [dG4Date, setDG4Date] = useState<Date>(DefaultDate())
     const [description, setDescription] = useState<string>("")
-    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>()
-    const [producerCount, setProducerWells] = useState<number>()
-    const [gasInjectorCount, setGasInjectorWells] = useState<number>()
-    const [waterInjectorCount, setWaterInjectorWells] = useState<number>()
+    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
+    const [producerCount, setProducerWells] = useState<number>(0)
+    const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
+    const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const [caseItem, setCaseItem] = useState<Components.Schemas.CaseDto>()
@@ -161,7 +160,7 @@ const EditCaseModal = ({
         try {
             setIsLoading(true)
 
-            let projectResult: Project
+            let projectResult: Components.Schemas.ProjectDto
             if (editMode && caseItem && caseItem.id) {
                 const newCase = { ...caseItem }
                 newCase.name = caseName
@@ -181,7 +180,6 @@ const EditCaseModal = ({
                 projectResult = await (await GetCaseService()).create(
                     project.id,
                     {
-                        id: project.id,
                         name: caseName,
                         description,
                         dG4Date: dG4Date.toJSON(),

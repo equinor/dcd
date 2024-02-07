@@ -62,6 +62,7 @@ public class SurfCostProfileDto : TimeSeriesCostDto
 
 public class SurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
+    [Required]
     public bool Override { get; set; }
 }
 

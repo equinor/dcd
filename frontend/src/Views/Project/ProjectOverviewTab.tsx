@@ -12,7 +12,6 @@ import { add, archive } from "@equinor/eds-icons"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { WrapperColumn, WrapperRow } from "../Asset/StyledAssetComponents"
-import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
 import EditCaseModal from "../../Components/Case/EditCaseModal"
@@ -62,8 +61,8 @@ const DescriptionField = styled(TextArea)`
 `
 
 interface Props {
-    project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>
+    project: Components.Schemas.ProjectDto,
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
 function ProjectOverviewTab({
@@ -73,7 +72,7 @@ function ProjectOverviewTab({
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
     const handleDescriptionChange: FormEventHandler<any> = async (e) => {
-        const newProject: Project = { ...project }
+        const newProject: Components.Schemas.ProjectDto = { ...project }
         newProject.description = e.currentTarget.value
         setProject(newProject)
     }
@@ -83,7 +82,7 @@ function ProjectOverviewTab({
 
         try {
             const projectId: string = unwrapProjectId(project.id)
-            const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
+            const projectResult: Components.Schemas.ProjectDto = await (await GetProjectService()).getProjectByID(projectId)
             const _ = (await GetSTEAService()).excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -118,13 +117,13 @@ function ProjectOverviewTab({
                     <WrapperRow>
                         <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
                         <Typography aria-label="Project phase">
-                            {GetProjectPhaseName(project.phase)}
+                            {GetProjectPhaseName(project.projectPhase)}
                         </Typography>
                     </WrapperRow>
                     <WrapperRow>
                         <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
                         <Typography aria-label="Project category">
-                            {GetProjectCategoryName(project.category)}
+                            {GetProjectCategoryName(project.projectCategory)}
                         </Typography>
                     </WrapperRow>
                     <WrapperRow>

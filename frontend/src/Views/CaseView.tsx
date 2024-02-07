@@ -16,7 +16,6 @@ import {
 import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
 import { Tooltip } from "@material-ui/core"
-import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { ProjectPath, unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
@@ -29,11 +28,9 @@ import EditCaseModal from "../Components/Case/EditCaseModal"
 import CaseScheduleTab from "./Case/CaseScheduleTab"
 import CaseSummaryTab from "./Case/CaseSummaryTab"
 import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
-import { Well } from "../models/Well"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
-import { Case } from "../models/case/Case"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -109,7 +106,7 @@ const MenuIcon = styled(Icon)`
 const CaseView = () => {
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
 
-    const [project, setProject] = useState<Project>()
+    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
     const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
@@ -132,7 +129,7 @@ const CaseView = () => {
     const [originalTopside, setOriginalTopside] = useState<Components.Schemas.TopsideDto>()
     const [originalTransport, setOriginalTransport] = useState<Components.Schemas.TransportDto>()
 
-    const [wells, setWells] = useState<Well[]>()
+    const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
 
@@ -277,7 +274,7 @@ const CaseView = () => {
     const duplicateCase = async () => {
         try {
             if (caseItem?.id && project?.id) {
-                const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id, {})
+                const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id)
                 setProject(newProject)
                 history.push(ProjectPath(fusionContextId!))
             }
@@ -313,7 +310,7 @@ const CaseView = () => {
 
     const setCaseAsReference = async () => {
         try {
-            const projectDto = Project.Copy(project)
+            const projectDto = { ...project }
             if (projectDto.referenceCaseId === caseItem.id) {
                 projectDto.referenceCaseId = EMPTY_GUID
             } else {
@@ -331,7 +328,7 @@ const CaseView = () => {
 
         dto.caseDto = caseItem
         if (!(JSON.stringify(caseItem) === JSON.stringify(originalCase))) {
-            dto.caseDto.hasChanges = true
+            // dto.caseDto.hasChanges = true
         }
 
         dto.drainageStrategyDto = drainageStrategy
@@ -403,7 +400,7 @@ const CaseView = () => {
         setUpdateFromServer(true)
         try {
             const result = await (await GetCaseWithAssetsService()).update(dto)
-            const projectResult = Project.fromJSON(result.projectDto!)
+            const projectResult = { ...result.projectDto }
             setProject(projectResult)
             if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {
                 setTotalFeasibilityAndConceptStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto)
@@ -585,7 +582,7 @@ const CaseView = () => {
                             </StyledTabPanel>
                             <StyledTabPanel>
                                 <CaseScheduleTab
-                                    caseItem={new Case(caseItem)}
+                                    caseItem={{ ...caseItem }}
                                     setCase={setCase}
                                     activeTab={activeTab}
                                 />

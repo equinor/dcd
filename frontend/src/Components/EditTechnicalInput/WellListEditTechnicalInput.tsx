@@ -7,8 +7,6 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
-import { Well } from "../../models/Well"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { GetWellService } from "../../Services/WellService"
 
@@ -18,9 +16,9 @@ const ButtonWrapper = styled.div`
 `
 
 interface Props {
-    project: Project
-    wells: Well[] | undefined
-    setWells: Dispatch<SetStateAction<Well[]>>
+    project: Components.Schemas.ProjectDto
+    wells: Components.Schemas.WellDto[] | undefined
+    setWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
     explorationWells: boolean
 }
 
@@ -30,8 +28,8 @@ interface TableWell {
     wellCategory: Components.Schemas.WellCategory,
     drillingDays: number,
     wellCost: number,
-    well: Well
-    wells: Well[]
+    well: Components.Schemas.WellDto
+    wells: Components.Schemas.WellDto[]
 }
 
 interface DeleteButtonProps {
@@ -81,7 +79,7 @@ function WellListEditTechnicalInput({
     }, [wells])
 
     const updateWells = (p: any) => {
-        const rowWells: Well[] = p.data.wells
+        const rowWells: any[] = p.data.wells
         if (rowWells) {
             const { field } = p.colDef
             const index = rowWells.findIndex((w) => w === p.data.well)
@@ -212,10 +210,11 @@ function WellListEditTechnicalInput({
     ])
 
     const CreateWell = async () => {
-        const newWell = new Well()
-        newWell.wellCategory = !explorationWells ? 0 : 4
-        newWell.name = "New well"
-        newWell.projectId = project.id
+        const newWell: any = {
+            wellCategory: !explorationWells ? 0 : 4,
+            name: "New well",
+            projectId: project.id,
+        }
         if (wells) {
             const newWells = [...wells, newWell]
             setWells(newWells)

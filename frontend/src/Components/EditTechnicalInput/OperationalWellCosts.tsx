@@ -13,10 +13,10 @@ interface Props {
     title: string
     project: Components.Schemas.ProjectDto
     developmentOperationalWellCosts?: Components.Schemas.DevelopmentOperationalWellCostsDto
-    setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
+    setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto>>
 
     explorationOperationalWellCosts?: Components.Schemas.ExplorationOperationalWellCostsDto
-    setExplorationOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>>
+    setExplorationOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto>>
 
 }
 

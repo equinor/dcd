@@ -4,15 +4,12 @@ import {
 import styled from "styled-components"
 
 import { Typography } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
-import { OpexCostProfile } from "../../models/case/OpexCostProfile"
-import { CessationCostProfile } from "../../models/case/CessationCostProfile"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import { MergeTimeseries } from "../../Utils/common"
+import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -40,7 +37,7 @@ const TableWrapper = styled.div`
 `
 
 interface Props {
-    project: Project,
+    project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
     setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     topside: Components.Schemas.TopsideDto,
@@ -107,8 +104,8 @@ function CaseSummaryTab({
                     const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
                     const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
 
-                    const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
-                    const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)
+                    const opex = (await opexWrapper).opexCostProfileDto
+                    const cessation = (await cessationWrapper).cessationCostDto
 
                     let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                     let feed = (await studyWrapper).totalFEEDStudiesDto
@@ -155,23 +152,21 @@ function CaseSummaryTab({
     }, [activeTab])
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = Case.fromJSON(caseItem)
-        newCase.npv = e.currentTarget.value.length > 0
-            ? Number(e.currentTarget.value) : undefined
+        const newCase = { ...caseItem }
+        newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
         setCase(newCase)
     }
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = Case.fromJSON(caseItem)
-        newCase.breakEven = e.currentTarget.value.length > 0
-            ? Math.max(Number(e.currentTarget.value), 0) : undefined
+        const newCase = { ...caseItem }
+        newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setCase(newCase)
     }
 
     interface ITimeSeriesData {
         profileName: string
         unit: string,
-        set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
         profile: ITimeSeries | undefined
     }
 

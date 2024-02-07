@@ -7,7 +7,6 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
-            override: boolean;
         }
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
         export interface CapexDto {
@@ -184,6 +183,15 @@ declare namespace Components {
             epaVersion: string;
             currency: Currency /* int32 */;
         }
+        export interface CreateCaseDto {
+            name?: string | null;
+            description?: string | null;
+            productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            dG4Date?: string; // date-time
+        }
         export type Currency = 1 | 2; // int32
         export interface DevelopmentOperationalWellCostsDto {
             id: string; // uuid
@@ -270,7 +278,6 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
-            override: boolean;
         }
         export interface ExplorationWellDto {
             drillingSchedule: DrillingScheduleDto;
@@ -572,7 +579,6 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
-            override: boolean;
         }
         export type Source = 0 | 1; // int32
         export interface Stream {
@@ -666,7 +672,7 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
-            override?: boolean;
+            override: boolean;
         }
         export interface SurfDto {
             id: string; // uuid
@@ -1062,7 +1068,7 @@ declare namespace Paths {
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.CaseDto;
+            export type RequestBody = Components.Schemas.CreateCaseDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectDto;
             }

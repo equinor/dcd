@@ -45,7 +45,7 @@ public class CasesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ProjectDto> CreateCase([FromRoute] Guid projectId, [FromBody] CaseDto caseDto)
+    public async Task<ProjectDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
         return await _caseService.CreateCase(projectId, caseDto);
     }

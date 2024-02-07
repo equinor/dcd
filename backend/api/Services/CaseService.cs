@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -21,10 +23,11 @@ public class CaseService : ICaseService
     private readonly IExplorationService _explorationService;
     private readonly IWellProjectService _wellProjectService;
     private readonly ILogger<CaseService> _logger;
+    private readonly IMapper _mapper;
 
     public CaseService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, IDrainageStrategyService drainageStrategyService,
         ITopsideService topsideService, ISurfService surfService, ISubstructureService substructureService, ITransportService transportService,
-        IExplorationService explorationService, IWellProjectService wellProjectService)
+        IExplorationService explorationService, IWellProjectService wellProjectService, IMapper mapper)
     {
         _context = context;
         _projectService = projectService;
@@ -36,11 +39,16 @@ public class CaseService : ICaseService
         _explorationService = explorationService;
         _wellProjectService = wellProjectService;
         _logger = loggerFactory.CreateLogger<CaseService>();
+        _mapper = mapper;
     }
 
-    public async Task<ProjectDto> CreateCase(Guid projectId, CaseDto caseDto)
+    public async Task<ProjectDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
-        var caseItem = CaseAdapter.Convert(caseDto);
+        var caseItem = _mapper.Map<Case>(createCaseDto);
+        if (caseItem == null)
+        {
+            throw new ArgumentNullException(nameof(caseItem));
+        }
         var project = await _projectService.GetProject(projectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;

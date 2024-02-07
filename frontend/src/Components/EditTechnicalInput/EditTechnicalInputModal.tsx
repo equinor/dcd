@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
@@ -8,10 +7,8 @@ import {
 } from "@equinor/eds-core-react"
 import { clear } from "@equinor/eds-icons"
 import WellCostsTab from "./WellCostsTab"
-import { Project } from "../../models/Project"
 import PROSPTab from "./PROSPTab"
 import { EMPTY_GUID } from "../../Utils/constants"
-import { Well } from "../../models/Well"
 import { IsExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
@@ -62,9 +59,9 @@ const CancelButton = styled(Button)`
 type Props = {
     toggleEditTechnicalInputModal: () => void
     isOpen: boolean
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project,
-    setWells?: Dispatch<SetStateAction<Well[] | undefined>>
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
+    project: Components.Schemas.ProjectDto,
+    setWells?: Dispatch<SetStateAction<Components.Schemas.WellDto[] | undefined>>
     caseId?: string
     setExploration?: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>
     setWellProject?: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>
@@ -84,19 +81,19 @@ const EditTechnicalInputModal = ({
 
     const [activeTab, setActiveTab] = useState<number>(0)
 
-    const [originalProject, setOriginalProject] = useState<Project>(project)
+    const [originalProject, setOriginalProject] = useState<Components.Schemas.ProjectDto>(project)
 
-    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project.explorationWellCosts)
-    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project.developmentWellCosts)
+    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
+    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
 
-    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project.explorationWellCosts)
-    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project.developmentWellCosts)
+    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
+    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
 
-    const [wellProjectWells, setWellProjectWells] = useState<Well[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
-    const [explorationWells, setExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
+    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
+    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
 
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Well[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<Well[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
 
     const [isSaving, setIsSaving] = useState<boolean>()
 
@@ -146,9 +143,9 @@ const EditTechnicalInputModal = ({
         return null
     }
 
-    const setExplorationWellProjectWellsFromWells = (wells: Well[]) => {
-        const filteredExplorationWellsResult = wells.filter((w: Well) => IsExplorationWell(w))
-        const filteredWellProjectWellsResult = wells.filter((w: Well) => !IsExplorationWell(w))
+    const setExplorationWellProjectWellsFromWells = (wells: Components.Schemas.WellDto[]) => {
+        const filteredExplorationWellsResult = wells.filter((w: Components.Schemas.WellDto) => IsExplorationWell(w))
+        const filteredWellProjectWellsResult = wells.filter((w: Components.Schemas.WellDto) => !IsExplorationWell(w))
         setWellProjectWells(filteredWellProjectWellsResult)
         setExplorationWells(filteredExplorationWellsResult)
 
@@ -163,9 +160,9 @@ const EditTechnicalInputModal = ({
         try {
             const dto: Components.Schemas.TechnicalInputDto = {}
             setIsSaving(true)
-            dto.projectDto = Project.Copy(project)
+            dto.projectDto = { ...project }
             if (!(JSON.stringify(project) === JSON.stringify(originalProject))) {
-                dto.projectDto.hasChanges = true
+                // dto.projectDto.hasChanges = true
             }
 
             dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
@@ -198,7 +195,7 @@ const EditTechnicalInputModal = ({
             const result = await (await GetTechnicalInputService()).update(project.id, dto)
 
             if (result.projectDto) {
-                setProject(Project.fromJSON(result.projectDto))
+                setProject({ ...result.projectDto })
             }
 
             if (result.explorationDto && setExploration) {

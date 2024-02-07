@@ -34,18 +34,12 @@ public class ExplorationDto
 }
 public class ExplorationWellCostProfileDto : TimeSeriesCostDto
 {
-    [Required]
-    public bool Override { get; set; }
 }
 public class AppraisalWellCostProfileDto : TimeSeriesCostDto
 {
-    [Required]
-    public bool Override { get; set; }
 }
 public class SidetrackCostProfileDto : TimeSeriesCostDto
 {
-    [Required]
-    public bool Override { get; set; }
 }
 public class GAndGAdminCostDto : TimeSeriesCostDto { }
 public class SeismicAcquisitionAndProcessingDto : TimeSeriesCostDto { }

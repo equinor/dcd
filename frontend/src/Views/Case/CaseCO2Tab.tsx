@@ -11,7 +11,6 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
@@ -21,6 +20,7 @@ import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
 import { WrapperColumn } from "../Asset/StyledAssetComponents"
+import { ITimeSeriesOverride } from "../../models/ITimeSeriesOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -72,7 +72,7 @@ const NumberInputField = styled.div`
 `
 
 interface Props {
-    project: Project,
+    project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
     topside: Components.Schemas.TopsideDto,
     setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>,
@@ -157,8 +157,7 @@ function CaseCO2Tab({
 
     const handleTopsideFuelConsumptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside = { ...topside }
-        newTopside.fuelConsumption = e.currentTarget.value.length > 0
-            ? Number(e.currentTarget.value) : undefined
+        newTopside.fuelConsumption = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
         setTopside(newTopside)
     }
 
@@ -166,7 +165,7 @@ function CaseCO2Tab({
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
-        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesOverride | undefined>>,
         profile: ITimeSeries | undefined
         total?: string
         overrideProfile?: ITimeSeries | undefined
@@ -260,7 +259,7 @@ function CaseCO2Tab({
 
     useEffect(() => {
         const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
-        if (newDrainageStrategy.co2EmissionsOverride && !co2EmissionsOverride) {
+        if (!co2EmissionsOverride) {
             return
         }
 
