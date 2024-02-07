@@ -63,34 +63,30 @@ function CaseDescriptionTab({
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
-        } else { newCase.facilitiesAvailability = undefined }
+        } else { newCase.facilitiesAvailability = 0 }
         setCase(newCase)
     }
 
     const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
-        newCase.producerCount = e.currentTarget.value.length > 0
-            ? Math.max(Number(e.currentTarget.value), 0) : undefined
+        newCase.producerCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setCase(newCase)
     }
 
     const handleGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
-        newCase.gasInjectorCount = e.currentTarget.value.length > 0
-            ? Math.max(Number(e.currentTarget.value), 0) : undefined
+        newCase.gasInjectorCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setCase(newCase)
     }
 
     const handletWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
-        newCase.waterInjectorCount = e.currentTarget.value.length > 0
-            ? Math.max(Number(e.currentTarget.value), 0) : undefined
+        newCase.waterInjectorCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setCase(newCase)
     }
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
-            // eslint-disable-next-line max-len
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
             const newCase = { ...caseItem }
             newCase.productionStrategyOverview = newProductionStrategy

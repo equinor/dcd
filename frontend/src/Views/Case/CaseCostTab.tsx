@@ -6,18 +6,10 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../models/ITimeSeries"
-import { OffshoreFacilitiesOperationsCostProfile } from "../../models/case/OffshoreFacilitiesOperationsCostProfile"
-import { WellInterventionCostProfile } from "../../models/case/WellInterventionCostProfile"
-import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasibilityAndConceptStudies"
-import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
-import { CessationWellsCost } from "../../models/case/CessationWellsCost"
-import { CessationOffshoreFacilitiesCost } from "../../models/case/CessationOffshoreFacilitiesCost"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -65,7 +57,7 @@ const TableWrapper = styled.div`
 `
 
 interface Props {
-    project: Project,
+    project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
     setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     topside: Components.Schemas.TopsideDto,
@@ -185,28 +177,24 @@ function CaseCostTab({
         (async () => {
             try {
                 if (activeTab === 5) {
-                    const totalFeasibility = TotalFeasibilityAndConceptStudies
-                        .fromJSON(caseItem.totalFeasibilityAndConceptStudies)
-                    const totalFEED = TotalFEEDStudies.fromJSON(caseItem.totalFEEDStudies)
+                    const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
+                    const totalFEED = caseItem.totalFEEDStudies
 
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
                     setTotalFEEDStudies(totalFEED)
                     setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
 
-                    const wellIntervention = WellInterventionCostProfile
-                        .fromJSON(caseItem.wellInterventionCostProfile)
-                    const offshoreFacilitiesOperations = OffshoreFacilitiesOperationsCostProfile
-                        .fromJSON(caseItem.offshoreFacilitiesOperationsCostProfile)
+                    const wellIntervention = wellInterventionCostProfile
+                    const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
 
                     setWellInterventionCostProfile(wellIntervention)
                     setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
                     setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
 
-                    const cessationWells = CessationWellsCost.fromJSON(caseItem.cessationWellsCost)
-                    const cessationOffshoreFacilities = CessationOffshoreFacilitiesCost
-                        .fromJSON(caseItem.cessationOffshoreFacilitiesCost)
+                    const cessationWells = caseItem.cessationWellsCost
+                    const cessationOffshoreFacilities = caseItem.cessationOffshoreFacilitiesCost
 
                     setCessationWellsCost(cessationWells)
                     setCessationWellsCostOverride(caseItem.cessationWellsCostOverride)
@@ -330,7 +318,7 @@ function CaseCostTab({
     }
 
     const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = Case.fromJSON(caseItem)
+        const newCase = { ...caseItem }
         const newCapexFactorFeasibilityStudies = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFeasibilityStudies !== undefined) {
@@ -340,7 +328,7 @@ function CaseCostTab({
     }
 
     const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = Case.fromJSON(caseItem)
+        const newCase = { ...caseItem }
         const newCapexFactorFEEDStudies = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFEEDStudies !== undefined) {
@@ -556,42 +544,42 @@ function CaseCostTab({
     }
 
     useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = Case.fromJSON(caseItem)
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (newCase.totalFeasibilityAndConceptStudiesOverride && !totalFeasibilityAndConceptStudiesOverride) { return }
         newCase.totalFeasibilityAndConceptStudiesOverride = totalFeasibilityAndConceptStudiesOverride
         setCase(newCase)
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = Case.fromJSON(caseItem)
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (newCase.totalFEEDStudiesOverride && !totalFEEDStudiesOverride) { return }
         newCase.totalFEEDStudiesOverride = totalFEEDStudiesOverride
         setCase(newCase)
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = Case.fromJSON(caseItem)
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (newCase.wellInterventionCostProfileOverride && !wellInterventionCostProfileOverride) { return }
         newCase.wellInterventionCostProfileOverride = wellInterventionCostProfileOverride
         setCase(newCase)
     }, [wellInterventionCostProfileOverride])
 
     useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = Case.fromJSON(caseItem)
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (newCase.offshoreFacilitiesOperationsCostProfileOverride && !offshoreFacilitiesOperationsCostProfileOverride) { return }
         newCase.offshoreFacilitiesOperationsCostProfileOverride = offshoreFacilitiesOperationsCostProfileOverride
         setCase(newCase)
     }, [offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = Case.fromJSON(caseItem)
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (newCase.cessationWellsCostOverride && !cessationWellsCostOverride) { return }
         newCase.cessationWellsCostOverride = cessationWellsCostOverride
         setCase(newCase)
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = Case.fromJSON(caseItem)
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (newCase.cessationOffshoreFacilitiesCostOverride && !cessationOffshoreFacilitiesCostOverride) { return }
         newCase.cessationOffshoreFacilitiesCostOverride = cessationOffshoreFacilitiesCostOverride
         setCase(newCase)

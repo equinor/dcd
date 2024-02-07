@@ -15,7 +15,7 @@ public static class WellProjectWellDtoAdapter
 
         if (wellProjectWell.DrillingSchedule != null)
         {
-            wellProjectWellDto.DrillingSchedule = Convert(wellProjectWell.DrillingSchedule);
+            wellProjectWellDto.DrillingSchedule = Convert(wellProjectWell.DrillingSchedule) ?? new DrillingScheduleDto();
         }
         return wellProjectWellDto;
     }

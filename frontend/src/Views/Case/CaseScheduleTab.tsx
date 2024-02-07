@@ -8,7 +8,6 @@ import styled from "styled-components"
 import {
     Typography,
 } from "@equinor/eds-core-react"
-import { Case } from "../../models/case/Case"
 import CaseDateField from "../../Components/Case/CaseDateField"
 import { DefaultDate, IsDefaultDate, ToMonthDate } from "../../Utils/common"
 
@@ -32,7 +31,7 @@ const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
 interface Props {
-    caseItem: Case,
+    caseItem: Components.Schemas.CaseDto,
     setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     activeTab: number
 }
@@ -46,15 +45,15 @@ function CaseScheduleTab({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.DG0Date = DefaultDate()
+            newCase.dG0Date = DefaultDate().toISOString()
             setCase(newCase)
             return
         }
-        newCase.DG0Date = new Date(e.target.value)
-        if (IsDefaultDate(newCase.DG1Date)) {
-            const dg = new Date(newCase.DG0Date)
+        newCase.dG0Date = new Date(e.target.value).toISOString()
+        if (newCase.dG1Date && IsDefaultDate(new Date(newCase.dG1Date))) {
+            const dg = new Date(newCase.dG0Date)
             dg.setMonth(dg.getMonth() + 12)
-            newCase.DG1Date = dg
+            newCase.dG1Date = dg.toISOString()
         }
         if (IsDefaultDate(newCase.DG2Date)) {
             const dg = new Date(newCase.DG1Date)

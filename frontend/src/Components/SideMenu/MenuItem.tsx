@@ -1,11 +1,9 @@
-/* eslint-disable camelcase */
 import styled from "styled-components"
 import {
     bookmark_filled, chevron_down, chevron_right, IconData,
 } from "@equinor/eds-icons"
 import { Icon, Tooltip, Typography } from "@equinor/eds-core-react"
 import { tokens } from "@equinor/eds-tokens"
-import { Project } from "../../models/Project"
 
 const Wrapper = styled.div<{ padding?: string }>`
     display: flex;
@@ -35,7 +33,7 @@ interface Props {
     isOpen?: boolean
     onClick?: () => void
     padding?: string
-    project?: Project
+    project?: Components.Schemas.ProjectDto
     caseItem?: Components.Schemas.CaseDto
 }
 
@@ -56,7 +54,6 @@ function MenuItem({
                 )}
                 <Typography color={isSelected ? selectedColor : ""}>{title}</Typography>
             </MenuTitle>
-            {/* eslint-disable-next-line camelcase */}
             {onClick !== undefined && <MenuIcon data={isOpen ? chevron_down : chevron_right} />}
         </Wrapper>
     )

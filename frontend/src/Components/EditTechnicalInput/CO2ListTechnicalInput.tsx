@@ -10,7 +10,6 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
 
 const SwitchWrapper = styled.div`
     align-items: flex-end;
@@ -27,8 +26,8 @@ const ColumnWrapper = styled.div`
 `
 
 interface Props {
-    project: Project
-    setProject: Dispatch<SetStateAction<Project | undefined>>
+    project: Components.Schemas.ProjectDto
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
 function CO2ListTechnicalInput({
@@ -147,7 +146,7 @@ function CO2ListTechnicalInput({
 
     useEffect(() => {
         if (project) {
-            const newProject: Project = { ...project }
+            const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
             newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
             newProject.flaredGasPerProducedVolume = flaredGasPerProducedVolume

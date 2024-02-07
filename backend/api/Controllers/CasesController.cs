@@ -3,6 +3,8 @@ using api.Services;
 
 using Api.Authorization;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -22,11 +24,24 @@ public class CasesController : ControllerBase
 {
     private readonly ICaseService _caseService;
     private readonly IDuplicateCaseService _duplicateCaseService;
+    private readonly IMapper _mapper;
 
-    public CasesController(ICaseService caseService, IDuplicateCaseService duplicateCaseService)
+    public CasesController(ICaseService caseService, IDuplicateCaseService duplicateCaseService, IMapper mapper)
     {
         _caseService = caseService;
         _duplicateCaseService = duplicateCaseService;
+        _mapper = mapper;
+    }
+
+    [HttpGet("{caseId}", Name = "GetCase")]
+    public async Task<CaseDto?> GetCase([FromRoute] Guid caseId)
+    {
+        var caseItem = await _caseService.GetCase(caseId);
+        if (caseItem == null)
+        {
+            return null;
+        }
+        return _mapper.Map<CaseDto>(caseItem);
     }
 
     [HttpPost]

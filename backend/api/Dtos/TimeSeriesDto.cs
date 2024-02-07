@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Models;
 
 using Microsoft.IdentityModel.Tokens;
@@ -6,7 +8,11 @@ namespace api.Dtos;
 
 public class TimeSeriesDto<T>
 {
+    
+    [Required]
     public Guid Id { get; set; }
+    
+    [Required]
     public int StartYear { get; set; }
     public T[] Values { get; set; } = null!;
 
@@ -30,7 +36,11 @@ public class TimeSeriesDoubleDto : TimeSeriesDto<double>
 
 public class TimeSeriesCostDto : TimeSeriesDoubleDto
 {
+    
+    [Required]
     public string EPAVersion { get; set; } = string.Empty;
+    
+    [Required]
     public Currency Currency { get; set; }
 
     public TimeSeriesCostDto AddValues(TimeSeriesCostDto timeSeriesCost)

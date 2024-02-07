@@ -23,6 +23,14 @@ class __CaseService extends __BaseService {
         return Project.fromJSON(res)
     }
 
+    public async getCase(
+        projectId: string,
+        caseId: string,
+    ): Promise<Project> {
+        const res = await this.get(`projects/${projectId}/cases/${caseId}`)
+        return res
+    }
+
     public async duplicateCase(
         projectId: string,
         copyCaseId: string,

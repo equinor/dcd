@@ -14,12 +14,12 @@ public static class ExplorationDtoAdapter
             Name = exploration.Name,
             RigMobDemob = exploration.RigMobDemob,
             Currency = exploration.Currency,
-            ExplorationWellCostProfile = Convert<ExplorationWellCostProfileDto, ExplorationWellCostProfile>(exploration.ExplorationWellCostProfile),
-            AppraisalWellCostProfile = Convert<AppraisalWellCostProfileDto, AppraisalWellCostProfile>(exploration.AppraisalWellCostProfile),
-            SidetrackCostProfile = Convert<SidetrackCostProfileDto, SidetrackCostProfile>(exploration.SidetrackCostProfile),
-            GAndGAdminCost = Convert<GAndGAdminCostDto, GAndGAdminCost>(exploration.GAndGAdminCost),
-            SeismicAcquisitionAndProcessing = Convert<SeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>(exploration.SeismicAcquisitionAndProcessing),
-            CountryOfficeCost = Convert<CountryOfficeCostDto, CountryOfficeCost>(exploration.CountryOfficeCost),
+            ExplorationWellCostProfile = Convert<ExplorationWellCostProfileDto, ExplorationWellCostProfile>(exploration.ExplorationWellCostProfile) ?? new ExplorationWellCostProfileDto(),
+            AppraisalWellCostProfile = Convert<AppraisalWellCostProfileDto, AppraisalWellCostProfile>(exploration.AppraisalWellCostProfile) ?? new AppraisalWellCostProfileDto(),
+            SidetrackCostProfile = Convert<SidetrackCostProfileDto, SidetrackCostProfile>(exploration.SidetrackCostProfile) ?? new SidetrackCostProfileDto(),
+            GAndGAdminCost = Convert<GAndGAdminCostDto, GAndGAdminCost>(exploration.GAndGAdminCost) ?? new GAndGAdminCostDto(),
+            SeismicAcquisitionAndProcessing = Convert<SeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>(exploration.SeismicAcquisitionAndProcessing) ?? new SeismicAcquisitionAndProcessingDto(),
+            CountryOfficeCost = Convert<CountryOfficeCostDto, CountryOfficeCost>(exploration.CountryOfficeCost) ?? new CountryOfficeCostDto(),
             ExplorationWells = exploration.ExplorationWells?.Select(ew => ExplorationWellDtoAdapter.Convert(ew)).ToList()
         };
         return explorationDto;

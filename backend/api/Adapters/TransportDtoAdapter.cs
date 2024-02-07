@@ -21,9 +21,9 @@ public static class TransportDtoAdapter
             CostYear = transport.CostYear,
             Source = transport.Source,
             ProspVersion = transport.ProspVersion,
-            CostProfile = Convert<TransportCostProfileDto, TransportCostProfile>(transport.CostProfile),
-            CostProfileOverride = ConvertOverride<TransportCostProfileOverrideDto, TransportCostProfileOverride>(transport.CostProfileOverride),
-            CessationCostProfile = Convert<TransportCessationCostProfileDto, TransportCessationCostProfile>(transport.CessationCostProfile),
+            CostProfile = Convert<TransportCostProfileDto, TransportCostProfile>(transport.CostProfile) ?? new TransportCostProfileDto(),
+            CostProfileOverride = ConvertOverride<TransportCostProfileOverrideDto, TransportCostProfileOverride>(transport.CostProfileOverride) ?? new TransportCostProfileOverrideDto(),
+            CessationCostProfile = Convert<TransportCessationCostProfileDto, TransportCessationCostProfile>(transport.CessationCostProfile) ?? new TransportCessationCostProfileDto(),
             DG3Date = transport.DG3Date,
             DG4Date = transport.DG4Date
         };

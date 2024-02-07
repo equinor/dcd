@@ -32,7 +32,7 @@
         "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
         "dev": "jest",
         "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
-        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url http://localhost:5000/swagger/v1/swagger.json",
+        "autogenerate-models": "dtsgen --out ./src/types.d.ts --url http://localhost:5000/swagger/v1/swagger.yaml",
         "autogenerate-models-build": "dtsgen --out ./src/types-azuredevops.d.ts --url https://backend-dcd-dev.radix.equinor.com/swagger/v1/swagger.json"
     },
     "eslintConfig": {
@@ -107,7 +107,7 @@
         "@typescript-eslint/eslint-plugin": "^5.45.0",
         "@typescript-eslint/parser": "^5.45.0",
         "dotenv-webpack": "^7.1.0",
-        "dtsgenerator": "^3.15.0",
+        "dtsgenerator": "^3.19.1",
         "eslint": "^8.9.0",
         "eslint-config-airbnb": "^19.0.4",
         "eslint-plugin-import": "^2.25.4",

@@ -10,9 +10,6 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { IsExplorationWell, isInteger } from "../../Utils/common"
-import { WellProjectWell } from "../../models/WellProjectWell"
-import { ExplorationWell } from "../../models/ExplorationWell"
-import { Well } from "../../models/Well"
 
 interface Props {
     dg4Year: number
@@ -21,8 +18,8 @@ interface Props {
     alignedGridsRef?: any[]
     gridRef?: any
     assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[]
-    setAssetWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[] | undefined>>
-    wells: Well[] | undefined
+    setAssetWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto | Components.Schemas.WellProjectWellDto[] | undefined>>
+    wells: Components.Schemas.WellDto[] | undefined
     assetId: string
     isExplorationTable: boolean
 }
@@ -38,7 +35,7 @@ function CaseDrillingScheduleTabTable({
     const [rowData, setRowData] = useState<any[]>([])
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
-        const newAssetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[] = [...assetWells]
+        const newAssetWells: (Components.Schemas.ExplorationWellDto | Components.Schemas.WellProjectWellDto)[] = [...assetWells]
         if (isExplorationTable) {
             wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
                 const explorationWell = assetWell.find((ew) => ew.wellId === w.id)

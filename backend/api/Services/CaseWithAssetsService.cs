@@ -321,11 +321,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
     public async Task<CaseDto> UpdateCase(CaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.Co2Emissions = true;
         profilesToGenerate.GAndGAdminCost = true;

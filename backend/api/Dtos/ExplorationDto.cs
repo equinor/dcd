@@ -1,33 +1,50 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Models;
 
 namespace api.Dtos;
 
 public class ExplorationDto
 {
+    [Required]
     public Guid Id { get; set; }
+    [Required]
     public Guid ProjectId { get; set; }
+    [Required]
     public string Name { get; set; } = string.Empty;
-    public ExplorationWellCostProfileDto? ExplorationWellCostProfile { get; set; }
-    public AppraisalWellCostProfileDto? AppraisalWellCostProfile { get; set; }
-    public SidetrackCostProfileDto? SidetrackCostProfile { get; set; }
-    public GAndGAdminCostDto? GAndGAdminCost { get; set; }
-    public SeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
-    public CountryOfficeCostDto? CountryOfficeCost { get; set; }
+    [Required]
+    public ExplorationWellCostProfileDto ExplorationWellCostProfile { get; set; } = new ExplorationWellCostProfileDto();
+    [Required]
+    public AppraisalWellCostProfileDto AppraisalWellCostProfile { get; set; } = new AppraisalWellCostProfileDto();
+    [Required]
+    public SidetrackCostProfileDto SidetrackCostProfile { get; set; } = new SidetrackCostProfileDto();
+    [Required]
+    public GAndGAdminCostDto GAndGAdminCost { get; set; } = new GAndGAdminCostDto();
+    [Required]
+    public SeismicAcquisitionAndProcessingDto SeismicAcquisitionAndProcessing { get; set; } = new SeismicAcquisitionAndProcessingDto();
+    [Required]
+    public CountryOfficeCostDto CountryOfficeCost { get; set; } = new CountryOfficeCostDto();
+    [Required]
     public double RigMobDemob { get; set; }
+    [Required]
     public Currency Currency { get; set; }
-    public List<ExplorationWellDto>? ExplorationWells { get; set; }
+    [Required]
+    public List<ExplorationWellDto>? ExplorationWells { get; set; } = [];
     public bool HasChanges { get; set; }
 }
 public class ExplorationWellCostProfileDto : TimeSeriesCostDto
 {
+    [Required]
     public bool Override { get; set; }
 }
 public class AppraisalWellCostProfileDto : TimeSeriesCostDto
 {
+    [Required]
     public bool Override { get; set; }
 }
 public class SidetrackCostProfileDto : TimeSeriesCostDto
 {
+    [Required]
     public bool Override { get; set; }
 }
 public class GAndGAdminCostDto : TimeSeriesCostDto { }

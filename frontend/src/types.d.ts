@@ -1,22 +1,22 @@
 declare namespace Components {
     namespace Schemas {
         export interface AppraisalWellCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
         export interface CapexDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
             drilling?: TimeSeriesCostDto;
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationCost?: CessationCostDto;
@@ -26,60 +26,58 @@ declare namespace Components {
             startYear?: number | null; // int32
         }
         export interface CaseDto {
-            id?: string; // uuid
-            projectId?: string; // uuid
-            name?: string | null;
-            description?: string | null;
-            referenceCase?: boolean;
-            artificialLift?: ArtificialLift /* int32 */;
-            productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            facilitiesAvailability?: number; // double
-            capexFactorFeasibilityStudies?: number; // double
-            capexFactorFEEDStudies?: number; // double
-            npv?: number; // double
-            breakEven?: number; // double
+            id: string; // uuid
+            projectId: string; // uuid
+            name: string;
+            description: string;
+            referenceCase: boolean;
+            artificialLift: ArtificialLift /* int32 */;
+            productionStrategyOverview: ProductionStrategyOverview /* int32 */;
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            facilitiesAvailability: number; // double
+            capexFactorFeasibilityStudies: number; // double
+            capexFactorFEEDStudies: number; // double
+            npv: number; // double
+            breakEven: number; // double
             host?: string | null;
-            dgaDate?: string; // date-time
-            dgbDate?: string; // date-time
-            dgcDate?: string; // date-time
-            apxDate?: string; // date-time
-            apzDate?: string; // date-time
-            dG0Date?: string; // date-time
-            dG1Date?: string; // date-time
-            dG2Date?: string; // date-time
-            dG3Date?: string; // date-time
-            dG4Date?: string; // date-time
-            createTime?: string; // date-time
-            modifyTime?: string; // date-time
-            cessationWellsCost?: CessationWellsCostDto;
-            cessationWellsCostOverride?: CessationWellsCostOverrideDto;
-            cessationOffshoreFacilitiesCost?: CessationOffshoreFacilitiesCostDto;
-            cessationOffshoreFacilitiesCostOverride?: CessationOffshoreFacilitiesCostOverrideDto;
-            totalFeasibilityAndConceptStudies?: TotalFeasibilityAndConceptStudiesDto;
-            totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverrideDto;
-            totalFEEDStudies?: TotalFEEDStudiesDto;
-            totalFEEDStudiesOverride?: TotalFEEDStudiesOverrideDto;
-            wellInterventionCostProfile?: WellInterventionCostProfileDto;
-            wellInterventionCostProfileOverride?: WellInterventionCostProfileOverrideDto;
-            offshoreFacilitiesOperationsCostProfile?: OffshoreFacilitiesOperationsCostProfileDto;
-            offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverrideDto;
-            drainageStrategyLink?: string; // uuid
-            wellProjectLink?: string; // uuid
-            surfLink?: string; // uuid
-            substructureLink?: string; // uuid
-            topsideLink?: string; // uuid
-            transportLink?: string; // uuid
-            explorationLink?: string; // uuid
-            capex?: number; // double
+            dgaDate: string; // date-time
+            dgbDate: string; // date-time
+            dgcDate: string; // date-time
+            apxDate: string; // date-time
+            apzDate: string; // date-time
+            dG0Date: string; // date-time
+            dG1Date: string; // date-time
+            dG2Date: string; // date-time
+            dG3Date: string; // date-time
+            dG4Date: string; // date-time
+            createTime: string; // date-time
+            modifyTime: string; // date-time
+            cessationWellsCost: CessationWellsCostDto;
+            cessationWellsCostOverride: CessationWellsCostOverrideDto;
+            cessationOffshoreFacilitiesCost: CessationOffshoreFacilitiesCostDto;
+            cessationOffshoreFacilitiesCostOverride: CessationOffshoreFacilitiesCostOverrideDto;
+            totalFeasibilityAndConceptStudies: TotalFeasibilityAndConceptStudiesDto;
+            totalFeasibilityAndConceptStudiesOverride: TotalFeasibilityAndConceptStudiesOverrideDto;
+            totalFEEDStudies: TotalFEEDStudiesDto;
+            totalFEEDStudiesOverride: TotalFEEDStudiesOverrideDto;
+            wellInterventionCostProfile: WellInterventionCostProfileDto;
+            wellInterventionCostProfileOverride: WellInterventionCostProfileOverrideDto;
+            offshoreFacilitiesOperationsCostProfile: OffshoreFacilitiesOperationsCostProfileDto;
+            offshoreFacilitiesOperationsCostProfileOverride: OffshoreFacilitiesOperationsCostProfileOverrideDto;
+            drainageStrategyLink: string; // uuid
+            wellProjectLink: string; // uuid
+            surfLink: string; // uuid
+            substructureLink: string; // uuid
+            topsideLink: string; // uuid
+            transportLink: string; // uuid
+            explorationLink: string; // uuid
+            capex: number; // double
             capexYear?: CapexYear;
-            cessationCost?: CessationCostDto;
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
             sharepointFileUrl?: string | null;
-            hasChanges?: boolean;
         }
         export interface CaseWithAssetsWrapperDto {
             caseDto?: CaseDto;
@@ -94,12 +92,12 @@ declare namespace Components {
             explorationWellDto?: ExplorationWellDto[] | null;
         }
         export interface CessationCostDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface CessationCostWrapperDto {
             cessationCostDto?: CessationCostDto;
@@ -107,125 +105,125 @@ declare namespace Components {
             cessationOffshoreFacilitiesCostDto?: CessationOffshoreFacilitiesCostDto;
         }
         export interface CessationOffshoreFacilitiesCostDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface CessationOffshoreFacilitiesCostOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface CessationWellsCostDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface CessationWellsCostOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface Co2DrillingFlaringFuelTotalsDto {
-            co2Drilling?: number; // double
-            co2Fuel?: number; // double
-            co2Flaring?: number; // double
+            co2Drilling: number; // double
+            co2Fuel: number; // double
+            co2Flaring: number; // double
         }
         export interface Co2EmissionsDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface Co2EmissionsOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            override?: boolean;
+            override: boolean;
         }
         export interface Co2IntensityDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface CompareCasesDto {
-            caseId?: string; // uuid
-            totalOilProduction?: number; // double
-            totalGasProduction?: number; // double
-            totalExportedVolumes?: number; // double
-            totalStudyCostsPlusOpex?: number; // double
-            totalCessationCosts?: number; // double
-            offshorePlusOnshoreFacilityCosts?: number; // double
-            developmentWellCosts?: number; // double
-            explorationWellCosts?: number; // double
-            totalCo2Emissions?: number; // double
-            co2Intensity?: number; // double
+            caseId: string; // uuid
+            totalOilProduction: number; // double
+            totalGasProduction: number; // double
+            totalExportedVolumes: number; // double
+            totalStudyCostsPlusOpex: number; // double
+            totalCessationCosts: number; // double
+            offshorePlusOnshoreFacilityCosts: number; // double
+            developmentWellCosts: number; // double
+            explorationWellCosts: number; // double
+            totalCo2Emissions: number; // double
+            co2Intensity: number; // double
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export interface CountryOfficeCostDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export type Currency = 1 | 2; // int32
         export interface DevelopmentOperationalWellCostsDto {
-            id?: string; // uuid
-            projectId?: string; // uuid
-            rigUpgrading?: number; // double
-            rigMobDemob?: number; // double
-            annualWellInterventionCostPerWell?: number; // double
-            pluggingAndAbandonment?: number; // double
-            hasChanges?: boolean;
+            id: string; // uuid
+            projectId: string; // uuid
+            rigUpgrading: number; // double
+            rigMobDemob: number; // double
+            annualWellInterventionCostPerWell: number; // double
+            pluggingAndAbandonment: number; // double
+            hasChanges: boolean;
         }
         export interface DrainageStrategyDto {
-            id?: string; // uuid
-            projectId?: string; // uuid
-            name?: string | null;
-            description?: string | null;
-            nglYield?: number; // double
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            artificialLift?: ArtificialLift /* int32 */;
-            gasSolution?: GasSolution /* int32 */;
-            productionProfileOil?: ProductionProfileOilDto;
-            productionProfileGas?: ProductionProfileGasDto;
-            productionProfileWater?: ProductionProfileWaterDto;
-            productionProfileWaterInjection?: ProductionProfileWaterInjectionDto;
-            fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
-            fuelFlaringAndLossesOverride?: FuelFlaringAndLossesOverrideDto;
-            netSalesGas?: NetSalesGasDto;
-            netSalesGasOverride?: NetSalesGasOverrideDto;
-            co2Emissions?: Co2EmissionsDto;
-            co2EmissionsOverride?: Co2EmissionsOverrideDto;
-            productionProfileNGL?: ProductionProfileNGLDto;
-            importedElectricity?: ImportedElectricityDto;
-            importedElectricityOverride?: ImportedElectricityOverrideDto;
-            co2Intensity?: Co2IntensityDto;
+            id: string; // uuid
+            projectId: string; // uuid
+            name: string;
+            description: string;
+            nglYield: number; // double
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            artificialLift: ArtificialLift /* int32 */;
+            gasSolution: GasSolution /* int32 */;
+            productionProfileOil: ProductionProfileOilDto;
+            productionProfileGas: ProductionProfileGasDto;
+            productionProfileWater: ProductionProfileWaterDto;
+            productionProfileWaterInjection: ProductionProfileWaterInjectionDto;
+            fuelFlaringAndLosses: FuelFlaringAndLossesDto;
+            fuelFlaringAndLossesOverride: FuelFlaringAndLossesOverrideDto;
+            netSalesGas: NetSalesGasDto;
+            netSalesGasOverride: NetSalesGasOverrideDto;
+            co2Emissions: Co2EmissionsDto;
+            co2EmissionsOverride: Co2EmissionsOverrideDto;
+            productionProfileNGL: ProductionProfileNGLDto;
+            importedElectricity: ImportedElectricityDto;
+            importedElectricityOverride: ImportedElectricityOverrideDto;
+            co2Intensity: Co2IntensityDto;
             hasChanges?: boolean;
         }
         export interface DrillingScheduleDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* int32 */[] | null;
         }
         export interface DriveItemDto {
@@ -241,99 +239,99 @@ declare namespace Components {
             lastModifiedDateTime?: string | null; // date-time
         }
         export interface ExplorationDto {
-            id?: string; // uuid
-            projectId?: string; // uuid
-            name?: string | null;
-            explorationWellCostProfile?: ExplorationWellCostProfileDto;
-            appraisalWellCostProfile?: AppraisalWellCostProfileDto;
-            sidetrackCostProfile?: SidetrackCostProfileDto;
-            gAndGAdminCost?: GAndGAdminCostDto;
-            seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessingDto;
-            countryOfficeCost?: CountryOfficeCostDto;
-            rigMobDemob?: number; // double
-            currency?: Currency /* int32 */;
-            explorationWells?: ExplorationWellDto[] | null;
+            id: string; // uuid
+            projectId: string; // uuid
+            name: string;
+            explorationWellCostProfile: ExplorationWellCostProfileDto;
+            appraisalWellCostProfile: AppraisalWellCostProfileDto;
+            sidetrackCostProfile: SidetrackCostProfileDto;
+            gAndGAdminCost: GAndGAdminCostDto;
+            seismicAcquisitionAndProcessing: SeismicAcquisitionAndProcessingDto;
+            countryOfficeCost: CountryOfficeCostDto;
+            rigMobDemob: number; // double
+            currency: Currency /* int32 */;
+            explorationWells: ExplorationWellDto[];
             hasChanges?: boolean;
         }
         export interface ExplorationOperationalWellCostsDto {
-            id?: string; // uuid
-            projectId?: string; // uuid
-            rigUpgrading?: number; // double
-            explorationRigMobDemob?: number; // double
-            explorationProjectDrillingCosts?: number; // double
-            appraisalRigMobDemob?: number; // double
-            appraisalProjectDrillingCosts?: number; // double
-            hasChanges?: boolean;
+            id: string; // uuid
+            projectId: string; // uuid
+            rigUpgrading: number; // double
+            explorationRigMobDemob: number; // double
+            explorationProjectDrillingCosts: number; // double
+            appraisalRigMobDemob: number; // double
+            appraisalProjectDrillingCosts: number; // double
+            hasChanges: boolean;
         }
         export interface ExplorationWellCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface ExplorationWellDto {
-            drillingSchedule?: DrillingScheduleDto;
-            explorationId?: string; // uuid
-            wellId?: string; // uuid
+            drillingSchedule: DrillingScheduleDto;
+            explorationId: string; // uuid
+            wellId: string; // uuid
             hasChanges?: boolean;
         }
         export interface FuelFlaringAndLossesDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface FuelFlaringAndLossesOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            override?: boolean;
+            override: boolean;
         }
         export interface GAndGAdminCostDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface GasInjectorCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface GasInjectorCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface GasProducerCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface GasProducerCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export type GasSolution = 0 | 1; // int32
         export interface GeneratedProfilesDto {
@@ -360,81 +358,81 @@ declare namespace Components {
             "@odata.type"?: string | null;
         }
         export interface ImportedElectricityDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface ImportedElectricityOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            override?: boolean;
+            override: boolean;
         }
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface NetSalesGasOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            override?: boolean;
+            override: boolean;
         }
         export interface OffshoreFacilitiesCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface OffshoreFacilitiesOperationsCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface OffshoreFacilitiesOperationsCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface OilProducerCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface OilProducerCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface OpexCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface OpexCostProfileWrapperDto {
             opexCostProfileDto?: OpexCostProfileDto;
@@ -451,76 +449,76 @@ declare namespace Components {
         }
         export type ProductionFlowline = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
         export interface ProductionProfileGasDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface ProductionProfileNGLDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface ProductionProfileOilDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface ProductionProfileWaterDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export interface ProductionProfileWaterInjectionDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
         export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export interface ProjectDto {
-            id?: string; // uuid
-            name?: string | null;
-            commonLibraryId?: string; // uuid
-            fusionProjectId?: string; // uuid
-            referenceCaseId?: string; // uuid
-            commonLibraryName?: string | null;
-            description?: string | null;
-            country?: string | null;
-            currency?: Currency /* int32 */;
-            physUnit?: PhysUnit /* int32 */;
-            createDate?: string; // date-time
-            projectPhase?: ProjectPhase /* int32 */;
-            projectCategory?: ProjectCategory /* int32 */;
-            explorationOperationalWellCosts?: ExplorationOperationalWellCostsDto;
-            developmentOperationalWellCosts?: DevelopmentOperationalWellCostsDto;
-            cases?: CaseDto[] | null;
-            wells?: WellDto[] | null;
-            explorations?: ExplorationDto[] | null;
-            surfs?: SurfDto[] | null;
-            substructures?: SubstructureDto[] | null;
-            topsides?: TopsideDto[] | null;
-            transports?: TransportDto[] | null;
-            drainageStrategies?: DrainageStrategyDto[] | null;
-            wellProjects?: WellProjectDto[] | null;
+            id: string; // uuid
+            name: string;
+            commonLibraryId: string; // uuid
+            fusionProjectId: string; // uuid
+            referenceCaseId: string; // uuid
+            commonLibraryName: string;
+            description: string;
+            country: string;
+            currency: Currency /* int32 */;
+            physUnit: PhysUnit /* int32 */;
+            createDate: string; // date-time
+            projectPhase: ProjectPhase /* int32 */;
+            projectCategory: ProjectCategory /* int32 */;
+            explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
+            developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
+            cases: CaseDto[];
+            wells: WellDto[];
+            explorations: ExplorationDto[];
+            surfs: SurfDto[];
+            substructures: SubstructureDto[];
+            topsides: TopsideDto[];
+            transports: TransportDto[];
+            drainageStrategies: DrainageStrategyDto[];
+            wellProjects: WellProjectDto[];
             sharepointSiteUrl?: string | null;
-            cO2RemovedFromGas?: number; // double
-            cO2EmissionFromFuelGas?: number; // double
-            flaredGasPerProducedVolume?: number; // double
-            cO2EmissionsFromFlaredGas?: number; // double
-            cO2Vented?: number; // double
-            dailyEmissionFromDrillingRig?: number; // double
-            averageDevelopmentDrillingDays?: number; // double
-            hasChanges?: boolean;
+            cO2RemovedFromGas: number; // double
+            cO2EmissionFromFuelGas: number; // double
+            flaredGasPerProducedVolume: number; // double
+            cO2EmissionsFromFlaredGas: number; // double
+            cO2Vented: number; // double
+            dailyEmissionFromDrillingRig: number; // double
+            averageDevelopmentDrillingDays: number; // double
+            hasChanges: boolean;
         }
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface ProjectWithGeneratedProfilesDto {
-            projectDto?: ProjectDto;
-            generatedProfilesDto?: GeneratedProfilesDto;
+            projectDto: ProjectDto;
+            generatedProfilesDto: GeneratedProfilesDto;
         }
         export interface STEACaseDto {
             name?: string | null;
@@ -538,12 +536,12 @@ declare namespace Components {
             steaCases?: STEACaseDto[] | null;
         }
         export interface SeismicAcquisitionAndProcessingDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface SharePointImportDto {
             id?: string | null;
@@ -568,13 +566,13 @@ declare namespace Components {
             "@odata.type"?: string | null;
         }
         export interface SidetrackCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export type Source = 0 | 1; // int32
         export interface Stream {
@@ -588,12 +586,12 @@ declare namespace Components {
             writeTimeout?: number; // int32
         }
         export interface StudyCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface StudyCostProfileWrapperDto {
             studyCostProfileDto?: StudyCostProfileDto;
@@ -601,99 +599,99 @@ declare namespace Components {
             totalFEEDStudiesDto?: TotalFEEDStudiesDto;
         }
         export interface SubstructureCessationCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface SubstructureCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface SubstructureCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface SubstructureDto {
-            id?: string; // uuid
-            name?: string | null;
-            projectId?: string; // uuid
-            costProfile?: SubstructureCostProfileDto;
-            costProfileOverride?: SubstructureCostProfileOverrideDto;
-            cessationCostProfile?: SubstructureCessationCostProfileDto;
-            dryWeight?: number; // double
-            maturity?: Maturity /* int32 */;
-            currency?: Currency /* int32 */;
-            approvedBy?: string | null;
-            costYear?: number; // int32
+            id: string; // uuid
+            name: string;
+            projectId: string; // uuid
+            costProfile: SubstructureCostProfileDto;
+            costProfileOverride: SubstructureCostProfileOverrideDto;
+            cessationCostProfile: SubstructureCessationCostProfileDto;
+            dryWeight: number; // double
+            maturity: Maturity /* int32 */;
+            currency: Currency /* int32 */;
+            approvedBy: string;
+            costYear: number; // int32
             prospVersion?: string | null; // date-time
-            source?: Source /* int32 */;
+            source: Source /* int32 */;
             lastChangedDate?: string | null; // date-time
-            concept?: Concept /* int32 */;
+            concept: Concept /* int32 */;
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
             hasChanges?: boolean;
         }
         export interface SurfCessationCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface SurfCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface SurfCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
             override?: boolean;
         }
         export interface SurfDto {
-            id?: string; // uuid
-            name?: string | null;
-            projectId?: string; // uuid
-            costProfile?: SurfCostProfileDto;
-            costProfileOverride?: SurfCostProfileOverrideDto;
-            cessationCostProfile?: SurfCessationCostProfileDto;
-            cessationCost?: number; // double
-            maturity?: Maturity /* int32 */;
-            infieldPipelineSystemLength?: number; // double
-            umbilicalSystemLength?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            riserCount?: number; // int32
-            templateCount?: number; // int32
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            productionFlowline?: ProductionFlowline /* int32 */;
-            currency?: Currency /* int32 */;
-            lastChangedDate?: string | null; // date-time
-            costYear?: number; // int32
-            source?: Source /* int32 */;
+            id: string; // uuid
+            name: string;
+            projectId: string; // uuid
+            costProfile: SurfCostProfileDto;
+            costProfileOverride: SurfCostProfileOverrideDto;
+            cessationCostProfile: SurfCessationCostProfileDto;
+            cessationCost: number; // double
+            maturity: Maturity /* int32 */;
+            infieldPipelineSystemLength: number; // double
+            umbilicalSystemLength: number; // double
+            artificialLift: ArtificialLift /* int32 */;
+            riserCount: number; // int32
+            templateCount: number; // int32
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            productionFlowline: ProductionFlowline /* int32 */;
+            currency: Currency /* int32 */;
+            lastChangedDate: string; // date-time
+            costYear: number; // int32
+            source: Source /* int32 */;
             prospVersion?: string | null; // date-time
-            approvedBy?: string | null;
+            approvedBy: string;
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
             hasChanges?: boolean;
@@ -708,147 +706,147 @@ declare namespace Components {
             caseId?: string | null; // uuid
         }
         export interface TimeSeriesCostDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface TopsideCessationCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface TopsideCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface TopsideCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface TopsideDto {
-            id?: string; // uuid
-            name?: string | null;
-            projectId?: string; // uuid
-            costProfile?: TopsideCostProfileDto;
-            costProfileOverride?: TopsideCostProfileOverrideDto;
-            cessationCostProfile?: TopsideCessationCostProfileDto;
-            dryWeight?: number; // double
-            oilCapacity?: number; // double
-            gasCapacity?: number; // double
-            waterInjectionCapacity?: number; // double
-            artificialLift?: ArtificialLift /* int32 */;
-            maturity?: Maturity /* int32 */;
-            currency?: Currency /* int32 */;
-            fuelConsumption?: number; // double
-            flaredGas?: number; // double
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            cO2ShareOilProfile?: number; // double
-            cO2ShareGasProfile?: number; // double
-            cO2ShareWaterInjectionProfile?: number; // double
-            cO2OnMaxOilProfile?: number; // double
-            cO2OnMaxGasProfile?: number; // double
-            cO2OnMaxWaterInjectionProfile?: number; // double
-            costYear?: number; // int32
+            id: string; // uuid
+            name: string;
+            projectId: string; // uuid
+            costProfile: TopsideCostProfileDto;
+            costProfileOverride: TopsideCostProfileOverrideDto;
+            cessationCostProfile: TopsideCessationCostProfileDto;
+            dryWeight: number; // double
+            oilCapacity: number; // double
+            gasCapacity: number; // double
+            waterInjectionCapacity: number; // double
+            artificialLift: ArtificialLift /* int32 */;
+            maturity: Maturity /* int32 */;
+            currency: Currency /* int32 */;
+            fuelConsumption: number; // double
+            flaredGas: number; // double
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            cO2ShareOilProfile: number; // double
+            cO2ShareGasProfile: number; // double
+            cO2ShareWaterInjectionProfile: number; // double
+            cO2OnMaxOilProfile: number; // double
+            cO2OnMaxGasProfile: number; // double
+            cO2OnMaxWaterInjectionProfile: number; // double
+            costYear: number; // int32
             prospVersion?: string | null; // date-time
             lastChangedDate?: string | null; // date-time
-            source?: Source /* int32 */;
-            approvedBy?: string | null;
+            source: Source /* int32 */;
+            approvedBy: string;
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
-            facilityOpex?: number; // double
-            peakElectricityImported?: number; // double
+            facilityOpex: number; // double
+            peakElectricityImported: number; // double
             hasChanges?: boolean;
         }
         export interface TotalFEEDStudiesDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface TotalFEEDStudiesOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface TotalFeasibilityAndConceptStudiesDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface TotalFeasibilityAndConceptStudiesOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface TransportCessationCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface TransportCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface TransportCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface TransportDto {
-            id?: string; // uuid
-            name?: string | null;
-            projectId?: string; // uuid
-            costProfile?: TransportCostProfileDto;
-            costProfileOverride?: TransportCostProfileOverrideDto;
-            cessationCostProfile?: TransportCessationCostProfileDto;
-            maturity?: Maturity /* int32 */;
-            gasExportPipelineLength?: number; // double
-            oilExportPipelineLength?: number; // double
-            currency?: Currency /* int32 */;
+            id: string; // uuid
+            name: string;
+            projectId: string; // uuid
+            costProfile: TransportCostProfileDto;
+            costProfileOverride: TransportCostProfileOverrideDto;
+            cessationCostProfile: TransportCessationCostProfileDto;
+            maturity: Maturity /* int32 */;
+            gasExportPipelineLength: number; // double
+            oilExportPipelineLength: number; // double
+            currency: Currency /* int32 */;
             lastChangedDate?: string | null; // date-time
-            costYear?: number; // int32
-            source?: Source /* int32 */;
+            costYear: number; // int32
+            source: Source /* int32 */;
             prospVersion?: string | null; // date-time
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
@@ -858,119 +856,78 @@ declare namespace Components {
             url?: string | null;
         }
         export interface WaterInjectorCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface WaterInjectorCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export type WellCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7; // int32
         export interface WellDto {
-            id?: string; // uuid
-            projectId?: string; // uuid
-            name?: string | null;
-            wellInterventionCost?: number; // double
-            plugingAndAbandonmentCost?: number; // double
-            wellCategory?: WellCategory /* int32 */;
-            wellCost?: number; // double
-            drillingDays?: number; // double
+            id: string; // uuid
+            projectId: string; // uuid
+            name: string;
+            wellInterventionCost: number; // double
+            plugingAndAbandonmentCost: number; // double
+            wellCategory: WellCategory /* int32 */;
+            wellCost: number; // double
+            drillingDays: number; // double
             hasChanges?: boolean;
             hasCostChanges?: boolean;
         }
         export interface WellInterventionCostProfileDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
+            epaVersion: string;
+            currency: Currency /* int32 */;
         }
         export interface WellInterventionCostProfileOverrideDto {
-            id?: string; // uuid
-            startYear?: number; // int32
+            id: string; // uuid
+            startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
-            epaVersion?: string | null;
-            currency?: Currency /* int32 */;
-            override?: boolean;
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface WellProjectDto {
-            id?: string; // uuid
-            projectId?: string; // uuid
-            name?: string | null;
-            oilProducerCostProfile?: OilProducerCostProfileDto;
-            oilProducerCostProfileOverride?: OilProducerCostProfileOverrideDto;
-            gasProducerCostProfile?: GasProducerCostProfileDto;
-            gasProducerCostProfileOverride?: GasProducerCostProfileOverrideDto;
-            waterInjectorCostProfile?: WaterInjectorCostProfileDto;
-            waterInjectorCostProfileOverride?: WaterInjectorCostProfileOverrideDto;
-            gasInjectorCostProfile?: GasInjectorCostProfileDto;
-            gasInjectorCostProfileOverride?: GasInjectorCostProfileOverrideDto;
-            artificialLift?: ArtificialLift /* int32 */;
-            currency?: Currency /* int32 */;
-            wellProjectWells?: WellProjectWellDto[] | null;
+            id: string; // uuid
+            projectId: string; // uuid
+            name: string;
+            oilProducerCostProfile: OilProducerCostProfileDto;
+            oilProducerCostProfileOverride: OilProducerCostProfileOverrideDto;
+            gasProducerCostProfile: GasProducerCostProfileDto;
+            gasProducerCostProfileOverride: GasProducerCostProfileOverrideDto;
+            waterInjectorCostProfile: WaterInjectorCostProfileDto;
+            waterInjectorCostProfileOverride: WaterInjectorCostProfileOverrideDto;
+            gasInjectorCostProfile: GasInjectorCostProfileDto;
+            gasInjectorCostProfileOverride: GasInjectorCostProfileOverrideDto;
+            artificialLift: ArtificialLift /* int32 */;
+            currency: Currency /* int32 */;
+            wellProjectWells: WellProjectWellDto[];
             hasChanges?: boolean;
         }
         export interface WellProjectWellDto {
-            drillingSchedule?: DrillingScheduleDto;
-            wellProjectId?: string; // uuid
-            wellId?: string; // uuid
+            drillingSchedule: DrillingScheduleDto;
+            wellProjectId: string; // uuid
+            wellId: string; // uuid
             hasChanges?: boolean;
         }
     }
 }
 declare namespace Paths {
-    namespace CalculateCompareCasesTotals {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-        }
-        export interface PathParameters {
-            projectId: Parameters.ProjectId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.CompareCasesDto[];
-        }
-    }
-    namespace CreateDevelopmentOperationalWellCosts {
-        export type RequestBody = Components.Schemas.DevelopmentOperationalWellCostsDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
-        }
-    }
-    namespace CreateExplorationOperationalWellCosts {
-        export type RequestBody = Components.Schemas.ExplorationOperationalWellCostsDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ExplorationOperationalWellCostsDto;
-        }
-    }
-    namespace CreateExplorationWell {
-        export type RequestBody = Components.Schemas.ExplorationWellDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
-    namespace CreateMultipleExplorationWells {
-        export type RequestBody = Components.Schemas.ExplorationWellDto[];
-        namespace Responses {
-            export type $200 = Components.Schemas.ExplorationWellDto[];
-        }
-    }
-    namespace CreateMultipleWellProjectWells {
-        export type RequestBody = Components.Schemas.WellProjectWellDto[];
-        namespace Responses {
-            export type $200 = Components.Schemas.WellProjectWellDto[];
-        }
-    }
     namespace CreateProject {
         export type RequestBody = Components.Schemas.ProjectDto;
         namespace Responses {
@@ -988,18 +945,14 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
-    namespace CreateWellProjectWell {
-        export type RequestBody = Components.Schemas.WellProjectWellDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
     namespace DeleteWell {
         namespace Parameters {
+            export type ProjectId = string;
             export type WellId = string; // uuid
         }
         export interface PathParameters {
             wellId: Parameters.WellId /* uuid */;
+            projectId: Parameters.ProjectId;
         }
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
@@ -1032,81 +985,17 @@ declare namespace Paths {
             }
         }
     }
-    namespace GenerateCessation {
+    namespace GetCase {
         namespace Parameters {
             export type CaseId = string; // uuid
+            export type ProjectId = string;
         }
         export interface PathParameters {
             caseId: Parameters.CaseId /* uuid */;
+            projectId: Parameters.ProjectId;
         }
         namespace Responses {
-            export type $200 = Components.Schemas.CessationCostWrapperDto;
-        }
-    }
-    namespace GenerateCo2DrillingFlaringFuelTotals {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.Co2DrillingFlaringFuelTotalsDto;
-        }
-    }
-    namespace GenerateCo2Intensity {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.Co2IntensityDto;
-        }
-    }
-    namespace GenerateCo2IntensityTotal {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = number; // double
-        }
-    }
-    namespace GenerateOpex {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.OpexCostProfileWrapperDto;
-        }
-    }
-    namespace GenerateStudy {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface PathParameters {
-            caseId: Parameters.CaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.StudyCostProfileWrapperDto;
-        }
-    }
-    namespace GetExplorationWells {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-        }
-        export interface QueryParameters {
-            projectId?: Parameters.ProjectId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.ExplorationWellDto[];
+            export type $200 = Components.Schemas.CaseDto;
         }
     }
     namespace GetInputToSTEA {
@@ -1137,17 +1026,6 @@ declare namespace Paths {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
     }
-    namespace GetWellProjectWells {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-        }
-        export interface QueryParameters {
-            projectId?: Parameters.ProjectId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.WellProjectWellDto[];
-        }
-    }
     namespace ImportFilesFromSharepointAsync {
         namespace Parameters {
             export type ProjectId = string; // uuid
@@ -1163,13 +1041,26 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectDto;
         }
     }
+    namespace Projects$ProjectIdCaseComparison {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.CompareCasesDto[];
+            }
+        }
+    }
     namespace Projects$ProjectIdCases {
         namespace Post {
             namespace Parameters {
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
-                projectId: Parameters.ProjectId;
+                projectId: Parameters.ProjectId /* uuid */;
             }
             export type RequestBody = Components.Schemas.CaseDto;
             namespace Responses {
@@ -1206,10 +1097,108 @@ declare namespace Paths {
             }
         }
     }
-    namespace SetReferenceCase {
-        export type RequestBody = Components.Schemas.ProjectDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
+    namespace Projects$ProjectIdCases$CaseIdCessation {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string;
+            }
+            export interface PathParameters {
+                caseId: Parameters.CaseId /* uuid */;
+                projectId: Parameters.ProjectId;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.CessationCostWrapperDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCo2drillingflaringfueltotals {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string;
+            }
+            export interface PathParameters {
+                caseId: Parameters.CaseId /* uuid */;
+                projectId: Parameters.ProjectId;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.Co2DrillingFlaringFuelTotalsDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCo2intensity {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string;
+            }
+            export interface PathParameters {
+                caseId: Parameters.CaseId /* uuid */;
+                projectId: Parameters.ProjectId;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.Co2IntensityDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCo2intensitytotal {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string;
+            }
+            export interface PathParameters {
+                caseId: Parameters.CaseId /* uuid */;
+                projectId: Parameters.ProjectId;
+            }
+            namespace Responses {
+                export type $200 = number; // double
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOpex {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string;
+            }
+            export interface PathParameters {
+                caseId: Parameters.CaseId /* uuid */;
+                projectId: Parameters.ProjectId;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.OpexCostProfileWrapperDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdStudy {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string;
+            }
+            export interface PathParameters {
+                caseId: Parameters.CaseId /* uuid */;
+                projectId: Parameters.ProjectId;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.StudyCostProfileWrapperDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdTechnicalInput {
+        namespace Put {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.TechnicalInputDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TechnicalInputDto;
+            }
         }
     }
     namespace UpdateCaseWithAssets {
@@ -1218,62 +1207,8 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ProjectWithGeneratedProfilesDto;
         }
     }
-    namespace UpdateDevelopmentOperationalWellCosts {
-        export type RequestBody = Components.Schemas.DevelopmentOperationalWellCostsDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
-        }
-    }
-    namespace UpdateExplorationOperationalWellCosts {
-        export type RequestBody = Components.Schemas.ExplorationOperationalWellCostsDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ExplorationOperationalWellCostsDto;
-        }
-    }
-    namespace UpdateExplorationWell {
-        export type RequestBody = Components.Schemas.ExplorationWellDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
-    namespace UpdateMultipleExplorationWells {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface QueryParameters {
-            caseId?: Parameters.CaseId /* uuid */;
-        }
-        export type RequestBody = Components.Schemas.ExplorationWellDto[];
-        namespace Responses {
-            export type $200 = Components.Schemas.ExplorationWellDto[];
-        }
-    }
-    namespace UpdateMultipleWellProjectWells {
-        namespace Parameters {
-            export type CaseId = string; // uuid
-        }
-        export interface QueryParameters {
-            caseId?: Parameters.CaseId /* uuid */;
-        }
-        export type RequestBody = Components.Schemas.WellProjectWellDto[];
-        namespace Responses {
-            export type $200 = Components.Schemas.WellProjectWellDto[];
-        }
-    }
     namespace UpdateProject {
         export type RequestBody = Components.Schemas.ProjectDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
-    namespace UpdateTechnicalInput {
-        export type RequestBody = Components.Schemas.TechnicalInputDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.TechnicalInputDto;
-        }
-    }
-    namespace UpdateWellProjectWell {
-        export type RequestBody = Components.Schemas.WellProjectWellDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
         }

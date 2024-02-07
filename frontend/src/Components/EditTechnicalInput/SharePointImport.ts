@@ -1,5 +1,3 @@
-import { Case } from "../../models/case/Case"
-import { Project } from "../../models/Project"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 
 export default class SharePointImport implements Components.Schemas.SharePointImportDto {
@@ -14,7 +12,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
     sharePointFileUrl?: string | null
     sharePointSiteUrl?: string | undefined
 
-    constructor(caseItem: Case, project: Project, data: Components.Schemas.SharePointImportDto | undefined) {
+    constructor(caseItem: Components.Schemas.CaseDto, project: Components.Schemas.ProjectDto, data: Components.Schemas.SharePointImportDto | undefined) {
         this.id = caseItem.id!
         this.selected = false
         this.surfState = SharePointImport.surfStatus(caseItem, project)
@@ -29,7 +27,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
 
     static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")
 
-    static surfStatus = (caseItem: Components.Schemas.CaseDto, project: Project): ImportStatusEnum => {
+    static surfStatus = (caseItem: Components.Schemas.CaseDto, project: Components.Schemas.ProjectDto): ImportStatusEnum => {
         const surfId = caseItem.surfLink
         const surf = project.surfs.find((s) => s.id === surfId)
         if (!surf) { return ImportStatusEnum.NotSelected }
@@ -39,7 +37,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         return ImportStatusEnum.Selected
     }
 
-    static substructureStatus = (caseItem: Components.Schemas.CaseDto, project: Project): ImportStatusEnum => {
+    static substructureStatus = (caseItem: Components.Schemas.CaseDto, project: Components.Schemas.ProjectDto): ImportStatusEnum => {
         const substructureId = caseItem.substructureLink
         const substructure = project.substructures.find((s) => s.id === substructureId)
         if (!substructure) { return ImportStatusEnum.NotSelected }
@@ -49,7 +47,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         return ImportStatusEnum.Selected
     }
 
-    static topsideStatus = (caseItem: Components.Schemas.CaseDto, project: Project): ImportStatusEnum => {
+    static topsideStatus = (caseItem: Components.Schemas.CaseDto, project: Components.Schemas.ProjectDto): ImportStatusEnum => {
         const topsideId = caseItem.topsideLink
         const topside = project.topsides.find((s) => s.id === topsideId)
         if (!topside) { return ImportStatusEnum.NotSelected }
@@ -59,7 +57,7 @@ export default class SharePointImport implements Components.Schemas.SharePointIm
         return ImportStatusEnum.Selected
     }
 
-    static transportStatus = (caseItem: Components.Schemas.CaseDto, project: Project): ImportStatusEnum => {
+    static transportStatus = (caseItem: Components.Schemas.CaseDto, project: Components.Schemas.ProjectDto): ImportStatusEnum => {
         const transportId = caseItem.transportLink
         const transport = project.transports.find((s) => s.id === transportId)
         if (!transport) { return ImportStatusEnum.NotSelected }
