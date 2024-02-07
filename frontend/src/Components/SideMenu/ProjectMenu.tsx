@@ -47,12 +47,16 @@ const projectMenuItems = [
 ]
 
 interface Props {
-    project: Components.Schemas.ProjectDto
+    project?: Components.Schemas.ProjectDto
 }
 
 function ProjectMenu({ project }: Props) {
     const [isOpen, setIsOpen] = useState<boolean>(true)
     const currentProject = useCurrentContext()
+
+    if (!project) {
+        return null
+    }
 
     return (
         <ExpandableDiv>

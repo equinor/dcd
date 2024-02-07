@@ -70,13 +70,13 @@ const SideMenu: React.FC<Props> = ({ children }) => {
                         setProject(fetchedProject)
                     }
                 } catch (error) {
-                    console.error()
+                    console.error("Error fetching project", error)
                 }
             })()
         }
     }, [currentProject?.externalId, location.pathname])
 
-    if (project) {
+    if (currentProject) {
         return (
             <Wrapper>
                 <Body>
