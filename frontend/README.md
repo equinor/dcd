@@ -11,13 +11,11 @@ Example: feat: add user login functionality
 fix: Addresses a bug fix.
 Example: fix: correct the user authentication error
 
-These prefixes help in quickly identifying the purpose of the changes and facilitate automated changelog generation.
-
 # Front-End Development Guidelines
 
 ## Component Structure
 
-To maintain a consistent and understandable codebase, all components should follow this common structure:
+All components should follow this common structure:
 
 1. **All imports**: Group all import statements at the beginning of the file.
 2. **Styled-components**: Declare styled components immediately after imports.
@@ -30,8 +28,6 @@ To maintain a consistent and understandable codebase, all components should foll
 9. **Default export**: Export the component as the default export of the file.
 
 ## Syntax Conventions
-
-To ensure our code is clean and consistent, please follow these syntax conventions:
 
 - Use **arrow functions** for components and functions.
 - Adopt **camelCase** naming for variables and functions.
@@ -52,10 +48,8 @@ For scenarios not meeting these criteria, opt for a **context** approach to mana
 
 ## Avoid Repetition
 
-- Establish a **single source of truth** for your data and configurations.
-- Store all constant variables in a dedicated **Constants** file.
-- Centralize utility/helper functions in a common **helpers** file.
-- Ensure every component adheres to the **single responsibility principle**.
-- Favor **modular and adaptable components** over rigid, similar ones to encourage reusability and flexibility in your codebase.
-
-By following these guidelines, we aim to create a cohesive, maintainable, and scalable front-end architecture. Let's build something great together!
+- Establish a **single source of truth** for all data and configurations.
+- Store all constant variables in the dedicated **common.ts** file.
+- Centralize utility/helper functions in a common **helpers.ts** file.
+- Ensure every new component adheres to the **single responsibility principle**.
+- Favor **modular and adaptable components** over rigid, similar ones to encourage reusability and flexibility in the codebase.
