@@ -1,6 +1,19 @@
-# Front-End Development Guidelines
+
 
 Welcome to our Concept app front end! This README outlines our coding and structural conventions to ensure consistency.
+
+# Git Workflow
+## Commit Message Conventions
+
+feat: Introduces a new feature.
+Example: feat: add user login functionality
+
+fix: Addresses a bug fix.
+Example: fix: correct the user authentication error
+
+These prefixes help in quickly identifying the purpose of the changes and facilitate automated changelog generation.
+
+# Front-End Development Guidelines
 
 ## Component Structure
 
@@ -46,7 +59,3 @@ For scenarios not meeting these criteria, opt for a **context** approach to mana
 - Favor **modular and adaptable components** over rigid, similar ones to encourage reusability and flexibility in your codebase.
 
 By following these guidelines, we aim to create a cohesive, maintainable, and scalable front-end architecture. Let's build something great together!
-
---- 
-
-Feel free to adjust or expand upon this README.md content as needed for your project specifics or personal preferences.
