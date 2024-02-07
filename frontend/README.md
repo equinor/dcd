@@ -49,7 +49,7 @@ For scenarios not meeting these criteria, opt for a **context** approach to mana
 ## Avoid Repetition
 
 - Establish a **single source of truth** for all data and configurations.
-- Store all constant variables in the dedicated **common.ts** file.
-- Centralize utility/helper functions in a common **helpers.ts** file.
+- Store all constant variables in the **common.ts** file.
+- Centralize utility/helper functions in the **helpers.ts** file.
 - Ensure every new component adheres to the **single responsibility principle**.
 - Favor **modular and adaptable components** over rigid, similar ones to encourage reusability and flexibility in the codebase.
