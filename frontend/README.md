@@ -1,6 +1,9 @@
 
 
-Welcome to our Concept app front end! This README outlines our coding and structural conventions to ensure consistency.
+Welcome to our Concept app front end! This README outlines our coding and structural guidelines to ensure consistency.
+
+
+Ensure your contributions align with our guidelines for a smooth and efficient review process. Reviewers should not approve PRs that fail to follow the guidelines. 
 
 # Git Workflow
 ## Commit Message Conventions
