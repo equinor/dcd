@@ -41,10 +41,14 @@ public class ProspExcelImportService
     private Prosp CreateConfig(IConfiguration config)
     {
         var prospImportConfig = config.GetSection("FileImportSettings:Prosp").Get<Prosp>();
-        prospImportConfig.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<Surf>();
-        prospImportConfig.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructure>();
-        prospImportConfig.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSide>();
-        prospImportConfig.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<Transport>();
+        if (prospImportConfig == null)
+        {
+            throw new Exception("Prosp import settings not found in appsettings.json");
+        }
+        prospImportConfig.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<Surf>() ?? new Surf();
+        prospImportConfig.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructure>() ?? new SubStructure();
+        prospImportConfig.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSide>() ?? new TopSide();
+        prospImportConfig.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<Transport>() ?? new Transport();
         return prospImportConfig;
     }
 
@@ -73,7 +77,7 @@ public class ProspExcelImportService
     private static double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
     {
         var values = new List<double>();
-        foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
+        foreach (var cell in cellData.Where(c => c?.CellReference != null && coordinates.Contains(c.CellReference!)))
             if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
             {
                 values.Add(value);
@@ -377,48 +381,6 @@ public class ProspExcelImportService
         }
     }
 
-    public async Task<ProjectDto> ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
-    {
-        using var ms = new MemoryStream();
-        file.CopyTo(ms);
-        using var document = SpreadsheetDocument.Open(ms, false);
-        var workbookPart = document.WorkbookPart;
-        var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
-            .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
-
-        if (mainSheet?.Id != null && workbookPart != null)
-        {
-            var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
-            var cellData = wsPart?.Worksheet.Descendants<Cell>();
-
-            if (cellData != null)
-            {
-                var parsedData = cellData.ToList();
-                if (assets["Surf"])
-                {
-                    await ImportSurf(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Topside"])
-                {
-                    await ImportTopside(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Substructure"])
-                {
-                    await ImportSubstructure(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Transport"])
-                {
-                    await ImportTransport(parsedData, sourceCaseId, projectId);
-                }
-            }
-        }
-
-        return await _projectService.GetProjectDto(projectId);
-    }
-
     public async Task<ProjectDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
         string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
     {
@@ -478,7 +440,7 @@ public class ProspExcelImportService
             }
 
             var caseDto = CaseDtoAdapter.Convert(caseItem);
-            return await _caseService.UpdateCase(caseDto);
+            return await _caseService.UpdateCase(sourceCaseId, caseDto);
         }
 
         return await _projectService.GetProjectDto(projectId);
@@ -497,7 +459,7 @@ public class ProspExcelImportService
         ClearImportedTransport(caseItem);
 
         var caseDto = CaseDtoAdapter.Convert(caseItem);
-        await _caseService.UpdateCase(caseDto);
+        await _caseService.UpdateCase(sourceCaseId, caseDto);
     }
 
     private void ClearImportedSurf(Case caseItem)

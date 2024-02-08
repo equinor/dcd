@@ -20,7 +20,6 @@ public static class ProjectAdapter
             ProjectPhase = projectDto.ProjectPhase,
             Currency = projectDto.Currency,
             PhysicalUnit = projectDto.PhysUnit,
-            Id = projectDto.ProjectId,
             SharepointSiteUrl = projectDto.SharepointSiteUrl,
             ExplorationOperationalWellCosts =
                 ExplorationOperationalWellCostsAdapter.Convert(projectDto.ExplorationOperationalWellCosts),
@@ -41,14 +40,11 @@ public static class ProjectAdapter
     public static void ConvertExisting(Project existing, ProjectDto projectDto)
     {
         existing.Name = projectDto.Name;
-        existing.CommonLibraryId = projectDto.CommonLibraryId;
         existing.CommonLibraryName = projectDto.CommonLibraryName;
-        existing.FusionProjectId = projectDto.FusionProjectId;
         existing.Description = projectDto.Description;
         existing.Country = projectDto.Country;
         existing.Currency = projectDto.Currency;
         existing.PhysicalUnit = projectDto.PhysUnit;
-        existing.Id = projectDto.ProjectId;
         existing.SharepointSiteUrl = projectDto.SharepointSiteUrl;
         existing.CO2RemovedFromGas = projectDto.CO2RemovedFromGas;
         existing.CO2EmissionFromFuelGas = projectDto.CO2EmissionFromFuelGas;
@@ -57,6 +53,7 @@ public static class ProjectAdapter
         existing.CO2Vented = projectDto.CO2Vented;
         existing.DailyEmissionFromDrillingRig = projectDto.DailyEmissionFromDrillingRig;
         existing.AverageDevelopmentDrillingDays = projectDto.AverageDevelopmentDrillingDays;
+        existing.ReferenceCaseId = projectDto.ReferenceCaseId;
     }
 
     public static void ConvertExistingFromProjectMaster(Project existing, ProjectDto projectDto)
@@ -64,9 +61,8 @@ public static class ProjectAdapter
         existing.Name = projectDto.Name;
         existing.CommonLibraryId = projectDto.CommonLibraryId;
         existing.CommonLibraryName = projectDto.CommonLibraryName;
-        existing.FusionProjectId = projectDto.FusionProjectId;
         existing.Country = projectDto.Country;
-        existing.Id = projectDto.ProjectId;
+        existing.Id = projectDto.Id;
         existing.ProjectCategory = projectDto.ProjectCategory;
         existing.ProjectPhase = projectDto.ProjectPhase;
     }

@@ -57,7 +57,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
         co2Emission.StartYear = totalProfile.StartYear;
         co2Emission.Values = totalProfile.Values;
 
-        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, co2Emission);
+        await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, co2Emission);
 
         var dto = DrainageStrategyDtoAdapter.Convert<Co2EmissionsDto, Co2Emissions>(co2Emission, project.PhysicalUnit);
         return dto ?? new Co2EmissionsDto();

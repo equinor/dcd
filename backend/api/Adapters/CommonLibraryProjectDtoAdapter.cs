@@ -5,25 +5,6 @@ namespace api.Adapters;
 
 public static class CommonLibraryProjectDtoAdapter
 {
-    public static CommonLibraryProjectDto? Convert(dynamic project)
-    {
-        var projectDto = new CommonLibraryProjectDto();
-        if (!Guid.TryParse(project.GUID.ToString(), out Guid guid))
-        {
-            return null;
-        }
-
-        projectDto.ProjectState = project.ProjectState;
-        projectDto.Id = guid;
-        projectDto.Name = project.Name;
-        projectDto.Description = project.Description;
-        projectDto.Country = project.Country;
-        projectDto.ProjectCategory = ConvertCategory(project.ProjectCategory.ToString());
-        projectDto.ProjectPhase = ConvertPhase(project.Phase.ToString());
-
-        return projectDto;
-    }
-
     internal static ProjectCategory ConvertCategory(string category)
     {
         return category switch

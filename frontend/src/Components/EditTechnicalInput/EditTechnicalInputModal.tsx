@@ -12,14 +12,10 @@ import { Project } from "../../models/Project"
 import PROSPTab from "./PROSPTab"
 import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
 import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
-import { GetExplorationOperationalWellCostsService } from "../../Services/ExplorationOperationalWellCostsService"
 import { EMPTY_GUID } from "../../Utils/constants"
-import { GetDevelopmentOperationalWellCostsService } from "../../Services/DevelopmentOperationalWellCostsService"
 import { Well } from "../../models/Well"
 import { IsExplorationWell } from "../../Utils/common"
-import { GetWellService } from "../../Services/WellService"
 import CO2Tab from "./CO2Tab"
-import { GetProjectService } from "../../Services/ProjectService"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
 import { Exploration } from "../../models/assets/exploration/Exploration"
 import { WellProject } from "../../models/assets/wellproject/WellProject"
@@ -36,11 +32,6 @@ const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-`
-
-const InvisibleButton = styled(Button)`
-    border: 1px solid ;
-    background-color: transparent;
 `
 
 const ModalDiv = styled.div`
@@ -86,8 +77,6 @@ type Props = {
 const EditTechnicalInputModal = ({
     toggleEditTechnicalInputModal, isOpen, setProject, project, setWells, caseId, setExploration, setWellProject,
 }: Props) => {
-    const [justOpened, setJustOpened] = useState(true)
-
     const [activeTab, setActiveTab] = useState<number>(0)
 
     const [originalProject, setOriginalProject] = useState<Project>(project)
@@ -107,16 +96,16 @@ const EditTechnicalInputModal = ({
     const [isSaving, setIsSaving] = useState<boolean>()
     
     useEffect(() => {
-        if (isOpen && !justOpened) {
-            // Set the original state only when the modal is opened
-            setOriginalProject({ ...project })
-            setOriginalExplorationOperationalWellCosts({ ...project.explorationWellCosts })
-            setOriginalDevelopmentOperationalWellCosts({ ...project.developmentWellCosts })
-            setOriginalWellProjectWells([...project?.wells?.filter((w) => !IsExplorationWell(w)) ?? []]);
-            setOriginalExplorationWells([...project?.wells?.filter((w) => IsExplorationWell(w)) ?? []]);
-            setJustOpened(false)
+        if (project.wells) {
+            setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
+            setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
+
+            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !IsExplorationWell(w)))
+            setOriginalWellProjectWells(originalWellProjectWellsResult)
+            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => IsExplorationWell(w)))
+            setOriginalExplorationWells(originalExplorationWellsResult)
         }
-    }, [isOpen, project])//, explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened])
+    }, [project])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -133,18 +122,6 @@ const EditTechnicalInputModal = ({
             window.removeEventListener("keydown", handleKeyDown)
         }
     }, [isOpen, toggleEditTechnicalInputModal])
-
-    useEffect(() => {
-        if (project.wells) {
-            setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
-            setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
-
-            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !IsExplorationWell(w)))
-            setOriginalWellProjectWells(originalWellProjectWellsResult)
-            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => IsExplorationWell(w)))
-            setOriginalExplorationWells(originalExplorationWellsResult)
-        }
-    }, [project])
 
     if (!isOpen) return null
 
@@ -169,6 +146,7 @@ const EditTechnicalInputModal = ({
         try {
             const dto: Components.Schemas.TechnicalInputDto = {}
             setIsSaving(true)
+
             dto.projectDto = Project.Copy(project)
             if (!(JSON.stringify(project) === JSON.stringify(originalProject))) {
                 dto.projectDto.hasChanges = true
@@ -201,7 +179,7 @@ const EditTechnicalInputModal = ({
                 dto.caseId = caseId
             }
 
-            const result = await (await GetTechnicalInputService()).update(dto)
+            const result = await (await GetTechnicalInputService()).update(project.id, dto)
 
             if (result.projectDto) {
                 setProject(Project.fromJSON(result.projectDto))
@@ -214,20 +192,17 @@ const EditTechnicalInputModal = ({
                 setWellProject(WellProject.fromJSON(result.wellProjectDto))
             }
 
-            const explorationOperationalWellCostsResult = result.explorationOperationalWellCostsDto
-            setExplorationOperationalWellCosts(explorationOperationalWellCosts)
+            
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
-
-            const developmentOperationalWellCostsResult = result.developmentOperationalWellCostsDto
-            setDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
             setOriginalDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
+            setOriginalWellProjectWells([...wellProjectWells])
+            setOriginalExplorationWells([...explorationWells])
 
-            if (result.wellDtos) {
-                setExplorationWellProjectWellsFromWells(result.wellDtos)
-            }
-            setIsSaving(false)
+            // Reset the changes made flag as changes have been successfully saved
+            setIsSaving(false) // End saving process
         } catch (error) {
             console.error("Error when saving technical input: ", error)
+            setIsSaving(false)
         } finally {
             setIsSaving(false)
         }
@@ -244,18 +219,18 @@ const EditTechnicalInputModal = ({
     }
 
     const handleCancel = () => {
-        // Assuming `captureInitialState` function properly captures and sets original states
-        setProject({ ...originalProject })
-        setExplorationOperationalWellCosts({ ...originalExplorationOperationalWellCosts })
-        setDevelopmentOperationalWellCosts({ ...originalDevelopmentOperationalWellCosts })
-        // For arrays, spread into a new array
-        setWellProjectWells([...originalWellProjectWells])
-        setExplorationWells([...originalExplorationWells])
+            // Revert the operational costs to their original state
+            setExplorationOperationalWellCosts(originalExplorationOperationalWellCosts)
+            setDevelopmentOperationalWellCosts(originalDevelopmentOperationalWellCosts)
 
-        // Close the modal
+            // Revert the wells to their original state
+            setWellProjectWells([...originalWellProjectWells])
+            setExplorationWells([...originalExplorationWells])
+        
+        // Close the modal in all cases
         toggleEditTechnicalInputModal()
-    }
-
+    };
+    
     return (
         <>
             <div style={{

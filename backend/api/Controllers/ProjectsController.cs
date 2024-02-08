@@ -14,7 +14,7 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
@@ -25,11 +25,20 @@ public class ProjectsController : ControllerBase
 {
     private readonly IFusionService _fusionService;
     private readonly IProjectService _projectService;
+    private readonly ICompareCasesService _compareCasesService;
+    private readonly ITechnicalInputService _technicalInputService;
 
-    public ProjectsController(IProjectService projectService, IFusionService fusionService)
+    public ProjectsController(
+        IProjectService projectService,
+        IFusionService fusionService,
+        ICompareCasesService compareCasesService,
+        ITechnicalInputService technicalInputService
+    )
     {
         _projectService = projectService;
         _fusionService = fusionService;
+        _compareCasesService = compareCasesService;
+        _technicalInputService = technicalInputService;
     }
 
     [HttpGet("{projectId}", Name = "GetProject")]
@@ -63,22 +72,17 @@ public class ProjectsController : ControllerBase
                 Country = projectMaster.Country ?? "",
                 Currency = Currency.NOK,
                 PhysUnit = PhysUnit.SI,
-                ProjectId = projectMaster.Identity,
+                Id = projectMaster.Identity,
                 ProjectCategory = category,
                 ProjectPhase = phase,
             };
             var project = ProjectAdapter.Convert(projectDto);
             project.CreateDate = DateTimeOffset.UtcNow;
+
             return await _projectService.CreateProject(project);
         }
 
         return new ProjectDto();
-    }
-
-    [HttpGet(Name = "GetProjects")]
-    public async Task<IEnumerable<ProjectDto>?> GetProjects()
-    {
-        return await _projectService.GetAllDtos();
     }
 
     [HttpPost(Name = "CreateProject")]
@@ -95,9 +99,15 @@ public class ProjectsController : ControllerBase
         return await _projectService.UpdateProject(projectDto);
     }
 
-    [HttpPut("ReferenceCase", Name = "SetReferenceCase")]
-    public async Task<ProjectDto> SetReferenceCase([FromBody] ProjectDto projectDto)
+    [HttpGet("{projectId}/case-comparison")]
+    public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
     {
-        return await _projectService.SetReferenceCase(projectDto);
+        return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
+    }
+
+    [HttpPut("{projectId}/technical-input")]
+    public async Task<TechnicalInputDto> UpdateTechnicalInput([FromRoute] Guid projectId, [FromBody] TechnicalInputDto dto)
+    {
+        return await _technicalInputService.UpdateTehnicalInput(dto);
     }
 }

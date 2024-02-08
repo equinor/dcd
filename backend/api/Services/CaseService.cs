@@ -38,24 +38,10 @@ public class CaseService : ICaseService
         _logger = loggerFactory.CreateLogger<CaseService>();
     }
 
-    public async Task<ProjectDto> CreateCase(CaseDto caseDto)
-    {
-        var case_ = CaseAdapter.Convert(caseDto);
-        if (case_.DG4Date == DateTimeOffset.MinValue)
-        {
-            case_.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
-        }
-        var project = await _projectService.GetProject(case_.ProjectId);
-        case_.Project = project;
-        _context.Cases!.Add(case_);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(project.Id);
-    }
-
-    public async Task<ProjectDto> NewCreateCase(CaseDto caseDto)
+    public async Task<ProjectDto> CreateCase(Guid projectId, CaseDto caseDto)
     {
         var caseItem = CaseAdapter.Convert(caseDto);
-        var project = await _projectService.GetProject(caseItem.ProjectId);
+        var project = await _projectService.GetProject(projectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
@@ -127,22 +113,13 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<ProjectDto> UpdateCase(CaseDto updatedCaseDto)
+    public async Task<ProjectDto> UpdateCase(Guid caseId, CaseDto updatedCaseDto)
     {
-        var caseItem = await GetCase(updatedCaseDto.Id);
+        var caseItem = await GetCase(caseId);
         CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
         _context.Cases!.Update(caseItem);
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(caseItem.ProjectId);
-    }
-
-    public async Task<CaseDto> NewUpdateCase(CaseDto updatedCaseDto)
-    {
-        var caseItem = await GetCase(updatedCaseDto.Id);
-        CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
-        _context.Cases!.Update(caseItem);
-        await _context.SaveChangesAsync();
-        return CaseDtoAdapter.Convert(await GetCase(caseItem.Id));
     }
 
     public async Task<ProjectDto> DeleteCase(Guid caseId)

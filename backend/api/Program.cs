@@ -73,7 +73,6 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
         DbContextOptionsBuilder<DcdDbContext> dbBuilder = new();
         dbBuilder.UseSqlServer(sqlConnectionString);
         using DcdDbContext context = new(dbBuilder.Options);
-        // context.Database.EnsureCreated();
     }
 }
 
@@ -147,7 +146,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .ReadFrom.Configuration(config)
     .Enrich.WithMachineName()
-    .Enrich.WithProperty("Environment", environment)
+    .Enrich.WithProperty("Environment", environment ?? "localdev")
     .Enrich.FromLogContext()
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);

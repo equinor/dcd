@@ -46,6 +46,11 @@ public class RefreshProjectService : BackgroundService
     private bool Showtime()
     {
         var runtime = _configuration.GetSection("HostedService").GetValue<string>("RunTime");
+        if (string.IsNullOrEmpty(runtime))
+        {
+            _logger.LogInformation("HostingService: No runtime specified");
+            return false;
+        }
         var hour = int.Parse(runtime.Split(':')[0]);
         var minute = int.Parse(runtime.Split(':')[1]);
         var second = int.Parse(runtime.Split(':')[2]);

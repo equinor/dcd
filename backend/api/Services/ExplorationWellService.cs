@@ -38,45 +38,6 @@ public class ExplorationWellService : IExplorationWellService
         throw new NotFoundInDBException();
     }
 
-    public async Task<ProjectDto> UpdateExplorationWell(ExplorationWellDto updatedExplorationWellDto)
-    {
-        var existingExplorationWell = await GetExplorationWell(updatedExplorationWellDto.WellId, updatedExplorationWellDto.ExplorationId);
-        ExplorationWellAdapter.ConvertExisting(existingExplorationWell, updatedExplorationWellDto);
-        if (updatedExplorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
-        {
-            _context.DrillingSchedule!.Remove(existingExplorationWell.DrillingSchedule);
-        }
-
-        _context.ExplorationWell!.Update(existingExplorationWell);
-        await _context.SaveChangesAsync();
-        var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == updatedExplorationWellDto.ExplorationId)?.ProjectId;
-        if (projectId != null)
-        {
-            return await _projectService.GetProjectDto((Guid)projectId);
-        }
-        throw new NotFoundInDBException();
-    }
-
-    public async Task<ExplorationWellDto[]?> UpdateMultpleExplorationWells(ExplorationWellDto[] updatedExplorationWellDtos, Guid caseId)
-    {
-        var explorationId = updatedExplorationWellDtos.FirstOrDefault()?.ExplorationId;
-        ProjectDto? projectDto = null;
-        foreach (var explorationWellDto in updatedExplorationWellDtos)
-        {
-            projectDto = await UpdateExplorationWell(explorationWellDto);
-        }
-
-        var explorationDto = await _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
-
-        await _explorationService.NewUpdateExploration(explorationDto);
-
-        if (projectDto != null && explorationId != null)
-        {
-            return projectDto.Explorations?.FirstOrDefault(e => e.Id == explorationId)?.ExplorationWells?.ToArray();
-        }
-        return null;
-    }
-
     public async Task<ExplorationWellDto[]?> CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos)
     {
         var explorationId = explorationWellDtos.FirstOrDefault()?.ExplorationId;
@@ -126,14 +87,6 @@ public class ExplorationWellService : IExplorationWellService
         return null;
     }
 
-    public async Task<ExplorationWellDto> GetExplorationWellDto(Guid wellId, Guid caseId)
-    {
-        var explorationWell = await GetExplorationWell(wellId, caseId);
-        var explorationWellDto = ExplorationWellDtoAdapter.Convert(explorationWell);
-
-        return explorationWellDto;
-    }
-
     public async Task<IEnumerable<ExplorationWell>> GetAll()
     {
         if (_context.ExplorationWell != null)
@@ -147,23 +100,4 @@ public class ExplorationWellService : IExplorationWellService
         }
     }
 
-    public async Task<IEnumerable<ExplorationWellDto>> GetAllDtos()
-    {
-        var explorationWells = await GetAll();
-        if (explorationWells.Any())
-        {
-            var explorationWellDtos = new List<ExplorationWellDto>();
-            foreach (ExplorationWell explorationWell in explorationWells)
-            {
-                var explorationWellDto = ExplorationWellDtoAdapter.Convert(explorationWell);
-                explorationWellDtos.Add(explorationWellDto);
-            }
-
-            return explorationWellDtos;
-        }
-        else
-        {
-            return new List<ExplorationWellDto>();
-        }
-    }
 }

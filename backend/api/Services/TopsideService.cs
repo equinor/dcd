@@ -81,26 +81,6 @@ public class TopsideService : ITopsideService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ProjectDto> DeleteTopside(Guid topsideId)
-    {
-        var topside = await GetTopside(topsideId);
-        _context.Topsides!.Remove(topside);
-        DeleteCaseLinks(topsideId);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(topside.ProjectId);
-    }
-
-    private void DeleteCaseLinks(Guid topsideId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.TopsideLink == topsideId)
-            {
-                c.TopsideLink = Guid.Empty;
-            }
-        }
-    }
-
     public async Task<ProjectDto> UpdateTopside(TopsideDto updatedTopsideDto)
     {
         var existing = await GetTopside(updatedTopsideDto.Id);
@@ -110,17 +90,6 @@ public class TopsideService : ITopsideService
         _context.Topsides!.Update(existing);
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
-    }
-
-    public async Task<TopsideDto> NewUpdateTopside(TopsideDto updatedTopsideDto)
-    {
-        var existing = await GetTopside(updatedTopsideDto.Id);
-        TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        var updatedTopside = _context.Topsides!.Update(existing);
-        await _context.SaveChangesAsync();
-        return TopsideDtoAdapter.Convert(updatedTopside.Entity);
     }
 
     public async Task<Topside> GetTopside(Guid topsideId)

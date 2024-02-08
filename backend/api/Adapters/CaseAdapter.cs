@@ -9,7 +9,6 @@ public static class CaseAdapter
     {
         var caseItem = new Case
         {
-            Id = caseDto.Id,
             ProjectId = caseDto.ProjectId,
             Name = caseDto.Name,
             Description = caseDto.Description,
@@ -129,23 +128,6 @@ public static class CaseAdapter
         {
             Id = dto.Id,
             Override = dto.Override,
-            StartYear = dto.StartYear,
-            Currency = dto.Currency,
-            EPAVersion = dto.EPAVersion,
-            Values = dto.Values,
-            Case = caseItem,
-        };
-    }
-
-    private static TModel? Convert<TDto, TModel>(TDto? dto, Case caseItem)
-        where TDto : TimeSeriesCostDto
-        where TModel : TimeSeriesCost, ICaseTimeSeries, new()
-    {
-        if (dto == null) { return new TModel(); }
-
-        return new TModel
-        {
-            Id = dto.Id,
             StartYear = dto.StartYear,
             Currency = dto.Currency,
             EPAVersion = dto.EPAVersion,

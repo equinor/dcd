@@ -12,17 +12,11 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
 import { isInteger } from "../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Components/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../Utils/constants"
 
 interface Props {
-    project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
-    caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
     timeSeriesData: any[]
     dg4Year: number
     tableYears: [number, number]
@@ -34,8 +28,6 @@ interface Props {
 }
 
 function CaseTabTable({
-    project, setProject,
-    caseItem, setCase,
     timeSeriesData, dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,

@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /* eslint-disable no-unsafe-optional-chaining */
 import styled from "styled-components"
 import {
@@ -14,8 +13,8 @@ import { bookmark_filled } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { Project } from "../../models/Project"
-import { GetCompareCasesService } from "../../Services/CompareCasesService"
 import { AgChartsCompareCases } from "../../Components/AgGrid/AgChartsCompareCases"
+import { GetProjectService } from "../../Services/ProjectService"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -98,7 +97,7 @@ function ProjectCompareCasesTab({
     useEffect(() => {
         (async () => {
             try {
-                const compareCasesService = await (await GetCompareCasesService()).calculate(project.id)
+                const compareCasesService = await (await GetProjectService()).compareCases(project.id)
                 const casesOrderedByGuid = compareCasesService.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
                 setCompareCasesTotals(casesOrderedByGuid)
             } catch (error) {

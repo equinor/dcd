@@ -29,7 +29,7 @@ public class ProjectService : IProjectService
 
     public async Task<ProjectDto> UpdateProject(ProjectDto projectDto)
     {
-        var existingProject = await GetProject(projectDto.ProjectId);
+        var existingProject = await GetProject(projectDto.Id);
         ProjectAdapter.ConvertExisting(existingProject, projectDto);
         _context.Projects!.Update(existingProject);
         await _context.SaveChangesAsync();
@@ -38,7 +38,7 @@ public class ProjectService : IProjectService
 
     public async Task<ProjectDto> UpdateProjectFromProjectMaster(ProjectDto projectDto)
     {
-        var existingProject = await GetProject(projectDto.ProjectId);
+        var existingProject = await GetProject(projectDto.Id);
         ProjectAdapter.ConvertExistingFromProjectMaster(existingProject, projectDto);
         _context.Projects!.Update(existingProject);
         await _context.SaveChangesAsync();
@@ -245,9 +245,24 @@ public class ProjectService : IProjectService
 
             if (project == null)
             {
-                var projectByFusionId = await _context.Projects
-                    .Include(c => c.Cases)
+                var projectByFusionId = await _context.Projects!
+                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
+                    .Include(p => p.Wells)
+                    .Include(p => p.ExplorationOperationalWellCosts)
+                    .Include(p => p.DevelopmentOperationalWellCosts)
                     .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
+
                 if (projectByFusionId == null)
                 {
                     throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
@@ -261,8 +276,7 @@ public class ProjectService : IProjectService
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 }));
-            AddAssetsToProject(project);
-            _logger.LogInformation("Add assets to project: {projectId}", projectId.ToString());
+            await AddAssetsToProject(project);
             return project;
         }
 
@@ -290,18 +304,18 @@ public class ProjectService : IProjectService
         var totalNumberOfProjects = projectDtos.Count();
         foreach (var project in projectDtos)
         {
-            var projectMaster = await GetProjectDtoFromProjectMaster(project.ProjectId);
+            var projectMaster = await GetProjectDtoFromProjectMaster(project.Id);
             if (!project.Equals(projectMaster))
             {
                 _logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name,
-                    project.ProjectId);
+                    project.Id);
                 numberOfDeviations++;
                 await UpdateProjectFromProjectMaster(projectMaster);
             }
             else
             {
                 _logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster",
-                    project.Name, project.ProjectId);
+                    project.Name, project.Id);
             }
         }
 
@@ -324,7 +338,7 @@ public class ProjectService : IProjectService
                 Country = projectMaster.Country ?? "",
                 Currency = Currency.NOK,
                 PhysUnit = PhysUnit.SI,
-                ProjectId = projectMaster.Identity,
+                Id = projectMaster.Identity,
                 ProjectCategory = category,
                 ProjectPhase = phase,
             };
@@ -333,21 +347,6 @@ public class ProjectService : IProjectService
 
         _logger.LogCritical("FusionService is null!");
         throw new NullReferenceException();
-    }
-
-    public async Task<ProjectDto> SetReferenceCase(ProjectDto projectDto)
-    {
-        if (projectDto.ProjectId == Guid.Empty)
-        {
-            throw new NotFoundInDBException($"Project {projectDto.ProjectId} not found");
-        }
-
-        var project = await GetProject(projectDto.ProjectId);
-        project.ReferenceCaseId = projectDto.ReferenceCaseId;
-
-        _context.Projects?.Update(project);
-        await _context.SaveChangesAsync();
-        return ProjectDtoAdapter.Convert(project);
     }
 
     private async Task<Project> AddAssetsToProject(Project project)
@@ -360,6 +359,7 @@ public class ProjectService : IProjectService
         project.Transports = (await GetTransports(project.Id)).ToList();
         project.Explorations = (await GetExplorations(project.Id)).ToList();
         project.Wells = (await GetWells(project.Id)).ToList();
+
         return project;
     }
 

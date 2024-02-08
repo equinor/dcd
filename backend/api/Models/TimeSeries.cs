@@ -21,9 +21,8 @@ public class TimeSeries<T>
         {
             if (string.IsNullOrEmpty(InternalData))
             {
-                return Array.Empty<T>();
+                return [];
             }
-            string[] tab = InternalData.Split(';');
             return Array.ConvertAll(InternalData.Split(';'), new Converter<string, T>(ConvertStringToGeneric));
         }
         set
