@@ -31,6 +31,7 @@ import { GetCaseService } from "../../Services/CaseService"
 import EditCaseModal from "./EditCaseModal"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { GetProjectService } from "../../Services/ProjectService"
+import { Link } from "react-router-dom"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -88,17 +89,23 @@ const CasesTable = ({ project, setProject }: Props) => {
         </Button>
     )
 
-    const nameWithReferenceCase = (p: any) => (
-        <span>
-            {p.node.data.referenceCaseId === p.node.data.id
-                && (
+    const nameWithReferenceCase = (p: any) => {
+        const caseDetailPath = CasePath(project.id, p.node.data.id);
+        
+        return (
+            <span>
+                {p.node.data.referenceCaseId === p.node.data.id && (
                     <Tooltip title="Reference case">
                         <MenuIcon data={bookmark_filled} size={16} />
                     </Tooltip>
                 )}
-            <span>{p.value}</span>
-        </span>
-    )
+                <Link to={caseDetailPath} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {p.value}
+                </Link>
+            </span>
+        );
+    };
+
 
     const [columnDefs] = useState<ColDef[]>([
         { field: "name", cellRenderer: nameWithReferenceCase },
