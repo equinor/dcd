@@ -86,8 +86,6 @@ type Props = {
 const EditTechnicalInputModal = ({
     toggleEditTechnicalInputModal, isOpen, setProject, project, setWells, caseId, setExploration, setWellProject,
 }: Props) => {
-    const [justOpened, setJustOpened] = useState(true)
-
     const [activeTab, setActiveTab] = useState<number>(0)
 
     const [originalProject, setOriginalProject] = useState<Project>(project)
@@ -107,16 +105,16 @@ const EditTechnicalInputModal = ({
     const [isSaving, setIsSaving] = useState<boolean>()
 
     useEffect(() => {
-        if (isOpen && !justOpened) {
-            // Set the original state only when the modal is opened
-            setOriginalProject({ ...project })
-            setOriginalExplorationOperationalWellCosts({ ...explorationOperationalWellCosts })
-            setOriginalDevelopmentOperationalWellCosts({ ...developmentOperationalWellCosts })
-            setOriginalWellProjectWells([...wellProjectWells])
-            setOriginalExplorationWells([...explorationWells])
-            setJustOpened(false)
+        if (project.wells) {
+            setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
+            setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
+
+            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !IsExplorationWell(w)))
+            setOriginalWellProjectWells(originalWellProjectWellsResult)
+            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => IsExplorationWell(w)))
+            setOriginalExplorationWells(originalExplorationWellsResult)
         }
-    }, [isOpen, project, explorationOperationalWellCosts, developmentOperationalWellCosts, wellProjectWells, explorationWells, justOpened])
+    }, [project])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -133,18 +131,6 @@ const EditTechnicalInputModal = ({
             window.removeEventListener("keydown", handleKeyDown)
         }
     }, [isOpen, toggleEditTechnicalInputModal])
-
-    useEffect(() => {
-        if (project.wells) {
-            setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
-            setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
-
-            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !IsExplorationWell(w)))
-            setOriginalWellProjectWells(originalWellProjectWellsResult)
-            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => IsExplorationWell(w)))
-            setOriginalExplorationWells(originalExplorationWellsResult)
-        }
-    }, [project])
 
     if (!isOpen) return null
 
@@ -169,6 +155,7 @@ const EditTechnicalInputModal = ({
         try {
             const dto: Components.Schemas.TechnicalInputDto = {}
             setIsSaving(true)
+
             dto.projectDto = Project.Copy(project)
             if (!(JSON.stringify(project) === JSON.stringify(originalProject))) {
                 dto.projectDto.hasChanges = true
@@ -214,41 +201,45 @@ const EditTechnicalInputModal = ({
                 setWellProject(WellProject.fromJSON(result.wellProjectDto))
             }
 
-            const explorationOperationalWellCostsResult = result.explorationOperationalWellCostsDto
-            setExplorationOperationalWellCosts(explorationOperationalWellCosts)
+            
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
-
-            const developmentOperationalWellCostsResult = result.developmentOperationalWellCostsDto
-            setDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
             setOriginalDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
+            setOriginalWellProjectWells([...wellProjectWells])
+            setOriginalExplorationWells([...explorationWells])
 
-            if (result.wellDtos) {
-                setExplorationWellProjectWellsFromWells(result.wellDtos)
-            }
-
-            setIsSaving(false)
-            toggleEditTechnicalInputModal()
+            // Reset the changes made flag as changes have been successfully saved
+            setIsSaving(false) // End saving process
         } catch (error) {
             console.error("Error when saving technical input: ", error)
+            setIsSaving(false)
         } finally {
             setIsSaving(false)
+        }
+    }
+
+    const handleSaveAndClose = async () => {
+        try {
+            await handleSave()
             toggleEditTechnicalInputModal()
+        }
+        catch (e) {
+            console.error("Error during save operation: ", e)
         }
     }
 
     const handleCancel = () => {
-        // Assuming `captureInitialState` function properly captures and sets original states
-        setProject({ ...originalProject })
-        setExplorationOperationalWellCosts({ ...originalExplorationOperationalWellCosts })
-        setDevelopmentOperationalWellCosts({ ...originalDevelopmentOperationalWellCosts })
-        // For arrays, spread into a new array
-        setWellProjectWells([...originalWellProjectWells])
-        setExplorationWells([...originalExplorationWells])
+            // Revert the operational costs to their original state
+            setExplorationOperationalWellCosts(originalExplorationOperationalWellCosts)
+            setDevelopmentOperationalWellCosts(originalDevelopmentOperationalWellCosts)
 
-        // Close the modal
+            // Revert the wells to their original state
+            setWellProjectWells([...originalWellProjectWells])
+            setExplorationWells([...originalExplorationWells])
+        
+        // Close the modal in all cases
         toggleEditTechnicalInputModal()
-    }
-
+    };
+    
     return (
         <>
             <div style={{
@@ -311,12 +302,16 @@ const EditTechnicalInputModal = ({
                         >
                             Cancel
                         </CancelButton>
-                        {!isSaving ? <Button onClick={handleSave}>Save and close</Button>
-                            : (
-                                <Button>
-                                    <Progress.Dots />
-                                </Button>
-                            )}
+                        {!isSaving ? (
+                            <>
+                                <Button style={{ marginRight: "8px" }} onClick={handleSave}>Save</Button>
+                                <Button onClick={handleSaveAndClose}>Save and Close</Button>
+                            </>
+                        ) : (
+                            <Button>
+                                <Progress.Dots />
+                            </Button>
+                        )}
                     </ButtonsWrapper>
                 </Wrapper>
             </ModalDiv>
