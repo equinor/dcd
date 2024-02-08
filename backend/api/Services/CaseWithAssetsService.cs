@@ -7,6 +7,8 @@ using api.Dtos;
 using api.Models;
 using api.Services.GenerateCostProfiles;
 
+using AutoMapper;
+
 namespace api.Services;
 
 public class CaseWithAssetsService : ICaseWithAssetsService
@@ -33,17 +35,33 @@ public class CaseWithAssetsService : ICaseWithAssetsService
     private readonly IGenerateImportedElectricityProfile _generateImportedElectricityProfile;
     private readonly IGenerateFuelFlaringLossesProfile _generateFuelFlaringLossesProfile;
     private readonly IGenerateNetSaleGasProfile _generateNetSaleGasProfile;
+    private readonly IMapper _mapper;
 
-    public CaseWithAssetsService(DcdDbContext context, IProjectService projectService, ICaseService caseService,
-    IDrainageStrategyService drainageStrategyService, IWellProjectService wellProjectService, IExplorationService explorationService,
-    ISurfService surfService, ISubstructureService substructureService, ITransportService transportService, ITopsideService topsideService,
-    IExplorationWellService explorationWellService, IWellProjectWellService wellProjectWellService,
-    ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
-    ILoggerFactory loggerFactory,
-    IGenerateStudyCostProfile generateStudyCostProfile, IGenerateOpexCostProfile generateOpexCostProfile,
-    IGenerateCessationCostProfile generateCessationCostProfile, IGenerateCo2EmissionsProfile generateCo2EmissionsProfile,
-    IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile, IGenerateImportedElectricityProfile generateImportedElectricityProfile,
-    IGenerateFuelFlaringLossesProfile generateFuelFlaringLossesProfile, IGenerateNetSaleGasProfile generateNetSaleGasProfile)
+    public CaseWithAssetsService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService,
+        IWellProjectService wellProjectService,
+        IExplorationService explorationService,
+        ISurfService surfService,
+        ISubstructureService substructureService,
+        ITransportService transportService,
+        ITopsideService topsideService,
+        IExplorationWellService explorationWellService,
+        IWellProjectWellService wellProjectWellService,
+        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
+        ILoggerFactory loggerFactory,
+        IGenerateStudyCostProfile generateStudyCostProfile,
+        IGenerateOpexCostProfile generateOpexCostProfile,
+        IGenerateCessationCostProfile generateCessationCostProfile,
+        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile,
+        IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile,
+        IGenerateImportedElectricityProfile generateImportedElectricityProfile,
+        IGenerateFuelFlaringLossesProfile generateFuelFlaringLossesProfile,
+        IGenerateNetSaleGasProfile generateNetSaleGasProfile,
+        IMapper mapper
+    )
     {
         _context = context;
 
@@ -64,6 +82,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
 
         _logger = loggerFactory.CreateLogger<CaseWithAssetsService>();
+        _mapper = mapper;
 
         _generateStudyCostProfile = generateStudyCostProfile;
         _generateOpexCostProfile = generateOpexCostProfile;
@@ -87,7 +106,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         public bool NetSalesGas { get; set; }
     }
 
-    public async Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssetsAsync(CaseWithAssetsWrapperDto wrapper)
+    public async Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssetsAsync(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper)
     {
         var project = await _projectService.GetProjectWithoutAssets(wrapper.CaseDto.ProjectId);
 
@@ -95,13 +114,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         var updatedCaseDto = await UpdateCase(wrapper.CaseDto, profilesToGenerate);
 
-        await UpdateDrainageStrategy(wrapper.DrainageStrategyDto, project.PhysicalUnit, profilesToGenerate);
-        await UpdateWellProject(wrapper.WellProjectDto, profilesToGenerate);
-        await UpdateExploration(wrapper.ExplorationDto, profilesToGenerate);
-        await UpdateSurf(wrapper.SurfDto, profilesToGenerate);
-        await UpdateSubstructure(wrapper.SubstructureDto, profilesToGenerate);
-        await UpdateTransport(wrapper.TransportDto, profilesToGenerate);
-        await UpdateTopside(wrapper.TopsideDto, profilesToGenerate);
+        await UpdateDrainageStrategy(updatedCaseDto.DrainageStrategyLink, wrapper.DrainageStrategyDto, project.PhysicalUnit, profilesToGenerate);
+        await UpdateWellProject(updatedCaseDto.WellProjectLink, wrapper.WellProjectDto, profilesToGenerate);
+        await UpdateExploration(updatedCaseDto.ExplorationLink, wrapper.ExplorationDto, profilesToGenerate);
+        await UpdateSurf(updatedCaseDto.SurfLink, wrapper.SurfDto, profilesToGenerate);
+        await UpdateSubstructure(updatedCaseDto.SubstructureLink, wrapper.SubstructureDto, profilesToGenerate);
+        await UpdateTransport(updatedCaseDto.TransportLink, wrapper.TransportDto, profilesToGenerate);
+        await UpdateTopside(updatedCaseDto.TopsideLink, wrapper.TopsideDto, profilesToGenerate);
 
         if (wrapper.ExplorationWellDto?.Length > 0)
         {
@@ -333,114 +352,87 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return CaseDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public async Task<DrainageStrategyDto> UpdateDrainageStrategy(DrainageStrategyDto updatedDto, PhysUnit unit, ProfilesToGenerate profilesToGenerate)
+    public async Task<DrainageStrategyDto> UpdateDrainageStrategy(
+        Guid drainageStrategyId,
+        UpdateDrainageStrategyDto updatedDto,
+        PhysUnit unit,
+        ProfilesToGenerate profilesToGenerate
+        )
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-
         profilesToGenerate.OpexCost = true;
         profilesToGenerate.CessationCost = true;
         profilesToGenerate.Co2Emissions = true;
         profilesToGenerate.FuelFlaringAndLosses = true;
         profilesToGenerate.ImportedElectricity = true;
 
-        var item = await _drainageStrategyService.GetDrainageStrategy(updatedDto.Id);
+        var item = await _drainageStrategyService.GetDrainageStrategy(drainageStrategyId);
+
+        
+
         DrainageStrategyAdapter.ConvertExisting(item, updatedDto, unit, false);
         var updatedItem = _context.DrainageStrategies!.Update(item);
         return DrainageStrategyDtoAdapter.Convert(updatedItem.Entity, unit);
     }
 
-    public async Task<WellProjectDto> UpdateWellProject(WellProjectDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<WellProjectDto> UpdateWellProject(Guid wellProjectLink, UpdateWellProjectDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-
         profilesToGenerate.StudyCost = true;
 
-        var item = await _wellProjectService.GetWellProject(updatedDto.Id);
+        var item = await _wellProjectService.GetWellProject(wellProjectLink);
         WellProjectAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.WellProjects!.Update(item);
         return WellProjectDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public async Task<ExplorationDto> UpdateExploration(ExplorationDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<ExplorationDto> UpdateExploration(Guid explorationLink, UpdateExplorationDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-
         profilesToGenerate.GAndGAdminCost = true;
 
-        var item = await _explorationService.GetExploration(updatedDto.Id);
+        var item = await _explorationService.GetExploration(explorationLink);
         ExplorationAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Explorations!.Update(item);
         return ExplorationDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public async Task<SurfDto> UpdateSurf(SurfDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SurfDto> UpdateSurf(Guid surfLink, UpdateSurfDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.CessationCost = true;
 
-        var item = await _surfService.GetSurf(updatedDto.Id);
+        var item = await _surfService.GetSurf(surfLink);
         SurfAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Surfs!.Update(item);
         return SurfDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public async Task<SubstructureDto> UpdateSubstructure(SubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SubstructureDto> UpdateSubstructure(Guid substructureLink, UpdateSubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-
         profilesToGenerate.StudyCost = true;
 
-        var item = await _substructureService.GetSubstructure(updatedDto.Id);
+        var item = await _substructureService.GetSubstructure(substructureLink);
         SubstructureAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Substructures!.Update(item);
         return SubstructureDtoAdapter.Convert(updatedItem.Entity);
     }
 
-    public async Task<TransportDto> UpdateTransport(TransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TransportDto> UpdateTransport(Guid transportLink, UpdateTransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-
         profilesToGenerate.StudyCost = true;
 
-        var item = await _transportService.GetTransport(updatedDto.Id);
+        var item = await _transportService.GetTransport(transportLink);
         TransportAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Transports!.Update(item);
         return TransportDtoAdapter.Convert(updatedItem.Entity);
     }
-    public async Task<TopsideDto> UpdateTopside(TopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TopsideDto> UpdateTopside(Guid topsideLink, UpdateTopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.OpexCost = true;
         profilesToGenerate.Co2Emissions = true;
         profilesToGenerate.FuelFlaringAndLosses = true;
         profilesToGenerate.ImportedElectricity = true;
 
-        var item = await _topsideService.GetTopside(updatedDto.Id);
+        var item = await _topsideService.GetTopside(topsideLink);
         TopsideAdapter.ConvertExisting(item, updatedDto);
         var updatedItem = _context.Topsides!.Update(item);
         return TopsideDtoAdapter.Convert(updatedItem.Entity);

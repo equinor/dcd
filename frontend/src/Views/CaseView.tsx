@@ -178,8 +178,8 @@ const CaseView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const caseMapped = await (await GetCaseService()).getCase(unwrapProjectId(currentProject?.externalId), caseId!)
-                console.log("CaseView -> caseMapped", caseMapped)
+                // const caseMapped = await (await GetCaseService()).getCase(unwrapProjectId(currentProject?.externalId), caseId!)
+                // console.log("CaseView -> caseMapped", caseMapped)
                 setUpdateFromServer(true)
                 setIsLoading(true)
                 const projectId = unwrapProjectId(currentProject?.externalId)
