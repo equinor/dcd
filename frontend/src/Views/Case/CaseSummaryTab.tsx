@@ -3,21 +3,15 @@ import {
 } from "react"
 import styled from "styled-components"
 
-import { Button, Progress, Typography } from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
-import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import CaseTabTable from "./CaseTabTable"
-import { GetCaseService } from "../../Services/CaseService"
 import { ITimeSeries } from "../../models/ITimeSeries"
-import { StudyCostProfile } from "../../models/case/StudyCostProfile"
 import { OpexCostProfile } from "../../models/case/OpexCostProfile"
 import { CessationCostProfile } from "../../models/case/CessationCostProfile"
-import { Exploration } from "../../models/assets/exploration/Exploration"
 import { Surf } from "../../models/assets/surf/Surf"
-import { GetSurfService } from "../../Services/SurfService"
-import { WellProject } from "../../models/assets/wellproject/WellProject"
 import { Substructure } from "../../models/assets/substructure/Substructure"
 import { Topside } from "../../models/assets/topside/Topside"
 import { Transport } from "../../models/assets/transport/Transport"
@@ -25,7 +19,7 @@ import { TopsideCostProfile } from "../../models/assets/topside/TopsideCostProfi
 import { SurfCostProfile } from "../../models/assets/surf/SurfCostProfile"
 import { SubstructureCostProfile } from "../../models/assets/substructure/SubstructureCostProfile"
 import { TransportCostProfile } from "../../models/assets/transport/TransportCostProfile"
-import { GetGenerateProfileService } from "../../Services/GenerateProfileService"
+import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import { MergeTimeseries } from "../../Utils/common"
 import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
 import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasibilityAndConceptStudies"
@@ -57,35 +51,22 @@ const TableWrapper = styled.div`
 
 interface Props {
     project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     topside: Topside,
-    setTopside: Dispatch<SetStateAction<Topside | undefined>>,
     surf: Surf,
-    setSurf: Dispatch<SetStateAction<Surf | undefined>>,
     substructure: Substructure,
-    setSubstrucutre: Dispatch<SetStateAction<Substructure | undefined>>,
     transport: Transport,
-    setTransport: Dispatch<SetStateAction<Transport | undefined>>,
-    exploration: Exploration,
-    setExploration: Dispatch<SetStateAction<Exploration | undefined>>,
-    wellProject: WellProject,
-    setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
-    drainageStrategy: DrainageStrategy
     activeTab: number
 }
 
 function CaseSummaryTab({
-    project, setProject,
+    project,
     caseItem, setCase,
-    exploration, setExploration,
-    wellProject, setWellProject,
-    topside, setTopside,
-    surf, setSurf,
-    substructure, setSubstrucutre,
-    transport, setTransport,
-    drainageStrategy,
+    topside,
+    surf,
+    substructure,
+    transport,
     activeTab,
 }: Props) {
     // OPEX
@@ -99,8 +80,8 @@ function CaseSummaryTab({
     const [substructureCost, setSubstructureCost] = useState<SubstructureCostProfile>()
     const [transportCost, setTransportCost] = useState<TransportCostProfile>()
 
-    const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2030)
+    const [, setStartYear] = useState<number>(2020)
+    const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
@@ -132,10 +113,9 @@ function CaseSummaryTab({
         (async () => {
             try {
                 if (activeTab === 7) {
-                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(caseItem.id)
-                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(caseItem.id)
-                    const cessationWrapper = (await GetGenerateProfileService())
-                        .generateCessationCost(caseItem.id)
+                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
+                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
+                    const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
 
                     const opex = OpexCostProfile.fromJSON((await opexWrapper).opexCostProfileDto)
                     const cessation = CessationCostProfile.fromJSON((await cessationWrapper).cessationCostDto)
@@ -280,10 +260,6 @@ function CaseSummaryTab({
             </ColumnWrapper>
             <TableWrapper>
                 <CaseTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
                     timeSeriesData={opexTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}
@@ -293,10 +269,6 @@ function CaseSummaryTab({
             </TableWrapper>
             <TableWrapper>
                 <CaseTabTable
-                    caseItem={caseItem}
-                    project={project}
-                    setCase={setCase}
-                    setProject={setProject}
                     timeSeriesData={capexTimeSeriesData}
                     dg4Year={caseItem.DG4Date.getFullYear()}
                     tableYears={tableYears}

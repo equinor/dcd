@@ -41,7 +41,7 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
         netSaleGas.StartYear = calculateNetSaleGas.StartYear;
         netSaleGas.Values = calculateNetSaleGas.Values;
 
-        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, netSaleGas);
+        await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, netSaleGas);
 
         var dto = DrainageStrategyDtoAdapter.Convert<NetSalesGasDto, NetSalesGas>(netSaleGas, project.PhysicalUnit);
         return dto ?? new NetSalesGasDto();

@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable camelcase */
 import {
     Button, Icon, Menu, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
@@ -296,8 +294,8 @@ const CaseView = () => {
 
     const duplicateCase = async () => {
         try {
-            if (caseItem?.id) {
-                const newProject = await (await GetCaseService()).duplicateCase(caseItem?.id, {})
+            if (caseItem?.id && project?.id) {
+                const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id, {})
                 setProject(newProject)
                 history.push(ProjectPath(fusionContextId!))
             }
@@ -309,7 +307,7 @@ const CaseView = () => {
     const deleteCase = async () => {
         try {
             if (caseItem?.id && project?.id) {
-                const newProject = await (await GetCaseService()).deleteCase(caseItem?.id)
+                const newProject = await (await GetCaseService()).deleteCase(project.id, caseItem?.id)
                 setProject(newProject)
                 history.push(ProjectPath(fusionContextId!))
             }
@@ -339,7 +337,7 @@ const CaseView = () => {
             } else {
                 projectDto.referenceCaseId = caseItem.id
             }
-            const newProject = await (await GetProjectService()).setReferenceCase(projectDto)
+            const newProject = await (await GetProjectService()).updateProject(projectDto)
             setProject(newProject)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -592,7 +590,6 @@ const CaseView = () => {
                             <StyledTabPanel>
                                 <CaseProductionProfilesTab
                                     project={project}
-                                    setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
                                     drainageStrategy={drainageStrategy}
@@ -653,7 +650,6 @@ const CaseView = () => {
                             <StyledTabPanel>
                                 <CaseCostTab
                                     project={project}
-                                    setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
                                     exploration={exploration}
@@ -668,7 +664,6 @@ const CaseView = () => {
                                     setSubstructure={setSubstructure}
                                     transport={transport}
                                     setTransport={setTransport}
-                                    drainageStrategy={drainageStrategy}
                                     activeTab={activeTab}
                                     totalFeasibilityAndConceptStudies={totalFeasibilityAndConceptStudies}
                                     setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
@@ -689,9 +684,7 @@ const CaseView = () => {
                             <StyledTabPanel>
                                 <CaseCO2Tab
                                     project={project}
-                                    setProject={setProject}
                                     caseItem={caseItem}
-                                    setCase={setCase}
                                     activeTab={activeTab}
                                     topside={topside}
                                     setTopside={setTopside}
@@ -704,22 +697,12 @@ const CaseView = () => {
                             <StyledTabPanel>
                                 <CaseSummaryTab
                                     project={project}
-                                    setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
-                                    exploration={exploration}
-                                    setExploration={setExploration}
-                                    wellProject={wellProject}
-                                    setWellProject={setWellProject}
                                     topside={topside}
-                                    setTopside={setTopside}
                                     surf={surf}
-                                    setSurf={setSurf}
                                     substructure={substructure}
-                                    setSubstrucutre={setSubstructure}
                                     transport={transport}
-                                    setTransport={setTransport}
-                                    drainageStrategy={drainageStrategy}
                                     activeTab={activeTab}
                                 />
                             </StyledTabPanel>

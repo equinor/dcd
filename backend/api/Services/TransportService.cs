@@ -81,15 +81,6 @@ public class TransportService : ITransportService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ProjectDto> DeleteTransport(Guid transportId)
-    {
-        var transport = await GetTransport(transportId);
-        _context.Transports!.Remove(transport);
-        DeleteCaseLinks(transportId);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(transport.ProjectId);
-    }
-
     public async Task<Transport> GetTransport(Guid transportId)
     {
         var transport = await _context.Transports!
@@ -104,17 +95,6 @@ public class TransportService : ITransportService
         return transport;
     }
 
-    private void DeleteCaseLinks(Guid transportId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.TransportLink == transportId)
-            {
-                c.TransportLink = Guid.Empty;
-            }
-        }
-    }
-
     public async Task<ProjectDto> UpdateTransport(TransportDto updatedTransportDto)
     {
         var existing = await GetTransport(updatedTransportDto.Id);
@@ -125,17 +105,5 @@ public class TransportService : ITransportService
         _context.Transports!.Update(existing);
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(updatedTransportDto.ProjectId);
-    }
-
-    public async Task<TransportDto> NewUpdateTransport(TransportDto updatedTransportDto)
-    {
-        var existing = await GetTransport(updatedTransportDto.Id);
-
-        TransportAdapter.ConvertExisting(existing, updatedTransportDto);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        var updatedTransport = _context.Transports!.Update(existing);
-        await _context.SaveChangesAsync();
-        return TransportDtoAdapter.Convert(updatedTransport.Entity);
     }
 }

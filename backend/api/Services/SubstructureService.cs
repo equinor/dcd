@@ -79,26 +79,6 @@ public class SubstructureService : ISubstructureService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ProjectDto> DeleteSubstructure(Guid substructureId)
-    {
-        var substructure = await GetSubstructure(substructureId);
-        _context.Substructures!.Remove(substructure);
-        DeleteCaseLinks(substructureId);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(substructure.ProjectId);
-    }
-
-    private void DeleteCaseLinks(Guid substructureId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.SubstructureLink == substructureId)
-            {
-                c.SubstructureLink = Guid.Empty;
-            }
-        }
-    }
-
     public async Task<ProjectDto> UpdateSubstructure(SubstructureDto updatedSubstructureDto)
     {
         var existing = await GetSubstructure(updatedSubstructureDto.Id);
@@ -109,18 +89,6 @@ public class SubstructureService : ISubstructureService
         _context.Substructures!.Update(existing);
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(existing.ProjectId);
-    }
-
-    public async Task<SubstructureDto> NewUpdateSubstructure(SubstructureDto updatedSubstructureDto)
-    {
-        var existing = await GetSubstructure(updatedSubstructureDto.Id);
-
-        SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        var updatedSubstructure = _context.Substructures!.Update(existing);
-        await _context.SaveChangesAsync();
-        return SubstructureDtoAdapter.Convert(updatedSubstructure.Entity);
     }
 
     public async Task<Substructure> GetSubstructure(Guid substructureId)

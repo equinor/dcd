@@ -174,20 +174,25 @@ const EditCaseModal = ({
                 newCase.waterInjectorCount = waterInjectorCount
                 newCase.productionStrategyOverview = productionStrategy ?? 0
                 projectResult = await (await GetCaseService()).updateCase(
+                    project.id,
+                    caseItem.id,
                     newCase,
                 )
                 setIsLoading(false)
             } else {
-                projectResult = await (await GetCaseService()).create({
-                    projectId: project.projectId,
-                    name: caseName,
-                    description,
-                    dG4Date: dG4Date.toJSON(),
-                    producerCount,
-                    gasInjectorCount,
-                    waterInjectorCount,
-                    productionStrategyOverview: productionStrategy,
-                })
+                projectResult = await (await GetCaseService()).create(
+                    project.id,
+                    {
+                        id: project.id,
+                        name: caseName,
+                        description,
+                        dG4Date: dG4Date.toJSON(),
+                        producerCount,
+                        gasInjectorCount,
+                        waterInjectorCount,
+                        productionStrategyOverview: productionStrategy,
+                    },
+                )
                 setIsLoading(false)
                 history.push(`/${fusionContextId}/case/${projectResult.cases.find((o) => (
                     o.name === caseName
@@ -248,7 +253,7 @@ const EditCaseModal = ({
                         onChange={handleProductionStrategyChange}
                         value={productionStrategy}
                     >
-                        <option key={undefined} value={undefined}> </option>
+                        <option key={undefined} value={undefined} aria-label="None"> </option>
                         <option key={0} value={0}>Depletion</option>
                         <option key={1} value={1}>Water injection</option>
                         <option key={2} value={2}>Gas injection</option>

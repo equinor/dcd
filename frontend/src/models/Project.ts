@@ -20,7 +20,6 @@ export class Project implements Components.Schemas.ProjectDto {
     drainageStrategies: DrainageStrategy[]
     explorations: Exploration[]
     id: string
-    projectId: string
     name: string
     phase?: Components.Schemas.ProjectPhase
     substructures: Substructure[]
@@ -53,8 +52,7 @@ export class Project implements Components.Schemas.ProjectDto {
         this.description = data.description ?? null
         this.drainageStrategies = data.drainageStrategies?.map(DrainageStrategy.fromJSON) ?? []
         this.explorations = data.explorations?.map(Exploration.fromJSON) ?? []
-        this.id = data.projectId ?? ""
-        this.projectId = data.projectId ?? ""
+        this.id = data.id ?? ""
         this.commonLibraryId = data.commonLibraryId ?? ""
         this.commonLibraryName = data.commonLibraryName ?? ""
         this.referenceCaseId = data.referenceCaseId ?? ""
@@ -90,7 +88,6 @@ export class Project implements Components.Schemas.ProjectDto {
             ...projectCopy,
             projectCategory: data.category,
             projectPhase: data.phase,
-            projectId: data.id,
         }
     }
 

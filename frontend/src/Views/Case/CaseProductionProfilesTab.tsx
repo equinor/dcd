@@ -9,7 +9,7 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Progress, Typography,
+    Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import { Project } from "../../models/Project"
 import { Case } from "../../models/case/Case"
@@ -78,7 +78,6 @@ const InputWrapper = styled.div`
 
 interface Props {
     project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
     caseItem: Case,
     setCase: Dispatch<SetStateAction<Case | undefined>>,
     drainageStrategy: DrainageStrategy,
@@ -96,7 +95,7 @@ interface Props {
 }
 
 function CaseProductionProfilesTab({
-    project, setProject,
+    project,
     caseItem, setCase,
     drainageStrategy, setDrainageStrategy,
     activeTab,
@@ -497,10 +496,6 @@ function CaseProductionProfilesTab({
                     />
                 )}
             <CaseTabTable
-                caseItem={caseItem}
-                project={project}
-                setCase={setCase}
-                setProject={setProject}
                 timeSeriesData={timeSeriesData}
                 dg4Year={caseItem.DG4Date.getFullYear()}
                 tableYears={tableYears}

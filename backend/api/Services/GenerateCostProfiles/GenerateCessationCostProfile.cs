@@ -41,7 +41,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         var lastYear = await GetRelativeLastYearOfProduction(caseItem);
         if (lastYear == null)
         {
-            var updateResult = await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
+            await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
             return new CessationCostWrapperDto();
         }
 
@@ -71,7 +71,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
             _logger.LogInformation("Surf {0} not found.", caseItem.SurfLink);
         }
 
-        var saveResult = await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
+        await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
 
         var cessationTimeSeries = TimeSeriesCost.MergeCostProfiles(cessationWellsCost, cessationOffshoreFacilitiesCost);
         var cessation = new CessationCost

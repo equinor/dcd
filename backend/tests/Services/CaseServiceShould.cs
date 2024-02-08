@@ -25,10 +25,9 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
     {
         var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var actual = CreateCase(project);
-        var projectService = _caseServiceFixture.ProjectService;
         var caseService = _caseServiceFixture.CaseService;
 
-        caseService.CreateCase(CaseDtoAdapter.Convert(actual));
+        caseService.CreateCase(project.Id, CaseDtoAdapter.Convert(actual));
 
         var cases = _caseServiceFixture.DbContext.Projects.FirstOrDefault(o =>
                 o.Name == project.Name).Cases;
@@ -60,7 +59,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
         var dbContext = _caseServiceFixture.DbContext;
 
         // Act
-        caseService.NewCreateCase(dto);
+        caseService.CreateCase(projectId, dto);
 
         var createdCase = dbContext.Cases.FirstOrDefault(c => c.Name == "NewCreateCase_CreateCaseFromMinimalDto_CaseCreated");
 
@@ -117,7 +116,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
         var dbContext = _caseServiceFixture.DbContext;
 
         // Act
-        caseService.NewCreateCase(dto);
+        caseService.CreateCase(projectId, dto);
 
         var createdCase = dbContext.Cases.FirstOrDefault(c => c.Name == "NewCreateCase_CreateCaseFromDto_CaseCreated");
 
@@ -175,7 +174,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
         var updatedCase = CreateUpdatedCase(project, oldCase);
 
         // Act
-        var projectResult = await caseService.UpdateCase(CaseDtoAdapter.Convert(updatedCase));
+        var projectResult = await caseService.UpdateCase(oldCase.Id, CaseDtoAdapter.Convert(updatedCase));
 
         // Assert
         var actualCase = projectResult.Cases.FirstOrDefault(o => o.Name == updatedCase.Name);
@@ -191,7 +190,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
         var project = _caseServiceFixture.DbContext.Projects.FirstOrDefault();
         var caseItem = CreateCase(project);
         caseItem.Name = "case to be deleted";
-        caseService.CreateCase(CaseDtoAdapter.Convert(caseItem));
+        caseService.CreateCase(project.Id, CaseDtoAdapter.Convert(caseItem));
 
         var cases = _caseServiceFixture.DbContext.Projects.FirstOrDefault(o =>
         o.Name == project.Name).Cases;

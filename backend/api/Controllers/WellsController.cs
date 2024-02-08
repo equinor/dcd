@@ -12,7 +12,7 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects/{projectId}/wells")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
         ApplicationRole.Admin,
@@ -28,46 +28,6 @@ public class WellsController : ControllerBase
     public WellsController(IWellService wellService)
     {
         _wellService = wellService;
-    }
-
-    [HttpGet("{wellId}", Name = "GetWell")]
-    public async Task<WellDto> GetWell(Guid wellId)
-    {
-        return await _wellService.GetWellDto(wellId);
-    }
-
-    [HttpGet(Name = "GetWells")]
-    public async Task<IEnumerable<WellDto>> GetWells([FromQuery] Guid projectId)
-    {
-        if (projectId != Guid.Empty)
-        {
-            return await _wellService.GetDtosForProject(projectId);
-        }
-        return await _wellService.GetAllDtos();
-    }
-
-    [HttpPost(Name = "CreateWell")]
-    public async Task<ProjectDto> CreateWell([FromBody] WellDto wellDto)
-    {
-        return await _wellService.CreateWell(wellDto);
-    }
-
-    [HttpPut(Name = "UpdateWell")]
-    public async Task<ProjectDto> UpdateWell([FromBody] WellDto wellDto)
-    {
-        return await _wellService.UpdateWell(wellDto);
-    }
-
-    [HttpPut("multiple", Name = "UpdateMultipleWells")]
-    public async Task<WellDto[]>? UpdateMultipleWells([FromBody] WellDto[] wellDtos)
-    {
-        return await _wellService.UpdateMultiple(wellDtos);
-    }
-
-    [HttpPost("multiple", Name = "CreateMultipleWells")]
-    public async Task<WellDto[]>? CreateMultipleWells([FromBody] WellDto[] wellDtos)
-    {
-        return await _wellService.CreateMultipleWells(wellDtos);
     }
 
     [HttpDelete("{wellId}", Name = "DeleteWell")]

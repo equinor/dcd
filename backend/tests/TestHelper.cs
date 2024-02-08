@@ -373,23 +373,7 @@ public static class TestHelper
             Assert.Null(expected);
             Assert.Null(actual);
         }
-        // else
-        // {
-        //     Assert.Equal(expected.Name, actual.Name);
-        //     Assert.Equal(expected.WellType, actual.WellType);
-
-        //     TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
-        //     TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
-        //     TestHelper.CompareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
-
-        //     Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-        // }
     }
-
-    // public static void CompareExplorations(ExplorationDto expected, Exploration actual)
-    // {
-    //     CompareExplorations(actual, expected);
-    // }
 
     public static void CompareExplorations(ExplorationDto expected, ExplorationDto actual)
     {

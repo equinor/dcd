@@ -38,7 +38,7 @@ public class WellProjectWellService : IWellProjectWellService
         throw new NotFoundInDBException();
     }
 
-    public async Task<WellProjectWellDto[]>? CreateMultipleWellProjectWells(WellProjectWellDto[] wellProjectWellDtos)
+    public async Task<WellProjectWellDto[]?> CreateMultipleWellProjectWells(WellProjectWellDto[] wellProjectWellDtos)
     {
         var wellProjectId = wellProjectWellDtos.FirstOrDefault()?.WellProjectId;
         ProjectDto? projectDto = null;
@@ -46,45 +46,6 @@ public class WellProjectWellService : IWellProjectWellService
         {
             projectDto = await CreateWellProjectWell(wellProjectWellDto);
         }
-        if (projectDto != null && wellProjectId != null)
-        {
-            return projectDto.WellProjects?.FirstOrDefault(e => e.Id == wellProjectId)?.WellProjectWells?.ToArray();
-        }
-        return null;
-    }
-
-    public async Task<ProjectDto> UpdateWellProjectWell(WellProjectWellDto updatedWellProjectWellDto)
-    {
-        var existing = await GetWellProjectWell(updatedWellProjectWellDto.WellId, updatedWellProjectWellDto.WellProjectId);
-        WellProjectWellAdapter.ConvertExisting(existing, updatedWellProjectWellDto);
-        if (updatedWellProjectWellDto.DrillingSchedule == null && existing.DrillingSchedule != null)
-        {
-            _context.DrillingSchedule!.Remove(existing.DrillingSchedule);
-        }
-
-        _context.WellProjectWell!.Update(existing);
-        await _context.SaveChangesAsync();
-        var projectId = (await _context.WellProjects!.FirstOrDefaultAsync(c => c.Id == updatedWellProjectWellDto.WellProjectId))?.ProjectId;
-        if (projectId != null)
-        {
-            return await _projectService.GetProjectDto((Guid)projectId);
-        }
-        throw new NotFoundInDBException();
-    }
-
-    public async Task<WellProjectWellDto[]>? UpdateMultipleWellProjectWells(WellProjectWellDto[] updatedWellProjectWellDtos, Guid caseId)
-    {
-        var wellProjectId = updatedWellProjectWellDtos.FirstOrDefault()?.WellProjectId;
-        ProjectDto? projectDto = null;
-        foreach (var wellProjectWellDto in updatedWellProjectWellDtos)
-        {
-            projectDto = await UpdateWellProjectWell(wellProjectWellDto);
-        }
-
-        var wellProjectDto = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
-
-        await _wellProjectService.NewUpdateWellProject(wellProjectDto);
-
         if (projectDto != null && wellProjectId != null)
         {
             return projectDto.WellProjects?.FirstOrDefault(e => e.Id == wellProjectId)?.WellProjectWells?.ToArray();
@@ -126,14 +87,6 @@ public class WellProjectWellService : IWellProjectWellService
         return null;
     }
 
-    public async Task<WellProjectWellDto> GetWellProjectWellDto(Guid wellId, Guid caseId)
-    {
-        var wellProjectWell = await GetWellProjectWell(wellId, caseId);
-        var wellProjectWellDto = WellProjectWellDtoAdapter.Convert(wellProjectWell);
-
-        return wellProjectWellDto;
-    }
-
     public async Task<IEnumerable<WellProjectWell>> GetAll()
     {
         if (_context.WellProjectWell != null)
@@ -144,26 +97,6 @@ public class WellProjectWellService : IWellProjectWellService
         {
             _logger.LogInformation("No WellProjectWells existing");
             return new List<WellProjectWell>();
-        }
-    }
-
-    public async Task<IEnumerable<WellProjectWellDto>> GetAllDtos()
-    {
-        var wellProjectWells = await GetAll();
-        if (wellProjectWells.Any())
-        {
-            var wellProjectWellDtos = new List<WellProjectWellDto>();
-            foreach (WellProjectWell wellProjectWell in wellProjectWells)
-            {
-                var wellProjectWellDto = WellProjectWellDtoAdapter.Convert(wellProjectWell);
-                wellProjectWellDtos.Add(wellProjectWellDto);
-            }
-
-            return wellProjectWellDtos;
-        }
-        else
-        {
-            return new List<WellProjectWellDto>();
         }
     }
 }

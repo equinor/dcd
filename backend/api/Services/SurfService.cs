@@ -54,17 +54,6 @@ public class SurfService : ISurfService
         return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
-    public async Task<SurfDto> NewUpdateSurf(SurfDto updatedSurfDto)
-    {
-        var existing = await GetSurf(updatedSurfDto.Id);
-        SurfAdapter.ConvertExisting(existing, updatedSurfDto);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        var updatedSurf = _context.Surfs!.Update(existing);
-        await _context.SaveChangesAsync();
-        return SurfDtoAdapter.Convert(updatedSurf.Entity);
-    }
-
     public async Task<Surf> GetSurf(Guid surfId)
     {
         var surf = await _context.Surfs!
@@ -112,26 +101,6 @@ public class SurfService : ISurfService
             throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
         }
         case_.SurfLink = surf.Id;
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<ProjectDto> DeleteSurf(Guid surfId)
-    {
-        var surf = await GetSurf(surfId);
-        _context.Surfs!.Remove(surf);
-        await DeleteCaseLinks(surfId);
-        return await _projectService.GetProjectDto(surf.ProjectId);
-    }
-
-    private async Task DeleteCaseLinks(Guid surfId)
-    {
-        foreach (Case c in _context.Cases!)
-        {
-            if (c.SurfLink == surfId)
-            {
-                c.SurfLink = Guid.Empty;
-            }
-        }
         await _context.SaveChangesAsync();
     }
 }

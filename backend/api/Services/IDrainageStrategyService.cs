@@ -1,16 +1,12 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Services
+namespace api.Services;
+
+public interface IDrainageStrategyService
 {
-    public interface IDrainageStrategyService
-    {
-        Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId);
-        Task<DrainageStrategy> NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId);
-        Task<DrainageStrategyDto> CopyDrainageStrategy(Guid drainageStrategyId, Guid sourceCaseId);
-        Task<ProjectDto> DeleteDrainageStrategy(Guid drainageStrategyId);
-        Task<ProjectDto> UpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto);
-        Task<DrainageStrategyDto> NewUpdateDrainageStrategy(DrainageStrategyDto updatedDrainageStrategyDto);
-        Task<DrainageStrategy> GetDrainageStrategy(Guid drainageStrategyId);
-    }
+    Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId);
+    Task<DrainageStrategy> NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId);
+    Task<DrainageStrategyDto> CopyDrainageStrategy(Guid drainageStrategyId, Guid sourceCaseId);
+    Task<DrainageStrategy> GetDrainageStrategy(Guid drainageStrategyId);
 }

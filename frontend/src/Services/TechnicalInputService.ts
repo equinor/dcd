@@ -5,8 +5,8 @@ import { config } from "./config"
 import { GetToken, LoginAccessTokenKey } from "../Utils/common"
 
 class __TechnicalInputService extends __BaseService {
-    public async update(body: any): Promise<Components.Schemas.TechnicalInputDto> {
-        const res: Components.Schemas.TechnicalInputDto = await this.put("", { body })
+    public async update(projectId: string, body: any): Promise<Components.Schemas.TechnicalInputDto> {
+        const res: Components.Schemas.TechnicalInputDto = await this.put(`projects/${projectId}/technical-input`, { body })
         return res
     }
 }

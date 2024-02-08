@@ -70,52 +70,6 @@ public class TransportServiceShould
     }
 
     [Fact]
-    public async Task DeleteTransport()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var transportService = new TransportService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var transportToDelete = CreateTestTransport(project);
-        fixture.context.Transports.Add(transportToDelete);
-        fixture.context.Cases.Add(new Case
-        {
-            Project = project,
-            TransportLink = transportToDelete.Id
-        });
-        fixture.context.SaveChanges();
-
-        // Act
-        var projectResult = await transportService.DeleteTransport(transportToDelete.Id);
-
-        // Assert
-        var actualTransport = projectResult.Transports.FirstOrDefault(o => o.Name == transportToDelete.Name);
-        Assert.Null(actualTransport);
-        var casesWithTransportLink = projectResult.Cases.Where(o => o.TransportLink == transportToDelete.Id);
-        Assert.Empty(casesWithTransportLink);
-    }
-
-    [Fact]
-    public async Task ThrowArgumentExceptionIfTryingToDeleteNonExistentTransport()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var transportService = new TransportService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault();
-        var transportToDelete = CreateTestTransport(project);
-        fixture.context.Transports.Add(transportToDelete);
-        fixture.context.SaveChanges();
-
-        // Act
-        await transportService.DeleteTransport(transportToDelete.Id);
-
-        // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () => await transportService.DeleteTransport(transportToDelete.Id));
-    }
-
-    [Fact]
     public async Task UpdateTransport()
     {
         // Arrange
@@ -148,17 +102,17 @@ public class TransportServiceShould
             ProjectId = project.Id,
             GasExportPipelineLength = 100,
             OilExportPipelineLength = 100,
-        }.WithCostProfile(new TransportCostProfile()
+        }.WithCostProfile(new TransportCostProfile
         {
             Currency = Currency.USD,
             StartYear = 2030,
-            Values = new double[] { 23.4, 28.9, 24.3 }
+            Values = [23.4, 28.9, 24.3]
         })
-            .WithTransportCessationCostProfile(new TransportCessationCostProfile()
+            .WithTransportCessationCostProfile(new TransportCessationCostProfile
             {
                 Currency = Currency.USD,
                 StartYear = 2030,
-                Values = new double[] { 17.4, 17.9, 37.3 }
+                Values = [17.4, 17.9, 37.3]
             });
     }
 
@@ -189,17 +143,17 @@ public class TransportServiceShould
             ProjectId = project.Id,
             GasExportPipelineLength = 999,
             OilExportPipelineLength = 999,
-        }.WithCostProfile(new TransportCostProfile()
+        }.WithCostProfile(new TransportCostProfile
         {
             Currency = Currency.USD,
             StartYear = 2030,
-            Values = new double[] { 13.4, 18.9, 34.3 }
+            Values = [13.4, 18.9, 34.3]
         })
-            .WithTransportCessationCostProfile(new TransportCessationCostProfile()
+            .WithTransportCessationCostProfile(new TransportCessationCostProfile
             {
                 Currency = Currency.USD,
                 StartYear = 2030,
-                Values = new double[] { 13.4, 18.9, 34.3 }
+                Values = [13.4, 18.9, 34.3]
             });
     }
 }

@@ -150,7 +150,10 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
     public async Task<OffshoreFacilitiesOperationsCostProfile> CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, DrainageStrategy drainageStrategy)
     {
-        if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0) { return new OffshoreFacilitiesOperationsCostProfile() { Values = Array.Empty<double>() }; }
+        if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0)
+        {
+            return new OffshoreFacilitiesOperationsCostProfile { Values = [] };
+        }
         var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
         var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
 
@@ -162,7 +165,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         catch (ArgumentException)
         {
             _logger.LogInformation("Topside {0} not found.", caseItem.TopsideLink);
-            return new OffshoreFacilitiesOperationsCostProfile() { Values = Array.Empty<double>() };
+            return new OffshoreFacilitiesOperationsCostProfile { Values = [] };
         }
         var facilityOpex = topside.FacilityOpex;
         var values = new List<double>

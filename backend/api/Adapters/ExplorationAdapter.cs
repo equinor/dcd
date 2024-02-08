@@ -40,24 +40,6 @@ public static class ExplorationAdapter
         existing.CountryOfficeCost = Convert<CountryOfficeCostDto, CountryOfficeCost>(explorationDto.CountryOfficeCost, existing);
     }
 
-    private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, Exploration exploration)
-    where TDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-    where TModel : TimeSeriesCost, ITimeSeriesOverride, IExplorationTimeSeries, new()
-    {
-        if (dto == null) { return new TModel(); }
-
-        return new TModel
-        {
-            Id = dto.Id,
-            Override = dto.Override,
-            StartYear = dto.StartYear,
-            Currency = dto.Currency,
-            EPAVersion = dto.EPAVersion,
-            Values = dto.Values,
-            Exploration = exploration,
-        };
-    }
-
     private static TModel? Convert<TDto, TModel>(TDto? dto, Exploration exploration)
         where TDto : TimeSeriesCostDto
         where TModel : TimeSeriesCost, IExplorationTimeSeries, new()

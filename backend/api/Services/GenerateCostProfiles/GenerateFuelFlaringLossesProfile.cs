@@ -42,7 +42,7 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
         fuelFlaringLosses.StartYear = total.StartYear;
         fuelFlaringLosses.Values = total.Values;
 
-        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, fuelFlaringLosses);
+        await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, fuelFlaringLosses);
 
         var dto = DrainageStrategyDtoAdapter.Convert<FuelFlaringAndLossesDto, FuelFlaringAndLosses>(fuelFlaringLosses, project.PhysicalUnit);
         return dto ?? new FuelFlaringAndLossesDto();
