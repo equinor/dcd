@@ -12,5 +12,6 @@ public class WellProjectProfile : Profile
         CreateMap<WellProject, WellProjectDto>();
 
         CreateMap<CreateWellProjectDto, WellProject>();
+        CreateMap<WellProjectDto, UpdateWellProjectDto>(); // Temp fix
     }
 }

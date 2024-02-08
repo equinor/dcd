@@ -1,14 +1,10 @@
-using System.ComponentModel.DataAnnotations;
-
 using api.Models;
 namespace api.Dtos;
 
 public class UpdateTransportDto
 {
     public string Name { get; set; } = string.Empty!;
-    public TransportCostProfileDto CostProfile { get; set; } = new TransportCostProfileDto();
-    public TransportCostProfileOverrideDto CostProfileOverride { get; set; } = new TransportCostProfileOverrideDto();
-    public TransportCessationCostProfileDto CessationCostProfile { get; set; } = new TransportCessationCostProfileDto();
+    public UpdateTransportCostProfileOverrideDto CostProfileOverride { get; set; } = new UpdateTransportCostProfileOverrideDto();
     public Maturity Maturity { get; set; }
     public double GasExportPipelineLength { get; set; }
     public double OilExportPipelineLength { get; set; }
@@ -19,16 +15,7 @@ public class UpdateTransportDto
     public DateTimeOffset? DG4Date { get; set; }
 }
 
-public class UpdateTransportCostProfileDto : TimeSeriesCostDto
-{
-
-}
-public class UpdateTransportCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+public class UpdateTransportCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
-}
-
-public class UpdateTransportCessationCostProfileDto : TimeSeriesCostDto
-{
-
 }

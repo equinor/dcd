@@ -11,7 +11,7 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects/{projectId}/cases/{caseId}/[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
@@ -28,9 +28,13 @@ public class CaseWithAssetsController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateCaseWithAssets")]
-    public async Task<ActionResult<ProjectWithGeneratedProfilesDto>> UpdateCaseWithAssetsAsync([FromBody] CaseWithAssetsWrapperDto caseWrapperDto)
+    public async Task<ActionResult<ProjectWithGeneratedProfilesDto>> UpdateCaseWithAssetsAsync(
+        [FromRoute] Guid projectId, 
+        [FromRoute] Guid caseId, 
+        [FromBody] CaseWithAssetsWrapperDto caseWrapperDto
+        )
     {
-        var dto = await _caseWithAssetsService.UpdateCaseWithAssetsAsync(caseWrapperDto);
+        var dto = await _caseWithAssetsService.UpdateCaseWithAssetsAsync(projectId, caseId, caseWrapperDto);
         return Ok(dto);
     }
 }

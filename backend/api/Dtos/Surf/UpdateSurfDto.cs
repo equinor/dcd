@@ -6,9 +6,7 @@ namespace api.Dtos;
 public class UpdateSurfDto
 {
     public string Name { get; set; } = string.Empty!;
-    public SurfCostProfileDto CostProfile { get; set; } = new SurfCostProfileDto();
-    public SurfCostProfileOverrideDto CostProfileOverride { get; set; } = new SurfCostProfileOverrideDto();
-    public SurfCessationCostProfileDto CessationCostProfile { get; set; } = new SurfCessationCostProfileDto();
+    public UpdateSurfCostProfileOverrideDto CostProfileOverride { get; set; } = new UpdateSurfCostProfileOverrideDto();
     public double CessationCost { get; set; }
     public Maturity Maturity { get; set; }
     public double InfieldPipelineSystemLength { get; set; }
@@ -30,20 +28,11 @@ public class UpdateSurfDto
     public bool HasChanges { get; set; }
 }
 
-public class UpdateSurfCostProfileDto : TimeSeriesCostDto
-{
-
-}
-
-public class UpdateSurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+public class UpdateSurfCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
 }
 
-public class UpdateSurfCessationCostProfileDto : TimeSeriesCostDto
-{
-
-}
 
 public enum UpdateProductionFlowlineDto
 {

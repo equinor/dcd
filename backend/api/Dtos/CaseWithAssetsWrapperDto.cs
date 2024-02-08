@@ -4,7 +4,7 @@ namespace api.Dtos;
 
 public class CaseWithAssetsWrapperDto
 {
-    public CaseDto CaseDto { get; set; } = null!;
+    public UpdateCaseDto CaseDto { get; set; } = null!;
     public UpdateDrainageStrategyDto DrainageStrategyDto { get; set; } = null!;
     public UpdateWellProjectDto WellProjectDto { get; set; } = null!;
     public UpdateExplorationDto ExplorationDto { get; set; } = null!;

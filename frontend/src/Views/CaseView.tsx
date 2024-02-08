@@ -399,7 +399,7 @@ const CaseView = () => {
         setIsSaving(true)
         setUpdateFromServer(true)
         try {
-            const result = await (await GetCaseWithAssetsService()).update(dto)
+            const result = await (await GetCaseWithAssetsService()).update(project.id, caseId!, dto)
             const projectResult = { ...result.projectDto }
             setProject(projectResult)
             if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {

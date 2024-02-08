@@ -12,5 +12,6 @@ public class ExplorationProfile : Profile
         CreateMap<Exploration, ExplorationDto>();
 
         CreateMap<CreateExplorationDto, Exploration>();
+        CreateMap<ExplorationDto, UpdateExplorationDto>(); // Temp fix
     }
 }

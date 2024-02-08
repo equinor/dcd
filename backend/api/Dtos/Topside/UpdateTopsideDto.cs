@@ -7,9 +7,7 @@ namespace api.Dtos;
 public class UpdateTopsideDto
 {
     public string Name { get; set; } = string.Empty!;
-    public TopsideCostProfileDto CostProfile { get; set; } = new TopsideCostProfileDto();
-    public TopsideCostProfileOverrideDto CostProfileOverride { get; set; } = new TopsideCostProfileOverrideDto();
-    public TopsideCessationCostProfileDto CessationCostProfile { get; set; } = new TopsideCessationCostProfileDto();
+    public UpdateTopsideCostProfileOverrideDto CostProfileOverride { get; set; } = new UpdateTopsideCostProfileOverrideDto();
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
     public double GasCapacity { get; set; }
@@ -37,15 +35,9 @@ public class UpdateTopsideDto
     public double PeakElectricityImported { get; set; }
 }
 
-public class UpdateTopsideCostProfileDto : TimeSeriesCostDto
-{
-}
 
-public class UpdateTopsideCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+public class UpdateTopsideCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
 }
 
-public class UpdateTopsideCessationCostProfileDto : TimeSeriesCostDto
-{
-}
