@@ -485,7 +485,7 @@ function CaseProductionProfilesTab({
                     "Water production (MSm3)",
                 ]}
             />
-            {(waterInjection !== undefined && waterInjection!.values!.length > 0)
+            {(waterInjection?.values && waterInjection.values?.length > 0)
                 && (
                     <AgChartsTimeseries
                         data={injectionProfilesChartData()}

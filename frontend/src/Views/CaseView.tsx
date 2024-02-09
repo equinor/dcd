@@ -120,21 +120,9 @@ const CaseView = () => {
     const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
     const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
 
-    const [originalCase, setOriginalCase] = useState<Components.Schemas.CaseDto>()
-    const [originalDrainageStrategy, setOriginalDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
-    const [originalWellProject, setOriginalWellProject] = useState<Components.Schemas.WellProjectDto>()
-    const [originalExploration, setOriginalExploration] = useState<Components.Schemas.ExplorationDto>()
-    const [originalSurf, setOriginalSurf] = useState<Components.Schemas.SurfDto>()
-    const [originalSubstructure, setOriginalSubstructure] = useState<Components.Schemas.SubstructureDto>()
-    const [originalTopside, setOriginalTopside] = useState<Components.Schemas.TopsideDto>()
-    const [originalTransport, setOriginalTransport] = useState<Components.Schemas.TransportDto>()
-
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
-
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
 
     const [totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto>()
@@ -200,51 +188,39 @@ const CaseView = () => {
                     history.push(projectUrl)
                 }
             }
-            setOriginalCase(caseResult)
             setCase(caseResult)
 
             const drainageStrategyResult = project?.drainageStrategies
                 .find((drain) => drain.id === caseResult?.drainageStrategyLink)
-            setOriginalDrainageStrategy(drainageStrategyResult)
             setDrainageStrategy(
                 drainageStrategyResult,
             )
 
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
-            setOriginalExploration(explorationResult)
             setExploration(explorationResult)
 
             const wellProjectResult = project
                 ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
-            setOriginalWellProject(wellProjectResult)
             setWellProject(wellProjectResult)
 
             const surfResult = project?.surfs.find((sur) => sur.id === caseResult?.surfLink)
-            setOriginalSurf(surfResult)
             setSurf(surfResult)
 
             const topsideResult = project?.topsides.find((top) => top.id === caseResult?.topsideLink)
-            setOriginalTopside(topsideResult)
             setTopside(topsideResult)
 
             const substructureResult = project?.substructures.find((sub) => sub.id === caseResult?.substructureLink)
-            setOriginalSubstructure(substructureResult)
             setSubstructure(substructureResult)
 
             const transportResult = project?.transports.find((tran) => tran.id === caseResult?.transportLink)
-            setOriginalTransport(transportResult)
             setTransport(transportResult)
 
             setWells(project.wells)
 
-            const wellProjectWellsResult = structuredClone(wellProjectResult?.wellProjectWells)
             setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
-            setOriginalWellProjectWells(wellProjectWellsResult ?? [])
 
-            const explorationWellsResult = structuredClone(explorationResult?.explorationWells)
             setExplorationWells(explorationResult?.explorationWells ?? [])
-            setOriginalExplorationWells(explorationWellsResult ?? [])
 
             setUpdateFromServer(false)
             setIsLoading(false)
@@ -252,19 +228,15 @@ const CaseView = () => {
             const caseResult = project.cases.find((o) => o.id === caseId)
 
             const surfResult = project.surfs.find((sur) => sur.id === caseResult?.surfLink)
-            setOriginalSurf(surfResult)
             setSurf(surfResult)
 
             const topsideResult = project.topsides.find((top) => top.id === caseResult?.topsideLink)
-            setOriginalTopside(topsideResult)
             setTopside(topsideResult)
 
             const substructureResult = project.substructures.find((sub) => sub.id === caseResult?.substructureLink)
-            setOriginalSubstructure(substructureResult)
             setSubstructure(substructureResult)
 
             const transportResult = project.transports.find((tran) => tran.id === caseResult?.transportLink)
-            setOriginalTransport(transportResult)
             setTransport(transportResult)
 
             setWells(project.wells)
@@ -327,74 +299,24 @@ const CaseView = () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {}
 
         dto.caseDto = caseItem
-        if (!(JSON.stringify(caseItem) === JSON.stringify(originalCase))) {
-            // dto.caseDto.hasChanges = true
-        }
 
         dto.drainageStrategyDto = drainageStrategy
-        if (!(JSON.stringify(drainageStrategy) === JSON.stringify(originalDrainageStrategy))) {
-            dto.drainageStrategyDto.hasChanges = true
-        }
 
         dto.wellProjectDto = wellProject
-        if (!(JSON.stringify(wellProject) === JSON.stringify(originalWellProject))) {
-            dto.wellProjectDto.hasChanges = true
-        }
 
         dto.explorationDto = exploration
-        if (!(JSON.stringify(exploration) === JSON.stringify(originalExploration))) {
-            dto.explorationDto.hasChanges = true
-        }
 
         dto.surfDto = surf
-        if (!(JSON.stringify(surf) === JSON.stringify(originalSurf))) {
-            dto.surfDto.hasChanges = true
-        }
 
         dto.substructureDto = substructure
-        if (!(JSON.stringify(substructure) === JSON.stringify(originalSubstructure))) {
-            dto.substructureDto.hasChanges = true
-        }
 
         dto.transportDto = transport
-        if (!(JSON.stringify(transport) === JSON.stringify(originalTransport))) {
-            dto.transportDto.hasChanges = true
-        }
 
         dto.topsideDto = topside
-        if (!(JSON.stringify(topside) === JSON.stringify(originalTopside))) {
-            dto.topsideDto.hasChanges = true
-        }
 
         dto.explorationWellDto = explorationWells
-        if (dto.explorationWellDto?.length > 0) {
-            dto.explorationWellDto.forEach((expWellDto, index) => {
-                if (expWellDto.drillingSchedule?.id !== EMPTY_GUID) {
-                    const originalExpWell = originalExplorationWells
-                        ?.find((oew) => oew.explorationId === expWellDto.explorationId
-                            && oew.wellId === expWellDto.wellId)
-
-                    if (!(JSON.stringify(expWellDto) === JSON.stringify(originalExpWell))) {
-                        dto.explorationWellDto![index].hasChanges = true
-                    }
-                }
-            })
-        }
 
         dto.wellProjectWellDtos = wellProjectWells
-        if (dto.wellProjectWellDtos?.length > 0) {
-            dto.wellProjectWellDtos.forEach((wpWellDto, index: number) => {
-                if (wpWellDto.drillingSchedule?.id !== EMPTY_GUID) {
-                    const originalWpWell = originalWellProjectWells
-                        ?.find((owpw) => owpw.wellProjectId === wpWellDto.wellProjectId
-                            && owpw.wellId === wpWellDto.wellId)
-
-                    if (!(JSON.stringify(wpWellDto) === JSON.stringify(originalWpWell))) {
-                        dto.wellProjectWellDtos![index].hasChanges = true
-                    }
-                }
-            })
-        }
 
         setIsSaving(true)
         setUpdateFromServer(true)
