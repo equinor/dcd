@@ -62,10 +62,16 @@ declare namespace Components {
             totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverrideDto;
             totalFEEDStudies?: TotalFEEDStudiesDto;
             totalFEEDStudiesOverride?: TotalFEEDStudiesOverrideDto;
+            totalOtherStudies?: TotalOtherStudiesDto;
+            totalOtherStudiesOverride?: TotalOtherStudiesOverrideDto;
             wellInterventionCostProfile?: WellInterventionCostProfileDto;
             wellInterventionCostProfileOverride?: WellInterventionCostProfileOverrideDto;
             offshoreFacilitiesOperationsCostProfile?: OffshoreFacilitiesOperationsCostProfileDto;
             offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverrideDto;
+            historicCostCostProfile?: HistoricCostCostProfileDto;
+            historicCostCostProfileOverride?: HistoricCostCostProfileOverrideDto;
+            additionalOPEXCostProfile?: AdditionalOPEXCostProfileDto;
+            additionalOPEXCostProfileOverride?: AdditionalOPEXCostProfileOverrideDto;
             drainageStrategyLink?: string; // uuid
             wellProjectLink?: string; // uuid
             surfLink?: string; // uuid
@@ -394,6 +400,23 @@ declare namespace Components {
             epaVersion?: string | null;
             currency?: Currency /* int32 */;
         }
+        export interface HistoricCostCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+        }
+        export interface HistoricCostCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            override?: boolean;
+        }
         export interface OffshoreFacilitiesOperationsCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -440,6 +463,8 @@ declare namespace Components {
             opexCostProfileDto?: OpexCostProfileDto;
             wellInterventionCostProfileDto?: WellInterventionCostProfileDto;
             offshoreFacilitiesOperationsCostProfileDto?: OffshoreFacilitiesOperationsCostProfileDto;
+            historicCostCostProfileDto?: HistoricCostCostProfileDto;
+            additionalOPEXCostProfileDto?: AdditionalOPEXCostProfileDto;
         }
         export type PhysUnit = 0 | 1; // int32
         export interface ProductionAndSalesVolumesDto {
@@ -599,6 +624,7 @@ declare namespace Components {
             studyCostProfileDto?: StudyCostProfileDto;
             totalFeasibilityAndConceptStudiesDto?: TotalFeasibilityAndConceptStudiesDto;
             totalFEEDStudiesDto?: TotalFEEDStudiesDto;
+            totalOtherStudiesDto?: totalOtherStudiesDto;
         }
         export interface SubstructureCessationCostProfileDto {
             id?: string; // uuid
@@ -810,6 +836,23 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface TotalOtherStudiesDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+        }
+        export interface TotalOtherStudiesOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            override?: boolean;
+        }
         export interface TransportCessationCostProfileDto {
             id?: string; // uuid
             startYear?: number; // int32
@@ -896,6 +939,23 @@ declare namespace Components {
             currency?: Currency /* int32 */;
         }
         export interface WellInterventionCostProfileOverrideDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+            override?: boolean;
+        }
+        export interface AdditionalOPEXCostProfileDto {
+            id?: string; // uuid
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion?: string | null;
+            currency?: Currency /* int32 */;
+        }
+        export interface AdditionalOPEXCostProfileOverrideDto {
             id?: string; // uuid
             startYear?: number; // int32
             values?: number /* double */[] | null;

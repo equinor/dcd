@@ -65,12 +65,22 @@ public static class CaseDtoAdapter
             TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(caseItem.TotalFEEDStudies),
             TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseItem.TotalFEEDStudiesOverride),
 
+            TotalOtherStudies = Convert<TotalOtherStudiesDto, TotalOtherStudies>(caseItem.TotalOtherStudies),
+            TotalOtherStudiesOverride = ConvertOverride<TotalOtherStudiesOverrideDto, TotalOtherStudiesOverride>(caseItem.TotalOtherStudiesOverride),
+
+            HistoricCostCostProfile = Convert<HistoricCostCostProfileDto, HistoricCostCostProfile>(caseItem.HistoricCostCostProfile),
+            HistoricCostCostProfileOverride = ConvertOverride<HistoricCostCostProfileOverrideDto, HistoricCostCostProfileOverride>(caseItem.HistoricCostCostProfileOverride),
+
             WellInterventionCostProfile = Convert<WellInterventionCostProfileDto, WellInterventionCostProfile>(caseItem.WellInterventionCostProfile),
             WellInterventionCostProfileOverride = ConvertOverride<WellInterventionCostProfileOverrideDto,
                 WellInterventionCostProfileOverride>(caseItem.WellInterventionCostProfileOverride),
 
             OffshoreFacilitiesOperationsCostProfile = Convert<OffshoreFacilitiesOperationsCostProfileDto, OffshoreFacilitiesOperationsCostProfile>(caseItem.OffshoreFacilitiesOperationsCostProfile),
             OffshoreFacilitiesOperationsCostProfileOverride = ConvertOverride<OffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>(caseItem.OffshoreFacilitiesOperationsCostProfileOverride),
+
+            AdditionalOPEXCostProfile = Convert<AdditionalOPEXCostProfileDto, AdditionalOPEXCostProfile>(caseItem.AdditionalOPEXCostProfile),
+            AdditionalOPEXCostProfileOverride = ConvertOverride<AdditionalOPEXCostProfileOverrideDto, AdditionalOPEXCostProfileOverride>(caseItem.AdditionalOPEXCostProfileOverride),
+
         };
 
         return caseDto;

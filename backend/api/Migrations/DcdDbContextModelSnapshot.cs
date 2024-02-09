@@ -909,6 +909,71 @@ namespace api.Migrations
                     b.ToTable("NetSalesGasOverride");
                 });
 
+            modelBuilder.Entity("api.Models.historicCostCostProfile", b =>
+                            {
+                                b.Property<Guid>("Id")
+                                    .ValueGeneratedOnAdd()
+                                    .HasColumnType("uniqueidentifier");
+
+                                b.Property<Guid>("Case.Id")
+                                    .HasColumnType("uniqueidentifier");
+
+                                b.Property<int>("Currency")
+                                    .HasColumnType("int");
+
+                                b.Property<string>("EPAVersion")
+                                    .IsRequired()
+                                    .HasColumnType("nvarchar(max)");
+
+                                b.Property<string>("InternalData")
+                                    .IsRequired()
+                                    .HasColumnType("nvarchar(max)");
+
+                                b.Property<int>("StartYear")
+                                    .HasColumnType("int");
+
+                                b.HasKey("Id");
+
+                                b.HasIndex("Case.Id")
+                                    .IsUnique();
+
+                                b.ToTable("HistoricCostCostProfile");
+                            });
+
+            modelBuilder.Entity("api.Models.HistoricCostCostProfileOverride", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Case.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Override")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Case.Id")
+                        .IsUnique();
+
+                    b.ToTable("HistoricCostCostProfileOverride");
+                });
+
             modelBuilder.Entity("api.Models.OffshoreFacilitiesOperationsCostProfile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -972,6 +1037,71 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("OffshoreFacilitiesOperationsCostProfileOverride");
+                });
+
+            modelBuilder.Entity("api.Models.AdditionalOPEXCostProfile", b =>
+                            {
+                                b.Property<Guid>("Id")
+                                    .ValueGeneratedOnAdd()
+                                    .HasColumnType("uniqueidentifier");
+
+                                b.Property<Guid>("Case.Id")
+                                    .HasColumnType("uniqueidentifier");
+
+                                b.Property<int>("Currency")
+                                    .HasColumnType("int");
+
+                                b.Property<string>("EPAVersion")
+                                    .IsRequired()
+                                    .HasColumnType("nvarchar(max)");
+
+                                b.Property<string>("InternalData")
+                                    .IsRequired()
+                                    .HasColumnType("nvarchar(max)");
+
+                                b.Property<int>("StartYear")
+                                    .HasColumnType("int");
+
+                                b.HasKey("Id");
+
+                                b.HasIndex("Case.Id")
+                                    .IsUnique();
+
+                                b.ToTable("AdditionalOPEXCostProfile");
+                            });
+
+            modelBuilder.Entity("api.Models.AdditionalOPEXCostProfileOverride", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Case.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Override")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Case.Id")
+                        .IsUnique();
+
+                    b.ToTable("AdditionalOPEXCostProfileOverride");
                 });
 
             modelBuilder.Entity("api.Models.OilProducerCostProfile", b =>
@@ -1951,6 +2081,71 @@ namespace api.Migrations
                     b.ToTable("TotalFEEDStudiesOverride");
                 });
 
+            modelBuilder.Entity("api.Models.TotalOtherStudies", b =>
+                            {
+                                b.Property<Guid>("Id")
+                                    .ValueGeneratedOnAdd()
+                                    .HasColumnType("uniqueidentifier");
+
+                                b.Property<Guid>("Case.Id")
+                                    .HasColumnType("uniqueidentifier");
+
+                                b.Property<int>("Currency")
+                                    .HasColumnType("int");
+
+                                b.Property<string>("EPAVersion")
+                                    .IsRequired()
+                                    .HasColumnType("nvarchar(max)");
+
+                                b.Property<string>("InternalData")
+                                    .IsRequired()
+                                    .HasColumnType("nvarchar(max)");
+
+                                b.Property<int>("StartYear")
+                                    .HasColumnType("int");
+
+                                b.HasKey("Id");
+
+                                b.HasIndex("Case.Id")
+                                    .IsUnique();
+
+                                b.ToTable("TotalOtherStudies");
+                            });
+
+            modelBuilder.Entity("api.Models.TotalOtherStudiesOverride", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Case.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Override")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Case.Id")
+                        .IsUnique();
+
+                    b.ToTable("TotalOtherStudiesOverride");
+                });
+
             modelBuilder.Entity("api.Models.Transport", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2607,6 +2802,28 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy");
                 });
 
+            modelBuilder.Entity("api.Models.HistoricCostCostProfile", b =>
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithOne("HistoricCostCostProfile")
+                        .HasForeignKey("api.Models.HistoricCostCostProfile", "Case.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Case");
+                });
+
+            modelBuilder.Entity("api.Models.HistoricCostCostProfileOverride", b =>
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithOne("HistoricCostCostProfileOverride")
+                        .HasForeignKey("api.Models.HistoricCostCostProfileOverride", "Case.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Case");
+                });
+
             modelBuilder.Entity("api.Models.OffshoreFacilitiesOperationsCostProfile", b =>
                 {
                     b.HasOne("api.Models.Case", "Case")
@@ -2623,6 +2840,28 @@ namespace api.Migrations
                     b.HasOne("api.Models.Case", "Case")
                         .WithOne("OffshoreFacilitiesOperationsCostProfileOverride")
                         .HasForeignKey("api.Models.OffshoreFacilitiesOperationsCostProfileOverride", "Case.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Case");
+                });
+
+            modelBuilder.Entity("api.Models.AdditionalOPEXCostProfile", b =>
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithOne("AdditionalOPEXCostProfile")
+                        .HasForeignKey("api.Models.AdditionalOPEXCostProfile", "Case.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Case");
+                });
+
+            modelBuilder.Entity("api.Models.AdditionalOPEXCostProfileOverride", b =>
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithOne("AdditionalOPEXCostProfileOverride")
+                        .HasForeignKey("api.Models.AdditionalOPEXCostProfileOverride", "Case.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2904,6 +3143,28 @@ namespace api.Migrations
                     b.Navigation("Case");
                 });
 
+            modelBuilder.Entity("api.Models.TotalOtherStudies", b =>
+{
+    b.HasOne("api.Models.Case", "Case")
+        .WithOne("TotalOtherStudies")
+        .HasForeignKey("api.Models.TotalOtherStudies", "Case.Id")
+        .OnDelete(DeleteBehavior.Cascade)
+        .IsRequired();
+
+    b.Navigation("Case");
+});
+
+            modelBuilder.Entity("api.Models.TotalOtherStudiesOverride", b =>
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithOne("TotalOtherStudiesOverride")
+                        .HasForeignKey("api.Models.TotalOtherStudiesOverride", "Case.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Case");
+                });
+
             modelBuilder.Entity("api.Models.Transport", b =>
                 {
                     b.HasOne("api.Models.Project", "Project")
@@ -3064,6 +3325,14 @@ namespace api.Migrations
                     b.Navigation("WellInterventionCostProfile");
 
                     b.Navigation("WellInterventionCostProfileOverride");
+
+                    b.Navigation("HistoricCostCostProfile");
+
+                    b.Navigation("HistoricCostCostProfileOverride");
+
+                    b.Navigation("AdditionalOPEXCostProfile");
+
+                    b.Navigation("AdditionalOPEXCostProfileOverride");
                 });
 
             modelBuilder.Entity("api.Models.DrainageStrategy", b =>

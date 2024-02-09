@@ -137,62 +137,41 @@ export const ProductionStrategyOverviewToString = (value?: Components.Schemas.Pr
 
 export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
-const zip = (t1: number[], t2: number[]) => t1.map((t1Value, index) => t1Value + (t2[index] ?? 0))
-
-const MergeCostProfileData = (t1: number[], t2: number[], offset: number): number[] => {
-    let doubleList: number[] = []
-    if (offset > t1.length) {
-        doubleList = doubleList.concat(t1)
-        const zeros = offset - t1.length
-
-        const zeroList = new Array(zeros).fill(0)
-
-        doubleList = doubleList.concat(zeroList)
-        doubleList = doubleList.concat(t2)
-        return doubleList
-    }
-    doubleList = doubleList.concat(t1.slice(0, offset))
-
-    if (t1.length - offset === t2.length) {
-        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), (t2)))
-    } else if (t1.length - offset > t2.length) {
-        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), t2))
-    } else {
-        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), t2))
-        const remaining = t2.length - (t1.length - offset)
-        doubleList = doubleList.concat(_.takeRight(t2, remaining))
-    }
-    return doubleList
+const zip = (arrays: number[][]) => {
+    const maxLength = Math.max(...arrays.map(arr => arr.length));
+    return Array.from({ length: maxLength }).map((_, index) => 
+        arrays.reduce((acc, curr) => acc + (curr[index] ?? 0), 0)
+    );
 }
 
-export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    const t1Year = t1?.startYear ?? 0
-    const t2Year = t2?.startYear ?? 0
-    const t1Values = t1?.values
-    const t2Values = t2?.values
+const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] => {
+    let maxLength = Math.max(...arrays.map(arr => arr.length + offsets[arrays.indexOf(arr)]));
+    let result = new Array(maxLength).fill(0);
 
-    if (!t1Values || t1Values.length === 0) {
-        if (!t2Values || t2Values.length === 0) {
-            return { startYear: 0, values: [] }
+    arrays.forEach((arr, idx) => {
+        let offset = offsets[idx];
+        for (let i = 0; i < arr.length; i++) {
+            if (i + offset < maxLength) {
+                result[i + offset] += arr[i];
+            }
         }
-        return t2
-    }
-    if (!t2Values || t2Values.length === 0) {
-        return t1
-    }
+    });
 
-    const offset = t1Year < t2Year ? t2Year - t1Year : t1Year - t2Year
+    return result;
+}
 
-    let values: number[] = []
-    if (t1Year < t2Year) {
-        values = MergeCostProfileData(t1Values, t2Values, offset)
-    } else {
-        values = MergeCostProfileData(t2Values, t1Values, offset)
-    }
+export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined, t3: ITimeSeries | undefined): ITimeSeries => {
+    const startYears = [t1, t2, t3].map(t => t?.startYear ?? 0);
+    const minYear = Math.min(...startYears);
+    const arrays = [t1, t2, t3].map(t => t?.values ?? []);
+    const offsets = startYears.map(year => Math.abs(year - minYear));
+
+    let values: number[] = MergeCostProfileData(arrays, offsets);
 
     const timeSeries = {
-        startYear: Math.min(t1Year, t2Year),
+        startYear: minYear,
         values,
     }
-    return timeSeries
+    return timeSeries;
 }
+

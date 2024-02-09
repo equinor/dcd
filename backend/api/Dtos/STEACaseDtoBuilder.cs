@@ -27,6 +27,14 @@ public static class STEACaseDtoBuilder
     private static void AddOpexCost(STEACaseDto sTEACaseDto, CaseDto caseDto)
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
+        if (caseDto.HistoricCostCostProfileOverride?.Override == true)
+        {
+            costProfileDtos.Add(caseDto.HistoricCostCostProfileOverride);
+        }
+        else if (caseDto.HistoricCostCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.HistoricCostCostProfile);
+        }
         if (caseDto.WellInterventionCostProfileOverride?.Override == true)
         {
             costProfileDtos.Add(caseDto.WellInterventionCostProfileOverride);
@@ -43,6 +51,14 @@ public static class STEACaseDtoBuilder
         else if (caseDto.OffshoreFacilitiesOperationsCostProfile != null)
         {
             costProfileDtos.Add(caseDto.OffshoreFacilitiesOperationsCostProfile);
+        }
+        if (caseDto.AdditionalOPEXCostProfileOverride?.Override == true)
+        {
+            costProfileDtos.Add(caseDto.AdditionalOPEXCostProfileOverride);
+        }
+        else if (caseDto.additionalOPEXCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.additionalOPEXCostProfile);
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
@@ -74,6 +90,15 @@ public static class STEACaseDtoBuilder
         else if (caseDto.TotalFEEDStudies != null)
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudies);
+        }
+
+        if (caseDto.TotalOtherStudiesOverride?.Override == true)
+        {
+            costProfileDtos.Add(caseDto.TotalOtherStudiesOverride);
+        }
+        else if (caseDto.TotalOtherStudies != null)
+        {
+            costProfileDtos.Add(caseDto.TotalOtherStudies);
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);

@@ -23,6 +23,7 @@ import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileSe
 import { MergeTimeseries } from "../../Utils/common"
 import { TotalFEEDStudies } from "../../models/case/TotalFEEDStudies"
 import { TotalFeasibilityAndConceptStudies } from "../../models/case/TotalFeasibilityAndConceptStudies"
+import { TotalOtherStudies } from "../../models/case/TotalOtherStudies"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -123,14 +124,18 @@ function CaseSummaryTab({
                     let feasibility = TotalFeasibilityAndConceptStudies
                         .fromJSON((await studyWrapper).totalFeasibilityAndConceptStudiesDto)
                     let feed = TotalFEEDStudies.fromJSON((await studyWrapper).totalFEEDStudiesDto)
+                    let otherStudies = TotalOtherStudies.fromJSON((await studyWrapper).totalOtherStudiesDto)
                     if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                         feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
                     }
                     if (caseItem.totalFEEDStudiesOverride?.override === true) {
                         feed = caseItem.totalFEEDStudiesOverride
                     }
+                    if (caseItem.totalOtherStudiesOverride?.override === true) {
+                        otherStudies = caseItem.totalOtherStudiesOverride
+                    }
 
-                    const totalStudy = MergeTimeseries(feasibility, feed)
+                    const totalStudy = MergeTimeseries(feasibility, feed, otherStudies)
                     setTotalStudyCost(totalStudy)
 
                     setOpexCost(opex)

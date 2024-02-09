@@ -46,10 +46,16 @@ public class DuplicateCaseService : IDuplicateCaseService
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.TotalOtherStudies)
+            .Include(c => c.TotalOtherStudiesOverride)
+            .Include(c => c.HistoricCostCostProfile)
+            .Include(c => c.HistoricCostCostProfileOverride)
             .Include(c => c.WellInterventionCostProfile)
             .Include(c => c.WellInterventionCostProfileOverride)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.AdditionalOPEXCostProfile)
+            .Include(c => c.AdditionalOPEXCostProfileOverride)
             .Include(c => c.CessationWellsCost)
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
@@ -89,6 +95,14 @@ public class DuplicateCaseService : IDuplicateCaseService
         {
             caseItem.TotalFEEDStudiesOverride.Id = Guid.Empty;
         }
+        if (caseItem.TotalOtherStudies != null)
+        {
+            caseItem.TotalOtherStudies.Id = Guid.Empty;
+        }
+        if (caseItem.TotalOtherStudiesOverride != null)
+        {
+            caseItem.TotalOtherStudiesOverride.Id = Guid.Empty;
+        }
         if (caseItem.CessationWellsCost != null)
         {
             caseItem.CessationWellsCost.Id = Guid.Empty;
@@ -120,6 +134,22 @@ public class DuplicateCaseService : IDuplicateCaseService
         if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride != null)
         {
             caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Id = Guid.Empty;
+        }
+        if (caseItem.HistoricCostCostProfile != null)
+        {
+            caseItem.HistoricCostCostProfile.Id = Guid.Empty;
+        }
+        if (caseItem.HistoricCostCostProfileOverride != null)
+        {
+            caseItem.HistoricCostCostProfileOverride.Id = Guid.Empty;
+        }
+        if (caseItem.AdditionalOPEXCostProfile != null)
+        {
+            caseItem.AdditionalOPEXCostProfile.Id = Guid.Empty;
+        }
+        if (caseItem.AdditionalOPEXCostProfileOverride != null)
+        {
+            caseItem.AdditionalOPEXCostProfileOverride.Id = Guid.Empty;
         }
 
         var project = await _projectService.GetProject(caseItem.ProjectId);

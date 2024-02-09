@@ -11,8 +11,14 @@ import { TotalFeasibilityAndConceptStudies } from "./TotalFeasibilityAndConceptS
 import { TotalFeasibilityAndConceptStudiesOverride } from "./TotalFeasibilityAndConceptStudiesOverride"
 import { TotalFEEDStudies } from "./TotalFEEDStudies"
 import { TotalFEEDStudiesOverride } from "./TotalFEEDStudiesOverride"
+import { TotalOtherStudies } from "./TotalOtherStudies"
+import { TotalOtherStudiesOverride } from "./TotalOtherStudiesOverride"
 import { WellInterventionCostProfile } from "./WellInterventionCostProfile"
 import { WellInterventionCostProfileOverride } from "./WellInterventionCostProfileOverride"
+import { HistoricCostCostProfile } from "./HistoricCostCostProfile"
+import { HistoricCostCostProfileOverride } from "./HistoricCostCostProfileOverride"
+import { AdditionalOPEXCostProfile } from "./AdditionalOPEXCostProfile"
+import { AdditionalOPEXCostProfileOverride } from "./AdditionalOPEXCostProfileOverride"
 
 export class Case implements Components.Schemas.CaseDto {
     capex?: number
@@ -64,10 +70,16 @@ export class Case implements Components.Schemas.CaseDto {
     totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverride | undefined
     totalFEEDStudies?: TotalFEEDStudies | undefined
     totalFEEDStudiesOverride?: TotalFEEDStudiesOverride | undefined
+    totalOtherStudies?: TotalOtherStudies | undefined
+    totalOtherStudiesOverride?: TotalOtherStudiesOverride | undefined
     wellInterventionCostProfile?: WellInterventionCostProfile | undefined
     wellInterventionCostProfileOverride?: WellInterventionCostProfileOverride | undefined
     offshoreFacilitiesOperationsCostProfile?: OffshoreFacilitiesOperationsCostProfile | undefined
     offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverride | undefined
+    historicCostCostProfile?: HistoricCostCostProfile | undefined
+    historicCostCostProfileOverride?: HistoricCostCostProfileOverride | undefined
+    additionalOPEXCostProfile?: AdditionalOPEXCostProfile | undefined
+    additionalOPEXCostProfileOverride?: AdditionalOPEXCostProfileOverride | undefined
 
     constructor(data: Components.Schemas.CaseDto) {
         this.capex = data.capex
@@ -125,6 +137,8 @@ export class Case implements Components.Schemas.CaseDto {
             .fromJSON(data.totalFeasibilityAndConceptStudiesOverride)
         this.totalFEEDStudies = TotalFEEDStudies.fromJSON(data.totalFEEDStudies)
         this.totalFEEDStudiesOverride = TotalFEEDStudiesOverride.fromJSON(data.totalFEEDStudiesOverride)
+        this.totalOtherStudies = TotalOtherStudies.fromJSON(data.totalOtherStudies)
+        this.totalOtherStudiesOverride = TotalOtherStudiesOverride.fromJSON(data.totalOtherStudiesOverride)
 
         this.wellInterventionCostProfile = WellInterventionCostProfile.fromJSON(data.wellInterventionCostProfile)
         this.wellInterventionCostProfileOverride = WellInterventionCostProfileOverride
@@ -133,6 +147,14 @@ export class Case implements Components.Schemas.CaseDto {
             .fromJSON(data.offshoreFacilitiesOperationsCostProfile)
         this.offshoreFacilitiesOperationsCostProfileOverride = OffshoreFacilitiesOperationsCostProfileOverride
             .fromJSON(data.offshoreFacilitiesOperationsCostProfileOverride)
+        this.additionalOPEXCostProfile = AdditionalOPEXCostProfile
+            .fromJSON(data.additionalOPEXCostProfile)
+        this.additionalOPEXCostProfileOverride = AdditionalOPEXCostProfileOverride
+            .fromJSON(data.additionalOPEXCostProfileOverride)
+        this.historicCostCostProfile = HistoricCostCostProfile
+            .fromJSON(data.historicCostCostProfile)
+        this.historicCostCostProfileOverride = HistoricCostCostProfileOverride
+            .fromJSON(data.historicCostCostProfileOverride)
     }
 
     static Copy(data: Case) {

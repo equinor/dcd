@@ -48,12 +48,15 @@ import { CessationWellsCost } from "../models/case/CessationWellsCost"
 import { OffshoreFacilitiesOperationsCostProfile } from "../models/case/OffshoreFacilitiesOperationsCostProfile"
 import { TotalFeasibilityAndConceptStudies } from "../models/case/TotalFeasibilityAndConceptStudies"
 import { TotalFEEDStudies } from "../models/case/TotalFEEDStudies"
+import { TotalOtherStudies } from "../models/case/TotalOtherStudies"
 import { WellInterventionCostProfile } from "../models/case/WellInterventionCostProfile"
 import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
 import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
 import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
 import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
 import { ImportedElectricity } from "../models/assets/drainagestrategy/ImportedElectricity"
+import { HistoricCostCostProfile } from "../models/case/HistoricCostCostProfile"
+import { AdditionalOPEXCostProfile } from "../models/case/AdditionalOPEXCostProfile"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -164,10 +167,18 @@ const CaseView = () => {
 
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<TotalFEEDStudies>()
 
+    const [totalOtherStudies, setTotalOtherStudies] = useState<TotalOtherStudies>()
+
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<OffshoreFacilitiesOperationsCostProfile>()
 
     const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<WellInterventionCostProfile>()
+
+    const [historicCostCostProfile,
+        setHistoricCostCostProfile] = useState<HistoricCostCostProfile>()
+        
+    const [additionalOPEXCostProfile,
+        setAdditionalOPEXCostProfile] = useState<AdditionalOPEXCostProfile>()
 
     const [cessationWellsCost, setCessationWellsCost] = useState<CessationWellsCost>()
     const [cessationOffshoreFacilitiesCost,
@@ -426,10 +437,14 @@ const CaseView = () => {
             if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {
                 setTotalFeasibilityAndConceptStudies(TotalFeasibilityAndConceptStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto))
                 setTotalFEEDStudies(TotalFEEDStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto))
+                setTotalOtherStudies(TotalOtherStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalOtherStudiesDto))
+
             }
             if (result.generatedProfilesDto?.opexCostProfileWrapperDto !== null && result.generatedProfilesDto?.opexCostProfileWrapperDto !== undefined) {
                 setOffshoreFacilitiesOperationsCostProfile(OffshoreFacilitiesOperationsCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto))
                 setWellInterventionCostProfile(WellInterventionCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.wellInterventionCostProfileDto))
+                setHistoricCostCostProfile(HistoricCostCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.historicCostCostProfileDto))
+                setAdditionalOPEXCostProfile(AdditionalOPEXCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto))
             }
             if (result.generatedProfilesDto?.cessationCostWrapperDto !== null && result.generatedProfilesDto?.cessationCostWrapperDto !== undefined) {
                 setCessationWellsCost(CessationWellsCost.fromJSON(result.generatedProfilesDto.cessationCostWrapperDto.cessationWellsCostDto))
@@ -669,10 +684,16 @@ const CaseView = () => {
                                     setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
                                     totalFEEDStudies={totalFEEDStudies}
                                     setTotalFEEDStudies={setTotalFEEDStudies}
+                                    totalOtherStudies={totalOtherStudies}
+                                    setTotalOtherStudies={setTotalOtherStudies}
                                     offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
                                     setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
                                     wellInterventionCostProfile={wellInterventionCostProfile}
                                     setWellInterventionCostProfile={setWellInterventionCostProfile}
+                                    historicCostCostProfile={historicCostCostProfile}
+                                    setHistoricCostCostProfile={setHistoricCostCostProfile}
+                                    additionalOPEXCostProfile={additionalOPEXCostProfile}
+                                    setAdditionalOPEXCostProfile={setAdditionalOPEXCostProfile}
                                     cessationWellsCost={cessationWellsCost}
                                     setCessationWellsCost={setCessationWellsCost}
                                     cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
