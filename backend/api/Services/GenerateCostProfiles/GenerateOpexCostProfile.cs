@@ -73,7 +73,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         result.HistoricCostCostProfileDto = historicCostCostProfileDto;
         result.AdditionalOPEXCostProfileDto = additionalOPEXCostProfileDto;
 
-        var OPEX = TimeSeriesCost.MergeCostProfiles([wellInterventionCost, offshoreFacilitiesOperationsCost, historicCostCostProfileDto, additionalOPEXCostProfileDto]);
+        var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost, historicCostCostProfileDto, additionalOPEXCostProfileDto);
         var opexCostProfile = new OpexCostProfile
         {
             StartYear = OPEX.StartYear,
