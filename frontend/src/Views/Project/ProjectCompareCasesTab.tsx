@@ -380,7 +380,7 @@ function ProjectCompareCasesTab({
                             <WrapperRow>
                                 <AgChartsCompareCases
                                     data={npvChartData}
-                                    chartTitle="NPV"
+                                    chartTitle="NPV before tax"
                                     barColors={["#005F57"]}
                                     barProfiles={["npv"]}
                                     barNames={["NPV"]}
@@ -391,7 +391,7 @@ function ProjectCompareCasesTab({
                                 />
                                 <AgChartsCompareCases
                                     data={breakEvenChartData}
-                                    chartTitle="Break even"
+                                    chartTitle="Break even before tax"
                                     barColors={["#00977B"]}
                                     barProfiles={["breakEven"]}
                                     barNames={["Break even"]}
