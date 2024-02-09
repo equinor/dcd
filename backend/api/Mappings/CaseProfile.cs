@@ -24,6 +24,13 @@ public class CaseProfile : Profile
         CreateMap<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>();
         // If you need to map in reverse direction
         CreateMap<UpdateCaseDto, Case>();
+        CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();
+        CreateMap<UpdateCessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>();
+        CreateMap<UpdateTotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
+        CreateMap<UpdateTotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>();
+        CreateMap<UpdateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
+        CreateMap<UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
+
         CreateMap<CreateCaseDto, Case>();
     }
 }

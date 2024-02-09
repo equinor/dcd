@@ -10,6 +10,12 @@ public class TransportProfile : Profile
     public TransportProfile()
     {
         CreateMap<Transport, TransportDto>();
+        CreateMap<TransportCostProfile, TransportCostProfileDto>();
+        CreateMap<TransportCostProfileOverride, TransportCostProfileOverrideDto>();
+        CreateMap<TransportCessationCostProfile, TransportCessationCostProfileDto>();
+
+        CreateMap<UpdateTransportDto, Transport>();
+        CreateMap<UpdateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
 
         CreateMap<CreateTransportDto, Transport>();
     }

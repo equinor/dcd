@@ -10,6 +10,7 @@ public class ExplorationWellProfile : Profile
     public ExplorationWellProfile()
     {
         CreateMap<ExplorationWell, ExplorationWellDto>();
+        CreateMap<DrillingSchedule, DrillingScheduleDto>();
 
         CreateMap<UpdateExplorationWellDto, ExplorationWell>();
     }
