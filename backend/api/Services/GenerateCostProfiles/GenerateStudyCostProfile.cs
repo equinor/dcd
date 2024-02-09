@@ -71,7 +71,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         {
             return new StudyCostProfileWrapperDto();
         }
-        var cost = TimeSeriesCostDto.MergeCostProfiles(feasibility, feed, otherStudies);
+        var cost = TimeSeriesCostDto.MergeCostProfilesList(feasibility, feed, otherStudies);
         var studyCost = new StudyCostProfile
         {
             StartYear = cost.StartYear,

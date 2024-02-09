@@ -61,7 +61,8 @@ public static class STEACaseDtoBuilder
             costProfileDtos.Add(caseDto.AdditionalOPEXCostProfile);
         }
 
-        var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
+        var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos.ToArray());
+
         var opexCost = new OpexCostProfileDto
         {
             StartYear = costProfile.StartYear,
@@ -101,7 +102,7 @@ public static class STEACaseDtoBuilder
             costProfileDtos.Add(caseDto.TotalOtherStudies);
         }
 
-        var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
+        var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos.ToArray());
         var studyCost = new StudyCostProfileDto
         {
             StartYear = costProfile.StartYear,
@@ -132,7 +133,7 @@ public static class STEACaseDtoBuilder
             costProfileDtos.Add(caseDto.CessationOffshoreFacilitiesCost);
         }
 
-        var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
+        var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos.ToArray());
         var cessationCost = new CessationCostDto
         {
             StartYear = costProfile.StartYear,
@@ -191,7 +192,7 @@ public static class STEACaseDtoBuilder
                 costProfileDtos.Add(wellProjectDto.GasInjectorCostProfile);
             }
 
-            var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
+            var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos.ToArray());
 
             sTEACaseDto.Capex.Drilling = costProfile;
             sTEACaseDto.Capex.Drilling.StartYear += dg4Year;
