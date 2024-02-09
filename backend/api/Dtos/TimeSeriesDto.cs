@@ -195,6 +195,5 @@ public class UpdateTimeSeriesCostDto
 {
     public int StartYear { get; set; }
     public double[]? Values { get; set; } = [];
-    public string EPAVersion { get; set; } = string.Empty;
     public Currency Currency { get; set; }
 }
