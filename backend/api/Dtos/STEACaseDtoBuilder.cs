@@ -56,9 +56,9 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.AdditionalOPEXCostProfileOverride);
         }
-        else if (caseDto.additionalOPEXCostProfile != null)
+        else if (caseDto.AdditionalOPEXCostProfile != null)
         {
-            costProfileDtos.Add(caseDto.additionalOPEXCostProfile);
+            costProfileDtos.Add(caseDto.AdditionalOPEXCostProfile);
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);

@@ -58,7 +58,7 @@ public static class CaseAdapter
 
         caseItem.TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>(caseDto.TotalFeasibilityAndConceptStudiesOverride, caseItem);
         caseItem.TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseDto.TotalFEEDStudiesOverride, caseItem);
-        caseItem.totalOtherStudiesOverride = ConvertOverride<TotalOtherStudiesOverrideDto, TotalOtherStudiesOverride>(caseDto.TotalOtherStudiesOverride, caseItem);
+        caseItem.TotalOtherStudiesOverride = ConvertOverride<TotalOtherStudiesOverrideDto, TotalOtherStudiesOverride>(caseDto.TotalOtherStudiesOverride, caseItem);
 
         caseItem.HistoricCostCostProfileOverride = ConvertOverride<HistoricCostCostProfileOverrideDto, HistoricCostCostProfileOverride>(caseDto.HistoricCostCostProfileOverride, caseItem);
         caseItem.WellInterventionCostProfileOverride = ConvertOverride<WellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>(caseDto.WellInterventionCostProfileOverride, caseItem);
@@ -116,7 +116,7 @@ public static class CaseAdapter
 
         existing.TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>(caseDto.TotalFeasibilityAndConceptStudiesOverride, existing);
         existing.TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseDto.TotalFEEDStudiesOverride, existing);
-        existing.totalOtherStudiesOverride = ConvertOverride<TotalOtherStudiesOverrideDto, TotalOtherStudiesOverride>(caseDto.TotalOtherStudiesOverride, existing);
+        existing.TotalOtherStudiesOverride = ConvertOverride<TotalOtherStudiesOverrideDto, TotalOtherStudiesOverride>(caseDto.TotalOtherStudiesOverride, existing);
 
         existing.HistoricCostCostProfileOverride = ConvertOverride<HistoricCostCostProfileOverrideDto, HistoricCostCostProfileOverride>(caseDto.HistoricCostCostProfileOverride, existing);
         existing.WellInterventionCostProfileOverride = ConvertOverride<WellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>(caseDto.WellInterventionCostProfileOverride, existing);
