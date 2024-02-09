@@ -66,7 +66,7 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
         }
     }
 
-    public static TimeSeriesCostDto MergeCostProfiles(params TimeSeriesCostDto[] timeseriesArray)
+    public static TimeSeriesCostDto MergeCostProfilesList(params TimeSeriesCostDto[] timeseriesArray)
     {
         var timeSeries = new TimeSeriesCostDto();
         if (timeseriesArray.Count > 0)
