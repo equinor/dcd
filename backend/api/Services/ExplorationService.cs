@@ -18,8 +18,8 @@ public class ExplorationService : IExplorationService
     private readonly IMapper _mapper;
 
     public ExplorationService(
-        DcdDbContext context, 
-        IProjectService projectService, 
+        DcdDbContext context,
+        IProjectService projectService,
         ILoggerFactory loggerFactory,
         IMapper mapper
         )

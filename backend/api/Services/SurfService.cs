@@ -16,8 +16,8 @@ public class SurfService : ISurfService
     private readonly ILogger<SurfService> _logger;
     private readonly IMapper _mapper;
     public SurfService(
-        DcdDbContext context, 
-        IProjectService projectService, 
+        DcdDbContext context,
+        IProjectService projectService,
         ILoggerFactory loggerFactory,
         IMapper mapper)
     {

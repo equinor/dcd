@@ -17,8 +17,8 @@ public class WellProjectService : IWellProjectService
     private readonly IMapper _mapper;
 
     public WellProjectService(
-        DcdDbContext context, 
-        IProjectService projectService, 
+        DcdDbContext context,
+        IProjectService projectService,
         ILoggerFactory loggerFactory,
         IMapper mapper
         )

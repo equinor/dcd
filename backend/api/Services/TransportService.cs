@@ -17,8 +17,8 @@ public class TransportService : ITransportService
     private readonly IMapper _mapper;
 
     public TransportService(
-        DcdDbContext context, 
-        IProjectService projectService, 
+        DcdDbContext context,
+        IProjectService projectService,
         ILoggerFactory loggerFactory,
         IMapper mapper
         )

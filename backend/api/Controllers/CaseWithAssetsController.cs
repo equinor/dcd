@@ -29,8 +29,8 @@ public class CaseWithAssetsController : ControllerBase
 
     [HttpPut(Name = "UpdateCaseWithAssets")]
     public async Task<ActionResult<ProjectWithGeneratedProfilesDto>> UpdateCaseWithAssetsAsync(
-        [FromRoute] Guid projectId, 
-        [FromRoute] Guid caseId, 
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
         [FromBody] CaseWithAssetsWrapperDto caseWrapperDto
         )
     {
