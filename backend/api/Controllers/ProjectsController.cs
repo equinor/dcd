@@ -44,7 +44,6 @@ public class ProjectsController : ControllerBase
     [HttpGet("{projectId}", Name = "GetProject")]
     public async Task<ProjectDto?> Get(Guid projectId)
     {
-        //return StatusCode(500);
         try
         {
             return await _projectService.GetProjectDto(projectId);
