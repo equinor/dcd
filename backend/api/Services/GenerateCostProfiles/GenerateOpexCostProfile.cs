@@ -43,7 +43,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         var newWellInterventionCost = await CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
         var newOffshoreFacilitiesOperationsCost = await CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
         var newHistoricCost = await CalculateHistoricCostCostProfile(caseItem, drainageStrategy);
-        var newAdditionalOPEXCost = await CalculateAdditionalOPEXCostProfileCostProfile(caseItem, drainageStrategy);
+        var newAdditionalOPEXCost = await CalculateAdditionalOPEXCostProfile(caseItem, drainageStrategy);
 
         var wellInterventionCost = caseItem.WellInterventionCostProfile ?? new WellInterventionCostProfile();
         wellInterventionCost.StartYear = newWellInterventionCost.StartYear;

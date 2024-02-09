@@ -71,7 +71,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         {
             return new StudyCostProfileWrapperDto();
         }
-        var cost = TimeSeriesCost.MergeCostProfiles(feasibility, feed, otherStudies);
+        var cost = TimeSeriesCost.MergeCostProfiles([feasibility, feed, otherStudies]);
         var studyCost = new StudyCostProfile
         {
             StartYear = cost.StartYear,
@@ -82,7 +82,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies)
+    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
     {
         caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
         caseItem.TotalFEEDStudies = totalFEEDStudies;
