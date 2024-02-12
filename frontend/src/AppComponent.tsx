@@ -16,7 +16,7 @@ import { FusionRouterBootstrap } from "./app/FusionRouterBootstrap"
 import ConceptAppAuthProvider from "./auth/ConceptAppAuthProvider"
 import { APP_VERSION } from "./version"
 import { buildConfig } from "./Services/config"
-import { ResolveConfiguration } from "./Utils/config"
+import { resolveConfiguration } from "./Utils/config"
 
 ModuleRegistry.registerModules([
     ClientSideRowModelModule,
@@ -55,7 +55,7 @@ const AppComponent: FC = () => {
         (m) => m.startsWith("*"),
     ])
 
-    const config = ResolveConfiguration(fusionEnvironment.env)
+    const config = resolveConfiguration(fusionEnvironment.env)
 
     if (runtimeConfig.value !== undefined && runtimeConfig.value !== null) {
         if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {

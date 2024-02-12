@@ -13,7 +13,7 @@ export const projectPath = (projectId: string) => {
     return `/${projectId}`;
 }
 
-export const CasePath = (projectId: string, caseId: string) => {
+export const casePath = (projectId: string, caseId: string) => {
     return `${projectPath(projectId)}/case/${caseId}`
 }
 
@@ -112,7 +112,7 @@ export const toMonthDate = (date?: Date | null): string | undefined => {
 }
 
 export const isDefaultDate = (date?: Date | null): boolean => {
-    if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
+    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
         return true
     }
     return false
@@ -120,7 +120,7 @@ export const isDefaultDate = (date?: Date | null): boolean => {
 
 export const isDefaultDateString = (dateString?: string | null): boolean => {
     const date = new Date(dateString ?? "")
-    if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
+    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
         return true
     }
     return false
