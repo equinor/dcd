@@ -1,39 +1,16 @@
 import { Typography } from "@material-ui/core"
 import { Dispatch, SetStateAction } from "react"
 import styled from "styled-components"
-import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
-import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
-import { Project } from "../../models/Project"
-import { Well } from "../../models/Well"
 import CO2ListTechnicalInput from "./CO2ListTechnicalInput"
-import OperationalWellCosts from "./OperationalWellCosts"
-import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
 
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 `
-
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-`
-
-const ColumnWrapper = styled.div`
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-`
-
-const WellListWrapper = styled.div`
-    margin-bottom: 20px;
-    margin-right: 50px;
-`
-
 interface Props {
-    project: Project
-    setProject: Dispatch<SetStateAction<Project | undefined>>
+    project: Components.Schemas.ProjectDto
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
 const CO2Tab = ({

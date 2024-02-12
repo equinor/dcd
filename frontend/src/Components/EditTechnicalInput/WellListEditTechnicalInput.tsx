@@ -7,8 +7,6 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
-import { Well } from "../../models/Well"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { GetWellService } from "../../Services/WellService"
 
@@ -18,9 +16,9 @@ const ButtonWrapper = styled.div`
 `
 
 interface Props {
-    project: Project
-    wells: Well[] | undefined
-    setWells: Dispatch<SetStateAction<Well[]>>
+    project: Components.Schemas.ProjectDto
+    wells: Components.Schemas.WellDto[] | undefined
+    setWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
     explorationWells: boolean
 }
 
@@ -30,8 +28,8 @@ interface TableWell {
     wellCategory: Components.Schemas.WellCategory,
     drillingDays: number,
     wellCost: number,
-    well: Well
-    wells: Well[]
+    well: Components.Schemas.WellDto
+    wells: Components.Schemas.WellDto[]
 }
 
 interface DeleteButtonProps {
@@ -81,7 +79,7 @@ function WellListEditTechnicalInput({
     }, [wells])
 
     const updateWells = (p: any) => {
-        const rowWells: Well[] = p.data.wells
+        const rowWells: any[] = p.data.wells
         if (rowWells) {
             const { field } = p.colDef
             const index = rowWells.findIndex((w) => w === p.data.well)
@@ -150,36 +148,6 @@ function WellListEditTechnicalInput({
         suppressMenu: true,
     }), [])
 
-    const deleteWell = async (wellIdToDelete: string) => {
-        try {
-            if (wellIdToDelete && wells) {
-                // Attempt to delete the well from the backend
-                await (await GetWellService()).deleteWell(project.id, wellIdToDelete)
-
-                // If successful, update local state to remove the well
-                const updatedWells = wells.filter((well) => well.id !== wellIdToDelete)
-                setWells(updatedWells)
-            }
-        } catch (error: any) {
-            // If there's an error (e.g., well not found in the database), handle it
-            if (error.response && error.response.status === 404) {
-                // If the well is not found, remove it from the local state as well
-                if (wells) {
-                    const updatedWells = wells.filter((well) => well.id !== wellIdToDelete)
-                    setWells(updatedWells)
-                }
-                console.error(`Well with id ${wellIdToDelete} not found and removed from the local list.`)
-            } else {
-                // For other errors, log them
-                console.error("[ProjectView] error while submitting form data", error)
-            }
-        }
-    }
-
-    const deleteCellRenderer = (params: any) => (
-        <DeleteButton wellId={params.data.id} onDelete={deleteWell} />
-    )
-
     const [columnDefs] = useState<ColDef[]>([
         {
             field: "name", sort: order, width: 110,
@@ -203,19 +171,14 @@ function WellListEditTechnicalInput({
                 template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`),
             },
         },
-        {
-            headerName: "",
-            width: 90,
-            cellRenderer: deleteCellRenderer,
-
-        },
     ])
 
     const CreateWell = async () => {
-        const newWell = new Well()
-        newWell.wellCategory = !explorationWells ? 0 : 4
-        newWell.name = "New well"
-        newWell.projectId = project.id
+        const newWell: any = {
+            wellCategory: !explorationWells ? 0 : 4,
+            name: "New well",
+            projectId: project.id,
+        }
         if (wells) {
             const newWells = [...wells, newWell]
             setWells(newWells)

@@ -1,12 +1,10 @@
-/* eslint-disable max-len */
-import { useLocation, useParams } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 
 import { useCurrentContext } from "@equinor/fusion"
 import ProjectMenu from "./ProjectMenu"
-import { Project } from "../../models/Project"
 import { GetProjectService } from "../../Services/ProjectService"
 
 const SidebarDiv = styled.div`
@@ -51,7 +49,7 @@ interface Props {
 }
 
 const SideMenu: React.FC<Props> = ({ children }) => {
-    const [project, setProject] = useState<Project>()
+    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
     const currentProject = useCurrentContext()
     const location = useLocation()
 
@@ -72,13 +70,13 @@ const SideMenu: React.FC<Props> = ({ children }) => {
                         setProject(fetchedProject)
                     }
                 } catch (error) {
-                    console.error()
+                    console.error("Error fetching project", error)
                 }
             })()
         }
     }, [currentProject?.externalId, location.pathname])
 
-    if (project) {
+    if (currentProject) {
         return (
             <Wrapper>
                 <Body>

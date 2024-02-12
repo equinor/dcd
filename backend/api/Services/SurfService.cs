@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -12,11 +14,17 @@ public class SurfService : ISurfService
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
     private readonly ILogger<SurfService> _logger;
-    public SurfService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    private readonly IMapper _mapper;
+    public SurfService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SurfService>();
+        _mapper = mapper;
     }
 
     public async Task<SurfDto> CopySurf(Guid surfId, Guid sourceCaseId)
@@ -37,10 +45,11 @@ public class SurfService : ISurfService
             newSurfDto.CessationCostProfile.Id = Guid.Empty;
         }
 
-        var surf = await NewCreateSurf(newSurfDto, sourceCaseId);
-        var dto = SurfDtoAdapter.Convert(surf);
+        // var surf = await NewCreateSurf(newSurfDto, sourceCaseId);
+        // var dto = SurfDtoAdapter.Convert(surf);
 
-        return dto;
+        // return dto;
+        return newSurfDto;
     }
 
     public async Task<ProjectDto> UpdateSurf(SurfDto updatedSurfDto)
@@ -81,10 +90,14 @@ public class SurfService : ISurfService
         return await _projectService.GetProjectDto(surf.ProjectId);
     }
 
-    public async Task<Surf> NewCreateSurf(SurfDto surfDto, Guid sourceCaseId)
+    public async Task<Surf> NewCreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto)
     {
-        var surf = SurfAdapter.Convert(surfDto);
-        var project = await _projectService.GetProject(surf.ProjectId);
+        var surf = _mapper.Map<Surf>(surfDto);
+        if (surf == null)
+        {
+            throw new ArgumentNullException(nameof(surf));
+        }
+        var project = await _projectService.GetProject(projectId);
         surf.Project = project;
         surf.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSurf = _context.Surfs!.Add(surf);

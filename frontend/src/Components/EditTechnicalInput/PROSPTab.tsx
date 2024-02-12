@@ -4,7 +4,6 @@ import styled from "styled-components"
 import {
     Button, Input, Label, Progress, Switch,
 } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
@@ -41,8 +40,8 @@ const ErrorMessage = styled.div`
 `
 
 interface Props {
-    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>;
-    project: Project;
+    setProject: React.Dispatch<React.SetStateAction<Components.Schemas.ProjectDto | undefined>>;
+    project: Components.Schemas.ProjectDto;
 }
 
 function PROSPTab({
@@ -81,7 +80,7 @@ function PROSPTab({
             setErrorMessage("") // Clear any existing error messages
 
             if (sharepointUrl !== project.sharepointSiteUrl) {
-                const newProject: Project = { ...project }
+                const newProject: Components.Schemas.ProjectDto = { ...project }
                 newProject.sharepointSiteUrl = sharepointUrl
                 const projectResult = await (await GetProjectService()).updateProject(newProject)
                 setProject(projectResult)

@@ -58,7 +58,7 @@ function CaseTabTable({
                 id: EMPTY_GUID, startYear: 0, values: [], override: false,
             }
 
-            if (rowObject.profile && rowObject.profile.values.length > 0) {
+            if (rowObject.profile && rowObject.profile.values?.length > 0) {
                 let j = 0
                 if (tableName === "Production profiles" || tableName === "CO2 emissions") {
                     for (let i = rowObject.profile.startYear;

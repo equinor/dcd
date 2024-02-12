@@ -1,6 +1,4 @@
 import {
-    Dispatch,
-    SetStateAction,
     useMemo,
     useState,
     useEffect,
@@ -9,34 +7,23 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
 import { IsExplorationWell, isInteger } from "../../Utils/common"
-import { DrillingSchedule } from "../../models/assets/wellproject/DrillingSchedule"
-import { WellProjectWell } from "../../models/WellProjectWell"
-import { ExplorationWell } from "../../models/ExplorationWell"
-import { Well } from "../../models/Well"
+import { EMPTY_GUID } from "../../Utils/constants"
 
 interface Props {
-    project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
-    caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
     dg4Year: number
     tableYears: [number, number]
     tableName: string
     alignedGridsRef?: any[]
     gridRef?: any
-    assetWells: ExplorationWell[] | WellProjectWell[]
-    setAssetWells: Dispatch<SetStateAction<ExplorationWell[] | WellProjectWell[] | undefined>>
-    wells: Well[] | undefined
+    assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[]
+    setAssetWells: (assetWell: any[]) => void
+    wells: Components.Schemas.WellDto[] | undefined
     assetId: string
     isExplorationTable: boolean
 }
 
 function CaseDrillingScheduleTabTable({
-    project, setProject,
-    caseItem, setCase,
     dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
@@ -47,14 +34,20 @@ function CaseDrillingScheduleTabTable({
     const [rowData, setRowData] = useState<any[]>([])
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
-        const newAssetWells: ExplorationWell[] | WellProjectWell[] = [...assetWells]
+        const newAssetWells: (Components.Schemas.ExplorationWellDto | Components.Schemas.WellProjectWellDto)[] = [...assetWells]
         if (isExplorationTable) {
             wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
                 const explorationWell = assetWell.find((ew) => ew.wellId === w.id)
                 if (!explorationWell) {
-                    const newExplorationWell = new ExplorationWell()
-                    newExplorationWell.explorationId = assetId
-                    newExplorationWell.wellId = w.id
+                    const newExplorationWell = {
+                        explorationId: assetId,
+                        wellId: w.id,
+                        drillingSchedule: {
+                            id: EMPTY_GUID,
+                            startYear: dg4Year,
+                            values: null,
+                        },
+                    }
                     newAssetWells.push(newExplorationWell)
                 }
             })
@@ -62,9 +55,15 @@ function CaseDrillingScheduleTabTable({
             wells?.filter((w) => !IsExplorationWell(w)).forEach((w) => {
                 const wellProjectWell = assetWell.find((wpw) => wpw.wellId === w.id)
                 if (!wellProjectWell) {
-                    const newWellProjectWell = new WellProjectWell()
-                    newWellProjectWell.wellProjectId = assetId
-                    newWellProjectWell.wellId = w.id
+                    const newWellProjectWell = {
+                        wellProjectId: assetId,
+                        wellId: w.id,
+                        drillingSchedule: {
+                            id: EMPTY_GUID,
+                            startYear: dg4Year,
+                            values: null,
+                        },
+                    }
                     newAssetWells.push(newWellProjectWell)
                 }
             })
@@ -84,7 +83,7 @@ function CaseDrillingScheduleTabTable({
                     total: 0,
                     assetWell: w,
                     assetWells: existingAndNewAssetWells,
-                    drillingSchedule: w.drillingSchedule ?? new DrillingSchedule(),
+                    drillingSchedule: w.drillingSchedule,
                 }
                 if (tableWell.drillingSchedule.values && tableWell.drillingSchedule.values.length > 0
                     && tableWell.drillingSchedule.startYear !== undefined) {
@@ -161,15 +160,15 @@ function CaseDrillingScheduleTabTable({
             const newProfile = { ...p.data.drillingSchedule }
             newProfile.startYear = timeSeriesStartYear
             newProfile.values = values
-            const rowWells: ExplorationWell[] | WellProjectWell[] = p.data.assetWells
+            const rowWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[] = p.data.assetWells
+
             if (rowWells) {
-                const { field } = p.colDef
                 const index = rowWells.findIndex((w) => w === p.data.assetWell)
                 if (index > -1) {
                     const well = rowWells[index]
                     const updatedWell = well
                     updatedWell.drillingSchedule = newProfile
-                    const updatedWells = [...rowWells]
+                    const updatedWells: any[] = [...rowWells]
                     updatedWells[index] = updatedWell
                     setAssetWells(updatedWells)
                 }

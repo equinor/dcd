@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 
@@ -13,12 +15,18 @@ public class DrainageStrategyService : IDrainageStrategyService
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
     private readonly ILogger<DrainageStrategyService> _logger;
+    private readonly IMapper _mapper;
 
-    public DrainageStrategyService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public DrainageStrategyService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper)
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
+        _mapper = mapper;
     }
 
     public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
@@ -33,11 +41,14 @@ public class DrainageStrategyService : IDrainageStrategyService
         return await _projectService.GetProjectDto(drainageStrategy.ProjectId);
     }
 
-    public async Task<DrainageStrategy> NewCreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
+    public async Task<DrainageStrategy> NewCreateDrainageStrategy(Guid projectId, Guid sourceCaseId, CreateDrainageStrategyDto drainageStrategyDto)
     {
-        var unit = (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
-        var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
-        var project = await _projectService.GetProject(drainageStrategy.ProjectId);
+        var drainageStrategy = _mapper.Map<DrainageStrategy>(drainageStrategyDto);
+        if (drainageStrategy == null)
+        {
+            throw new ArgumentNullException(nameof(drainageStrategy));
+        }
+        var project = await _projectService.GetProject(projectId);
         drainageStrategy.Project = project;
         var createdDrainageStrategy = _context.DrainageStrategies!.Add(drainageStrategy);
         await _context.SaveChangesAsync();
@@ -105,10 +116,11 @@ public class DrainageStrategyService : IDrainageStrategyService
             newDrainageStrategyDto.ImportedElectricityOverride.Id = Guid.Empty;
         }
 
-        var drainageStrategy = await NewCreateDrainageStrategy(newDrainageStrategyDto, sourceCaseId);
-        var dto = DrainageStrategyDtoAdapter.Convert(drainageStrategy, unit);
+        // var drainageStrategy = await NewCreateDrainageStrategy(newDrainageStrategyDto, sourceCaseId);
+        // var dto = DrainageStrategyDtoAdapter.Convert(drainageStrategy, unit);
 
-        return dto;
+        // return dto;
+        return new DrainageStrategyDto();
     }
 
     private async Task SetCaseLink(DrainageStrategy drainageStrategy, Guid sourceCaseId, Project project)

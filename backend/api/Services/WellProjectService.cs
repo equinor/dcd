@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -12,12 +14,19 @@ public class WellProjectService : IWellProjectService
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
     private readonly ILogger<WellProjectService> _logger;
+    private readonly IMapper _mapper;
 
-    public WellProjectService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public WellProjectService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<WellProjectService>();
+        _mapper = mapper;
     }
 
     public async Task<WellProjectDto> CopyWellProject(Guid wellProjectId, Guid sourceCaseId)
@@ -62,15 +71,20 @@ public class WellProjectService : IWellProjectService
             newWellProjectDto.GasInjectorCostProfileOverride.Id = Guid.Empty;
         }
 
-        var wellProject = await NewCreateWellProject(newWellProjectDto, sourceCaseId);
-        var dto = WellProjectDtoAdapter.Convert(wellProject);
-        return dto;
+        // var wellProject = await NewCreateWellProject(newWellProjectDto, sourceCaseId);
+        // var dto = WellProjectDtoAdapter.Convert(wellProject);
+        // return dto;
+        return newWellProjectDto;
     }
 
-    public async Task<WellProject> NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId)
+    public async Task<WellProject> NewCreateWellProject(Guid projectId, Guid sourceCaseId, CreateWellProjectDto wellProjectDto)
     {
-        var wellProject = WellProjectAdapter.Convert(wellProjectDto);
-        var project = await _projectService.GetProject(wellProject.ProjectId);
+        var wellProject = _mapper.Map<WellProject>(wellProjectDto);
+        if (wellProject == null)
+        {
+            throw new ArgumentNullException(nameof(wellProject));
+        }
+        var project = await _projectService.GetProject(projectId);
         wellProject.Project = project;
         var createdWellProject = _context.WellProjects!.Add(wellProject);
         await _context.SaveChangesAsync();

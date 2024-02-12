@@ -9,5 +9,5 @@ public interface ISurfService
     Task<ProjectDto> UpdateSurf(SurfDto updatedSurfDto);
     Task<Surf> GetSurf(Guid surfId);
     Task<ProjectDto> CreateSurf(SurfDto surfDto, Guid sourceCaseId);
-    Task<Surf> NewCreateSurf(SurfDto surfDto, Guid sourceCaseId);
+    Task<Surf> NewCreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto);
 }

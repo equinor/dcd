@@ -6,7 +6,7 @@ import { enableContext } from "@equinor/fusion-framework-module-context"
 export const configurator: AppModuleInitiator = (config) => {
     enableAgGrid(config)
     config.useFrameworkServiceClient("portal")
-    enableNavigation(config, window.location.pathname.match(/^\/?apps/) ? "/apps/conceptapp" : "/")
+    enableNavigation(config)
     enableContext(config, (builder) => {
         builder.setContextType(["ProjectMaster"])
     })

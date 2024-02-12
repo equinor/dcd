@@ -3,6 +3,8 @@ using api.Services;
 
 using Api.Authorization;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -30,7 +32,7 @@ public class CasesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ProjectDto> CreateCase([FromRoute] Guid projectId, [FromBody] CaseDto caseDto)
+    public async Task<ProjectDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
         return await _caseService.CreateCase(projectId, caseDto);
     }

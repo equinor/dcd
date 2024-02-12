@@ -5,10 +5,9 @@ import {
 import { lock } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import { Topside } from "../../models/assets/topside/Topside"
 
 interface Props {
-    topside: Topside,
+    topside: Components.Schemas.TopsideDto,
 }
 
 function CaseCO2DistributionTable({

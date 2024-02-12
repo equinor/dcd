@@ -10,7 +10,6 @@ import React, {
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { useCurrentContext } from "@equinor/fusion"
-import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import ProjectOverviewTab from "./Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "./Project/ProjectCompareCasesTab"
@@ -54,7 +53,7 @@ const ProjectView = () => {
     const currentProject = useCurrentContext()
 
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const [project, setProject] = useState<Project>()
+    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
     const [, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
     const [, setCurrency] = useState<Components.Schemas.Currency>(1)
 
@@ -109,7 +108,7 @@ const ProjectView = () => {
 
     const handleSave = async () => {
         setIsSaving(true)
-        const updatedProject = Project.Copy(project)
+        const updatedProject = { ...project }
         const result = await (await GetProjectService()).updateProject(updatedProject)
         setIsSaving(false)
         setProject(result)

@@ -1,7 +1,5 @@
 import _ from "lodash"
-import { Case } from "../models/case/Case"
 import { ITimeSeries } from "../models/ITimeSeries"
-import { Well } from "../models/Well"
 
 export const LoginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -36,7 +34,7 @@ export function GetToken(keyName: string) {
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
-export const unwrapCase = (_case?: Case | undefined): Case => {
+export const unwrapCase = (_case?: Components.Schemas.CaseDto | undefined): Components.Schemas.CaseDto => {
     if (_case === undefined || _case === null) {
         throw new Error("Attempted to Create a case from which has not been created")
     }
@@ -120,6 +118,16 @@ export const IsDefaultDate = (date?: Date | null): boolean => {
     return false
 }
 
+export const IsDefaultDateString = (dateString?: string | null): boolean => {
+    const date = new Date(dateString ?? "")
+    if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
+        return true
+    }
+    return false
+}
+
+export const DateFromString = (dateString?: string | null): Date => new Date(dateString ?? "")
+
 export const DefaultDate = () => new Date("0001-01-01")
 
 export const isInteger = (value: string) => /^-?\d+$/.test(value)
@@ -135,7 +143,7 @@ export const ProductionStrategyOverviewToString = (value?: Components.Schemas.Pr
     }[value]
 }
 
-export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
+export const IsExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
 const zip = (t1: number[], t2: number[]) => t1.map((t1Value, index) => t1Value + (t2[index] ?? 0))
 
@@ -173,7 +181,11 @@ export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
 
     if (!t1Values || t1Values.length === 0) {
         if (!t2Values || t2Values.length === 0) {
-            return { startYear: 0, values: [] }
+            return {
+                id: "",
+                startYear: 0,
+                values: [],
+            }
         }
         return t2
     }
@@ -191,6 +203,7 @@ export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
     }
 
     const timeSeries = {
+        id: t1?.id ?? t2?.id ?? "",
         startYear: Math.min(t1Year, t2Year),
         values,
     }

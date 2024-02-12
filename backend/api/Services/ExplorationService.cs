@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -13,12 +15,19 @@ public class ExplorationService : IExplorationService
     private readonly IProjectService _projectService;
 
     private readonly ILogger<ExplorationService> _logger;
+    private readonly IMapper _mapper;
 
-    public ExplorationService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public ExplorationService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<ExplorationService>();
+        _mapper = mapper;
     }
 
 
@@ -53,15 +62,20 @@ public class ExplorationService : IExplorationService
             newExplorationDto.GAndGAdminCost.Id = Guid.Empty;
         }
 
-        var wellProject = await NewCreateExploration(newExplorationDto, sourceCaseId);
-        var dto = ExplorationDtoAdapter.Convert(wellProject);
-        return dto;
+        // var wellProject = await NewCreateExploration(newExplorationDto, sourceCaseId);
+        // var dto = ExplorationDtoAdapter.Convert(wellProject);
+        // return dto;
+        return newExplorationDto;
     }
 
-    public async Task<Exploration> NewCreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
+    public async Task<Exploration> NewCreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto)
     {
-        var exploration = ExplorationAdapter.Convert(explorationDto);
-        var project = await _projectService.GetProject(exploration.ProjectId);
+        var exploration = _mapper.Map<Exploration>(explorationDto);
+        if (exploration == null)
+        {
+            throw new ArgumentNullException(nameof(exploration));
+        }
+        var project = await _projectService.GetProject(projectId);
         exploration.Project = project;
         var createdExploration = _context.Explorations!.Add(exploration);
         await _context.SaveChangesAsync();

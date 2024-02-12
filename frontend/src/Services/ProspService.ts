@@ -2,18 +2,17 @@ import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
-import { Project } from "../models/Project"
 import { DriveItem } from "../models/sharepoint/DriveItem"
 
 export class __ProspService extends __BaseService {
-    public async create(sourceCaseId: string, projectId: string, body: any) :Promise<Project> {
+    public async create(sourceCaseId: string, projectId: string, body: any) :Promise<Components.Schemas.ProjectDto> {
         const res: Components.Schemas.ProjectDto = await this.postWithParams(
             "",
             { body },
 
             { params: { sourceCaseId, projectId } },
         )
-        return Project.fromJSON(res)
+        return res
     }
 
     async getSharePointFileNamesAndId(body:any) {
@@ -21,14 +20,14 @@ export class __ProspService extends __BaseService {
         return driveItem
     }
 
-    public async importFromSharepoint(projectId: string, body: any): Promise<Project> {
+    public async importFromSharepoint(projectId: string, body: any): Promise<Components.Schemas.ProjectDto> {
         const res: Components.Schemas.ProjectDto = await this.postWithParams(
             `${projectId}/sharepoint`,
             { body },
 
             { params: { projectId } },
         )
-        return Project.fromJSON(res)
+        return res
     }
 }
 

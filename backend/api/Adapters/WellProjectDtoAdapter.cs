@@ -14,18 +14,18 @@ public static class WellProjectDtoAdapter
             Name = wellProject.Name,
             ArtificialLift = wellProject.ArtificialLift,
             Currency = wellProject.Currency,
-            WellProjectWells = wellProject.WellProjectWells?.Select(wc => WellProjectWellDtoAdapter.Convert(wc)).ToList(),
-            OilProducerCostProfile = Convert<OilProducerCostProfileDto, OilProducerCostProfile>(wellProject.OilProducerCostProfile),
-            OilProducerCostProfileOverride = ConvertOverride<OilProducerCostProfileOverrideDto, OilProducerCostProfileOverride>(wellProject.OilProducerCostProfileOverride),
+            WellProjectWells = wellProject.WellProjectWells?.Select(wc => WellProjectWellDtoAdapter.Convert(wc)).ToList() ?? [],
+            OilProducerCostProfile = Convert<OilProducerCostProfileDto, OilProducerCostProfile>(wellProject.OilProducerCostProfile) ?? new OilProducerCostProfileDto(),
+            OilProducerCostProfileOverride = ConvertOverride<OilProducerCostProfileOverrideDto, OilProducerCostProfileOverride>(wellProject.OilProducerCostProfileOverride) ?? new OilProducerCostProfileOverrideDto(),
 
-            GasProducerCostProfile = Convert<GasProducerCostProfileDto, GasProducerCostProfile>(wellProject.GasProducerCostProfile),
-            GasProducerCostProfileOverride = ConvertOverride<GasProducerCostProfileOverrideDto, GasProducerCostProfileOverride>(wellProject.GasProducerCostProfileOverride),
+            GasProducerCostProfile = Convert<GasProducerCostProfileDto, GasProducerCostProfile>(wellProject.GasProducerCostProfile) ?? new GasProducerCostProfileDto(),
+            GasProducerCostProfileOverride = ConvertOverride<GasProducerCostProfileOverrideDto, GasProducerCostProfileOverride>(wellProject.GasProducerCostProfileOverride) ?? new GasProducerCostProfileOverrideDto(),
 
-            WaterInjectorCostProfile = Convert<WaterInjectorCostProfileDto, WaterInjectorCostProfile>(wellProject.WaterInjectorCostProfile),
-            WaterInjectorCostProfileOverride = ConvertOverride<WaterInjectorCostProfileOverrideDto, WaterInjectorCostProfileOverride>(wellProject.WaterInjectorCostProfileOverride),
+            WaterInjectorCostProfile = Convert<WaterInjectorCostProfileDto, WaterInjectorCostProfile>(wellProject.WaterInjectorCostProfile) ?? new WaterInjectorCostProfileDto(),
+            WaterInjectorCostProfileOverride = ConvertOverride<WaterInjectorCostProfileOverrideDto, WaterInjectorCostProfileOverride>(wellProject.WaterInjectorCostProfileOverride) ?? new WaterInjectorCostProfileOverrideDto(),
 
-            GasInjectorCostProfile = Convert<GasInjectorCostProfileDto, GasInjectorCostProfile>(wellProject.GasInjectorCostProfile),
-            GasInjectorCostProfileOverride = ConvertOverride<GasInjectorCostProfileOverrideDto, GasInjectorCostProfileOverride>(wellProject.GasInjectorCostProfileOverride)
+            GasInjectorCostProfile = Convert<GasInjectorCostProfileDto, GasInjectorCostProfile>(wellProject.GasInjectorCostProfile) ?? new GasInjectorCostProfileDto(),
+            GasInjectorCostProfileOverride = ConvertOverride<GasInjectorCostProfileOverrideDto, GasInjectorCostProfileOverride>(wellProject.GasInjectorCostProfileOverride) ?? new GasInjectorCostProfileOverrideDto(),
         };
 
         return wellProjectDto;

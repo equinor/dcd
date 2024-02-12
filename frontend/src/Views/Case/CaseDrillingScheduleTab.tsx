@@ -9,16 +9,9 @@ import {
 import styled from "styled-components"
 
 import {
-    Button, NativeSelect, Progress, Typography,
+    Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
-import { Exploration } from "../../models/assets/exploration/Exploration"
-import { WellProject } from "../../models/assets/wellproject/WellProject"
-import { Well } from "../../models/Well"
-import { ExplorationWell } from "../../models/ExplorationWell"
-import { WellProjectWell } from "../../models/WellProjectWell"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 
@@ -67,27 +60,23 @@ const InputWrapper = styled.div`
 `
 
 interface Props {
-    project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
-    caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
-    exploration: Exploration,
-    setExploration: Dispatch<SetStateAction<Exploration | undefined>>,
-    wellProject: WellProject,
-    setWellProject: Dispatch<SetStateAction<WellProject | undefined>>,
-    explorationWells: ExplorationWell[],
-    setExplorationWells: Dispatch<SetStateAction<ExplorationWell[] | undefined>>,
-    wellProjectWells: WellProjectWell[],
-    setWellProjectWells: Dispatch<SetStateAction<WellProjectWell[] | undefined>>,
-    wells: Well[] | undefined
+    project: Components.Schemas.ProjectDto,
+    caseItem: Components.Schemas.CaseDto,
+    exploration: Components.Schemas.ExplorationDto,
+    wellProject: Components.Schemas.WellProjectDto,
+    explorationWells: Components.Schemas.ExplorationWellDto[],
+    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>,
+    wellProjectWells: Components.Schemas.WellProjectWellDto[],
+    setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
+    wells: Components.Schemas.WellDto[] | undefined
     activeTab: number
 }
 
 function CaseDrillingScheduleTab({
-    project, setProject,
-    caseItem, setCase,
-    exploration, setExploration,
-    wellProject, setWellProject,
+    project,
+    caseItem,
+    exploration,
+    wellProject,
     explorationWells, setExplorationWells,
     wellProjectWells, setWellProjectWells,
     wells, activeTab,
@@ -108,9 +97,7 @@ function CaseDrillingScheduleTab({
     // ExplorationWell
     const [explorationWellCount, setExplorationWellCount] = useState<number>(0)
     const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
-    const [sidetrackCount, setSidetrackCount] = useState<number>(0)
-
-    const [isSaving, setIsSaving] = useState<boolean>()
+    const [, setSidetrackCount] = useState<number>(0)
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -134,12 +121,12 @@ function CaseDrillingScheduleTab({
     }
 
     useEffect(() => {
-        if (activeTab === 3) {
+        if (activeTab === 3 && caseItem.dG4Date !== undefined) {
             const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
             const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                caseItem.DG4Date.getFullYear(),
+                new Date(caseItem.dG4Date).getFullYear(),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -298,12 +285,8 @@ function CaseDrillingScheduleTab({
             <TableWrapper>
                 <CaseDrillingScheduleTabTable
                     assetWells={explorationWells}
-                    caseItem={caseItem}
-                    dg4Year={caseItem.DG4Date.getFullYear()}
-                    project={project}
+                    dg4Year={caseItem.dG4Date !== undefined ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     setAssetWells={setExplorationWells}
-                    setCase={setCase}
-                    setProject={setProject}
                     tableName="Exploration wells"
                     tableYears={tableYears}
                     assetId={exploration.id!}
@@ -316,12 +299,8 @@ function CaseDrillingScheduleTab({
             <TableWrapper>
                 <CaseDrillingScheduleTabTable
                     assetWells={wellProjectWells}
-                    caseItem={caseItem}
-                    dg4Year={caseItem.DG4Date.getFullYear()}
-                    project={project}
+                    dg4Year={caseItem.dG4Date !== undefined ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     setAssetWells={setWellProjectWells}
-                    setCase={setCase}
-                    setProject={setProject}
                     tableName="Development wells"
                     tableYears={tableYears}
                     assetId={wellProject.id!}

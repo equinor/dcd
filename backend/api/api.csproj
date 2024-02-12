@@ -6,6 +6,7 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.0" />
         <PackageReference Include="DocumentFormat.OpenXml" Version="2.16.0" />
         <PackageReference Include="Equinor.TI.CommonLibrary.Client" Version="0.3.4" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
