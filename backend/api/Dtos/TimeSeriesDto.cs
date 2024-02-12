@@ -66,18 +66,21 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
         }
     }
 
-public static TimeSeriesCostDto MergeCostProfilesList(TimeSeriesCostDto[] timeseriesList)
-{
-    if (timeseriesList.Length == 0) return new TimeSeriesCostDto(); // Return an empty TimeSeriesCostDto if the list is empty.
-
-    var timeSeries = timeseriesList[0]; // Start with the first item in the list.
-    for (int i = 1; i < timeseriesList.Length; i++) // Start merging from the second item.
+    public static TimeSeriesCostDto MergeCostProfilesList(TimeSeriesCostDto[] timeseriesList)
     {
-        timeSeries = MergeCostProfiles(timeSeries, timeseriesList[i]);
-    }
+        if (timeseriesList.Length == 0)
+        {
+            return new TimeSeriesCostDto();
+        } 
 
-    return timeSeries;
-}
+        var timeSeries = timeseriesList[0];
+        for (int i = 1; i < timeseriesList.Length; i++) 
+        {
+            timeSeries = MergeCostProfiles(timeSeries, timeseriesList[i]);
+        }
+
+        return timeSeries;
+    }
 
 
     public static TimeSeriesCostDto MergeCostProfiles(TimeSeriesCostDto t1, TimeSeriesCostDto t2)
