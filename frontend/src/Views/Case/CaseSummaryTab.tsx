@@ -8,7 +8,7 @@ import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
-import { MergeTimeseries } from "../../Utils/common"
+import { mergeTimeseries } from "../../Utils/common"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 
 const ColumnWrapper = styled.div`
@@ -117,7 +117,7 @@ const CaseSummaryTab = ({
                         feed = caseItem.totalFEEDStudiesOverride
                     }
 
-                    const totalStudy = MergeTimeseries(feasibility, feed)
+                    const totalStudy = mergeTimeseries(feasibility, feed)
                     setTotalStudyCost(totalStudy)
 
                     setOpexCost(opex)

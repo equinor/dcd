@@ -6,7 +6,7 @@ import { IconData } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { ProjectMenuItemType } from "./ProjectMenu"
 import MenuItem from "./MenuItem"
-import { CasePath } from "../../Utils/common"
+import { casePath } from "../../Utils/common"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -74,7 +74,7 @@ const ProjectMenuItemComponent = ({
                     {subItems.map((subItem, index) => (
                         <SubItem key={`menu-sub-item-${index + 1}`}>
                             <nav>
-                                <LinkWithoutStyle to={CasePath(
+                                <LinkWithoutStyle to={casePath(
                                     currentProject?.id!,
                                     subItem.id ? subItem.id : "",
                                 )}

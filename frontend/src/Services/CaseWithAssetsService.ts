@@ -2,7 +2,7 @@ import { __BaseService } from "./__BaseService"
 
 import { config } from "./config"
 
-import { GetToken, LoginAccessTokenKey } from "../Utils/common"
+import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class CaseWithAssetsService extends __BaseService {
     public async update(projectId: string, caseId: string, body: any): Promise<Components.Schemas.ProjectWithGeneratedProfilesDto> {
@@ -14,6 +14,6 @@ class CaseWithAssetsService extends __BaseService {
 export const GetCaseWithAssetsService = async () => {
     return new CaseWithAssetsService({
         ...config.CaseWithAssetsService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
+        accessToken: await getToken(loginAccessTokenKey)!,
     })
 }

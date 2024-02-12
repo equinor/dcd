@@ -1,7 +1,7 @@
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
-import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+import { loginAccessTokenKey, getToken } from "../Utils/common"
 import { DriveItem } from "../models/sharepoint/DriveItem"
 
 export class __ProspService extends __BaseService {
@@ -34,6 +34,6 @@ export class __ProspService extends __BaseService {
 export const GetProspService = async () => {
     return new __ProspService({
         ...config.UploadService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
+        accessToken: await getToken(loginAccessTokenKey)!,
     })
 }

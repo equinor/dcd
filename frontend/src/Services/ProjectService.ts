@@ -1,7 +1,7 @@
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
-import { GetToken, LoginAccessTokenKey } from "../Utils/common"
+import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 export class __ProjectService extends __BaseService {
     async getProjectByID(id: string) {
@@ -36,6 +36,6 @@ export class __ProjectService extends __BaseService {
 export const GetProjectService = async () => {
     return new __ProjectService({
         ...config.ProjectService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
+        accessToken: await getToken(loginAccessTokenKey)!,
     })
 }

@@ -10,7 +10,7 @@ import {
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
-import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../../Utils/common"
+import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { WrapperColumn, WrapperRow } from "../Asset/StyledAssetComponents"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
@@ -117,13 +117,13 @@ const ProjectOverviewTab = ({
                     <WrapperRow>
                         <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
                         <Typography aria-label="Project phase">
-                            {GetProjectPhaseName(project.projectPhase)}
+                            {getProjectPhaseName(project.projectPhase)}
                         </Typography>
                     </WrapperRow>
                     <WrapperRow>
                         <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
                         <Typography aria-label="Project category">
-                            {GetProjectCategoryName(project.projectCategory)}
+                            {getProjectCategoryName(project.projectCategory)}
                         </Typography>
                     </WrapperRow>
                     <WrapperRow>

@@ -2,7 +2,7 @@ import { __BaseService } from "./__BaseService"
 
 import { config } from "./config"
 
-import { GetToken, LoginAccessTokenKey } from "../Utils/common"
+import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class CaseService extends __BaseService {
     public async create(
@@ -54,6 +54,6 @@ class CaseService extends __BaseService {
 export const GetCaseService = async () => {
     return new CaseService({
         ...config.CaseService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
+        accessToken: await getToken(loginAccessTokenKey)!,
     })
 }

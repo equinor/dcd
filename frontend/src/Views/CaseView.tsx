@@ -17,7 +17,7 @@ import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
 import { Tooltip } from "@material-ui/core"
 import { GetProjectService } from "../Services/ProjectService"
-import { ProjectPath, unwrapProjectId } from "../Utils/common"
+import { projectPath, unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import CaseCostTab from "./Case/CaseCostTab"
@@ -248,7 +248,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(ProjectPath(fusionContextId!))
+                history.push(projectPath(fusionContextId!))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -260,7 +260,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).deleteCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(ProjectPath(fusionContextId!))
+                history.push(projectPath(fusionContextId!))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)

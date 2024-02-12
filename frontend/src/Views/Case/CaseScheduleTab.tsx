@@ -10,11 +10,11 @@ import {
 } from "@equinor/eds-core-react"
 import CaseDateField from "../../Components/Case/CaseDateField"
 import {
-    DateFromString,
-    DefaultDate,
-    IsDefaultDate,
-    IsDefaultDateString,
-    ToMonthDate,
+    dateFromString,
+    defaultDate,
+    isDefaultDate,
+    isDefaultDateString,
+    toMonthDate,
 } from "../../Utils/common"
 
 const ColumnWrapper = styled.div`
@@ -51,27 +51,27 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.dG0Date = DefaultDate().toISOString()
+            newCase.dG0Date = defaultDate().toISOString()
             setCase(newCase)
             return
         }
         newCase.dG0Date = new Date(e.target.value).toISOString()
-        if (newCase.dG1Date && IsDefaultDateString(newCase.dG1Date)) {
+        if (newCase.dG1Date && isDefaultDateString(newCase.dG1Date)) {
             const dg = new Date(newCase.dG0Date)
             dg.setMonth(dg.getMonth() + 12)
             newCase.dG1Date = dg.toISOString()
         }
-        if (IsDefaultDateString(newCase.dG2Date)) {
+        if (isDefaultDateString(newCase.dG2Date)) {
             const dg = new Date(newCase.dG1Date)
             dg.setMonth(dg.getMonth() + 12)
             newCase.dG2Date = dg.toISOString()
         }
-        if (IsDefaultDateString(newCase.dG3Date)) {
+        if (isDefaultDateString(newCase.dG3Date)) {
             const dg = new Date(newCase.dG2Date)
             dg.setMonth(dg.getMonth() + 12)
             newCase.dG3Date = dg.toISOString()
         }
-        if (IsDefaultDateString(newCase.dG4Date)) {
+        if (isDefaultDateString(newCase.dG4Date)) {
             const dg = new Date(newCase.dG3Date)
             dg.setMonth(dg.getMonth() + 36)
             newCase.dG4Date = dg.toISOString()
@@ -83,7 +83,7 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.dG1Date = DefaultDate().toISOString()
+            newCase.dG1Date = defaultDate().toISOString()
         } else {
             newCase.dG1Date = new Date(e.target.value).toISOString()
         }
@@ -94,7 +94,7 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.dG2Date = DefaultDate().toISOString()
+            newCase.dG2Date = defaultDate().toISOString()
         } else {
             newCase.dG2Date = new Date(e.target.value).toISOString()
         }
@@ -105,7 +105,7 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.dG3Date = DefaultDate().toISOString()
+            newCase.dG3Date = defaultDate().toISOString()
         } else {
             newCase.dG3Date = new Date(e.target.value).toISOString()
         }
@@ -116,7 +116,7 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.dG4Date = DefaultDate().toISOString()
+            newCase.dG4Date = defaultDate().toISOString()
         } else {
             newCase.dG4Date = new Date(e.target.value).toISOString()
         }
@@ -127,7 +127,7 @@ const CaseScheduleTab = ({
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.dgaDate = DefaultDate().toISOString()
+            newCase.dgaDate = defaultDate().toISOString()
         } else {
             newCase.dgaDate = new Date(e.target.value).toISOString()
         }
@@ -138,7 +138,7 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.dgbDate = DefaultDate().toISOString()
+            newCase.dgbDate = defaultDate().toISOString()
         } else {
             newCase.dgbDate = new Date(e.target.value).toISOString()
         }
@@ -149,7 +149,7 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.dgcDate = DefaultDate().toISOString()
+            newCase.dgcDate = defaultDate().toISOString()
         } else {
             newCase.dgcDate = new Date(e.target.value).toISOString()
         }
@@ -160,7 +160,7 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.apxDate = DefaultDate().toISOString()
+            newCase.apxDate = defaultDate().toISOString()
         } else {
             newCase.apxDate = new Date(e.target.value).toISOString()
         }
@@ -171,7 +171,7 @@ const CaseScheduleTab = ({
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newCase.apzDate = DefaultDate().toISOString()
+            newCase.apzDate = defaultDate().toISOString()
         } else {
             newCase.apzDate = new Date(e.target.value).toISOString()
         }
@@ -179,25 +179,25 @@ const CaseScheduleTab = ({
     }
 
     const findMinDate = (dates: Date[]) => {
-        const filteredDates = dates.filter((d) => !IsDefaultDate(d))
+        const filteredDates = dates.filter((d) => !isDefaultDate(d))
         if (filteredDates.length === 0) { return undefined }
 
         const minDateValue = Math.max(
             ...filteredDates.map((date) => date.getTime()),
         )
         const minDate = new Date(minDateValue)
-        return ToMonthDate(minDate)
+        return toMonthDate(minDate)
     }
 
     const findMaxDate = (dates: Date[]) => {
-        const filteredDates = dates.filter((d) => !IsDefaultDate(d))
+        const filteredDates = dates.filter((d) => !isDefaultDate(d))
         if (filteredDates.length === 0) { return undefined }
 
         const maxDateValue = Math.min(
             ...filteredDates.map((date) => date.getTime()),
         )
         const maxDate = new Date(maxDateValue)
-        return ToMonthDate(maxDate)
+        return toMonthDate(maxDate)
     }
 
     const getDatesFromStrings = (dateStrings: string[]) => {
@@ -216,62 +216,62 @@ const CaseScheduleTab = ({
                 <RowWrapper>
                     <CaseDateField
                         onChange={handleDGAChange}
-                        value={DateFromString(caseItem.dgaDate)}
+                        value={dateFromString(caseItem.dgaDate)}
                         label="DGA"
                     />
                     <CaseDateField
                         onChange={handleDGBChange}
-                        value={DateFromString(caseItem.dgbDate)}
+                        value={dateFromString(caseItem.dgbDate)}
                         label="DGB"
                     />
                     <CaseDateField
                         onChange={handleDGCChange}
-                        value={DateFromString(caseItem.dgcDate)}
+                        value={dateFromString(caseItem.dgcDate)}
                         label="DGC"
                     />
                     <CaseDateField
                         onChange={handleAPXChange}
-                        value={DateFromString(caseItem.apxDate)}
+                        value={dateFromString(caseItem.apxDate)}
                         label="APX"
                     />
                     <CaseDateField
                         onChange={handleAPZChange}
-                        value={DateFromString(caseItem.apzDate)}
+                        value={dateFromString(caseItem.apzDate)}
                         label="APZ"
                     />
                 </RowWrapper>
                 <RowWrapper>
                     <CaseDateField
                         onChange={handleDG0Change}
-                        value={DateFromString(caseItem.dG0Date)}
+                        value={dateFromString(caseItem.dG0Date)}
                         label="DG0"
                         max={findMaxDate(getDatesFromStrings([caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
                         min={undefined}
                     />
                     <CaseDateField
                         onChange={handleDG1Change}
-                        value={DateFromString(caseItem.dG1Date)}
+                        value={dateFromString(caseItem.dG1Date)}
                         label="DG1"
                         max={findMaxDate(getDatesFromStrings([caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
                         min={findMinDate(getDatesFromStrings([caseItem.dG0Date]))}
                     />
                     <CaseDateField
                         onChange={handleDG2Change}
-                        value={DateFromString(caseItem.dG2Date)}
+                        value={dateFromString(caseItem.dG2Date)}
                         label="DG2"
                         max={findMaxDate(getDatesFromStrings([caseItem.dG3Date, caseItem.dG4Date]))}
                         min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date]))}
                     />
                     <CaseDateField
                         onChange={handleDG3Change}
-                        value={DateFromString(caseItem.dG3Date)}
+                        value={dateFromString(caseItem.dG3Date)}
                         label="DG3"
                         max={findMaxDate(getDatesFromStrings([caseItem.dG4Date]))}
                         min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date]))}
                     />
                     <CaseDateField
                         onChange={handleDG4Change}
-                        value={DateFromString(caseItem.dG4Date)}
+                        value={dateFromString(caseItem.dG4Date)}
                         label="DG4"
                         max={undefined}
                         min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date]))}

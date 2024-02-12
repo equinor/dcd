@@ -3,7 +3,7 @@ import { __BaseService } from "./__BaseService"
 
 import { config } from "./config"
 
-import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+import { loginAccessTokenKey, getToken } from "../Utils/common"
 
 class STEAService extends __BaseService {
     public async excelToSTEA(project: Components.Schemas.ProjectDto) {
@@ -15,6 +15,6 @@ class STEAService extends __BaseService {
 export const GetSTEAService = async () => {
     return new STEAService({
         ...config.STEAService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
+        accessToken: await getToken(loginAccessTokenKey)!,
     })
 }

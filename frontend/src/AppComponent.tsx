@@ -11,7 +11,7 @@ import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { MenuModule } from "@ag-grid-enterprise/menu"
 import { GridChartsModule } from "@ag-grid-enterprise/charts"
 import { AppRouter } from "./app/AppRouter"
-import { StoreAppId, StoreAppScope } from "./Utils/common"
+import { storeAppId, storeAppScope } from "./Utils/common";
 import { FusionRouterBootstrap } from "./app/FusionRouterBootstrap"
 import ConceptAppAuthProvider from "./auth/ConceptAppAuthProvider"
 import { APP_VERSION } from "./version"
@@ -64,13 +64,13 @@ const AppComponent: FC = () => {
 
         if (runtimeConfig.value?.environment) {
             const values: any = { ...runtimeConfig.value.environment }
-            StoreAppId(values.APP_ID)
-            StoreAppScope(values.BACKEND_APP_SCOPE)
+            storeAppId(values.APP_ID)
+            storeAppScope(values.BACKEND_APP_SCOPE)
         }
     } else {
         buildConfig(config.REACT_APP_API_BASE_URL)
-        StoreAppId(config.APP_ID)
-        StoreAppScope(config.BACKEND_APP_SCOPE[0])
+        storeAppId(config.APP_ID)
+        storeAppScope(config.BACKEND_APP_SCOPE[0])
     }
 
     console.log("Concept App version: ", APP_VERSION)

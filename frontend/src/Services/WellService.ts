@@ -2,7 +2,7 @@ import { __BaseService } from "./__BaseService"
 
 import { config } from "./config"
 
-import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+import { loginAccessTokenKey, getToken } from "../Utils/common"
 
 class WellService extends __BaseService {
     public async deleteWell(projectId: string, wellId: string): Promise<Components.Schemas.ProjectDto> {
@@ -14,6 +14,6 @@ class WellService extends __BaseService {
 export const GetWellService = async () => {
     return new WellService({
         ...config.WellService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
+        accessToken: await getToken(loginAccessTokenKey)!,
     })
 }

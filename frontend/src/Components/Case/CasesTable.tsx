@@ -24,7 +24,7 @@ import {
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { CasePath, ProductionStrategyOverviewToString } from "../../Utils/common"
+import { casePath, productionStrategyOverviewToString } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 import EditCaseModal from "./EditCaseModal"
 import { EMPTY_GUID } from "../../Utils/constants"
@@ -68,7 +68,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
     const productionStrategyToString = (p: any) => {
-        const stringValue = ProductionStrategyOverviewToString(p.value)
+        const stringValue = productionStrategyOverviewToString(p.value)
         return <div>{stringValue}</div>
     }
 
@@ -88,7 +88,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     )
 
     const nameWithReferenceCase = (p: any) => {
-        const caseDetailPath = CasePath(project.id, p.node.data.id);
+        const caseDetailPath = casePath(project.id, p.node.data.id);
         
         return (
             <span>
@@ -179,7 +179,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     const openCase = async () => {
         try {
             if (selectedCaseId) {
-                history.push(CasePath(fusionContextId!, selectedCaseId))
+                history.push(casePath(fusionContextId!, selectedCaseId))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)

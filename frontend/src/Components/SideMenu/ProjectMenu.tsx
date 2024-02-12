@@ -7,7 +7,7 @@ import { useCurrentContext } from "@equinor/fusion"
 import MenuItem from "./MenuItem"
 import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
 
-import { ProjectPath } from "../../Utils/common"
+import { projectPath } from "../../Utils/common"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -61,7 +61,7 @@ const ProjectMenu = ({ project }: Props) => {
     return (
         <ExpandableDiv>
             <nav>
-                <LinkWithoutStyle to={ProjectPath(currentProject?.externalId!)}>
+                <LinkWithoutStyle to={projectPath(currentProject?.externalId!)}>
                     <MenuItem
                         title={project.name!}
                         isSelected={currentProject?.externalId === project.id}

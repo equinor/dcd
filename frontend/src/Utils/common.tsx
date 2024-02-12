@@ -1,35 +1,35 @@
 import _ from "lodash"
 import { ITimeSeries } from "../models/ITimeSeries"
 
-export const LoginAccessTokenKey = "loginAccessToken"
+export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
-export const GetDrainageStrategy = (
+export const getDrainageStrategy = (
     project: Components.Schemas.ProjectDto,
     drainageStrategyId?: string,
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
-export const ProjectPath = (projectId: string) => {
+export const projectPath = (projectId: string) => {
     return `/${projectId}`;
 }
 
 export const CasePath = (projectId: string, caseId: string) => {
-    return `${ProjectPath(projectId)}/case/${caseId}`
+    return `${projectPath(projectId)}/case/${caseId}`
 }
 
-export const StoreToken = (keyName: string, token: string) => {
+export const storeToken = (keyName: string, token: string) => {
     window.sessionStorage.setItem(keyName, token)
 }
 
-export const StoreAppId = (appId: string) => {
+export const storeAppId = (appId: string) => {
     window.sessionStorage.setItem("appId", appId)
 }
 
-export const StoreAppScope = (appScope: string) => {
+export const storeAppScope = (appScope: string) => {
     window.sessionStorage.setItem("appScope", appScope)
 }
 
-export const GetToken = (keyName: string) => {
+export const getToken = (keyName: string) => {
     const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
@@ -55,7 +55,7 @@ export const unwrapCaseId = (caseId?: string | undefined): string => {
     return caseId
 }
 
-export const GetProjectCategoryName = (key?: Components.Schemas.ProjectCategory): string => {
+export const getProjectCategoryName = (key?: Components.Schemas.ProjectCategory): string => {
     if (key === undefined) {
         return ""
     }
@@ -85,7 +85,7 @@ export const GetProjectCategoryName = (key?: Components.Schemas.ProjectCategory)
     }[key]
 }
 
-export const GetProjectPhaseName = (key?: Components.Schemas.ProjectPhase): string => {
+export const getProjectPhaseName = (key?: Components.Schemas.ProjectPhase): string => {
     if (key === undefined) {
         return ""
     }
@@ -103,7 +103,7 @@ export const GetProjectPhaseName = (key?: Components.Schemas.ProjectPhase): stri
     }[key]
 }
 
-export const ToMonthDate = (date?: Date | null): string | undefined => {
+export const toMonthDate = (date?: Date | null): string | undefined => {
     if (Number.isNaN(date?.getTime())) {
         return undefined
     }
@@ -111,14 +111,14 @@ export const ToMonthDate = (date?: Date | null): string | undefined => {
     return date?.toISOString().substring(0, 7)
 }
 
-export const IsDefaultDate = (date?: Date | null): boolean => {
+export const isDefaultDate = (date?: Date | null): boolean => {
     if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
         return true
     }
     return false
 }
 
-export const IsDefaultDateString = (dateString?: string | null): boolean => {
+export const isDefaultDateString = (dateString?: string | null): boolean => {
     const date = new Date(dateString ?? "")
     if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
         return true
@@ -126,13 +126,13 @@ export const IsDefaultDateString = (dateString?: string | null): boolean => {
     return false
 }
 
-export const DateFromString = (dateString?: string | null): Date => new Date(dateString ?? "")
+export const dateFromString = (dateString?: string | null): Date => new Date(dateString ?? "")
 
-export const DefaultDate = () => new Date("0001-01-01")
+export const defaultDate = () => new Date("0001-01-01")
 
 export const isInteger = (value: string) => /^-?\d+$/.test(value)
 
-export const ProductionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
+export const productionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
     if (value === undefined) { return "" }
     return {
         0: "Depletion",
@@ -143,11 +143,11 @@ export const ProductionStrategyOverviewToString = (value?: Components.Schemas.Pr
     }[value]
 }
 
-export const IsExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
+export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
 const zip = (t1: number[], t2: number[]) => t1.map((t1Value, index) => t1Value + (t2[index] ?? 0))
 
-const MergeCostProfileData = (t1: number[], t2: number[], offset: number): number[] => {
+const mergeCostProfileData = (t1: number[], t2: number[], offset: number): number[] => {
     let doubleList: number[] = []
     if (offset > t1.length) {
         doubleList = doubleList.concat(t1)
@@ -173,7 +173,7 @@ const MergeCostProfileData = (t1: number[], t2: number[], offset: number): numbe
     return doubleList
 }
 
-export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
+export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
     const t1Year = t1?.startYear ?? 0
     const t2Year = t2?.startYear ?? 0
     const t1Values = t1?.values
@@ -197,9 +197,9 @@ export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
 
     let values: number[] = []
     if (t1Year < t2Year) {
-        values = MergeCostProfileData(t1Values, t2Values, offset)
+        values = mergeCostProfileData(t1Values, t2Values, offset)
     } else {
-        values = MergeCostProfileData(t2Values, t1Values, offset)
+        values = mergeCostProfileData(t2Values, t1Values, offset)
     }
 
     const timeSeries = {

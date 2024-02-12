@@ -1,6 +1,6 @@
 import { useCurrentContext, useHistory } from "@equinor/fusion"
 import { useEffect } from "react"
-import { ProjectPath } from "../Utils/common"
+import { projectPath } from "../Utils/common"
 
 const Welcome = (): JSX.Element => {
     const history = useHistory()
@@ -8,7 +8,7 @@ const Welcome = (): JSX.Element => {
 
     useEffect(() => {
         if (currentProject?.externalId) {
-            history.push(ProjectPath(currentProject?.externalId))
+            history.push(projectPath(currentProject?.externalId))
         }
     }, [currentProject?.externalId])
 
