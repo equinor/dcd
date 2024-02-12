@@ -20,14 +20,14 @@ interface Props {
 
 }
 
-function OperationalWellCosts({
+const OperationalWellCosts = ({
     title,
     project,
     developmentOperationalWellCosts,
     explorationOperationalWellCosts,
     setDevelopmentOperationalWellCosts,
     setExplorationOperationalWellCosts,
-}: Props) {
+}: Props) => {
     const [developmentRigUpgrading, setDevelopmentRigUpgrading] = useState<number | undefined>(developmentOperationalWellCosts?.rigUpgrading)
     const [developmentRigMobDemob, setDevelopmentRigMobDemob] = useState<number | undefined>(developmentOperationalWellCosts?.rigMobDemob)
     const [developmentAnnualWellInterventionCost, setDevelopmentAnnualWellInterventionCost] = useState<number | undefined>(developmentOperationalWellCosts?.annualWellInterventionCostPerWell)

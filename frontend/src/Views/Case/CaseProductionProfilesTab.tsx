@@ -81,7 +81,7 @@ interface Props {
     setImportedElectricity: Dispatch<SetStateAction<Components.Schemas.ImportedElectricityDto | undefined>>,
 }
 
-function CaseProductionProfilesTab({
+const CaseProductionProfilesTab = ({
     project,
     caseItem, setCase,
     drainageStrategy, setDrainageStrategy,
@@ -89,7 +89,7 @@ function CaseProductionProfilesTab({
     netSalesGas, setNetSalesGas,
     fuelFlaringAndLosses, setFuelFlaringAndLosses,
     importedElectricity, setImportedElectricity,
-}: Props) {
+}: Props) => {
     const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
     const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
     const [water, setWater] = useState<Components.Schemas.ProductionProfileWaterDto>()

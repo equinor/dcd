@@ -10,7 +10,7 @@ interface Props {
 const appKey = "conceptapp"
 const fusionPrefix = `/apps/${appKey}`
 
-export function FusionRouterBootstrap({ children }: Props): JSX.Element {
+export const FusionRouterBootstrap = ({ children }: Props): JSX.Element => {
     const { env } = useFusionEnvironment()
     const history = useMemo(() => {
         const basename = env ? fusionPrefix : "/"

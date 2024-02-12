@@ -4,7 +4,7 @@ import CaseView from "../Views/CaseView"
 import Welcome from "../Views/Welcome"
 import ProjectView from "../Views/ProjectView"
 
-export function AppRouter(): JSX.Element {
+export const AppRouter = (): JSX.Element => {
     return (
         <Switch>
             <Route

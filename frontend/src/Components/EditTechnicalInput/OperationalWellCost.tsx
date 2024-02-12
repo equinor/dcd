@@ -10,9 +10,9 @@ interface Props {
     value: number
 }
 
-function OperationalWellCost({
+const OperationalWellCost = ({
     title, setValue, value,
-}: Props) {
+}: Props) => {
     const onValueChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setValue(Number(e.target.value))
     }

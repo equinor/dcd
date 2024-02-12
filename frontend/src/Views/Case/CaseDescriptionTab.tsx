@@ -46,11 +46,11 @@ interface Props {
     activeTab: number
 }
 
-function CaseDescriptionTab({
+const CaseDescriptionTab = ({
     caseItem,
     setCase,
     activeTab,
-}: Props) {
+}: Props) => {
     const handleDescriptionChange: FormEventHandler<any> = async (e) => {
         const newCase = { ...caseItem }
         newCase.description = e.currentTarget.value

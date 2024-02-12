@@ -29,10 +29,10 @@ interface Props {
     setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
-function ProjectSettingsTab({
+const ProjectSettingsTab = ({
     project,
     setProject,
-}: Props) {
+}: Props) => {
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len

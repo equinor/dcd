@@ -43,9 +43,9 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => (
     </Button>
 )
 
-function WellListEditTechnicalInput({
+const WellListEditTechnicalInput = ({
     project, explorationWells, wells, setWells,
-}: Props) {
+}: Props) => {
     const gridRef = useRef(null)
     const styles = useStyles()
     const onGridReady = (params: any) => {

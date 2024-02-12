@@ -1,4 +1,4 @@
-export const ResolveConfiguration = (env: string) => {
+export const resolveConfiguration = (env: string) => {
     switch (env) {
     case "FPRD":
     return {

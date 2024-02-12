@@ -20,7 +20,7 @@ import styled from "styled-components"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { ModalNoFocus } from "../ModalNoFocus"
 import {
-    DefaultDate, IsDefaultDate, ProjectPath, ToMonthDate,
+    defaultDate, isDefaultDate, projectPath, toMonthDate,
 } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 
@@ -93,7 +93,7 @@ const EditCaseModal = ({
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string>("")
-    const [dG4Date, setDG4Date] = useState<Date>(DefaultDate())
+    const [dG4Date, setDG4Date] = useState<Date>(defaultDate())
     const [description, setDescription] = useState<string>("")
     const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
     const [producerCount, setProducerWells] = useState<number>(0)
@@ -140,7 +140,7 @@ const EditCaseModal = ({
     const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         let newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newDate = DefaultDate()
+            newDate = defaultDate()
         } else {
             newDate = new Date(e.target.value)
         }
@@ -148,10 +148,10 @@ const EditCaseModal = ({
     }
 
     const getDG4Value = () => {
-        if (!IsDefaultDate(dG4Date)) {
-            return ToMonthDate(dG4Date)
+        if (!isDefaultDate(dG4Date)) {
+            return toMonthDate(dG4Date)
         }
-        return !IsDefaultDate(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : new Date()) ? ToMonthDate(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : new Date()) : undefined
+        return !isDefaultDate(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : new Date()) ? toMonthDate(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : new Date()) : undefined
     }
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -197,7 +197,7 @@ const EditCaseModal = ({
             setProject(projectResult)
             toggleModal()
             if (navigate) {
-                history.push(ProjectPath(fusionContextId!))
+                history.push(projectPath(fusionContextId!))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
