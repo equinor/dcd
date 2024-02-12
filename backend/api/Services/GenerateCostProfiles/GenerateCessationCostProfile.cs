@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services;
 
 public class GenerateCessationCostProfile : IGenerateCessationCostProfile
@@ -16,9 +18,17 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
     private readonly ISurfService _surfService;
     private readonly IProjectService _projectService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateCessationCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService, ISurfService surfService, IProjectService projectService)
+    public GenerateCessationCostProfile(
+        DcdDbContext context, 
+        ILoggerFactory loggerFactory, 
+        ICaseService caseService, 
+        IDrainageStrategyService drainageStrategyService,
+        IWellProjectService wellProjectService, 
+        ISurfService surfService, 
+        IProjectService projectService,
+        IMapper mapper)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<GenerateCessationCostProfile>();
@@ -27,6 +37,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         _wellProjectService = wellProjectService;
         _surfService = surfService;
         _projectService = projectService;
+        _mapper = mapper;
     }
 
     public async Task<CessationCostWrapperDto> GenerateAsync(Guid caseId)
@@ -50,7 +61,9 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         {
             wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
             cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear, cessationWellsCost);
-            var cessationWellsDto = CaseDtoAdapter.Convert<CessationWellsCostDto, CessationWellsCost>(cessationWellsCost);
+
+            var cessationWellsDto = _mapper.Map<CessationWellsCostDto>(cessationWellsCost);
+
             result.CessationWellsCostDto = cessationWellsDto;
         }
         catch (ArgumentException)
@@ -63,7 +76,9 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         {
             surf = await _surfService.GetSurf(caseItem.SurfLink);
             cessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(surf, (int)lastYear, cessationOffshoreFacilitiesCost);
-            var cessationOffshoreFacilitiesCostDto = CaseDtoAdapter.Convert<CessationOffshoreFacilitiesCostDto, CessationOffshoreFacilitiesCost>(cessationOffshoreFacilitiesCost);
+
+            var cessationOffshoreFacilitiesCostDto = _mapper.Map<CessationOffshoreFacilitiesCostDto>(cessationOffshoreFacilitiesCost);
+
             result.CessationOffshoreFacilitiesCostDto = cessationOffshoreFacilitiesCostDto;
         }
         catch (ArgumentException)
@@ -79,7 +94,9 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
             StartYear = cessationTimeSeries.StartYear,
             Values = cessationTimeSeries.Values
         };
-        var cessationDto = CaseDtoAdapter.Convert<CessationCostDto, CessationCost>(cessation);
+
+        var cessationDto = _mapper.Map<CessationCostDto>(cessation);
+
         result.CessationCostDto = cessationDto;
         return result;
     }

@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -14,20 +16,31 @@ public class WellProjectWellService : IWellProjectWellService
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly IWellProjectService _wellProjectService;
     private readonly ILogger<WellProjectWellService> _logger;
+    private readonly IMapper _mapper;
 
-    public WellProjectWellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory,
-        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, IWellProjectService wellProjectService)
+    public WellProjectWellService(
+        DcdDbContext context, 
+        IProjectService projectService, 
+        ILoggerFactory loggerFactory,
+        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, 
+        IWellProjectService wellProjectService,
+        IMapper mapper)
     {
         _context = context;
         _projectService = projectService;
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
         _wellProjectService = wellProjectService;
         _logger = loggerFactory.CreateLogger<WellProjectWellService>();
+        _mapper = mapper;
     }
 
-    public async Task<ProjectDto> CreateWellProjectWell(WellProjectWellDto wellProjectWellDto)
+    public async Task<ProjectDto> CreateWellProjectWell(CreateWellProjectWellDto wellProjectWellDto)
     {
-        var wellProjectWell = WellProjectWellAdapter.Convert(wellProjectWellDto);
+        var wellProjectWell = _mapper.Map<WellProjectWell>(wellProjectWellDto);
+        if (wellProjectWell == null)
+        {
+            throw new ArgumentNullException(nameof(wellProjectWell));
+        }
         _context.WellProjectWell!.Add(wellProjectWell);
         await _context.SaveChangesAsync();
         var projectId = (await _context.WellProjects!.FirstOrDefaultAsync(c => c.Id == wellProjectWellDto.WellProjectId))?.ProjectId;
@@ -38,7 +51,7 @@ public class WellProjectWellService : IWellProjectWellService
         throw new NotFoundInDBException();
     }
 
-    public async Task<WellProjectWellDto[]?> CreateMultipleWellProjectWells(WellProjectWellDto[] wellProjectWellDtos)
+    public async Task<WellProjectWellDto[]?> CreateMultipleWellProjectWells(CreateWellProjectWellDto[] wellProjectWellDtos)
     {
         var wellProjectId = wellProjectWellDtos.FirstOrDefault()?.WellProjectId;
         ProjectDto? projectDto = null;
@@ -70,10 +83,14 @@ public class WellProjectWellService : IWellProjectWellService
         var sourceWellProjectWells = (await GetAll()).Where(wpw => wpw.WellProjectId == sourceWellProjectId).ToList();
         if (sourceWellProjectWells?.Count > 0)
         {
-            var newWellProjectWellDtos = new List<WellProjectWellDto>();
+            var newWellProjectWellDtos = new List<CreateWellProjectWellDto>();
             foreach (var wellProjectWell in sourceWellProjectWells)
             {
-                var newWellProjectWellDto = WellProjectWellDtoAdapter.Convert(wellProjectWell);
+                var newWellProjectWellDto = _mapper.Map<CreateWellProjectWellDto>(wellProjectWell);
+                if (newWellProjectWellDto == null)
+                {
+                    throw new ArgumentNullException(nameof(newWellProjectWellDto));
+                }
                 if (newWellProjectWellDto.DrillingSchedule != null)
                 {
                     newWellProjectWellDto.DrillingSchedule.Id = Guid.Empty;

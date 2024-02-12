@@ -32,7 +32,10 @@ public class DrainageStrategyService : IDrainageStrategyService
     public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
         var unit = (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
-        var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
+        var drainageStrategy = _mapper.Map<DrainageStrategy>(drainageStrategyDto);
+        if (drainageStrategy == null) {
+            throw new Exception("Drainage stragegy null");
+        }
         var project = await _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
         _context.DrainageStrategies!.Add(drainageStrategy);

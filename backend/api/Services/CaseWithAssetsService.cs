@@ -359,7 +359,12 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var item = await _caseService.GetCase(caseId);
         _mapper.Map(updatedDto, item);
         var updatedItem = _context.Cases!.Update(item);
-        return CaseDtoAdapter.Convert(updatedItem.Entity);
+        var caseDto = _mapper.Map<CaseDto>(updatedItem.Entity);
+        if (caseDto == null)
+        {
+            throw new Exception("Failed to update case");
+        }
+        return caseDto; 
     }
 
     public async Task<DrainageStrategyDto?> UpdateDrainageStrategy(

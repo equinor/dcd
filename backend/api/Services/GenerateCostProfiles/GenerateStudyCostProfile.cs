@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services;
 
 public class GenerateStudyCostProfile : IGenerateStudyCostProfile
@@ -17,9 +19,18 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
     private readonly ISurfService _surfService;
     private readonly ITransportService _transportService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateStudyCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, ICaseService caseService, IWellProjectService wellProjectService, ITopsideService topsideService,
-        ISubstructureService substructureService, ISurfService surfService, ITransportService transportService)
+    public GenerateStudyCostProfile(
+        DcdDbContext context, 
+        ILoggerFactory loggerFactory, 
+        ICaseService caseService, 
+        IWellProjectService wellProjectService, 
+        ITopsideService topsideService,
+        ISubstructureService substructureService, 
+        ISurfService surfService, 
+        ITransportService transportService,
+        IMapper mapper)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<GenerateStudyCostProfile>();
@@ -29,6 +40,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         _substructureService = substructureService;
         _surfService = surfService;
         _transportService = transportService;
+        _mapper = mapper;
     }
 
     public async Task<StudyCostProfileWrapperDto> GenerateAsync(Guid caseId)
@@ -52,8 +64,8 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         await UpdateCaseAndSaveAsync(caseItem, feasibility, feed);
 
         var result = new StudyCostProfileWrapperDto();
-        var feasibilityDto = CaseDtoAdapter.Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(feasibility);
-        var feedDto = CaseDtoAdapter.Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(feed);
+        var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
+        var feedDto = _mapper.Map<TotalFEEDStudiesDto>(feed);
 
         result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
         result.TotalFEEDStudiesDto = feedDto;
@@ -68,7 +80,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
             StartYear = cost.StartYear,
             Values = cost.Values
         };
-        var study = CaseDtoAdapter.Convert<StudyCostProfileDto, StudyCostProfile>(studyCost);
+        var study = _mapper.Map<StudyCostProfileDto>(studyCost);
         result.StudyCostProfileDto = study;
         return result;
     }
@@ -98,8 +110,10 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         var lastYearDays = dg2.DayOfYear;
         var lastYearPercentage = lastYearDays / (double)totalDays;
 
-        var percentageOfYearList = new List<double>();
-        percentageOfYearList.Add(firstYearPercentage);
+        var percentageOfYearList = new List<double>
+        {
+            firstYearPercentage
+        };
         for (int i = dg0.Year + 1; i < dg2.Year; i++)
         {
             var days = DateTime.IsLeapYear(i) ? 366 : 365;

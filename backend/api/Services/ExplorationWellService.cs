@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -14,20 +16,31 @@ public class ExplorationWellService : IExplorationWellService
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly IExplorationService _explorationService;
     private readonly ILogger<ExplorationWellService> _logger;
+    private readonly IMapper _mapper;
 
-    public ExplorationWellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory,
-        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, IExplorationService explorationService)
+    public ExplorationWellService(
+        DcdDbContext context, 
+        IProjectService projectService, 
+        ILoggerFactory loggerFactory,
+        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, 
+        IExplorationService explorationService,
+        IMapper mapper)
     {
         _context = context;
         _projectService = projectService;
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
         _explorationService = explorationService;
         _logger = loggerFactory.CreateLogger<ExplorationWellService>();
+        _mapper = mapper;
     }
 
-    public async Task<ProjectDto> CreateExplorationWell(ExplorationWellDto explorationWellDto)
+    public async Task<ProjectDto> CreateExplorationWell(CreateExplorationWellDto explorationWellDto)
     {
-        var explorationWell = ExplorationWellAdapter.Convert(explorationWellDto);
+        var explorationWell = _mapper.Map<ExplorationWell>(explorationWellDto);
+        if (explorationWell == null)
+        {
+            throw new ArgumentNullException(nameof(explorationWell));
+        }
         _context.ExplorationWell!.Add(explorationWell);
         await _context.SaveChangesAsync();
         var projectId = _context.Explorations!.FirstOrDefault(c => c.Id == explorationWellDto.ExplorationId)?.ProjectId;
@@ -38,7 +51,7 @@ public class ExplorationWellService : IExplorationWellService
         throw new NotFoundInDBException();
     }
 
-    public async Task<ExplorationWellDto[]?> CreateMultipleExplorationWells(ExplorationWellDto[] explorationWellDtos)
+    public async Task<ExplorationWellDto[]?> CreateMultipleExplorationWells(CreateExplorationWellDto[] explorationWellDtos)
     {
         var explorationId = explorationWellDtos.FirstOrDefault()?.ExplorationId;
         ProjectDto? projectDto = null;
@@ -70,10 +83,14 @@ public class ExplorationWellService : IExplorationWellService
         var sourceExplorationWells = (await GetAll()).Where(ew => ew.ExplorationId == sourceExplorationId).ToList();
         if (sourceExplorationWells?.Count > 0)
         {
-            var newExplorationWellDtos = new List<ExplorationWellDto>();
+            var newExplorationWellDtos = new List<CreateExplorationWellDto>();
             foreach (var explorationWell in sourceExplorationWells)
             {
-                var newExplorationDto = ExplorationWellDtoAdapter.Convert(explorationWell);
+                var newExplorationDto = _mapper.Map<CreateExplorationWellDto>(explorationWell);
+                if (newExplorationDto == null)
+                {
+                    throw new ArgumentNullException(nameof(newExplorationDto));
+                }
                 if (newExplorationDto.DrillingSchedule != null)
                 {
                     newExplorationDto.DrillingSchedule.Id = Guid.Empty;
