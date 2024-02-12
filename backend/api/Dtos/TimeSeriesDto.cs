@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Models;
 
 using Microsoft.IdentityModel.Tokens;
@@ -6,7 +8,11 @@ namespace api.Dtos;
 
 public class TimeSeriesDto<T>
 {
+
+    [Required]
     public Guid Id { get; set; }
+
+    [Required]
     public int StartYear { get; set; }
     public T[] Values { get; set; } = null!;
 
@@ -30,7 +36,11 @@ public class TimeSeriesDoubleDto : TimeSeriesDto<double>
 
 public class TimeSeriesCostDto : TimeSeriesDoubleDto
 {
+
+    [Required]
     public string EPAVersion { get; set; } = string.Empty;
+
+    [Required]
     public Currency Currency { get; set; }
 
     public TimeSeriesCostDto AddValues(TimeSeriesCostDto timeSeriesCost)
@@ -66,22 +76,19 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
         }
     }
 
-    public static TimeSeriesCostDto MergeCostProfilesList(TimeSeriesCostDto[] timeseriesList)
+    public static TimeSeriesCostDto MergeCostProfilesList(List<TimeSeriesCostDto> timeseriesList)
     {
-        if (timeseriesList.Length == 0)
+        var timeSeries = new TimeSeriesCostDto();
+        if (timeseriesList.Count > 0)
         {
-            return new TimeSeriesCostDto();
-        } 
-
-        var timeSeries = timeseriesList[0];
-        for (int i = 1; i < timeseriesList.Length; i++) 
-        {
-            timeSeries = MergeCostProfiles(timeSeries, timeseriesList[i]);
+            foreach (var ts in timeseriesList)
+            {
+                timeSeries = MergeCostProfiles(timeSeries, ts);
+            }
         }
 
         return timeSeries;
     }
-
 
     public static TimeSeriesCostDto MergeCostProfiles(TimeSeriesCostDto t1, TimeSeriesCostDto t2)
     {
@@ -158,8 +165,18 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
 public class TimeSeriesVolumeDto : TimeSeriesDoubleDto
 {
 }
+public class UpdateTimeSeriesVolumeDto
+{
+    public int StartYear { get; set; }
+    public double[]? Values { get; set; } = [];
+}
 public class TimeSeriesMassDto : TimeSeriesDoubleDto
 {
+}
+public class UpdateTimeSeriesMassDto
+{
+    public int StartYear { get; set; }
+    public double[]? Values { get; set; } = [];
 }
 public class TimeSeriesEnergyDto : TimeSeriesDoubleDto
 {
@@ -172,4 +189,11 @@ public class TimeSeriesScheduleDto : TimeSeriesDto<int>
 public interface ITimeSeriesOverrideDto
 {
     bool Override { get; set; }
+}
+
+public class UpdateTimeSeriesCostDto
+{
+    public int StartYear { get; set; }
+    public double[]? Values { get; set; } = [];
+    public Currency Currency { get; set; }
 }
