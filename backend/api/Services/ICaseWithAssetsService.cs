@@ -7,15 +7,8 @@ namespace api.Services;
 
 public interface ICaseWithAssetsService
 {
-    Task CreateAndUpdateExplorationWellsAsync(ExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
-    Task CreateAndUpdateWellProjectWellsAsync(WellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
-    Task<CaseDto> UpdateCase(CaseDto updatedDto, ProfilesToGenerate profilesToGenerate);
-    Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssetsAsync(CaseWithAssetsWrapperDto wrapper);
-    Task<DrainageStrategyDto> UpdateDrainageStrategy(DrainageStrategyDto updatedDto, PhysUnit unit, ProfilesToGenerate profilesToGenerate);
-    Task<ExplorationDto> UpdateExploration(ExplorationDto updatedDto, ProfilesToGenerate profilesToGenerate);
-    Task<SubstructureDto> UpdateSubstructure(SubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate);
-    Task<SurfDto> UpdateSurf(SurfDto updatedDto, ProfilesToGenerate profilesToGenerate);
-    Task<TopsideDto> UpdateTopside(TopsideDto updatedDto, ProfilesToGenerate profilesToGenerate);
-    Task<TransportDto> UpdateTransport(TransportDto updatedDto, ProfilesToGenerate profilesToGenerate);
-    Task<WellProjectDto> UpdateWellProject(WellProjectDto updatedDto, ProfilesToGenerate profilesToGenerate);
+    Task CreateAndUpdateExplorationWellsAsync(UpdateExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
+    Task CreateAndUpdateWellProjectWellsAsync(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
+    Task<CaseDto> UpdateCase(Guid caseId, UpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate);
+    Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssetsAsync(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper);
 }

@@ -4,14 +4,14 @@ namespace api.Dtos;
 
 public class CaseWithAssetsWrapperDto
 {
-    public CaseDto CaseDto { get; set; } = null!;
-    public DrainageStrategyDto DrainageStrategyDto { get; set; } = null!;
-    public WellProjectDto WellProjectDto { get; set; } = null!;
-    public ExplorationDto ExplorationDto { get; set; } = null!;
-    public SurfDto SurfDto { get; set; } = null!;
-    public SubstructureDto SubstructureDto { get; set; } = null!;
-    public TopsideDto TopsideDto { get; set; } = null!;
-    public TransportDto TransportDto { get; set; } = null!;
-    public WellProjectWellDto[]? WellProjectWellDtos { get; set; }
-    public ExplorationWellDto[]? ExplorationWellDto { get; set; }
+    public UpdateCaseDto CaseDto { get; set; } = null!;
+    public UpdateDrainageStrategyDto DrainageStrategyDto { get; set; } = null!;
+    public UpdateWellProjectDto WellProjectDto { get; set; } = null!;
+    public UpdateExplorationDto ExplorationDto { get; set; } = null!;
+    public UpdateSurfDto SurfDto { get; set; } = null!;
+    public UpdateSubstructureDto SubstructureDto { get; set; } = null!;
+    public UpdateTopsideDto TopsideDto { get; set; } = null!;
+    public UpdateTransportDto TransportDto { get; set; } = null!;
+    public UpdateWellProjectWellDto[]? WellProjectWellDtos { get; set; }
+    public UpdateExplorationWellDto[]? ExplorationWellDto { get; set; }
 }

@@ -52,25 +52,25 @@ public static class CaseDtoAdapter
             SharepointFileName = caseItem.SharepointFileName,
             SharepointFileUrl = caseItem.SharepointFileUrl,
 
-            CessationWellsCost = Convert<CessationWellsCostDto, CessationWellsCost>(caseItem.CessationWellsCost),
-            CessationWellsCostOverride = ConvertOverride<CessationWellsCostOverrideDto, CessationWellsCostOverride>(caseItem.CessationWellsCostOverride),
+            CessationWellsCost = Convert<CessationWellsCostDto, CessationWellsCost>(caseItem.CessationWellsCost) ?? new CessationWellsCostDto(),
+            CessationWellsCostOverride = ConvertOverride<CessationWellsCostOverrideDto, CessationWellsCostOverride>(caseItem.CessationWellsCostOverride) ?? new CessationWellsCostOverrideDto(),
 
-            CessationOffshoreFacilitiesCost = Convert<CessationOffshoreFacilitiesCostDto, CessationOffshoreFacilitiesCost>(caseItem.CessationOffshoreFacilitiesCost),
-            CessationOffshoreFacilitiesCostOverride = ConvertOverride<CessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>(caseItem.CessationOffshoreFacilitiesCostOverride),
+            CessationOffshoreFacilitiesCost = Convert<CessationOffshoreFacilitiesCostDto, CessationOffshoreFacilitiesCost>(caseItem.CessationOffshoreFacilitiesCost) ?? new CessationOffshoreFacilitiesCostDto(),
+            CessationOffshoreFacilitiesCostOverride = ConvertOverride<CessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>(caseItem.CessationOffshoreFacilitiesCostOverride) ?? new CessationOffshoreFacilitiesCostOverrideDto(),
 
-            TotalFeasibilityAndConceptStudies = Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(caseItem.TotalFeasibilityAndConceptStudies),
+            TotalFeasibilityAndConceptStudies = Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(caseItem.TotalFeasibilityAndConceptStudies) ?? new TotalFeasibilityAndConceptStudiesDto(),
             TotalFeasibilityAndConceptStudiesOverride = ConvertOverride<TotalFeasibilityAndConceptStudiesOverrideDto,
-                TotalFeasibilityAndConceptStudiesOverride>(caseItem.TotalFeasibilityAndConceptStudiesOverride),
+                TotalFeasibilityAndConceptStudiesOverride>(caseItem.TotalFeasibilityAndConceptStudiesOverride) ?? new TotalFeasibilityAndConceptStudiesOverrideDto(),
 
-            TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(caseItem.TotalFEEDStudies),
-            TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseItem.TotalFEEDStudiesOverride),
+            TotalFEEDStudies = Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(caseItem.TotalFEEDStudies) ?? new TotalFEEDStudiesDto(),
+            TotalFEEDStudiesOverride = ConvertOverride<TotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>(caseItem.TotalFEEDStudiesOverride) ?? new TotalFEEDStudiesOverrideDto(),
 
-            WellInterventionCostProfile = Convert<WellInterventionCostProfileDto, WellInterventionCostProfile>(caseItem.WellInterventionCostProfile),
+            WellInterventionCostProfile = Convert<WellInterventionCostProfileDto, WellInterventionCostProfile>(caseItem.WellInterventionCostProfile) ?? new WellInterventionCostProfileDto(),
             WellInterventionCostProfileOverride = ConvertOverride<WellInterventionCostProfileOverrideDto,
-                WellInterventionCostProfileOverride>(caseItem.WellInterventionCostProfileOverride),
+                WellInterventionCostProfileOverride>(caseItem.WellInterventionCostProfileOverride) ?? new WellInterventionCostProfileOverrideDto(),
 
-            OffshoreFacilitiesOperationsCostProfile = Convert<OffshoreFacilitiesOperationsCostProfileDto, OffshoreFacilitiesOperationsCostProfile>(caseItem.OffshoreFacilitiesOperationsCostProfile),
-            OffshoreFacilitiesOperationsCostProfileOverride = ConvertOverride<OffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>(caseItem.OffshoreFacilitiesOperationsCostProfileOverride),
+            OffshoreFacilitiesOperationsCostProfile = Convert<OffshoreFacilitiesOperationsCostProfileDto, OffshoreFacilitiesOperationsCostProfile>(caseItem.OffshoreFacilitiesOperationsCostProfile) ?? new OffshoreFacilitiesOperationsCostProfileDto(),
+            OffshoreFacilitiesOperationsCostProfileOverride = ConvertOverride<OffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>(caseItem.OffshoreFacilitiesOperationsCostProfileOverride) ?? new OffshoreFacilitiesOperationsCostProfileOverrideDto(),
         };
 
         return caseDto;

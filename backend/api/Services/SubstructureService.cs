@@ -4,6 +4,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -13,12 +15,19 @@ public class SubstructureService : ISubstructureService
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
     private readonly ILogger<SubstructureService> _logger;
+    private readonly IMapper _mapper;
 
-    public SubstructureService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public SubstructureService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SubstructureService>();
+        _mapper = mapper;
     }
 
     public async Task<ProjectDto> CreateSubstructure(Substructure substructure, Guid sourceCaseId)
@@ -32,10 +41,14 @@ public class SubstructureService : ISubstructureService
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<Substructure> NewCreateSubstructure(SubstructureDto substructureDto, Guid sourceCaseId)
+    public async Task<Substructure> NewCreateSubstructure(Guid projectId, Guid sourceCaseId, CreateSubstructureDto substructureDto)
     {
-        var substructure = SubstructureAdapter.Convert(substructureDto);
-        var project = await _projectService.GetProject(substructure.ProjectId);
+        var substructure = _mapper.Map<Substructure>(substructureDto);
+        if (substructure == null)
+        {
+            throw new ArgumentNullException(nameof(substructure));
+        }
+        var project = await _projectService.GetProject(projectId);
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSubstructure = _context.Substructures!.Add(substructure);
@@ -62,10 +75,11 @@ public class SubstructureService : ISubstructureService
             newSubstructureDto.CessationCostProfile.Id = Guid.Empty;
         }
 
-        var topside = await NewCreateSubstructure(newSubstructureDto, sourceCaseId);
-        var dto = SubstructureDtoAdapter.Convert(topside);
+        // var topside = await NewCreateSubstructure(newSubstructureDto, sourceCaseId);
+        // var dto = SubstructureDtoAdapter.Convert(topside);
 
-        return dto;
+        // return dto;
+        return newSubstructureDto;
     }
 
     private async Task SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)

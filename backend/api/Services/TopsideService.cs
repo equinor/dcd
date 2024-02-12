@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -12,12 +14,19 @@ public class TopsideService : ITopsideService
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
     private readonly ILogger<TopsideService> _logger;
+    private readonly IMapper _mapper;
 
-    public TopsideService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public TopsideService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TopsideService>();
+        _mapper = mapper;
     }
 
     public async Task<TopsideDto> CopyTopside(Guid topsideId, Guid sourceCaseId)
@@ -38,10 +47,11 @@ public class TopsideService : ITopsideService
             newTopsideDto.CessationCostProfile.Id = Guid.Empty;
         }
 
-        var topside = await NewCreateTopside(newTopsideDto, sourceCaseId);
-        var dto = TopsideDtoAdapter.Convert(topside);
+        // var topside = await NewCreateTopside(newTopsideDto, sourceCaseId);
+        // var dto = TopsideDtoAdapter.Convert(topside);
 
-        return dto;
+        // return dto;
+        return newTopsideDto;
     }
 
     public async Task<ProjectDto> CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
@@ -57,13 +67,16 @@ public class TopsideService : ITopsideService
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<Topside> NewCreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
+    public async Task<Topside> NewCreateTopside(Guid projectId, Guid sourceCaseId, CreateTopsideDto topsideDto)
     {
-        var topside = TopsideAdapter.Convert(topsideDto);
-        var project = await _projectService.GetProject(topsideDto.ProjectId);
+        var topside = _mapper.Map<Topside>(topsideDto);
+        if (topside == null)
+        {
+            throw new ArgumentNullException(nameof(topside));
+        }
+        var project = await _projectService.GetProject(projectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.UtcNow;
-        topside.ProspVersion = topsideDto.ProspVersion;
         var createdTopside = _context.Topsides!.Add(topside);
         await _context.SaveChangesAsync();
         await SetCaseLink(topside, sourceCaseId, project);

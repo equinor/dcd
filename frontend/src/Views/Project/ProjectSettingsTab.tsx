@@ -4,7 +4,6 @@ import {
     Dispatch, SetStateAction,
 } from "react"
 import styled from "styled-components"
-import { Project } from "../../models/Project"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -26,8 +25,8 @@ const InputField = styled(NativeSelect)`
  `
 
 interface Props {
-    project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>
+    project: Components.Schemas.ProjectDto,
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
 function ProjectSettingsTab({
@@ -38,7 +37,7 @@ function ProjectSettingsTab({
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
-            const newProject: Project = { ...project }
+            const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.physUnit = newPhysicalUnit
             setProject(newProject)
         }
@@ -48,7 +47,7 @@ function ProjectSettingsTab({
         if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
-            const newProject: Project = { ...project }
+            const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.currency = newCurrency
             setProject(newProject)
         }

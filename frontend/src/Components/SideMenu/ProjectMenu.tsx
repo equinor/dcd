@@ -1,10 +1,9 @@
 import { useState } from "react"
 import styled from "styled-components"
-import { Link, useParams } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { file, folder, dashboard } from "@equinor/eds-icons"
 
 import { useCurrentContext } from "@equinor/fusion"
-import { Project } from "../../models/Project"
 import MenuItem from "./MenuItem"
 import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
 
@@ -48,13 +47,16 @@ const projectMenuItems = [
 ]
 
 interface Props {
-    project: Project
+    project?: Components.Schemas.ProjectDto
 }
 
 function ProjectMenu({ project }: Props) {
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [isOpen, setIsOpen] = useState<boolean>(true)
     const currentProject = useCurrentContext()
+
+    if (!project) {
+        return null
+    }
 
     return (
         <ExpandableDiv>

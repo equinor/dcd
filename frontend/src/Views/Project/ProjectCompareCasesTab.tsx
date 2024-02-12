@@ -12,7 +12,6 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { bookmark_filled } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { Project } from "../../models/Project"
 import { AgChartsCompareCases } from "../../Components/AgGrid/AgChartsCompareCases"
 import { GetProjectService } from "../../Services/ProjectService"
 
@@ -23,7 +22,7 @@ const MenuIcon = styled(Icon)`
 `
 
 interface Props {
-    project: Project
+    project: Components.Schemas.ProjectDto
 }
 
 interface TableCompareCase {

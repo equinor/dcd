@@ -2,18 +2,14 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
-    useState,
     FormEventHandler,
 } from "react"
 import styled from "styled-components"
 
 import {
-    Button, Label, NativeSelect, Progress, Typography,
+    Label, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
-import { GetCaseService } from "../../Services/CaseService"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 
 const ColumnWrapper = styled.div`
@@ -45,62 +41,54 @@ const InputWrapper = styled.div`
 `
 
 interface Props {
-    project: Project,
-    setProject: Dispatch<SetStateAction<Project | undefined>>,
-    caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
+    caseItem: Components.Schemas.CaseDto,
+    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     activeTab: number
 }
 
 function CaseDescriptionTab({
-    project,
-    setProject,
     caseItem,
     setCase,
     activeTab,
 }: Props) {
     const handleDescriptionChange: FormEventHandler<any> = async (e) => {
-        const newCase: Case = { ...caseItem }
+        const newCase = { ...caseItem }
         newCase.description = e.currentTarget.value
         setCase(newCase)
     }
 
     const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase: Case = { ...caseItem }
+        const newCase = { ...caseItem }
         const newfacilitiesAvailability = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
-        } else { newCase.facilitiesAvailability = undefined }
+        } else { newCase.facilitiesAvailability = 0 }
         setCase(newCase)
     }
 
     const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase: Case = { ...caseItem }
-        newCase.producerCount = e.currentTarget.value.length > 0
-            ? Math.max(Number(e.currentTarget.value), 0) : undefined
+        const newCase = { ...caseItem }
+        newCase.producerCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setCase(newCase)
     }
 
     const handleGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase: Case = { ...caseItem }
-        newCase.gasInjectorCount = e.currentTarget.value.length > 0
-            ? Math.max(Number(e.currentTarget.value), 0) : undefined
+        const newCase = { ...caseItem }
+        newCase.gasInjectorCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setCase(newCase)
     }
 
     const handletWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase: Case = { ...caseItem }
-        newCase.waterInjectorCount = e.currentTarget.value.length > 0
-            ? Math.max(Number(e.currentTarget.value), 0) : undefined
+        const newCase = { ...caseItem }
+        newCase.waterInjectorCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setCase(newCase)
     }
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
-            // eslint-disable-next-line max-len
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
-            const newCase: Case = { ...caseItem }
+            const newCase = { ...caseItem }
             newCase.productionStrategyOverview = newProductionStrategy
             setCase(newCase)
         }
@@ -110,7 +98,7 @@ function CaseDescriptionTab({
         if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
             // eslint-disable-next-line max-len
             const newArtificialLift: Components.Schemas.ArtificialLift = Number(e.currentTarget.value) as Components.Schemas.ArtificialLift
-            const newCase: Case = { ...caseItem }
+            const newCase = { ...caseItem }
             newCase.artificialLift = newArtificialLift
             setCase(newCase)
         }
@@ -129,7 +117,7 @@ function CaseDescriptionTab({
                     id="description"
                     placeholder="Enter a description"
                     onInput={handleDescriptionChange}
-                    value={caseItem.description}
+                    value={caseItem.description ?? ""}
                     cols={110}
                     rows={8}
                 />

@@ -1,13 +1,21 @@
-namespace api.Dtos
+using System.ComponentModel.DataAnnotations;
+
+namespace api.Dtos;
+
+public class DevelopmentOperationalWellCostsDto
 {
-    public class DevelopmentOperationalWellCostsDto
-    {
-        public Guid Id { get; set; }
-        public Guid ProjectId { get; set; }
-        public double RigUpgrading { get; set; }
-        public double RigMobDemob { get; set; }
-        public double AnnualWellInterventionCostPerWell { get; set; }
-        public double PluggingAndAbandonment { get; set; }
-        public bool HasChanges { get; set; }
-    }
+    [Required]
+    public Guid Id { get; set; }
+    [Required]
+    public Guid ProjectId { get; set; }
+    [Required]
+    public double RigUpgrading { get; set; }
+    [Required]
+    public double RigMobDemob { get; set; }
+    [Required]
+    public double AnnualWellInterventionCostPerWell { get; set; }
+    [Required]
+    public double PluggingAndAbandonment { get; set; }
+    [Required]
+    public bool HasChanges { get; set; }
 }

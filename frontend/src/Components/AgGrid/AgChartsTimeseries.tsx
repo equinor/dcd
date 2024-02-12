@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const setValueToCorrespondingYear = (profile: any, i: number, startYear: number, dg4Year: number) => {
-    if (profile !== undefined && startYear !== undefined) {
+    if (profile !== undefined && startYear !== undefined && profile.values !== undefined && profile.values !== null) {
         const profileStartYear: number = Number(profile.startYear) + dg4Year
         const profileYears: number[] = Array.from(
             { length: profile.values.length },

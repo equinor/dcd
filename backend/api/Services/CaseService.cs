@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -21,10 +23,11 @@ public class CaseService : ICaseService
     private readonly IExplorationService _explorationService;
     private readonly IWellProjectService _wellProjectService;
     private readonly ILogger<CaseService> _logger;
+    private readonly IMapper _mapper;
 
     public CaseService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, IDrainageStrategyService drainageStrategyService,
         ITopsideService topsideService, ISurfService surfService, ISubstructureService substructureService, ITransportService transportService,
-        IExplorationService explorationService, IWellProjectService wellProjectService)
+        IExplorationService explorationService, IWellProjectService wellProjectService, IMapper mapper)
     {
         _context = context;
         _projectService = projectService;
@@ -36,11 +39,16 @@ public class CaseService : ICaseService
         _explorationService = explorationService;
         _wellProjectService = wellProjectService;
         _logger = loggerFactory.CreateLogger<CaseService>();
+        _mapper = mapper;
     }
 
-    public async Task<ProjectDto> CreateCase(Guid projectId, CaseDto caseDto)
+    public async Task<ProjectDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
-        var caseItem = CaseAdapter.Convert(caseDto);
+        var caseItem = _mapper.Map<Case>(createCaseDto);
+        if (caseItem == null)
+        {
+            throw new ArgumentNullException(nameof(caseItem));
+        }
         var project = await _projectService.GetProject(projectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
@@ -49,65 +57,58 @@ public class CaseService : ICaseService
         var createdCase = _context.Cases!.Add(caseItem);
         await _context.SaveChangesAsync();
 
-        var drainageStrategyDto = new DrainageStrategyDto
+        var drainageStrategyDto = new CreateDrainageStrategyDto
         {
-            ProjectId = createdCase.Entity.ProjectId,
             Name = "Drainage strategy",
             Description = ""
         };
-        var drainageStrategy = await _drainageStrategyService.NewCreateDrainageStrategy(drainageStrategyDto, createdCase.Entity.Id);
+        var drainageStrategy = await _drainageStrategyService.NewCreateDrainageStrategy(projectId, createdCase.Entity.Id, drainageStrategyDto);
         caseItem.DrainageStrategyLink = drainageStrategy.Id;
 
-        var topsideDto = new TopsideDto
+        var topsideDto = new CreateTopsideDto
         {
-            ProjectId = createdCase.Entity.ProjectId,
             Name = "Topside",
             Source = Source.ConceptApp,
         };
-        var topside = await _topsideService.NewCreateTopside(topsideDto, createdCase.Entity.Id);
+        var topside = await _topsideService.NewCreateTopside(projectId, createdCase.Entity.Id, topsideDto);
         caseItem.TopsideLink = topside.Id;
 
-        var surfDto = new SurfDto
+        var surfDto = new CreateSurfDto
         {
-            ProjectId = createdCase.Entity.ProjectId,
             Name = "Surf",
             Source = Source.ConceptApp,
         };
-        var surf = await _surfService.NewCreateSurf(surfDto, createdCase.Entity.Id);
+        var surf = await _surfService.NewCreateSurf(projectId, createdCase.Entity.Id, surfDto);
         caseItem.SurfLink = surf.Id;
 
-        var substructureDto = new SubstructureDto
+        var substructureDto = new CreateSubstructureDto
         {
-            ProjectId = createdCase.Entity.ProjectId,
             Name = "Substructure",
             Source = Source.ConceptApp,
         };
-        var substructure = await _substructureService.NewCreateSubstructure(substructureDto, createdCase.Entity.Id);
+        var substructure = await _substructureService.NewCreateSubstructure(projectId, createdCase.Entity.Id, substructureDto);
         caseItem.SubstructureLink = substructure.Id;
 
-        var transportDto = new TransportDto
+        var transportDto = new CreateTransportDto
         {
-            ProjectId = createdCase.Entity.ProjectId,
             Name = "Transport",
             Source = Source.ConceptApp,
         };
-        var transport = await _transportService.NewCreateTransport(transportDto, createdCase.Entity.Id);
+        var transport = await _transportService.NewCreateTransport(projectId, createdCase.Entity.Id, transportDto);
         caseItem.TransportLink = transport.Id;
 
-        var explorationDto = new ExplorationDto
+        var explorationDto = new CreateExplorationDto
         {
-            ProjectId = createdCase.Entity.ProjectId,
             Name = "Exploration",
         };
-        var exploration = await _explorationService.NewCreateExploration(explorationDto, createdCase.Entity.Id);
+        var exploration = await _explorationService.NewCreateExploration(projectId, createdCase.Entity.Id, explorationDto);
         caseItem.ExplorationLink = exploration.Id;
 
-        var wellProjectDto = new WellProjectDto
+        var wellProjectDto = new CreateWellProjectDto
         {
-            ProjectId = createdCase.Entity.ProjectId,
             Name = "WellProject",
         };
-        var wellProject = await _wellProjectService.NewCreateWellProject(wellProjectDto, createdCase.Entity.Id);
+        var wellProject = await _wellProjectService.NewCreateWellProject(projectId, createdCase.Entity.Id, wellProjectDto);
         caseItem.WellProjectLink = wellProject.Id;
 
         return await _projectService.GetProjectDto(project.Id);

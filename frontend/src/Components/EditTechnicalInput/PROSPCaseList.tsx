@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import {
     Button, Checkbox, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"
@@ -14,7 +13,6 @@ import {
 } from "@ag-grid-community/core"
 import styled from "styled-components"
 import { external_link } from "@equinor/eds-icons"
-import { Project } from "../../models/Project"
 import SharePointImport from "./SharePointImport"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
@@ -25,8 +23,8 @@ const ApplyButtonWrapper = styled.div`
     padding-top: 1em;
 `
 interface Props {
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
+    project: Components.Schemas.ProjectDto
     driveItems: DriveItem[] | undefined
     check: boolean
 }
@@ -339,7 +337,7 @@ function PROSPCaseList({
         gridRef.current = params.api
     }
 
-    const gridDataToDtos = (p: Project) => {
+    const gridDataToDtos = (p: Components.Schemas.ProjectDto) => {
         const dtos: any[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
             const dto: any = {}
@@ -363,7 +361,7 @@ function PROSPCaseList({
         return dtos
     }
 
-    const save = useCallback(async (p: Project) => {
+    const save = useCallback(async (p: Components.Schemas.ProjectDto) => {
         const dtos = gridDataToDtos(p)
         if (dtos.length > 0) {
             setIsApplying(true)

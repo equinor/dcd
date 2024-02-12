@@ -25,7 +25,6 @@ public static class SurfDtoAdapter
             WaterInjectorCount = surf.WaterInjectorCount,
             Currency = surf.Currency,
 
-            LastChangedDate = surf.LastChangedDate,
             CostYear = surf.CostYear,
             Source = surf.Source,
             ProspVersion = surf.ProspVersion,
@@ -37,17 +36,17 @@ public static class SurfDtoAdapter
 
         if (surf.CostProfile != null)
         {
-            surfDto.CostProfile = Convert<SurfCostProfileDto, SurfCostProfile>(surf.CostProfile);
+            surfDto.CostProfile = Convert<SurfCostProfileDto, SurfCostProfile>(surf.CostProfile) ?? new SurfCostProfileDto();
         }
 
         if (surf.CostProfileOverride != null)
         {
-            surfDto.CostProfileOverride = ConvertOverride<SurfCostProfileOverrideDto, SurfCostProfileOverride>(surf.CostProfileOverride);
+            surfDto.CostProfileOverride = ConvertOverride<SurfCostProfileOverrideDto, SurfCostProfileOverride>(surf.CostProfileOverride) ?? new SurfCostProfileOverrideDto();
         }
 
         if (surf.CessationCostProfile != null)
         {
-            surfDto.CessationCostProfile = Convert<SurfCessationCostProfileDto, SurfCessationCostProfile>(surf.CessationCostProfile);
+            surfDto.CessationCostProfile = Convert<SurfCessationCostProfileDto, SurfCessationCostProfile>(surf.CessationCostProfile) ?? new SurfCessationCostProfileDto();
         }
 
         return surfDto;

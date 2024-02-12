@@ -1,4 +1,5 @@
 using api.Context;
+using api.Mappings;
 using api.SampleData.Generators;
 using api.Services;
 using api.Services.GenerateCostProfiles;
@@ -193,11 +194,15 @@ builder.Services.AddScoped<ProspSharepointImportService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
+
 builder.Services.Configure<IConfiguration>(builder.Configuration);
+
+builder.Services.AddAutoMapper(typeof(CaseProfile));
+
 builder.Services.AddControllers(
     options => options.Conventions.Add(new RouteTokenTransformerConvention(new ApiEndpointTransformer()))
 );
-builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -231,6 +236,8 @@ builder.Services.AddSwaggerGen(c =>
         },
     });
 });
+
+
 builder.Host.UseSerilog();
 
 var app = builder.Build();

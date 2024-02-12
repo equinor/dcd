@@ -1,12 +1,8 @@
 import { Dispatch, SetStateAction } from "react"
+import { Typography } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
-import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
-import { Project } from "../../models/Project"
-import { Well } from "../../models/Well"
 import OperationalWellCosts from "./OperationalWellCosts"
 import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
-import { Typography } from "@equinor/eds-core-react"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -33,18 +29,18 @@ const WellListWrapper = styled.div`
 `
 
 interface Props {
-    project: Project
-    developmentOperationalWellCosts: DevelopmentOperationalWellCosts
-    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<DevelopmentOperationalWellCosts | undefined>>
+    project: Components.Schemas.ProjectDto
+    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto
+    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto>>
 
-    explorationOperationalWellCosts: ExplorationOperationalWellCosts
-    setExplorationOperationalWellCosts: Dispatch<SetStateAction<ExplorationOperationalWellCosts | undefined>>
+    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto
+    setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto>>
 
-    wellProjectWells: Well[]
-    setWellProjectWells: Dispatch<SetStateAction<Well[]>>
+    wellProjectWells: Components.Schemas.WellDto[]
+    setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
 
-    explorationWells: Well[]
-    setExplorationWells: Dispatch<SetStateAction<Well[]>>
+    explorationWells: Components.Schemas.WellDto[]
+    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
 }
 
 const WellCostsTab = ({

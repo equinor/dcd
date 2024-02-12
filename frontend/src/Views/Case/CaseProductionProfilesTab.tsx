@@ -11,25 +11,12 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
 import CaseNumberInput from "../../Components/Case/CaseNumberInput"
-import { DrainageStrategy } from "../../models/assets/drainagestrategy/DrainageStrategy"
 import CaseTabTable from "./CaseTabTable"
-import { NetSalesGas } from "../../models/assets/drainagestrategy/NetSalesGas"
-import { FuelFlaringAndLosses } from "../../models/assets/drainagestrategy/FuelFlaringAndLosses"
-import { ProductionProfileGas } from "../../models/assets/drainagestrategy/ProductionProfileGas"
-import { ProductionProfileOil } from "../../models/assets/drainagestrategy/ProductionProfileOil"
-import { ProductionProfileWater } from "../../models/assets/drainagestrategy/ProductionProfileWater"
-import { ProductionProfileNGL } from "../../models/assets/drainagestrategy/ProductionProfileNGL"
-import { ProductionProfileWaterInjection } from "../../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { ImportedElectricity } from "../../models/assets/drainagestrategy/ImportedElectricity"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
-import { ImportedElectricityOverride } from "../../models/assets/drainagestrategy/ImportedElectricityOverride"
-import { NetSalesGasOverride } from "../../models/assets/drainagestrategy/NetSalesGasOverride"
-import { FuelFlaringAndLossesOverride } from "../../models/assets/drainagestrategy/FuelFlaringAndLossesOverride"
+import { ITimeSeriesOverride } from "../../models/ITimeSeriesOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -77,21 +64,21 @@ const InputWrapper = styled.div`
 `
 
 interface Props {
-    project: Project,
-    caseItem: Case,
-    setCase: Dispatch<SetStateAction<Case | undefined>>,
-    drainageStrategy: DrainageStrategy,
-    setDrainageStrategy: Dispatch<SetStateAction<DrainageStrategy | undefined>>,
+    project: Components.Schemas.ProjectDto,
+    caseItem: Components.Schemas.CaseDto,
+    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
+    drainageStrategy: Components.Schemas.DrainageStrategyDto,
+    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>,
     activeTab: number
 
-    netSalesGas: NetSalesGas | undefined,
-    setNetSalesGas: Dispatch<SetStateAction<NetSalesGas | undefined>>,
+    netSalesGas: Components.Schemas.NetSalesGasDto | undefined,
+    setNetSalesGas: Dispatch<SetStateAction<Components.Schemas.NetSalesGasDto | undefined>>,
 
-    fuelFlaringAndLosses: FuelFlaringAndLosses | undefined,
-    setFuelFlaringAndLosses: Dispatch<SetStateAction<FuelFlaringAndLosses | undefined>>,
+    fuelFlaringAndLosses: Components.Schemas.FuelFlaringAndLossesDto | undefined,
+    setFuelFlaringAndLosses: Dispatch<SetStateAction<Components.Schemas.FuelFlaringAndLossesDto | undefined>>,
 
-    importedElectricity: ImportedElectricity | undefined,
-    setImportedElectricity: Dispatch<SetStateAction<ImportedElectricity | undefined>>,
+    importedElectricity: Components.Schemas.ImportedElectricityDto | undefined,
+    setImportedElectricity: Dispatch<SetStateAction<Components.Schemas.ImportedElectricityDto | undefined>>,
 }
 
 function CaseProductionProfilesTab({
@@ -103,15 +90,15 @@ function CaseProductionProfilesTab({
     fuelFlaringAndLosses, setFuelFlaringAndLosses,
     importedElectricity, setImportedElectricity,
 }: Props) {
-    const [gas, setGas] = useState<ProductionProfileGas>()
-    const [oil, setOil] = useState<ProductionProfileOil>()
-    const [water, setWater] = useState<ProductionProfileWater>()
-    const [nGL, setNGL] = useState<ProductionProfileNGL>()
-    const [waterInjection, setWaterInjection] = useState<ProductionProfileWaterInjection>()
+    const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
+    const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
+    const [water, setWater] = useState<Components.Schemas.ProductionProfileWaterDto>()
+    const [nGL, setNGL] = useState<Components.Schemas.ProductionProfileNGLDto>()
+    const [waterInjection, setWaterInjection] = useState<Components.Schemas.ProductionProfileWaterInjectionDto>()
 
-    const [netSalesGasOverride, setNetSalesGasOverride] = useState<NetSalesGasOverride>()
-    const [fuelFlaringAndLossesOverride, setFuelFlaringAndLossesOverride] = useState<FuelFlaringAndLossesOverride>()
-    const [importedElectricityOverride, setImportedElectricityOverride] = useState<ImportedElectricityOverride>()
+    const [netSalesGasOverride, setNetSalesGasOverride] = useState<Components.Schemas.NetSalesGasOverrideDto>()
+    const [fuelFlaringAndLossesOverride, setFuelFlaringAndLossesOverride] = useState<Components.Schemas.FuelFlaringAndLossesOverrideDto>()
+    const [importedElectricityOverride, setImportedElectricityOverride] = useState<Components.Schemas.ImportedElectricityOverrideDto>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -119,8 +106,21 @@ function CaseProductionProfilesTab({
 
     const gridRef = useRef<any>(null)
 
-    const updateAndSetDraiangeStrategy = (drainage: DrainageStrategy) => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainage }
+    const updateAndSetDraiangeStrategy = (drainage: Components.Schemas.DrainageStrategyDto) => {
+        if (drainageStrategy === undefined) { return }
+        if (netSalesGas === undefined
+            || fuelFlaringAndLosses === undefined
+            || gas === undefined
+            || oil === undefined
+            || water === undefined
+            || nGL === undefined
+            || waterInjection === undefined
+            || importedElectricityOverride === undefined
+            || netSalesGasOverride === undefined
+            || fuelFlaringAndLossesOverride === undefined) {
+            return
+        }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainage }
         newDrainageStrategy.netSalesGas = netSalesGas
         newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
@@ -136,20 +136,19 @@ function CaseProductionProfilesTab({
     }
 
     const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase: Case = { ...caseItem }
+        const newCase = { ...caseItem }
         const newfacilitiesAvailability = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
-        } else { newCase.facilitiesAvailability = undefined }
+        } else { newCase.facilitiesAvailability = 0 }
         setCase(newCase)
     }
 
     const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1) {
-            // eslint-disable-next-line max-len
             const newGasSolution: Components.Schemas.GasSolution = Number(e.currentTarget.value) as Components.Schemas.GasSolution
-            const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
+            const newDrainageStrategy = { ...drainageStrategy }
             newDrainageStrategy.gasSolution = newGasSolution
             updateAndSetDraiangeStrategy(newDrainageStrategy)
         }
@@ -177,7 +176,7 @@ function CaseProductionProfilesTab({
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
-        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesOverride | undefined>>,
         profile: ITimeSeries | undefined
         overrideProfile?: ITimeSeries | undefined
         overridable?: boolean
@@ -240,24 +239,26 @@ function CaseProductionProfilesTab({
 
     const productionProfilesChartData = () => {
         const dataArray: object[] = []
+        if (caseItem.dG4Date === undefined) { return dataArray }
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
-                oilProduction: setValueToCorrespondingYear(oil, i, startYear, caseItem.DG4Date.getFullYear()),
-                gasProduction: setValueToCorrespondingYear(gas, i, startYear, caseItem.DG4Date.getFullYear()),
-                waterProduction: setValueToCorrespondingYear(water, i, startYear, caseItem.DG4Date.getFullYear()),
+                oilProduction: setValueToCorrespondingYear(oil, i, startYear, new Date(caseItem.dG4Date).getFullYear()),
+                gasProduction: setValueToCorrespondingYear(gas, i, startYear, new Date(caseItem.dG4Date).getFullYear()),
+                waterProduction: setValueToCorrespondingYear(water, i, startYear, new Date(caseItem.dG4Date).getFullYear()),
             })
         }
         return dataArray
     }
 
     const injectionProfilesChartData = () => {
-        const dataArray = []
+        const dataArray: object[] = []
+        if (caseItem.dG4Date === undefined) { return dataArray }
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
                 waterInjection:
-                    setValueToCorrespondingYear(waterInjection, i, startYear, caseItem.DG4Date.getFullYear()),
+                    setValueToCorrespondingYear(waterInjection, i, startYear, new Date(caseItem.dG4Date).getFullYear()),
             })
         }
         return dataArray
@@ -266,7 +267,7 @@ function CaseProductionProfilesTab({
     useEffect(() => {
         (async () => {
             try {
-                if (activeTab === 1) {
+                if (activeTab === 1 && caseItem.dG4Date !== undefined) {
                     setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
                     setNetSalesGas(drainageStrategy.netSalesGas)
                     setImportedElectricity(drainageStrategy.importedElectricity)
@@ -277,7 +278,7 @@ function CaseProductionProfilesTab({
                     drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
                     drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
                     drainageStrategy.co2EmissionsOverride,
-                    ], caseItem.DG4Date.getFullYear(), setStartYear, setEndYear, setTableYears)
+                    ], new Date(caseItem.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
                     setWater(drainageStrategy.productionProfileWater)
@@ -295,50 +296,50 @@ function CaseProductionProfilesTab({
     }, [activeTab])
 
     useEffect(() => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        if (newDrainageStrategy.productionProfileOil && !oil) { return }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        if (!oil) { return }
         newDrainageStrategy.productionProfileOil = oil
         setDrainageStrategy(newDrainageStrategy)
     }, [oil])
 
     useEffect(() => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        if (newDrainageStrategy.productionProfileGas && !gas) { return }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        if (!gas) { return }
         newDrainageStrategy.productionProfileGas = gas
         setDrainageStrategy(newDrainageStrategy)
     }, [gas])
 
     useEffect(() => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        if (newDrainageStrategy.productionProfileWater && !water) { return }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        if (!water) { return }
         newDrainageStrategy.productionProfileWater = water
         setDrainageStrategy(newDrainageStrategy)
     }, [water])
 
     useEffect(() => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        if (newDrainageStrategy.productionProfileWaterInjection && !waterInjection) { return }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        if (!waterInjection) { return }
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
         setDrainageStrategy(newDrainageStrategy)
     }, [waterInjection])
 
     useEffect(() => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        if (newDrainageStrategy.importedElectricityOverride && !importedElectricityOverride) { return }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        if (!importedElectricityOverride) { return }
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [importedElectricityOverride])
 
     useEffect(() => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        if (newDrainageStrategy.fuelFlaringAndLossesOverride && !fuelFlaringAndLossesOverride) { return }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        if (!fuelFlaringAndLossesOverride) { return }
         newDrainageStrategy.fuelFlaringAndLossesOverride = fuelFlaringAndLossesOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [fuelFlaringAndLossesOverride])
 
     useEffect(() => {
-        const newDrainageStrategy: DrainageStrategy = { ...drainageStrategy }
-        if (newDrainageStrategy.netSalesGasOverride && !netSalesGasOverride) { return }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        if (!netSalesGasOverride) { return }
         newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [netSalesGasOverride])
@@ -484,7 +485,7 @@ function CaseProductionProfilesTab({
                     "Water production (MSm3)",
                 ]}
             />
-            {(waterInjection !== undefined && waterInjection!.values!.length > 0)
+            {(waterInjection?.values && waterInjection.values?.length > 0)
                 && (
                     <AgChartsTimeseries
                         data={injectionProfilesChartData()}
@@ -497,7 +498,7 @@ function CaseProductionProfilesTab({
                 )}
             <CaseTabTable
                 timeSeriesData={timeSeriesData}
-                dg4Year={caseItem.DG4Date.getFullYear()}
+                dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                 tableYears={tableYears}
                 tableName="Production profiles"
                 includeFooter={false}

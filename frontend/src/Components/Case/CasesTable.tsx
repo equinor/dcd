@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import {
     Button,
     Menu,
@@ -25,7 +24,6 @@ import {
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
 import { CasePath, ProductionStrategyOverviewToString } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 import EditCaseModal from "./EditCaseModal"
@@ -40,15 +38,15 @@ const MenuIcon = styled(Icon)`
 `
 
 interface Props {
-    project: Project
-    setProject: Dispatch<SetStateAction<Project | undefined>>
+    project: Components.Schemas.ProjectDto
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
 interface TableCase {
     id: string,
     name: string,
     description: string,
-    productionStrategyOverview: Components.Schemas.ProductionStrategyOverview,
+    productionStrategyOverview: Components.Schemas.ProductionStrategyOverview | undefined,
     producerCount: number,
     gasInjectorCount: number,
     waterInjectorCount: number,
@@ -136,7 +134,7 @@ const CasesTable = ({ project, setProject }: Props) => {
                     producerCount: c.producerCount ?? 0,
                     waterInjectorCount: c.waterInjectorCount ?? 0,
                     gasInjectorCount: c.gasInjectorCount ?? 0,
-                    createdAt: c.createdAt?.toISOString().substring(0, 10),
+                    createdAt: c.createTime?.substring(0, 10),
                     referenceCaseId: project.referenceCaseId,
                 }
                 tableCases.push(tableCase)
@@ -159,7 +157,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     const duplicateCase = async () => {
         try {
             if (selectedCaseId) {
-                const newProject = await (await GetCaseService()).duplicateCase(project.id, selectedCaseId, {})
+                const newProject = await (await GetCaseService()).duplicateCase(project.id, selectedCaseId)
                 setProject(newProject)
             }
         } catch (error) {
@@ -190,11 +188,11 @@ const CasesTable = ({ project, setProject }: Props) => {
 
     const setCaseAsReference = async () => {
         try {
-            const projectDto = Project.Copy(project)
+            const projectDto = { ...project }
             if (projectDto.referenceCaseId === selectedCaseId) {
                 projectDto.referenceCaseId = EMPTY_GUID
             } else {
-                projectDto.referenceCaseId = selectedCaseId
+                projectDto.referenceCaseId = selectedCaseId ?? ""
             }
             const newProject = await (await GetProjectService()).updateProject(projectDto)
             setProject(newProject)
