@@ -44,10 +44,10 @@ interface Props {
     project: Components.Schemas.ProjectDto;
 }
 
-function PROSPTab({
+const PROSPTab = ({
     project,
     setProject,
-}: Props) {
+}: Props) => {
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>()

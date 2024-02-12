@@ -23,13 +23,13 @@ interface Props {
     isExplorationTable: boolean
 }
 
-function CaseDrillingScheduleTabTable({
+const CaseDrillingScheduleTabTable = ({
     dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
     assetWells, setAssetWells,
     wells, assetId, isExplorationTable,
-}: Props) {
+}: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
 

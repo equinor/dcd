@@ -98,7 +98,7 @@ interface Props {
     setGAndGAdminCost: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostDto | undefined>>,
 }
 
-function CaseCostTab({
+const CaseCostTab = ({
     project,
     caseItem, setCase,
     exploration, setExploration,
@@ -115,7 +115,7 @@ function CaseCostTab({
     cessationWellsCost, setCessationWellsCost,
     cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
     gAndGAdminCost, setGAndGAdminCost,
-}: Props) {
+}: Props) => {
     // OPEX
     const [totalFeasibilityAndConceptStudiesOverride,
         setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()

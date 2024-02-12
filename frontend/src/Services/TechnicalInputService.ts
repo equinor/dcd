@@ -16,7 +16,7 @@ export const TechnicalInputService = new __TechnicalInputService({
     accessToken: window.sessionStorage.getItem("loginAccessToken")!,
 })
 
-export async function GetTechnicalInputService() {
+export const GetTechnicalInputService = async () => {
     return new __TechnicalInputService({
         ...config.TechnicalInputService,
         accessToken: await GetToken(LoginAccessTokenKey)!,

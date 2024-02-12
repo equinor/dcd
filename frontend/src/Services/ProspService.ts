@@ -31,7 +31,7 @@ export class __ProspService extends __BaseService {
     }
 }
 
-export async function GetProspService() {
+export const GetProspService = async () => {
     return new __ProspService({
         ...config.UploadService,
         accessToken: await GetToken(LoginAccessTokenKey)!,

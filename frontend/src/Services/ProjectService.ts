@@ -33,7 +33,7 @@ export class __ProjectService extends __BaseService {
     }
 }
 
-export async function GetProjectService() {
+export const GetProjectService = async () => {
     return new __ProjectService({
         ...config.ProjectService,
         accessToken: await GetToken(LoginAccessTokenKey)!,

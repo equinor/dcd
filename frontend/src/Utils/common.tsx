@@ -9,27 +9,27 @@ export const GetDrainageStrategy = (
     drainageStrategyId?: string,
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
-export function ProjectPath(projectId: string) {
-    return `/${projectId}`
+export const ProjectPath = (projectId: string) => {
+    return `/${projectId}`;
 }
 
-export function CasePath(projectId: string, caseId: string) {
+export const CasePath = (projectId: string, caseId: string) => {
     return `${ProjectPath(projectId)}/case/${caseId}`
 }
 
-export function StoreToken(keyName: string, token: string) {
+export const StoreToken = (keyName: string, token: string) => {
     window.sessionStorage.setItem(keyName, token)
 }
 
-export function StoreAppId(appId: string) {
+export const StoreAppId = (appId: string) => {
     window.sessionStorage.setItem("appId", appId)
 }
 
-export function StoreAppScope(appScope: string) {
+export const StoreAppScope = (appScope: string) => {
     window.sessionStorage.setItem("appScope", appScope)
 }
 
-export function GetToken(keyName: string) {
+export const GetToken = (keyName: string) => {
     const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
@@ -55,7 +55,7 @@ export const unwrapCaseId = (caseId?: string | undefined): string => {
     return caseId
 }
 
-export function GetProjectCategoryName(key?: Components.Schemas.ProjectCategory): string {
+export const GetProjectCategoryName = (key?: Components.Schemas.ProjectCategory): string => {
     if (key === undefined) {
         return ""
     }
@@ -85,7 +85,7 @@ export function GetProjectCategoryName(key?: Components.Schemas.ProjectCategory)
     }[key]
 }
 
-export function GetProjectPhaseName(key?: Components.Schemas.ProjectPhase): string {
+export const GetProjectPhaseName = (key?: Components.Schemas.ProjectPhase): string => {
     if (key === undefined) {
         return ""
     }

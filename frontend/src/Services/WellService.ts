@@ -11,7 +11,7 @@ class WellService extends __BaseService {
     }
 }
 
-export async function GetWellService() {
+export const GetWellService = async () => {
     return new WellService({
         ...config.WellService,
         accessToken: await GetToken(LoginAccessTokenKey)!,

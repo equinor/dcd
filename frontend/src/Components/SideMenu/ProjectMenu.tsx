@@ -50,7 +50,7 @@ interface Props {
     project?: Components.Schemas.ProjectDto
 }
 
-function ProjectMenu({ project }: Props) {
+const ProjectMenu = ({ project }: Props) => {
     const [isOpen, setIsOpen] = useState<boolean>(true)
     const currentProject = useCurrentContext()
 

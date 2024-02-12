@@ -51,7 +51,7 @@ class CaseService extends __BaseService {
     }
 }
 
-export async function GetCaseService() {
+export const GetCaseService = async () => {
     return new CaseService({
         ...config.CaseService,
         accessToken: await GetToken(LoginAccessTokenKey)!,

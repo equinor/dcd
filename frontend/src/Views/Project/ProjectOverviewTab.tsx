@@ -65,9 +65,9 @@ interface Props {
     setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
-function ProjectOverviewTab({
+const ProjectOverviewTab = ({
     project, setProject,
-}: Props) {
+}: Props) => {
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 

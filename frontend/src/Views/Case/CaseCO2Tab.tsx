@@ -84,13 +84,13 @@ interface Props {
     setCo2Emissions: Dispatch<SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>,
 }
 
-function CaseCO2Tab({
+const CaseCO2Tab = ({
     project,
     caseItem,
     topside, setTopside,
     activeTab, drainageStrategy, setDrainageStrategy,
     co2Emissions, setCo2Emissions,
-}: Props) {
+}: Props) => {
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()

@@ -27,12 +27,12 @@ interface Props {
     totalRowName?: string
 }
 
-function CaseTabTable({
+const CaseTabTable = ({
     timeSeriesData, dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
     includeFooter, totalRowName,
-}: Props) {
+}: Props) => {
     const styles = useStyles()
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")

@@ -42,11 +42,11 @@ interface Props {
     activeTab: number
 }
 
-function CaseScheduleTab({
+const CaseScheduleTab = ({
     caseItem,
     setCase,
     activeTab,
-}: Props) {
+}: Props) => {
     const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
         const newDate = new Date(e.target.value)

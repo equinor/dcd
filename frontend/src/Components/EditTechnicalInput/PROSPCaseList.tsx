@@ -46,12 +46,12 @@ interface RowData {
     transportStateChanged: boolean
     sharePointFileChanged: boolean,
 }
-function PROSPCaseList({
+const PROSPCaseList = ({
     setProject,
     project,
     driveItems,
     check,
-}: Props) {
+}: Props) => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const [rowData, setRowData] = useState<RowData[]>()

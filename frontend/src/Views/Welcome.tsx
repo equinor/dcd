@@ -2,7 +2,7 @@ import { useCurrentContext, useHistory } from "@equinor/fusion"
 import { useEffect } from "react"
 import { ProjectPath } from "../Utils/common"
 
-function Welcome(): JSX.Element {
+const Welcome = (): JSX.Element => {
     const history = useHistory()
     const currentProject = useCurrentContext()
 

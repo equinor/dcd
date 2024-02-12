@@ -47,7 +47,7 @@ interface Props {
     activeTab: number
 }
 
-function CaseSummaryTab({
+const CaseSummaryTab = ({
     project,
     caseItem, setCase,
     topside,
@@ -55,7 +55,7 @@ function CaseSummaryTab({
     substructure,
     transport,
     activeTab,
-}: Props) {
+}: Props) => {
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()

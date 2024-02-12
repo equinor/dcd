@@ -46,9 +46,9 @@ interface Props {
     subItems?: Components.Schemas.CaseDto[]
 }
 
-function ProjectMenuItemComponent({
+const ProjectMenuItemComponent = ({
     item, projectId, subItems, project,
-}: Props) {
+}: Props) => {
     const { caseId } = useParams<Record<string, string | undefined>>()
     const currentProject = useCurrentContext()
 
