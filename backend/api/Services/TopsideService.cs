@@ -32,7 +32,12 @@ public class TopsideService : ITopsideService
     public async Task<TopsideDto> CopyTopside(Guid topsideId, Guid sourceCaseId)
     {
         var source = await GetTopside(topsideId);
-        var newTopsideDto = TopsideDtoAdapter.Convert(source);
+        var newTopsideDto = _mapper.Map<TopsideDto>(source);
+        if (newTopsideDto == null)
+        {
+            _logger.LogError("Failed to map topside to dto");
+            throw new Exception("Failed to map topside to dto");
+        }
         newTopsideDto.Id = Guid.Empty;
         if (newTopsideDto.CostProfile != null)
         {
@@ -56,7 +61,11 @@ public class TopsideService : ITopsideService
 
     public async Task<ProjectDto> CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
     {
-        var topside = TopsideAdapter.Convert(topsideDto);
+        var topside = _mapper.Map<Topside>(topsideDto);
+        if (topside == null)
+        {
+            throw new ArgumentNullException(nameof(topside));
+        }
         var project = await _projectService.GetProject(topsideDto.ProjectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.UtcNow;
@@ -97,7 +106,7 @@ public class TopsideService : ITopsideService
     public async Task<ProjectDto> UpdateTopside(TopsideDto updatedTopsideDto)
     {
         var existing = await GetTopside(updatedTopsideDto.Id);
-        TopsideAdapter.ConvertExisting(existing, updatedTopsideDto);
+        _mapper.Map(updatedTopsideDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Topsides!.Update(existing);

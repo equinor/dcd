@@ -64,7 +64,12 @@ public class DrainageStrategyService : IDrainageStrategyService
         var source = await GetDrainageStrategy(drainageStrategyId);
         var unit = (await _projectService.GetProject(source.ProjectId)).PhysicalUnit;
 
-        var newDrainageStrategyDto = DrainageStrategyDtoAdapter.Convert(source, unit);
+        var newDrainageStrategyDto = _mapper.Map<DrainageStrategyDto>(source);
+
+        if (newDrainageStrategyDto == null) {
+            throw new Exception();
+        }
+
         newDrainageStrategyDto.Id = Guid.Empty;
         if (newDrainageStrategyDto.ProductionProfileOil != null)
         {

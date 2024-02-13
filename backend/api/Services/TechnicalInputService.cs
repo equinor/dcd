@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services;
 
 public class TechnicalInputService : ITechnicalInputService
@@ -19,13 +21,21 @@ public class TechnicalInputService : ITechnicalInputService
     private readonly IWellService _wellService;
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<TechnicalInputService> _logger;
+    private readonly IMapper _mapper;
 
-    public TechnicalInputService(DcdDbContext context, IProjectService projectService, ICaseService caseService,
-    IWellProjectService wellProjectService, IExplorationService explorationService,
-    IExplorationOperationalWellCostsService explorationOperationalWellCostsService,
-    IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
-    IWellService wellService, ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
-    ILoggerFactory loggerFactory)
+    public TechnicalInputService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ICaseService caseService,
+        IWellProjectService wellProjectService,
+        IExplorationService explorationService,
+        IExplorationOperationalWellCostsService explorationOperationalWellCostsService,
+        IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
+        IWellService wellService,
+        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
+        ILoggerFactory loggerFactory,
+        IMapper mapper
+    )
     {
         _context = context;
 
@@ -43,6 +53,7 @@ public class TechnicalInputService : ITechnicalInputService
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
 
         _logger = loggerFactory.CreateLogger<TechnicalInputService>();
+        _mapper = mapper;
     }
 
     public async Task<TechnicalInputDto> UpdateTehnicalInput(TechnicalInputDto technicalInputDto)
@@ -61,7 +72,13 @@ public class TechnicalInputService : ITechnicalInputService
                 technicalInputDto.WellProjectDto = wellResult.Value.wellProjectDto;
             }
             var project = await _projectService.GetProject(technicalInputDto.ProjectDto.Id);
-            technicalInputDto.ProjectDto = ProjectDtoAdapter.Convert(project);
+            var projectDto = _mapper.Map<ProjectDto>(project);
+            if (projectDto == null)
+            {
+                _logger.LogError("Failed to map project to dto");
+                throw new Exception("Failed to map project to dto");
+            }
+            technicalInputDto.ProjectDto = projectDto;
         }
 
         await _context.SaveChangesAsync();
@@ -78,7 +95,11 @@ public class TechnicalInputService : ITechnicalInputService
         {
             if (wellDto.Id == Guid.Empty)
             {
-                var well = WellAdapter.Convert(wellDto);
+                var well = _mapper.Map<Well>(wellDto);
+                if (well == null)
+                {
+                    throw new ArgumentNullException(nameof(well));
+                }
                 var updatedWell = _context.Wells!.Add(well);
                 wellDto.Id = updatedWell.Entity.Id;
 
@@ -94,7 +115,7 @@ public class TechnicalInputService : ITechnicalInputService
                         runCostProfileCalculation = true;
                         updatedWells.Add(wellDto.Id);
                     }
-                    WellAdapter.ConvertExisting(existing, wellDto);
+                    _mapper.Map(wellDto, existing);
 
                     _context.Wells!.Update(existing);
                 }
@@ -114,7 +135,15 @@ public class TechnicalInputService : ITechnicalInputService
                 var exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
                 var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
-                return (ExplorationDtoAdapter.Convert(exploration), WellProjectDtoAdapter.Convert(wellProject));
+                var explorationDto = _mapper.Map<ExplorationDto>(exploration);
+                var wellProjectDto = _mapper.Map<WellProjectDto>(wellProject);
+                if (explorationDto == null || wellProjectDto == null)
+                {
+                    _logger.LogError("Failed to map exploration or well project to dto");
+                    throw new Exception("Failed to map exploration or well project to dto");
+                }
+
+                return (explorationDto, wellProjectDto);
             }
         }
         return null;
@@ -126,10 +155,18 @@ public class TechnicalInputService : ITechnicalInputService
             return updatedDto;
         }
         var item = await _projectService.GetProject(updatedDto.Id);
-        ProjectAdapter.ConvertExisting(item, updatedDto);
+        _mapper.Map(updatedDto, item);
         var updatedItem = _context.Projects!.Update(item);
         await _context.SaveChangesAsync();
-        return ProjectDtoAdapter.Convert(updatedItem.Entity);
+
+        var projectDto = _mapper.Map<ProjectDto>(updatedItem.Entity);
+        if (projectDto == null)
+        {
+            _logger.LogError("Failed to map project to dto");
+            throw new Exception("Failed to map project to dto");
+        }
+
+        return projectDto;
     }
 
     public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(ExplorationOperationalWellCostsDto updatedDto)
@@ -139,10 +176,16 @@ public class TechnicalInputService : ITechnicalInputService
             return updatedDto;
         }
         var item = await _explorationOperationalWellCostsService.GetOperationalWellCosts(updatedDto.Id) ?? new ExplorationOperationalWellCosts();
-        ExplorationOperationalWellCostsAdapter.ConvertExisting(item, updatedDto);
+        _mapper.Map(updatedDto, item);
         var updatedItem = _context.ExplorationOperationalWellCosts!.Update(item);
         await _context.SaveChangesAsync();
-        return ExplorationOperationalWellCostsDtoAdapter.Convert(updatedItem.Entity);
+        var explorationOperationalWellCostsDto = _mapper.Map<ExplorationOperationalWellCostsDto>(updatedItem.Entity);
+        if (explorationOperationalWellCostsDto == null)
+        {
+            _logger.LogError("Failed to map exploration operational well costs to dto");
+            throw new Exception("Failed to map exploration operational well costs to dto");
+        }
+        return explorationOperationalWellCostsDto;
     }
 
     public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedDto)
@@ -152,9 +195,15 @@ public class TechnicalInputService : ITechnicalInputService
             return updatedDto;
         }
         var item = await _developmentOperationalWellCostsService.GetOperationalWellCosts(updatedDto.Id) ?? new DevelopmentOperationalWellCosts();
-        DevelopmentOperationalWellCostsAdapter.ConvertExisting(item, updatedDto);
+        _mapper.Map(updatedDto, item);
         var updatedItem = _context.DevelopmentOperationalWellCosts!.Update(item);
         await _context.SaveChangesAsync();
-        return DevelopmentOperationalWellCostsDtoAdapter.Convert(updatedItem.Entity);
+        var developmentOperationalWellCostsDto = _mapper.Map<DevelopmentOperationalWellCostsDto>(updatedItem.Entity);
+        if (developmentOperationalWellCostsDto == null)
+        {
+            _logger.LogError("Failed to map development operational well costs to dto");
+            throw new Exception("Failed to map development operational well costs to dto");
+        }
+        return developmentOperationalWellCostsDto;
     }
 }

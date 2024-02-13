@@ -4,6 +4,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class GenerateImportedElectricityProfile : IGenerateImportedElectricityProfile
@@ -13,15 +15,23 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateImportedElectricityProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService)
+    public GenerateImportedElectricityProfile(
+        DcdDbContext context, 
+        ICaseService caseService, 
+        IProjectService projectService, 
+        ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService,
+        IMapper mapper
+        )
     {
         _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
+        _mapper = mapper;
     }
 
     public async Task<ImportedElectricityDto> GenerateAsync(Guid caseId)
@@ -45,7 +55,8 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
 
         await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, importedElectricity);
 
-        var dto = DrainageStrategyDtoAdapter.Convert<ImportedElectricityDto, ImportedElectricity>(importedElectricity, project.PhysicalUnit);
+        var dto = _mapper.Map<ImportedElectricityDto>(importedElectricity);
+
         return dto ?? new ImportedElectricityDto();
     }
 

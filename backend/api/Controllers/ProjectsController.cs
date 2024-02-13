@@ -6,6 +6,8 @@ using api.Services;
 using Api.Authorization;
 using Api.Services.FusionIntegration;
 
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -27,18 +29,21 @@ public class ProjectsController : ControllerBase
     private readonly IProjectService _projectService;
     private readonly ICompareCasesService _compareCasesService;
     private readonly ITechnicalInputService _technicalInputService;
+    private readonly IMapper _mapper;
 
     public ProjectsController(
         IProjectService projectService,
         IFusionService fusionService,
         ICompareCasesService compareCasesService,
-        ITechnicalInputService technicalInputService
+        ITechnicalInputService technicalInputService,
+        IMapper mapper
     )
     {
         _projectService = projectService;
         _fusionService = fusionService;
         _compareCasesService = compareCasesService;
         _technicalInputService = technicalInputService;
+        _mapper = mapper;
     }
 
     [HttpGet("{projectId}", Name = "GetProject")]
@@ -60,8 +65,8 @@ public class ProjectsController : ControllerBase
         var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
         if (projectMaster != null)
         {
-            var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
-            var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
+            // var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
+            // var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
             ProjectDto projectDto = new()
             {
                 Name = projectMaster.Description ?? "",
@@ -72,10 +77,16 @@ public class ProjectsController : ControllerBase
                 Currency = Currency.NOK,
                 PhysUnit = PhysUnit.SI,
                 Id = projectMaster.Identity,
-                ProjectCategory = category,
-                ProjectPhase = phase,
+                // ProjectCategory = category,
+                // ProjectPhase = phase,
             };
-            var project = ProjectAdapter.Convert(projectDto);
+            var project = _mapper.Map<Project>(projectDto);
+
+            if (project == null)
+            {
+                throw new ArgumentNullException(nameof(project));
+            }
+
             project.CreateDate = DateTimeOffset.UtcNow;
 
             return await _projectService.CreateProject(project);
@@ -87,7 +98,11 @@ public class ProjectsController : ControllerBase
     [HttpPost(Name = "CreateProject")]
     public async Task<ProjectDto> CreateProject([FromBody] ProjectDto projectDto)
     {
-        var project = ProjectAdapter.Convert(projectDto);
+        var project = _mapper.Map<Project>(projectDto);
+        if (project == null)
+        {
+            throw new ArgumentNullException(nameof(project));
+        }
         project.CreateDate = DateTimeOffset.UtcNow;
         return await _projectService.CreateProject(project);
     }
