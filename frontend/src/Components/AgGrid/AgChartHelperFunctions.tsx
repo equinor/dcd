@@ -21,7 +21,7 @@ export const separateProfileObjects = (barProfiles: string[], barNames: string[]
     return barProfileObjects
 }
 
-export const insertIf = (condition: any, addAxes: boolean, axesData: any, ...elements: any) => {
+export const insertIf = (condition: boolean, addAxes: boolean, axesData: any, ...elements: any) => {
     if (addAxes) {
         return condition ? { axes: axesData } : []
     }

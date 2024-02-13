@@ -266,8 +266,8 @@ const EditCaseModal = ({
                                 type="number"
                                 value={producerCount}
                                 disabled={false}
-                                onChange={(e: any) => setProducerWells(Number(e.currentTarget.value))}
-                                onKeyPress={(e: any) => {
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProducerWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (!/\d/.test(e.key)) {
                                         e.preventDefault()
                                     }
