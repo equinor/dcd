@@ -7,7 +7,7 @@ namespace api.Dtos;
 public class UpdateSubstructureDto
 {
     public string Name { get; set; } = string.Empty!;
-    public UpdateSubstructureCostProfileOverrideDto CostProfileOverride { get; set; } = new UpdateSubstructureCostProfileOverrideDto();
+    public UpdateSubstructureCostProfileOverrideDto? CostProfileOverride { get; set; }
     public double DryWeight { get; set; }
     public Maturity Maturity { get; set; }
     public Currency Currency { get; set; }

@@ -14,10 +14,9 @@ public class UpdateDrainageStrategyDto
     public int WaterInjectorCount { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public GasSolution GasSolution { get; set; }
-    public UpdateFuelFlaringAndLossesOverrideDto FuelFlaringAndLossesOverride { get; set; } = new UpdateFuelFlaringAndLossesOverrideDto();
-    public UpdateNetSalesGasOverrideDto NetSalesGasOverride { get; set; } = new UpdateNetSalesGasOverrideDto();
-
-    public UpdateCo2EmissionsOverrideDto Co2EmissionsOverride { get; set; } = new UpdateCo2EmissionsOverrideDto();
+    public UpdateFuelFlaringAndLossesOverrideDto? FuelFlaringAndLossesOverride { get; set; }
+    public UpdateNetSalesGasOverrideDto? NetSalesGasOverride { get; set; }
+    public UpdateCo2EmissionsOverrideDto? Co2EmissionsOverride { get; set; }
 }
 
 public class UpdateFuelFlaringAndLossesOverrideDto : UpdateTimeSeriesVolumeDto, ITimeSeriesOverrideDto

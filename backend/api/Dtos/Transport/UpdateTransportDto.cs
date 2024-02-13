@@ -4,7 +4,7 @@ namespace api.Dtos;
 public class UpdateTransportDto
 {
     public string Name { get; set; } = string.Empty!;
-    public UpdateTransportCostProfileOverrideDto CostProfileOverride { get; set; } = new UpdateTransportCostProfileOverrideDto();
+    public UpdateTransportCostProfileOverrideDto? CostProfileOverride { get; set; }
     public Maturity Maturity { get; set; }
     public double GasExportPipelineLength { get; set; }
     public double OilExportPipelineLength { get; set; }

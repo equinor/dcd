@@ -22,7 +22,7 @@ public class CaseProfile : Profile
         CreateMap<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>();
-        // If you need to map in reverse direction
+
         CreateMap<UpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();
         CreateMap<UpdateCessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>();
@@ -32,5 +32,7 @@ public class CaseProfile : Profile
         CreateMap<UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
 
         CreateMap<CreateCaseDto, Case>();
+
+        CreateMap<OpexCostProfile, OpexCostProfileDto>();
     }
 }

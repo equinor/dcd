@@ -7,7 +7,7 @@ namespace api.Dtos;
 public class UpdateTopsideDto
 {
     public string Name { get; set; } = string.Empty!;
-    public UpdateTopsideCostProfileOverrideDto CostProfileOverride { get; set; } = new UpdateTopsideCostProfileOverrideDto();
+    public UpdateTopsideCostProfileOverrideDto? CostProfileOverride { get; set; }
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
     public double GasCapacity { get; set; }
