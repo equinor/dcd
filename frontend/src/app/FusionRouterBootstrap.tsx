@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { Router } from "react-router-dom"
 
 interface Props {
-    children: any;
+    children: React.ReactNode
 }
 
 const appKey = "conceptapp"

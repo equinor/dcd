@@ -1,4 +1,5 @@
 export const separateProfileObjects = (barProfiles: string[], barNames: string[], xKey: string) => {
+export const separateProfileObjects = (barProfiles: string[], barNames: string[], xKey: string) => {
     const barProfileObjects = barProfiles.map((bp, i) => ({
         type: "column",
         xKey,
@@ -21,7 +22,7 @@ export const separateProfileObjects = (barProfiles: string[], barNames: string[]
     return barProfileObjects
 }
 
-export const insertIf = (condition: any, addAxes: boolean, axesData: any, ...elements: any) => {
+export const insertIf = (condition: boolean, addAxes: boolean, axesData: any, ...elements: any) => {
     if (addAxes) {
         return condition ? { axes: axesData } : []
     }

@@ -1,8 +1,6 @@
 import { useLocation } from "react-router-dom"
-
 import { useEffect, useState } from "react"
 import styled from "styled-components"
-
 import { useCurrentContext } from "@equinor/fusion"
 import ProjectMenu from "./ProjectMenu"
 import { GetProjectService } from "../../Services/ProjectService"
@@ -45,7 +43,7 @@ const SideMenuFooter = styled.div`
 `
 
 interface Props {
-    children: JSX.Element;
+    children: JSX.Element
 }
 
 const SideMenu: React.FC<Props> = ({ children }) => {

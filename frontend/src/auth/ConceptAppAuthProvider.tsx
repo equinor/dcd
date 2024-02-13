@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-no-constructed-context-values */
 /* eslint-disable max-len */
-import {
- createContext, useEffect, useContext, useState,
-} from "react"
+import { createContext, useState } from "react"
 
 interface ConceptAppAuthContextState {
     userError?: Error;
@@ -22,8 +20,8 @@ ConceptAppAuthContext.displayName = "ConceptAppAuthContext"
  * for the application/client.
  */
 const AuthHandler: React.FC<AuthHandlerProps> = ({ children }: AuthHandlerProps) => {
-    const [userError, setUserError] = useState<Error>()
-    const [isLoading, setIsLoading] = useState(true)
+    const [userError] = useState<Error>()
+    const [isLoading] = useState(true)
 
     return <ConceptAppAuthContext.Provider value={{ userError, loading: isLoading }}>{children}</ConceptAppAuthContext.Provider>
 }
