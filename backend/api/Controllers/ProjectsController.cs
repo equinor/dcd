@@ -67,7 +67,7 @@ public class ProjectsController : ControllerBase
         {
             // var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
             // var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
-            ProjectDto projectDto = new()
+            CreateProjectDto projectDto = new()
             {
                 Name = projectMaster.Description ?? "",
                 Description = projectMaster.Description ?? "",
@@ -76,7 +76,6 @@ public class ProjectsController : ControllerBase
                 Country = projectMaster.Country ?? "",
                 Currency = Currency.NOK,
                 PhysUnit = PhysUnit.SI,
-                Id = projectMaster.Identity,
                 // ProjectCategory = category,
                 // ProjectPhase = phase,
             };

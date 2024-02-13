@@ -9,6 +9,6 @@ public class DevelopmentOperationalWellCostsProfile : Profile
 {
     public DevelopmentOperationalWellCostsProfile()
     {
-        CreateMap<ExplorationOperationalWellCostsProfile, ExplorationOperationalWellCostsDto>();
+        CreateMap<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>().ReverseMap();
     }
 }
