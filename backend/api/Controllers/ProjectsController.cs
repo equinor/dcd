@@ -119,8 +119,8 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut("{projectId}/technical-input")]
-    public async Task<TechnicalInputDto> UpdateTechnicalInput([FromRoute] Guid projectId, [FromBody] TechnicalInputDto dto)
+    public async Task<TechnicalInputDto> UpdateTechnicalInput([FromRoute] Guid projectId, [FromBody] UpdateTechnicalInputDto dto)
     {
-        return await _technicalInputService.UpdateTehnicalInput(dto);
+        return await _technicalInputService.UpdateTehnicalInput(projectId, dto);
     }
 }

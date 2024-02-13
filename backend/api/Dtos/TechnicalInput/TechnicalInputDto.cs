@@ -10,5 +10,4 @@ public class TechnicalInputDto
     public ProjectDto ProjectDto { get; set; } = null!;
     public ExplorationDto? ExplorationDto { get; set; }
     public WellProjectDto? WellProjectDto { get; set; }
-    public Guid? CaseId { get; set; }
 }

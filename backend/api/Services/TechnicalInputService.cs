@@ -56,37 +56,40 @@ public class TechnicalInputService : ITechnicalInputService
         _mapper = mapper;
     }
 
-    public async Task<TechnicalInputDto> UpdateTehnicalInput(TechnicalInputDto technicalInputDto)
+    public async Task<TechnicalInputDto> UpdateTehnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
     {
-        await UpdateProject(technicalInputDto.ProjectDto);
+        var project = await _projectService.GetProject(projectId);
 
-        await UpdateExplorationOperationalWellCosts(technicalInputDto.ExplorationOperationalWellCostsDto);
-        await UpdateDevelopmentOperationalWellCosts(technicalInputDto.DevelopmentOperationalWellCostsDto);
+        await UpdateProject(project, technicalInputDto.ProjectDto);
+
+        await UpdateExplorationOperationalWellCosts(project, technicalInputDto.ExplorationOperationalWellCostsDto);
+        await UpdateDevelopmentOperationalWellCosts(project, technicalInputDto.DevelopmentOperationalWellCostsDto);
+
+        var returnDto = new TechnicalInputDto();
 
         if (technicalInputDto.WellDtos?.Length > 0)
         {
-            var wellResult = await CreateAndUpdateWells(technicalInputDto.WellDtos, technicalInputDto.CaseId);
+            var wellResult = await CreateAndUpdateWells(technicalInputDto.WellDtos);
             if (wellResult != null)
             {
-                technicalInputDto.ExplorationDto = wellResult.Value.explorationDto;
-                technicalInputDto.WellProjectDto = wellResult.Value.wellProjectDto;
+                returnDto.ExplorationDto = wellResult.Value.explorationDto;
+                returnDto.WellProjectDto = wellResult.Value.wellProjectDto;
             }
-            var project = await _projectService.GetProject(technicalInputDto.ProjectDto.Id);
             var projectDto = _mapper.Map<ProjectDto>(project);
             if (projectDto == null)
             {
                 _logger.LogError("Failed to map project to dto");
                 throw new Exception("Failed to map project to dto");
             }
-            technicalInputDto.ProjectDto = projectDto;
+            returnDto.ProjectDto = projectDto;
         }
 
         await _context.SaveChangesAsync();
-        return technicalInputDto;
+        return returnDto;
     }
 
-    public async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
-        WellDto[] wellDtos, Guid? caseId)
+    private async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
+        WellDto[] wellDtos)
     {
         var runCostProfileCalculation = false;
         var runSaveChanges = false;
@@ -129,34 +132,14 @@ public class TechnicalInputService : ITechnicalInputService
         if (runCostProfileCalculation)
         {
             await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
-            if (caseId != null)
-            {
-                var caseItem = await _caseService.GetCase((Guid)caseId);
-                var exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
-                var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-
-                var explorationDto = _mapper.Map<ExplorationDto>(exploration);
-                var wellProjectDto = _mapper.Map<WellProjectDto>(wellProject);
-                if (explorationDto == null || wellProjectDto == null)
-                {
-                    _logger.LogError("Failed to map exploration or well project to dto");
-                    throw new Exception("Failed to map exploration or well project to dto");
-                }
-
-                return (explorationDto, wellProjectDto);
-            }
         }
         return null;
     }
-    public async Task<ProjectDto> UpdateProject(ProjectDto updatedDto)
+    private async Task<ProjectDto> UpdateProject(Project project, UpdateProjectDto updatedDto)
     {
-        if (!updatedDto.HasChanges)
-        {
-            return updatedDto;
-        }
-        var item = await _projectService.GetProject(updatedDto.Id);
-        _mapper.Map(updatedDto, item);
-        var updatedItem = _context.Projects!.Update(item);
+        ;
+        _mapper.Map(updatedDto, project);
+        var updatedItem = _context.Projects!.Update(project);
         await _context.SaveChangesAsync();
 
         var projectDto = _mapper.Map<ProjectDto>(updatedItem.Entity);
@@ -169,13 +152,14 @@ public class TechnicalInputService : ITechnicalInputService
         return projectDto;
     }
 
-    public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(ExplorationOperationalWellCostsDto updatedDto)
+    private async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(Project project, UpdateExplorationOperationalWellCostsDto updatedDto)
     {
-        if (!updatedDto.HasChanges)
+        if (project.ExplorationOperationalWellCosts == null)
         {
-            return updatedDto;
+            _logger.LogError("Exploration operational well costs not found");
+            throw new Exception("Exploration operational well costs not found");
         }
-        var item = await _explorationOperationalWellCostsService.GetOperationalWellCosts(updatedDto.Id) ?? new ExplorationOperationalWellCosts();
+        var item = await _explorationOperationalWellCostsService.GetOperationalWellCosts(project.ExplorationOperationalWellCosts.Id) ?? new ExplorationOperationalWellCosts();
         _mapper.Map(updatedDto, item);
         var updatedItem = _context.ExplorationOperationalWellCosts!.Update(item);
         await _context.SaveChangesAsync();
@@ -188,13 +172,14 @@ public class TechnicalInputService : ITechnicalInputService
         return explorationOperationalWellCostsDto;
     }
 
-    public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts(DevelopmentOperationalWellCostsDto updatedDto)
+    private async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts(Project project, UpdateDevelopmentOperationalWellCostsDto updatedDto)
     {
-        if (!updatedDto.HasChanges)
+        if (project.DevelopmentOperationalWellCosts == null)
         {
-            return updatedDto;
+            _logger.LogError("Development operational well costs not found");
+            throw new Exception("Development operational well costs not found");
         }
-        var item = await _developmentOperationalWellCostsService.GetOperationalWellCosts(updatedDto.Id) ?? new DevelopmentOperationalWellCosts();
+        var item = await _developmentOperationalWellCostsService.GetOperationalWellCosts(project.DevelopmentOperationalWellCosts.Id) ?? new DevelopmentOperationalWellCosts();
         _mapper.Map(updatedDto, item);
         var updatedItem = _context.DevelopmentOperationalWellCosts!.Update(item);
         await _context.SaveChangesAsync();
