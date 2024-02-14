@@ -10,7 +10,6 @@ import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../models/ITimeSeries"
-import { ITimeSeriesOverride } from "../../models/ITimeSeriesOverride"
 import { ITimeSeriesCostOverride } from "../../models/ITimeSeriesCostOverride"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 
@@ -98,7 +97,7 @@ interface Props {
     setGAndGAdminCost: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostDto | undefined>>,
 }
 
-function CaseCostTab({
+const CaseCostTab = ({
     project,
     caseItem, setCase,
     exploration, setExploration,
@@ -115,7 +114,7 @@ function CaseCostTab({
     cessationWellsCost, setCessationWellsCost,
     cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
     gAndGAdminCost, setGAndGAdminCost,
-}: Props) {
+}: Props) => {
     // OPEX
     const [totalFeasibilityAndConceptStudiesOverride,
         setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()

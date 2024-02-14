@@ -56,7 +56,7 @@ interface Props {
     activeTab: number
 }
 
-function CaseFacilitiesTab({
+const CaseFacilitiesTab = ({
     project,
     caseItem, setCase,
     topside, setTopside,
@@ -64,7 +64,7 @@ function CaseFacilitiesTab({
     substructure, setSubstrucutre,
     transport, setTransport,
     activeTab,
-}: Props) {
+}: Props) => {
     const handleFacilityOpexChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside = { ...topside }
         newTopside.facilityOpex = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0

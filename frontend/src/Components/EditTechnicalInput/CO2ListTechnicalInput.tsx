@@ -30,9 +30,9 @@ interface Props {
     setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
-function CO2ListTechnicalInput({
+const CO2ListTechnicalInput = ({
     project, setProject,
-}: Props) {
+}: Props) => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
 
@@ -74,12 +74,12 @@ function CO2ListTechnicalInput({
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                case true:
-                    return node.data.profile === "CO2 vented"
-                case false:
-                    return node.data.profile !== "CO2 vented"
-                default:
-                    return true
+                    case true:
+                        return node.data.profile === "CO2 vented"
+                    case false:
+                        return node.data.profile !== "CO2 vented"
+                    default:
+                        return true
                 }
             }
             return true

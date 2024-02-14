@@ -1,9 +1,7 @@
 import { NativeSelect } from "@equinor/eds-core-react"
-import {
-    ChangeEventHandler,
-    Dispatch, SetStateAction,
-} from "react"
+import { ChangeEventHandler } from "react"
 import styled from "styled-components"
+import { useAppContext } from "../../context/AppContext"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -24,17 +22,11 @@ const InputField = styled(NativeSelect)`
     padding-bottom: 2em;
  `
 
-interface Props {
-    project: Components.Schemas.ProjectDto,
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-}
+const ProjectSettingsTab = () => {
+    const { project, setProject } = useAppContext()
 
-function ProjectSettingsTab({
-    project,
-    setProject,
-}: Props) {
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1) {
+        if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
             // eslint-disable-next-line max-len
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
             const newProject: Components.Schemas.ProjectDto = { ...project }
@@ -44,13 +36,17 @@ function ProjectSettingsTab({
     }
 
     const handleCurrencyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1) {
+        if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
             // eslint-disable-next-line max-len
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
             const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.currency = newCurrency
             setProject(newProject)
         }
+    }
+
+    if (!project) {
+        return <div>Loading project data...</div>
     }
 
     return (

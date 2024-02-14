@@ -37,9 +37,9 @@ interface Props {
     caseItem?: Components.Schemas.CaseDto
 }
 
-function MenuItem({
+const MenuItem = ({
     title, isSelected, icon, isOpen, onClick, padding, project, caseItem,
-}: Props) {
+}: Props) => {
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
 
     return (
@@ -47,11 +47,11 @@ function MenuItem({
             <MenuTitle>
                 {icon && <MenuIcon data={icon} color={isSelected ? selectedColor : ""} />}
                 {(project?.referenceCaseId === caseItem?.id) && caseItem
-                && (
-                    <Tooltip title="Reference case">
-                        <MenuIcon data={bookmark_filled} size={16} />
-                    </Tooltip>
-                )}
+                    && (
+                        <Tooltip title="Reference case">
+                            <MenuIcon data={bookmark_filled} size={16} />
+                        </Tooltip>
+                    )}
                 <Typography color={isSelected ? selectedColor : ""}>{title}</Typography>
             </MenuTitle>
             {onClick !== undefined && <MenuIcon data={isOpen ? chevron_down : chevron_right} />}

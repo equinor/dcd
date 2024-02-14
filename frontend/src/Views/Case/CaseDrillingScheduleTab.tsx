@@ -72,7 +72,7 @@ interface Props {
     activeTab: number
 }
 
-function CaseDrillingScheduleTab({
+const CaseDrillingScheduleTab = ({
     project,
     caseItem,
     exploration,
@@ -80,7 +80,7 @@ function CaseDrillingScheduleTab({
     explorationWells, setExplorationWells,
     wellProjectWells, setWellProjectWells,
     wells, activeTab,
-}: Props) {
+}: Props) => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])

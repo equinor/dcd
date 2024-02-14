@@ -44,10 +44,10 @@ interface Props {
     project: Components.Schemas.ProjectDto;
 }
 
-function PROSPTab({
+const PROSPTab = ({
     project,
     setProject,
-}: Props) {
+}: Props) => {
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>()
@@ -62,7 +62,7 @@ function PROSPTab({
                     const result = await (await GetProspService())
                         .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
                     setDriveItems(result)
-                    setErrorMessage("") // Clear any existing error messages
+                    setErrorMessage("")
                 } catch (error) {
                     console.error("[PROSPTab] error while fetching SharePoint files", error)
                     setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
@@ -77,7 +77,7 @@ function PROSPTab({
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
             setDriveItems(result)
-            setErrorMessage("") // Clear any existing error messages
+            setErrorMessage("")
 
             if (sharepointUrl !== project.sharepointSiteUrl) {
                 const newProject: Components.Schemas.ProjectDto = { ...project }

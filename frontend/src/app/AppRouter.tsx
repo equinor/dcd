@@ -4,31 +4,29 @@ import CaseView from "../Views/CaseView"
 import Welcome from "../Views/Welcome"
 import ProjectView from "../Views/ProjectView"
 
-export function AppRouter(): JSX.Element {
-    return (
-        <Switch>
-            <Route
-                path="/"
-                exact
-            >
-                <Welcome />
-            </Route>
-            <Route
-                path="/:fusionContextId"
-                exact
-            >
-                <SideMenu>
-                    <ProjectView />
-                </SideMenu>
-            </Route>
-            <Route
-                path="/:fusionContextId/case/:caseId"
-                exact
-            >
-                <SideMenu>
-                    <CaseView />
-                </SideMenu>
-            </Route>
-        </Switch>
-    )
-}
+export const AppRouter = (): JSX.Element => (
+    <Switch>
+        <Route
+            path="/"
+            exact
+        >
+            <Welcome />
+        </Route>
+        <Route
+            path="/:fusionContextId"
+            exact
+        >
+            <SideMenu>
+                <ProjectView />
+            </SideMenu>
+        </Route>
+        <Route
+            path="/:fusionContextId/case/:caseId"
+            exact
+        >
+            <SideMenu>
+                <CaseView />
+            </SideMenu>
+        </Route>
+    </Switch>
+)

@@ -8,7 +8,7 @@ import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
-import { MergeTimeseries } from "../../Utils/common"
+import { mergeTimeseries } from "../../Utils/common"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 
 const ColumnWrapper = styled.div`
@@ -47,7 +47,7 @@ interface Props {
     activeTab: number
 }
 
-function CaseSummaryTab({
+const CaseSummaryTab = ({
     project,
     caseItem, setCase,
     topside,
@@ -55,8 +55,8 @@ function CaseSummaryTab({
     substructure,
     transport,
     activeTab,
-}: Props) {
-    // Summary table
+}: Props) => {
+     // Summary table
     // Expploration cost subtable
     // const [explorationCostSum, setExplorationCostSum] = useState<Components.Schemas.explorationCostSum>()
 
@@ -90,8 +90,6 @@ function CaseSummaryTab({
     // const [importedElectricity, setImportedElectricity] = useState<>()
     // const [defferedOilProfileMSm3, setDefferedOilProfileMSm3] = useState<>()
     // const [deferralGas, setDeferralGas] = useState<>()
-
-
 
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
@@ -154,7 +152,7 @@ function CaseSummaryTab({
                         feed = caseItem.totalFEEDStudiesOverride
                     }
 
-                    const totalStudy = MergeTimeseries(feasibility, feed)
+                    const totalStudy = mergeTimeseries(feasibility, feed)
                     setTotalStudyCost(totalStudy)
 
                     setOpexCost(opex)

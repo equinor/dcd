@@ -7,7 +7,7 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { IsExplorationWell, isInteger } from "../../Utils/common"
+import { isExplorationWell, isInteger } from "../../Utils/common"
 import { EMPTY_GUID } from "../../Utils/constants"
 
 interface Props {
@@ -23,20 +23,20 @@ interface Props {
     isExplorationTable: boolean
 }
 
-function CaseDrillingScheduleTabTable({
+const CaseDrillingScheduleTabTable = ({
     dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
     assetWells, setAssetWells,
     wells, assetId, isExplorationTable,
-}: Props) {
+}: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
         const newAssetWells: (Components.Schemas.ExplorationWellDto | Components.Schemas.WellProjectWellDto)[] = [...assetWells]
         if (isExplorationTable) {
-            wells?.filter((w) => IsExplorationWell(w)).forEach((w) => {
+            wells?.filter((w) => isExplorationWell(w)).forEach((w) => {
                 const explorationWell = assetWell.find((ew) => ew.wellId === w.id)
                 if (!explorationWell) {
                     const newExplorationWell = {
@@ -52,7 +52,7 @@ function CaseDrillingScheduleTabTable({
                 }
             })
         } else {
-            wells?.filter((w) => !IsExplorationWell(w)).forEach((w) => {
+            wells?.filter((w) => !isExplorationWell(w)).forEach((w) => {
                 const wellProjectWell = assetWell.find((wpw) => wpw.wellId === w.id)
                 if (!wellProjectWell) {
                     const newWellProjectWell = {

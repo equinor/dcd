@@ -1,4 +1,4 @@
 export enum ImportStatusEnum {
     Selected,
-    NotSelected
+    NotSelected,
 }

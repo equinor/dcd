@@ -31,7 +31,7 @@ const CaseNumberInput = ({
             disabled={disabled}
             onChange={onChange}
             min={allowNegative ? undefined : 0}
-            onKeyPress={(event: any) => {
+            onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
                 if (integer && !/\d/.test(event.key)) {
                     event.preventDefault()
                 }

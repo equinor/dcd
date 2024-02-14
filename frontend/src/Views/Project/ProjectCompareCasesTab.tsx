@@ -14,16 +14,13 @@ import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { AgChartsCompareCases } from "../../Components/AgGrid/AgChartsCompareCases"
 import { GetProjectService } from "../../Services/ProjectService"
+import { useAppContext } from "../../context/AppContext"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.5rem;
     margin-bottom: -0.2rem;
 `
-
-interface Props {
-    project: Components.Schemas.ProjectDto
-}
 
 interface TableCompareCase {
     id: string,
@@ -65,11 +62,10 @@ const StyledTabPanel = styled(Panel)`
     border-top: 1px solid LightGray;
 `
 
-function ProjectCompareCasesTab({
-    project,
-}: Props) {
+const ProjectCompareCasesTab = () => {
     const gridRef = useRef(null)
     const styles = useStyles()
+    const { project } = useAppContext()
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -94,15 +90,17 @@ function ProjectCompareCasesTab({
     const [co2IntensityChartData, setCo2IntensityChartData] = useState<object>()
 
     useEffect(() => {
-        (async () => {
-            try {
-                const compareCasesService = await (await GetProjectService()).compareCases(project.id)
-                const casesOrderedByGuid = compareCasesService.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
-                setCompareCasesTotals(casesOrderedByGuid)
-            } catch (error) {
-                console.error("[ProjectView] Error while generating compareCasesTotals", error)
-            }
-        })()
+        if (project) {
+            (async () => {
+                try {
+                    const compareCasesService = await (await GetProjectService()).compareCases(project.id)
+                    const casesOrderedByGuid = compareCasesService.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
+                    setCompareCasesTotals(casesOrderedByGuid)
+                } catch (error) {
+                    console.error("[ProjectView] Error while generating compareCasesTotals", error)
+                }
+            })()
+        }
     }, [])
 
     const casesToRowData = () => {
@@ -142,7 +140,7 @@ function ProjectCompareCasesTab({
         const investmentProfilesObject: object[] = []
         const totalCo2EmissionsObject: object[] = []
         const co2IntensityObject: object[] = []
-        if (compareCasesTotals !== undefined) {
+        if (compareCasesTotals !== undefined && project) {
             for (let i = 0; i < project.cases.length; i += 1) {
                 npvObject.push({
                     cases: project.cases[i].name,
@@ -183,18 +181,20 @@ function ProjectCompareCasesTab({
     }
 
     useEffect(() => {
-        casesToRowData()
-        generateAllCharts()
-    }, [project.cases, compareCasesTotals])
+        if (project) {
+            casesToRowData()
+            generateAllCharts()
+        }
+    }, [project?.cases, compareCasesTotals])
 
     const nameWithReferenceCase = (p: any) => (
         <span>
-            {project.referenceCaseId === p.node.data.id
-                        && (
-                            <Tooltip title="Reference case">
-                                <MenuIcon data={bookmark_filled} size={16} />
-                            </Tooltip>
-                        )}
+            {project && project.referenceCaseId === p.node.data.id
+                && (
+                    <Tooltip title="Reference case">
+                        <MenuIcon data={bookmark_filled} size={16} />
+                    </Tooltip>
+                )}
             <span>{p.value}</span>
         </span>
     )

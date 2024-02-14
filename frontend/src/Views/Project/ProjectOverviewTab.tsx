@@ -1,7 +1,5 @@
 import {
     MouseEventHandler, useState,
-    Dispatch,
-    SetStateAction,
     FormEventHandler,
 } from "react"
 import styled from "styled-components"
@@ -10,12 +8,13 @@ import {
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
-import { GetProjectPhaseName, GetProjectCategoryName, unwrapProjectId } from "../../Utils/common"
+import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { WrapperColumn, WrapperRow } from "../Asset/StyledAssetComponents"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
 import EditCaseModal from "../../Components/Case/EditCaseModal"
 import CasesTable from "../../Components/Case/CasesTable"
+import { useAppContext } from "../../context/AppContext"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -60,33 +59,37 @@ const DescriptionField = styled(TextArea)`
     width: 60rem;
 `
 
-interface Props {
-    project: Components.Schemas.ProjectDto,
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-}
-
-function ProjectOverviewTab({
-    project, setProject,
-}: Props) {
+const ProjectOverviewTab = () => {
+    const { project, setProject } = useAppContext()
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const handleDescriptionChange: FormEventHandler<any> = async (e) => {
-        const newProject: Components.Schemas.ProjectDto = { ...project }
-        newProject.description = e.currentTarget.value
-        setProject(newProject)
+    const handleDescriptionChange: FormEventHandler = (e) => {
+        const target = e.target as typeof e.target & {
+            value: string
+        }
+        if (project) {
+            const updatedProject = { ...project, description: target.value }
+            setProject(updatedProject)
+        }
     }
 
     const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
-        try {
-            const projectId: string = unwrapProjectId(project.id)
-            const projectResult: Components.Schemas.ProjectDto = await (await GetProjectService()).getProjectByID(projectId)
-            const _ = (await GetSTEAService()).excelToSTEA(projectResult)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
+        if (project) {
+            try {
+                const projectId = unwrapProjectId(project.id)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
+                await (await GetSTEAService()).excelToSTEA(projectResult)
+            } catch (error) {
+                console.error("[ProjectView] error while submitting form data", error)
+            }
         }
+    }
+
+    if (!project) {
+        return <div>Loading project data...</div>
     }
 
     return (
@@ -117,13 +120,13 @@ function ProjectOverviewTab({
                     <WrapperRow>
                         <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
                         <Typography aria-label="Project phase">
-                            {GetProjectPhaseName(project.projectPhase)}
+                            {getProjectPhaseName(project.projectPhase)}
                         </Typography>
                     </WrapperRow>
                     <WrapperRow>
                         <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
                         <Typography aria-label="Project category">
-                            {GetProjectCategoryName(project.projectCategory)}
+                            {getProjectCategoryName(project.projectCategory)}
                         </Typography>
                     </WrapperRow>
                     <WrapperRow>
