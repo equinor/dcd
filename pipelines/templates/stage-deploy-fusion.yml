@@ -143,6 +143,12 @@ stages:
           - job: AddDbMigrations_${{ parameters.envshortname }}
             dependsOn: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             steps:
+              - task: UseDotNet@2
+                displayName: 'Use .NET Core sdk'
+                inputs:
+                  packageType: sdk
+                  version: 8.0.x
+                  installationPath: $(Agent.ToolsDirectory)/dotnet
               - task: PowerShell@2
                 displayName: Update env variabel in Azure Devops to ${{ parameters.envshortname }}
                 inputs:
@@ -169,4 +175,3 @@ stages:
                     inlineScript: |
                       cd "$(Build.SourcesDirectory)/backend/api"
                       dotnet ef database update --verbose
-                      
