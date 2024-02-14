@@ -1,7 +1,5 @@
 import {
     MouseEventHandler, useState,
-    Dispatch,
-    SetStateAction,
     FormEventHandler,
 } from "react"
 import styled from "styled-components"
@@ -16,6 +14,7 @@ import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
 import EditCaseModal from "../../Components/Case/EditCaseModal"
 import CasesTable from "../../Components/Case/CasesTable"
+import { useAppContext } from "../../context/AppContext"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -60,34 +59,37 @@ const DescriptionField = styled(TextArea)`
     width: 60rem;
 `
 
-interface Props {
-    project: Components.Schemas.ProjectDto,
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-}
-
-const ProjectOverviewTab = ({
-    project, setProject,
-}: Props) => {
+const ProjectOverviewTab = () => {
+    const { project, setProject } = useAppContext()
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const handleDescriptionChange: FormEventHandler<any> = async (e) => {
-        const newProject: Components.Schemas.ProjectDto = { ...project }
-        newProject.description = e.currentTarget.value
-        setProject(newProject)
+    const handleDescriptionChange: FormEventHandler = (e) => {
+        const target = e.target as typeof e.target & {
+            value: string
+        }
+        if (project) {
+            const updatedProject = { ...project, description: target.value }
+            setProject(updatedProject)
+        }
     }
 
     const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
-        try {
-            const projectId: string = unwrapProjectId(project.id)
-            const projectResult: Components.Schemas.ProjectDto = await (await GetProjectService()).getProjectByID(projectId)
-            const _ = (await GetSTEAService()).excelToSTEA(projectResult)
-            // todo: rewrite so _ is not left unused
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
+        if (project) {
+            try {
+                const projectId = unwrapProjectId(project.id)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
+                await (await GetSTEAService()).excelToSTEA(projectResult)
+            } catch (error) {
+                console.error("[ProjectView] error while submitting form data", error)
+            }
         }
+    }
+
+    if (!project) {
+        return <div>Loading project data...</div>
     }
 
     return (

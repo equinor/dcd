@@ -10,6 +10,7 @@ import React, {
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import { useCurrentContext } from "@equinor/fusion"
+import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 import ProjectOverviewTab from "./Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "./Project/ProjectCompareCasesTab"
@@ -48,17 +49,12 @@ const Wrapper = styled.div`
 `
 
 const ProjectView = () => {
-    const [activeTab, setActiveTab] = React.useState(0)
-
     const currentProject = useCurrentContext()
-
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
-    const [, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
-    const [, setCurrency] = useState<Components.Schemas.Currency>(1)
+    const { project, setProject } = useAppContext()
 
+    const [activeTab, setActiveTab] = React.useState(0)
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
-
     const [isSaving, setIsSaving] = useState<boolean>()
     const [isLoading, setIsLoading] = useState<boolean>()
     const [isCreating, setIsCreating] = useState<boolean>()
@@ -73,10 +69,7 @@ const ProjectView = () => {
                         setIsCreating(true)
                         res = await (await GetProjectService()).createProjectFromContextId(currentProject.id)
                     }
-                    if (res !== undefined) {
-                        setPhysicalUnit(res?.physUnit)
-                        setCurrency(res?.currency)
-                    }
+
                     setProject(res)
                     setIsCreating(false)
                     setIsLoading(false)
@@ -139,21 +132,13 @@ const ProjectView = () => {
                     </List>
                     <Panels>
                         <StyledTabPanel>
-                            <ProjectOverviewTab
-                                project={project}
-                                setProject={setProject}
-                            />
+                            <ProjectOverviewTab />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <ProjectCompareCasesTab
-                                project={project}
-                            />
+                            <ProjectCompareCasesTab />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <ProjectSettingsTab
-                                project={project}
-                                setProject={setProject}
-                            />
+                            <ProjectSettingsTab />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
