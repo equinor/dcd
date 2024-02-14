@@ -34,7 +34,8 @@
         "react/prop-types": 0,
         "max-len": ["warn", 180],
         "linebreak-style": 0,
-        "camelcase": 0
+        "camelcase": 0,
+        "no-unused-vars": "warn"
     },
     "overrides": [
         {

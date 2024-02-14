@@ -61,7 +61,6 @@ type Props = {
     isOpen: boolean
     setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
     project: Components.Schemas.ProjectDto,
-    setWells?: Dispatch<SetStateAction<Components.Schemas.WellDto[] | undefined>>
     caseId?: string
     setExploration?: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>
     setWellProject?: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>
@@ -72,7 +71,6 @@ const EditTechnicalInputModal = ({
     isOpen,
     setProject,
     project,
-    setWells,
     caseId,
     setExploration,
     setWellProject,
@@ -128,21 +126,6 @@ const EditTechnicalInputModal = ({
     if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
         return null
     }
-
-    /*
-    const setExplorationWellProjectWellsFromWells = (wells: Components.Schemas.WellDto[]) => {
-        const filteredExplorationWellsResult = wells.filter((w: Components.Schemas.WellDto) => isExplorationWell(w))
-        const filteredWellProjectWellsResult = wells.filter((w: Components.Schemas.WellDto) => !isExplorationWell(w))
-        setWellProjectWells(filteredWellProjectWellsResult)
-        setExplorationWells(filteredExplorationWellsResult)
-
-        setOriginalWellProjectWells(filteredWellProjectWellsResult)
-        setOriginalExplorationWells(filteredExplorationWellsResult)
-        if (setWells) {
-            setWells(wells)
-        }
-    }
-    */
 
     const handleSave = async () => {
         try {

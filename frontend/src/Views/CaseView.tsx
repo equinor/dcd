@@ -608,7 +608,6 @@ const CaseView = () => {
                 isOpen={editTechnicalInputModalIsOpen}
                 project={project}
                 setProject={setProject}
-                setWells={setWells}
                 caseId={caseItem.id}
                 setExploration={setExploration}
                 setWellProject={setWellProject}

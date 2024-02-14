@@ -10,7 +10,6 @@ import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../models/ITimeSeries"
-import { ITimeSeriesOverride } from "../../models/ITimeSeriesOverride"
 import { ITimeSeriesCostOverride } from "../../models/ITimeSeriesCostOverride"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 

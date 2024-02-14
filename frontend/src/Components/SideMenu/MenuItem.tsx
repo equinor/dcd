@@ -47,11 +47,11 @@ const MenuItem = ({
             <MenuTitle>
                 {icon && <MenuIcon data={icon} color={isSelected ? selectedColor : ""} />}
                 {(project?.referenceCaseId === caseItem?.id) && caseItem
-                && (
-                    <Tooltip title="Reference case">
-                        <MenuIcon data={bookmark_filled} size={16} />
-                    </Tooltip>
-                )}
+                    && (
+                        <Tooltip title="Reference case">
+                            <MenuIcon data={bookmark_filled} size={16} />
+                        </Tooltip>
+                    )}
                 <Typography color={isSelected ? selectedColor : ""}>{title}</Typography>
             </MenuTitle>
             {onClick !== undefined && <MenuIcon data={isOpen ? chevron_down : chevron_right} />}

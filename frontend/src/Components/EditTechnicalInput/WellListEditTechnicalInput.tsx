@@ -1,14 +1,12 @@
-import { Button, NativeSelect, Icon } from "@equinor/eds-core-react"
+import { Button, NativeSelect } from "@equinor/eds-core-react"
 import {
     ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
-import { delete_to_trash } from "@equinor/eds-icons"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { GetWellService } from "../../Services/WellService"
 
 const ButtonWrapper = styled.div`
     margin-top: 20px;
@@ -31,17 +29,6 @@ interface TableWell {
     well: Components.Schemas.WellDto
     wells: Components.Schemas.WellDto[]
 }
-
-interface DeleteButtonProps {
-    wellId: string;
-    onDelete: (wellId: string) => void;
-}
-
-const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => (
-    <Button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
-        <Icon data={delete_to_trash} size={16} />
-    </Button>
-)
 
 const WellListEditTechnicalInput = ({
     project, explorationWells, wells, setWells,
