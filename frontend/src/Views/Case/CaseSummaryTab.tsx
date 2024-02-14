@@ -56,6 +56,43 @@ function CaseSummaryTab({
     transport,
     activeTab,
 }: Props) {
+    // Summary table
+    // Expploration cost subtable
+    const [explorationCostDetails, setExplorationCostDetails] = useState<Components.Schemas.explorationCostDetails>()
+
+    // CAPEX subtable
+    const [capexDetails, setCapexDetails] = useState([])
+    const [drilling, setDrilling] = useState<>()
+    const [offshoreFacilities, setOffshoreFacilities] = useState<>()
+    const [onshoreFacilities, setOnshoreFacilities] = useState<>()
+    const [cessationOffshoreFacilities, setCessationOffshoreFacilities] = useState<>()
+    const [cessationOnshoreFacilities, setCessationOnshoreFacilities] = useState<>()
+
+    // Study cost subtable
+    const [studyCostDetails, setStudyCostDetails] = useState([])
+    const [feasibilityAndConceptStudies, setFeasibilityAndConceptStudies] = useState<>()
+    const [feedStudies, setFEEDStudies] = useState<>()
+    const [otherStudies, setOtherStudies] = useState<>()
+
+    // OPEX subtable
+    const [opexDetails, setOpexDetails] = useState([])
+    const [historicCost, setHistoricCost] = useState<>()
+    const [offshoreRelatedOpexInclWellIntervention, setOffshoreRelatedOpexInclWellIntervention] = useState<>() //INCL WHAT
+    const [onshoreRelatedOpex, setOnshoreRelatedOpex] = useState<>()
+
+    //Production & sales volume table
+    const [productionAndSalesVolume, setProductionAndSalesVolume] = useState([])
+    const [oilCondensateProduction , setOilCondensateProduction] = useState<>()
+    const [nglProduction, setNGLProduction] = useState<>()
+    const [salesGas, setSalesGas] = useState<>()
+    const [gasImport, setGasImport] = useState<>()
+    const [cO2Emissions, setCO2Emissions] = useState<>()
+    const [importedElectricity, setImportedElectricity] = useState<>()
+    const [defferedOilProfileMSm3, setDefferedOilProfileMSm3] = useState<>()
+    const [deferralGas, setDeferralGas] = useState<>()
+
+
+
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
