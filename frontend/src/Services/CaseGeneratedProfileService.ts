@@ -1,7 +1,7 @@
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
-import { GetToken, LoginAccessTokenKey } from "../Utils/common"
+import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 export class CaseGeneratedProfileService extends __BaseService {
     async generateOpexCost(projectId: string, caseId: string): Promise<Components.Schemas.OpexCostProfileWrapperDto> {
@@ -35,9 +35,9 @@ export class CaseGeneratedProfileService extends __BaseService {
     }
 }
 
-export async function GetGenerateProfileService() {
+export const GetGenerateProfileService = async () => {
     return new CaseGeneratedProfileService({
         ...config.GenerateProfileService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
+        accessToken: await getToken(loginAccessTokenKey)!,
     })
 }

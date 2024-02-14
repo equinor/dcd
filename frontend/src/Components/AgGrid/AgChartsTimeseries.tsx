@@ -2,7 +2,7 @@ import { AgChartsReact } from "ag-charts-react"
 import { insertIf, separateProfileObjects } from "./AgChartHelperFunctions"
 
 interface Props {
-    data: any
+    data: object
     chartTitle: string
     barColors: string[]
     barProfiles: string[]
@@ -44,7 +44,7 @@ export const AgChartsTimeseries = ({
         },
     }
 
-    const defaultOptions: any = {
+    const defaultOptions: object = {
         data,
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },

@@ -13,7 +13,7 @@ import {
     useMemo,
     useRef,
 } from "react"
-import { useHistory, useParams } from "react-router-dom"
+import { useHistory, useParams, Link } from "react-router-dom"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import {
@@ -24,12 +24,12 @@ import {
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { CasePath, ProductionStrategyOverviewToString } from "../../Utils/common"
+import { casePath, productionStrategyOverviewToString } from "../../Utils/common"
+import { casePath, productionStrategyOverviewToString } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
 import EditCaseModal from "./EditCaseModal"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { GetProjectService } from "../../Services/ProjectService"
-import { Link } from "react-router-dom"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -55,7 +55,7 @@ interface TableCase {
 }
 
 const CasesTable = ({ project, setProject }: Props) => {
-    const gridRef = useRef<any>(null)
+    const gridRef = useRef<AgGridReact>(null)
     const styles = useStyles()
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -68,11 +68,11 @@ const CasesTable = ({ project, setProject }: Props) => {
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
     const productionStrategyToString = (p: any) => {
-        const stringValue = ProductionStrategyOverviewToString(p.value)
+        const stringValue = productionStrategyOverviewToString(p.value)
         return <div>{stringValue}</div>
     }
 
-    const onMoreClick = (data: any, target: HTMLElement) => {
+    const onMoreClick = (data: TableCase, target: HTMLElement) => {
         setSelectedCaseId(data.id)
         setMenuAnchorEl(target)
         setIsMenuOpen(!isMenuOpen)
@@ -88,8 +88,8 @@ const CasesTable = ({ project, setProject }: Props) => {
     )
 
     const nameWithReferenceCase = (p: any) => {
-        const caseDetailPath = CasePath(project.id, p.node.data.id);
-        
+        const caseDetailPath = casePath(project.id, p.node.data.id)
+
         return (
             <span>
                 {p.node.data.referenceCaseId === p.node.data.id && (
@@ -97,12 +97,12 @@ const CasesTable = ({ project, setProject }: Props) => {
                         <MenuIcon data={bookmark_filled} size={16} />
                     </Tooltip>
                 )}
-                <Link to={caseDetailPath} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Link to={caseDetailPath} style={{ textDecoration: "none", color: "inherit" }}>
                     {p.value}
                 </Link>
             </span>
-        );
-    };
+        )
+    }
 
     const [columnDefs] = useState<ColDef[]>([
         { field: "name", cellRenderer: nameWithReferenceCase },
@@ -179,7 +179,7 @@ const CasesTable = ({ project, setProject }: Props) => {
     const openCase = async () => {
         try {
             if (selectedCaseId) {
-                history.push(CasePath(fusionContextId!, selectedCaseId))
+                history.push(casePath(fusionContextId!, selectedCaseId))
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)

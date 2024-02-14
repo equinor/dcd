@@ -37,9 +37,9 @@ interface Props {
     caseItem?: Components.Schemas.CaseDto
 }
 
-function MenuItem({
+const MenuItem = ({
     title, isSelected, icon, isOpen, onClick, padding, project, caseItem,
-}: Props) {
+}: Props) => {
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
 
     return (

@@ -30,9 +30,9 @@ interface Props {
     setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
 }
 
-function CO2ListTechnicalInput({
+const CO2ListTechnicalInput = ({
     project, setProject,
-}: Props) {
+}: Props) => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
 

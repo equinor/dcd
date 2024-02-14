@@ -10,9 +10,9 @@ interface Props {
     topside: Components.Schemas.TopsideDto,
 }
 
-function CaseCO2DistributionTable({
+const CaseCO2DistributionTable = ({
     topside,
-}: Props) {
+}: Props) => {
     const gridRef = useRef(null)
 
     const onGridReady = (params: any) => {

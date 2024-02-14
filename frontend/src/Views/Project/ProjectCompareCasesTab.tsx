@@ -65,9 +65,9 @@ const StyledTabPanel = styled(Panel)`
     border-top: 1px solid LightGray;
 `
 
-function ProjectCompareCasesTab({
+const ProjectCompareCasesTab = ({
     project,
-}: Props) {
+}: Props) => {
     const gridRef = useRef(null)
     const styles = useStyles()
 

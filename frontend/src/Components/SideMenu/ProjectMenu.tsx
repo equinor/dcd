@@ -7,7 +7,7 @@ import { useCurrentContext } from "@equinor/fusion"
 import MenuItem from "./MenuItem"
 import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
 
-import { ProjectPath } from "../../Utils/common"
+import { projectPath } from "../../Utils/common"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -50,7 +50,7 @@ interface Props {
     project?: Components.Schemas.ProjectDto
 }
 
-function ProjectMenu({ project }: Props) {
+const ProjectMenu = ({ project }: Props) => {
     const [isOpen, setIsOpen] = useState<boolean>(true)
     const currentProject = useCurrentContext()
 
@@ -61,7 +61,7 @@ function ProjectMenu({ project }: Props) {
     return (
         <ExpandableDiv>
             <nav>
-                <LinkWithoutStyle to={ProjectPath(currentProject?.externalId!)}>
+                <LinkWithoutStyle to={projectPath(currentProject?.externalId!)}>
                     <MenuItem
                         title={project.name!}
                         isSelected={currentProject?.externalId === project.id}

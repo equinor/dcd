@@ -9,7 +9,7 @@ import { clear } from "@equinor/eds-icons"
 import WellCostsTab from "./WellCostsTab"
 import PROSPTab from "./PROSPTab"
 import { EMPTY_GUID } from "../../Utils/constants"
-import { IsExplorationWell } from "../../Utils/common"
+import { isExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
 
@@ -79,7 +79,7 @@ const EditTechnicalInputModal = ({
 }: Props) => {
     const [activeTab, setActiveTab] = useState<number>(0)
 
-    const [originalProject, setOriginalProject] = useState<Components.Schemas.ProjectDto>(project)
+    const [originalProject] = useState<Components.Schemas.ProjectDto>(project)
 
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
@@ -87,22 +87,22 @@ const EditTechnicalInputModal = ({
     const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
     const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
 
-    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
-    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
+    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
+    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !IsExplorationWell(w)) ?? [])
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => IsExplorationWell(w)) ?? [])
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
     const [isSaving, setIsSaving] = useState<boolean>()
 
     useEffect(() => {
         if (project.wells) {
-            setWellProjectWells(project.wells.filter((w) => !IsExplorationWell(w)))
-            setExplorationWells(project.wells.filter((w) => IsExplorationWell(w)))
+            setWellProjectWells(project.wells.filter((w) => !isExplorationWell(w)))
+            setExplorationWells(project.wells.filter((w) => isExplorationWell(w)))
 
-            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !IsExplorationWell(w)))
+            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !isExplorationWell(w)))
             setOriginalWellProjectWells(originalWellProjectWellsResult)
-            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => IsExplorationWell(w)))
+            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => isExplorationWell(w)))
             setOriginalExplorationWells(originalExplorationWellsResult)
         }
     }, [project])
@@ -129,9 +129,10 @@ const EditTechnicalInputModal = ({
         return null
     }
 
+    /*
     const setExplorationWellProjectWellsFromWells = (wells: Components.Schemas.WellDto[]) => {
-        const filteredExplorationWellsResult = wells.filter((w: Components.Schemas.WellDto) => IsExplorationWell(w))
-        const filteredWellProjectWellsResult = wells.filter((w: Components.Schemas.WellDto) => !IsExplorationWell(w))
+        const filteredExplorationWellsResult = wells.filter((w: Components.Schemas.WellDto) => isExplorationWell(w))
+        const filteredWellProjectWellsResult = wells.filter((w: Components.Schemas.WellDto) => !isExplorationWell(w))
         setWellProjectWells(filteredWellProjectWellsResult)
         setExplorationWells(filteredExplorationWellsResult)
 
@@ -141,6 +142,7 @@ const EditTechnicalInputModal = ({
             setWells(wells)
         }
     }
+    */
 
     const handleSave = async () => {
         try {
@@ -191,7 +193,6 @@ const EditTechnicalInputModal = ({
                 setWellProject(result.wellProjectDto)
             }
 
-            
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
             setOriginalDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
             setOriginalWellProjectWells([...wellProjectWells])
@@ -211,25 +212,24 @@ const EditTechnicalInputModal = ({
         try {
             await handleSave()
             toggleEditTechnicalInputModal()
-        }
-        catch (e) {
+        } catch (e) {
             console.error("Error during save operation: ", e)
         }
     }
 
     const handleCancel = () => {
-            // Revert the operational costs to their original state
-            setExplorationOperationalWellCosts(originalExplorationOperationalWellCosts)
-            setDevelopmentOperationalWellCosts(originalDevelopmentOperationalWellCosts)
+        // Revert the operational costs to their original state
+        setExplorationOperationalWellCosts(originalExplorationOperationalWellCosts)
+        setDevelopmentOperationalWellCosts(originalDevelopmentOperationalWellCosts)
 
-            // Revert the wells to their original state
-            setWellProjectWells([...originalWellProjectWells])
-            setExplorationWells([...originalExplorationWells])
-        
+        // Revert the wells to their original state
+        setWellProjectWells([...originalWellProjectWells])
+        setExplorationWells([...originalExplorationWells])
+
         // Close the modal in all cases
         toggleEditTechnicalInputModal()
-    };
-    
+    }
+
     return (
         <>
             <div style={{
