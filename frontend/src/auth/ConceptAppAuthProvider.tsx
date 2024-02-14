@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-no-constructed-context-values */
 /* eslint-disable max-len */
-import {
-    createContext, useState,
-} from "react"
+import { createContext, useState } from "react"
 
 interface ConceptAppAuthContextState {
     userError?: Error;

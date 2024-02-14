@@ -62,7 +62,7 @@ const PROSPTab = ({
                     const result = await (await GetProspService())
                         .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
                     setDriveItems(result)
-                    setErrorMessage("") // Clear any existing error messages
+                    setErrorMessage("")
                 } catch (error) {
                     console.error("[PROSPTab] error while fetching SharePoint files", error)
                     setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
@@ -77,7 +77,7 @@ const PROSPTab = ({
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
             setDriveItems(result)
-            setErrorMessage("") // Clear any existing error messages
+            setErrorMessage("")
 
             if (sharepointUrl !== project.sharepointSiteUrl) {
                 const newProject: Components.Schemas.ProjectDto = { ...project }

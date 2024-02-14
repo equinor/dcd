@@ -54,7 +54,7 @@ interface TableCase {
 }
 
 const CasesTable = ({ project, setProject }: Props) => {
-    const gridRef = useRef<any>(null)
+    const gridRef = useRef<AgGridReact>(null)
     const styles = useStyles()
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -71,7 +71,7 @@ const CasesTable = ({ project, setProject }: Props) => {
         return <div>{stringValue}</div>
     }
 
-    const onMoreClick = (data: any, target: HTMLElement) => {
+    const onMoreClick = (data: TableCase, target: HTMLElement) => {
         setSelectedCaseId(data.id)
         setMenuAnchorEl(target)
         setIsMenuOpen(!isMenuOpen)
