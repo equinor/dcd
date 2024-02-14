@@ -7,10 +7,10 @@ namespace api.Dtos;
 public class UpdateWellProjectDto
 {
     public string Name { get; set; } = string.Empty;
-    public UpdateOilProducerCostProfileOverrideDto OilProducerCostProfileOverride { get; set; } = new UpdateOilProducerCostProfileOverrideDto();
-    public UpdateGasProducerCostProfileOverrideDto GasProducerCostProfileOverride { get; set; } = new UpdateGasProducerCostProfileOverrideDto();
-    public UpdateWaterInjectorCostProfileOverrideDto WaterInjectorCostProfileOverride { get; set; } = new UpdateWaterInjectorCostProfileOverrideDto();
-    public UpdateGasInjectorCostProfileOverrideDto GasInjectorCostProfileOverride { get; set; } = new UpdateGasInjectorCostProfileOverrideDto();
+    public UpdateOilProducerCostProfileOverrideDto? OilProducerCostProfileOverride { get; set; }
+    public UpdateGasProducerCostProfileOverrideDto? GasProducerCostProfileOverride { get; set; }
+    public UpdateWaterInjectorCostProfileOverrideDto? WaterInjectorCostProfileOverride { get; set; }
+    public UpdateGasInjectorCostProfileOverrideDto? GasInjectorCostProfileOverride { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public Currency Currency { get; set; }
     public List<WellProjectWellDto> WellProjectWells { get; set; } = [];

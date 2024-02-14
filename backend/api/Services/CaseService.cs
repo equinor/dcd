@@ -117,7 +117,9 @@ public class CaseService : ICaseService
     public async Task<ProjectDto> UpdateCase(Guid caseId, CaseDto updatedCaseDto)
     {
         var caseItem = await GetCase(caseId);
-        CaseAdapter.ConvertExisting(caseItem, updatedCaseDto);
+
+        _mapper.Map(updatedCaseDto, caseItem);
+
         _context.Cases!.Update(caseItem);
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(caseItem.ProjectId);

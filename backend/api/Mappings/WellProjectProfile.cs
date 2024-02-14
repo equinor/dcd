@@ -18,7 +18,7 @@ public class WellProjectProfile : Profile
         CreateMap<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto>();
         CreateMap<GasInjectorCostProfile, GasInjectorCostProfileDto>();
         CreateMap<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto>();
-        CreateMap<WellProjectWell, WellProjectWellDto>();
+        CreateMap<WellProjectWell, WellProjectWellDto>().ReverseMap();
 
         CreateMap<UpdateWellProjectDto, WellProject>();
         CreateMap<UpdateOilProducerCostProfileOverrideDto, OilProducerCostProfileOverride>();

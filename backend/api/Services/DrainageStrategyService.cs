@@ -32,7 +32,11 @@ public class DrainageStrategyService : IDrainageStrategyService
     public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
     {
         var unit = (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
-        var drainageStrategy = DrainageStrategyAdapter.Convert(drainageStrategyDto, unit, true);
+        var drainageStrategy = _mapper.Map<DrainageStrategy>(drainageStrategyDto);
+        if (drainageStrategy == null)
+        {
+            throw new Exception("Drainage stragegy null");
+        }
         var project = await _projectService.GetProject(drainageStrategy.ProjectId);
         drainageStrategy.Project = project;
         _context.DrainageStrategies!.Add(drainageStrategy);
@@ -61,7 +65,13 @@ public class DrainageStrategyService : IDrainageStrategyService
         var source = await GetDrainageStrategy(drainageStrategyId);
         var unit = (await _projectService.GetProject(source.ProjectId)).PhysicalUnit;
 
-        var newDrainageStrategyDto = DrainageStrategyDtoAdapter.Convert(source, unit);
+        var newDrainageStrategyDto = _mapper.Map<DrainageStrategyDto>(source);
+
+        if (newDrainageStrategyDto == null)
+        {
+            throw new Exception();
+        }
+
         newDrainageStrategyDto.Id = Guid.Empty;
         if (newDrainageStrategyDto.ProductionProfileOil != null)
         {

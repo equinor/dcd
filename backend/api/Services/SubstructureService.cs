@@ -60,7 +60,11 @@ public class SubstructureService : ISubstructureService
     public async Task<SubstructureDto> CopySubstructure(Guid substructureId, Guid sourceCaseId)
     {
         var source = await GetSubstructure(substructureId);
-        var newSubstructureDto = SubstructureDtoAdapter.Convert(source);
+        var newSubstructureDto = _mapper.Map<SubstructureDto>(source);
+        if (newSubstructureDto == null)
+        {
+            throw new ArgumentNullException(nameof(newSubstructureDto));
+        }
         newSubstructureDto.Id = Guid.Empty;
         if (newSubstructureDto.CostProfile != null)
         {
@@ -97,7 +101,7 @@ public class SubstructureService : ISubstructureService
     {
         var existing = await GetSubstructure(updatedSubstructureDto.Id);
 
-        SubstructureAdapter.ConvertExisting(existing, updatedSubstructureDto);
+        _mapper.Map(updatedSubstructureDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Update(existing);

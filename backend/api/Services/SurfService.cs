@@ -30,7 +30,12 @@ public class SurfService : ISurfService
     public async Task<SurfDto> CopySurf(Guid surfId, Guid sourceCaseId)
     {
         var source = await GetSurf(surfId);
-        var newSurfDto = SurfDtoAdapter.Convert(source);
+        var newSurfDto = _mapper.Map<SurfDto>(source);
+        if (newSurfDto == null)
+        {
+            _logger.LogError("Failed to map surf to dto");
+            throw new Exception("Failed to map surf to dto");
+        }
         newSurfDto.Id = Guid.Empty;
         if (newSurfDto.CostProfile != null)
         {
@@ -55,7 +60,7 @@ public class SurfService : ISurfService
     public async Task<ProjectDto> UpdateSurf(SurfDto updatedSurfDto)
     {
         var existing = await GetSurf(updatedSurfDto.Id);
-        SurfAdapter.ConvertExisting(existing, updatedSurfDto);
+        _mapper.Map(updatedSurfDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Surfs!.Update(existing);
@@ -79,7 +84,11 @@ public class SurfService : ISurfService
 
     public async Task<ProjectDto> CreateSurf(SurfDto surfDto, Guid sourceCaseId)
     {
-        var surf = SurfAdapter.Convert(surfDto);
+        var surf = _mapper.Map<Surf>(surfDto);
+        if (surf == null)
+        {
+            throw new ArgumentNullException(nameof(surf));
+        }
         var project = await _projectService.GetProject(surf.ProjectId);
         surf.Project = project;
         surf.ProspVersion = surfDto.ProspVersion;
