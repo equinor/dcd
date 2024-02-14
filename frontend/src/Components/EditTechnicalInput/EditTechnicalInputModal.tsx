@@ -61,7 +61,6 @@ type Props = {
     isOpen: boolean
     setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
     project: Components.Schemas.ProjectDto,
-    setWells?: Dispatch<SetStateAction<Components.Schemas.WellDto[] | undefined>>
     caseId?: string
     setExploration?: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>
     setWellProject?: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>
@@ -72,14 +71,13 @@ const EditTechnicalInputModal = ({
     isOpen,
     setProject,
     project,
-    setWells,
     caseId,
     setExploration,
     setWellProject,
 }: Props) => {
     const [activeTab, setActiveTab] = useState<number>(0)
 
-    const [originalProject, setOriginalProject] = useState<Components.Schemas.ProjectDto>(project)
+    const [originalProject] = useState<Components.Schemas.ProjectDto>(project)
 
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
@@ -127,19 +125,6 @@ const EditTechnicalInputModal = ({
 
     if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
         return null
-    }
-
-    const setExplorationWellProjectWellsFromWells = (wells: Components.Schemas.WellDto[]) => {
-        const filteredExplorationWellsResult = wells.filter((w: Components.Schemas.WellDto) => isExplorationWell(w))
-        const filteredWellProjectWellsResult = wells.filter((w: Components.Schemas.WellDto) => !isExplorationWell(w))
-        setWellProjectWells(filteredWellProjectWellsResult)
-        setExplorationWells(filteredExplorationWellsResult)
-
-        setOriginalWellProjectWells(filteredWellProjectWellsResult)
-        setOriginalExplorationWells(filteredExplorationWellsResult)
-        if (setWells) {
-            setWells(wells)
-        }
     }
 
     const handleSave = async () => {
@@ -191,7 +176,6 @@ const EditTechnicalInputModal = ({
                 setWellProject(result.wellProjectDto)
             }
 
-            
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
             setOriginalDevelopmentOperationalWellCosts(developmentOperationalWellCosts)
             setOriginalWellProjectWells([...wellProjectWells])
@@ -211,25 +195,24 @@ const EditTechnicalInputModal = ({
         try {
             await handleSave()
             toggleEditTechnicalInputModal()
-        }
-        catch (e) {
+        } catch (e) {
             console.error("Error during save operation: ", e)
         }
     }
 
     const handleCancel = () => {
-            // Revert the operational costs to their original state
-            setExplorationOperationalWellCosts(originalExplorationOperationalWellCosts)
-            setDevelopmentOperationalWellCosts(originalDevelopmentOperationalWellCosts)
+        // Revert the operational costs to their original state
+        setExplorationOperationalWellCosts(originalExplorationOperationalWellCosts)
+        setDevelopmentOperationalWellCosts(originalDevelopmentOperationalWellCosts)
 
-            // Revert the wells to their original state
-            setWellProjectWells([...originalWellProjectWells])
-            setExplorationWells([...originalExplorationWells])
-        
+        // Revert the wells to their original state
+        setWellProjectWells([...originalWellProjectWells])
+        setExplorationWells([...originalExplorationWells])
+
         // Close the modal in all cases
         toggleEditTechnicalInputModal()
-    };
-    
+    }
+
     return (
         <>
             <div style={{

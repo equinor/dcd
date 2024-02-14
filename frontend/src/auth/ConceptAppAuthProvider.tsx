@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 /* eslint-disable max-len */
 import {
- createContext, useEffect, useContext, useState,
+    createContext, useState,
 } from "react"
 
 interface ConceptAppAuthContextState {
@@ -22,14 +22,14 @@ ConceptAppAuthContext.displayName = "ConceptAppAuthContext"
  * for the application/client.
  */
 const AuthHandler: React.FC<AuthHandlerProps> = ({ children }: AuthHandlerProps) => {
-    const [userError, setUserError] = useState<Error>()
-    const [isLoading, setIsLoading] = useState(true)
+    const [userError] = useState<Error>()
+    const [isLoading] = useState(true)
 
     return <ConceptAppAuthContext.Provider value={{ userError, loading: isLoading }}>{children}</ConceptAppAuthContext.Provider>
 }
 
 /**
- * A "wrapper" around the {@see MsalProvider}, so that we can keep track of the {@see tokenProvider} we are using.
+ * A "wrapper" around the @see MsalProvider, so that we can keep track of the @see tokenProvider we are using.
  * Also abstracts the MSAL layer away from the rest of the application.
  */
 const ConceptAppAuthProvider: React.FC<{ children: JSX.Element }> = (props) => <AuthHandler {...props} />

@@ -11,7 +11,7 @@ import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { MenuModule } from "@ag-grid-enterprise/menu"
 import { GridChartsModule } from "@ag-grid-enterprise/charts"
 import { AppRouter } from "./app/AppRouter"
-import { storeAppId, storeAppScope } from "./Utils/common";
+import { storeAppId, storeAppScope } from "./Utils/common"
 import { FusionRouterBootstrap } from "./app/FusionRouterBootstrap"
 import ConceptAppAuthProvider from "./auth/ConceptAppAuthProvider"
 import { APP_VERSION } from "./version"
