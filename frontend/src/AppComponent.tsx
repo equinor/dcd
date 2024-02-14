@@ -73,7 +73,7 @@ const AppComponent: FC = () => {
         storeAppScope(config.BACKEND_APP_SCOPE[0])
     }
 
-    console.log("Concept App version: ", APP_VERSION)
+    console.log("ConceptApp version: ", APP_VERSION)
 
     return (
         <ConceptAppAuthProvider>
