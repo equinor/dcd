@@ -16,8 +16,8 @@ public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
     private readonly IMapper _mapper;
 
     public GenerateCo2IntensityProfile(
-        ICaseService caseService, 
-        IDrainageStrategyService drainageStrategyService, 
+        ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService,
         IProjectService projectService,
         IGenerateCo2EmissionsProfile generateCo2EmissionsProfile,
         IMapper mapper

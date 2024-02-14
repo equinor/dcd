@@ -19,10 +19,10 @@ public class WellProjectWellService : IWellProjectWellService
     private readonly IMapper _mapper;
 
     public WellProjectWellService(
-        DcdDbContext context, 
-        IProjectService projectService, 
+        DcdDbContext context,
+        IProjectService projectService,
         ILoggerFactory loggerFactory,
-        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper, 
+        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
         IWellProjectService wellProjectService,
         IMapper mapper)
     {

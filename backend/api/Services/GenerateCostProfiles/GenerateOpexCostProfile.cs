@@ -19,12 +19,12 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
     private readonly IMapper _mapper;
 
     public GenerateOpexCostProfile(
-        DcdDbContext context, 
-        ILoggerFactory loggerFactory, 
-        ICaseService caseService, 
-        IProjectService projectService, 
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        ICaseService caseService,
+        IProjectService projectService,
         IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService, 
+        IWellProjectService wellProjectService,
         ITopsideService topsideService,
         IMapper mapper)
     {
@@ -77,7 +77,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
             Values = OPEX.Values
         };
         var opexDto = _mapper.Map<OpexCostProfileDto>(opexCostProfile);
-        
+
         result.OpexCostProfileDto = opexDto;
         return result;
     }

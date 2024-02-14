@@ -19,11 +19,11 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
     private readonly IMapper _mapper;
 
     public GenerateCo2EmissionsProfile(
-        DcdDbContext context, 
-        ICaseService caseService, 
-        IDrainageStrategyService drainageStrategyService, 
+        DcdDbContext context,
+        ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService,
         IProjectService projectService,
-        ITopsideService topsideService, 
+        ITopsideService topsideService,
         IWellProjectService wellProjectService,
         IMapper mapper)
     {

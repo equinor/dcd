@@ -18,9 +18,9 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
     private readonly IMapper _mapper;
 
     public GenerateFuelFlaringLossesProfile(
-        DcdDbContext context, 
-        ICaseService caseService, 
-        IProjectService projectService, 
+        DcdDbContext context,
+        ICaseService caseService,
+        IProjectService projectService,
         ITopsideService topsideService,
         IDrainageStrategyService drainageStrategyService,
         IMapper mapper)

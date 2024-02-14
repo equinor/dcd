@@ -21,12 +21,12 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
     private readonly IMapper _mapper;
 
     public GenerateCessationCostProfile(
-        DcdDbContext context, 
-        ILoggerFactory loggerFactory, 
-        ICaseService caseService, 
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        ICaseService caseService,
         IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService, 
-        ISurfService surfService, 
+        IWellProjectService wellProjectService,
+        ISurfService surfService,
         IProjectService projectService,
         IMapper mapper)
     {

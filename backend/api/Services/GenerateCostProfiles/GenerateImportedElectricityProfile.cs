@@ -18,9 +18,9 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
     private readonly IMapper _mapper;
 
     public GenerateImportedElectricityProfile(
-        DcdDbContext context, 
-        ICaseService caseService, 
-        IProjectService projectService, 
+        DcdDbContext context,
+        ICaseService caseService,
+        IProjectService projectService,
         ITopsideService topsideService,
         IDrainageStrategyService drainageStrategyService,
         IMapper mapper

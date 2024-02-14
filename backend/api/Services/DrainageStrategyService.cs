@@ -33,7 +33,8 @@ public class DrainageStrategyService : IDrainageStrategyService
     {
         var unit = (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
         var drainageStrategy = _mapper.Map<DrainageStrategy>(drainageStrategyDto);
-        if (drainageStrategy == null) {
+        if (drainageStrategy == null)
+        {
             throw new Exception("Drainage stragegy null");
         }
         var project = await _projectService.GetProject(drainageStrategy.ProjectId);
@@ -66,7 +67,8 @@ public class DrainageStrategyService : IDrainageStrategyService
 
         var newDrainageStrategyDto = _mapper.Map<DrainageStrategyDto>(source);
 
-        if (newDrainageStrategyDto == null) {
+        if (newDrainageStrategyDto == null)
+        {
             throw new Exception();
         }
 

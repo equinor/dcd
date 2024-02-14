@@ -19,10 +19,10 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
     private readonly IMapper _mapper;
 
     public CostProfileFromDrillingScheduleHelper(
-        DcdDbContext context, 
+        DcdDbContext context,
         ILoggerFactory loggerFactory,
-        ICaseService caseService, 
-        IExplorationService explorationService, 
+        ICaseService caseService,
+        IExplorationService explorationService,
         IWellProjectService wellProjectService,
         IMapper mapper)
     {

@@ -364,7 +364,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         {
             throw new Exception("Failed to update case");
         }
-        return caseDto; 
+        return caseDto;
     }
 
     public async Task<DrainageStrategyDto?> UpdateDrainageStrategy(

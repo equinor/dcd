@@ -22,13 +22,13 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
     private readonly IMapper _mapper;
 
     public GenerateStudyCostProfile(
-        DcdDbContext context, 
-        ILoggerFactory loggerFactory, 
-        ICaseService caseService, 
-        IWellProjectService wellProjectService, 
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        ICaseService caseService,
+        IWellProjectService wellProjectService,
         ITopsideService topsideService,
-        ISubstructureService substructureService, 
-        ISurfService surfService, 
+        ISubstructureService substructureService,
+        ISurfService surfService,
         ITransportService transportService,
         IMapper mapper)
     {
