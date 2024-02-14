@@ -75,7 +75,6 @@
         "@equinor/fusion-framework-module-ag-grid": "~30.1.0",
         "@equinor/fusion-framework-module-navigation": "^2.1.1",
         "@equinor/fusion-framework-react-app": "^4.0.14",
-        "@equinor/fusion-observable": "^8.1.5",
         "@equinor/fusion-react-ag-grid-styles": "29.3.16",
         "@equinor/fusion-react-textarea": "^0.5.15",
         "@material-ui/core": "^4.12.3",
