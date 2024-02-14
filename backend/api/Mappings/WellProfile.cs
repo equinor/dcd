@@ -9,8 +9,9 @@ public class WellProfile : Profile
 {
     public WellProfile()
     {
-        CreateMap<Well, WellDto>();
+        CreateMap<Well, WellDto>().ReverseMap();
 
         CreateMap<CreateWellDto, Well>();
+        CreateMap<DrillingScheduleDto, DrillingSchedule>().ReverseMap();
     }
 }

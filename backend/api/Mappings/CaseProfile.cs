@@ -35,5 +35,6 @@ public class CaseProfile : Profile
 
         CreateMap<OpexCostProfile, OpexCostProfileDto>();
         CreateMap<CessationCost, CessationCostDto>();
+        CreateMap<StudyCostProfile, StudyCostProfileDto>();
     }
 }
