@@ -13,7 +13,8 @@ import { GridChartsModule } from "@ag-grid-enterprise/charts"
 import { AppRouter } from "./app/AppRouter"
 import { storeAppId, storeAppScope } from "./Utils/common"
 import { FusionRouterBootstrap } from "./app/FusionRouterBootstrap"
-import ConceptAppAuthProvider from "./auth/ConceptAppAuthProvider"
+import ConceptAppAuthProvider from "./context/ConceptAppAuthProvider"
+import { AppContextProvider } from "./context/AppContext"
 import { APP_VERSION } from "./version"
 import { buildConfig } from "./Services/config"
 import { resolveConfiguration } from "./Utils/config"
@@ -76,11 +77,13 @@ const AppComponent: FC = () => {
     console.log("Concept App version: ", APP_VERSION)
 
     return (
-        <ConceptAppAuthProvider>
-            <FusionRouterBootstrap>
-                <AppRouter />
-            </FusionRouterBootstrap>
-        </ConceptAppAuthProvider>
+        <AppContextProvider>
+            <ConceptAppAuthProvider>
+                <FusionRouterBootstrap>
+                    <AppRouter />
+                </FusionRouterBootstrap>
+            </ConceptAppAuthProvider>
+        </AppContextProvider>
     )
 }
 
