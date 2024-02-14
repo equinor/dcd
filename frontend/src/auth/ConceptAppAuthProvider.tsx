@@ -27,7 +27,7 @@ const AuthHandler: React.FC<AuthHandlerProps> = ({ children }: AuthHandlerProps)
 }
 
 /**
- * A "wrapper" around the {@see MsalProvider}, so that we can keep track of the {@see tokenProvider} we are using.
+ * A "wrapper" around the @see MsalProvider, so that we can keep track of the @see tokenProvider we are using.
  * Also abstracts the MSAL layer away from the rest of the application.
  */
 const ConceptAppAuthProvider: React.FC<{ children: JSX.Element }> = (props) => <AuthHandler {...props} />

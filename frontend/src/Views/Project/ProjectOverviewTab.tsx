@@ -84,6 +84,7 @@ const ProjectOverviewTab = ({
             const projectId: string = unwrapProjectId(project.id)
             const projectResult: Components.Schemas.ProjectDto = await (await GetProjectService()).getProjectByID(projectId)
             const _ = (await GetSTEAService()).excelToSTEA(projectResult)
+            // todo: rewrite so _ is not left unused
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }

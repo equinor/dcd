@@ -190,11 +190,11 @@ const ProjectCompareCasesTab = ({
     const nameWithReferenceCase = (p: any) => (
         <span>
             {project.referenceCaseId === p.node.data.id
-                        && (
-                            <Tooltip title="Reference case">
-                                <MenuIcon data={bookmark_filled} size={16} />
-                            </Tooltip>
-                        )}
+                && (
+                    <Tooltip title="Reference case">
+                        <MenuIcon data={bookmark_filled} size={16} />
+                    </Tooltip>
+                )}
             <span>{p.value}</span>
         </span>
     )

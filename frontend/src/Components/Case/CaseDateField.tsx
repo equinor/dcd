@@ -6,7 +6,7 @@ import {
     ChangeEventHandler,
 } from "react"
 import styled from "styled-components"
-import { isDefaultDate, toMonthDate } from "../../Utils/common";
+import { isDefaultDate, toMonthDate } from "../../Utils/common"
 
 const ColumnWrapper = styled.div`
     display: flex;
