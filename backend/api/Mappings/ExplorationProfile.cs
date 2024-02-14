@@ -16,7 +16,7 @@ public class ExplorationProfile : Profile
         CreateMap<GAndGAdminCost, GAndGAdminCostDto>();
         CreateMap<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>();
         CreateMap<CountryOfficeCost, CountryOfficeCostDto>();
-        CreateMap<ExplorationWell, ExplorationWellDto>();
+        CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
         CreateMap<UpdateExplorationDto, Exploration>();
 
