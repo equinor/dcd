@@ -107,7 +107,7 @@
         "name": "Concept App",
         "shortName": "conceptapp",
         "description": "Concept App",
-        "type": "web",
+        "type": "standalone",
         "owners": [
             "eriei@equinor.com",
             "ahmab@equinor.com",

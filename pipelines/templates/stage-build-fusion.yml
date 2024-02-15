@@ -56,10 +56,8 @@ stages:
                       major: .version | split(".")[0], 
                       minor: .version | split(".")[1], 
                       patch: .version | split(".")[2]
-                  }, 
-                  admins: .manifest.admins, 
-                  owners: .manifest.owners 
-                  }' package.json)" > frontend/dist/app-manifest.json
+                  }
+                  }' package.json)" > ./dist/app-manifest.json
           - task: ArchiveFiles@2
             displayName: "Archive files"
             inputs:
